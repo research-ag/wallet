@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@assets/*": ["frontend/assets/*"],
+      "@candid/*": ["frontend/candid/*"],
+      "@redux/*": ["frontend/redux/*"],
+      "@components/*": ["frontend/components/*"],
+      "@pages/*": ["frontend/pages/*"],
+      "@hooks/*": ["frontend/pages/hooks/*"],
+      "@workers/*": ["frontend/pages/workers/*"],
+      "@/*": ["frontend/*"]
+    }
+  }
+}
