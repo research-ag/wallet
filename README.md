@@ -1,4 +1,4 @@
-# HPL Wallet
+# ICRC-1 Wallet
 
 [![License: GPL3](https://img.shields.io/badge/License-GPL3-blue.svg)](https://choosealicense.com/licenses/gpl-3.0/#)
 [![React Version](https://img.shields.io/badge/React-18.2-blue.svg)](https://reactjs.org/)
@@ -6,7 +6,7 @@
 [![Node Version](https://img.shields.io/badge/node-18.16.0-green.svg)](https://nodejs.org/es)
 [![dfx Version](https://img.shields.io/badge/dfx-0.14.1-violet.svg)](https://internetcomputer.org/docs/current/references/cli-reference/dfx-parent)
 
-HPL Wallet is an application designed for Internet Computer Network. This project allows users to manage their digital assets and perform transactions with major ICRC1 cryptocurrencies. Whether you're a beginner or an experienced crypto enthusiast, HPL Wallet provides a user-friendly interface for your Wallet needs.
+ICRC-1 Wallet is an application designed for Internet Computer Network. This project allows users to manage their digital assets and perform transactions with major ICRC1 cryptocurrencies. Whether you're a beginner or an experienced crypto enthusiast, ICRC-1 Wallet provides a user-friendly interface for your Wallet needs.
 
 ## Table of Contents
 
@@ -18,7 +18,7 @@ HPL Wallet is an application designed for Internet Computer Network. This projec
 
 ## Getting Started
 
-To get started with HPL Wallet, follow these steps:
+To get started with ICRC-1 Wallet, follow these steps:
 
 1. Clone the repository to your local machine:
 
@@ -69,7 +69,7 @@ To get started with HPL Wallet, follow these steps:
 npm run dev
 ```
 
-6. Open your web browser and visit `http://localhost:3000` to access the HPL Wallet application.
+6. Open your web browser and visit `http://localhost:3000` to access the ICRC-1 Wallet application.
 
 ## Features
 
@@ -81,7 +81,7 @@ npm run dev
 
 ## Technologies
 
-HPL Wallet is built using the following technologies:
+ICRC-1 Wallet is built using the following technologies:
 
 - React 18.2
 - TypeScript
@@ -95,7 +95,7 @@ HPL Wallet is built using the following technologies:
 
 ## Usage
 
-Once you have installed the project and started the development server, you can access the HPL Wallet application in your web browser. Here are some basic usage instructions:
+Once you have installed the project and started the development server, you can access the ICRC-1 Wallet application in your web browser. Here are some basic usage instructions:
 
 - Create a new wallet and secure your wallet information.
 - Add your cryptocurrencies and manage your digital assets.
