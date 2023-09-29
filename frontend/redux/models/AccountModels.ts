@@ -102,3 +102,11 @@ const TransactionList = z.object({
 });
 
 export type TransactionList = z.infer<typeof TransactionList>;
+
+// Process Interfaces
+const AssetToAdd = z.object({
+  symbol: z.string(),
+  tokenSymbol: z.string(),
+  logo: z.string().optional(),
+});
+export type AssetToAdd = z.infer<typeof AssetToAdd>;

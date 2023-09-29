@@ -36,23 +36,6 @@ const DetailList = () => {
     getSortedRowModel: getSortedRowModel(),
   });
 
-  const setDrawer = (drawer: DrawerOption) => {
-    setDrawerOption(drawer);
-    setTimeout(() => {
-      setDrawerOpen(true);
-    }, 150);
-  };
-
-  // Tailwind CSS
-  const colStyle = (idxTH: number) =>
-    clsx({
-      ["realtive"]: true,
-      ["w-[5rem] min-w-[5rem] max-w-[5rem]"]: idxTH === 0,
-      ["w-[calc(55%-5rem)] min-w-[calc(55%-5rem)] max-w-[calc(55%-5rem)]"]: idxTH === 1,
-      ["w-[20%] min-w-[20%] max-w-[20%]"]: idxTH === 2,
-      ["w-[25%] min-w-[25%] max-w-[25%]"]: idxTH === 3,
-    });
-
   return (
     <Fragment>
       <div
@@ -178,6 +161,23 @@ const DetailList = () => {
       </div>
     </Fragment>
   );
+
+  function setDrawer(drawer: DrawerOption) {
+    setDrawerOption(drawer);
+    setTimeout(() => {
+      setDrawerOpen(true);
+    }, 150);
+  }
 };
+
+// Tailwind CSS
+const colStyle = (idxTH: number) =>
+  clsx({
+    ["realtive"]: true,
+    ["w-[5rem] min-w-[5rem] max-w-[5rem]"]: idxTH === 0,
+    ["w-[calc(55%-5rem)] min-w-[calc(55%-5rem)] max-w-[calc(55%-5rem)]"]: idxTH === 1,
+    ["w-[20%] min-w-[20%] max-w-[20%]"]: idxTH === 2,
+    ["w-[25%] min-w-[25%] max-w-[25%]"]: idxTH === 3,
+  });
 
 export default DetailList;

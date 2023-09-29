@@ -5,7 +5,6 @@ import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 import { ReactComponent as ExchangeIcon } from "@assets/svg/files/arrows-exchange-v.svg";
 //
 import { IconTypeEnum, SendingStatus, SendingStatusEnum } from "@/const";
-import { toFullDecimal } from "@/utils";
 import { IcrcAccount, IcrcLedgerCanister } from "@dfinity/ledger";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { IdentityHook } from "@hooks/identityHook";
@@ -13,10 +12,11 @@ import { clsx } from "clsx";
 import { GeneralHook } from "../hooks/generalHook";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { useTranslation } from "react-i18next";
-import { hexToUint8Array, shortAddress, subUint8ArrayToHex, roundToDecimalN } from "@/utils";
+import { hexToUint8Array, shortAddress, subUint8ArrayToHex, roundToDecimalN, toFullDecimal } from "@/utils";
 import { CustomInput } from "@components/Input";
 import { CustomButton } from "@components/Button";
 import { AssetHook } from "../hooks/assetHook";
+import { ChangeEvent } from "react";
 
 interface SendOwnAccountProps {
   selectedAccount: SubAccount | undefined;
@@ -58,31 +58,6 @@ const SendOwnAccount = ({
   const { reloadBallance } = AssetHook();
   const { getAssetIcon } = GeneralHook();
   const { userAgent } = IdentityHook();
-
-  // Tailwind CSS constants
-  const sendBox = clsx(
-    "flex",
-    "flex-row",
-    "w-full",
-    "justify-between",
-    "items-start",
-    "rounded",
-    "border",
-    "p-3",
-    "mb-4",
-  );
-  const accountInfo = clsx("flex", "flex-col", "justify-start", "items-start", "w-full", "pl-2", "pr-2");
-
-  const maxAmount = () => {
-    const amount = roundToDecimalN(
-      Number(selectedAccount?.amount || "0") - Number(selectedAccount?.transaction_fee || "0"),
-      selectedAsset?.decimal || 8,
-    );
-    const over =
-      Number(amount) > Number(selectedAccount?.amount || "0") - Number(selectedAccount?.transaction_fee || "");
-    const valid = Number(selectedAccount?.amount || "0") >= Number(selectedAccount?.transaction_fee || "");
-    return { amount, over, valid };
-  };
 
   return (
     <div className="flex flex-col justify-start items-center w-full h-full text-lg text-PrimaryTextColorLight dark:text-PrimaryTextColor">
@@ -176,17 +151,7 @@ const SendOwnAccount = ({
         </div>
         <CloseIcon
           className="cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
-          onClick={() => {
-            setContactToSend(undefined);
-            setNewAccount("");
-            setReciver({
-              name: "",
-              color: "",
-              strAccount: "",
-              icrcAccount: {} as IcrcAccount,
-            });
-            setAmount("");
-          }}
+          onClick={onClose}
         />
       </div>
       <p className="w-full text-left opacity-60">{t("amount")}</p>
@@ -199,18 +164,13 @@ const SendOwnAccount = ({
             border={"none"}
             type="number"
             lang="en-US"
-            onChange={(e) => {
-              if (Number(e.target.value) >= 0) setAmount(e.target.value);
-            }}
+            onChange={onChangeAmount}
             formNoValidate
           />
         </div>
         <button
           className="flex justify-center items-center p-1 bg-RadioCheckColor rounded cursor-pointer"
-          onClick={() => {
-            maxAmount().valid &&
-              setAmount(toFullDecimal(maxAmount().amount.toString(), selectedAccount?.decimal || "8"));
-          }}
+          onClick={onMaxAmount}
         >
           <p className="text-sm text-PrimaryTextColor">{t("max")}</p>
         </button>
@@ -235,62 +195,102 @@ const SendOwnAccount = ({
       </div>
 
       <div className="w-full flex flex-row justify-end items-center mt-12">
-        <CustomButton
-          intent="deny"
-          className="mr-3 min-w-[5rem]"
-          onClick={() => {
-            setContactToSend(undefined);
-            setDrawerOpen(false);
-          }}
-        >
+        <CustomButton intent="deny" className="mr-3 min-w-[5rem]" onClick={onCancel}>
           <p>{t("cancel")}</p>
         </CustomButton>
-        <CustomButton
-          className="min-w-[5rem]"
-          onClick={async () => {
-            if (Number(amount) >= 0 && maxAmount().valid) {
-              if (Number(amount) > maxAmount().amount && maxAmount().valid) {
-                setSendingStatus(SendingStatusEnum.enum.error);
-                showModal(true);
-              } else {
-                let errorFound = false;
-                setSendingStatus(SendingStatusEnum.enum.sending);
-                showModal(true);
-                const { transfer } = IcrcLedgerCanister.create({
-                  agent: userAgent,
-                  canisterId: selectedAsset?.address as any,
-                });
-                try {
-                  await transfer({
-                    to: {
-                      owner: receiver.icrcAccount.owner,
-                      subaccount: receiver.icrcAccount.subaccount ? [receiver.icrcAccount.subaccount] : [],
-                    },
-                    amount: BigInt(
-                      Math.floor(Math.round(Number(amount) * Math.pow(10, Number(selectedAsset?.decimal)))),
-                    ),
-                    from_subaccount: hexToUint8Array(selectedAccount?.sub_account_id || "0"),
-                  });
-                } catch (e) {
-                  console.error(e);
-                  errorFound = true;
-                  setSendingStatus(SendingStatusEnum.enum.error);
-                } finally {
-                  if (!errorFound) {
-                    setDrawerOpen(false);
-                    setSendingStatus(SendingStatusEnum.enum.done);
-                    reloadBallance();
-                  }
-                }
-              }
-            }
-          }}
-        >
+        <CustomButton className="min-w-[5rem]" onClick={onSend}>
           <p>{t("next")}</p>
         </CustomButton>
       </div>
     </div>
   );
+
+  function onClose() {
+    setContactToSend(undefined);
+    setNewAccount("");
+    setReciver({
+      name: "",
+      color: "",
+      strAccount: "",
+      icrcAccount: {} as IcrcAccount,
+    });
+    setAmount("");
+  }
+
+  function onChangeAmount(e: ChangeEvent<HTMLInputElement>) {
+    if (Number(e.target.value) >= 0) setAmount(e.target.value);
+  }
+
+  function onMaxAmount() {
+    maxAmount().valid && setAmount(toFullDecimal(maxAmount().amount.toString(), selectedAccount?.decimal || "8"));
+  }
+
+  function onCancel() {
+    setContactToSend(undefined);
+    setDrawerOpen(false);
+  }
+
+  async function onSend() {
+    if (Number(amount) >= 0 && maxAmount().valid) {
+      if (Number(amount) > maxAmount().amount && maxAmount().valid) {
+        setSendingStatus(SendingStatusEnum.enum.error);
+        showModal(true);
+      } else {
+        let errorFound = false;
+        setSendingStatus(SendingStatusEnum.enum.sending);
+        showModal(true);
+        const { transfer } = IcrcLedgerCanister.create({
+          agent: userAgent,
+          canisterId: selectedAsset?.address as any,
+        });
+        try {
+          await transfer({
+            to: {
+              owner: receiver.icrcAccount.owner,
+              subaccount: receiver.icrcAccount.subaccount ? [receiver.icrcAccount.subaccount] : [],
+            },
+            amount: BigInt(Math.floor(Math.round(Number(amount) * Math.pow(10, Number(selectedAsset?.decimal))))),
+            from_subaccount: hexToUint8Array(selectedAccount?.sub_account_id || "0"),
+          });
+        } catch (e) {
+          console.error(e);
+          errorFound = true;
+          setSendingStatus(SendingStatusEnum.enum.error);
+        } finally {
+          if (!errorFound) {
+            setDrawerOpen(false);
+            setSendingStatus(SendingStatusEnum.enum.done);
+            reloadBallance();
+          }
+        }
+      }
+    }
+  }
+
+  function maxAmount() {
+    const amount = roundToDecimalN(
+      Number(selectedAccount?.amount || "0") - Number(selectedAccount?.transaction_fee || "0"),
+      selectedAsset?.decimal || 8,
+    );
+    const over =
+      Number(amount) > Number(selectedAccount?.amount || "0") - Number(selectedAccount?.transaction_fee || "");
+    const valid = Number(selectedAccount?.amount || "0") >= Number(selectedAccount?.transaction_fee || "");
+    return { amount, over, valid };
+  }
 };
+
+// Tailwind CSS constants
+const sendBox = clsx(
+  "flex",
+  "flex-row",
+  "w-full",
+  "justify-between",
+  "items-start",
+  "rounded",
+  "border",
+  "p-3",
+  "mb-4",
+);
+const accountInfo = clsx("flex", "flex-col", "justify-start", "items-start", "w-full", "pl-2", "pr-2");
 
 export default SendOwnAccount;
