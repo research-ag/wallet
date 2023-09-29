@@ -217,13 +217,17 @@ const AddAssetManual = ({
             intent={newToken.address.length > 5 ? "accept" : "deny"}
             onClick={async () => {
               if (asset) {
+                //change contacts local and reducer
                 dispatch(editAssetName(asset.tokenSymbol, newToken.symbol));
+                //list all tokens modifying the one we selected
                 const auxTokens = tokens.map((tkn) => {
                   if (tkn.id_number === newToken.id_number) {
                     return newToken;
                   } else return tkn;
                 });
+                //save tokens in list to local
                 saveInLocalStorage(auxTokens);
+                //edit tokens list and assets list
                 dispatch(editToken(newToken, asset.tokenSymbol));
                 setAssetOpen(false);
               } else addAssetToData();
