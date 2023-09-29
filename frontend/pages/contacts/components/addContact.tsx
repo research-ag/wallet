@@ -2,7 +2,7 @@
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 import { ReactComponent as TrashIcon } from "@assets/svg/files/trash-empty.svg";
 //
-import { Fragment } from "react";
+import { Fragment, KeyboardEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { CustomInput } from "@components/Input";
 import { useContacts } from "../hooks/contactsHook";
