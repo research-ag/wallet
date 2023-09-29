@@ -26,7 +26,6 @@ const DrawerAction = ({ drawerOption, setDrawerOption, setDrawerOpen, children }
 
   const customSend = clsx(chechEqId(DrawerOptionEnum.Enum.SEND) ? selectedButton : unselectedButton);
   const customReceive = clsx(chechEqId(DrawerOptionEnum.Enum.RECEIVE) ? selectedButton : unselectedButton);
-  // const customWrap = clsx(chechEqId(DrawerOptionEnum.Enum.WRAP) ? selectedButton : unselectedButton);
 
   const drawerOptions = [
     { name: "send", style: customSend, type: DrawerOptionEnum.Enum.SEND },

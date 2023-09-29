@@ -82,13 +82,7 @@ export const CustomCopy: FC<TooltipProps> = ({
     <Popover.Root open={open}>
       <Popover.Trigger asChild>
         <button
-          onClick={() => {
-            navigator.clipboard.writeText(copyText);
-            setOpen(true);
-            setTimeout(() => {
-              setOpen(false);
-            }, showTime);
-          }}
+          onClick={handleCopyClic}
           className={`p-0 ${customCopy({ background, rounded, boxSize, className })}`}
           {...props}
         >
@@ -115,4 +109,12 @@ export const CustomCopy: FC<TooltipProps> = ({
       </Popover.Portal>
     </Popover.Root>
   );
+
+  function handleCopyClic() {
+    navigator.clipboard.writeText(copyText);
+    setOpen(true);
+    setTimeout(() => {
+      setOpen(false);
+    }, showTime);
+  }
 };

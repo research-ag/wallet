@@ -33,56 +33,7 @@ const DrawerTransaction = ({ setDrawerOpen }: DrawerTransactionProps) => {
     selectedAccount?.address || "",
     selectedAccount?.sub_account_id || "",
   );
-
   const assetSymbol = getAssetSymbol(selectedTransaction?.symbol || "", assets);
-
-  const hasSub = (to: boolean) => {
-    return (
-      selectedTransaction?.symbol !== AssetSymbolEnum.Enum.ICP ||
-      ICPSubaccounts.find((sub) => sub.legacy === (to ? selectedTransaction?.to : selectedTransaction?.from))
-    );
-  };
-
-  const isICPWithSub = (to: boolean) => {
-    return (
-      selectedTransaction?.symbol === AssetSymbolEnum.Enum.ICP &&
-      ICPSubaccounts.find((sub) => sub.legacy === (to ? selectedTransaction?.to : selectedTransaction?.from))
-    );
-  };
-
-  const getIdentifier = (to: boolean) => {
-    return selectedTransaction?.symbol === AssetSymbolEnum.Enum.ICP
-      ? to
-        ? selectedTransaction?.to || ""
-        : selectedTransaction?.from || ""
-      : Principal.fromHex(
-          to ? selectedTransaction?.identityTo || "" : selectedTransaction?.identityFrom || "",
-        ).toString();
-  };
-
-  const getPrincipal = (to: boolean) => {
-    return isICPWithSub(to) ? authClient : to ? selectedTransaction?.to || "" : selectedTransaction?.from || "";
-  };
-
-  const getSub = (to: boolean) => {
-    return isICPWithSub(to)
-      ? ICPSubaccounts.find((sub) => sub.legacy === (to ? selectedTransaction?.to : selectedTransaction?.from))
-          ?.sub_account_id || "0x0"
-      : to
-      ? selectedTransaction?.toSub || "0x0"
-      : selectedTransaction?.fromSub || "0x0";
-  };
-
-  const getICRCAccount = (to: boolean) => {
-    try {
-      return getICRC1Acc({
-        owner: Principal.fromText(getPrincipal(to)),
-        subaccount: hexToUint8Array(getSub(to)),
-      } as IcrcAccount);
-    } catch {
-      return getPrincipal(to);
-    }
-  };
 
   return (
     <Fragment>
@@ -105,13 +56,11 @@ const DrawerTransaction = ({ setDrawerOpen }: DrawerTransactionProps) => {
             }}
           />
         </div>
-
         {/* FROM SECTION */}
         <div className="flex flex-col justify-center items-center gap-4 w-[calc(100%-3rem)] mx-6 p-4 bg-FromBoxColorLight dark:bg-FromBoxColor">
           <div className="flex flex-row justify-between items-center w-full">
             <p className="text-PrimaryTextColorLight dark:text-PrimaryTextColor font-medium">{t("from")}</p>
           </div>
-
           <div className="flex flex-row justify-between items-center w-full font-normal">
             <p>{`${t("acc.principal")}`}</p>
             <div className="flex flex-row justify-start items-center gap-2">
@@ -124,7 +73,6 @@ const DrawerTransaction = ({ setDrawerOpen }: DrawerTransactionProps) => {
               />
             </div>
           </div>
-
           <div className="flex flex-row justify-between items-center w-full font-normal">
             <p>{`${t("acc.subacc")}`}</p>
             <div className="flex flex-row justify-start items-center gap-2">
@@ -137,7 +85,6 @@ const DrawerTransaction = ({ setDrawerOpen }: DrawerTransactionProps) => {
               />
             </div>
           </div>
-
           <div className="flex flex-row justify-between items-center w-full font-normal">
             <p>{`${t("icrc.acc")}`}</p>
             <div className="flex flex-row justify-start items-center gap-2">
@@ -150,7 +97,6 @@ const DrawerTransaction = ({ setDrawerOpen }: DrawerTransactionProps) => {
               />
             </div>
           </div>
-
           {selectedTransaction?.symbol === AssetSymbolEnum.Enum.ICP && (
             <div className="flex flex-row justify-between items-center w-full font-normal">
               <p>{`${t("acc.identifier")}`}</p>
@@ -165,7 +111,6 @@ const DrawerTransaction = ({ setDrawerOpen }: DrawerTransactionProps) => {
               </div>
             </div>
           )}
-
           <div className="flex flex-row justify-between items-center w-full font-normal">
             <p>{t("transaction.amount")}</p>
             <p className="">{`${toFullDecimal(
@@ -175,16 +120,13 @@ const DrawerTransaction = ({ setDrawerOpen }: DrawerTransactionProps) => {
             )} ${assetSymbol}`}</p>
           </div>
         </div>
-
         {/* ARROW SECTION */}
         <DownBlueArrow className="my-3"></DownBlueArrow>
-
         {/* TO SECTION */}
         <div className="flex flex-col justify-center items-center gap-4 w-[calc(100%-3rem)] mx-6 p-4 bg-FromBoxColorLight dark:bg-FromBoxColor rounded-md">
           <div className="flex flex-row justify-between items-center w-full">
             <p className="text-PrimaryTextColorLight dark:text-PrimaryTextColor font-medium">{t("to")}</p>
           </div>
-
           <div className="flex flex-row justify-between items-center w-full font-normal">
             <p>{`${t("acc.principal")}`}</p>
             <div className="flex flex-row justify-start items-center gap-2">
@@ -197,7 +139,6 @@ const DrawerTransaction = ({ setDrawerOpen }: DrawerTransactionProps) => {
               />
             </div>
           </div>
-
           <div className="flex flex-row justify-between items-center w-full font-normal">
             <p>{`${t("acc.subacc")}`}</p>
             <div className="flex flex-row justify-start items-center gap-2">
@@ -210,7 +151,6 @@ const DrawerTransaction = ({ setDrawerOpen }: DrawerTransactionProps) => {
               />
             </div>
           </div>
-
           <div className="flex flex-row justify-between items-center w-full font-normal">
             <p>{`${t("icrc.acc")}`}</p>
             <div className="flex flex-row justify-start items-center gap-2">
@@ -223,7 +163,6 @@ const DrawerTransaction = ({ setDrawerOpen }: DrawerTransactionProps) => {
               />
             </div>
           </div>
-
           {selectedTransaction?.symbol === AssetSymbolEnum.Enum.ICP && (
             <div className="flex flex-row justify-between items-center w-full font-normal">
               <p>{`${t("acc.identifier")}`}</p>
@@ -238,7 +177,6 @@ const DrawerTransaction = ({ setDrawerOpen }: DrawerTransactionProps) => {
               </div>
             </div>
           )}
-
           <div className="flex flex-row justify-between items-center w-full font-normal">
             <p>{t("transaction.amount")}</p>
             <p className="">{`${toFullDecimal(
@@ -259,6 +197,55 @@ const DrawerTransaction = ({ setDrawerOpen }: DrawerTransactionProps) => {
       </div>
     </Fragment>
   );
+
+  function hasSub(to: boolean) {
+    return (
+      selectedTransaction?.symbol !== AssetSymbolEnum.Enum.ICP ||
+      ICPSubaccounts.find((sub) => sub.legacy === (to ? selectedTransaction?.to : selectedTransaction?.from))
+    );
+  }
+
+  function isICPWithSub(to: boolean) {
+    return (
+      selectedTransaction?.symbol === AssetSymbolEnum.Enum.ICP &&
+      ICPSubaccounts.find((sub) => sub.legacy === (to ? selectedTransaction?.to : selectedTransaction?.from))
+    );
+  }
+
+  function getIdentifier(to: boolean) {
+    if (selectedTransaction?.symbol === AssetSymbolEnum.Enum.ICP) {
+      if (to) return selectedTransaction?.to || "";
+      else return selectedTransaction?.from || "";
+    } else
+      return Principal.fromHex(
+        to ? selectedTransaction?.identityTo || "" : selectedTransaction?.identityFrom || "",
+      ).toString();
+  }
+
+  function getPrincipal(to: boolean) {
+    return isICPWithSub(to) ? authClient : to ? selectedTransaction?.to || "" : selectedTransaction?.from || "";
+  }
+
+  function getSub(to: boolean) {
+    if (isICPWithSub(to)) {
+      return (
+        ICPSubaccounts.find((sub) => sub.legacy === (to ? selectedTransaction?.to : selectedTransaction?.from))
+          ?.sub_account_id || "0x0"
+      );
+    } else if (to) return selectedTransaction?.toSub || "0x0";
+    else return selectedTransaction?.fromSub || "0x0";
+  }
+
+  function getICRCAccount(to: boolean) {
+    try {
+      return getICRC1Acc({
+        owner: Principal.fromText(getPrincipal(to)),
+        subaccount: hexToUint8Array(getSub(to)),
+      } as IcrcAccount);
+    } catch {
+      return getPrincipal(to);
+    }
+  }
 };
 
 export default DrawerTransaction;

@@ -16,6 +16,7 @@ import { CustomButton } from "@components/Button";
 import Modal from "@components/Modal";
 import AddContact from "./addContact";
 import clsx from "clsx";
+import { Asset } from "@redux/models/AccountModels";
 
 interface ContactFiltersProps {
   searchKey: string;
@@ -29,14 +30,6 @@ const ContactFilters = ({ searchKey, assetFilter, setSearchKey, setAssetFilter }
   const { theme } = ThemeHook();
   const { assetOpen, setAssetOpen, setAddOpen, addOpen } = useContacts();
   const { assets, getAssetIcon } = GeneralHook();
-
-  // Tailwind CSS
-  const assetStyle = (k: number) =>
-    clsx({
-      ["flex flex-row justify-between items-center px-3 py-2 w-full hover:bg-HoverColorLight hover:dark:bg-HoverColor"]:
-        true,
-      ["rounded-b-lg"]: k === assets.length - 1,
-    });
 
   return (
     <Fragment>
@@ -81,19 +74,10 @@ const ContactFilters = ({ searchKey, assetFilter, setSearchKey, setAssetFilter }
               align="end"
             >
               <button
-                onClick={() => {
-                  if (assetFilter.length === assets.length) setAssetFilter([]);
-                  else {
-                    const symbols = assets.map((ast) => {
-                      return ast.tokenSymbol;
-                    });
-                    setAssetFilter(symbols);
-                  }
-                }}
+                onClick={handleSelectAll}
                 className="flex flex-row justify-between items-center rounded-t-lg px-3 py-2 w-full hover:bg-HoverColorLight hover:dark:bg-HoverColor"
               >
                 <p>{t("selected.all")}</p>
-
                 <CustomCheck
                   className="border-BorderColorLight dark:border-BorderColor"
                   checked={assetFilter.length === assets.length}
@@ -103,12 +87,9 @@ const ContactFilters = ({ searchKey, assetFilter, setSearchKey, setAssetFilter }
                 return (
                   <button
                     key={k}
-                    className={assetStyle(k)}
+                    className={assetStyle(k, assets)}
                     onClick={() => {
-                      if (assetFilter.includes(asset.tokenSymbol)) {
-                        const auxSymbols = assetFilter.filter((ast) => ast !== asset.tokenSymbol);
-                        setAssetFilter(auxSymbols);
-                      } else setAssetFilter([...assetFilter, asset.tokenSymbol]);
+                      handleSelectAsset(asset);
                     }}
                   >
                     <div className="flex flex-start justify-start items-center gap-2">
@@ -156,6 +137,31 @@ const ContactFilters = ({ searchKey, assetFilter, setSearchKey, setAssetFilter }
       </Modal>
     </Fragment>
   );
+
+  function handleSelectAll() {
+    if (assetFilter.length === assets.length) setAssetFilter([]);
+    else {
+      const symbols = assets.map((ast) => {
+        return ast.tokenSymbol;
+      });
+      setAssetFilter(symbols);
+    }
+  }
+
+  function handleSelectAsset(asset: Asset) {
+    if (assetFilter.includes(asset.tokenSymbol)) {
+      const auxSymbols = assetFilter.filter((ast) => ast !== asset.tokenSymbol);
+      setAssetFilter(auxSymbols);
+    } else setAssetFilter([...assetFilter, asset.tokenSymbol]);
+  }
 };
 
 export default ContactFilters;
+
+// Tailwind CSS
+const assetStyle = (k: number, assets: Asset[]) =>
+  clsx({
+    ["flex flex-row justify-between items-center px-3 py-2 w-full hover:bg-HoverColorLight hover:dark:bg-HoverColor"]:
+      true,
+    ["rounded-b-lg"]: k === assets.length - 1,
+  });

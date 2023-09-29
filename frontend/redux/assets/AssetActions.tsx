@@ -319,9 +319,8 @@ export const getAllTransactionsICRC1 = async (
   });
 
   const transactionsInfo = ICRC1getTransactions.transactions.map(({ transaction, id }) =>
-    formatckBTCTransaccion(transaction, id, myPrincipal.toString(), symbol, canister, subNumber),
+    formatckBTCTransaccion(transaction, id, myPrincipal.toString(), assetSymbol, canister, subNumber),
   );
-
   if (
     loading &&
     store.getState().asset.selectedAccount?.sub_account_id === subNumber &&

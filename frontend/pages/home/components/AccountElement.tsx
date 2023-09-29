@@ -94,7 +94,7 @@ const AccountElement = ({
         aria-haspopup="true"
         className={accElemStyle}
         onClick={() => {
-          !newSub && changeSelectedAccount(subAccount);
+          if (!newSub && selectedAccount !== subAccount) changeSelectedAccount(subAccount);
           if (editNameId !== subAccount.sub_account_id) setEditNameId("");
         }}
       >

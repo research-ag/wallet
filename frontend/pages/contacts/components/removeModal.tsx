@@ -67,23 +67,30 @@ const RemoveModal = ({ deleteModal, setDeleteModal, deleteType, getDeleteMsg, de
           </div>
         )}
         <div className="flex flex-row justify-end items-center w-full px-8">
-          <CustomButton
-            className="min-w-[5rem]"
-            onClick={() => {
-              if (deleteType === DeleteContactTypeEnum.Enum.CONTACT) removeCntct(deleteObject.principal);
-              else if (deleteType === DeleteContactTypeEnum.Enum.ASSET)
-                removeAsset(deleteObject.principal, deleteObject.tokenSymbol);
-              else removeSubacc(deleteObject.principal, deleteObject.tokenSymbol, deleteObject.subaccIdx);
-              setDeleteModal(false);
-            }}
-            size={"small"}
-          >
+          <CustomButton className="min-w-[5rem]" onClick={handleConfirmButton} size={"small"}>
             <p>{t("confirm")}</p>
           </CustomButton>
         </div>
       </div>
     </Modal>
   );
+
+  function handleConfirmButton() {
+    switch (deleteType) {
+      case DeleteContactTypeEnum.Enum.CONTACT:
+        removeCntct(deleteObject.principal);
+        break;
+      case DeleteContactTypeEnum.Enum.ASSET:
+        removeAsset(deleteObject.principal, deleteObject.tokenSymbol);
+        break;
+      case DeleteContactTypeEnum.Enum.SUB:
+        removeSubacc(deleteObject.principal, deleteObject.tokenSymbol, deleteObject.subaccIdx);
+        break;
+      default:
+        break;
+    }
+    setDeleteModal(false);
+  }
 };
 
 export default RemoveModal;

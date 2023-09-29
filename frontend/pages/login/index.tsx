@@ -11,6 +11,7 @@ import { ThemeHook } from "@hooks/themeHook";
 import { Fragment } from "react";
 import { handleAuthenticated } from "@/redux/CheckAuth";
 import { AuthNetworkTypeEnum, ThemesEnum } from "@/const";
+import { AuthNetwork } from "@redux/models/TokenModels";
 
 const Login = () => {
   const { t } = useTranslation();
@@ -43,13 +44,7 @@ const Login = () => {
                     className="flex flex-row justify-between items-center w-full mt-4 p-3 rounded-[5%] cursor-pointer bg-SecondaryColorLight dark:bg-SecondaryColor"
                     key={k}
                     onClick={async () => {
-                      if (opt.type === AuthNetworkTypeEnum.Values.IC || opt.type === AuthNetworkTypeEnum.Values.NFID) {
-                        localStorage.setItem(
-                          "network_type",
-                          JSON.stringify({ type: opt.type, network: opt.network, name: opt.name }),
-                        );
-                        handleAuthenticated(opt);
-                      }
+                      handleLogin(opt);
                     }}
                   >
                     <h3 className="font-medium text-PrimaryTextColorLight dark:text-PrimaryTextColor">{opt.name}</h3>
@@ -83,6 +78,13 @@ const Login = () => {
       </div>
     </Fragment>
   );
+
+  async function handleLogin(opt: AuthNetwork) {
+    if (opt.type === AuthNetworkTypeEnum.Values.IC || opt.type === AuthNetworkTypeEnum.Values.NFID) {
+      localStorage.setItem("network_type", JSON.stringify({ type: opt.type, network: opt.network, name: opt.name }));
+      handleAuthenticated(opt);
+    }
+  }
 };
 
 export default Login;
