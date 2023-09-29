@@ -58,48 +58,6 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens }: AddA
     setValidToken(false);
   }, [assetOpen]);
 
-  const saveInLocalStorage = (tokens: Token[]) => {
-    localStorage.setItem(
-      authClient,
-      JSON.stringify({
-        from: "II",
-        tokens: tokens.sort((a, b) => {
-          return a.id_number - b.id_number;
-        }),
-      }),
-    );
-  };
-
-  const addAssetToData = () => {
-    if (checkAssetAdded(newToken.address)) {
-      setErrToken(t("adding.asset.already.imported"));
-      setValidToken(false);
-    } else {
-      const idxSorting =
-        tokens.length > 0
-          ? [...tokens].sort((a, b) => {
-              return b.id_number - a.id_number;
-            })
-          : [];
-      const idx = (idxSorting.length > 0 ? idxSorting[0]?.id_number : 0) + 1;
-      const tknSave = {
-        ...newToken,
-        id_number: idx,
-        subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default }],
-      };
-      saveInLocalStorage([...tokens, tknSave]);
-      setAddStatus(AddingAssetsEnum.enum.adding);
-      showModal(true);
-      dispatch(addToken(tknSave));
-      reloadBallance(
-        [...tokens, tknSave].sort((a, b) => {
-          return a.id_number - b.id_number;
-        }),
-      );
-      setAssetOpen(false);
-    }
-  };
-
   return (
     <Fragment>
       <div className="flex flex-col justify-start items-center bg-PrimaryColorLight dark:bg-PrimaryColor w-full h-full pt-8 px-6 text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md">
@@ -107,21 +65,7 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens }: AddA
           <p className="text-lg font-bold">{asset ? t("edit.asset") : t("add.asset")}</p>
           <CloseIcon
             className="stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor cursor-pointer"
-            onClick={() => {
-              setAssetOpen(false);
-              setNetwork(TokenNetworkEnum.enum["ICRC-1"]);
-              setNewToken({
-                address: "",
-                symbol: "",
-                name: "",
-                decimal: "",
-                subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default }],
-                index: "",
-                id_number: 999,
-              });
-              setManual(false);
-              setAssetInfo(undefined);
-            }}
+            onClick={onClose}
           />
         </div>
         {manual || asset ? (
@@ -173,6 +117,64 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens }: AddA
       )}
     </Fragment>
   );
+
+  function onClose() {
+    setAssetOpen(false);
+    setNetwork(TokenNetworkEnum.enum["ICRC-1"]);
+    setNewToken({
+      address: "",
+      symbol: "",
+      name: "",
+      decimal: "",
+      subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default }],
+      index: "",
+      id_number: 999,
+    });
+    setManual(false);
+    setAssetInfo(undefined);
+  }
+
+  function saveInLocalStorage(tokens: Token[]) {
+    localStorage.setItem(
+      authClient,
+      JSON.stringify({
+        from: "II",
+        tokens: tokens.sort((a, b) => {
+          return a.id_number - b.id_number;
+        }),
+      }),
+    );
+  }
+
+  function addAssetToData() {
+    if (checkAssetAdded(newToken.address)) {
+      setErrToken(t("adding.asset.already.imported"));
+      setValidToken(false);
+    } else {
+      const idxSorting =
+        tokens.length > 0
+          ? [...tokens].sort((a, b) => {
+              return b.id_number - a.id_number;
+            })
+          : [];
+      const idx = (idxSorting.length > 0 ? idxSorting[0]?.id_number : 0) + 1;
+      const tknSave = {
+        ...newToken,
+        id_number: idx,
+        subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default }],
+      };
+      saveInLocalStorage([...tokens, tknSave]);
+      setAddStatus(AddingAssetsEnum.enum.adding);
+      showModal(true);
+      dispatch(addToken(tknSave));
+      reloadBallance(
+        [...tokens, tknSave].sort((a, b) => {
+          return a.id_number - b.id_number;
+        }),
+      );
+      setAssetOpen(false);
+    }
+  }
 };
 
 export default AddAsset;

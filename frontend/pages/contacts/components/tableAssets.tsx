@@ -60,14 +60,6 @@ const TableAssets = ({
 
   const { getAssetIcon } = GeneralHook();
 
-  const dotH = (asst: AssetContact) => {
-    let height = "0";
-    if (asst.tokenSymbol === openSubaccToken && (asst.subaccounts.length > 0 || addSub))
-      height = (5.7 + asst.subaccounts.length * 3.55 + (addSub ? 3.55 : 0)).toString();
-    else height = "3.25";
-    return `${height}rem`;
-  };
-
   return (
     <table className="w-full text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md ">
       {cntc.assets.length > 0 && (
@@ -113,23 +105,7 @@ const TableAssets = ({
                       <p className="ml-2">{`${asst.subaccounts.length} Subs`}</p>
                       <button
                         onClick={() => {
-                          setAddSub(true);
-                          setSelContactPrin("");
-                          if (!addSub) {
-                            setSubaccEdited({
-                              name: "",
-                              subaccount_index: "",
-                            });
-                            setSelSubaccIdx("");
-                            setSubaccEditedErr({
-                              name: false,
-                              subaccount_index: false,
-                            });
-                          }
-
-                          changeName("");
-                          changeSubIdx("");
-                          if (openSubaccToken !== asst.tokenSymbol) setOpenSubaccToken(asst.tokenSymbol);
+                          onAddSub(asst);
                         }}
                         className="flex bg-AddSecondaryButton w-8 h-8 justify-center items-center rounded-r p-0"
                       >
@@ -143,21 +119,7 @@ const TableAssets = ({
                     <PencilIcon className="w-4 h-4 invisible" />
                     <TrashIcon
                       onClick={() => {
-                        setAddSub(false);
-                        setSelContactPrin("");
-                        setSelSubaccIdx("");
-                        setDeleteObject({
-                          principal: cntc.principal,
-                          name: cntc.name,
-                          tokenSymbol: asst.tokenSymbol,
-                          symbol: asst.symbol,
-                          subaccIdx: "",
-                          subaccName: "",
-                          totalAssets: 0,
-                          TotalSub: asst.subaccounts.length,
-                        });
-                        setDeleteModal(true);
-                        setDeleteType(DeleteContactTypeEnum.Enum.ASSET);
+                        onDeleteAsset(asst);
                       }}
                       className="w-4 h-4 fill-PrimaryTextColorLight dark:fill-PrimaryTextColor cursor-pointer"
                     />
@@ -168,10 +130,7 @@ const TableAssets = ({
                     {asst.subaccounts.length > 0 && (
                       <ChevIcon
                         onClick={() => {
-                          setAddSub(false);
-                          setSelSubaccIdx("");
-                          if (openSubaccToken === asst.tokenSymbol) setOpenSubaccToken("");
-                          else setOpenSubaccToken(asst.tokenSymbol);
+                          onChevIconClic(asst);
                         }}
                         className={`w-8 h-8 stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor stroke-0  cursor-pointer ${
                           asst.tokenSymbol === openSubaccToken ? "" : "rotate-90"
@@ -211,6 +170,59 @@ const TableAssets = ({
       </tbody>
     </table>
   );
+
+  function dotH(asst: AssetContact) {
+    let height = "0";
+    if (asst.tokenSymbol === openSubaccToken && (asst.subaccounts.length > 0 || addSub))
+      height = (5.7 + asst.subaccounts.length * 3.55 + (addSub ? 3.55 : 0)).toString();
+    else height = "3.25";
+    return `${height}rem`;
+  }
+
+  function onAddSub(asst: AssetContact) {
+    setAddSub(true);
+    setSelContactPrin("");
+    if (!addSub) {
+      setSubaccEdited({
+        name: "",
+        subaccount_index: "",
+      });
+      setSelSubaccIdx("");
+      setSubaccEditedErr({
+        name: false,
+        subaccount_index: false,
+      });
+    }
+
+    changeName("");
+    changeSubIdx("");
+    if (openSubaccToken !== asst.tokenSymbol) setOpenSubaccToken(asst.tokenSymbol);
+  }
+
+  function onDeleteAsset(asst: AssetContact) {
+    setAddSub(false);
+    setSelContactPrin("");
+    setSelSubaccIdx("");
+    setDeleteObject({
+      principal: cntc.principal,
+      name: cntc.name,
+      tokenSymbol: asst.tokenSymbol,
+      symbol: asst.symbol,
+      subaccIdx: "",
+      subaccName: "",
+      totalAssets: 0,
+      TotalSub: asst.subaccounts.length,
+    });
+    setDeleteModal(true);
+    setDeleteType(DeleteContactTypeEnum.Enum.ASSET);
+  }
+
+  function onChevIconClic(asst: AssetContact) {
+    setAddSub(false);
+    setSelSubaccIdx("");
+    if (openSubaccToken === asst.tokenSymbol) setOpenSubaccToken("");
+    else setOpenSubaccToken(asst.tokenSymbol);
+  }
 };
 
 export default TableAssets;

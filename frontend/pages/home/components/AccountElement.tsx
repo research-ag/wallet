@@ -8,7 +8,7 @@ import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
 import { SubAccount } from "@redux/models/AccountModels";
 import { clsx } from "clsx";
-import { Fragment, useState } from "react";
+import { ChangeEvent, Fragment, useState } from "react";
 import { GeneralHook } from "../hooks/generalHook";
 import { toFullDecimal } from "@/utils";
 import { CustomInput } from "@components/Input";
@@ -60,39 +60,11 @@ const AccountElement = ({
   const [deleteModal, setDeleteModal] = useState(false);
   const [nameError, setNameError] = useState(false);
 
-  // Tailwind CSS
-  const accElemStyle = clsx({
-    ["relative flex flex-row justify-between items-center w-[calc(100%-2rem)] min-h-[3.5rem] pl-4 pr-4 text-PrimaryColor dark:text-PrimaryColorLight cursor-pointer hover:bg-[rgb(51,178,239,0.24)] text-md"]:
-      true,
-    ["bg-[rgb(51,178,239,0.24)]"]: chechEqId() && !newSub,
-    ["!bg-SvgColor"]: newSub,
-  });
-  const accName = clsx({ ["text-[#33b2ef]"]: chechEqId() });
-  const accId = clsx({
-    ["text-[#33b2ef]"]: chechEqId(),
-    ["opacity-60"]: subAccount?.sub_account_id !== selectedAccount?.sub_account_id,
-  });
-  const accCurrencyAmnt = clsx({
-    ["opacity-60"]: subAccount?.sub_account_id !== selectedAccount?.sub_account_id,
-  });
-
-  const saveLocalStorage = (auxTokens: Token[]) => {
-    localStorage.setItem(
-      authClient,
-      JSON.stringify({
-        from: "II",
-        tokens: auxTokens.sort((a, b) => {
-          return a.id_number - b.id_number;
-        }),
-      }),
-    );
-  };
-
   return (
     <Fragment>
       <div
         aria-haspopup="true"
-        className={accElemStyle}
+        className={accElemStyle()}
         onClick={() => {
           if (!newSub && selectedAccount !== subAccount) changeSelectedAccount(subAccount);
           if (editNameId !== subAccount.sub_account_id) setEditNameId("");
@@ -111,82 +83,28 @@ const AccountElement = ({
                 inputClass="!py-1"
                 compOutClass="!w-1/2"
                 autoFocus
-                onChange={(e) => {
-                  setName(e.target.value);
-                  setNameError(false);
-                }}
+                onChange={onNameChange}
               />
               <button
                 className="flex justify-center items-center ml-2 p-0.5 bg-RadioCheckColor rounded cursor-pointer"
-                onClick={() => {
-                  if (name !== "") {
-                    setEditNameId("");
-                    if (newSub) {
-                      const auxTokens = tokens.map((tkn, k) => {
-                        if (k === Number(tokenIndex)) {
-                          return {
-                            ...tkn,
-                            subAccounts: [
-                              ...tkn.subAccounts,
-                              {
-                                name: name,
-                                numb: subAccount.sub_account_id,
-                              },
-                            ].sort((a, b) => {
-                              return bigInt(a.numb).compare(bigInt(b.numb));
-                            }),
-                          };
-                        } else return tkn;
-                      });
-                      saveLocalStorage(auxTokens);
-                      dispatch(addSubAccount(tokenIndex, { ...subAccount, name: name }));
-                      setNewSub(undefined);
-                    } else {
-                      const auxTokens = tokens.map((tkn, k) => {
-                        if (k === Number(tokenIndex)) {
-                          const auxSubs: TokenSubAccount[] = [];
-                          tkn.subAccounts.map((sa) => {
-                            if (sa.numb === subAccount.sub_account_id) {
-                              auxSubs.push({ ...sa, name: name });
-                            } else auxSubs.push(sa);
-                          });
-                          return { ...tkn, subAccounts: auxSubs };
-                        } else return tkn;
-                      });
-                      saveLocalStorage(auxTokens);
-                      dispatch(setSubAccountName(tokenIndex, subaccountId, name));
-                    }
-                  } else {
-                    setNameError(true);
-                  }
-                }}
+                onClick={onSave}
               >
                 <p className="text-sm text-PrimaryTextColor">{t("save")}</p>
               </button>
               <button
                 className="flex justify-center items-center ml-2 p-1 bg-LockColor rounded cursor-pointer"
-                onClick={() => {
-                  setEditNameId("");
-                  setNewSub(undefined);
-                }}
+                onClick={onAdd}
               >
                 <img src={PlusIcon} className="w-4 h-4 rotate-45" alt="info-icon" />
               </button>
             </div>
           ) : (
-            <button
-              className="p-0 w-full text-left min-h-[1.645rem]"
-              onDoubleClick={() => {
-                setEditNameId(subAccount.sub_account_id);
-                setName(subAccount.name);
-                setNewSub(undefined);
-              }}
-            >
-              <p className={`${accName} break-words max-w-[9rem]`}>{`${subAccount?.name}`}</p>
+            <button className="p-0 w-full text-left min-h-[1.645rem]" onDoubleClick={onDoubleClick}>
+              <p className={`${accName()} break-words max-w-[9rem]`}>{`${subAccount?.name}`}</p>
             </button>
           )}
           <div className="flex flex-row justify-start items-center gap-3 min-h-5">
-            <p className={`${accId} break-words max-w-[9rem] text-left`}>{subAccount?.sub_account_id}</p>
+            <p className={`${accId()} break-words max-w-[9rem] text-left`}>{subAccount?.sub_account_id}</p>
             {chechEqId() && (
               <CustomCopy size={"xSmall"} className="p-0" copyText={subAccount?.sub_account_id.substring(2) || "0"} />
             )}
@@ -199,7 +117,7 @@ const AccountElement = ({
         >
           <div className="flex flex-col justify-center items-end">
             <p className="whitespace-nowrap">{`${toFullDecimal(subAccount?.amount, subAccount.decimal)} ${symbol}`}</p>
-            <p className={accCurrencyAmnt}>{`≈ $${Number(subAccount?.currency_amount).toFixed(2)}`}</p>
+            <p className={accCurrencyAmnt()}>{`≈ $${Number(subAccount?.currency_amount).toFixed(2)}`}</p>
           </div>
           {subAccount?.sub_account_id !== "0x0" && Number(subAccount?.amount) === 0 && !newSub && (
             <button
@@ -236,24 +154,7 @@ const AccountElement = ({
           </p>
 
           <div className="flex flex-row justify-end items-start w-full ">
-            <CustomButton
-              className="min-w-[5rem]"
-              onClick={() => {
-                const auxTokens = tokens.map((tkn, k) => {
-                  if (k === Number(tokenIndex)) {
-                    const auxSubs: TokenSubAccount[] = [];
-                    tkn.subAccounts.map((sa) => {
-                      if (sa.numb !== subAccount.sub_account_id) auxSubs.push(sa);
-                    });
-                    return { ...tkn, subAccounts: auxSubs };
-                  } else return tkn;
-                });
-                saveLocalStorage(auxTokens);
-                dispatch(removeSubAcc(tokenIndex, subaccountId));
-                setDeleteModal(false);
-              }}
-              size={"small"}
-            >
+            <CustomButton className="min-w-[5rem]" onClick={onConfirm} size={"small"}>
               <p>{t("yes")}</p>
             </CustomButton>
           </div>
@@ -261,6 +162,116 @@ const AccountElement = ({
       </Modal>
     </Fragment>
   );
+
+  function onNameChange(e: ChangeEvent<HTMLInputElement>) {
+    setName(e.target.value);
+    setNameError(false);
+  }
+
+  function onSave() {
+    if (name !== "") {
+      setEditNameId("");
+      if (newSub) {
+        const auxTokens = tokens.map((tkn, k) => {
+          if (k === Number(tokenIndex)) {
+            return {
+              ...tkn,
+              subAccounts: [
+                ...tkn.subAccounts,
+                {
+                  name: name,
+                  numb: subAccount.sub_account_id,
+                },
+              ].sort((a, b) => {
+                return bigInt(a.numb).compare(bigInt(b.numb));
+              }),
+            };
+          } else return tkn;
+        });
+        saveLocalStorage(auxTokens);
+        dispatch(addSubAccount(tokenIndex, { ...subAccount, name: name }));
+        setNewSub(undefined);
+      } else {
+        const auxTokens = tokens.map((tkn, k) => {
+          if (k === Number(tokenIndex)) {
+            const auxSubs: TokenSubAccount[] = [];
+            tkn.subAccounts.map((sa) => {
+              if (sa.numb === subAccount.sub_account_id) {
+                auxSubs.push({ ...sa, name: name });
+              } else auxSubs.push(sa);
+            });
+            return { ...tkn, subAccounts: auxSubs };
+          } else return tkn;
+        });
+        saveLocalStorage(auxTokens);
+        dispatch(setSubAccountName(tokenIndex, subaccountId, name));
+      }
+    } else {
+      setNameError(true);
+    }
+  }
+
+  function onAdd() {
+    setEditNameId("");
+    setNewSub(undefined);
+  }
+
+  function onConfirm() {
+    const auxTokens = tokens.map((tkn, k) => {
+      if (k === Number(tokenIndex)) {
+        const auxSubs: TokenSubAccount[] = [];
+        tkn.subAccounts.map((sa) => {
+          if (sa.numb !== subAccount.sub_account_id) auxSubs.push(sa);
+        });
+        return { ...tkn, subAccounts: auxSubs };
+      } else return tkn;
+    });
+    saveLocalStorage(auxTokens);
+    dispatch(removeSubAcc(tokenIndex, subaccountId));
+    setDeleteModal(false);
+  }
+
+  function saveLocalStorage(auxTokens: Token[]) {
+    localStorage.setItem(
+      authClient,
+      JSON.stringify({
+        from: "II",
+        tokens: auxTokens.sort((a, b) => {
+          return a.id_number - b.id_number;
+        }),
+      }),
+    );
+  }
+
+  function onDoubleClick() {
+    setEditNameId(subAccount.sub_account_id);
+    setName(subAccount.name);
+    setNewSub(undefined);
+  }
+
+  // Tailwind CSS
+  function accElemStyle() {
+    return clsx({
+      ["relative flex flex-row justify-between items-center w-[calc(100%-2rem)] min-h-[3.5rem] pl-4 pr-4 text-PrimaryColor dark:text-PrimaryColorLight cursor-pointer hover:bg-[rgb(51,178,239,0.24)] text-md"]:
+        true,
+      ["bg-[rgb(51,178,239,0.24)]"]: chechEqId() && !newSub,
+      ["!bg-SvgColor"]: newSub,
+    });
+  }
+  function accName() {
+    return clsx({ ["text-[#33b2ef]"]: chechEqId() });
+  }
+  function accId() {
+    return clsx({
+      ["text-[#33b2ef]"]: chechEqId(),
+      ["opacity-60"]: subAccount?.sub_account_id !== selectedAccount?.sub_account_id,
+    });
+  }
+  function accCurrencyAmnt() {
+    return clsx({
+      ["opacity-60"]: subAccount?.sub_account_id !== selectedAccount?.sub_account_id,
+    });
+  }
 };
 
 export default AccountElement;
