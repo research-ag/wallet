@@ -35,6 +35,10 @@ const CodeElement = ({ tx }: CodeElementProps) => {
   let iAm = false;
   let hasSubName = false;
   let subName = "";
+
+  let hasContactName = false;
+  let contactName = "";
+
   if (tx?.symbol !== AssetSymbolEnum.Enum.ICP) {
     iAm = authClient === (isTo ? tx.to || "" : tx.from || "");
     if (iAm) {
@@ -43,6 +47,21 @@ const CodeElement = ({ tx }: CodeElementProps) => {
         const subAcc = isTo ? tx.toSub || "0" : tx.fromSub || "0";
         const subNameAux = symbolAsst.find((sa) => sa.sub_account_id === subAcc)?.name;
         if (subNameAux && subNameAux != "-") {
+          hasSubName = true;
+          subName = subNameAux;
+        }
+      }
+    }
+
+    const contact = contacts.find((cntc) => cntc.principal === (isTo ? tx.to || "" : tx.from || ""));
+    if (contact) {
+      hasContactName = true;
+      contactName = contact.name;
+      const symbolAsst = contact.assets.find((asst) => asst.tokenSymbol === tx?.symbol)?.subaccounts;
+      if (symbolAsst && symbolAsst?.length > 0) {
+        const subAcc = isTo ? tx.toSub || "0" : tx.fromSub || "0";
+        const subNameAux = symbolAsst.find((sa) => sa.subaccount_index === subAcc)?.name;
+        if (subNameAux) {
           hasSubName = true;
           subName = subNameAux;
         }
@@ -63,32 +82,11 @@ const CodeElement = ({ tx }: CodeElementProps) => {
         }
       }
     }
-  }
 
-  let hasContactName = false;
-  let contactName = "";
-  if (!iAm) {
-    if (tx?.symbol !== AssetSymbolEnum.Enum.ICP) {
-      const contact = contacts.find((cntc) => cntc.principal === (isTo ? tx.to || "" : tx.from || ""));
-      if (contact) {
-        hasContactName = true;
-        contactName = contact.name;
-        const symbolAsst = contact.assets.find((asst) => asst.tokenSymbol === tx?.symbol)?.subaccounts;
-        if (symbolAsst && symbolAsst?.length > 0) {
-          const subAcc = isTo ? tx.toSub || "0" : tx.fromSub || "0";
-          const subNameAux = symbolAsst.find((sa) => sa.subaccount_index === subAcc)?.name;
-          if (subNameAux) {
-            hasSubName = true;
-            subName = subNameAux;
-          }
-        }
-      }
-    } else {
-      const contact = contacts.find((cntc) => cntc.accountIdentier === (isTo ? tx.to || "" : tx.from || ""));
-      if (contact) {
-        hasContactName = true;
-        contactName = contact.name;
-      }
+    const contact = contacts.find((cntc) => cntc.accountIdentier === (isTo ? tx.to || "" : tx.from || ""));
+    if (contact) {
+      hasContactName = true;
+      contactName = contact.name;
     }
   }
 
