@@ -11,7 +11,14 @@ import {
   removeContactAsset,
   removeContactSubacc,
 } from "@redux/contacts/ContactsReducer";
-import { AssetContact, Contact, SubAccountContact } from "@redux/models/ContactsModels";
+import {
+  AssetContact,
+  Contact,
+  ContactErr,
+  NewContactSubAccount,
+  SubAccountContact,
+  SubAccountContactErr,
+} from "@redux/models/ContactsModels";
 import bigInt from "big-integer";
 import { useState } from "react";
 
@@ -71,7 +78,7 @@ export const useContacts = () => {
     assets: [],
   });
   const [addSub, setAddSub] = useState(false);
-  const [contactEditedErr, setContactEditedErr] = useState({
+  const [contactEditedErr, setContactEditedErr] = useState<ContactErr>({
     name: false,
     principal: false,
   });
@@ -79,12 +86,12 @@ export const useContacts = () => {
     name: "",
     subaccount_index: "",
   });
-  const [subaccEditedErr, setSubaccEditedErr] = useState({
+  const [subaccEditedErr, setSubaccEditedErr] = useState<SubAccountContactErr>({
     name: false,
     subaccount_index: false,
   });
 
-  const [deleteObject, setDeleteObject] = useState({
+  const [deleteObject, setDeleteObject] = useState<NewContactSubAccount>({
     principal: "",
     name: "",
     tokenSymbol: "",

@@ -9,6 +9,26 @@ const SubAccountContact = z.object({
 
 export type SubAccountContact = z.infer<typeof SubAccountContact>;
 
+const SubAccountContactErr = z.object({
+  name: z.boolean(),
+  subaccount_index: z.boolean(),
+});
+
+export type SubAccountContactErr = z.infer<typeof SubAccountContactErr>;
+
+const NewContactSubAccount = z.object({
+  principal: z.string(),
+  name: z.string(),
+  tokenSymbol: z.string(),
+  symbol: z.string(),
+  subaccIdx: z.string(),
+  subaccName: z.string(),
+  totalAssets: z.number(),
+  TotalSub: z.number(),
+});
+
+export type NewContactSubAccount = z.infer<typeof NewContactSubAccount>;
+
 const AssetContact = z.object({
   symbol: z.string(),
   tokenSymbol: z.string(),
@@ -26,3 +46,10 @@ const Contact = z.object({
 });
 
 export type Contact = z.infer<typeof Contact>;
+
+const ContactErr = z.object({
+  name: z.boolean(),
+  principal: z.boolean(),
+});
+
+export type ContactErr = z.infer<typeof ContactErr>;

@@ -1,7 +1,6 @@
 // svg
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 import { ReactComponent as TrashIcon } from "@assets/svg/files/trash-empty.svg";
-import PlusIcon from "@assets/svg/files/plus-icon.svg";
 //
 import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
@@ -10,11 +9,11 @@ import { useContacts } from "../hooks/contactsHook";
 import { CustomButton } from "@components/Button";
 import ContactAssetPop from "./contactAssetPop";
 import { GeneralHook } from "@pages/home/hooks/generalHook";
-import { IconTypeEnum } from "@/const";
 import { AssetContact, Contact, SubAccountContact } from "@redux/models/ContactsModels";
 import { useAppDispatch } from "@redux/Store";
 import { addContact } from "@redux/contacts/ContactsReducer";
 import { checkHexString, removeLeadingZeros } from "@/utils";
+import ContactAssetElement from "./contactAssetElement";
 
 interface AddContactProps {
   setAddOpen(value: boolean): void;
@@ -60,10 +59,7 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
         break;
       }
 
-      if (subAccIdx === "") {
-        isAvailable = false;
-        break;
-      } else if (ids.includes(subAccIdx)) {
+      if (subAccIdx === "" || ids.includes(subAccIdx)) {
         isAvailable = false;
         break;
       } else {
@@ -98,11 +94,7 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
           validSubaccounts = false;
         }
         // Pushing position index of subaccounts that contains errors in the index (empty or invalid)
-        if (subAccIdx === "" || newSa.subaccount_index.trim().toLowerCase() === "0x") {
-          errId.push(j);
-          valid = false;
-          validSubaccounts = false;
-        } else if (ids.includes(subAccIdx)) {
+        if (subAccIdx === "" || newSa.subaccount_index.trim().toLowerCase() === "0x" || ids.includes(subAccIdx)) {
           errId.push(j);
           valid = false;
           validSubaccounts = false;
@@ -110,9 +102,7 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
           ids.push(subAccIdx);
         }
         // Adding SubAccountContact to the new contact
-        if (valid) {
-          auxNewSub.push({ name: newSa.name.trim(), subaccount_index: subAccIdx });
-        }
+        if (valid) auxNewSub.push({ name: newSa.name.trim(), subaccount_index: subAccIdx });
       }
     });
     // Check if valid Subaccounts and Valid prev contact info
@@ -126,9 +116,7 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
           break;
         }
       }
-      if (auxContact.assets.length > 0) {
-        auxContact.assets[editKey].subaccounts = auxNewSub;
-      }
+      if (auxContact.assets.length > 0) auxContact.assets[editKey].subaccounts = auxNewSub;
       // Verify if is an asset change or Add Contact action
       if (from === "change" && contAst) {
         setNewContact(auxContact);
@@ -280,48 +268,17 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
                 <div className="flex flex-col w-full h-full scroll-y-light">
                   {newContact.assets.map((contAst, k) => {
                     return (
-                      <button
-                        key={k}
-                        onClick={() => {
-                          if (selAstContact !== contAst.tokenSymbol) {
-                            isValidSubacc("change", true, contAst);
-                          }
+                      <ContactAssetElement
+                        contAst={contAst}
+                        k={k}
+                        selAstContact={selAstContact}
+                        isValidSubacc={() => {
+                          isValidSubacc("change", true, contAst);
                         }}
-                        className={`flex flex-row justify-between items-center w-full p-3 ${
-                          contAst.tokenSymbol === selAstContact
-                            ? "bg-SecondaryColorLight dark:bg-SecondaryColor border-0 border-l-4 border-SelectRowColor"
-                            : ""
-                        }`}
-                      >
-                        <div className="flex flex-row justify-start items-center gap-3">
-                          {getAssetIcon(IconTypeEnum.Enum.FILTER, contAst.tokenSymbol, contAst.logo)}
-                          <p>{contAst.symbol}</p>
-                        </div>
-                        <div className="flex flex-row justify-between items-center w-28 h-8 rounded bg-black/10 dark:bg-white/10">
-                          <p className="ml-2">{`${
-                            contAst.tokenSymbol === selAstContact ? newSubAccounts.length : contAst.subaccounts.length
-                          } ${
-                            (contAst.tokenSymbol === selAstContact
-                              ? newSubAccounts.length
-                              : contAst.subaccounts.length) !== 1
-                              ? "Subs"
-                              : "Sub"
-                          }`}</p>
-                          {contAst.tokenSymbol === selAstContact && (
-                            <button
-                              onClick={() => {
-                                if (isAvailableAddContact())
-                                  setNewSubaccounts((prev) => {
-                                    return [...prev, { name: "", subaccount_index: "" }];
-                                  });
-                              }}
-                              className="flex bg-AddSecondaryButton w-8 h-8 justify-center items-center rounded-r p-0"
-                            >
-                              <img src={PlusIcon} alt="plus-icon" className="w-5 h-5" />
-                            </button>
-                          )}
-                        </div>
-                      </button>
+                        isAvailableAddContact={isAvailableAddContact}
+                        newSubAccounts={newSubAccounts}
+                        setNewSubaccounts={setNewSubaccounts}
+                      ></ContactAssetElement>
                     );
                   })}
                 </div>
