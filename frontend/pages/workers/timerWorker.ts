@@ -1,16 +1,12 @@
-// eslint-disable-next-line import/no-anonymous-default-export
-
-import { TimerActionTypeEnum } from "@/const";
-
 // eslint-disable-next-line no-restricted-globals
 const timerCode = () => {
   self.onmessage = () => {
-    self.postMessage(TimerActionTypeEnum.Enum.TRANSACTIONS);
+    self.postMessage("TRANSACTIONS");
     setInterval(() => {
-      self.postMessage(TimerActionTypeEnum.Enum.TRANSACTIONS);
+      self.postMessage("TRANSACTIONS");
     }, 5 * 60 * 1000);
     setInterval(() => {
-      self.postMessage(TimerActionTypeEnum.Enum.ASSETS);
+      self.postMessage("ASSETS");
     }, 5 * 60 * 1000);
   };
 };

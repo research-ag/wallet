@@ -20,7 +20,12 @@ export const WorkerHook = () => {
           let transactionsICP = await getAllTransactionsICP(elementS.sub_account_id, false);
 
           store.dispatch(
-            setTxWorker({ tx: transactionsICP, symbol: elementA.tokenSymbol, subaccount: elementS.sub_account_id }),
+            setTxWorker({
+              tx: transactionsICP,
+              symbol: elementA.symbol,
+              tokenSymbol: elementA.tokenSymbol,
+              subaccount: elementS.sub_account_id,
+            }),
           );
         });
       } else {
@@ -38,7 +43,12 @@ export const WorkerHook = () => {
             );
 
             store.dispatch(
-              setTxWorker({ tx: transactionsICRC1, symbol: elementA.symbol, subaccount: elementS.sub_account_id }),
+              setTxWorker({
+                tx: transactionsICRC1,
+                symbol: elementA.symbol,
+                tokenSymbol: elementA.tokenSymbol,
+                subaccount: elementS.sub_account_id,
+              }),
             );
           });
         }
