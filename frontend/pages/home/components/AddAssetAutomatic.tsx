@@ -46,19 +46,6 @@ const AddAssetAutomatic = ({
 
   const { getAssetIcon } = GeneralHook();
 
-  // Tailwind CSS constants
-  const networkBox = clsx(
-    "flex",
-    "flex-row",
-    "w-full",
-    "justify-between",
-    "items-start",
-    "rounded",
-    "border border-BorderSuccessColor",
-    "px-3",
-    "py-1",
-  );
-
   return (
     <div className="flex flex-col justify-start items-start w-full">
       <div className="flex flex-row justify-start items-center w-full gap-4">
@@ -105,17 +92,7 @@ const AddAssetAutomatic = ({
                         idx > 0 ? "border-t border-BorderColorLight dark:border-BorderColor" : ""
                       }`}
                       onSelect={() => {
-                        setNetwork(sa);
-                        if (sa !== network)
-                          setNewToken({
-                            address: "",
-                            symbol: "",
-                            name: "",
-                            decimal: "",
-                            subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default }],
-                            index: "",
-                            id_number: 999,
-                          });
+                        onSelectNetwork(sa);
                       }}
                     >
                       <div className="flex flex-col justify-center items-start">
@@ -176,9 +153,7 @@ const AddAssetAutomatic = ({
                         idx > 0 ? "border-t border-BorderColorLight dark:border-BorderColor" : ""
                       }`}
                       onSelect={() => {
-                        setNewToken(newAsset);
-                        setErrToken("");
-                        setValidToken(true);
+                        onSelectToken(newAsset);
                       }}
                     >
                       <div className="flex flex-row justify-start items-center">
@@ -195,35 +170,64 @@ const AddAssetAutomatic = ({
       </div>
       {errToken !== "" && <p className="text-LockColor text-right text-sm w-full">{errToken}</p>}
       <div className="w-full flex flex-row justify-between items-center mt-2 mb-4">
-        <CustomButton
-          intent={"noBG"}
-          className="!font-light !p-0 mt-3"
-          onClick={() => {
-            setManual(true);
-            setNewToken({
-              address: "",
-              symbol: "",
-              name: "",
-              decimal: "",
-              subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default }],
-              index: "",
-              id_number: 999,
-            });
-          }}
-        >
+        <CustomButton intent={"noBG"} className="!font-light !p-0 mt-3" onClick={onAddAssetManually}>
           {t("add.asset.manually")}
         </CustomButton>
-        <CustomButton
-          className="min-w-[5rem]"
-          onClick={async () => {
-            newToken.address.trim() !== "" && addAssetToData();
-          }}
-        >
+        <CustomButton className="min-w-[5rem]" onClick={onAdd}>
           <p>{t("add")}</p>
         </CustomButton>
       </div>
     </div>
   );
+
+  function onSelectNetwork(sa: TokenNetwork) {
+    setNetwork(sa);
+    if (sa !== network)
+      setNewToken({
+        address: "",
+        symbol: "",
+        name: "",
+        decimal: "",
+        subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default }],
+        index: "",
+        id_number: 999,
+      });
+  }
+
+  function onSelectToken(newAsset: Token) {
+    setNewToken(newAsset);
+    setErrToken("");
+    setValidToken(true);
+  }
+
+  function onAddAssetManually() {
+    setManual(true);
+    setNewToken({
+      address: "",
+      symbol: "",
+      name: "",
+      decimal: "",
+      subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default }],
+      index: "",
+      id_number: 999,
+    });
+  }
+  async function onAdd() {
+    newToken.address.trim() !== "" && addAssetToData();
+  }
 };
+
+// Tailwind CSS constants
+const networkBox = clsx(
+  "flex",
+  "flex-row",
+  "w-full",
+  "justify-between",
+  "items-start",
+  "rounded",
+  "border border-BorderSuccessColor",
+  "px-3",
+  "py-1",
+);
 
 export default AddAssetAutomatic;

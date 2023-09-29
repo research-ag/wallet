@@ -36,31 +36,6 @@ const AssetElement = ({ asset, idx, acordeonIdx, setAssetInfo, setAssetOpen, tok
   const [usedIdxs, setUsedIdxs] = useState<string[]>([]);
   const [newErr, setNewErr] = useState<{ name: boolean; idx: boolean }>({ name: false, idx: false });
 
-  const getFullTokenAmount = () => {
-    const assetMarket = tokensMarket.find((tm) => tm.symbol === asset.tokenSymbol);
-    const assetTotal = asset.subAccounts.reduce((count, sa) => {
-      return count + Number(sa.amount);
-    }, 0);
-
-    const power = Math.pow(10, Number(asset.decimal));
-    const currencyTotal = assetMarket ? getUSDfromToken(assetTotal * power, assetMarket.price, asset.decimal) : "0.00";
-
-    return {
-      token: assetTotal,
-      currency: Number(currencyTotal),
-    };
-  };
-
-  const getLowestMissing = (idxs: string[]) => {
-    let lowestMissing = bigInt();
-    for (let index = 0; index < idxs.length; index++) {
-      const saId = hexToNumber(idxs[index]) || bigInt();
-      const newId = hexToNumber(`0x${index.toString(16)}`) || bigInt();
-      if (saId.compare(newId) !== 1) lowestMissing = saId.add(bigInt(1));
-    }
-    return lowestMissing;
-  };
-
   return (
     <Fragment>
       <Accordion.Item value={`asset-${idx}`}>
@@ -70,15 +45,7 @@ const AssetElement = ({ asset, idx, acordeonIdx, setAssetInfo, setAssetOpen, tok
           } ${
             idx < assets?.length ? "border-b-[0.1rem] dark:border-BorderColorThree border-BorderColorThreeLight" : ""
           }`}
-          onClick={() => {
-            changeSelectedAsset(asset);
-            if (asset?.tokenSymbol !== selectedAsset?.tokenSymbol) {
-              setNewSub(undefined);
-              asset.subAccounts.length > 0 && changeSelectedAccount(asset.subAccounts[0]);
-            }
-            setName("");
-            setEditNameId("");
-          }}
+          onClick={onSelectAsset}
         >
           {asset?.tokenSymbol === selectedAsset?.tokenSymbol && (
             <div className="absolute left-0 bg-[#33b2ef] h-full w-1"></div>
@@ -93,43 +60,11 @@ const AssetElement = ({ asset, idx, acordeonIdx, setAssetInfo, setAssetOpen, tok
                     <p className={`${asset?.tokenSymbol !== selectedAsset?.tokenSymbol ? "opacity-60" : ""}`}>{`${
                       asset.symbol ? asset.symbol : asset.tokenSymbol
                     }`}</p>{" "}
-                    <div
-                      className="p-0"
-                      onClick={() => {
-                        setAssetInfo(asset);
-                        setAssetOpen(true);
-                      }}
-                    >
+                    <div className="p-0" onClick={onInfoClic}>
                       <img src={InfoIcon} className="ml-1" alt="info-icon" />
                     </div>
                     {asset?.tokenSymbol === selectedAsset?.tokenSymbol ? (
-                      <div
-                        className="flex flex-row justify-start items-center rounded ml-2 !p-0"
-                        onClick={() => {
-                          let newIdx = "0";
-                          if (asset.subAccounts.length !== 0) {
-                            const idxs = asset.subAccounts.map((sa) => {
-                              return sa.sub_account_id.toLowerCase();
-                            });
-                            newIdx = getLowestMissing(idxs).toString(16);
-                            setUsedIdxs(idxs);
-                          }
-
-                          setNewErr({ name: false, idx: false });
-                          setNewSub({
-                            name: "",
-                            sub_account_id: newIdx,
-                            address: authClient,
-                            amount: "0",
-                            currency_amount: "0",
-                            transaction_fee: asset.subAccounts[0].transaction_fee,
-                            decimal: Number(asset.decimal),
-                            symbol: asset.subAccounts[0].symbol,
-                          });
-                          setEditNameId(asset.subAccounts.length.toFixed());
-                          setName("");
-                        }}
-                      >
+                      <div className="flex flex-row justify-start items-center rounded ml-2 !p-0" onClick={onAddSub}>
                         <div className="flex justify-center items-center w-full h-5 rounded bg-SvgColorLight/10 dark:bg-SvgColor">
                           <p className="text-sm mx-1">+ Sub</p>
                         </div>
@@ -210,6 +145,71 @@ const AssetElement = ({ asset, idx, acordeonIdx, setAssetInfo, setAssetOpen, tok
       ></DialogAddAsset>
     </Fragment>
   );
+
+  function onSelectAsset() {
+    changeSelectedAsset(asset);
+    if (asset?.tokenSymbol !== selectedAsset?.tokenSymbol) {
+      setNewSub(undefined);
+      asset.subAccounts.length > 0 && changeSelectedAccount(asset.subAccounts[0]);
+    }
+    setName("");
+    setEditNameId("");
+  }
+
+  function onInfoClic() {
+    setAssetInfo(asset);
+    setAssetOpen(true);
+  }
+
+  function onAddSub() {
+    let newIdx = "0";
+    if (asset.subAccounts.length !== 0) {
+      const idxs = asset.subAccounts.map((sa) => {
+        return sa.sub_account_id.toLowerCase();
+      });
+      newIdx = getLowestMissing(idxs).toString(16);
+      setUsedIdxs(idxs);
+    }
+
+    setNewErr({ name: false, idx: false });
+    setNewSub({
+      name: "",
+      sub_account_id: newIdx,
+      address: authClient,
+      amount: "0",
+      currency_amount: "0",
+      transaction_fee: asset.subAccounts[0].transaction_fee,
+      decimal: Number(asset.decimal),
+      symbol: asset.subAccounts[0].symbol,
+    });
+    setEditNameId(asset.subAccounts.length.toFixed());
+    setName("");
+  }
+
+  function getFullTokenAmount() {
+    const assetMarket = tokensMarket.find((tm) => tm.symbol === asset.tokenSymbol);
+    const assetTotal = asset.subAccounts.reduce((count, sa) => {
+      return count + Number(sa.amount);
+    }, 0);
+
+    const power = Math.pow(10, Number(asset.decimal));
+    const currencyTotal = assetMarket ? getUSDfromToken(assetTotal * power, assetMarket.price, asset.decimal) : "0.00";
+
+    return {
+      token: assetTotal,
+      currency: Number(currencyTotal),
+    };
+  }
+
+  function getLowestMissing(idxs: string[]) {
+    let lowestMissing = bigInt();
+    for (let index = 0; index < idxs.length; index++) {
+      const saId = hexToNumber(idxs[index]) || bigInt();
+      const newId = hexToNumber(`0x${index.toString(16)}`) || bigInt();
+      if (saId.compare(newId) !== 1) lowestMissing = saId.add(bigInt(1));
+    }
+    return lowestMissing;
+  }
 };
 
 export default AssetElement;

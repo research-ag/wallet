@@ -29,11 +29,7 @@ const ContactAssetElement = ({
   return (
     <button
       key={k}
-      onClick={() => {
-        if (selAstContact !== contAst.tokenSymbol) {
-          isValidSubacc();
-        }
-      }}
+      onClick={onClicAssetElem}
       className={`flex flex-row justify-between items-center w-full p-3 ${
         contAst.tokenSymbol === selAstContact
           ? "bg-SecondaryColorLight dark:bg-SecondaryColor border-0 border-l-4 border-SelectRowColor"
@@ -54,12 +50,7 @@ const ContactAssetElement = ({
         }`}</p>
         {contAst.tokenSymbol === selAstContact && (
           <button
-            onClick={() => {
-              if (isAvailableAddContact())
-                setNewSubaccounts((prev: any) => {
-                  return [...prev, { name: "", subaccount_index: "" }];
-                });
-            }}
+            onClick={onAddSub}
             className="flex bg-AddSecondaryButton w-8 h-8 justify-center items-center rounded-r p-0"
           >
             <img src={PlusIcon} alt="plus-icon" className="w-5 h-5" />
@@ -68,5 +59,18 @@ const ContactAssetElement = ({
       </div>
     </button>
   );
+
+  function onClicAssetElem() {
+    if (selAstContact !== contAst.tokenSymbol) {
+      isValidSubacc();
+    }
+  }
+
+  function onAddSub() {
+    if (isAvailableAddContact())
+      setNewSubaccounts((prev: any) => {
+        return [...prev, { name: "", subaccount_index: "" }];
+      });
+  }
 };
 export default ContactAssetElement;

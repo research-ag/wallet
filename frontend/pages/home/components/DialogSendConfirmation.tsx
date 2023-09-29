@@ -32,19 +32,6 @@ const DialogSendConfirmation = ({
 }: DialogSendConfirmationProps) => {
   const { t } = useTranslation();
 
-  const getStatusMessage = (status: string) => {
-    switch (status) {
-      case SendingStatusEnum.enum.sending:
-        return t("sending");
-      case SendingStatusEnum.enum.done:
-        return t("sending.successful");
-      case SendingStatusEnum.enum.error:
-        return t("sending.failed");
-      default:
-        return "";
-    }
-  };
-
   return (
     <Modal
       open={modal}
@@ -55,10 +42,7 @@ const DialogSendConfirmation = ({
       <div className="reative flex flex-col justify-start items-center w-full">
         <CloseIcon
           className="absolute top-5 right-5 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
-          onClick={() => {
-            setDrawerOpen(false);
-            showModal(false);
-          }}
+          onClick={onClose}
         />
         <div className="flex flex-col justify-start items-center w-full py-2 border-b border-BorderColorTwoLight dark:border-BorderColorTwo">
           <div className="flex justify-center items-center p-2 rounded-md border border-BorderColorTwoLight dark:border-BorderColorTwo">
@@ -87,6 +71,24 @@ const DialogSendConfirmation = ({
       </div>
     </Modal>
   );
+
+  function onClose() {
+    setDrawerOpen(false);
+    showModal(false);
+  }
+
+  function getStatusMessage(status: string) {
+    switch (status) {
+      case SendingStatusEnum.enum.sending:
+        return t("sending");
+      case SendingStatusEnum.enum.done:
+        return t("sending.successful");
+      case SendingStatusEnum.enum.error:
+        return t("sending.failed");
+      default:
+        return "";
+    }
+  }
 };
 
 export default DialogSendConfirmation;

@@ -18,7 +18,7 @@ import { AccountIdentifier } from "@dfinity/nns";
 import ContactAssetPop from "./contactAssetPop";
 import { getInitialFromName, shortAddress } from "@/utils";
 import TableAssets from "./tableAssets";
-import { Fragment } from "react";
+import { ChangeEvent, ChangeEventHandler, Fragment } from "react";
 import { CustomCopy } from "@components/CopyTooltip";
 import { CustomInput } from "@components/Input";
 import { clsx } from "clsx";
@@ -26,6 +26,7 @@ import { DeleteContactTypeEnum } from "@/const";
 import { Principal } from "@dfinity/principal";
 import { GeneralHook } from "@pages/home/hooks/generalHook";
 import { useContacts } from "../hooks/contactsHook";
+import { AssetToAdd } from "@redux/models/AccountModels";
 
 interface TableContactsProps {
   contacts: Contact[];
@@ -93,55 +94,6 @@ const TableContacts = ({
   const { assets, getAssetIcon } = GeneralHook();
   const { checkPrincipalValid, updateContact, addAsset } = useContacts();
 
-  const getContactColor = (idx: number) => {
-    if (idx % 3 === 0) return "bg-ContactColor1";
-    else if (idx % 3 === 1) return "bg-ContactColor2";
-    else return "bg-ContactColor3";
-  };
-
-  const getContactsToShow = () => {
-    return contacts.filter((cntc) => {
-      let incSubName = false;
-      for (let i = 0; i < cntc.assets.length; i++) {
-        const ast = cntc.assets[i];
-        for (let j = 0; j < ast.subaccounts.length; j++) {
-          const sa = ast.subaccounts[j];
-          if (sa.name.toLowerCase().includes(searchKey.toLowerCase())) {
-            incSubName = true;
-            break;
-          }
-        }
-      }
-      if (assetFilter.length === 0) {
-        return (
-          cntc.name.toLowerCase().includes(searchKey.toLowerCase()) ||
-          incSubName ||
-          cntc.principal.toLowerCase().includes(searchKey.toLowerCase())
-        );
-      } else {
-        const astFilValid = assetFilter.some((astFil) => {
-          return cntc.assets.find((ast) => ast.tokenSymbol === astFil);
-        });
-
-        return (
-          (cntc.name.toLowerCase().includes(searchKey.toLowerCase()) ||
-            incSubName ||
-            cntc.principal.toLowerCase().includes(searchKey.toLowerCase())) &&
-          astFilValid
-        );
-      }
-    });
-  };
-
-  // Tailwind CSS
-  const contactStyle = (cntc: Contact) =>
-    clsx({
-      ["border-b border-BorderColorTwoLight dark:border-BorderColorTwo"]: true,
-      ["bg-SelectRowColor/10"]: cntc.principal === selContactPrin || cntc.principal === selCntcPrinAddAsst,
-      ["bg-SecondaryColorLight dark:bg-SecondaryColor"]:
-        cntc.principal === openAssetsPrin && cntc.principal !== selContactPrin && cntc.principal !== selCntcPrinAddAsst,
-    });
-
   return (
     <table className="w-full  text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md">
       <thead className="border-b border-BorderColorTwoLight dark:border-BorderColorTwo text-PrimaryTextColor/70 sticky top-0 z-[1]">
@@ -179,14 +131,7 @@ const TableContacts = ({
                       sizeComp={"xLarge"}
                       sizeInput="small"
                       value={contactEdited.name}
-                      onChange={(e) => {
-                        setContactEdited((prev: any) => {
-                          return { ...prev, name: e.target.value };
-                        });
-                        setContactEditedErr((prev: any) => {
-                          return { name: false, principal: prev.principal };
-                        });
-                      }}
+                      onChange={onContactNameChange}
                     />
                   ) : (
                     <div className="flex flex-row justify-start items-center w-full gap-2">
@@ -219,30 +164,13 @@ const TableContacts = ({
                     <ContactAssetPop
                       compClass="flex flex-row justify-center items-center"
                       btnClass="!w-8 !h-8 bg-AddSecondaryButton rounded-l-none"
-                      assets={assets.filter((ast) => {
-                        let isIncluded = false;
-                        cntc.assets.map((contAst) => {
-                          if (ast.tokenSymbol === contAst.tokenSymbol) isIncluded = true;
-                        });
-                        return !isIncluded;
-                      })}
+                      assets={getFilteredAssets(cntc)}
                       getAssetIcon={getAssetIcon}
                       onAdd={(data) => {
-                        const auxAsst: AssetContact[] = data.map((dt) => {
-                          return {
-                            symbol: dt.symbol,
-                            tokenSymbol: dt.tokenSymbol,
-                            logo: dt.logo,
-                            subaccounts: [],
-                          };
-                        });
-                        addAsset(auxAsst, cntc.principal);
+                        onAddAssets(data, cntc);
                       }}
                       onOpen={() => {
-                        setSelCntcPrinAddAsst(cntc.principal);
-                        setAddSub(false);
-                        setSelSubaccIdx("");
-                        setSelContactPrin("");
+                        onAddAssetPopOpen(cntc);
                       }}
                       onClose={() => {
                         setSelCntcPrinAddAsst("");
@@ -256,76 +184,27 @@ const TableContacts = ({
                   {cntc.principal === selContactPrin ? (
                     <CheckIcon
                       onClick={() => {
-                        setContactEditedErr({
-                          name: contactEdited.name.trim() === "",
-                          principal:
-                            contactEdited.principal !== cntc.principal && !checkPrincipalValid(contactEdited.principal),
-                        });
-
-                        if (
-                          contactEdited.name.trim() !== "" &&
-                          (checkPrincipalValid(contactEdited.principal) || contactEdited.principal === cntc.principal)
-                        ) {
-                          updateContact(
-                            {
-                              ...contactEdited,
-                              assets: cntc.assets,
-                              accountIdentier: AccountIdentifier.fromPrincipal({
-                                principal: Principal.fromText(contactEdited.principal),
-                              }).toHex(),
-                            },
-                            cntc.principal,
-                          );
-                          setSelContactPrin("");
-                        }
+                        onSave(cntc);
                       }}
                       className="w-4 h-4 stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor opacity-50 cursor-pointer"
                     />
                   ) : (
                     <PencilIcon
                       onClick={() => {
-                        setAddSub(false);
-                        setSelSubaccIdx("");
-                        setSelContactPrin(cntc.principal);
-                        setContactEdited(cntc);
-                        if (cntc.principal !== openAssetsPrin) {
-                          setOpenAssetsPrin("");
-                        }
-                        setContactEditedErr({ name: false, principal: false });
+                        onEdit(cntc);
                       }}
                       className="w-4 h-4 fill-PrimaryTextColorLight dark:fill-PrimaryTextColor opacity-50 cursor-pointer"
                     />
                   )}
                   {cntc.principal === selContactPrin ? (
                     <CloseIcon
-                      onClick={() => {
-                        setSelContactPrin("");
-                        setSubaccEditedErr({ name: false, subaccount_index: false });
-                      }}
+                      onClick={onClose}
                       className="w-5 h-5 stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor opacity-50 cursor-pointer"
                     />
                   ) : (
                     <TrashIcon
                       onClick={() => {
-                        setAddSub(false);
-                        setSelContactPrin("");
-                        setSelSubaccIdx("");
-                        setDeleteType(DeleteContactTypeEnum.Enum.CONTACT);
-                        let ttlSub = 0;
-                        cntc.assets.map((asst) => {
-                          ttlSub = ttlSub + asst.subaccounts.length;
-                        });
-                        setDeleteObject({
-                          principal: cntc.principal,
-                          name: cntc.name,
-                          tokenSymbol: "",
-                          symbol: "",
-                          subaccIdx: "",
-                          subaccName: "",
-                          totalAssets: cntc.assets.length,
-                          TotalSub: ttlSub,
-                        });
-                        setDeleteModal(true);
+                        onDelete(cntc);
                       }}
                       className="w-4 h-4 fill-PrimaryTextColorLight dark:fill-PrimaryTextColor cursor-pointer"
                     />
@@ -336,17 +215,7 @@ const TableContacts = ({
                 <div className="flex flex-row justify-center items-start gap-2 w-full">
                   <ChevIcon
                     onClick={() => {
-                      if (cntc.principal === openAssetsPrin) setOpenAssetsPrin("");
-                      else {
-                        if (cntc.assets.length > 0) {
-                          setContactEdited(cntc);
-                          setOpenAssetsPrin(cntc.principal);
-                        }
-                      }
-                      if (cntc.principal !== selContactPrin) setSelContactPrin("");
-                      setOpenSubaccToken("");
-                      setSelSubaccIdx("");
-                      setAddSub(false);
+                      onChevIconClic(cntc);
                     }}
                     className={`w-8 h-8 stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor stroke-0  cursor-pointer ${
                       cntc.principal === openAssetsPrin ? "" : "rotate-90"
@@ -385,6 +254,170 @@ const TableContacts = ({
       </tbody>
     </table>
   );
+
+  function getContactColor(idx: number) {
+    if (idx % 3 === 0) return "bg-ContactColor1";
+    else if (idx % 3 === 1) return "bg-ContactColor2";
+    else return "bg-ContactColor3";
+  }
+
+  function getContactsToShow() {
+    return contacts.filter((cntc) => {
+      let incSubName = false;
+      for (let i = 0; i < cntc.assets.length; i++) {
+        const ast = cntc.assets[i];
+        for (let j = 0; j < ast.subaccounts.length; j++) {
+          const sa = ast.subaccounts[j];
+          if (sa.name.toLowerCase().includes(searchKey.toLowerCase())) {
+            incSubName = true;
+            break;
+          }
+        }
+      }
+      if (assetFilter.length === 0) {
+        return (
+          cntc.name.toLowerCase().includes(searchKey.toLowerCase()) ||
+          incSubName ||
+          cntc.principal.toLowerCase().includes(searchKey.toLowerCase())
+        );
+      } else {
+        const astFilValid = assetFilter.some((astFil) => {
+          return cntc.assets.find((ast) => ast.tokenSymbol === astFil);
+        });
+
+        return (
+          (cntc.name.toLowerCase().includes(searchKey.toLowerCase()) ||
+            incSubName ||
+            cntc.principal.toLowerCase().includes(searchKey.toLowerCase())) &&
+          astFilValid
+        );
+      }
+    });
+  }
+
+  function onContactNameChange(e: ChangeEvent<HTMLInputElement>) {
+    setContactEdited((prev: any) => {
+      return { ...prev, name: e.target.value };
+    });
+    setContactEditedErr((prev: any) => {
+      return { name: false, principal: prev.principal };
+    });
+  }
+
+  function getFilteredAssets(cntc: Contact) {
+    return assets.filter((ast) => {
+      let isIncluded = false;
+      cntc.assets.map((contAst) => {
+        if (ast.tokenSymbol === contAst.tokenSymbol) isIncluded = true;
+      });
+      return !isIncluded;
+    });
+  }
+
+  function onAddAssets(data: AssetToAdd[], cntc: Contact) {
+    const auxAsst: AssetContact[] = data.map((dt) => {
+      return {
+        symbol: dt.symbol,
+        tokenSymbol: dt.tokenSymbol,
+        logo: dt.logo,
+        subaccounts: [],
+      };
+    });
+    addAsset(auxAsst, cntc.principal);
+  }
+
+  function onAddAssetPopOpen(cntc: Contact) {
+    setSelCntcPrinAddAsst(cntc.principal);
+    setAddSub(false);
+    setSelSubaccIdx("");
+    setSelContactPrin("");
+  }
+
+  function onSave(cntc: Contact) {
+    setContactEditedErr({
+      name: contactEdited.name.trim() === "",
+      principal: contactEdited.principal !== cntc.principal && !checkPrincipalValid(contactEdited.principal),
+    });
+
+    if (
+      contactEdited.name.trim() !== "" &&
+      (checkPrincipalValid(contactEdited.principal) || contactEdited.principal === cntc.principal)
+    ) {
+      updateContact(
+        {
+          ...contactEdited,
+          assets: cntc.assets,
+          accountIdentier: AccountIdentifier.fromPrincipal({
+            principal: Principal.fromText(contactEdited.principal),
+          }).toHex(),
+        },
+        cntc.principal,
+      );
+      setSelContactPrin("");
+    }
+  }
+
+  function onEdit(cntc: Contact) {
+    setAddSub(false);
+    setSelSubaccIdx("");
+    setSelContactPrin(cntc.principal);
+    setContactEdited(cntc);
+    if (cntc.principal !== openAssetsPrin) {
+      setOpenAssetsPrin("");
+    }
+    setContactEditedErr({ name: false, principal: false });
+  }
+
+  function onClose() {
+    setSelContactPrin("");
+    setSubaccEditedErr({ name: false, subaccount_index: false });
+  }
+
+  function onDelete(cntc: Contact) {
+    setAddSub(false);
+    setSelContactPrin("");
+    setSelSubaccIdx("");
+    setDeleteType(DeleteContactTypeEnum.Enum.CONTACT);
+    let ttlSub = 0;
+    cntc.assets.map((asst) => {
+      ttlSub = ttlSub + asst.subaccounts.length;
+    });
+    setDeleteObject({
+      principal: cntc.principal,
+      name: cntc.name,
+      tokenSymbol: "",
+      symbol: "",
+      subaccIdx: "",
+      subaccName: "",
+      totalAssets: cntc.assets.length,
+      TotalSub: ttlSub,
+    });
+    setDeleteModal(true);
+  }
+
+  function onChevIconClic(cntc: Contact) {
+    if (cntc.principal === openAssetsPrin) setOpenAssetsPrin("");
+    else {
+      if (cntc.assets.length > 0) {
+        setContactEdited(cntc);
+        setOpenAssetsPrin(cntc.principal);
+      }
+    }
+    if (cntc.principal !== selContactPrin) setSelContactPrin("");
+    setOpenSubaccToken("");
+    setSelSubaccIdx("");
+    setAddSub(false);
+  }
+
+  // Tailwind CSS
+  function contactStyle(cntc: Contact) {
+    return clsx({
+      ["border-b border-BorderColorTwoLight dark:border-BorderColorTwo"]: true,
+      ["bg-SelectRowColor/10"]: cntc.principal === selContactPrin || cntc.principal === selCntcPrinAddAsst,
+      ["bg-SecondaryColorLight dark:bg-SecondaryColor"]:
+        cntc.principal === openAssetsPrin && cntc.principal !== selContactPrin && cntc.principal !== selCntcPrinAddAsst,
+    });
+  }
 };
 
 export default TableContacts;

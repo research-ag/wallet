@@ -31,20 +31,6 @@ const DialogAssetConfirmation = ({
   const { t } = useTranslation();
   const { getAssetIcon } = GeneralHook();
 
-  const getMessage = (status: string) => {
-    switch (status) {
-      case AddingAssetsEnum.Enum.adding:
-        return { top: "", botton: t("adding.asset") };
-      case AddingAssetsEnum.Enum.done:
-        return { top: t("congrats"), botton: t("adding.asset.successful") };
-      case AddingAssetsEnum.Enum.error:
-        return { top: t("error"), botton: t("adding.asset.failed") };
-
-      default:
-        return { top: t("adding.asset"), botton: "" };
-    }
-  };
-
   return (
     <Modal
       open={modal}
@@ -55,21 +41,7 @@ const DialogAssetConfirmation = ({
       <div className="reative flex flex-col justify-start items-center w-full">
         <CloseIcon
           className="absolute top-5 right-5 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
-          onClick={() => {
-            showModal(false);
-            setAssetOpen(false);
-            setNetwork(TokenNetworkEnum.enum["ICRC-1"]);
-            setNewToken({
-              address: "",
-              symbol: "",
-              decimal: "",
-              name: "",
-              subAccounts: [{ numb: "0x0", name: "Default" }],
-              index: "",
-              id_number: 999,
-            });
-            setManual(false);
-          }}
+          onClick={onClose}
         />
         <div className="flex flex-col justify-start items-center w-full py-2">
           {getAssetIcon(IconTypeEnum.Enum.ASSET, newToken?.symbol, newToken.logo)}
@@ -85,6 +57,36 @@ const DialogAssetConfirmation = ({
       </div>
     </Modal>
   );
+
+  function onClose() {
+    showModal(false);
+    setAssetOpen(false);
+    setNetwork(TokenNetworkEnum.enum["ICRC-1"]);
+    setNewToken({
+      address: "",
+      symbol: "",
+      decimal: "",
+      name: "",
+      subAccounts: [{ numb: "0x0", name: "Default" }],
+      index: "",
+      id_number: 999,
+    });
+    setManual(false);
+  }
+
+  function getMessage(status: string) {
+    switch (status) {
+      case AddingAssetsEnum.Enum.adding:
+        return { top: "", botton: t("adding.asset") };
+      case AddingAssetsEnum.Enum.done:
+        return { top: t("congrats"), botton: t("adding.asset.successful") };
+      case AddingAssetsEnum.Enum.error:
+        return { top: t("error"), botton: t("adding.asset.failed") };
+
+      default:
+        return { top: t("adding.asset"), botton: "" };
+    }
+  }
 };
 
 export default DialogAssetConfirmation;

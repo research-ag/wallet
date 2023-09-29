@@ -15,6 +15,8 @@ import { Token } from "@redux/models/TokenModels";
 import { AccountDefaultEnum, IconTypeEnum } from "@/const";
 import { Asset } from "@redux/models/AccountModels";
 import { IdentityHook } from "@pages/hooks/identityHook";
+import { fn } from "moment";
+import { ChangeEvent } from "react";
 
 interface AddAssetManualProps {
   manual: boolean;
@@ -79,13 +81,7 @@ const AddAssetManual = ({
           placeholder="Ledger Principal"
           compOutClass=""
           value={newToken.address}
-          onChange={(e) => {
-            setErrToken("");
-            setNewToken((prev: any) => {
-              return { ...prev, address: e.target.value.trim() };
-            });
-            setValidToken(false);
-          }}
+          onChange={onLedgerChange}
         />
         {errToken !== "" && <p className="text-LockColor text-left text-sm">{errToken}</p>}
         {validToken && <p className="text-BorderSuccessColor text-left text-sm">{t("token.validation.msg")}</p>}
@@ -99,11 +95,7 @@ const AddAssetManual = ({
           placeholder="Index Principal"
           compOutClass=""
           value={newToken.index}
-          onChange={(e) => {
-            setNewToken((prev: any) => {
-              return { ...prev, index: e.target.value };
-            });
-          }}
+          onChange={onChangeIndex}
         />
       </div>
       <div className="flex flex-col items-start w-full mb-3">
@@ -114,12 +106,7 @@ const AddAssetManual = ({
           placeholder="-"
           compOutClass=""
           value={newToken.symbol}
-          onChange={(e) => {
-            if (e.target.value.length <= 8)
-              setNewToken((prev: any) => {
-                return { ...prev, symbol: e.target.value };
-              });
-          }}
+          onChange={onChangeSymbol}
         />
       </div>
       <div className="flex flex-col items-start w-full mb-3">
@@ -130,11 +117,7 @@ const AddAssetManual = ({
           placeholder="-"
           compOutClass=""
           value={newToken.name}
-          onChange={(e) => {
-            setNewToken((prev: any) => {
-              return { ...prev, name: e.target.value };
-            });
-          }}
+          onChange={onChangeName}
         />
       </div>
       <div className="flex flex-col items-start w-full mb-3">
@@ -148,33 +131,12 @@ const AddAssetManual = ({
           compOutClass=""
           type="number"
           value={newToken.decimal}
-          onChange={(e) => {
-            setNewToken((prev: any) => {
-              return { ...prev, decimal: e.target.value };
-            });
-          }}
+          onChange={onChangeDecimal}
         />
       </div>
       <div className="flex flex-row justify-between w-full gap-4">
         {manual && (
-          <CustomButton
-            intent="deny"
-            className="mr-3 min-w-[5rem]"
-            onClick={() => {
-              setManual(false);
-              setNewToken({
-                address: "",
-                symbol: "",
-                name: "",
-                decimal: "",
-                subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default }],
-                index: "",
-                id_number: 999,
-              });
-              setErrToken("");
-              setValidToken(false);
-            }}
-          >
+          <CustomButton intent="deny" className="mr-3 min-w-[5rem]" onClick={onBack}>
             <p>{t("back")}</p>
           </CustomButton>
         )}
@@ -182,32 +144,7 @@ const AddAssetManual = ({
           {!asset && (
             <CustomButton
               intent={newToken.address.length > 5 ? "success" : "deny"}
-              onClick={async () => {
-                if (checkAssetAdded(newToken.address)) {
-                  setErrToken(t("adding.asset.already.imported"));
-                  setValidToken(false);
-                } else {
-                  try {
-                    const { metadata } = IcrcLedgerCanister.create({
-                      agent: userAgent,
-                      canisterId: newToken.address as any,
-                    });
-
-                    const myMetadata = await metadata({
-                      certified: false,
-                    });
-
-                    const { symbol, decimals, name, logo } = getMetadataInfo(myMetadata);
-                    setNewToken((prev: any) => {
-                      return { ...prev, decimal: decimals.toFixed(0), symbol: symbol, name: name, logo: logo };
-                    });
-                    setValidToken(true);
-                  } catch (e) {
-                    setErrToken(`${(e as Error).message} ${t("add.asset.import.error")}`);
-                    setValidToken(false);
-                  }
-                }
-              }}
+              onClick={onTest}
               disabled={newToken.address.length <= 5}
             >
               {t("test")}
@@ -215,23 +152,7 @@ const AddAssetManual = ({
           )}
           <CustomButton
             intent={newToken.address.length > 5 ? "accept" : "deny"}
-            onClick={async () => {
-              if (asset) {
-                //change contacts local and reducer
-                dispatch(editAssetName(asset.tokenSymbol, newToken.symbol));
-                //list all tokens modifying the one we selected
-                const auxTokens = tokens.map((tkn) => {
-                  if (tkn.id_number === newToken.id_number) {
-                    return newToken;
-                  } else return tkn;
-                });
-                //save tokens in list to local
-                saveInLocalStorage(auxTokens);
-                //edit tokens list and assets list
-                dispatch(editToken(newToken, asset.tokenSymbol));
-                setAssetOpen(false);
-              } else addAssetToData();
-            }}
+            onClick={onSave}
             disabled={newToken.address.length <= 5 || newToken.name === "" || newToken.symbol === ""}
           >
             {t("save")}
@@ -240,6 +161,99 @@ const AddAssetManual = ({
       </div>
     </div>
   );
+
+  function onLedgerChange(e: ChangeEvent<HTMLInputElement>) {
+    setErrToken("");
+    setNewToken((prev: any) => {
+      return { ...prev, address: e.target.value.trim() };
+    });
+    setValidToken(false);
+  }
+
+  function onChangeIndex(e: ChangeEvent<HTMLInputElement>) {
+    setNewToken((prev: any) => {
+      return { ...prev, index: e.target.value };
+    });
+  }
+
+  function onChangeSymbol(e: ChangeEvent<HTMLInputElement>) {
+    if (e.target.value.length <= 8)
+      setNewToken((prev: any) => {
+        return { ...prev, symbol: e.target.value };
+      });
+  }
+
+  function onChangeName(e: ChangeEvent<HTMLInputElement>) {
+    setNewToken((prev: any) => {
+      return { ...prev, name: e.target.value };
+    });
+  }
+
+  function onChangeDecimal(e: ChangeEvent<HTMLInputElement>) {
+    setNewToken((prev: any) => {
+      return { ...prev, decimal: e.target.value };
+    });
+  }
+
+  function onBack() {
+    setManual(false);
+    setNewToken({
+      address: "",
+      symbol: "",
+      name: "",
+      decimal: "",
+      subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default }],
+      index: "",
+      id_number: 999,
+    });
+    setErrToken("");
+    setValidToken(false);
+  }
+
+  async function onTest() {
+    if (checkAssetAdded(newToken.address)) {
+      setErrToken(t("adding.asset.already.imported"));
+      setValidToken(false);
+    } else {
+      try {
+        const { metadata } = IcrcLedgerCanister.create({
+          agent: userAgent,
+          canisterId: newToken.address as any,
+        });
+
+        const myMetadata = await metadata({
+          certified: false,
+        });
+
+        const { symbol, decimals, name, logo } = getMetadataInfo(myMetadata);
+        setNewToken((prev: any) => {
+          return { ...prev, decimal: decimals.toFixed(0), symbol: symbol, name: name, logo: logo };
+        });
+        setValidToken(true);
+      } catch (e) {
+        setErrToken(`${(e as Error).message} ${t("add.asset.import.error")}`);
+        setValidToken(false);
+      }
+    }
+  }
+
+  async function onSave() {
+    if (asset) {
+      // Change contacts local and reducer
+      dispatch(editAssetName(asset.tokenSymbol, newToken.symbol));
+      // List all tokens modifying the one we selected
+      const auxTokens = tokens.map((tkn) => {
+        if (tkn.id_number === newToken.id_number) {
+          return newToken;
+        } else return tkn;
+      });
+      // Save tokens in list to local
+      saveInLocalStorage(auxTokens);
+      // Edit tokens list and assets list
+      dispatch(editToken(newToken, asset.tokenSymbol));
+      setAssetOpen(false);
+    } else addAssetToData();
+  }
 };
 
 export default AddAssetManual;
