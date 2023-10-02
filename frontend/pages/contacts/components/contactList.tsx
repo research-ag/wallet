@@ -14,19 +14,6 @@ interface ContactListProps {
 const ContactList = ({ searchKey, assetFilter }: ContactListProps) => {
   const { t } = useTranslation();
   const {
-    contacts,
-    selCntcPrinAddAsst,
-    setSelCntcPrinAddAsst,
-    selContactPrin,
-    setSelContactPrin,
-    contactEdited,
-    setContactEdited,
-    openAssetsPrin,
-    setOpenAssetsPrin,
-    openSubaccToken,
-    setOpenSubaccToken,
-    selSubaccIdx,
-    setSelSubaccIdx,
     subaccEdited,
     setSubaccEdited,
     deleteModal,
@@ -35,46 +22,25 @@ const ContactList = ({ searchKey, assetFilter }: ContactListProps) => {
     setDeleteType,
     deleteObject,
     setDeleteObject,
-    contactEditedErr,
-    setContactEditedErr,
     subaccEditedErr,
     setSubaccEditedErr,
-    addSub,
-    setAddSub,
   } = useContacts();
 
   return (
     <Fragment>
       <div className="flex flex-col w-full h-full mt-3 scroll-y-light max-h-[calc(100vh-12rem)]">
         <TableContacts
-          contacts={contacts}
-          openSubaccToken={openSubaccToken}
-          setOpenSubaccToken={setOpenSubaccToken}
-          setSelSubaccIdx={setSelSubaccIdx}
           changeName={changeName}
-          addSub={addSub}
-          setAddSub={setAddSub}
           setDeleteType={setDeleteType}
           setDeleteObject={setDeleteObject}
-          setSelContactPrin={setSelContactPrin}
           setSubaccEdited={setSubaccEdited}
           setSubaccEditedErr={setSubaccEditedErr}
           changeSubIdx={changeSubIdx}
           setDeleteModal={setDeleteModal}
-          selSubaccIdx={selSubaccIdx}
           subaccEdited={subaccEdited}
           subaccEditedErr={subaccEditedErr}
           searchKey={searchKey}
           assetFilter={assetFilter}
-          openAssetsPrin={openAssetsPrin}
-          selContactPrin={selContactPrin}
-          setOpenAssetsPrin={setOpenAssetsPrin}
-          selCntcPrinAddAsst={selCntcPrinAddAsst}
-          contactEditedErr={contactEditedErr}
-          setContactEditedErr={setContactEditedErr}
-          contactEdited={contactEdited}
-          setContactEdited={setContactEdited}
-          setSelCntcPrinAddAsst={setSelCntcPrinAddAsst}
         ></TableContacts>
       </div>
       <RemoveModal
