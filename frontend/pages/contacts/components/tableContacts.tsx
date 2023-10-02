@@ -18,7 +18,7 @@ import { AccountIdentifier } from "@dfinity/nns";
 import ContactAssetPop from "./contactAssetPop";
 import { getInitialFromName, shortAddress } from "@/utils";
 import TableAssets from "./tableAssets";
-import { ChangeEvent, ChangeEventHandler, Fragment } from "react";
+import { ChangeEvent, Fragment } from "react";
 import { CustomCopy } from "@components/CopyTooltip";
 import { CustomInput } from "@components/Input";
 import { clsx } from "clsx";

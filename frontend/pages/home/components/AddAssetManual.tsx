@@ -15,7 +15,6 @@ import { Token } from "@redux/models/TokenModels";
 import { AccountDefaultEnum, IconTypeEnum } from "@/const";
 import { Asset } from "@redux/models/AccountModels";
 import { IdentityHook } from "@pages/hooks/identityHook";
-import { fn } from "moment";
 import { ChangeEvent } from "react";
 
 interface AddAssetManualProps {

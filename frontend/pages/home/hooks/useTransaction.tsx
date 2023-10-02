@@ -21,7 +21,6 @@ export const UseTransaction = () => {
         hexToUint8Array(selectedAccount?.sub_account_id || "0x0"),
         true,
         selectedAsset?.tokenSymbol || "",
-        selectedAsset?.symbol || "",
         selectedToken.address,
         selectedAccount?.sub_account_id,
       );
