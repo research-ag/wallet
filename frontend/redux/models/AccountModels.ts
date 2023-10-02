@@ -96,6 +96,7 @@ export type RosettaTransaction = z.infer<typeof RosettaTransaction>;
 // Local Storage
 const TransactionList = z.object({
   symbol: z.string(),
+  tokenSymbol: z.string(),
   subaccount: z.string(),
   tx: z.array(Transaction),
 });
