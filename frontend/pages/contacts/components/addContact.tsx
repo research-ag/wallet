@@ -1,7 +1,6 @@
 // svg
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 import { ReactComponent as TrashIcon } from "@assets/svg/files/trash-empty.svg";
-import PlusIcon from "@assets/svg/files/plus-icon.svg";
 //
 import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
@@ -10,11 +9,12 @@ import { useContacts } from "../hooks/contactsHook";
 import { CustomButton } from "@components/Button";
 import ContactAssetPop from "./contactAssetPop";
 import { GeneralHook } from "@pages/home/hooks/generalHook";
-import { IconTypeEnum } from "@/const";
 import { AssetContact, Contact, SubAccountContact } from "@redux/models/ContactsModels";
 import { useAppDispatch } from "@redux/Store";
 import { addContact } from "@redux/contacts/ContactsReducer";
 import { checkHexString, removeLeadingZeros } from "@/utils";
+import ContactAssetElement from "./contactAssetElement";
+import { AssetToAdd } from "@redux/models/AccountModels";
 
 interface AddContactProps {
   setAddOpen(value: boolean): void;
@@ -44,114 +44,6 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
   } = useContacts();
   const { assets, getAssetIcon, asciiHex } = GeneralHook();
 
-  const isAvailableAddContact = () => {
-    let isAvailable = true;
-    const ids: string[] = [];
-
-    for (let index = 0; index < newSubAccounts.length; index++) {
-      const newSa = newSubAccounts[index];
-      let subAccIdx = "";
-      if (removeLeadingZeros(newSa.subaccount_index.trim()) === "") {
-        if (newSa.subaccount_index.length !== 0) subAccIdx = "0";
-      } else subAccIdx = removeLeadingZeros(newSa.subaccount_index.trim());
-
-      if (newSa.name.trim() === "") {
-        isAvailable = false;
-        break;
-      }
-
-      if (subAccIdx === "") {
-        isAvailable = false;
-        break;
-      } else if (ids.includes(subAccIdx)) {
-        isAvailable = false;
-        break;
-      } else {
-        ids.push(subAccIdx);
-      }
-    }
-    return isAvailable;
-  };
-
-  const isValidSubacc = (from: string, validContact: boolean, contAst?: AssetContact) => {
-    const auxNewSub: SubAccountContact[] = [];
-    const errName: number[] = [];
-    const errId: number[] = [];
-    let validSubaccounts = true;
-    const ids: string[] = [];
-    newSubAccounts.map((newSa, j) => {
-      let subacc = newSa.subaccount_index.trim();
-      // Check if string contains prefix "0x" and remove it if is the case
-      if (subacc.slice(0, 2).toLowerCase() === "0x") subacc = subacc.substring(2);
-      // Check if subaccount have data
-      if (newSa.name.trim() !== "" || newSa.subaccount_index.trim() !== "") {
-        let subAccIdx = "";
-        // Removing zeros and check if subaccount index is not empty
-        if (removeLeadingZeros(subacc) === "") {
-          if (newSa.subaccount_index.length !== 0) subAccIdx = "0";
-        } else removeLeadingZeros(subacc);
-        let valid = true;
-        // Pushing position index of subaccounts that contains errors in the name (empty)
-        if (newSa.name.trim() === "") {
-          errName.push(j);
-          valid = false;
-          validSubaccounts = false;
-        }
-        // Pushing position index of subaccounts that contains errors in the index (empty or invalid)
-        if (subAccIdx === "" || newSa.subaccount_index.trim().toLowerCase() === "0x") {
-          errId.push(j);
-          valid = false;
-          validSubaccounts = false;
-        } else if (ids.includes(subAccIdx)) {
-          errId.push(j);
-          valid = false;
-          validSubaccounts = false;
-        } else {
-          ids.push(subAccIdx);
-        }
-        // Adding SubAccountContact to the new contact
-        if (valid) {
-          auxNewSub.push({ name: newSa.name.trim(), subaccount_index: subAccIdx });
-        }
-      }
-    });
-    // Check if valid Subaccounts and Valid prev contact info
-    if (validSubaccounts && validContact) {
-      const auxContact = { ...newContact };
-      let editKey = 0;
-      // Setting subaccount to the selected asset
-      for (let index = 0; index < auxContact.assets.length; index++) {
-        if (auxContact.assets[index].tokenSymbol === selAstContact) {
-          editKey = index;
-          break;
-        }
-      }
-      if (auxContact.assets.length > 0) {
-        auxContact.assets[editKey].subaccounts = auxNewSub;
-      }
-      // Verify if is an asset change or Add Contact action
-      if (from === "change" && contAst) {
-        setNewContact(auxContact);
-        setSelAstContact(contAst.tokenSymbol);
-        setNewSubaccounts(
-          contAst.subaccounts.length === 0 ? [{ name: "", subaccount_index: "" }] : contAst.subaccounts,
-        );
-      } else {
-        dispatch(addContact(auxContact));
-        setAddOpen(false);
-      }
-      setNewContactSubNameErr([]);
-      setNewContactSubIdErr([]);
-      setNewContactErr("");
-    } else {
-      // Set errors and error message
-      setNewContactSubNameErr(errName);
-      setNewContactSubIdErr(errId);
-      if (errName.length > 0 || errId.length > 0) setNewContactErr("check.add.contact.subacc.err");
-    }
-    return { validSubaccounts, auxNewSub, errName, errId };
-  };
-
   return (
     <Fragment>
       <div className="reative flex flex-col justify-start items-start w-full gap-4 text-md">
@@ -171,11 +63,7 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
               border={newContactNameErr ? "error" : undefined}
               value={newContact.name}
               onChange={(e) => {
-                setNewContact((prev) => {
-                  return { ...prev, name: e.target.value };
-                });
-                setNewContactErr("");
-                setNewContactNameErr(false);
+                onNameChange(e.target.value);
               }}
             />
           </div>
@@ -187,11 +75,7 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
               border={newContactPrinErr ? "error" : undefined}
               value={newContact.principal}
               onChange={(e) => {
-                setNewContact((prev) => {
-                  return { ...prev, principal: e.target.value };
-                });
-                setNewContactErr("");
-                setNewContactPrinErr(false);
+                onPrincipalChange(e.target.value);
               }}
             />
           </div>
@@ -202,33 +86,7 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
               assets={assets}
               getAssetIcon={getAssetIcon}
               onAdd={(data) => {
-                let auxConatct: Contact = {
-                  name: "",
-                  principal: "",
-                  assets: [],
-                };
-                setNewContact((prev) => {
-                  auxConatct = {
-                    ...prev,
-                    assets: data.map((ata) => {
-                      return {
-                        symbol: ata.symbol,
-                        subaccounts: [],
-                        tokenSymbol: ata.tokenSymbol,
-                        logo: ata.logo,
-                      };
-                    }),
-                  };
-                  return auxConatct;
-                });
-                if (data[0]) {
-                  setSelAstContact(data[0].tokenSymbol);
-                  const auxAsset = auxConatct.assets.find((ast) => ast.tokenSymbol === data[0].tokenSymbol);
-                  if (auxAsset)
-                    setNewSubaccounts(
-                      auxAsset.subaccounts.length === 0 ? [{ name: "", subaccount_index: "" }] : auxAsset.subaccounts,
-                    );
-                }
+                assetToAddEmpty(data);
               }}
             />
           ) : (
@@ -257,22 +115,7 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
                       compClass="flex flex-row justify-end items-center w-full"
                       getAssetIcon={getAssetIcon}
                       onAdd={(data) => {
-                        setNewContact((prev) => {
-                          return {
-                            ...prev,
-                            assets: [
-                              ...prev.assets,
-                              ...data.map((ata) => {
-                                return {
-                                  symbol: ata.symbol,
-                                  subaccounts: [],
-                                  tokenSymbol: ata.tokenSymbol,
-                                  logo: ata.logo,
-                                };
-                              }),
-                            ],
-                          };
-                        });
+                        assetToAdd(data);
                       }}
                     />
                   )}
@@ -280,48 +123,18 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
                 <div className="flex flex-col w-full h-full scroll-y-light">
                   {newContact.assets.map((contAst, k) => {
                     return (
-                      <button
+                      <ContactAssetElement
                         key={k}
-                        onClick={() => {
-                          if (selAstContact !== contAst.tokenSymbol) {
-                            isValidSubacc("change", true, contAst);
-                          }
+                        contAst={contAst}
+                        k={k}
+                        selAstContact={selAstContact}
+                        isValidSubacc={() => {
+                          isValidSubacc("change", true, contAst);
                         }}
-                        className={`flex flex-row justify-between items-center w-full p-3 ${
-                          contAst.tokenSymbol === selAstContact
-                            ? "bg-SecondaryColorLight dark:bg-SecondaryColor border-0 border-l-4 border-SelectRowColor"
-                            : ""
-                        }`}
-                      >
-                        <div className="flex flex-row justify-start items-center gap-3">
-                          {getAssetIcon(IconTypeEnum.Enum.FILTER, contAst.tokenSymbol, contAst.logo)}
-                          <p>{contAst.symbol}</p>
-                        </div>
-                        <div className="flex flex-row justify-between items-center w-28 h-8 rounded bg-black/10 dark:bg-white/10">
-                          <p className="ml-2">{`${
-                            contAst.tokenSymbol === selAstContact ? newSubAccounts.length : contAst.subaccounts.length
-                          } ${
-                            (contAst.tokenSymbol === selAstContact
-                              ? newSubAccounts.length
-                              : contAst.subaccounts.length) !== 1
-                              ? "Subs"
-                              : "Sub"
-                          }`}</p>
-                          {contAst.tokenSymbol === selAstContact && (
-                            <button
-                              onClick={() => {
-                                if (isAvailableAddContact())
-                                  setNewSubaccounts((prev) => {
-                                    return [...prev, { name: "", subaccount_index: "" }];
-                                  });
-                              }}
-                              className="flex bg-AddSecondaryButton w-8 h-8 justify-center items-center rounded-r p-0"
-                            >
-                              <img src={PlusIcon} alt="plus-icon" className="w-5 h-5" />
-                            </button>
-                          )}
-                        </div>
-                      </button>
+                        isAvailableAddContact={isAvailableAddContact}
+                        newSubAccounts={newSubAccounts}
+                        setNewSubaccounts={setNewSubaccounts}
+                      ></ContactAssetElement>
                     );
                   })}
                 </div>
@@ -342,11 +155,7 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
                           placeholder={t("name")}
                           value={newSA.name}
                           onChange={(e) => {
-                            const auxSubs = [...newSubAccounts];
-                            auxSubs[k].name = e.target.value;
-                            setNewSubaccounts(auxSubs);
-                            setNewContactSubNameErr([...newContactSubNameErr].filter((num) => num !== k));
-                            setNewContactErr("");
+                            onChangeSubName(e.target.value, k);
                           }}
                         />
                       );
@@ -365,31 +174,15 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
                             placeholder={"Hex"}
                             value={newSA.subaccount_index}
                             onChange={(e) => {
-                              if (checkHexString(e.target.value)) {
-                                const auxSubs = [...newSubAccounts];
-                                auxSubs[k].subaccount_index = e.target.value.trim();
-                                setNewSubaccounts(auxSubs);
-                                setNewContactSubIdErr([...newContactSubIdErr].filter((num) => num !== k));
-                                setNewContactErr("");
-                              }
+                              onchangeSubIdx(e.target.value, k);
                             }}
                             onKeyDown={(e) => {
-                              if (!asciiHex.includes(e.key)) {
-                                e.preventDefault();
-                              }
-                              if (newSA.subaccount_index.includes("0x") || newSA.subaccount_index.includes("0X")) {
-                                if (e.key === "X" || e.key == "x") {
-                                  e.preventDefault();
-                                }
-                              }
+                              onKeyPressSubIdx(e, newSA);
                             }}
                           />
                           <TrashIcon
                             onClick={() => {
-                              const auxSubs = [...newSubAccounts];
-                              auxSubs.splice(k, 1);
-                              setNewSubaccounts(auxSubs);
-                              setNewContactErr("");
+                              onDeleteSubAccount(k);
                             }}
                             className="w-5 h-5 fill-PrimaryTextColorLight dark:fill-PrimaryTextColor cursor-pointer"
                           />
@@ -404,39 +197,236 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
         </div>
         <div className="flex flex-row justify-end items-center w-full gap-3">
           <p className="text-TextErrorColor">{t(newContactErr)}</p>
-          <CustomButton
-            className="min-w-[5rem]"
-            onClick={() => {
-              let validContact = true;
-              let err = { msg: "", name: false, prin: false };
-              if (newContact.name.trim() === "" && newContact.principal.trim() === "") {
-                validContact = false;
-                err = { msg: "check.add.contact.both.err", name: true, prin: true };
-              } else {
-                if (newContact.name.trim() === "") {
-                  validContact = false;
-                  err = { ...err, msg: "check.add.contact.name.err", name: true };
-                }
-                if (newContact.principal.trim() === "") {
-                  validContact = false;
-                  err = { ...err, msg: "check.add.contact.prin.empty.err", prin: true };
-                } else if (!checkPrincipalValid(newContact.principal)) {
-                  validContact = false;
-                  err = { ...err, msg: "check.add.contact.prin.err", prin: true };
-                }
-              }
-              setNewContactErr(err.msg);
-              setNewContactNameErr(err.name);
-              setNewContactPrinErr(err.prin);
-              isValidSubacc("add", validContact);
-            }}
-          >
+          <CustomButton className="min-w-[5rem]" onClick={onAddContact}>
             <p>{t("add.contact")}</p>
           </CustomButton>
         </div>
       </div>
     </Fragment>
   );
+
+  function isAvailableAddContact() {
+    let isAvailable = true;
+    const ids: string[] = [];
+
+    for (let index = 0; index < newSubAccounts.length; index++) {
+      const newSa = newSubAccounts[index];
+      let subAccIdx = "";
+      if (removeLeadingZeros(newSa.subaccount_index.trim()) === "") {
+        if (newSa.subaccount_index.length !== 0) subAccIdx = "0";
+      } else subAccIdx = removeLeadingZeros(newSa.subaccount_index.trim());
+
+      if (newSa.name.trim() === "") {
+        isAvailable = false;
+        break;
+      }
+
+      if (subAccIdx === "" || ids.includes(subAccIdx)) {
+        isAvailable = false;
+        break;
+      } else {
+        ids.push(subAccIdx);
+      }
+    }
+    return isAvailable;
+  }
+
+  function isValidSubacc(from: string, validContact: boolean, contAst?: AssetContact) {
+    const auxNewSub: SubAccountContact[] = [];
+    const errName: number[] = [];
+    const errId: number[] = [];
+    let validSubaccounts = true;
+    const ids: string[] = [];
+    newSubAccounts.map((newSa, j) => {
+      let subacc = newSa.subaccount_index.trim();
+      // Check if string contains prefix "0x" and remove it if is the case
+      if (subacc.slice(0, 2).toLowerCase() === "0x") subacc = subacc.substring(2);
+      // Check if subaccount have data
+      if (newSa.name.trim() !== "" || newSa.subaccount_index.trim() !== "") {
+        let subAccIdx = "";
+        // Removing zeros and check if subaccount index is not empty
+        if (removeLeadingZeros(subacc) === "") {
+          if (newSa.subaccount_index.length !== 0) subAccIdx = "0";
+        } else removeLeadingZeros(subacc);
+        let valid = true;
+        // Pushing position index of subaccounts that contains errors in the name (empty)
+        if (newSa.name.trim() === "") {
+          errName.push(j);
+          valid = false;
+          validSubaccounts = false;
+        }
+        // Pushing position index of subaccounts that contains errors in the index (empty or invalid)
+        if (subAccIdx === "" || newSa.subaccount_index.trim().toLowerCase() === "0x" || ids.includes(subAccIdx)) {
+          errId.push(j);
+          valid = false;
+          validSubaccounts = false;
+        } else {
+          ids.push(subAccIdx);
+        }
+        // Adding SubAccountContact to the new contact
+        if (valid) auxNewSub.push({ name: newSa.name.trim(), subaccount_index: subAccIdx });
+      }
+    });
+    // Check if valid Subaccounts and Valid prev contact info
+    if (validSubaccounts && validContact) {
+      const auxContact = { ...newContact };
+      let editKey = 0;
+      // Setting subaccount to the selected asset
+      for (let index = 0; index < auxContact.assets.length; index++) {
+        if (auxContact.assets[index].tokenSymbol === selAstContact) {
+          editKey = index;
+          break;
+        }
+      }
+      if (auxContact.assets.length > 0) auxContact.assets[editKey].subaccounts = auxNewSub;
+      // Verify if is an asset change or Add Contact action
+      if (from === "change" && contAst) {
+        setNewContact(auxContact);
+        setSelAstContact(contAst.tokenSymbol);
+        setNewSubaccounts(
+          contAst.subaccounts.length === 0 ? [{ name: "", subaccount_index: "" }] : contAst.subaccounts,
+        );
+      } else {
+        dispatch(addContact(auxContact));
+        setAddOpen(false);
+      }
+      setNewContactSubNameErr([]);
+      setNewContactSubIdErr([]);
+      setNewContactErr("");
+    } else {
+      // Set errors and error message
+      setNewContactSubNameErr(errName);
+      setNewContactSubIdErr(errId);
+      if (errName.length > 0 || errId.length > 0) setNewContactErr("check.add.contact.subacc.err");
+    }
+    return { validSubaccounts, auxNewSub, errName, errId };
+  }
+
+  function onNameChange(value: string) {
+    setNewContact((prev) => {
+      return { ...prev, name: value };
+    });
+    setNewContactErr("");
+    setNewContactNameErr(false);
+  }
+
+  function onPrincipalChange(value: string) {
+    setNewContact((prev) => {
+      return { ...prev, principal: value };
+    });
+    setNewContactErr("");
+    setNewContactPrinErr(false);
+  }
+
+  function assetToAddEmpty(data: AssetToAdd[]) {
+    let auxConatct: Contact = {
+      name: "",
+      principal: "",
+      assets: [],
+    };
+    setNewContact((prev) => {
+      auxConatct = {
+        ...prev,
+        assets: data.map((ata) => {
+          return {
+            symbol: ata.symbol,
+            subaccounts: [],
+            tokenSymbol: ata.tokenSymbol,
+            logo: ata.logo,
+          };
+        }),
+      };
+      return auxConatct;
+    });
+    if (data[0]) {
+      setSelAstContact(data[0].tokenSymbol);
+      const auxAsset = auxConatct.assets.find((ast) => ast.tokenSymbol === data[0].tokenSymbol);
+      if (auxAsset)
+        setNewSubaccounts(
+          auxAsset.subaccounts.length === 0 ? [{ name: "", subaccount_index: "" }] : auxAsset.subaccounts,
+        );
+    }
+  }
+
+  function assetToAdd(data: AssetToAdd[]) {
+    setNewContact((prev) => {
+      return {
+        ...prev,
+        assets: [
+          ...prev.assets,
+          ...data.map((ata) => {
+            return {
+              symbol: ata.symbol,
+              subaccounts: [],
+              tokenSymbol: ata.tokenSymbol,
+              logo: ata.logo,
+            };
+          }),
+        ],
+      };
+    });
+  }
+
+  function onChangeSubName(value: string, k: number) {
+    const auxSubs = [...newSubAccounts];
+    auxSubs[k].name = value;
+    setNewSubaccounts(auxSubs);
+    setNewContactSubNameErr([...newContactSubNameErr].filter((num) => num !== k));
+    setNewContactErr("");
+  }
+
+  function onchangeSubIdx(value: string, k: number) {
+    if (checkHexString(value)) {
+      const auxSubs = [...newSubAccounts];
+      auxSubs[k].subaccount_index = value.trim();
+      setNewSubaccounts(auxSubs);
+      setNewContactSubIdErr([...newContactSubIdErr].filter((num) => num !== k));
+      setNewContactErr("");
+    }
+  }
+
+  function onKeyPressSubIdx(e: React.KeyboardEvent<HTMLInputElement>, newSA: SubAccountContact) {
+    if (!asciiHex.includes(e.key)) {
+      e.preventDefault();
+    }
+    if (newSA.subaccount_index.includes("0x") || newSA.subaccount_index.includes("0X")) {
+      if (e.key === "X" || e.key == "x") {
+        e.preventDefault();
+      }
+    }
+  }
+
+  function onDeleteSubAccount(k: number) {
+    const auxSubs = [...newSubAccounts];
+    auxSubs.splice(k, 1);
+    setNewSubaccounts(auxSubs);
+    setNewContactErr("");
+  }
+
+  function onAddContact() {
+    let validContact = true;
+    let err = { msg: "", name: false, prin: false };
+    if (newContact.name.trim() === "" && newContact.principal.trim() === "") {
+      validContact = false;
+      err = { msg: "check.add.contact.both.err", name: true, prin: true };
+    } else {
+      if (newContact.name.trim() === "") {
+        validContact = false;
+        err = { ...err, msg: "check.add.contact.name.err", name: true };
+      }
+      if (newContact.principal.trim() === "") {
+        validContact = false;
+        err = { ...err, msg: "check.add.contact.prin.empty.err", prin: true };
+      } else if (!checkPrincipalValid(newContact.principal)) {
+        validContact = false;
+        err = { ...err, msg: "check.add.contact.prin.err", prin: true };
+      }
+    }
+    setNewContactErr(err.msg);
+    setNewContactNameErr(err.name);
+    setNewContactPrinErr(err.prin);
+    isValidSubacc("add", validContact);
+  }
 };
 
 export default AddContact;

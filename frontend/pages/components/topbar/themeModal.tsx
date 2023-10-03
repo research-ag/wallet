@@ -19,24 +19,6 @@ const ThemeModal = ({ setOpen }: ThemeModalProps) => {
 
   const { changeTheme, theme } = ThemeHook();
 
-  const handleChange = (theme: string) => {
-    if (theme === ThemesEnum.enum.light) {
-      document.documentElement.classList.remove(ThemesEnum.enum.dark);
-      changeTheme(ThemesEnum.enum.light);
-      localStorage.setItem("theme", ThemesEnum.enum.light);
-    } else {
-      document.documentElement.classList.add(ThemesEnum.enum.dark);
-      changeTheme(ThemesEnum.enum.dark);
-      localStorage.setItem("theme", ThemesEnum.enum.dark);
-    }
-  };
-
-  // Tailwind CSS constants
-  const themeBox = clsx("flex", "flex-col", "w-full", "border", "rounded-lg", "mb-4", "p-0", "overflow-hidden");
-  const option = clsx("w-full", "flex", "flex-row", "justify-start", "items-center", "p-4");
-  const optionBottom = clsx("py-0", "border-t");
-  const logoMsg = clsx("py-4", "p-8", "border-l-[2px]", "ml-4", "font-medium");
-
   return (
     <Fragment>
       <div className="flex flex-row justify-between items-center w-full mb-2 top-modal">
@@ -125,6 +107,24 @@ const ThemeModal = ({ setOpen }: ThemeModalProps) => {
       </button>
     </Fragment>
   );
+
+  function handleChange(theme: string) {
+    if (theme === ThemesEnum.enum.light) {
+      document.documentElement.classList.remove(ThemesEnum.enum.dark);
+      changeTheme(ThemesEnum.enum.light);
+      localStorage.setItem("theme", ThemesEnum.enum.light);
+    } else {
+      document.documentElement.classList.add(ThemesEnum.enum.dark);
+      changeTheme(ThemesEnum.enum.dark);
+      localStorage.setItem("theme", ThemesEnum.enum.dark);
+    }
+  }
 };
 
 export default ThemeModal;
+
+// Tailwind CSS constants
+const themeBox = clsx("flex", "flex-col", "w-full", "border", "rounded-lg", "mb-4", "p-0", "overflow-hidden");
+const option = clsx("w-full", "flex", "flex-row", "justify-start", "items-center", "p-4");
+const optionBottom = clsx("py-0", "border-t");
+const logoMsg = clsx("py-4", "p-8", "border-l-[2px]", "ml-4", "font-medium");

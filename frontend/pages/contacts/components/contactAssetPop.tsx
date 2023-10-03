@@ -5,16 +5,9 @@ import PlusIcon from "@assets/svg/files/plus-icon.svg";
 import { CustomButton } from "@components/Button";
 import { CustomCheck } from "@components/CheckBox";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { Asset } from "@redux/models/AccountModels";
+import { Asset, AssetToAdd } from "@redux/models/AccountModels";
 import { Fragment, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-
-interface AssetToAdd {
-  symbol: string;
-  tokenSymbol: string;
-  logo?: string;
-}
-
 interface ContactAssetPopProps {
   onAdd(data: AssetToAdd[]): void;
   assets: Asset[];
@@ -38,11 +31,6 @@ const ContactAssetPop = ({
   const [assetsToAdd, setAssetsToAdd] = useState<AssetToAdd[]>([]);
   const [symbolToAdd, setSymbolsToAdd] = useState<string[]>([]);
   const [openDrop, setOpenDrop] = useState<boolean>(false);
-
-  const setToAdd = (assets: AssetToAdd[], tokens: string[]) => {
-    setAssetsToAdd(assets);
-    setSymbolsToAdd(tokens);
-  };
 
   useEffect(() => {
     if (openDrop) {
@@ -76,20 +64,7 @@ const ContactAssetPop = ({
                     className={
                       "flex flex-row justify-between items-center rounded-t-lg px-3 py-2 w-full hover:bg-HoverColorLight hover:dark:bg-HoverColor"
                     }
-                    onClick={() => {
-                      if (assetsToAdd.length === assets.length) {
-                        setToAdd([], []);
-                      } else {
-                        setToAdd(
-                          assets.map((ast) => {
-                            return { symbol: ast.symbol, tokenSymbol: ast.tokenSymbol, logo: ast.logo };
-                          }),
-                          assets.map((ast) => {
-                            return ast.tokenSymbol;
-                          }),
-                        );
-                      }
-                    }}
+                    onClick={handleSelectAll}
                   >
                     <p>{t("selected.all")}</p>
                     <CustomCheck
@@ -107,20 +82,7 @@ const ContactAssetPop = ({
                             : ""
                         }`}
                         onClick={() => {
-                          if (symbolToAdd.includes(asset.tokenSymbol)) {
-                            setToAdd(
-                              assetsToAdd.filter((ast) => ast.tokenSymbol !== asset.tokenSymbol),
-                              symbolToAdd.filter((ast) => ast !== asset.tokenSymbol),
-                            );
-                          } else {
-                            setToAdd(
-                              [
-                                ...assetsToAdd,
-                                { symbol: asset.symbol, tokenSymbol: asset.tokenSymbol, logo: asset.logo },
-                              ],
-                              [...symbolToAdd, asset.tokenSymbol],
-                            );
-                          }
+                          handleSelectAsset(asset);
                         }}
                       >
                         <div className="flex flex-start justify-start items-center gap-2">
@@ -138,15 +100,7 @@ const ContactAssetPop = ({
                 </div>
 
                 <div className="flex justify-center items-center p-2 pt-4 w-full rounded-b-lg">
-                  <CustomButton
-                    onClick={() => {
-                      onAdd(assetsToAdd);
-                      setToAdd([], []);
-                      setOpenDrop(false);
-                    }}
-                    size={"small"}
-                    className="w-full"
-                  >
+                  <CustomButton onClick={handleAddAssetButton} size={"small"} className="w-full">
                     <p>{t("add.asset")}</p>
                   </CustomButton>
                 </div>
@@ -157,6 +111,46 @@ const ContactAssetPop = ({
       </div>
     </Fragment>
   );
+
+  function setToAdd(assets: AssetToAdd[], tokens: string[]) {
+    setAssetsToAdd(assets);
+    setSymbolsToAdd(tokens);
+  }
+
+  function handleSelectAll() {
+    if (assetsToAdd.length === assets.length) {
+      setToAdd([], []);
+    } else {
+      setToAdd(
+        assets.map((ast) => {
+          return { symbol: ast.symbol, tokenSymbol: ast.tokenSymbol, logo: ast.logo };
+        }),
+        assets.map((ast) => {
+          return ast.tokenSymbol;
+        }),
+      );
+    }
+  }
+
+  function handleSelectAsset(asset: Asset) {
+    if (symbolToAdd.includes(asset.tokenSymbol)) {
+      setToAdd(
+        assetsToAdd.filter((ast) => ast.tokenSymbol !== asset.tokenSymbol),
+        symbolToAdd.filter((ast) => ast !== asset.tokenSymbol),
+      );
+    } else {
+      setToAdd(
+        [...assetsToAdd, { symbol: asset.symbol, tokenSymbol: asset.tokenSymbol, logo: asset.logo }],
+        [...symbolToAdd, asset.tokenSymbol],
+      );
+    }
+  }
+
+  function handleAddAssetButton() {
+    onAdd(assetsToAdd);
+    setToAdd([], []);
+    setOpenDrop(false);
+  }
 };
 
 export default ContactAssetPop;

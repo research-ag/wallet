@@ -17,20 +17,11 @@ interface DrawerActionProps {
 const DrawerAction = ({ drawerOption, setDrawerOption, setDrawerOpen, children }: DrawerActionProps) => {
   const { t } = useTranslation();
 
-  const chechEqId = (option: DrawerOption) => {
-    return drawerOption === option;
-  };
-
   const selectedButton = "border-AccpetButtonColor";
   const unselectedButton = "text-PrimaryTextColorLight dark:text-PrimaryTextColor";
-
-  const customSend = clsx(chechEqId(DrawerOptionEnum.Enum.SEND) ? selectedButton : unselectedButton);
-  const customReceive = clsx(chechEqId(DrawerOptionEnum.Enum.RECEIVE) ? selectedButton : unselectedButton);
-  // const customWrap = clsx(chechEqId(DrawerOptionEnum.Enum.WRAP) ? selectedButton : unselectedButton);
-
   const drawerOptions = [
-    { name: "send", style: customSend, type: DrawerOptionEnum.Enum.SEND },
-    { name: "receive", style: customReceive, type: DrawerOptionEnum.Enum.RECEIVE },
+    { name: "send", style: customSend(), type: DrawerOptionEnum.Enum.SEND },
+    { name: "receive", style: customReceive(), type: DrawerOptionEnum.Enum.RECEIVE },
     // { name: "wrap", style: customWrap, type: DrawerOptionEnum.Enum.WRAP },
   ];
 
@@ -65,6 +56,17 @@ const DrawerAction = ({ drawerOption, setDrawerOption, setDrawerOpen, children }
       {children}
     </Fragment>
   );
+
+  function chechEqId(option: DrawerOption) {
+    return drawerOption === option;
+  }
+
+  function customSend() {
+    return clsx(chechEqId(DrawerOptionEnum.Enum.SEND) ? selectedButton : unselectedButton);
+  }
+  function customReceive() {
+    return clsx(chechEqId(DrawerOptionEnum.Enum.RECEIVE) ? selectedButton : unselectedButton);
+  }
 };
 
 export default DrawerAction;

@@ -4,15 +4,17 @@ import DownAmountIcon from "@assets/svg/files/down-amount-icon.svg";
 import { SortingState, createColumnHelper } from "@tanstack/react-table";
 import { Transaction } from "@redux/models/AccountModels";
 import moment from "moment";
-import { getAddress, toFullDecimal } from "@/utils";
+import { getAddress, getAssetSymbol, toFullDecimal } from "@/utils";
 import { useTranslation } from "react-i18next";
 import { TransactionTypeEnum } from "@/const";
 import { Fragment, useState } from "react";
 import { useAppSelector } from "@redux/Store";
 import CodeElement from "@components/TableCodeElement";
+import { AssetHook } from "@pages/home/hooks/assetHook";
 
 export const TableHook = () => {
   const { t } = useTranslation();
+  const { assets } = AssetHook();
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const { selectedAccount, selectedTransaction } = useAppSelector((state) => state.asset);
@@ -95,7 +97,7 @@ export const TableHook = () => {
                     Number(info.getValue()?.amount) / Math.pow(10, selectedAccount?.decimal || 8),
                     selectedAccount?.decimal || 8,
                   )
-            } ${info.getValue()?.symbol}`}</p>
+            } ${getAssetSymbol(info.getValue()?.symbol || "", assets)}`}</p>
           </div>
         );
       },

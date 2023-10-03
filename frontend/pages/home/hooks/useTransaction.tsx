@@ -13,32 +13,45 @@ export const UseTransaction = () => {
 
   const changeSelectedTransaction = (value: Transaction) => dispatch(setSelectedTransaction(value));
 
+  const getSelectedSubaccountICRCTx = async () => {
+    const selectedToken = tokens.find((tk: Token) => tk.symbol === selectedAsset?.symbol);
+    if (selectedToken) {
+      getAllTransactionsICRC1(
+        selectedToken?.index || "",
+        hexToUint8Array(selectedAccount?.sub_account_id || "0x0"),
+        true,
+        selectedAsset?.tokenSymbol || "",
+        selectedToken.address,
+        selectedAccount?.sub_account_id,
+      );
+    }
+  };
+
+  const getSelectedSubaccountICPTx = async () => {
+    getAllTransactionsICP(selectedAccount?.sub_account_id || "", true);
+  };
+
   useEffect(() => {
     if (selectedAsset?.tokenSymbol === AssetSymbolEnum.Enum.ICP) {
       const getICPTx = async () => {
-        await getAllTransactionsICP(selectedAccount?.sub_account_id || "", true);
+        await getSelectedSubaccountICPTx();
       };
 
       getICPTx();
     } else {
       const getICRCTx = async () => {
-        const selectedToken = tokens.find((tk: Token) => tk.symbol === selectedAsset?.tokenSymbol);
-        if (selectedToken) {
-          getAllTransactionsICRC1(
-            selectedToken?.index || "",
-            hexToUint8Array(selectedAccount?.sub_account_id || "0x0"),
-            true,
-            selectedAsset?.tokenSymbol || "",
-            selectedAsset?.symbol || "",
-            selectedToken.address,
-            selectedAccount?.sub_account_id,
-          );
-        }
+        await getSelectedSubaccountICRCTx();
       };
 
       getICRCTx();
     }
   }, [selectedAccount]);
 
-  return { selectedAsset, selectedTransaction, changeSelectedTransaction };
+  return {
+    selectedAsset,
+    selectedTransaction,
+    changeSelectedTransaction,
+    getSelectedSubaccountICRCTx,
+    getSelectedSubaccountICPTx,
+  };
 };

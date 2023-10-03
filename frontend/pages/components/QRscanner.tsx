@@ -66,18 +66,15 @@ const QRscanner = ({ qrView, onSuccess, setQRview }: QRscannerProps) => {
       </div>
 
       <div className="w-full flex flex-row justify-end items-center mb-16">
-        <CustomButton
-          intent="deny"
-          className="mr-3 min-w-[5rem]"
-          onClick={() => {
-            myScanner?.clear();
-            setQRview(false);
-          }}
-        >
+        <CustomButton intent="deny" className="mr-3 min-w-[5rem]" onClick={handleBackButton}>
           <p>{t("back")}</p>
         </CustomButton>
       </div>
     </div>
   );
+  function handleBackButton() {
+    myScanner?.clear();
+    setQRview(false);
+  }
 };
 export default QRscanner;

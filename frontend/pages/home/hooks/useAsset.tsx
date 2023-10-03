@@ -14,7 +14,7 @@ export const UseAsset = () => {
     if (assets && assets.length > 0) {
       let actualAsset: Asset | undefined = undefined;
       assets.map((ast: Asset) => {
-        if (ast?.tokenSymbol === (selectedAsset?.tokenSymbol ? selectedAsset.tokenSymbol : "")) {
+        if (ast?.tokenSymbol === selectedAsset?.tokenSymbol) {
           actualAsset = ast;
           changeSelectedAsset(ast);
         }

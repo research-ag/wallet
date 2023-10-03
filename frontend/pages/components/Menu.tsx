@@ -8,7 +8,6 @@ import { useContacts } from "@pages/contacts/hooks/contactsHook";
 
 const Menu = () => {
   const { t } = useTranslation();
-
   const { assets, assetLoading } = AssetHook();
   const { contacts } = useContacts();
 
@@ -36,9 +35,7 @@ const Menu = () => {
             border={"underline"}
             className="flex flex-row justify-start items-center mb-4"
             onClick={() => {
-              if (window.location.pathname !== menu.path) {
-                history.push(menu.path);
-              }
+              handleMenuClic(menu.path);
             }}
           >
             <p
@@ -58,6 +55,12 @@ const Menu = () => {
       </div>
     </Fragment>
   );
+
+  function handleMenuClic(path: string) {
+    if (window.location.pathname !== path) {
+      history.push(path);
+    }
+  }
 };
 
 export default Menu;
