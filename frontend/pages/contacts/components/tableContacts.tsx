@@ -18,7 +18,7 @@ import { AccountIdentifier } from "@dfinity/nns";
 import ContactAssetPop from "./contactAssetPop";
 import { getInitialFromName, shortAddress } from "@/utils";
 import TableAssets from "./tableAssets";
-import { ChangeEvent, ChangeEventHandler, Fragment } from "react";
+import { ChangeEvent, Fragment } from "react";
 import { CustomCopy } from "@components/CopyTooltip";
 import { CustomInput } from "@components/Input";
 import { clsx } from "clsx";
@@ -29,70 +29,57 @@ import { useContacts } from "../hooks/contactsHook";
 import { AssetToAdd } from "@redux/models/AccountModels";
 
 interface TableContactsProps {
-  contacts: Contact[];
-  openSubaccToken: string;
-  setOpenSubaccToken(value: string): void;
-  setSelSubaccIdx(value: string): void;
   changeName(value: string): void;
-  addSub: boolean;
-  setAddSub(value: boolean): void;
   setDeleteType(value: DeleteContactTypeEnum): void;
   setDeleteObject(value: NewContactSubAccount): void;
-  setSelContactPrin(value: string): void;
   setSubaccEdited(value: SubAccountContact): void;
   setSubaccEditedErr(value: SubAccountContactErr): void;
   changeSubIdx(value: string): void;
   setDeleteModal(value: boolean): void;
-  selSubaccIdx: string;
   subaccEdited: SubAccountContact;
   subaccEditedErr: SubAccountContactErr;
   searchKey: string;
   assetFilter: string[];
-  openAssetsPrin: string;
-  selContactPrin: string;
-  setOpenAssetsPrin(value: string): void;
-  selCntcPrinAddAsst: string;
-  contactEditedErr: ContactErr;
-  setContactEditedErr(value: any): void;
-  contactEdited: Contact;
-  setContactEdited(value: any): void;
-  setSelCntcPrinAddAsst(value: string): void;
 }
 
 const TableContacts = ({
-  contacts,
-  openSubaccToken,
-  setOpenSubaccToken,
-  setSelSubaccIdx,
   changeName,
-  addSub,
-  setAddSub,
   setDeleteType,
   setDeleteObject,
-  setSelContactPrin,
   setSubaccEdited,
   setSubaccEditedErr,
   changeSubIdx,
   setDeleteModal,
-  selSubaccIdx,
   subaccEdited,
   subaccEditedErr,
   searchKey,
   assetFilter,
-  openAssetsPrin,
-  selContactPrin,
-  setOpenAssetsPrin,
-  selCntcPrinAddAsst,
-  contactEditedErr,
-  setContactEditedErr,
-  contactEdited,
-  setContactEdited,
-  setSelCntcPrinAddAsst,
 }: TableContactsProps) => {
   const { t } = useTranslation();
 
   const { assets, getAssetIcon } = GeneralHook();
-  const { checkPrincipalValid, updateContact, addAsset } = useContacts();
+  const {
+    contacts,
+    selContactPrin,
+    setSelContactPrin,
+    checkPrincipalValid,
+    updateContact,
+    addAsset,
+    selCntcPrinAddAsst,
+    setSelCntcPrinAddAsst,
+    contactEdited,
+    setContactEdited,
+    openSubaccToken,
+    setOpenSubaccToken,
+    openAssetsPrin,
+    setOpenAssetsPrin,
+    selSubaccIdx,
+    setSelSubaccIdx,
+    contactEditedErr,
+    setContactEditedErr,
+    addSub,
+    setAddSub,
+  } = useContacts();
 
   return (
     <table className="w-full  text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md">

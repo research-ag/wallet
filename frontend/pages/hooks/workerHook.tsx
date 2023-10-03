@@ -37,7 +37,6 @@ export const WorkerHook = () => {
               hexToUint8Array(elementS?.sub_account_id || "0x0"),
               false,
               elementA.tokenSymbol,
-              elementA.symbol,
               selectedToken.address,
               elementS?.sub_account_id,
             );
