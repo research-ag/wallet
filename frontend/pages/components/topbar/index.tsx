@@ -27,6 +27,7 @@ import { useAppDispatch } from "@redux/Store";
 import { setLoading } from "@redux/assets/AssetReducer";
 import { CustomCopy } from "@components/CopyTooltip";
 import { AssetHook } from "@pages/home/hooks/assetHook";
+import { db } from "@/database/db";
 
 const TopBarComponent = () => {
   const { t } = useTranslation();
@@ -150,7 +151,7 @@ const TopBarComponent = () => {
   function changeLanguage(lang: string) {
     onLanguageChange(lang);
     i18n.changeLanguage(lang, () => {
-      localStorage.setItem("language", lang);
+      db().setLanguage(lang);
     });
   }
 };

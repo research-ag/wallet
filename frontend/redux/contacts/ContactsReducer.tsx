@@ -2,13 +2,12 @@ import { getAccountIdentifier, hexToNumber } from "@/utils";
 import { AssetContact, Contact } from "@redux/models/ContactsModels";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import bigInt from "big-integer";
+import { db } from "@/database/db";
 
 interface ContactsState {
-  storageCode: string;
   contacts: Contact[];
 }
 const initialState: ContactsState = {
-  storageCode: "",
   contacts: [],
 };
 
@@ -16,24 +15,21 @@ const contactsSlice = createSlice({
   name: "contacts",
   initialState,
   reducers: {
-    setStorageCode(state, action: PayloadAction<string>) {
-      state.storageCode = action.payload;
-    },
     setContacts(state, action: PayloadAction<Contact[]>) {
       state.contacts = action.payload;
 
-      setLocalContacts(action.payload, state.storageCode);
+      db().setContacts(action.payload).then();
     },
     addContact(state, action: PayloadAction<Contact>) {
       const auxContact = { ...action.payload, accountIdentier: getAccountIdentifier(action.payload.principal, 0) };
       const auxContacts = [...state.contacts, auxContact];
       state.contacts = auxContacts;
-      setLocalContacts(auxContacts, state.storageCode);
+      db().setContacts(auxContacts).then();
     },
     deleteContatc(state, action: PayloadAction<string>) {
       const auxContacts = state.contacts.filter((cnts) => cnts.principal !== action.payload);
       state.contacts = auxContacts;
-      setLocalContacts(auxContacts, state.storageCode);
+      db().setContacts(auxContacts).then();
     },
     editContact: {
       reducer(
@@ -49,7 +45,7 @@ const contactsSlice = createSlice({
           } else return cnts;
         });
         state.contacts = auxContacts;
-        setLocalContacts(auxContacts, state.storageCode);
+        db().setContacts(auxContacts).then();
       },
       prepare(editedContact: Contact, pastPrincipal: string) {
         return {
@@ -72,7 +68,7 @@ const contactsSlice = createSlice({
         });
 
         state.contacts = auxContacts;
-        setLocalContacts(auxContacts, state.storageCode);
+        db().setContacts(auxContacts).then();
       },
       prepare(asset: AssetContact[], pastPrincipal: string) {
         return {
@@ -100,7 +96,7 @@ const contactsSlice = createSlice({
         });
 
         state.contacts = auxContacts;
-        setLocalContacts(auxContacts, state.storageCode);
+        db().setContacts(auxContacts).then();
       },
       prepare(tokenSymbol: string, symbol: string) {
         return {
@@ -145,7 +141,7 @@ const contactsSlice = createSlice({
           }
         });
         state.contacts = auxContacts;
-        setLocalContacts(auxContacts, state.storageCode);
+        db().setContacts(auxContacts).then();
       },
       prepare(principal: string, tokenSymbol: string, newName: string, newIndex: string) {
         return {
@@ -198,7 +194,7 @@ const contactsSlice = createSlice({
           }
         });
         state.contacts = auxContacts;
-        setLocalContacts(auxContacts, state.storageCode);
+        db().setContacts(auxContacts).then();
       },
       prepare(principal: string, tokenSymbol: string, subIndex: string, newName: string, newIndex: string) {
         return {
@@ -216,7 +212,7 @@ const contactsSlice = createSlice({
         const auxContacts = state.contacts.filter((cnts) => cnts.principal !== action.payload.principal);
 
         state.contacts = auxContacts;
-        setLocalContacts(auxContacts, state.storageCode);
+        db().setContacts(auxContacts).then();
       },
       prepare(principal: string) {
         return {
@@ -240,7 +236,7 @@ const contactsSlice = createSlice({
         });
 
         state.contacts = auxContacts;
-        setLocalContacts(auxContacts, state.storageCode);
+        db().setContacts(auxContacts).then();
       },
       prepare(principal: string, tokenSymbol: string) {
         return {
@@ -276,7 +272,7 @@ const contactsSlice = createSlice({
           }
         });
         state.contacts = auxContacts;
-        setLocalContacts(auxContacts, state.storageCode);
+        db().setContacts(auxContacts).then();
       },
       prepare(principal: string, tokenSymbol: string, subIndex: string) {
         return {
@@ -286,23 +282,12 @@ const contactsSlice = createSlice({
     },
     clearDataContacts(state) {
       state.contacts = [];
-      state.storageCode = "";
     },
   },
 });
 
-const setLocalContacts = (contacts: Contact[], code: string) => {
-  localStorage.setItem(
-    code,
-    JSON.stringify({
-      contacts: contacts,
-    }),
-  );
-};
-
 export const {
   clearDataContacts,
-  setStorageCode,
   setContacts,
   addContact,
   deleteContatc,

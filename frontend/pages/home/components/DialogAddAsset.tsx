@@ -14,6 +14,7 @@ import { useAppDispatch } from "@redux/Store";
 import { addSubAccount } from "@redux/assets/AssetReducer";
 import bigInt from "big-integer";
 import { ChangeEvent } from "react";
+import { db } from "@/database/db";
 
 interface DialogAddAssetProps {
   newErr: any;
@@ -26,7 +27,6 @@ interface DialogAddAssetProps {
   setHexChecked(value: any): void;
   tokens: Token[];
   idx: number;
-  authClient: string;
 }
 
 const DialogAddAsset = ({
@@ -40,7 +40,6 @@ const DialogAddAsset = ({
   setHexChecked,
   tokens,
   idx,
-  authClient,
 }: DialogAddAssetProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
@@ -151,19 +150,11 @@ const DialogAddAsset = ({
     });
   }
 
-  function saveLocalStorage(auxTokens: Token[]) {
-    localStorage.setItem(
-      authClient,
-      JSON.stringify({
-        from: "II",
-        tokens: auxTokens.sort((a, b) => {
-          return a.id_number - b.id_number;
-        }),
-      }),
-    );
+  async function saveLocalStorage(auxTokens: Token[]) {
+    await db().setTokens(auxTokens);
   }
 
-  function onEnter() {
+  async function onEnter() {
     if (newSub) {
       const subClean = removeLeadingZeros(
         newSub.sub_account_id.slice(0, 2).toLowerCase() === "0x"
@@ -194,7 +185,7 @@ const DialogAddAsset = ({
             };
           } else return tkn;
         });
-        saveLocalStorage(auxTokens);
+        await saveLocalStorage(auxTokens);
         dispatch(
           addSubAccount(idx, {
             ...newSub,

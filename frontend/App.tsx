@@ -7,12 +7,13 @@ import "./App.scss";
 import { AuthClient } from "@dfinity/auth-client";
 import { handleLoginApp } from "@redux/CheckAuth";
 import { setAuth } from "@redux/auth/AuthReducer";
+import { db } from "@/database/db";
 
 const App: React.FC = () => {
   const { i18n } = useTranslation();
 
   useEffect(() => {
-    const language = localStorage.getItem("language");
+    const language = db().getLanguage();
     if (language !== undefined && language !== null && language !== "" && language !== "null") {
       i18n.changeLanguage(language);
     }

@@ -9,6 +9,7 @@ import { clsx } from "clsx";
 import * as RadioGroup from "@radix-ui/react-radio-group";
 import { ThemeHook } from "@pages/hooks/themeHook";
 import { ThemesEnum } from "@/const";
+import { db } from "@/database/db";
 
 interface ThemeModalProps {
   setOpen(value: boolean): void;
@@ -112,11 +113,11 @@ const ThemeModal = ({ setOpen }: ThemeModalProps) => {
     if (theme === ThemesEnum.enum.light) {
       document.documentElement.classList.remove(ThemesEnum.enum.dark);
       changeTheme(ThemesEnum.enum.light);
-      localStorage.setItem("theme", ThemesEnum.enum.light);
+      db().setTheme(ThemesEnum.enum.light);
     } else {
       document.documentElement.classList.add(ThemesEnum.enum.dark);
       changeTheme(ThemesEnum.enum.dark);
-      localStorage.setItem("theme", ThemesEnum.enum.dark);
+      db().setTheme(ThemesEnum.enum.dark);
     }
   }
 };

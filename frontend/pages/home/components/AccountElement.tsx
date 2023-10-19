@@ -14,13 +14,13 @@ import { toFullDecimal } from "@/utils";
 import { CustomInput } from "@components/Input";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch } from "@redux/Store";
-import { AccountHook } from "@pages/hooks/accountHook";
 import { Token, TokenSubAccount } from "@redux/models/TokenModels";
 import { CustomCopy } from "@components/CopyTooltip";
 import { addSubAccount, removeSubAcc, setSubAccountName } from "@redux/assets/AssetReducer";
 import Modal from "@components/Modal";
 import { CustomButton } from "@components/Button";
 import bigInt from "big-integer";
+import { db } from "@/database/db";
 
 interface AccountElementProps {
   subAccount: SubAccount;
@@ -51,7 +51,6 @@ const AccountElement = ({
 }: AccountElementProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const { authClient } = AccountHook();
   const { selectedAccount, changeSelectedAccount } = GeneralHook();
   const chechEqId = () => {
     return subAccount?.sub_account_id === selectedAccount?.sub_account_id;
@@ -168,7 +167,7 @@ const AccountElement = ({
     setNameError(false);
   }
 
-  function onSave() {
+  async function onSave() {
     if (name !== "") {
       setEditNameId("");
       if (newSub) {
@@ -188,7 +187,7 @@ const AccountElement = ({
             };
           } else return tkn;
         });
-        saveLocalStorage(auxTokens);
+        await saveLocalStorage(auxTokens);
         dispatch(addSubAccount(tokenIndex, { ...subAccount, name: name }));
         setNewSub(undefined);
       } else {
@@ -203,7 +202,7 @@ const AccountElement = ({
             return { ...tkn, subAccounts: auxSubs };
           } else return tkn;
         });
-        saveLocalStorage(auxTokens);
+        await saveLocalStorage(auxTokens);
         dispatch(setSubAccountName(tokenIndex, subaccountId, name));
       }
     } else {
@@ -216,7 +215,7 @@ const AccountElement = ({
     setNewSub(undefined);
   }
 
-  function onConfirm() {
+  async function onConfirm() {
     const auxTokens = tokens.map((tkn, k) => {
       if (k === Number(tokenIndex)) {
         const auxSubs: TokenSubAccount[] = [];
@@ -226,21 +225,13 @@ const AccountElement = ({
         return { ...tkn, subAccounts: auxSubs };
       } else return tkn;
     });
-    saveLocalStorage(auxTokens);
+    await saveLocalStorage(auxTokens);
     dispatch(removeSubAcc(tokenIndex, subaccountId));
     setDeleteModal(false);
   }
 
-  function saveLocalStorage(auxTokens: Token[]) {
-    localStorage.setItem(
-      authClient,
-      JSON.stringify({
-        from: "II",
-        tokens: auxTokens.sort((a, b) => {
-          return a.id_number - b.id_number;
-        }),
-      }),
-    );
+  async function saveLocalStorage(auxTokens: Token[]) {
+    await db().setTokens(auxTokens);
   }
 
   function onDoubleClick() {

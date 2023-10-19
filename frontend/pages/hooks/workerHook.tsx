@@ -1,4 +1,4 @@
-import { AssetSymbolEnum, WorkerTaskEnum, defaultTokens } from "@/const";
+import { AssetSymbolEnum, defaultTokens, WorkerTaskEnum } from "@/const";
 import { hexToUint8Array } from "@/utils";
 // import { AssetList, Metadata } from "@candid/metadata/service.did";
 import store, { useAppSelector } from "@redux/Store";
@@ -8,10 +8,11 @@ import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { Token } from "@redux/models/TokenModels";
 import timer_script from "@workers/timerWorker";
 import { useEffect } from "react";
+import { db } from "@/database/db";
 
 export const WorkerHook = () => {
   const { tokens, assets, txWorker } = useAppSelector((state) => state.asset);
-  const { authClient, userAgent } = useAppSelector((state) => state.auth);
+  const { userAgent } = useAppSelector((state) => state.auth);
 
   const getTransactionsWorker = async () => {
     assets.map((elementA: Asset) => {
@@ -56,11 +57,10 @@ export const WorkerHook = () => {
   };
 
   const getAssetsWorker = async () => {
-    const userData = localStorage.getItem(authClient);
-    if (userData) {
-      const userDataJson = JSON.parse(userData);
-      store.dispatch(setTokens(userDataJson.tokens));
-      await updateAllBalances(true, userAgent, userDataJson.tokens);
+    const dbTokens = await db().getTokens();
+    if (dbTokens) {
+      store.dispatch(setTokens(tokens));
+      await updateAllBalances(true, userAgent, dbTokens);
     } else {
       const { tokens } = await updateAllBalances(true, userAgent, defaultTokens, true);
       store.dispatch(setTokens(tokens));
