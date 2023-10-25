@@ -3,7 +3,7 @@ import { hexToUint8Array } from "@/utils";
 // import { AssetList, Metadata } from "@candid/metadata/service.did";
 import store, { useAppSelector } from "@redux/Store";
 import { getAllTransactionsICP, getAllTransactionsICRC1, updateAllBalances } from "@redux/assets/AssetActions";
-import { setTokens, setTxWorker } from "@redux/assets/AssetReducer";
+import { setTxWorker } from "@redux/assets/AssetReducer";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { Token } from "@redux/models/TokenModels";
 import timer_script from "@workers/timerWorker";
@@ -59,11 +59,9 @@ export const WorkerHook = () => {
   const getAssetsWorker = async () => {
     const dbTokens = await db().getTokens();
     if (dbTokens) {
-      store.dispatch(setTokens(tokens));
       await updateAllBalances(true, userAgent, dbTokens);
     } else {
-      const { tokens } = await updateAllBalances(true, userAgent, defaultTokens, true);
-      store.dispatch(setTokens(tokens));
+      await updateAllBalances(true, userAgent, defaultTokens, true);
     }
   };
 

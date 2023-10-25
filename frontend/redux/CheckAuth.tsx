@@ -11,10 +11,10 @@ import {
 } from "./auth/AuthReducer";
 import { AuthClient } from "@dfinity/auth-client";
 import { updateAllBalances } from "./assets/AssetActions";
-import { clearDataAsset, setTokens } from "./assets/AssetReducer";
+import { clearDataAsset } from "./assets/AssetReducer";
 import { AuthNetwork } from "./models/TokenModels";
 import { AuthNetworkTypeEnum, defaultTokens } from "@/const";
-import { clearDataContacts, setContacts } from "./contacts/ContactsReducer";
+import { clearDataContacts } from "./contacts/ContactsReducer";
 import { db } from "@/database/db";
 
 const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${
@@ -63,17 +63,9 @@ export const handleLoginApp = async (authIdentity: Identity) => {
   // TOKENS
   const dbTokens = await db().getTokens();
   if (dbTokens) {
-    store.dispatch(setTokens(dbTokens));
     await updateAllBalances(true, myAgent, dbTokens);
   } else {
-    const { tokens } = await updateAllBalances(true, myAgent, defaultTokens, true);
-    store.dispatch(setTokens(tokens));
-  }
-
-  // CONTACTS
-  const contacts = await db().getContacts();
-  if (contacts) {
-    store.dispatch(setContacts(contacts));
+    await updateAllBalances(true, myAgent, defaultTokens, true);
   }
 
   store.dispatch(setAuthenticated(true, false, authIdentity.getPrincipal().toText().toLowerCase()));

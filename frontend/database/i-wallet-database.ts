@@ -1,6 +1,7 @@
 import { AuthNetwork, Token } from "@redux/models/TokenModels";
 import { Contact } from "@redux/models/ContactsModels";
 import { Identity } from "@dfinity/agent";
+import { Observable } from "rxjs";
 
 export abstract class IWalletDatabase {
   abstract init(): Promise<void>;
@@ -9,6 +10,7 @@ export abstract class IWalletDatabase {
   getLanguage(): string | null {
     return localStorage.getItem("language");
   }
+
   setLanguage(value: string): void {
     localStorage.setItem("language", value);
   }
@@ -16,6 +18,7 @@ export abstract class IWalletDatabase {
   getTheme(): "dark" | "light" | null {
     return localStorage.theme;
   }
+
   setTheme(value: "dark" | "light"): void {
     localStorage.theme = value;
   }
@@ -23,6 +26,7 @@ export abstract class IWalletDatabase {
   getNetworkType(): AuthNetwork | null {
     return JSON.parse(localStorage.getItem("network_type") || "null");
   }
+
   setNetworkType(value: AuthNetwork): void {
     localStorage.setItem("network_type", JSON.stringify({
       type: value.type,
@@ -34,11 +38,27 @@ export abstract class IWalletDatabase {
   // user data
   abstract setIdentity(identity: Identity | null): void;
 
+  abstract getToken(id_number: number): Promise<Token | null>;
+
   abstract getTokens(): Promise<Token[]>;
+
+  abstract subscribeToAllTokens(): Observable<Token[]>;
+
+  abstract addToken(token: Token): Promise<void>;
+
+  abstract updateToken(id_number: number, newDoc: Token): Promise<void>;
 
   abstract setTokens(allTokens: Token[]): Promise<void>;
 
+  abstract getContact(principal: string): Promise<Contact | null>;
+
   abstract getContacts(): Promise<Contact[]>;
 
-  abstract setContacts(allContacts: Contact[]): Promise<void>;
+  abstract subscribeToAllContacts(): Observable<Contact[]>;
+
+  abstract addContact(contact: Contact): Promise<void>;
+
+  abstract updateContact(principal: string, newDoc: Contact): Promise<void>;
+
+  abstract deleteContact(principal: string): Promise<void>;
 }

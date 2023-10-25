@@ -18,29 +18,37 @@ import { db } from "@/database/db";
 
 interface DialogAddAssetProps {
   newErr: any;
+
   setNewErr(value: any): void;
+
   newSub: SubAccount | undefined;
+
   setNewSub(value: any): void;
+
   usedIdxs: string[];
+
   getLowestMissing(value: string[]): any;
+
   hexChecked: boolean;
+
   setHexChecked(value: any): void;
+
   tokens: Token[];
   idx: number;
 }
 
 const DialogAddAsset = ({
-  newErr,
-  setNewErr,
-  newSub,
-  setNewSub,
-  usedIdxs,
-  getLowestMissing,
-  hexChecked,
-  setHexChecked,
-  tokens,
-  idx,
-}: DialogAddAssetProps) => {
+                          newErr,
+                          setNewErr,
+                          newSub,
+                          setNewSub,
+                          usedIdxs,
+                          getLowestMissing,
+                          hexChecked,
+                          setHexChecked,
+                          tokens,
+                          idx,
+                        }: DialogAddAssetProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
@@ -150,10 +158,6 @@ const DialogAddAsset = ({
     });
   }
 
-  async function saveLocalStorage(auxTokens: Token[]) {
-    await db().setTokens(auxTokens);
-  }
-
   async function onEnter() {
     if (newSub) {
       const subClean = removeLeadingZeros(
@@ -169,23 +173,19 @@ const DialogAddAsset = ({
         errIdx = true;
       }
       if (!errName && !errIdx) {
-        const auxTokens = tokens.map((tkn, k) => {
-          if (k === Number(idx)) {
-            return {
-              ...tkn,
-              subAccounts: [
-                ...tkn.subAccounts,
-                {
-                  name: newSub.name,
-                  numb: `0x${subClean}`.toLowerCase(),
-                },
-              ].sort((a, b) => {
-                return hexToNumber(a.numb)?.compare(hexToNumber(b.numb) || bigInt()) || 0;
-              }),
-            };
-          } else return tkn;
+        const token = tokens[Number(idx)];
+        await db().updateToken(token.id_number, {
+          ...token,
+          subAccounts: [
+            ...token.subAccounts,
+            {
+              name: newSub.name,
+              numb: `0x${subClean}`.toLowerCase(),
+            },
+          ].sort((a, b) => {
+            return hexToNumber(a.numb)?.compare(hexToNumber(b.numb) || bigInt()) || 0;
+          }),
         });
-        await saveLocalStorage(auxTokens);
         dispatch(
           addSubAccount(idx, {
             ...newSub,

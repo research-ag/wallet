@@ -9,10 +9,8 @@ import { TokenHook } from "../hooks/tokenHook";
 import { Asset } from "@redux/models/AccountModels";
 import { Token } from "@redux/models/TokenModels";
 import { AssetHook } from "../hooks/assetHook";
-import { useAppDispatch } from "@redux/Store";
 import DialogAssetConfirmation from "./DialogAssetConfirmation";
 import AddAssetManual from "./AddAssetManual";
-import { addToken } from "@redux/assets/AssetReducer";
 import AddAssetAutomatic from "./AddAssetAutomatic";
 import { db } from "@/database/db";
 
@@ -26,7 +24,6 @@ interface AddAssetsProps {
 
 const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens }: AddAssetsProps) => {
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
 
   const { reloadBallance } = AssetHook();
   const { checkAssetAdded } = GeneralHook();
@@ -81,7 +78,6 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens }: AddA
             setAssetOpen={setAssetOpen}
             tokens={tokens}
             addAssetToData={addAssetToData}
-            saveInLocalStorage={saveInLocalStorage}
           ></AddAssetManual>
         ) : (
           <AddAssetAutomatic
@@ -133,10 +129,6 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens }: AddA
     setAssetInfo(undefined);
   }
 
-  async function saveInLocalStorage(tokens: Token[]) {
-    await db().setTokens(tokens);
-  }
-
   async function addAssetToData() {
     if (checkAssetAdded(newToken.address)) {
       setErrToken(t("adding.asset.already.imported"));
@@ -154,10 +146,9 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens }: AddA
         id_number: idx,
         subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default }],
       };
-      await saveInLocalStorage([...tokens, tknSave]);
+      await db().addToken(tknSave);
       setAddStatus(AddingAssetsEnum.enum.adding);
       showModal(true);
-      dispatch(addToken(tknSave));
       reloadBallance(
         [...tokens, tknSave].sort((a, b) => {
           return a.id_number - b.id_number;

@@ -16,38 +16,47 @@ import { AccountDefaultEnum, IconTypeEnum } from "@/const";
 import { Asset } from "@redux/models/AccountModels";
 import { IdentityHook } from "@pages/hooks/identityHook";
 import { ChangeEvent } from "react";
+import { db } from "@/database/db";
 
 interface AddAssetManualProps {
   manual: boolean;
+
   setManual(value: boolean): void;
+
   errToken: string;
+
   setErrToken(value: string): void;
+
   validToken: boolean;
+
   setValidToken(value: boolean): void;
+
   newToken: Token;
+
   setNewToken(value: any): void;
+
   asset: Asset | undefined;
+
   setAssetOpen(value: boolean): void;
+
   tokens: Token[];
+
   addAssetToData(): void;
-  saveInLocalStorage(value: Token[]): void;
 }
 
 const AddAssetManual = ({
-  manual,
-  setManual,
-  errToken,
-  setErrToken,
-  validToken,
-  setValidToken,
-  newToken,
-  setNewToken,
-  asset,
-  setAssetOpen,
-  tokens,
-  addAssetToData,
-  saveInLocalStorage,
-}: AddAssetManualProps) => {
+                          manual,
+                          setManual,
+                          errToken,
+                          setErrToken,
+                          validToken,
+                          setValidToken,
+                          newToken,
+                          setNewToken,
+                          asset,
+                          setAssetOpen,
+                          addAssetToData,
+                        }: AddAssetManualProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
@@ -62,7 +71,8 @@ const AddAssetManual = ({
           <p className="text-lg font-bold mt-2">{`${asset.tokenName} - ${asset.tokenSymbol}`}</p>
         </div>
       ) : (
-        <div className="flex flex-row justify-start items-start w-full p-2 rounded-lg border border-SelectRowColor bg-SelectRowColor/10">
+        <div
+          className="flex flex-row justify-start items-start w-full p-2 rounded-lg border border-SelectRowColor bg-SelectRowColor/10">
           <InfoIcon className="h-5 w-5 fill-SelectRowColor mr-2 mt-1" />
           <p className="w-full text-justify opacity-60">
             {t("asset.add.warning.1")} <span className=" text-SelectRowColor">{t("asset.add.warning.2")}</span>
@@ -241,13 +251,10 @@ const AddAssetManual = ({
       // Change contacts local and reducer
       dispatch(editAssetName(asset.tokenSymbol, newToken.symbol));
       // List all tokens modifying the one we selected
-      const auxTokens = tokens.map((tkn) => {
-        if (tkn.id_number === newToken.id_number) {
-          return newToken;
-        } else return tkn;
-      });
-      // Save tokens in list to local
-      saveInLocalStorage(auxTokens);
+      const token = await db().getToken(newToken.id_number);
+      if (token) {
+        await db().updateToken(token.id_number, newToken);
+      }
       // Edit tokens list and assets list
       dispatch(editToken(newToken, asset.tokenSymbol));
       setAssetOpen(false);

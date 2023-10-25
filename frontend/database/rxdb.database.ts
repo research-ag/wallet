@@ -1,18 +1,21 @@
 import { IWalletDatabase } from "@/database/i-wallet-database";
 import { Token } from "@redux/models/TokenModels";
 import { Contact } from "@redux/models/ContactsModels";
-import { addRxPlugin, createRxDatabase, lastOfArray, RxCollection } from "rxdb";
+import { addRxPlugin, createRxDatabase, lastOfArray, RxCollection, RxDocument } from "rxdb";
 import { getRxStorageDexie } from "rxdb/plugins/storage-dexie";
 import { RxDBMigrationPlugin } from "rxdb/plugins/migration";
+import { Ed25519KeyIdentity } from "@dfinity/identity";
 
 import { RxDBDevModePlugin } from "rxdb/plugins/dev-mode";
+import { RxDBUpdatePlugin } from "rxdb/plugins/update";
 import { AnonymousIdentity, HttpAgent, Identity } from "@dfinity/agent";
 import { createActor } from "@/database/candid";
 import { replicateRxCollection, RxReplicationState } from "rxdb/plugins/replication";
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable } from "rxjs";
+import { BehaviorSubject, combineLatest, distinctUntilChanged, from, map, Observable, Subject, switchMap } from "rxjs";
 
-addRxPlugin(RxDBDevModePlugin);
+addRxPlugin(RxDBUpdatePlugin);
 addRxPlugin(RxDBMigrationPlugin);
+addRxPlugin(RxDBDevModePlugin);
 
 type TokenRxdbDocument = Token & { id: string, updatedAt: number, deleted: boolean };
 type ContactRxdbDocument = Contact & { updatedAt: number, deleted: boolean };
@@ -106,6 +109,7 @@ export class RxdbDatabase extends IWalletDatabase {
   }
 
   private identity: Identity = new AnonymousIdentity();
+  private identityChanged$: Subject<void> = new Subject<void>();
   private readonly agent = new HttpAgent({ identity: this.identity, host: import.meta.env.VITE_DB_CANISTER_HOST });
   private readonly replicaCanister = createActor(import.meta.env.VITE_DB_CANISTER_ID, { agent: this.agent });
 
@@ -145,18 +149,51 @@ export class RxdbDatabase extends IWalletDatabase {
     this.agent.replaceIdentity(identity || new AnonymousIdentity());
   }
 
+  private _mapTokenDoc(doc: RxDocument<TokenRxdbDocument>): Token {
+    return {
+      name: doc.name,
+      id_number: doc.id_number,
+      address: doc.address,
+      logo: doc.logo,
+      decimal: doc.decimal,
+      symbol: doc.symbol,
+      index: doc.index,
+      subAccounts: doc.subAccounts,
+    };
+  }
+
+  async getToken(id_number: number): Promise<Token | null> {
+    const doc = await (await this.tokens).findOne("" + id_number).exec();
+    return doc && this._mapTokenDoc(doc);
+  }
+
   async getTokens(): Promise<Token[]> {
     const documents = await (await this.tokens).find().exec();
-    return documents.map(d => ({
-      name: d.name,
-      id_number: d.id_number,
-      address: d.address,
-      logo: d.logo,
-      decimal: d.decimal,
-      symbol: d.symbol,
-      index: d.index,
-      subAccounts: d.subAccounts,
-    }));
+    return documents.map(this._mapTokenDoc);
+  }
+
+  subscribeToAllTokens(): Observable<Token[]> {
+    return this.identityChanged$.pipe(
+      switchMap(() => from(this.tokens)),
+      switchMap(collection => collection.find().$),
+      map(x => x.map(this._mapTokenDoc)),
+    );
+  }
+
+  async addToken(token: Token): Promise<void> {
+    await (await this.tokens).insert({
+      ...token,
+      id: "" + token.id_number,
+      deleted: false,
+      updatedAt: Date.now(),
+    });
+  }
+
+  async updateToken(id_number: number, newDoc: Token): Promise<void> {
+    await (await this.tokens).findOne("" + id_number).update({
+      ...newDoc,
+      updatedAt: Date.now(),
+    });
   }
 
   async setTokens(allTokens: Token[]): Promise<void> {
@@ -170,24 +207,50 @@ export class RxdbDatabase extends IWalletDatabase {
     })));
   }
 
-  async getContacts(): Promise<Contact[]> {
-    const documents = await (await this.contacts).find().exec();
-    return documents.map(d => ({
-      name: d.name,
-      principal: d.principal,
-      accountIdentier: d.accountIdentier,
-      assets: d.assets,
-    }));
+  private _mapContactDoc(doc: RxDocument<ContactRxdbDocument>): Contact {
+    return {
+      name: doc.name,
+      principal: doc.principal,
+      accountIdentier: doc.accountIdentier,
+      assets: doc.assets,
+    };
   }
 
-  async setContacts(allContacts: Contact[]): Promise<void> {
-    console.warn("using setContacts function to overwrite all contacts in DB at once is discouraged");
-    await (await this.contacts).bulkRemove(((await this.getContacts()) || []).map(x => "" + x.name));
-    await (await this.contacts).bulkInsert(allContacts.map(x => ({
-      ...x,
+  async getContact(principal: string): Promise<Contact | null> {
+    const doc = await (await this.contacts).findOne(principal).exec();
+    return doc && this._mapContactDoc(doc);
+  }
+
+  async getContacts(): Promise<Contact[]> {
+    const documents = await (await this.contacts).find().exec();
+    return documents.map(this._mapContactDoc);
+  }
+
+  subscribeToAllContacts(): Observable<Contact[]> {
+    return this.identityChanged$.pipe(
+      switchMap(() => from(this.contacts)),
+      switchMap(collection => collection.find().$),
+      map(x => x.map(this._mapContactDoc)),
+    );
+  }
+
+  async addContact(contact: Contact): Promise<void> {
+    await (await this.contacts).insert({
+      ...contact,
       deleted: false,
       updatedAt: Date.now(),
-    })));
+    });
+  }
+
+  async updateContact(principal: string, newDoc: Contact): Promise<void> {
+    await (await this.contacts).findOne(principal).update({
+      ...newDoc,
+      updatedAt: Date.now(),
+    });
+  }
+
+  async deleteContact(principal: string): Promise<void> {
+    await (await this.contacts).findOne(principal).remove();
   }
 
   async init(): Promise<void> {
@@ -238,10 +301,10 @@ export class RxdbDatabase extends IWalletDatabase {
         schema: {
           type: "object",
           version: 0,
-          primaryKey: "name",
+          primaryKey: "principal",
           properties: {
-            name: { type: "string", maxLength: 100 },
             principal: { type: "string", maxLength: 100 },
+            name: { type: "string", maxLength: 100 },
             accountIdentier: { type: "string", maxLength: 100 },
             assets: {
               type: "array",
@@ -264,7 +327,7 @@ export class RxdbDatabase extends IWalletDatabase {
               },
             },
           },
-          required: ["name", "principal", "assets"],
+          required: ["name", "assets"],
         },
         migrationStrategies: {},
       },
