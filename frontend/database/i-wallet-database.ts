@@ -48,8 +48,6 @@ export abstract class IWalletDatabase {
 
   abstract updateToken(id_number: number, newDoc: Token): Promise<void>;
 
-  abstract setTokens(allTokens: Token[]): Promise<void>;
-
   abstract getContact(principal: string): Promise<Contact | null>;
 
   abstract getContacts(): Promise<Contact[]>;

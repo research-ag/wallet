@@ -201,9 +201,7 @@ export const updateAllBalances = async (
 
   if (loading) {
     store.dispatch(setAssets(assets));
-    if (newTokens.length !== 0) {
-      await db().setTokens(newTokens);
-    }
+    await Promise.all(newTokens.map(t => db().updateToken(t.id_number, t)));
   }
 
   const icpAsset = assets.find((ast) => ast.tokenSymbol === "ICP");

@@ -196,17 +196,6 @@ export class RxdbDatabase extends IWalletDatabase {
     });
   }
 
-  async setTokens(allTokens: Token[]): Promise<void> {
-    console.warn("using setTokens function to overwrite all tokens in DB at once is discouraged");
-    await (await this.tokens).bulkRemove(((await this.getTokens()) || []).map(x => "" + x.id_number));
-    await (await this.tokens).bulkInsert(allTokens.map(d => ({
-      ...d,
-      id: "" + d.id_number,
-      deleted: false,
-      updatedAt: Date.now(),
-    })));
-  }
-
   private _mapContactDoc(doc: RxDocument<ContactRxdbDocument>): Contact {
     return {
       name: doc.name,

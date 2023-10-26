@@ -46,18 +46,18 @@ export class LocalStorageDatabase extends IWalletDatabase {
 
   async addToken(token: Token): Promise<void> {
     const tokens = this._getTokens();
-    await this.setTokens([...tokens, token]);
+    this.setTokens([...tokens, token]);
   }
 
   async updateToken(id_number: number, newDoc: Token): Promise<void> {
-    await this.setTokens(this._getTokens().map((tkn) => {
+    this.setTokens(this._getTokens().map((tkn) => {
       if (tkn.id_number === id_number) {
         return newDoc;
       } else return tkn;
     }));
   }
 
-  async setTokens(allTokens: Token[]): Promise<void> {
+  private setTokens(allTokens: Token[]) {
     const tokens = allTokens.sort((a, b) => {
       return a.id_number - b.id_number;
     });
