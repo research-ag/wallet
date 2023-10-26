@@ -3,20 +3,21 @@ import store from "@redux/Store";
 import { Token, TokenMarketInfo, TokenSubAccount } from "@redux/models/TokenModels";
 import { IcrcAccount, IcrcIndexCanister, IcrcLedgerCanister } from "@dfinity/ledger";
 import {
-  formatIcpTransaccion,
-  getSubAccountArray,
-  getMetadataInfo,
   formatckBTCTransaccion,
+  formatIcpTransaccion,
+  getMetadataInfo,
+  getSubAccountArray,
   getUSDfromToken,
-  hexToUint8Array,
   hexToNumber,
+  hexToUint8Array,
 } from "@/utils";
-import { setAssets, setTransactions, setTokenMarket, setICPSubaccounts } from "./AssetReducer";
+import { setAssets, setICPSubaccounts, setTokenMarket, setTransactions } from "./AssetReducer";
 import { AccountIdentifier, SubAccount as SubAccountNNS } from "@dfinity/nns";
 import { Asset, ICPSubAccount, SubAccount } from "@redux/models/AccountModels";
 import { Principal } from "@dfinity/principal";
 import { AccountDefaultEnum } from "@/const";
 import bigInt from "big-integer";
+import { db } from "@/database/db";
 
 export const updateAllBalances = async (
   loading: boolean,
@@ -200,17 +201,7 @@ export const updateAllBalances = async (
 
   if (loading) {
     store.dispatch(setAssets(assets));
-    if (newTokens.length !== 0) {
-      localStorage.setItem(
-        myPrincipal.toString(),
-        JSON.stringify({
-          from: "II",
-          tokens: newTokens.sort((a, b) => {
-            return a.id_number - b.id_number;
-          }),
-        }),
-      );
-    }
+    await Promise.all(newTokens.map(t => db().updateToken(t.id_number, t)));
   }
 
   const icpAsset = assets.find((ast) => ast.tokenSymbol === "ICP");

@@ -1,0 +1,53 @@
+type WalletDatabase = 
+ service {
+   dump: () ->
+    (vec
+      record {
+        principal;
+        record {
+          vec opt TokenDocument;
+          vec opt ContactDocument;
+        };
+      }) query;
+   pullContacts: (nat32, opt text, nat) -> (vec ContactDocument) query;
+   pullTokens: (nat32, opt text, nat) -> (vec TokenDocument) query;
+   pushContacts: (vec ContactDocument) -> (vec ContactDocument);
+   pushTokens: (vec TokenDocument) -> (vec TokenDocument);
+ };
+type TokenDocument = 
+ record {
+   address: text;
+   decimal: text;
+   deleted: bool;
+   id: text;
+   id_number: nat64;
+   index: opt text;
+   logo: opt text;
+   name: text;
+   subAccounts: vec record {
+                      name: text;
+                      numb: text;
+                    };
+   symbol: text;
+   updatedAt: nat32;
+ };
+type ContactDocument = 
+ record {
+   accountIdentier: opt text;
+   assets:
+    vec
+     record {
+       logo: opt text;
+       subaccounts: vec record {
+                          name: text;
+                          subaccount_index: text;
+                        };
+       symbol: text;
+       tokenSymbol: text;
+     };
+   deleted: bool;
+   name: text;
+   "principal": text;
+   updatedAt: nat32;
+ };
+service : () -> WalletDatabase

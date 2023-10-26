@@ -141,7 +141,6 @@ const AssetElement = ({ asset, idx, acordeonIdx, setAssetInfo, setAssetOpen, tok
         setHexChecked={setHexChecked}
         tokens={tokens}
         idx={idx}
-        authClient={authClient}
       ></DialogAddAsset>
     </Fragment>
   );

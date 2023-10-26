@@ -6,14 +6,15 @@ import { ReactComponent as BrazilFlag } from "../../assets/svg/files/brazil.svg"
 //
 import { useEffect, useState } from "react";
 import i18n from "../../i18n";
+import { db } from "@/database/db";
 
 export const LanguageHook = () => {
   const [languageMenu, setLanguageMenu] = useState<any>({
-    code: localStorage.language ? localStorage.language : "en",
+    code: db().getLanguage() || "en",
   });
 
   const changeLocalLanguage = (e: string) => {
-    localStorage.setItem("language", e);
+    db().setLanguage(e);
   };
 
   const languageOptionTemplate = () => {

@@ -12,6 +12,7 @@ import { Fragment } from "react";
 import { handleAuthenticated } from "@/redux/CheckAuth";
 import { AuthNetworkTypeEnum, ThemesEnum } from "@/const";
 import { AuthNetwork } from "@redux/models/TokenModels";
+import { db } from "@/database/db";
 
 const Login = () => {
   const { t } = useTranslation();
@@ -81,7 +82,7 @@ const Login = () => {
 
   async function handleLogin(opt: AuthNetwork) {
     if (opt.type === AuthNetworkTypeEnum.Values.IC || opt.type === AuthNetworkTypeEnum.Values.NFID) {
-      localStorage.setItem("network_type", JSON.stringify({ type: opt.type, network: opt.network, name: opt.name }));
+      db().setNetworkType(opt);
       handleAuthenticated(opt);
     }
   }
