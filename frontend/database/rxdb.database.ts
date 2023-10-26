@@ -4,7 +4,6 @@ import { Contact } from "@redux/models/ContactsModels";
 import { addRxPlugin, createRxDatabase, lastOfArray, RxCollection, RxDocument } from "rxdb";
 import { getRxStorageDexie } from "rxdb/plugins/storage-dexie";
 import { RxDBMigrationPlugin } from "rxdb/plugins/migration";
-import { Ed25519KeyIdentity } from "@dfinity/identity";
 
 import { RxDBDevModePlugin } from "rxdb/plugins/dev-mode";
 import { RxDBUpdatePlugin } from "rxdb/plugins/update";
@@ -146,7 +145,8 @@ export class RxdbDatabase extends IWalletDatabase {
   setIdentity(identity: Identity | null): void {
     this.invalidateDb();
     this.identity = identity || new AnonymousIdentity();
-    this.agent.replaceIdentity(identity || new AnonymousIdentity());
+    this.agent.replaceIdentity(this.identity);
+    this.identityChanged$.next();
   }
 
   private _mapTokenDoc(doc: RxDocument<TokenRxdbDocument>): Token {
