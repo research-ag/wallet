@@ -28,7 +28,7 @@ export const handleAuthenticated = async (opt: AuthNetwork) => {
       identityProvider:
         opt?.type === AuthNetworkTypeEnum.Values.NFID && opt?.type !== undefined && opt?.type !== null
           ? opt?.network + AUTH_PATH
-          : undefined,
+          : "https://identity.ic0.app/#authorize",
       onSuccess: () => {
         handleLoginApp(authClient.getIdentity());
         resolve();
@@ -44,15 +44,10 @@ export const handleAuthenticated = async (opt: AuthNetwork) => {
 
 export const handleLoginApp = async (authIdentity: Identity) => {
   if (localStorage.getItem("network_type") === null) logout();
-  const opt: AuthNetwork = JSON.parse(localStorage.getItem("network_type") || "");
-
   store.dispatch(setAuthLoading(true));
   const myAgent = new HttpAgent({
     identity: authIdentity,
-    host:
-      opt?.type === AuthNetworkTypeEnum.Values.NFID && opt?.type !== undefined && opt?.type !== null
-        ? opt?.network + AUTH_PATH
-        : import.meta.env.VITE_AGGENT_HOST,
+    host: "https://identity.ic0.app",
   });
 
   const myPrincipal = await myAgent.getPrincipal();
