@@ -9,7 +9,6 @@ import { useTranslation } from "react-i18next";
 import {
   AssetContact,
   Contact,
-  ContactErr,
   NewContactSubAccount,
   SubAccountContact,
   SubAccountContactErr,
