@@ -24,6 +24,7 @@ interface AddAssetAutomaticProps {
   errToken: string;
   setManual(value: boolean): void;
   newAssetList: Token[];
+  tokens: Token[];
 }
 
 const AddAssetAutomatic = ({
@@ -41,6 +42,7 @@ const AddAssetAutomatic = ({
   errToken,
   setManual,
   newAssetList,
+  tokens,
 }: AddAssetAutomaticProps) => {
   const { t } = useTranslation();
 
@@ -146,22 +148,24 @@ const AddAssetAutomatic = ({
                 align="end"
               >
                 {newAssetList.map((newAsset, idx) => {
-                  return (
-                    <DropdownMenu.Item
-                      key={`net-${idx}`}
-                      className={`flex flex-row text-md justify-start items-center p-3 cursor-pointer ${
-                        idx > 0 ? "border-t border-BorderColorLight dark:border-BorderColor" : ""
-                      }`}
-                      onSelect={() => {
-                        onSelectToken(newAsset);
-                      }}
-                    >
-                      <div className="flex flex-row justify-start items-center">
-                        {getAssetIcon(IconTypeEnum.Enum.ASSET, newAsset.symbol, newToken.logo)}
-                        <p className="ml-3">{`${newAsset.symbol}`}</p>
-                      </div>
-                    </DropdownMenu.Item>
-                  );
+                  const tokenFounded = tokens.find((tkn) => tkn.symbol === newAsset.symbol);
+                  if (!tokenFounded)
+                    return (
+                      <DropdownMenu.Item
+                        key={`net-${idx}`}
+                        className={`flex flex-row text-md justify-start items-center p-3 cursor-pointer ${
+                          idx > 0 ? "border-t border-BorderColorLight dark:border-BorderColor" : ""
+                        }`}
+                        onSelect={() => {
+                          onSelectToken(newAsset);
+                        }}
+                      >
+                        <div className="flex flex-row justify-start items-center">
+                          {getAssetIcon(IconTypeEnum.Enum.ASSET, newAsset.symbol, newToken.logo)}
+                          <p className="ml-3">{`${newAsset.symbol}`}</p>
+                        </div>
+                      </DropdownMenu.Item>
+                    );
                 })}
               </DropdownMenu.Content>
             </DropdownMenu.Portal>
