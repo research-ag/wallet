@@ -35,6 +35,8 @@ const AssetsList = () => {
             onChange={(e) => {
               setSearchKey(e.target.value);
             }}
+            autoComplete="false"
+            spellCheck={false}
           />
           <div
             className="flex flex-row justify-center items-center w-8 h-8 bg-SelectRowColor rounded-md cursor-pointer"
@@ -55,12 +57,18 @@ const AssetsList = () => {
               onValueChange={onValueChange}
             >
               {assets?.map((asset: Asset, idx: number) => {
+                const mySearchKey = searchKey.toLowerCase().trim();
                 let includeInSub = false;
                 asset.subAccounts.map((sa) => {
-                  if (sa.name.toLowerCase().includes(searchKey.toLowerCase())) includeInSub = true;
+                  if (sa.name.toLowerCase().includes(mySearchKey)) includeInSub = true;
                 });
 
-                if (asset.name.toLowerCase().includes(searchKey.toLowerCase()) || includeInSub || searchKey === "")
+                if (
+                  asset.name.toLowerCase().includes(mySearchKey) ||
+                  asset.symbol.toLowerCase().includes(mySearchKey) ||
+                  includeInSub ||
+                  searchKey.trim() === ""
+                )
                   return (
                     <AssetElement
                       key={idx}
@@ -70,7 +78,7 @@ const AssetsList = () => {
                       setAssetInfo={setAssetInfo}
                       setAssetOpen={setAssetOpen}
                       tokens={tokens}
-                    ></AssetElement>
+                    />
                   );
               })}
             </Accordion.Root>

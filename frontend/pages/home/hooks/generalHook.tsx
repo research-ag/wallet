@@ -18,7 +18,7 @@ export const GeneralHook = () => {
 
   const { ICPSubaccounts, assets, accounts, transactions, selectedAsset, selectedAccount, selectedTransaction } =
     useAppSelector((state) => state.asset);
-  const { userAgent } = useAppSelector((state) => state.auth);
+  const { userAgent, userPrincipal } = useAppSelector((state) => state.auth);
   const changeAssets = (value: Array<Asset>) => dispatch(setAssets(value));
   const changeAccounts = (value: Array<SubAccount>) => dispatch(setAccounts(value));
   const changeTransactions = (value: Array<Transaction>) => dispatch(setTransactions(value));
@@ -98,6 +98,7 @@ export const GeneralHook = () => {
 
   return {
     userAgent,
+    userPrincipal,
     ICPSubaccounts,
     assets,
     accounts,
