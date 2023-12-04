@@ -95,6 +95,9 @@ export const WorkerHook = () => {
     };
 
     timerWorker.postMessage(postRequest);
+    return () => {
+      timerWorker.terminate();
+    };
   }, []);
 
   return { txWorker };
