@@ -2,7 +2,7 @@
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 import { ReactComponent as TrashIcon } from "@assets/svg/files/trash-empty.svg";
 //
-import { Fragment, KeyboardEvent } from "react";
+import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
 import { CustomInput } from "@components/Input";
 import { useContacts } from "../hooks/contactsHook";
@@ -15,6 +15,7 @@ import { addContact } from "@redux/contacts/ContactsReducer";
 import { checkHexString, removeLeadingZeros } from "@/utils";
 import ContactAssetElement from "./contactAssetElement";
 import { AssetToAdd } from "@redux/models/AccountModels";
+import { Principal } from "@dfinity/principal";
 
 interface AddContactProps {
   setAddOpen(value: boolean): void;
@@ -315,7 +316,14 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
       return { ...prev, principal: value };
     });
     setNewContactErr("");
-    setNewContactPrinErr(false);
+    if (value.trim() !== "")
+      try {
+        Principal.fromText(value);
+        setNewContactPrinErr(false);
+      } catch {
+        setNewContactPrinErr(true);
+      }
+    else setNewContactPrinErr(false);
   }
 
   function assetToAddEmpty(data: AssetToAdd[]) {

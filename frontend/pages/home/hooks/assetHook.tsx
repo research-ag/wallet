@@ -1,7 +1,13 @@
 import { defaultTokens } from "@/const";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { updateAllBalances } from "@redux/assets/AssetActions";
-import { setAcordeonAssetIdx, setLoading, setSelectedAccount, setSelectedAsset } from "@redux/assets/AssetReducer";
+import {
+  removeToken,
+  setAcordeonAssetIdx,
+  setLoading,
+  setSelectedAccount,
+  setSelectedAsset,
+} from "@redux/assets/AssetReducer";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { Token } from "@redux/models/TokenModels";
 import { useEffect, useState } from "react";
@@ -12,7 +18,9 @@ export const AssetHook = () => {
     (state) => state.asset,
   );
   const { userAgent } = useAppSelector((state) => state.auth);
-
+  const deleteAsset = (symb: string) => {
+    dispatch(removeToken(symb));
+  };
   const [searchKey, setSearchKey] = useState("");
   const setAcordeonIdx = (assetIdx: string) => dispatch(setAcordeonAssetIdx(assetIdx));
   const [assetInfo, setAssetInfo] = useState<Asset | undefined>();
@@ -64,7 +72,7 @@ export const AssetHook = () => {
     assetLoading,
     selectedAsset,
     selectedAccount,
-
+    deleteAsset,
     searchKey,
     setSearchKey,
     acordeonIdx,

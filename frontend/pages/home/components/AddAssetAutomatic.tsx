@@ -78,7 +78,7 @@ const AddAssetAutomatic = ({
                 />
               </div>
             </DropdownMenu.Trigger>
-            <DropdownMenu.Portal className="w-full">
+            <DropdownMenu.Portal>
               <DropdownMenu.Content
                 className="text-lg bg-PrimaryColorLight w-[8rem] rounded-lg dark:bg-SecondaryColor z-[999] text-PrimaryTextColorLight dark:text-PrimaryTextColor shadow-sm shadow-BorderColorTwoLight dark:shadow-BorderColorTwo border border-BorderColorLight dark:border-BorderColor"
                 sideOffset={2}
@@ -139,7 +139,7 @@ const AddAssetAutomatic = ({
                 />
               </div>
             </DropdownMenu.Trigger>
-            <DropdownMenu.Portal className="w-full">
+            <DropdownMenu.Portal>
               <DropdownMenu.Content
                 className="text-lg bg-PrimaryColorLight w-[16rem] rounded-lg dark:bg-SecondaryColor z-[999] text-PrimaryTextColorLight dark:text-PrimaryTextColor shadow-sm shadow-BorderColorTwoLight dark:shadow-BorderColorTwo border border-BorderColorLight dark:border-BorderColor"
                 sideOffset={2}

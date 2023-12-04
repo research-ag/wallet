@@ -13,7 +13,7 @@ import SendUserIcon from "@assets/svg/files/send-user-icon.svg";
 import { Contact, SubAccountContact } from "@redux/models/ContactsModels";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { useTranslation } from "react-i18next";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useState } from "react";
 
 interface SendOutAccountProps {
   setOpenContactList(value: boolean): void;
@@ -54,6 +54,7 @@ const SendOutAccount = ({
   setQRview,
 }: SendOutAccountProps) => {
   const { t } = useTranslation();
+  const [errAddress, setErrAddress] = useState(false);
 
   return (
     <div className="flex flex-col justify-start items-start w-full">
@@ -73,7 +74,7 @@ const SendOutAccount = ({
                     }}
                   />
                 </DropdownMenu.Trigger>
-                <DropdownMenu.Portal className="w-full">
+                <DropdownMenu.Portal>
                   <DropdownMenu.Content
                     className=" w-[22.6rem] max-h-[calc(100vh-15rem)] scroll-y-light bg-PrimaryColorLight rounded-lg dark:bg-SecondaryColor z-[999] text-PrimaryTextColorLight dark:text-PrimaryTextColor shadow-sm shadow-BorderColorTwoLight dark:shadow-BorderColorTwo border border-AccpetButtonColor cursor-pointer"
                     sideOffset={12}
@@ -126,6 +127,7 @@ const SendOutAccount = ({
         placeholder={t("icrc.account")}
         compOutClass="mb-1"
         value={newAccount}
+        border={errAddress ? "error" : undefined}
         onChange={onChangeInput}
         onKeyUp={onKeyUp}
       />
@@ -186,6 +188,14 @@ const SendOutAccount = ({
   function onChangeInput(e: ChangeEvent<HTMLInputElement>) {
     setNewAccount(e.target.value);
     if (newAccountErr !== "") setNewAccountErr("");
+    if (e.target.value.trim() !== "")
+      try {
+        decodeIcrcAccount(e.target.value);
+        setErrAddress(false);
+      } catch {
+        setErrAddress(true);
+      }
+    else setErrAddress(false);
   }
 
   function onKeyUp(e: React.KeyboardEvent<HTMLInputElement>) {

@@ -19,6 +19,7 @@ export const TokenHook = (asset: Asset | undefined) => {
   const [networkTOpen, setNetworkTOpen] = useState(false);
   const [assetTOpen, setAssetTOpen] = useState(false);
   const [errToken, setErrToken] = useState("");
+  const [errIndex, setErrIndex] = useState("");
   const [newToken, setNewToken] = useState<Token>({
     address: "",
     symbol: "",
@@ -29,6 +30,7 @@ export const TokenHook = (asset: Asset | undefined) => {
     id_number: 999,
   });
   const [validToken, setValidToken] = useState(false);
+  const [validIndex, setValidIndex] = useState(false);
   const [addAssetOpen, setAddAssetOpen] = useState<boolean>(false);
   const [modal, showModal] = useState(false);
   const [addStatus, setAddStatus] = useState<AddingAssets>(AddingAssetsEnum.Enum.none);
@@ -62,8 +64,12 @@ export const TokenHook = (asset: Asset | undefined) => {
     setAddAssetOpen,
     validToken,
     setValidToken,
+    validIndex,
+    setValidIndex,
     errToken,
     setErrToken,
+    errIndex,
+    setErrIndex,
     modal,
     showModal,
     addStatus,

@@ -23,7 +23,6 @@ const QRscanner = ({ qrView, onSuccess, setQRview }: QRscannerProps) => {
       );
       scanner.render(
         (value: string) => {
-          scanner.pause();
           scanner.clear().then(() => {
             onSuccess(value);
             setScannerErr("");
