@@ -144,4 +144,18 @@ export const defaultTokens: Token[] = [
       },
     ],
   },
+  {
+    id_number: 2,
+    symbol: "ckETH",
+    name: "ckETH",
+    address: "ss2fx-dyaaa-aaaar-qacoq-cai",
+    decimal: "8",
+    index: "s3zol-vqaaa-aaaar-qacpa-cai",
+    subAccounts: [
+      {
+        name: AccountDefaultEnum.Values.Default,
+        numb: "0x0",
+      },
+    ],
+  },
 ];
