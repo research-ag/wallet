@@ -52,6 +52,26 @@ const assetSlice = createSlice({
     addToken(state, action: PayloadAction<Token>) {
       state.tokens.push(action.payload);
     },
+    removeToken(state, action: PayloadAction<string>) {
+      let count = 0;
+      const auxTkns: Token[] = [];
+      state.tokens.map((tkn) => {
+        count++;
+        if (tkn.symbol !== action.payload) {
+          auxTkns.push({ ...tkn, id_number: count - 1 });
+        }
+      });
+      state.tokens = auxTkns;
+      count = 0;
+      const auxAssets: Asset[] = [];
+      state.assets.map((asst) => {
+        count++;
+        if (asst.tokenSymbol !== action.payload) {
+          auxAssets.push({ ...asst, sort_index: count - 1 });
+        }
+      });
+      state.assets = auxAssets;
+    },
     editToken: {
       reducer(
         state,
@@ -231,6 +251,7 @@ export const {
   setLoading,
   setTokens,
   addToken,
+  removeToken,
   editToken,
   setTokenMarket,
   setSubAccountName,
