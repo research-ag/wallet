@@ -15,6 +15,7 @@ import { addContact } from "@redux/contacts/ContactsReducer";
 import { checkHexString, removeLeadingZeros } from "@/utils";
 import ContactAssetElement from "./contactAssetElement";
 import { AssetToAdd } from "@redux/models/AccountModels";
+import { Principal } from "@dfinity/principal";
 
 interface AddContactProps {
   setAddOpen(value: boolean): void;
@@ -315,7 +316,14 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
       return { ...prev, principal: value };
     });
     setNewContactErr("");
-    setNewContactPrinErr(false);
+    if (value.trim() !== "")
+      try {
+        Principal.fromText(value);
+        setNewContactPrinErr(false);
+      } catch {
+        setNewContactPrinErr(true);
+      }
+    else setNewContactPrinErr(false);
   }
 
   function assetToAddEmpty(data: AssetToAdd[]) {

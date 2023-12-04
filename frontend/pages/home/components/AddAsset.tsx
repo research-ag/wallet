@@ -36,8 +36,12 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens }: AddA
     setNewToken,
     validToken,
     setValidToken,
+    validIndex,
+    setValidIndex,
     errToken,
     setErrToken,
+    errIndex,
+    setErrIndex,
     modal,
     showModal,
     addStatus,
@@ -74,8 +78,12 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens }: AddA
             setManual={setManual}
             errToken={errToken}
             setErrToken={setErrToken}
+            errIndex={errIndex}
+            setErrIndex={setErrIndex}
             validToken={validToken}
             setValidToken={setValidToken}
+            validIndex={validIndex}
+            setValidIndex={setValidIndex}
             newToken={newToken}
             setNewToken={setNewToken}
             asset={asset}

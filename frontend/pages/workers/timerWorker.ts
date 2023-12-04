@@ -9,10 +9,10 @@ const timerCode = () => {
     self.postMessage(WorkerTrans.TRANSACTIONS);
     setInterval(() => {
       self.postMessage(WorkerTrans.TRANSACTIONS);
-    }, 5 * 60 * 1000);
+    }, 10 * 60 * 1000);
     setInterval(() => {
       self.postMessage(WorkerTrans.ASSETS);
-    }, 5 * 60 * 1000);
+    }, 10 * 60 * 1000);
   };
 };
 

@@ -79,17 +79,6 @@ const DetailList = () => {
               </div>
               <p className="text-md">{t("receive")}</p>
             </div>
-            <div className="flex flex-col justify-center items-center w-1/3 gap-1">
-              <div
-                className="flex flex-row justify-center items-center w-7 h-7 bg-[#33b2ef] rounded-md cursor-pointer"
-                onClick={() => {
-                  setDrawer(DrawerOptionEnum.Enum.WRAP);
-                }}
-              >
-                <img src={WrapIcon} className="w-4 h-4" alt="wrap-icon" />
-              </div>
-              <p className="text-md">{t("wrap")}</p>
-            </div>
           </div>
         </div>
 
