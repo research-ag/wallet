@@ -13,7 +13,7 @@ import SendUserIcon from "@assets/svg/files/send-user-icon.svg";
 import { Contact, SubAccountContact } from "@redux/models/ContactsModels";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { useTranslation } from "react-i18next";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useState } from "react";
 
 interface SendOutAccountProps {
   setOpenContactList(value: boolean): void;
@@ -77,6 +77,7 @@ const SendOutAccount = ({
   setManualSub,
 }: SendOutAccountProps) => {
   const { t } = useTranslation();
+  const [errAddress, setErrAddress] = useState(false);
 
   return (
     <div className="flex flex-col justify-start items-start w-full">
