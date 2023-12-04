@@ -52,7 +52,7 @@ const ContactAssetPop = ({
               <img src={PlusIcon} alt="plus-icon" />
             </CustomButton>
           </DropdownMenu.Trigger>
-          <DropdownMenu.Portal className="w-full">
+          <DropdownMenu.Portal>
             <DropdownMenu.Content
               className="text-md bg-PrimaryColorLight w-[10rem] rounded-lg dark:bg-SecondaryColor scroll-y-light z-[9999] max-h-80 text-PrimaryTextColorLight dark:text-PrimaryTextColor shadow-sm shadow-BorderColorTwoLight dark:shadow-BorderColorTwo border border-BorderColorLight dark:border-BorderColor/20"
               sideOffset={2}

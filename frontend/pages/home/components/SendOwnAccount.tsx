@@ -94,7 +94,7 @@ const SendOwnAccount = ({
             />
           </div>
         </DropdownMenu.Trigger>
-        <DropdownMenu.Portal className="w-full">
+        <DropdownMenu.Portal>
           <DropdownMenu.Content
             className="w-full text-lg max-h-[calc(100vh-17rem)] scroll-y-light bg-PrimaryColorLight rounded-lg dark:bg-SecondaryColor z-[999] text-PrimaryTextColorLight dark:text-PrimaryTextColor shadow-sm shadow-BorderColorTwoLight dark:shadow-BorderColorTwo border border-BorderColorLight dark:border-BorderColor"
             sideOffset={5}
