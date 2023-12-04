@@ -77,7 +77,6 @@ const SendOutAccount = ({
   setManualSub,
 }: SendOutAccountProps) => {
   const { t } = useTranslation();
-  const [errAddress, setErrAddress] = useState(false);
 
   return (
     <div className="flex flex-col justify-start items-start w-full">
