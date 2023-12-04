@@ -93,6 +93,7 @@
   "contact.error.principal.self": "Il principale contatto non può essere se stesso",
 
   "copied": "Copiato!",
+<<<<<<< HEAD
   "current.have": "Attualmente ho",
   "delete.service.confirmation": "Conferma che desideri eliminare",
   "successful.notification": "Notifica Riuscita",
@@ -103,6 +104,9 @@
   "increased.credit": "Aumento del credito",
   "delete.asset.msg": "Sei sicuro di voler eliminare la Risorsa",
   "delete.service.asset.msg": "Alcuni servizi stanno utilizzando la Risorsa, se la elimini scomparirà anche nell'elenco dei Servizi",
+=======
+  "delete.asset.msg": "Sei sicuro di voler eliminare la Risorsa",
+>>>>>>> df1b1296 (delete assets with 0 balance)
   "empty.index.error": "L'indice non può essere vuoto",
   "empty.name.err": "L'nome non può essere vuoto",
   "already.used.index": "Indice già utilizzato",

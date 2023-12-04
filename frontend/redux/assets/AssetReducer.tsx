@@ -104,6 +104,88 @@ const assetSlice = createSlice({
     setICPSubaccounts(state, action: PayloadAction<ICPSubAccount[]>) {
       state.ICPSubaccounts = action.payload;
     },
+<<<<<<< HEAD
+=======
+    setLoading(state, action: PayloadAction<boolean>) {
+      state.assetLoading = action.payload;
+    },
+    setTokens(state, action: PayloadAction<Token[]>) {
+      state.tokens = action.payload;
+    },
+    addToken(state, action: PayloadAction<Token>) {
+      state.tokens.push(action.payload);
+    },
+    removeToken(state, action: PayloadAction<string>) {
+      let count = 0;
+      const auxTkns: Token[] = [];
+      state.tokens.map((tkn) => {
+        count++;
+        if (tkn.symbol !== action.payload) {
+          auxTkns.push({ ...tkn, id_number: count - 1 });
+        }
+      });
+      state.tokens = auxTkns;
+      count = 0;
+      const auxAssets: Asset[] = [];
+      state.assets.map((asst) => {
+        count++;
+        if (asst.tokenSymbol !== action.payload) {
+          auxAssets.push({ ...asst, sort_index: count - 1 });
+        }
+      });
+      state.assets = auxAssets;
+    },
+    editToken: {
+      reducer(
+        state,
+        action: PayloadAction<{
+          token: Token;
+          tokenSymbol: string;
+        }>,
+      ) {
+        const { token, tokenSymbol } = action.payload;
+        const auxTokens = state.tokens.map((tkn) => {
+          if (tkn.id_number === token.id_number) {
+            return token;
+          } else return tkn;
+        });
+        const auxAssets = state.assets.map((asst) => {
+          if (asst.tokenSymbol === tokenSymbol) {
+            return { ...asst, symbol: token.symbol, name: token.name, index: token.index };
+          } else return asst;
+        });
+        state.tokens = auxTokens;
+        state.assets = auxAssets;
+      },
+      prepare(token: Token, tokenSymbol: string) {
+        return {
+          payload: { token, tokenSymbol },
+        };
+      },
+    },
+    setSubAccountName: {
+      reducer(
+        state,
+        action: PayloadAction<{
+          tokenIndex: number | string;
+          subaccountId: number | string;
+          name: string;
+        }>,
+      ) {
+        const { tokenIndex, subaccountId, name } = action.payload;
+
+        if (state.assets[Number(tokenIndex)] && state.assets[Number(tokenIndex)].subAccounts[Number(subaccountId)])
+          state.assets[Number(tokenIndex)].subAccounts[Number(subaccountId)].name = name;
+        if (state.tokens[Number(tokenIndex)] && state.tokens[Number(tokenIndex)].subAccounts[Number(subaccountId)])
+          state.tokens[Number(tokenIndex)].subAccounts[Number(subaccountId)].name = name;
+      },
+      prepare(tokenIndex: string | number, subaccountId: string | number, name: string) {
+        return {
+          payload: { tokenIndex, subaccountId, name },
+        };
+      },
+    },
+>>>>>>> df1b1296 (delete assets with 0 balance)
     setTokenMarket(state, action: PayloadAction<TokenMarketInfo[]>) {
       state.utilData.tokensMarket = action.payload;
     },
@@ -190,6 +272,14 @@ export const {
   setAssetMutationAction,
   setICRC1SystemAssets,
   setICPSubaccounts,
+<<<<<<< HEAD
+=======
+  setLoading,
+  setTokens,
+  addToken,
+  removeToken,
+  editToken,
+>>>>>>> df1b1296 (delete assets with 0 balance)
   setTokenMarket,
   setAssets,
   setAccounts,
