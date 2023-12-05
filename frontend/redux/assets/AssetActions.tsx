@@ -59,7 +59,7 @@ export const updateAllBalances = async (
         {
           id: 999,
           name: "Ethereum",
-          symbol: "ETH",
+          symbol: "ckETH",
           price: ethRate.USD,
           marketcap: 0,
           volume24: 0,
