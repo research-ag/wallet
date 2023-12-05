@@ -32,13 +32,17 @@ export const TableHook = () => {
             <div className="flex justify-center items-center p-2 rounded-md border border-BorderColorTwoLight dark:border-BorderColorTwo">
               <img
                 src={
-                  getAddress(
-                    info.getValue().type,
-                    info.getValue().from || "",
-                    info.getValue().fromSub || "",
-                    selectedAccount?.address || "",
-                    selectedAccount?.sub_account_id || "",
-                  )
+                  info.getValue().kind === "burn"
+                    ? UpAmountIcon
+                    : info.getValue().kind === "mint"
+                    ? DownAmountIcon
+                    : getAddress(
+                        info.getValue().type,
+                        info.getValue().from || "",
+                        info.getValue().fromSub || "",
+                        selectedAccount?.address || "",
+                        selectedAccount?.sub_account_id || "",
+                      )
                     ? UpAmountIcon
                     : DownAmountIcon
                 }
@@ -74,13 +78,15 @@ export const TableHook = () => {
     columnHelper.accessor((row) => row, {
       id: "amount",
       cell: (info) => {
-        let isTo = getAddress(
-          info.getValue().type,
-          info.getValue().from || "",
-          info.getValue().fromSub || "",
-          selectedAccount?.address || "",
-          selectedAccount?.sub_account_id || "",
-        );
+        let isTo =
+          info.getValue().kind !== "mint" &&
+          getAddress(
+            info.getValue().type,
+            info.getValue().from || "",
+            info.getValue().fromSub || "",
+            selectedAccount?.address || "",
+            selectedAccount?.sub_account_id || "",
+          );
 
         return (
           <div className="flex flex-col justify-center items-end my-2 w-full pr-5">
