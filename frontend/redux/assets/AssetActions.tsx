@@ -24,9 +24,37 @@ export const updateAllBalances = async (
   tokens: Token[],
   basicSearch?: boolean,
 ) => {
-  let tokenMarkets: TokenMarketInfo[] = await fetch(import.meta.env.VITE_APP_TOKEN_MARKET).then((x) => x.json());
-  tokenMarkets = tokenMarkets.filter((x) => !x.unreleased);
-  store.dispatch(setTokenMarket(tokenMarkets));
+  let tokenMarkets: TokenMarketInfo[] = [];
+  try {
+    const auxTokenMarkets: TokenMarketInfo[] = await fetch(import.meta.env.VITE_APP_TOKEN_MARKET).then((x) => x.json());
+    tokenMarkets = auxTokenMarkets.filter((x) => !x.unreleased);
+  } catch {
+    tokenMarkets = [];
+  }
+
+  try {
+    const ethRate = await fetch(import.meta.env.VITE_APP_ETH_MARKET).then((x) => x.json());
+
+    store.dispatch(
+      setTokenMarket([
+        ...tokenMarkets,
+        {
+          id: 999,
+          name: "Ethereum",
+          symbol: "ETH",
+          price: ethRate.USD,
+          marketcap: 0,
+          volume24: 0,
+          circulating: 0,
+          total: 0,
+          liquidity: 0,
+          unreleased: 0,
+        },
+      ]),
+    );
+  } catch {
+    store.dispatch(setTokenMarket(tokenMarkets));
+  }
 
   const myPrincipal = await myAgent.getPrincipal();
   const newTokens: Token[] = [];
