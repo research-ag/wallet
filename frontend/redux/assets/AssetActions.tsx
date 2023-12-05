@@ -19,6 +19,7 @@ import { hexToUint8Array } from "@common/utils/hexadecimal";
 import { getMetadataInfo } from "@common/utils/icrc";
 import logger from "@/common/utils/logger";
 
+<<<<<<< HEAD
 /**
  * This function updates the balances for all provided assets and their subaccounts, based on the market price and the account balance.
  *
@@ -34,6 +35,45 @@ export const updateAllBalances: UpdateAllBalances = async (params) => {
   if (ckETHRate) tokenMarkets.push(ckETHRate);
   tokenMarkets.push(ckUSDCRate);
   store.dispatch(setTokenMarket(tokenMarkets));
+=======
+export const updateAllBalances = async (
+  loading: boolean,
+  myAgent: HttpAgent,
+  tokens: Token[],
+  basicSearch?: boolean,
+) => {
+  let tokenMarkets: TokenMarketInfo[] = [];
+  try {
+    const auxTokenMarkets: TokenMarketInfo[] = await fetch(import.meta.env.VITE_APP_TOKEN_MARKET).then((x) => x.json());
+    tokenMarkets = auxTokenMarkets.filter((x) => !x.unreleased);
+  } catch {
+    tokenMarkets = [];
+  }
+
+  try {
+    const ethRate = await fetch(import.meta.env.VITE_APP_ETH_MARKET).then((x) => x.json());
+
+    store.dispatch(
+      setTokenMarket([
+        ...tokenMarkets,
+        {
+          id: 999,
+          name: "Ethereum",
+          symbol: "ETH",
+          price: ethRate.USD,
+          marketcap: 0,
+          volume24: 0,
+          circulating: 0,
+          total: 0,
+          liquidity: 0,
+          unreleased: 0,
+        },
+      ]),
+    );
+  } catch {
+    store.dispatch(setTokenMarket(tokenMarkets));
+  }
+>>>>>>> 870ab8ce (fetch eth market value)
 
   const auxAssets = [...assets].sort((a, b) => a.sortIndex - b.sortIndex);
   const myPrincipal = store.getState().auth.userPrincipal;
