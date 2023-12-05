@@ -148,7 +148,7 @@ const AddAssetAutomatic = ({
                 align="end"
               >
                 {newAssetList.map((newAsset, idx) => {
-                  const tokenFounded = tokens.find((tkn) => tkn.symbol === newAsset.symbol);
+                  const tokenFounded = tokens.find((tkn) => tkn.address === newAsset.address);
                   if (!tokenFounded)
                     return (
                       <DropdownMenu.Item
