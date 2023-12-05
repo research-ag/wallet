@@ -58,12 +58,14 @@ export const AssetHook = () => {
       return asset.name.toLowerCase().includes(searchKey.toLowerCase()) || includeInSub || searchKey === "";
     });
 
-    if (auxAssets.length > 0)
-      if (selectedAsset && !auxAssets.includes(selectedAsset)) {
+    if (auxAssets.length > 0) {
+      const isSelected = auxAssets.find((ast) => ast.tokenSymbol === selectedAsset?.tokenSymbol);
+      if (selectedAsset && !isSelected) {
         setAcordeonIdx(`asset-${auxAssets[0].sort_index}`);
         dispatch(setSelectedAsset(auxAssets[0]));
         auxAssets[0].subAccounts.length > 0 && dispatch(setSelectedAccount(auxAssets[0].subAccounts[0]));
       }
+    }
   }, [searchKey]);
 
   return {
