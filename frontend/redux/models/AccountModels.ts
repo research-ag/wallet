@@ -53,6 +53,7 @@ const Transaction = z.object({
   symbol: z.string(),
   identityTo: z.string().optional(),
   identityFrom: z.string().optional(),
+  kind: z.string().optional(),
 });
 
 export type Transaction = z.infer<typeof Transaction>;

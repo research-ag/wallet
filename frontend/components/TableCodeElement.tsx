@@ -95,35 +95,41 @@ const CodeElement = ({ tx }: CodeElementProps) => {
 
   return (
     <Fragment>
-      <div className="flex flex-col items-start justify-center w-full my-2 min-h-12">
-        {hasContactName ? (
-          <p className={contcNameStyle}>{`${isTo ? t("to") : t("from")}: ${contactName}`}</p>
-        ) : (
-          <p className={contcNameStyle}>
-            {`${isTo ? t("to") : t("from")}: ${shortAddress(
-              isICPWithSub ? authClient : isTo ? tx.to || "" : tx.from || "",
-              12,
-              12,
-            )}`}
-          </p>
-        )}
-        {hasContactName && (
-          <p className="opacity-75 text-left break-words max-w-[20.5rem]">
-            {`${shortAddress(isICPWithSub ? authClient : isTo ? tx.to || "" : tx.from || "", 12, 12)}`}
-          </p>
-        )}
-        {hasSub && (
-          <p className={`${accId} text-left break-words max-w-[20.5rem]`}>
-            {`${hasSubName ? subName + " -" : ""} ${
-              isICPWithSub
-                ? ICPSubaccounts.find((sub) => sub.legacy === (isTo ? tx.to : tx.from))?.sub_account_id || "0x0"
-                : isTo
-                ? tx.toSub || "0"
-                : tx.fromSub || "0"
-            } `}
-          </p>
-        )}
-      </div>
+      {tx.kind === "mint" || tx.kind === "burn" ? (
+        <div className="flex flex-col items-start justify-center w-full my-2 min-h-12">
+          <p className={contcNameStyle}>{tx.kind === "mint" ? "Mint" : "Burn"}</p>
+        </div>
+      ) : (
+        <div className="flex flex-col items-start justify-center w-full my-2 min-h-12">
+          {hasContactName ? (
+            <p className={contcNameStyle}>{`${isTo ? t("to") : t("from")}: ${contactName}`}</p>
+          ) : (
+            <p className={contcNameStyle}>
+              {`${isTo ? t("to") : t("from")}: ${shortAddress(
+                isICPWithSub ? authClient : isTo ? tx.to || "" : tx.from || "",
+                12,
+                12,
+              )}`}
+            </p>
+          )}
+          {hasContactName && (
+            <p className="opacity-75 text-left break-words max-w-[20.5rem]">
+              {`${shortAddress(isICPWithSub ? authClient : isTo ? tx.to || "" : tx.from || "", 12, 12)}`}
+            </p>
+          )}
+          {hasSub && (
+            <p className={`${accId} text-left break-words max-w-[20.5rem]`}>
+              {`${hasSubName ? subName + " -" : ""} ${
+                isICPWithSub
+                  ? ICPSubaccounts.find((sub) => sub.legacy === (isTo ? tx.to : tx.from))?.sub_account_id || "0x0"
+                  : isTo
+                  ? tx.toSub || "0"
+                  : tx.fromSub || "0"
+              } `}
+            </p>
+          )}
+        </div>
+      )}
     </Fragment>
   );
 };

@@ -42,11 +42,26 @@ const DrawerTransaction = ({ setDrawerOpen }: DrawerTransactionProps) => {
         <div className="flex flex-row justify-between items-center w-full mb-4 px-6">
           <div className="flex flex-row justify-start items-center gap-7">
             <p className="font-semibold text-lg text-PrimaryTextColorLight dark:text-PrimaryTextColor">
-              {selectedTransaction?.type === TransactionTypeEnum.Enum.RECEIVE
+              {selectedTransaction?.kind === "mint"
+                ? "Mint"
+                : selectedTransaction?.kind === "burn"
+                ? "Burn"
+                : selectedTransaction?.type === TransactionTypeEnum.Enum.RECEIVE
                 ? t("transaction.received")
                 : t("transaction.sent")}
             </p>
-            <img src={isTo ? UpAmountIcon : DownAmountIcon} alt="" />
+            <img
+              src={
+                selectedTransaction?.kind === "mint"
+                  ? DownAmountIcon
+                  : selectedTransaction?.kind === "burn"
+                  ? UpAmountIcon
+                  : isTo
+                  ? UpAmountIcon
+                  : DownAmountIcon
+              }
+              alt=""
+            />
           </div>
           <CloseIcon
             className="cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
@@ -57,143 +72,151 @@ const DrawerTransaction = ({ setDrawerOpen }: DrawerTransactionProps) => {
           />
         </div>
         {/* FROM SECTION */}
-        <div className="flex flex-col justify-center items-center gap-4 w-[calc(100%-3rem)] mx-6 p-4 bg-FromBoxColorLight dark:bg-FromBoxColor">
-          <div className="flex flex-row justify-between items-center w-full">
-            <p className="text-PrimaryTextColorLight dark:text-PrimaryTextColor font-medium">{t("from")}</p>
-          </div>
-          <div className="flex flex-row justify-between items-center w-full font-normal">
-            <p>{`${t("acc.principal")}`}</p>
-            <div className="flex flex-row justify-start items-center gap-2">
-              <p>{`${hasSub(false) ? shortAddress(getPrincipal(false), 12, 12) : t("unknown")}`}</p>
-              <CustomCopy
-                size={"small"}
-                copyText={getPrincipal(false)}
-                copyStroke="cursor-pointer max-w-[0.7rem] h-auto"
-                isTransaction={true}
-              />
+        {selectedTransaction?.kind !== "mint" && (
+          <div className="flex flex-col justify-center items-center gap-4 w-[calc(100%-3rem)] mx-6 p-4 bg-FromBoxColorLight dark:bg-FromBoxColor">
+            <div className="flex flex-row justify-between items-center w-full">
+              <p className="text-PrimaryTextColorLight dark:text-PrimaryTextColor font-medium">{t("from")}</p>
             </div>
-          </div>
-          <div className="flex flex-row justify-between items-center w-full font-normal">
-            <p>{`${t("acc.subacc")}`}</p>
-            <div className="flex flex-row justify-start items-center gap-2">
-              <p>{`${hasSub(false) ? getSub(false) : t("unknown")}`}</p>
-              <CustomCopy
-                size={"small"}
-                copyText={getSub(false).substring(2)}
-                copyStroke="cursor-pointer max-w-[0.7rem] h-auto"
-                isTransaction={true}
-              />
-            </div>
-          </div>
-          <div className="flex flex-row justify-between items-center w-full font-normal">
-            <p>{`${t("icrc.acc")}`}</p>
-            <div className="flex flex-row justify-start items-center gap-2">
-              <p>{`${hasSub(false) ? shortAddress(getICRCAccount(false), 12, 12) : t("unknown")}`}</p>
-              <CustomCopy
-                size={"small"}
-                copyText={hasSub(false) ? getICRCAccount(false) : ""}
-                copyStroke="cursor-pointer max-w-[0.7rem] h-auto"
-                isTransaction={true}
-              />
-            </div>
-          </div>
-          {selectedTransaction?.symbol === AssetSymbolEnum.Enum.ICP && (
             <div className="flex flex-row justify-between items-center w-full font-normal">
-              <p>{`${t("acc.identifier")}`}</p>
+              <p>{`${t("acc.principal")}`}</p>
               <div className="flex flex-row justify-start items-center gap-2">
-                <p>{`${shortAddress(getIdentifier(false), 12, 12)}`}</p>
+                <p>{`${hasSub(false) ? shortAddress(getPrincipal(false), 12, 12) : t("unknown")}`}</p>
                 <CustomCopy
                   size={"small"}
-                  copyText={getIdentifier(false)}
+                  copyText={getPrincipal(false)}
                   copyStroke="cursor-pointer max-w-[0.7rem] h-auto"
                   isTransaction={true}
                 />
               </div>
             </div>
-          )}
-          <div className="flex flex-row justify-between items-center w-full font-normal">
-            <p>{t("transaction.amount")}</p>
-            <p className="">{`${toFullDecimal(
-              Number(selectedTransaction?.amount) / Math.pow(10, selectedAccount?.decimal || 8) +
-                Number(selectedAccount?.transaction_fee),
-              selectedAccount?.decimal || 8,
-            )} ${assetSymbol}`}</p>
+            <div className="flex flex-row justify-between items-center w-full font-normal">
+              <p>{`${t("acc.subacc")}`}</p>
+              <div className="flex flex-row justify-start items-center gap-2">
+                <p>{`${hasSub(false) ? getSub(false) : t("unknown")}`}</p>
+                <CustomCopy
+                  size={"small"}
+                  copyText={getSub(false).substring(2)}
+                  copyStroke="cursor-pointer max-w-[0.7rem] h-auto"
+                  isTransaction={true}
+                />
+              </div>
+            </div>
+            <div className="flex flex-row justify-between items-center w-full font-normal">
+              <p>{`${t("icrc.acc")}`}</p>
+              <div className="flex flex-row justify-start items-center gap-2">
+                <p>{`${hasSub(false) ? shortAddress(getICRCAccount(false), 12, 12) : t("unknown")}`}</p>
+                <CustomCopy
+                  size={"small"}
+                  copyText={hasSub(false) ? getICRCAccount(false) : ""}
+                  copyStroke="cursor-pointer max-w-[0.7rem] h-auto"
+                  isTransaction={true}
+                />
+              </div>
+            </div>
+            {selectedTransaction?.symbol === AssetSymbolEnum.Enum.ICP && (
+              <div className="flex flex-row justify-between items-center w-full font-normal">
+                <p>{`${t("acc.identifier")}`}</p>
+                <div className="flex flex-row justify-start items-center gap-2">
+                  <p>{`${shortAddress(getIdentifier(false), 12, 12)}`}</p>
+                  <CustomCopy
+                    size={"small"}
+                    copyText={getIdentifier(false)}
+                    copyStroke="cursor-pointer max-w-[0.7rem] h-auto"
+                    isTransaction={true}
+                  />
+                </div>
+              </div>
+            )}
+            <div className="flex flex-row justify-between items-center w-full font-normal">
+              <p>{t("transaction.amount")}</p>
+              <p className="">{`${toFullDecimal(
+                Number(selectedTransaction?.amount) / Math.pow(10, selectedAccount?.decimal || 8) +
+                  Number(selectedAccount?.transaction_fee),
+                selectedAccount?.decimal || 8,
+              )} ${assetSymbol}`}</p>
+            </div>
           </div>
-        </div>
+        )}
         {/* ARROW SECTION */}
-        <DownBlueArrow className="my-3"></DownBlueArrow>
+        {selectedTransaction?.kind !== "burn" && selectedTransaction?.kind !== "mint" && (
+          <DownBlueArrow className="my-3"></DownBlueArrow>
+        )}
         {/* TO SECTION */}
-        <div className="flex flex-col justify-center items-center gap-4 w-[calc(100%-3rem)] mx-6 p-4 bg-FromBoxColorLight dark:bg-FromBoxColor rounded-md">
-          <div className="flex flex-row justify-between items-center w-full">
-            <p className="text-PrimaryTextColorLight dark:text-PrimaryTextColor font-medium">{t("to")}</p>
-          </div>
-          <div className="flex flex-row justify-between items-center w-full font-normal">
-            <p>{`${t("acc.principal")}`}</p>
-            <div className="flex flex-row justify-start items-center gap-2">
-              <p>{`${hasSub(true) ? shortAddress(getPrincipal(true), 12, 12) : t("unknown")}`}</p>
-              <CustomCopy
-                size={"small"}
-                copyText={getPrincipal(true)}
-                copyStroke="cursor-pointer max-w-[0.7rem] h-auto"
-                isTransaction={true}
-              />
+        {selectedTransaction?.kind !== "burn" && (
+          <div className="flex flex-col justify-center items-center gap-4 w-[calc(100%-3rem)] mx-6 p-4 bg-FromBoxColorLight dark:bg-FromBoxColor rounded-md">
+            <div className="flex flex-row justify-between items-center w-full">
+              <p className="text-PrimaryTextColorLight dark:text-PrimaryTextColor font-medium">{t("to")}</p>
             </div>
-          </div>
-          <div className="flex flex-row justify-between items-center w-full font-normal">
-            <p>{`${t("acc.subacc")}`}</p>
-            <div className="flex flex-row justify-start items-center gap-2">
-              <p>{`${hasSub(true) ? getSub(true) : t("unknown")}`}</p>
-              <CustomCopy
-                size={"small"}
-                copyText={getSub(true).substring(2)}
-                copyStroke="cursor-pointer max-w-[0.7rem] h-auto"
-                isTransaction={true}
-              />
-            </div>
-          </div>
-          <div className="flex flex-row justify-between items-center w-full font-normal">
-            <p>{`${t("icrc.acc")}`}</p>
-            <div className="flex flex-row justify-start items-center gap-2">
-              <p>{`${hasSub(true) ? shortAddress(getICRCAccount(true), 12, 12) : t("unknown")}`}</p>
-              <CustomCopy
-                size={"small"}
-                copyText={getICRCAccount(true)}
-                copyStroke="cursor-pointer max-w-[0.7rem] h-auto"
-                isTransaction={true}
-              />
-            </div>
-          </div>
-          {selectedTransaction?.symbol === AssetSymbolEnum.Enum.ICP && (
             <div className="flex flex-row justify-between items-center w-full font-normal">
-              <p>{`${t("acc.identifier")}`}</p>
+              <p>{`${t("acc.principal")}`}</p>
               <div className="flex flex-row justify-start items-center gap-2">
-                <p>{`${shortAddress(getIdentifier(true), 12, 12)}`}</p>
+                <p>{`${hasSub(true) ? shortAddress(getPrincipal(true), 12, 12) : t("unknown")}`}</p>
                 <CustomCopy
                   size={"small"}
-                  copyText={getIdentifier(true)}
+                  copyText={getPrincipal(true)}
                   copyStroke="cursor-pointer max-w-[0.7rem] h-auto"
                   isTransaction={true}
                 />
               </div>
             </div>
-          )}
-          <div className="flex flex-row justify-between items-center w-full font-normal">
-            <p>{t("transaction.amount")}</p>
-            <p className="">{`${toFullDecimal(
-              Number(selectedTransaction?.amount) / Math.pow(10, selectedAccount?.decimal || 8),
-              selectedAccount?.decimal || 8,
-            )} ${assetSymbol}`}</p>
+            <div className="flex flex-row justify-between items-center w-full font-normal">
+              <p>{`${t("acc.subacc")}`}</p>
+              <div className="flex flex-row justify-start items-center gap-2">
+                <p>{`${hasSub(true) ? getSub(true) : t("unknown")}`}</p>
+                <CustomCopy
+                  size={"small"}
+                  copyText={getSub(true).substring(2)}
+                  copyStroke="cursor-pointer max-w-[0.7rem] h-auto"
+                  isTransaction={true}
+                />
+              </div>
+            </div>
+            <div className="flex flex-row justify-between items-center w-full font-normal">
+              <p>{`${t("icrc.acc")}`}</p>
+              <div className="flex flex-row justify-start items-center gap-2">
+                <p>{`${hasSub(true) ? shortAddress(getICRCAccount(true), 12, 12) : t("unknown")}`}</p>
+                <CustomCopy
+                  size={"small"}
+                  copyText={getICRCAccount(true)}
+                  copyStroke="cursor-pointer max-w-[0.7rem] h-auto"
+                  isTransaction={true}
+                />
+              </div>
+            </div>
+            {selectedTransaction?.symbol === AssetSymbolEnum.Enum.ICP && (
+              <div className="flex flex-row justify-between items-center w-full font-normal">
+                <p>{`${t("acc.identifier")}`}</p>
+                <div className="flex flex-row justify-start items-center gap-2">
+                  <p>{`${shortAddress(getIdentifier(true), 12, 12)}`}</p>
+                  <CustomCopy
+                    size={"small"}
+                    copyText={getIdentifier(true)}
+                    copyStroke="cursor-pointer max-w-[0.7rem] h-auto"
+                    isTransaction={true}
+                  />
+                </div>
+              </div>
+            )}
+            <div className="flex flex-row justify-between items-center w-full font-normal">
+              <p>{t("transaction.amount")}</p>
+              <p className="">{`${toFullDecimal(
+                Number(selectedTransaction?.amount) / Math.pow(10, selectedAccount?.decimal || 8),
+                selectedAccount?.decimal || 8,
+              )} ${assetSymbol}`}</p>
+            </div>
           </div>
-        </div>
-        <div className="flex flex-col justify-center items-center gap-4 w-[calc(100%-3rem)] mx-6 mt-5 p-4 bg-FromBoxColorLight dark:bg-FromBoxColor rounded-md">
-          <div className="flex flex-row justify-between items-center w-full font-normal">
-            <p className="font-bold">{t("fee")}</p>
-            <p className="font-bold">{`${toFullDecimal(
-              Number(selectedAccount?.transaction_fee),
-              selectedAccount?.decimal || 8,
-            )} ${assetSymbol}`}</p>
+        )}
+        {selectedTransaction?.kind !== "mint" && (
+          <div className="flex flex-col justify-center items-center gap-4 w-[calc(100%-3rem)] mx-6 mt-5 p-4 bg-FromBoxColorLight dark:bg-FromBoxColor rounded-md">
+            <div className="flex flex-row justify-between items-center w-full font-normal">
+              <p className="font-bold">{t("fee")}</p>
+              <p className="font-bold">{`${toFullDecimal(
+                Number(selectedAccount?.transaction_fee),
+                selectedAccount?.decimal || 8,
+              )} ${assetSymbol}`}</p>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </Fragment>
   );

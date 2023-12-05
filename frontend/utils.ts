@@ -7,7 +7,7 @@ import store from "@redux/Store";
 import { Transaction, Operation, RosettaTransaction, Asset } from "./redux/models/AccountModels";
 import { IcrcTokenMetadataResponse, IcrcAccount, encodeIcrcAccount } from "@dfinity/ledger";
 import { OperationStatusEnum, OperationTypeEnum, TransactionTypeEnum, TransactionType } from "./const";
-import { Transaction as T } from "@dfinity/ledger/dist/candid/icrc1_index";
+import { Account, Transaction as T } from "@dfinity/ledger/dist/candid/icrc1_index";
 import { isNullish, uint8ArrayToHexString, bigEndianCrc32, encodeBase32 } from "@dfinity/utils";
 import { AccountIdentifier, SubAccount as SubAccountNNS } from "@dfinity/nns";
 
@@ -278,56 +278,113 @@ export const formatckBTCTransaccion = (
   canister: string,
   subNumber?: string,
 ): Transaction => {
-  const { timestamp, transfer } = ckBTCTransaction;
-  const trans = { status: OperationStatusEnum.Enum.COMPLETED } as Transaction;
-  transfer?.forEach((operation: any) => {
-    const value = operation.amount;
-    const amount = value.toString();
-    trans.to = (operation.to.owner as Principal).toString();
-    trans.from = (operation.from.owner as Principal).toString();
+  const { timestamp, transfer, mint, burn, kind } = ckBTCTransaction;
+  const trans = { status: OperationStatusEnum.Enum.COMPLETED, kind: kind } as Transaction;
+  if (kind === "mint")
+    mint.forEach(
+      (operation: { to: Account; memo: [] | [Uint8Array]; created_at_time: [] | [bigint]; amount: bigint }) => {
+        const value = operation.amount;
+        const amount = value.toString();
+        trans.to = (operation.to.owner as Principal).toString();
+        if (operation.to.subaccount.length > 0)
+          trans.toSub = `0x${subUint8ArrayToHex((operation.to.subaccount as [Uint8Array])[0])}`;
+        else trans.toSub = "0x0";
+        trans.from = "";
+        trans.fromSub = "";
+        trans.canisterId = canister;
+        trans.symbol = symbol;
+        trans.amount = amount;
+        let subaccTo: SubAccountNNS | undefined = undefined;
+        try {
+          subaccTo = SubAccountNNS.fromBytes((operation.to.subaccount as [Uint8Array])[0]) as SubAccountNNS;
+        } catch {
+          subaccTo = undefined;
+        }
+        trans.idx = id.toString();
+        trans.identityTo = AccountIdentifier.fromPrincipal({
+          principal: operation.to.owner as Principal,
+          subAccount: subaccTo,
+        }).toHex();
+        trans.type = TransactionTypeEnum.Enum.RECEIVE;
+      },
+    );
+  else if (kind === "burn")
+    burn.forEach(
+      (operation: { from: Account; memo: [] | [Uint8Array]; created_at_time: [] | [bigint]; amount: bigint }) => {
+        const value = operation.amount;
+        const amount = value.toString();
+        trans.from = (operation.from.owner as Principal).toString();
+        if (operation.from.subaccount.length > 0)
+          trans.fromSub = `0x${subUint8ArrayToHex((operation.from.subaccount as [Uint8Array])[0])}`;
+        else trans.fromSub = "0x0";
+        trans.to = "";
+        trans.toSub = "";
+        trans.canisterId = canister;
+        trans.symbol = symbol;
+        trans.amount = amount;
+        let subaccFrom: SubAccountNNS | undefined = undefined;
+        try {
+          subaccFrom = SubAccountNNS.fromBytes((operation.from.subaccount as [Uint8Array])[0]) as SubAccountNNS;
+        } catch {
+          subaccFrom = undefined;
+        }
+        trans.idx = id.toString();
+        trans.identityFrom = AccountIdentifier.fromPrincipal({
+          principal: operation.from.owner as Principal,
+          subAccount: subaccFrom,
+        }).toHex();
+        trans.type = TransactionTypeEnum.Enum.SEND;
+      },
+    );
+  else
+    transfer?.forEach((operation: any) => {
+      const value = operation.amount;
+      const amount = value.toString();
+      trans.to = (operation.to.owner as Principal).toString();
+      trans.from = (operation.from.owner as Principal).toString();
 
-    if (operation.to.subaccount.length > 0)
-      trans.toSub = `0x${subUint8ArrayToHex((operation.to.subaccount as [Uint8Array])[0])}`;
-    else trans.toSub = "0x0";
+      if (operation.to.subaccount.length > 0)
+        trans.toSub = `0x${subUint8ArrayToHex((operation.to.subaccount as [Uint8Array])[0])}`;
+      else trans.toSub = "0x0";
 
-    if (operation.from.subaccount.length > 0)
-      trans.fromSub = `0x${subUint8ArrayToHex((operation.from.subaccount as [Uint8Array])[0])}`;
-    else trans.fromSub = "0x0";
+      if (operation.from.subaccount.length > 0)
+        trans.fromSub = `0x${subUint8ArrayToHex((operation.from.subaccount as [Uint8Array])[0])}`;
+      else trans.fromSub = "0x0";
 
-    const subCheck = subNumber;
-    if (trans.from === principal && trans.fromSub === subCheck) {
-      trans.type = TransactionTypeEnum.Enum.SEND;
-    } else {
-      trans.type = TransactionTypeEnum.Enum.RECEIVE;
-    }
+      const subCheck = subNumber;
+      if (trans.from === principal && trans.fromSub === subCheck) {
+        trans.type = TransactionTypeEnum.Enum.SEND;
+      } else {
+        trans.type = TransactionTypeEnum.Enum.RECEIVE;
+      }
 
-    trans.canisterId = canister;
-    trans.symbol = symbol;
-    trans.amount = amount;
-    trans.idx = id.toString();
+      trans.canisterId = canister;
+      trans.symbol = symbol;
+      trans.amount = amount;
+      trans.idx = id.toString();
 
-    let subaccTo: SubAccountNNS | undefined = undefined;
-    try {
-      subaccTo = SubAccountNNS.fromBytes((operation.to.subaccount as [Uint8Array])[0]) as SubAccountNNS;
-    } catch {
-      subaccTo = undefined;
-    }
-    trans.identityTo = AccountIdentifier.fromPrincipal({
-      principal: operation.to.owner as Principal,
-      subAccount: subaccTo,
-    }).toHex();
+      let subaccTo: SubAccountNNS | undefined = undefined;
+      try {
+        subaccTo = SubAccountNNS.fromBytes((operation.to.subaccount as [Uint8Array])[0]) as SubAccountNNS;
+      } catch {
+        subaccTo = undefined;
+      }
+      trans.identityTo = AccountIdentifier.fromPrincipal({
+        principal: operation.to.owner as Principal,
+        subAccount: subaccTo,
+      }).toHex();
 
-    let subaccFrom: SubAccountNNS | undefined = undefined;
-    try {
-      subaccFrom = SubAccountNNS.fromBytes((operation.to.subaccount as [Uint8Array])[0]) as SubAccountNNS;
-    } catch {
-      subaccFrom = undefined;
-    }
-    trans.identityFrom = AccountIdentifier.fromPrincipal({
-      principal: operation.from.owner as Principal,
-      subAccount: subaccFrom,
-    }).toHex();
-  });
+      let subaccFrom: SubAccountNNS | undefined = undefined;
+      try {
+        subaccFrom = SubAccountNNS.fromBytes((operation.to.subaccount as [Uint8Array])[0]) as SubAccountNNS;
+      } catch {
+        subaccFrom = undefined;
+      }
+      trans.identityFrom = AccountIdentifier.fromPrincipal({
+        principal: operation.from.owner as Principal,
+        subAccount: subaccFrom,
+      }).toHex();
+    });
   return {
     ...trans,
     timestamp: Math.floor(Number(timestamp) / MILI_PER_SECOND),
