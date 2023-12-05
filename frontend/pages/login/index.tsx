@@ -3,19 +3,21 @@ import HplWalletIcon from "@/assets/svg/files/logo_ICRC-1-dark.svg";
 import HplWalletLightIcon from "@/assets/svg/files/logo_ICRC-1.svg";
 import { ReactComponent as LoginLogoIcon } from "@/assets/svg/files/login-logo.svg";
 import { ReactComponent as ChevIcon } from "@/assets/svg/files/chev-icon.svg";
+import { ReactComponent as CheckIcon } from "@assets/svg/files/edit-check.svg";
 //
 import { LoginHook } from "./hooks/loginhook";
 import FlagSelector from "./components/flagSelector";
 import { useTranslation } from "react-i18next";
 import { ThemeHook } from "@hooks/themeHook";
-import { Fragment } from "react";
-import { handleAuthenticated } from "@/redux/CheckAuth";
+import { ChangeEvent, Fragment } from "react";
+import { handleAuthenticated, handleSeedAuthenticated } from "@/redux/CheckAuth";
 import { AuthNetworkTypeEnum, ThemesEnum } from "@/const";
 import { AuthNetwork } from "@redux/models/TokenModels";
+import { CustomInput } from "@components/Input";
 
 const Login = () => {
   const { t } = useTranslation();
-  const { handleOpenChange, loginOpts, open } = LoginHook();
+  const { handleOpenChange, loginOpts, open, seedOpen, setSeedOpen, seed, setSeed } = LoginHook();
   const { theme } = ThemeHook();
   return (
     <Fragment>
@@ -40,15 +42,44 @@ const Login = () => {
               </p>
               {loginOpts.map((opt, k) => {
                 return (
-                  <div
-                    className="flex flex-row justify-between items-center w-full mt-4 p-3 rounded-[5%] cursor-pointer bg-SecondaryColorLight dark:bg-SecondaryColor"
-                    key={k}
-                    onClick={async () => {
-                      handleLogin(opt);
-                    }}
-                  >
-                    <h3 className="font-medium text-PrimaryTextColorLight dark:text-PrimaryTextColor">{opt.name}</h3>
-                    {opt.icon}
+                  <div className="flex flex-col justify-start items-start w-full" key={k}>
+                    <div
+                      className="flex flex-row justify-between items-center w-full mt-4 p-3 rounded-[5%] cursor-pointer bg-SecondaryColorLight dark:bg-SecondaryColor"
+                      onClick={async () => {
+                        handleLogin(opt);
+                      }}
+                    >
+                      <h3 className="font-medium text-PrimaryTextColorLight dark:text-PrimaryTextColor">{opt.name}</h3>
+                      {opt.icon}
+                    </div>
+                    {seedOpen && opt.type === AuthNetworkTypeEnum.Enum.NONE && (
+                      <CustomInput
+                        sizeInput={"medium"}
+                        intent={"secondary"}
+                        compOutClass=""
+                        value={seed}
+                        onChange={onSeedChange}
+                        autoFocus
+                        sufix={
+                          <div className="flex flex-row justify-start items-center gap-2">
+                            <CheckIcon
+                              onClick={() => {
+                                handleSeedAuthenticated(seed);
+                              }}
+                              className={`w-4 h-4 ${
+                                seed.length > 0
+                                  ? "stroke-BorderSuccessColor"
+                                  : "stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
+                              } opacity-50 cursor-pointer`}
+                            />
+                            <p className="text-sm text-PrimaryTextColorLight dark:text-PrimaryTextColor">Max 32</p>
+                          </div>
+                        }
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") handleSeedAuthenticated(seed);
+                        }}
+                      />
+                    )}
                   </div>
                 );
               })}
@@ -81,9 +112,16 @@ const Login = () => {
 
   async function handleLogin(opt: AuthNetwork) {
     if (opt.type === AuthNetworkTypeEnum.Values.IC || opt.type === AuthNetworkTypeEnum.Values.NFID) {
+      setSeedOpen(false);
       localStorage.setItem("network_type", JSON.stringify({ type: opt.type, network: opt.network, name: opt.name }));
       handleAuthenticated(opt);
+    } else if (opt.type === AuthNetworkTypeEnum.Enum.NONE) {
+      setSeedOpen((prev) => !prev);
+      setSeed("");
     }
+  }
+  function onSeedChange(e: ChangeEvent<HTMLInputElement>) {
+    if (e.target.value.length <= 32) setSeed(e.target.value);
   }
 };
 
