@@ -48,7 +48,7 @@ export type AccountDefault = z.infer<typeof AccountDefaultEnum>;
 export const WorkerTaskEnum = z.enum(["TRANSACTIONS", "ASSETS"]);
 export type WorkerTask = z.infer<typeof WorkerTaskEnum>;
 
-export const AuthNetworkNameEnum = z.enum(["Internet Identity", "NFID", "Metamask", "xxxx", "NONE"]);
+export const AuthNetworkNameEnum = z.enum(["Internet Identity", "NFID", "Metamask", "Seed", "NONE"]);
 export type AuthNetworkName = z.infer<typeof AuthNetworkNameEnum>;
 
 export const AuthNetworkTypeEnum = z.enum(["IC", "NFID", "MM", "NONE"]);
