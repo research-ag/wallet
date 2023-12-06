@@ -41,7 +41,7 @@ const AssetElement = ({ asset, idx, acordeonIdx, setAssetInfo, setAssetOpen, tok
 
   return (
     <Fragment>
-      <Accordion.Item value={`asset-${idx}`}>
+      <Accordion.Item value={`asset-${asset.sort_index}`}>
         <div
           className={`relative flex flex-row items-center w-full h-16 text-PrimaryColor dark:text-PrimaryColorLight cursor-pointer hover:bg-SecondaryColorLight dark:hover:bg-SecondaryColor ${
             asset?.tokenSymbol === selectedAsset?.tokenSymbol ? "bg-SecondaryColorLight dark:bg-SecondaryColor" : ""
@@ -96,7 +96,9 @@ const AssetElement = ({ asset, idx, acordeonIdx, setAssetInfo, setAssetOpen, tok
                 <img
                   src={theme === ThemesEnum.enum.dark ? ChevronRightIcon : ChevronRightDarkIcon}
                   className={`${
-                    acordeonIdx === `asset-${idx}` ? "-rotate-90 transition-transform" : "rotate-0 transition-transform"
+                    acordeonIdx === `asset-${asset.sort_index}`
+                      ? "-rotate-90 transition-transform"
+                      : "rotate-0 transition-transform"
                   } `}
                   alt="chevron-icon"
                 />

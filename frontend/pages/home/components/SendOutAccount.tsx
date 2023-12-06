@@ -241,6 +241,7 @@ const SendOutAccount = ({
     setManual(!manual);
     setNewAccount("");
     setErrAddress(false);
+    setNewAccountErr("");
     setManualPrinc({
       err: false,
       princ: "",
@@ -343,16 +344,17 @@ const SendOutAccount = ({
     if (manual && (manualPrinc.err || manualPrinc.princ.trim() === "")) return;
     try {
       let manualHex = "";
+      let manulReciver = "";
       if (manual) {
         if (manualSub.toLowerCase().includes("0x")) {
           manualHex = manualSub.substring(2);
         } else manualHex = manualSub;
-        console.log("manualHex", manualHex);
+        manulReciver = encodeIcrcAccount({
+          owner: Principal.fromText(manualPrinc.princ),
+          subaccount: hexToUint8Array(`0x${manualHex}`),
+        });
       }
-      const manulReciver = encodeIcrcAccount({
-        owner: Principal.fromText(manualPrinc.princ),
-        subaccount: hexToUint8Array(`0x${manualHex}`),
-      });
+
       const myReceiver = decodeIcrcAccount(manual ? manulReciver : contactAcc ? contactAcc : newAccount);
       const receiverSubHex = `0x${subUint8ArrayToHex(myReceiver.subaccount)}`;
       if (selectedAccount?.address === myReceiver.owner.toText() && receiverSubHex === selectedAccount.sub_account_id) {
