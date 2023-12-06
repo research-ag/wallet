@@ -73,7 +73,7 @@ const SendOutAccount = ({
 
   return (
     <div className="flex flex-col justify-start items-start w-full">
-      <div className="flex flex-row justify-start items-center gap-2">
+      <div className="flex flex-row justify-start items-center gap-2 mb-2">
         <p className="opacity-70 text-md text-PrimaryTextColorLight  dark:text-PrimaryTextColor">{"Manual"}</p>
         <div
           className={`flex flex-row w-9 h-4 rounded-full relative cursor-pointer items-center ${
