@@ -122,6 +122,7 @@
   "transaction.amount": "Quantia",
   "drawer.send.account.error": "O endereço não é válido",
   "add.asset.import.error": "Importar token sob sua própria responsabilidade",
+  "add.index.import.error": "O Principal não é válido como Index",
   "icrc.acc": "ICRC Conta",
   "unknown": "Desconhecido",
   "acc.identifier": "Identificador de conta",

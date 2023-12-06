@@ -122,6 +122,7 @@
   "transaction.amount": "Amount",
   "drawer.send.account.error": "Address is not valid",
   "add.asset.import.error": "Import token on your own responsability",
+  "add.index.import.error": "Principal is not valid as Index",
   "icrc.acc": "ICRC-1 Identifier",
   "unknown": "Unknown",
   "acc.identifier": "Legacy Identifier",

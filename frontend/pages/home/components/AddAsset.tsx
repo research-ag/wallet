@@ -59,6 +59,7 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens }: AddA
 
   useEffect(() => {
     setErrToken("");
+    setErrIndex("");
     setValidToken(false);
   }, [assetOpen]);
 

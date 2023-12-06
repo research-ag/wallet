@@ -169,7 +169,7 @@ const AccountElement = ({
   }
 
   function onSave() {
-    if (name !== "") {
+    if (name.trim() !== "") {
       setEditNameId("");
       if (newSub) {
         const auxTokens = tokens.map((tkn, k) => {
@@ -179,7 +179,7 @@ const AccountElement = ({
               subAccounts: [
                 ...tkn.subAccounts,
                 {
-                  name: name,
+                  name: name.trim(),
                   numb: subAccount.sub_account_id,
                 },
               ].sort((a, b) => {
@@ -189,7 +189,7 @@ const AccountElement = ({
           } else return tkn;
         });
         saveLocalStorage(auxTokens);
-        dispatch(addSubAccount(tokenIndex, { ...subAccount, name: name }));
+        dispatch(addSubAccount(tokenIndex, { ...subAccount, name: name.trim() }));
         setNewSub(undefined);
       } else {
         const auxTokens = tokens.map((tkn, k) => {
@@ -197,14 +197,14 @@ const AccountElement = ({
             const auxSubs: TokenSubAccount[] = [];
             tkn.subAccounts.map((sa) => {
               if (sa.numb === subAccount.sub_account_id) {
-                auxSubs.push({ ...sa, name: name });
+                auxSubs.push({ ...sa, name: name.trim() });
               } else auxSubs.push(sa);
             });
             return { ...tkn, subAccounts: auxSubs };
           } else return tkn;
         });
         saveLocalStorage(auxTokens);
-        dispatch(setSubAccountName(tokenIndex, subaccountId, name));
+        dispatch(setSubAccountName(tokenIndex, subaccountId, name.trim()));
       }
     } else {
       setNameError(true);

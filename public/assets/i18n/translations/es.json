@@ -122,6 +122,7 @@
   "transaction.amount": "Cantidad",
   "drawer.send.account.error": "La dirección no es válida",
   "add.asset.import.error": "Importar token bajo su propia responsabilidad",
+  "add.index.import.error": "Principal no es válido como Index",
   "icrc.acc": "Cuenta ICRC",
   "unknown": "Desconocido",
   "acc.identifier": "Identificador de Cuenta",

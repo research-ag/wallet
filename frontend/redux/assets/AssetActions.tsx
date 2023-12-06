@@ -34,27 +34,25 @@ export const updateAllBalances = async (
 
   try {
     const ethRate = await fetch(import.meta.env.VITE_APP_ETH_MARKET).then((x) => x.json());
-
-    store.dispatch(
-      setTokenMarket([
-        ...tokenMarkets,
-        {
-          id: 999,
-          name: "Ethereum",
-          symbol: "ckETH",
-          price: ethRate.USD,
-          marketcap: 0,
-          volume24: 0,
-          circulating: 0,
-          total: 0,
-          liquidity: 0,
-          unreleased: 0,
-        },
-      ]),
-    );
+    tokenMarkets = [
+      ...tokenMarkets,
+      {
+        id: 999,
+        name: "Ethereum",
+        symbol: "ckETH",
+        price: ethRate.USD,
+        marketcap: 0,
+        volume24: 0,
+        circulating: 0,
+        total: 0,
+        liquidity: 0,
+        unreleased: 0,
+      },
+    ];
   } catch {
-    store.dispatch(setTokenMarket(tokenMarkets));
+    //
   }
+  store.dispatch(setTokenMarket(tokenMarkets));
 
   const myPrincipal = await myAgent.getPrincipal();
   const newTokens: Token[] = [];
