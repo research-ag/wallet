@@ -7,6 +7,7 @@ import "./App.scss";
 import { AuthClient } from "@dfinity/auth-client";
 import { handleLoginApp } from "@redux/CheckAuth";
 import { setAuth } from "@redux/auth/AuthReducer";
+import { GlobalDebug } from "./RemoveLogs";
 
 const App: React.FC = () => {
   const { i18n } = useTranslation();
@@ -17,6 +18,10 @@ const App: React.FC = () => {
       i18n.changeLanguage(language);
     }
   }, [i18n]);
+
+  useEffect(() => {
+    import.meta.env.NODE_ENV === "PRODUCTION" && GlobalDebug(false, true);
+  }, []);
 
   useEffect(() => {
     const getIdentity = async () => {

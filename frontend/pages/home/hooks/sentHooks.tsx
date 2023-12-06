@@ -21,6 +21,10 @@ export const SentHook = (drower: boolean, baseAccount: SubAccount | undefined) =
       setShowAccounts(false);
       setQRview(false);
       setContactToSend(undefined);
+      setErrAddress(false);
+      setManual(false);
+      setManualPrinc({ princ: "", err: false });
+      setManualSub("");
     }
   }, [drower]);
 
@@ -45,6 +49,10 @@ export const SentHook = (drower: boolean, baseAccount: SubAccount | undefined) =
   const [assetDropOpen, setAssetDropOpen] = useState(false);
   const [selectedAccount, setSelectedAccount] = useState<SubAccount | undefined>(baseAccount);
   const [contactToSend, setContactToSend] = useState<{ name: string; subName: string; subId: string } | undefined>();
+  const [errAddress, setErrAddress] = useState(false);
+  const [manual, setManual] = useState(false);
+  const [manualPrinc, setManualPrinc] = useState({ princ: "", err: false });
+  const [manualSub, setManualSub] = useState("");
 
   return {
     receiver,
@@ -72,5 +80,13 @@ export const SentHook = (drower: boolean, baseAccount: SubAccount | undefined) =
     contacts,
     contactToSend,
     setContactToSend,
+    errAddress,
+    setErrAddress,
+    manual,
+    setManual,
+    manualPrinc,
+    setManualPrinc,
+    manualSub,
+    setManualSub,
   };
 };

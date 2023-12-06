@@ -39,6 +39,14 @@ const DrawerSend = ({ setDrawerOpen, drawerOpen }: DrawerSendProps) => {
     contacts,
     contactToSend,
     setContactToSend,
+    errAddress,
+    setErrAddress,
+    manual,
+    setManual,
+    manualPrinc,
+    setManualPrinc,
+    manualSub,
+    setManualSub,
   } = SentHook(drawerOpen, baseAccount);
 
   return (
@@ -69,6 +77,14 @@ const DrawerSend = ({ setDrawerOpen, drawerOpen }: DrawerSendProps) => {
             setReciver={setReciver}
             setContactToSend={setContactToSend}
             setQRview={setQRview}
+            errAddress={errAddress}
+            setErrAddress={setErrAddress}
+            manual={manual}
+            setManual={setManual}
+            manualPrinc={manualPrinc}
+            setManualPrinc={setManualPrinc}
+            manualSub={manualSub}
+            setManualSub={setManualSub}
           ></SendOutAccount>
         )
       ) : (

@@ -60,7 +60,7 @@ const CodeElement = ({ tx }: CodeElementProps) => {
       const symbolAsst = contact.assets.find((asst) => asst.tokenSymbol === tx?.symbol)?.subaccounts;
       if (symbolAsst && symbolAsst?.length > 0) {
         const subAcc = isTo ? tx.toSub || "0" : tx.fromSub || "0";
-        const subNameAux = symbolAsst.find((sa) => sa.subaccount_index === subAcc)?.name;
+        const subNameAux = symbolAsst.find((sa) => `0x${sa.subaccount_index}` === subAcc)?.name;
         if (subNameAux) {
           hasSubName = true;
           subName = subNameAux;
@@ -88,6 +88,15 @@ const CodeElement = ({ tx }: CodeElementProps) => {
       hasContactName = true;
       contactName = contact.name;
     }
+    const symbolAsst = assets.find((asst) => asst.tokenSymbol === tx?.symbol)?.subAccounts;
+    if (symbolAsst && symbolAsst?.length > 0) {
+      const subAcc = ICPSubaccounts.find((sub) => sub.legacy === (isTo ? tx.to : tx.from));
+      const subNameAux = symbolAsst.find((sa) => sa.sub_account_id === subAcc?.sub_account_id)?.name;
+      if (subNameAux) {
+        hasSubName = true;
+        subName = subNameAux;
+      }
+    }
   }
 
   // tailwind CSS
@@ -102,7 +111,13 @@ const CodeElement = ({ tx }: CodeElementProps) => {
       ) : (
         <div className="flex flex-col items-start justify-center w-full my-2 min-h-12">
           {hasContactName ? (
-            <p className={contcNameStyle}>{`${isTo ? t("to") : t("from")}: ${contactName}`}</p>
+            <p
+              data-popover-target="popover-default"
+              className={contcNameStyle}
+              data-toggle="popover"
+              data-trigger="hover"
+              title={isICPWithSub ? authClient : isTo ? tx.to || "" : tx.from || ""}
+            >{`${isTo ? t("to") : t("from")}: ${contactName}`}</p>
           ) : (
             <p className={contcNameStyle}>
               {`${isTo ? t("to") : t("from")}: ${shortAddress(
@@ -112,22 +127,33 @@ const CodeElement = ({ tx }: CodeElementProps) => {
               )}`}
             </p>
           )}
-          {hasContactName && (
-            <p className="opacity-75 text-left break-words max-w-[20.5rem]">
-              {`${shortAddress(isICPWithSub ? authClient : isTo ? tx.to || "" : tx.from || "", 12, 12)}`}
-            </p>
-          )}
-          {hasSub && (
-            <p className={`${accId} text-left break-words max-w-[20.5rem]`}>
-              {`${hasSubName ? subName + " -" : ""} ${
-                isICPWithSub
-                  ? ICPSubaccounts.find((sub) => sub.legacy === (isTo ? tx.to : tx.from))?.sub_account_id || "0x0"
-                  : isTo
-                  ? tx.toSub || "0"
-                  : tx.fromSub || "0"
-              } `}
-            </p>
-          )}
+          {hasSub &&
+            (subName.trim() === "" ? (
+              <p className={`${accId} text-left break-words max-w-[20.5rem]`}>
+                {`${hasSubName ? subName + " -" : ""} ${
+                  isICPWithSub
+                    ? ICPSubaccounts.find((sub) => sub.legacy === (isTo ? tx.to : tx.from))?.sub_account_id || "0x0"
+                    : isTo
+                    ? tx.toSub || "0"
+                    : tx.fromSub || "0"
+                } `}
+              </p>
+            ) : (
+              <p
+                className={`${accId} text-left break-words max-w-[20.5rem]`}
+                data-toggle="popover"
+                data-trigger="hover"
+                title={
+                  isICPWithSub
+                    ? ICPSubaccounts.find((sub) => sub.legacy === (isTo ? tx.to : tx.from))?.sub_account_id || "0x0"
+                    : isTo
+                    ? tx.toSub || "0"
+                    : tx.fromSub || "0"
+                }
+              >
+                {subName}
+              </p>
+            ))}
         </div>
       )}
     </Fragment>
