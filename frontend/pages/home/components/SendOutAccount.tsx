@@ -13,8 +13,7 @@ import SendUserIcon from "@assets/svg/files/send-user-icon.svg";
 import { Contact, SubAccountContact } from "@redux/models/ContactsModels";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { useTranslation } from "react-i18next";
-import { ChangeEvent, useState } from "react";
-import { boolean } from "zod";
+import { ChangeEvent } from "react";
 
 interface SendOutAccountProps {
   setOpenContactList(value: boolean): void;
