@@ -98,13 +98,14 @@ const SendOutAccount = ({
             border={manualPrinc.err ? "error" : "secondary"}
           />
           <CustomInput
-            compOutClass="!w-1/3"
+            compOutClass="!w-[40%]"
             intent={"secondary"}
-            placeholder={"Hex"}
+            placeholder={t("sub-acc")}
             value={manualSub}
             onChange={onChangeIdx}
             sizeInput="small"
             border={"secondary"}
+            sufix={<p className="text-sm text-PrimaryTextColorLight  dark:text-PrimaryTextColor opacity-50">(Hex)</p>}
           />
         </div>
       ) : (
