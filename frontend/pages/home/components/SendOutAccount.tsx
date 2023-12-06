@@ -7,13 +7,14 @@ import { CustomButton } from "@components/Button";
 import { CustomInput } from "@components/Input";
 import { IcrcAccount, decodeIcrcAccount, encodeIcrcAccount } from "@dfinity/ledger";
 import { Principal } from "@dfinity/principal";
-import { getICRC1Acc, shortAddress, subUint8ArrayToHex, getFirstNFrom, hexToUint8Array } from "@/utils";
+import { getICRC1Acc, shortAddress, subUint8ArrayToHex, getFirstNFrom, hexToUint8Array, checkHexString } from "@/utils";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import SendUserIcon from "@assets/svg/files/send-user-icon.svg";
 import { Contact, SubAccountContact } from "@redux/models/ContactsModels";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { useTranslation } from "react-i18next";
 import { ChangeEvent, useState } from "react";
+import { boolean } from "zod";
 
 interface SendOutAccountProps {
   setOpenContactList(value: boolean): void;
@@ -29,6 +30,14 @@ interface SendOutAccountProps {
   setReciver(value: any): void;
   setContactToSend(value: any): void;
   setQRview(value: boolean): void;
+  errAddress: boolean;
+  setErrAddress(value: boolean): void;
+  manual: boolean;
+  setManual(value: boolean): void;
+  manualPrinc: { princ: string; err: boolean };
+  setManualPrinc(value: { princ: string; err: boolean }): void;
+  manualSub: string;
+  setManualSub(value: string): void;
 }
 
 interface ContactToSend {
@@ -52,85 +61,128 @@ const SendOutAccount = ({
   setReciver,
   setContactToSend,
   setQRview,
+  errAddress,
+  setErrAddress,
+  manual,
+  setManual,
+  manualPrinc,
+  setManualPrinc,
+  manualSub,
+  setManualSub,
 }: SendOutAccountProps) => {
   const { t } = useTranslation();
-  const [errAddress, setErrAddress] = useState(false);
 
   return (
     <div className="flex flex-col justify-start items-start w-full">
-      <CustomInput
-        prefix={<img src={SearchIcon} className="mx-2" alt="search-icon" />}
-        sufix={
-          <div className="flex flex-row justify-center items-center mx-2 gap-2">
-            {contactsToShow() > 0 && (
-              <DropdownMenu.Root>
-                <DropdownMenu.Trigger asChild>
-                  <img
-                    src={SendUserIcon}
-                    className="cursor-pointer"
-                    alt="search-icon"
-                    onClick={() => {
-                      setOpenContactList(true);
-                    }}
-                  />
-                </DropdownMenu.Trigger>
-                <DropdownMenu.Portal>
-                  <DropdownMenu.Content
-                    className=" w-[22.6rem] max-h-[calc(100vh-15rem)] scroll-y-light bg-PrimaryColorLight rounded-lg dark:bg-SecondaryColor z-[999] text-PrimaryTextColorLight dark:text-PrimaryTextColor shadow-sm shadow-BorderColorTwoLight dark:shadow-BorderColorTwo border border-AccpetButtonColor cursor-pointer"
-                    sideOffset={12}
-                    align="end"
-                  >
-                    {getContactsToShow().map((s, k) => {
-                      return (
-                        <button
-                          key={k}
-                          className="flex flex-row justify-start items-center w-full hover:bg-[rgb(51,178,239,0.2)] px-2 py-3 gap-3 text-md"
-                          onClick={() => {
-                            onSelecetContact(s);
-                          }}
-                        >
-                          <div className="flex justify-center items-center !w-8 !h-8 !min-w-[2rem] rounded-md bg-ReceiverColor">
-                            <p className="font-semibold">{getFirstNFrom(s.sName, 1)}</p>
-                          </div>
-                          <div className="flex flex-col justify-start items-start w-full">
-                            <p className="text-left w-full max-w-[18rem] break-words">{`${s.cName} [${s.sName}]`}</p>
-                            <p className="text-SvgColor">{`${shortAddress(
-                              getICRCAccount(s.princ, `0x${s.subaccount_index}`),
-                              6,
-                              10,
-                            )}`}</p>
-                          </div>
-                        </button>
-                      );
-                    })}
-                    <DropdownMenu.Arrow
-                      className=" fill-AccpetButtonColor rounded-lg dark:fill-AccpetButtonColor"
-                      width={10}
-                      hanging={10}
+      <div className="flex flex-row justify-start items-center gap-2">
+        <p className="opacity-70 text-md text-PrimaryTextColorLight  dark:text-PrimaryTextColor">{"Manual"}</p>
+        <div
+          className={`flex flex-row w-9 h-4 rounded-full relative cursor-pointer items-center ${
+            manual ? "bg-[#26A17B]" : "bg-[#7E7D91]"
+          }`}
+          onClick={onManualToggle}
+        >
+          <div
+            className={`w-3 h-3 rounded-full bg-white transition-spacing duration-300 ${manual ? "ml-5" : "ml-1"}`}
+          ></div>
+        </div>
+      </div>
+      {manual ? (
+        <div className="flex flex-col justify-start items-start w-full gap-2">
+          <CustomInput
+            intent={"secondary"}
+            placeholder={"Principal"}
+            compOutClass="mb-1"
+            value={manualPrinc.princ}
+            onChange={onChangePrincipal}
+            sizeInput="small"
+            border={manualPrinc.err ? "error" : "secondary"}
+          />
+          <CustomInput
+            compOutClass="!w-1/3"
+            intent={"secondary"}
+            placeholder={"Hex"}
+            value={manualSub}
+            onChange={onChangeIdx}
+            sizeInput="small"
+            border={"secondary"}
+          />
+        </div>
+      ) : (
+        <CustomInput
+          prefix={<img src={SearchIcon} className="mx-2" alt="search-icon" />}
+          sufix={
+            <div className="flex flex-row justify-center items-center mx-2 gap-2">
+              {contactsToShow() > 0 && (
+                <DropdownMenu.Root>
+                  <DropdownMenu.Trigger asChild>
+                    <img
+                      src={SendUserIcon}
+                      className="cursor-pointer"
+                      alt="search-icon"
+                      onClick={() => {
+                        setOpenContactList(true);
+                      }}
                     />
-                  </DropdownMenu.Content>
-                </DropdownMenu.Portal>
-              </DropdownMenu.Root>
-            )}
+                  </DropdownMenu.Trigger>
+                  <DropdownMenu.Portal>
+                    <DropdownMenu.Content
+                      className=" w-[22.6rem] max-h-[calc(100vh-15rem)] scroll-y-light bg-PrimaryColorLight rounded-lg dark:bg-SecondaryColor z-[999] text-PrimaryTextColorLight dark:text-PrimaryTextColor shadow-sm shadow-BorderColorTwoLight dark:shadow-BorderColorTwo border border-AccpetButtonColor cursor-pointer"
+                      sideOffset={12}
+                      align="end"
+                    >
+                      {getContactsToShow().map((s, k) => {
+                        return (
+                          <button
+                            key={k}
+                            className="flex flex-row justify-start items-center w-full hover:bg-[rgb(51,178,239,0.2)] px-2 py-3 gap-3 text-md"
+                            onClick={() => {
+                              onSelecetContact(s);
+                            }}
+                          >
+                            <div className="flex justify-center items-center !w-8 !h-8 !min-w-[2rem] rounded-md bg-ReceiverColor">
+                              <p className="font-semibold">{getFirstNFrom(s.sName, 1)}</p>
+                            </div>
+                            <div className="flex flex-col justify-start items-start w-full">
+                              <p className="text-left w-full max-w-[18rem] break-words">{`${s.cName} [${s.sName}]`}</p>
+                              <p className="text-SvgColor">{`${shortAddress(
+                                getICRCAccount(s.princ, `0x${s.subaccount_index}`),
+                                6,
+                                10,
+                              )}`}</p>
+                            </div>
+                          </button>
+                        );
+                      })}
+                      <DropdownMenu.Arrow
+                        className=" fill-AccpetButtonColor rounded-lg dark:fill-AccpetButtonColor"
+                        width={10}
+                        hanging={10}
+                      />
+                    </DropdownMenu.Content>
+                  </DropdownMenu.Portal>
+                </DropdownMenu.Root>
+              )}
 
-            <img
-              src={QRIcon}
-              className="cursor-pointer"
-              alt="search-icon"
-              onClick={() => {
-                setQRview(true);
-              }}
-            />
-          </div>
-        }
-        intent={"secondary"}
-        placeholder={t("icrc.account")}
-        compOutClass="mb-1"
-        value={newAccount}
-        border={errAddress ? "error" : undefined}
-        onChange={onChangeInput}
-        onKeyUp={onKeyUp}
-      />
+              <img
+                src={QRIcon}
+                className="cursor-pointer"
+                alt="search-icon"
+                onClick={() => {
+                  setQRview(true);
+                }}
+              />
+            </div>
+          }
+          intent={"secondary"}
+          placeholder={t("icrc.account")}
+          compOutClass="mb-1"
+          value={newAccount}
+          border={errAddress ? "error" : undefined}
+          onChange={onChangeInput}
+          onKeyUp={onKeyUp}
+        />
+      )}
       <p className="text-md text-LockColor text-left">{newAccountErr}</p>
       <div className="w-full flex flex-row justify-between items-center mt-2 mb-4">
         <CustomButton
@@ -184,6 +236,34 @@ const SendOutAccount = ({
       )}
     </div>
   );
+
+  function onManualToggle() {
+    setManual(!manual);
+    setNewAccount("");
+    setErrAddress(false);
+    setManualPrinc({
+      err: false,
+      princ: "",
+    });
+    setManualSub("");
+  }
+
+  function onChangePrincipal(e: ChangeEvent<HTMLInputElement>) {
+    let errPrin = false;
+    if (e.target.value.trim() !== "")
+      try {
+        Principal.fromText(e.target.value);
+      } catch {
+        errPrin = true;
+      }
+    setManualPrinc({
+      err: errPrin,
+      princ: e.target.value,
+    });
+  }
+  function onChangeIdx(e: ChangeEvent<HTMLInputElement>) {
+    if (checkHexString(e.target.value)) setManualSub(e.target.value.trim());
+  }
 
   function onChangeInput(e: ChangeEvent<HTMLInputElement>) {
     setNewAccount(e.target.value);
@@ -260,8 +340,20 @@ const SendOutAccount = ({
   }
 
   async function handleSetReceiver(contactAcc?: string) {
+    if (manual && (manualPrinc.err || manualPrinc.princ.trim() === "")) return;
     try {
-      const myReceiver = decodeIcrcAccount(contactAcc ? contactAcc : newAccount);
+      let manualHex = "";
+      if (manual) {
+        if (manualSub.toLowerCase().includes("0x")) {
+          manualHex = manualSub.substring(2);
+        } else manualHex = manualSub;
+        console.log("manualHex", manualHex);
+      }
+      const manulReciver = encodeIcrcAccount({
+        owner: Principal.fromText(manualPrinc.princ),
+        subaccount: hexToUint8Array(`0x${manualHex}`),
+      });
+      const myReceiver = decodeIcrcAccount(manual ? manulReciver : contactAcc ? contactAcc : newAccount);
       const receiverSubHex = `0x${subUint8ArrayToHex(myReceiver.subaccount)}`;
       if (selectedAccount?.address === myReceiver.owner.toText() && receiverSubHex === selectedAccount.sub_account_id) {
         setNewAccountErr(t("sendes.as.receiver"));
