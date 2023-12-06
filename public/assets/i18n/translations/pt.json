@@ -93,7 +93,6 @@
   "contact.error.principal.self": "Principal de contato não pode ser o mesmo que o principal da conta",
 
   "copied": "Copiado!",
-<<<<<<< HEAD
   "atualmente.have": "Atualmente tenho",
   "delete.service.confirmation": "Por favor, confirme que deseja excluir",
   "successful.notification": "Notificação Bem-sucedida",
@@ -104,9 +103,6 @@
   "increased.credit": "Aumento de crédito",
   "delete.asset.msg": "Tem certeza que deseja excluir o Ativo",
   "delete.service.asset.msg": "Alguns serviços estão usando o Ativo, se você excluí-lo ele também desaparecerá da Lista de Serviços",
-=======
-  "delete.asset.msg": "Tem certeza que deseja excluir o Ativo",
->>>>>>> df1b1296 (delete assets with 0 balance)
   "empty.index.error": "O índice não pode estar vazio",
   "empty.name.err": "O noma não pode estar vazio",
   "already.used.index": "Índice já utilizado",

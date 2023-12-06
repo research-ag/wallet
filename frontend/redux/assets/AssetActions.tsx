@@ -19,7 +19,6 @@ import { hexToUint8Array } from "@common/utils/hexadecimal";
 import { getMetadataInfo } from "@common/utils/icrc";
 import logger from "@/common/utils/logger";
 
-<<<<<<< HEAD
 /**
  * This function updates the balances for all provided assets and their subaccounts, based on the market price and the account balance.
  *
@@ -35,45 +34,6 @@ export const updateAllBalances: UpdateAllBalances = async (params) => {
   if (ckETHRate) tokenMarkets.push(ckETHRate);
   tokenMarkets.push(ckUSDCRate);
   store.dispatch(setTokenMarket(tokenMarkets));
-=======
-export const updateAllBalances = async (
-  loading: boolean,
-  myAgent: HttpAgent,
-  tokens: Token[],
-  basicSearch?: boolean,
-) => {
-  let tokenMarkets: TokenMarketInfo[] = [];
-  try {
-    const auxTokenMarkets: TokenMarketInfo[] = await fetch(import.meta.env.VITE_APP_TOKEN_MARKET).then((x) => x.json());
-    tokenMarkets = auxTokenMarkets.filter((x) => !x.unreleased);
-  } catch {
-    tokenMarkets = [];
-  }
-
-  try {
-    const ethRate = await fetch(import.meta.env.VITE_APP_ETH_MARKET).then((x) => x.json());
-
-    store.dispatch(
-      setTokenMarket([
-        ...tokenMarkets,
-        {
-          id: 999,
-          name: "Ethereum",
-          symbol: "ckETH",
-          price: ethRate.USD,
-          marketcap: 0,
-          volume24: 0,
-          circulating: 0,
-          total: 0,
-          liquidity: 0,
-          unreleased: 0,
-        },
-      ]),
-    );
-  } catch {
-    store.dispatch(setTokenMarket(tokenMarkets));
-  }
->>>>>>> 870ab8ce (fetch eth market value)
 
   const auxAssets = [...assets].sort((a, b) => a.sortIndex - b.sortIndex);
   const myPrincipal = store.getState().auth.userPrincipal;
@@ -195,102 +155,7 @@ export const getSNSTokens = async (agent: HttpAgent): Promise<Asset[]> => {
         });
       }
     }),
-<<<<<<< HEAD
   );
 
   return deduplicatedTokens.reverse();
-=======
-  };
-};
-
-export const getAllTransactionsICP = async (subaccount_index: string, loading: boolean) => {
-  const myAgent = store.getState().auth.userAgent;
-  const myPrincipal = await myAgent.getPrincipal();
-  let subacc: SubAccountNNS | undefined = undefined;
-  try {
-    subacc = SubAccountNNS.fromBytes(hexToUint8Array(subaccount_index)) as SubAccountNNS;
-  } catch {
-    subacc = undefined;
-  }
-
-  const accountIdentifier = AccountIdentifier.fromPrincipal({
-    principal: myPrincipal,
-    subAccount: subacc,
-  });
-  try {
-    const response = await fetch(`${import.meta.env.VITE_ROSETTA_URL}/search/transactions`, {
-      method: "POST",
-      body: JSON.stringify({
-        network_identifier: {
-          blockchain: import.meta.env.VITE_NET_ID_BLOCKCHAIN,
-          network: import.meta.env.VITE_NET_ID_NETWORK,
-        },
-        account_identifier: {
-          address: accountIdentifier.toHex(),
-        },
-      }),
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "*/*",
-      },
-    });
-    if (!response.ok) throw Error(`${response.statusText}`);
-    const { transactions } = await response.json();
-    const transactionsInfo = transactions.map(({ transaction }: any) =>
-      formatIcpTransaccion(accountIdentifier.toHex(), transaction),
-    );
-
-    if (loading) {
-      store.dispatch(setTransactions(transactionsInfo));
-    } else {
-      return transactionsInfo;
-    }
-  } catch (error) {
-    console.error("error", error);
-    if (!loading) {
-      return [];
-    }
-  }
-};
-
-export const getAllTransactionsICRC1 = async (
-  canister_id: any,
-  subaccount_index: Uint8Array,
-  loading: boolean,
-  assetSymbol: string,
-  symbol: string,
-  canister: string,
-  subNumber?: string,
-) => {
-  const myAgent = store.getState().auth.userAgent;
-  const myPrincipal = await myAgent.getPrincipal();
-  const canisterPrincipal = Principal.fromText(canister_id);
-
-  const { getTransactions: ICRC1_getTransactions } = IcrcIndexCanister.create({
-    agent: myAgent,
-    canisterId: canisterPrincipal,
-  });
-
-  const ICRC1getTransactions = await ICRC1_getTransactions({
-    account: {
-      owner: myPrincipal,
-      subaccount: subaccount_index,
-    } as IcrcAccount,
-    max_results: BigInt(100),
-  });
-
-  const transactionsInfo = ICRC1getTransactions.transactions.map(({ transaction, id }) =>
-    formatckBTCTransaccion(transaction, id, myPrincipal.toString(), assetSymbol, canister, subNumber),
-  );
-  if (
-    loading &&
-    store.getState().asset.selectedAccount?.sub_account_id === subNumber &&
-    assetSymbol === store.getState().asset.selectedAsset?.tokenSymbol
-  ) {
-    store.dispatch(setTransactions(transactionsInfo));
-    return transactionsInfo;
-  } else {
-    return transactionsInfo;
-  }
->>>>>>> 131bad97 (fix on clic functions in line)
 };

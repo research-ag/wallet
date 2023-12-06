@@ -267,7 +267,7 @@ const TableContacts = ({
         const ast = cntc.assets[i];
         for (let j = 0; j < ast.subaccounts.length; j++) {
           const sa = ast.subaccounts[j];
-          if (sa.name.toLowerCase().includes(searchKey.toLowerCase())) {
+          if (sa.name.toLowerCase().includes(searchKey.trim().toLowerCase())) {
             incSubName = true;
             break;
           }
@@ -275,9 +275,9 @@ const TableContacts = ({
       }
       if (assetFilter.length === 0) {
         return (
-          cntc.name.toLowerCase().includes(searchKey.toLowerCase()) ||
+          cntc.name.toLowerCase().includes(searchKey.trim().toLowerCase()) ||
           incSubName ||
-          cntc.principal.toLowerCase().includes(searchKey.toLowerCase())
+          cntc.principal.toLowerCase().includes(searchKey.trim().toLowerCase())
         );
       } else {
         const astFilValid = assetFilter.some((astFil) => {
@@ -285,9 +285,9 @@ const TableContacts = ({
         });
 
         return (
-          (cntc.name.toLowerCase().includes(searchKey.toLowerCase()) ||
+          (cntc.name.toLowerCase().includes(searchKey.trim().toLowerCase()) ||
             incSubName ||
-            cntc.principal.toLowerCase().includes(searchKey.toLowerCase())) &&
+            cntc.principal.toLowerCase().includes(searchKey.trim().toLowerCase())) &&
           astFilValid
         );
       }

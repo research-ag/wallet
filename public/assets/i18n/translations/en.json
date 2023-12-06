@@ -92,7 +92,6 @@
   "contact.error.principal.self": "Principal is the same as the account",
 
   "copied": "Copied!",
-<<<<<<< HEAD
   "currently.have": "Currently have",
   "delete.service.confirmation": "Please confirm you want to delete",
   "successful.notification": "Successful Notification",
@@ -103,9 +102,6 @@
   "increased.credit": "Increased Credit",
   "delete.asset.msg": "Are you sure you want to delete the Asset",
   "delete.service.asset.msg": "Some services are using the Asset, if you delete it will also disappear in Service List",
-=======
-  "delete.asset.msg": "Are you sure you want to delete the Asset",
->>>>>>> df1b1296 (delete assets with 0 balance)
   "empty.index.err": "Index can't be empty",
   "empty.name.err": "Name can't be empty",
   "already.used.index": "Index already used",

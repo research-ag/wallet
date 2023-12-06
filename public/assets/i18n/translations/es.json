@@ -94,7 +94,6 @@
   "contact.error.principal.self": "No se permite el principal de contacto propio",
 
   "copied": "Copiado!",
-<<<<<<< HEAD
   "currently.have": "Actualmente tengo",
   "delete.service.confirmation": "Confirma que deseas eliminar",
   "successful.notification": "Notificación Exitosa",
@@ -105,9 +104,6 @@
   "increased.credit": "Crédito aumentado",
   "delete.asset.msg": "¿Estás seguro de que deseas eliminar el Activo",
   "delete.service.asset.msg": "Algunos servicios están usando el Activo, si lo eliminas también desaparecerá de la Lista de Servicios",
-=======
-  "delete.asset.msg": "¿Estás seguro de que deseas eliminar el Activo",
->>>>>>> df1b1296 (delete assets with 0 balance)
   "empty.index.error": "El índice no puede estar vacío",
   "empty.name.err": "El nombre no puede estar vacío",
   "already.used.index": "Índice ya utilizado",
