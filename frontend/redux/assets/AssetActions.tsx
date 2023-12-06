@@ -59,7 +59,7 @@ export const updateAllBalances = async (
   const assets: Asset[] = [];
 
   await Promise.all(
-    tokens.map(async (tkn) => {
+    tokens.map(async (tkn, idNum) => {
       try {
         const { balance, metadata, transactionFee } = IcrcLedgerCanister.create({
           agent: myAgent,
@@ -190,7 +190,7 @@ export const updateAllBalances = async (
           subAccounts: subAccList.sort((a, b) => {
             return hexToNumber(a.sub_account_id)?.compare(hexToNumber(b.sub_account_id) || bigInt()) || 0;
           }),
-          sort_index: tkn.id_number,
+          sort_index: idNum,
           decimal: decimals.toFixed(0),
           tokenName: name,
           tokenSymbol: symbol,
@@ -215,7 +215,7 @@ export const updateAllBalances = async (
             },
           ],
           decimal: "8",
-          sort_index: 99999,
+          sort_index: 99999 + idNum,
           tokenName: tkn.name,
           tokenSymbol: tkn.symbol,
         });
