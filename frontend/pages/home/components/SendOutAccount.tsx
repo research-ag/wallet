@@ -14,6 +14,7 @@ import { Contact, SubAccountContact } from "@redux/models/ContactsModels";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { useTranslation } from "react-i18next";
 import { ChangeEvent, useState } from "react";
+import { boolean } from "zod";
 
 interface SendOutAccountProps {
   setOpenContactList(value: boolean): void;
