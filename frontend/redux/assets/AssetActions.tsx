@@ -11,7 +11,7 @@ import {
   hexToUint8Array,
   hexToNumber,
 } from "@/utils";
-import { setAssets, setTransactions, setTokenMarket, setICPSubaccounts } from "./AssetReducer";
+import { setAssets, setTransactions, setTokenMarket, setICPSubaccounts, setAcordeonAssetIdx } from "./AssetReducer";
 import { AccountIdentifier, SubAccount as SubAccountNNS } from "@dfinity/nns";
 import { Asset, ICPSubAccount, SubAccount } from "@redux/models/AccountModels";
 import { Principal } from "@dfinity/principal";
@@ -23,6 +23,7 @@ export const updateAllBalances = async (
   myAgent: HttpAgent,
   tokens: Token[],
   basicSearch?: boolean,
+  fromLogin?: boolean,
 ) => {
   let tokenMarkets: TokenMarketInfo[] = [];
   try {
@@ -237,6 +238,9 @@ export const updateAllBalances = async (
         }),
       );
     }
+    if (fromLogin) {
+      assets.length > 0 && store.dispatch(setAcordeonAssetIdx([assets[0].tokenSymbol]));
+    }
   }
 
   const icpAsset = assets.find((ast) => ast.tokenSymbol === "ICP");
@@ -326,34 +330,38 @@ export const getAllTransactionsICRC1 = async (
   canister: string,
   subNumber?: string,
 ) => {
-  const myAgent = store.getState().auth.userAgent;
-  const myPrincipal = await myAgent.getPrincipal();
-  const canisterPrincipal = Principal.fromText(canister_id);
+  try {
+    const myAgent = store.getState().auth.userAgent;
+    const myPrincipal = await myAgent.getPrincipal();
+    const canisterPrincipal = Principal.fromText(canister_id);
 
-  const { getTransactions: ICRC1_getTransactions } = IcrcIndexCanister.create({
-    agent: myAgent,
-    canisterId: canisterPrincipal,
-  });
+    const { getTransactions: ICRC1_getTransactions } = IcrcIndexCanister.create({
+      agent: myAgent,
+      canisterId: canisterPrincipal,
+    });
 
-  const ICRC1getTransactions = await ICRC1_getTransactions({
-    account: {
-      owner: myPrincipal,
-      subaccount: subaccount_index,
-    } as IcrcAccount,
-    max_results: BigInt(100),
-  });
+    const ICRC1getTransactions = await ICRC1_getTransactions({
+      account: {
+        owner: myPrincipal,
+        subaccount: subaccount_index,
+      } as IcrcAccount,
+      max_results: BigInt(100),
+    });
 
-  const transactionsInfo = ICRC1getTransactions.transactions.map(({ transaction, id }) =>
-    formatckBTCTransaccion(transaction, id, myPrincipal.toString(), assetSymbol, canister, subNumber),
-  );
-  if (
-    loading &&
-    store.getState().asset.selectedAccount?.sub_account_id === subNumber &&
-    assetSymbol === store.getState().asset.selectedAsset?.tokenSymbol
-  ) {
-    store.dispatch(setTransactions(transactionsInfo));
-    return transactionsInfo;
-  } else {
-    return transactionsInfo;
+    const transactionsInfo = ICRC1getTransactions.transactions.map(({ transaction, id }) =>
+      formatckBTCTransaccion(transaction, id, myPrincipal.toString(), assetSymbol, canister, subNumber),
+    );
+    if (
+      loading &&
+      store.getState().asset.selectedAccount?.sub_account_id === subNumber &&
+      assetSymbol === store.getState().asset.selectedAsset?.tokenSymbol
+    ) {
+      store.dispatch(setTransactions(transactionsInfo));
+      return transactionsInfo;
+    } else {
+      return transactionsInfo;
+    }
+  } catch {
+    return [];
   }
 };

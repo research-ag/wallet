@@ -50,9 +50,8 @@ const AssetsList = () => {
           {assets?.length > 0 && (
             <Accordion.Root
               className=""
-              type="single"
-              defaultValue="asset-0"
-              collapsible
+              type="multiple"
+              defaultValue={[]}
               value={acordeonIdx}
               onValueChange={onValueChange}
             >
@@ -108,8 +107,8 @@ const AssetsList = () => {
     }, 150);
   }
 
-  function onValueChange(e: string) {
-    if (e !== "") setAcordeonIdx(e);
+  function onValueChange(e: string[]) {
+    setAcordeonIdx(e);
   }
 };
 

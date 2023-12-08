@@ -43,6 +43,8 @@
   "succes.caps": "SUCESSO",
   "subacc": "SubCon",
   "sub-acc": "Sub-conta",
+  "not.yet.available": "ainda não disponível",
+  "devs.only": "somente desenvolvedores",
   "err.qr.img": "Não foi possível detectar um QR válido para o upload da imagem",
   "hex.check": "Adicionar índice manualmenteks",
   "add.subacc": "Adicionar Subconta",

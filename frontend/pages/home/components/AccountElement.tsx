@@ -6,7 +6,7 @@ import { ReactComponent as WarningIcon } from "@assets/svg/files/warning.svg";
 import { ReactComponent as TrashIcon } from "@assets/svg/files/trash-icon.svg";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
-import { SubAccount } from "@redux/models/AccountModels";
+import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { clsx } from "clsx";
 import { ChangeEvent, Fragment, useState } from "react";
 import { GeneralHook } from "../hooks/generalHook";
@@ -23,8 +23,10 @@ import { CustomButton } from "@components/Button";
 import bigInt from "big-integer";
 
 interface AccountElementProps {
+  asset: Asset;
   subAccount: SubAccount;
   symbol: string;
+  tokenSymbol: string;
   name: string;
   editNameId: string;
   setName(value: string): void;
@@ -37,8 +39,10 @@ interface AccountElementProps {
 }
 
 const AccountElement = ({
+  asset,
   subAccount,
   symbol,
+  tokenSymbol,
   name,
   editNameId,
   setName,
@@ -52,9 +56,11 @@ const AccountElement = ({
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { authClient } = AccountHook();
-  const { selectedAccount, changeSelectedAccount } = GeneralHook();
+  const { selectedAsset, changeSelectedAsset, selectedAccount, changeSelectedAccount } = GeneralHook();
   const chechEqId = () => {
-    return subAccount?.sub_account_id === selectedAccount?.sub_account_id;
+    return (
+      subAccount?.sub_account_id === selectedAccount?.sub_account_id && subAccount?.symbol === selectedAccount?.symbol
+    );
   };
 
   const [deleteModal, setDeleteModal] = useState(false);
@@ -66,6 +72,7 @@ const AccountElement = ({
         aria-haspopup="true"
         className={accElemStyle()}
         onClick={() => {
+          if (!newSub && selectedAsset?.tokenSymbol !== tokenSymbol) changeSelectedAsset(asset);
           if (!newSub && selectedAccount !== subAccount) changeSelectedAccount(subAccount);
           if (editNameId !== subAccount.sub_account_id) setEditNameId("");
         }}

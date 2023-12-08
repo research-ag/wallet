@@ -11,7 +11,7 @@ interface AssetState {
   tokensMarket: TokenMarketInfo[];
   assets: Array<Asset>;
   accounts: Array<SubAccount>;
-  acordeonIdx: string;
+  acordeonIdx: string[];
   transactions: Array<Transaction>;
   selectedAsset: Asset | undefined;
   selectedAccount: SubAccount | undefined;
@@ -27,7 +27,7 @@ const initialState: AssetState = {
   tokensMarket: [],
   assets: [],
   accounts: [],
-  acordeonIdx: "asset-0",
+  acordeonIdx: [],
   transactions: [],
   selectedAsset: undefined,
   selectedAccount: undefined,
@@ -227,7 +227,7 @@ const assetSlice = createSlice({
     setTxLoad(state, action) {
       state.txLoad = action.payload;
     },
-    setAcordeonAssetIdx(state, action: PayloadAction<string>) {
+    setAcordeonAssetIdx(state, action: PayloadAction<string[]>) {
       state.acordeonIdx = action.payload;
     },
     clearDataAsset(state) {

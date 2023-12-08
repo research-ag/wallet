@@ -77,9 +77,9 @@ export const handleLoginApp = async (authIdentity: Identity) => {
   if (userData) {
     const userDataJson = JSON.parse(userData);
     store.dispatch(setTokens(userDataJson.tokens));
-    await updateAllBalances(true, myAgent, userDataJson.tokens);
+    await updateAllBalances(true, myAgent, userDataJson.tokens, false, true);
   } else {
-    const { tokens } = await updateAllBalances(true, myAgent, defaultTokens, true);
+    const { tokens } = await updateAllBalances(true, myAgent, defaultTokens, true, true);
     store.dispatch(setTokens(tokens));
   }
 

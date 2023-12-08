@@ -49,7 +49,9 @@ const Login = () => {
                         handleLogin(opt);
                       }}
                     >
-                      <h3 className="font-medium text-PrimaryTextColorLight dark:text-PrimaryTextColor">{opt.name}</h3>
+                      <h3 className="font-medium text-PrimaryTextColorLight dark:text-PrimaryTextColor">
+                        {opt.name} <span className="text-md opacity-60">{opt.extra ? `(${t(opt.extra)})` : ""}</span>
+                      </h3>
                       {opt.icon}
                     </div>
                     {seedOpen && opt.type === AuthNetworkTypeEnum.Enum.NONE && (

@@ -45,6 +45,7 @@ export type TokenMarketInfo = z.infer<typeof TokenMarketInfo>;
 
 const AuthNetwork = z.object({
   name: AuthNetworkNameEnum,
+  extra: z.string().optional(),
   icon: z.any(),
   type: AuthNetworkTypeEnum,
   network: z.any(),

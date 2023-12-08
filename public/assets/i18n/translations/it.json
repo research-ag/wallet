@@ -43,6 +43,8 @@
   "succes.caps": "SUCCESSO",
   "subacc": "AcSec",
   "sub-acc": "Sub-account",
+  "not.yet.available": "non ancora disponibile",
+  "devs.only": "solo sviluppatori",
   "err.qr.img": "Impossibile rilevare un QR valido per il caricamento dell'immagine",
   "hex.check": "Aggiungi indice manualmente",
   "add.subacc": "Aggiungi Account Secondario",
