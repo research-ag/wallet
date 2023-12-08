@@ -22,7 +22,7 @@ import DeleteAssetModal from "./DeleteAssetModal";
 interface AssetElementProps {
   asset: Asset;
   idx: number;
-  acordeonIdx: string;
+  acordeonIdx: string[];
   setAssetInfo(value: Asset | undefined): void;
   setAssetOpen(value: boolean): void;
   tokens: Token[];
@@ -41,7 +41,7 @@ const AssetElement = ({ asset, idx, acordeonIdx, setAssetInfo, setAssetOpen, tok
 
   return (
     <Fragment>
-      <Accordion.Item value={`asset-${asset.sort_index}`}>
+      <Accordion.Item value={asset.tokenSymbol}>
         <div
           className={`relative flex flex-row items-center w-full h-16 text-PrimaryColor dark:text-PrimaryColorLight cursor-pointer hover:bg-SecondaryColorLight dark:hover:bg-SecondaryColor ${
             asset?.tokenSymbol === selectedAsset?.tokenSymbol ? "bg-SecondaryColorLight dark:bg-SecondaryColor" : ""
@@ -96,7 +96,7 @@ const AssetElement = ({ asset, idx, acordeonIdx, setAssetInfo, setAssetOpen, tok
                 <img
                   src={theme === ThemesEnum.enum.dark ? ChevronRightIcon : ChevronRightDarkIcon}
                   className={`${
-                    acordeonIdx === `asset-${asset.sort_index}`
+                    acordeonIdx.includes(asset.tokenSymbol)
                       ? "-rotate-90 transition-transform"
                       : "rotate-0 transition-transform"
                   } `}
@@ -127,8 +127,10 @@ const AssetElement = ({ asset, idx, acordeonIdx, setAssetInfo, setAssetOpen, tok
                 return (
                   <AccountElement
                     key={subIdx}
+                    asset={asset}
                     subAccount={subAccount}
                     symbol={asset.symbol}
+                    tokenSymbol={asset.tokenSymbol}
                     name={name}
                     setName={setName}
                     editNameId={editNameId}
