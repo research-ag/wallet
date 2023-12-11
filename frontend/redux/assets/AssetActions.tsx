@@ -81,9 +81,9 @@ export const updateAllBalances = async (
         const subAccList: SubAccount[] = [];
         const userSubAcc: TokenSubAccount[] = [];
 
-        // Basic Serach look into first 1000 subaccount under the 10 consecutive zeros logic
+        // Basic Serach look into first 1000 subaccount under the 5 consecutive zeros logic
         // It iterates geting amount of each subaccount
-        // If 10 consecutive subaccounts balances are zero, iteration stops
+        // If 5 consecutive subaccounts balances are zero, iteration stops
         if (basicSearch) {
           let zeros = 0;
           for (let i = 0; i < 1000; i++) {
@@ -110,13 +110,13 @@ export const updateAllBalances = async (
               });
             } else zeros++;
 
-            if (zeros === 10) break;
+            if (zeros === 5) break;
           }
         } else {
           // Non Basic Serach first look into storaged subaccounts
-          // Then search into first 1000 subaccount that are not looked yet under the 10 consecutive zeros logic
+          // Then search into first 1000 subaccount that are not looked yet under the 5 consecutive zeros logic
           // It iterates geting amount of each subaccount
-          // If 10 consecutive subaccounts balances are zero, iteration stops
+          // If 5 consecutive subaccounts balances are zero, iteration stops
           const idsPushed: string[] = [];
           await Promise.all(
             tkn.subAccounts.map(async (sa) => {
@@ -170,7 +170,7 @@ export const updateAllBalances = async (
                 });
               } else zeros++;
 
-              if (zeros === 10) break;
+              if (zeros === 5) break;
             }
           }
         }
