@@ -29,11 +29,18 @@ export const UseTransaction = () => {
   };
 
   const getSelectedSubaccountICPTx = async () => {
-    getAllTransactionsICP(selectedAccount?.sub_account_id || "", true);
+    getAllTransactionsICP(
+      selectedAccount?.sub_account_id || "",
+      true,
+      selectedAccount?.symbol === AssetSymbolEnum.Enum.OGY,
+    );
   };
 
   useEffect(() => {
-    if (selectedAsset?.tokenSymbol === AssetSymbolEnum.Enum.ICP) {
+    if (
+      selectedAsset?.tokenSymbol === AssetSymbolEnum.Enum.ICP ||
+      selectedAsset?.tokenSymbol === AssetSymbolEnum.Enum.OGY
+    ) {
       const getICPTx = async () => {
         await getSelectedSubaccountICPTx();
       };

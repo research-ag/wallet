@@ -7,6 +7,8 @@ import ckEthIcon from "@/assets/svg/files/ckETH.svg";
 import OpenChatIcon from "@/assets/svg/files/openchat.svg";
 import KinicIcon from "@/assets/svg/files/kinic.svg";
 import HotOrNotIcon from "@/assets/svg/files/hot-or-not.svg";
+import GoldTokenIcon from "@/assets/svg/files/gldt_icon.svg";
+import OrigynIcon from "@/assets/svg/files/ogy_icon.svg";
 import DragginzIcon from "@/assets/svg/files/dragginz.svg";
 import { z } from "zod";
 import { Token } from "@redux/models/TokenModels";
@@ -27,7 +29,7 @@ export type DrawerOption = z.infer<typeof DrawerOptionEnum>;
 export const IconTypeEnum = z.enum(["ASSET", "HEADER", "FILTER"]);
 export type IconType = z.infer<typeof IconTypeEnum>;
 
-export const AssetSymbolEnum = z.enum(["ICP", "ckBTC", "CHAT", "KINIC", "SNS1", "HOT"]);
+export const AssetSymbolEnum = z.enum(["ICP", "ckBTC", "CHAT", "KINIC", "SNS1", "HOT", "OGY"]);
 export type AssetSymbol = z.infer<typeof AssetSymbolEnum>;
 
 export const ThemesEnum = z.enum(["dark", "light"]);
@@ -116,7 +118,25 @@ export const ICRC1systemAssets: Array<Token> = [
     index: "zlaol-iaaaa-aaaaq-aaaha-cai",
   },
   {
-    id_number: 10006,
+    id_number: 10007,
+    address: "oh54a-baaaa-aaaap-abryq-cai",
+    symbol: "GLDT",
+    name: "Gold token",
+    decimal: "8",
+    subAccounts: [{ numb: "0", name: "Default" }],
+    index: "oo6x4-xiaaa-aaaap-abrza-cai",
+  },
+  // {
+  //   id_number: 10008,
+  //   address: "jwcfb-hyaaa-aaaaj-aac4q-cai",
+  //   symbol: "OGY",
+  //   name: "Origyn",
+  //   decimal: "8",
+  //   subAccounts: [{ numb: "0", name: "Default" }],
+  //   index: "",
+  // },
+  {
+    id_number: 10009,
     address: "6rdgd-kyaaa-aaaaq-aaavq-cai",
     symbol: "HOT",
     name: "Hot or Not",
@@ -142,6 +162,8 @@ export const symbolIconDict: { [key: string]: string } = {
   KINIC: KinicIcon,
   SNS1: DragginzIcon,
   HOT: HotOrNotIcon,
+  GLDT: GoldTokenIcon,
+  OGY: OrigynIcon,
 };
 
 export const defaultTokens: Token[] = [
