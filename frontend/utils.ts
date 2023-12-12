@@ -84,17 +84,10 @@ export const roundToDecimalN = (numb: number | string, decimal: number | string)
   return Math.round(Number(numb) * Math.pow(10, Number(decimal))) / Math.pow(10, Number(decimal));
 };
 
-export function toFullDecimal(numb: number | string, decimal: number | string) {
+export function toFullDecimal(numb: number | string, decimal: number | string, maxFraction?: number) {
   if (Number(numb) === 0) return "0";
-  let x = Math.round(Number(numb) * Math.pow(10, Number(decimal))) / Math.pow(10, Number(decimal));
-  if (Math.abs(x) < 0.000001) {
-    const e = parseInt(x.toString().split("e-")[1]);
-    if (e) {
-      (x *= Math.pow(10, e - 1)), decimal;
-      return "0." + new Array(e).join("0") + roundToDecimalN(x, decimal).toString().substring(2);
-    }
-  }
-  return x.toString();
+  const x = Math.round(Number(numb) * Math.pow(10, Number(decimal))) / Math.pow(10, Number(decimal));
+  return x.toLocaleString("en-US", { maximumFractionDigits: Number(decimal) });
 }
 export const getUSDfromToken = (
   tokenAmount: string | number,

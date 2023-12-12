@@ -142,37 +142,37 @@ export const updateAllBalances = async (
               });
             }),
           );
-          let zeros = 0;
-          for (let i = 0; i < 1000; i++) {
-            if (!idsPushed.includes(`0x${i.toString(16)}`)) {
-              const myBalance = await balance({
-                owner: myPrincipal,
-                subaccount: new Uint8Array(getSubAccountArray(i)),
-                certified: false,
-              });
-              if (Number(myBalance) > 0 || i === 0) {
-                zeros = 0;
-                subAccList.push({
-                  name: i === 0 ? AccountDefaultEnum.Values.Default : "-",
-                  sub_account_id: `0x${i.toString(16)}`,
-                  address: myPrincipal.toString(),
-                  amount: (Number(myBalance.toString()) / power).toString(),
-                  currency_amount: assetMarket
-                    ? getUSDfromToken(myBalance.toString(), assetMarket.price, decimals)
-                    : "0",
-                  transaction_fee: (Number(myTransactionFee.toString()) / power).toString(),
-                  decimal: decimals,
-                  symbol: tkn.symbol,
-                });
-                userSubAcc.push({
-                  name: i === 0 ? AccountDefaultEnum.Values.Default : "-",
-                  numb: `0x${i.toString(16)}`,
-                });
-              } else zeros++;
+          // let zeros = 0;
+          // for (let i = 0; i < 1000; i++) {
+          //   if (!idsPushed.includes(`0x${i.toString(16)}`)) {
+          //     const myBalance = await balance({
+          //       owner: myPrincipal,
+          //       subaccount: new Uint8Array(getSubAccountArray(i)),
+          //       certified: false,
+          //     });
+          //     if (Number(myBalance) > 0 || i === 0) {
+          //       zeros = 0;
+          //       subAccList.push({
+          //         name: i === 0 ? AccountDefaultEnum.Values.Default : "-",
+          //         sub_account_id: `0x${i.toString(16)}`,
+          //         address: myPrincipal.toString(),
+          //         amount: (Number(myBalance.toString()) / power).toString(),
+          //         currency_amount: assetMarket
+          //           ? getUSDfromToken(myBalance.toString(), assetMarket.price, decimals)
+          //           : "0",
+          //         transaction_fee: (Number(myTransactionFee.toString()) / power).toString(),
+          //         decimal: decimals,
+          //         symbol: tkn.symbol,
+          //       });
+          //       userSubAcc.push({
+          //         name: i === 0 ? AccountDefaultEnum.Values.Default : "-",
+          //         numb: `0x${i.toString(16)}`,
+          //       });
+          //     } else zeros++;
 
-              if (zeros === 5) break;
-            }
-          }
+          //     if (zeros === 5) break;
+          //   }
+          // }
         }
         newTokens.push({
           ...tkn,
