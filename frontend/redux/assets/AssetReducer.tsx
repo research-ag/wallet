@@ -57,6 +57,8 @@ const assetSlice = createSlice({
       const auxTkns: Token[] = [];
       state.tokens.map((tkn) => {
         count++;
+        console.log("token", tkn.symbol, action.payload);
+
         if (tkn.symbol !== action.payload) {
           auxTkns.push({ ...tkn, id_number: count - 1 });
         }
