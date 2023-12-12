@@ -272,7 +272,7 @@ export const updateAllBalances = async (
   };
 };
 
-export const getAllTransactionsICP = async (subaccount_index: string, loading: boolean) => {
+export const getAllTransactionsICP = async (subaccount_index: string, loading: boolean, isOGY: boolean) => {
   const myAgent = store.getState().auth.userAgent;
   const myPrincipal = await myAgent.getPrincipal();
   let subacc: SubAccountNNS | undefined = undefined;
@@ -287,22 +287,25 @@ export const getAllTransactionsICP = async (subaccount_index: string, loading: b
     subAccount: subacc,
   });
   try {
-    const response = await fetch(`${import.meta.env.VITE_ROSETTA_URL}/search/transactions`, {
-      method: "POST",
-      body: JSON.stringify({
-        network_identifier: {
-          blockchain: import.meta.env.VITE_NET_ID_BLOCKCHAIN,
-          network: import.meta.env.VITE_NET_ID_NETWORK,
+    const response = await fetch(
+      `${isOGY ? import.meta.env.VITE_ROSETTA_URL_OGY : import.meta.env.VITE_ROSETTA_URL}/search/transactions`,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          network_identifier: {
+            blockchain: isOGY ? import.meta.env.VITE_NET_ID_BLOCKCHAIN_OGY : import.meta.env.VITE_NET_ID_BLOCKCHAIN,
+            network: isOGY ? import.meta.env.VITE_NET_ID_NETWORK_OGY : import.meta.env.VITE_NET_ID_NETWORK,
+          },
+          account_identifier: {
+            address: accountIdentifier.toHex(),
+          },
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "*/*",
         },
-        account_identifier: {
-          address: accountIdentifier.toHex(),
-        },
-      }),
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "*/*",
       },
-    });
+    ).catch();
     if (!response.ok) throw Error(`${response.statusText}`);
     const { transactions } = await response.json();
     const transactionsInfo = transactions.map(({ transaction }: any) =>
@@ -315,7 +318,7 @@ export const getAllTransactionsICP = async (subaccount_index: string, loading: b
       return transactionsInfo;
     }
   } catch (error) {
-    console.error("error", error);
+    // console.error("error", error);
     if (!loading) {
       return [];
     }
