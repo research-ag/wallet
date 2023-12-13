@@ -184,6 +184,15 @@ const DialogAddAsset = ({
         let tknAddress = "";
         let decimal = 8;
         let assetMrkt = 0;
+        const { balance } = IcrcLedgerCanister.create({
+          agent: userAgent,
+          canisterId: tknAddress as any,
+        });
+        const myBalance = await balance({
+          owner: userPrincipal,
+          subaccount: hexToUint8Array(`0x${subClean}`),
+          certified: false,
+        });
         const auxTokens = tokens.map((tkn, k) => {
           if (k === Number(idx)) {
             tknAddress = tkn.address;
@@ -196,6 +205,8 @@ const DialogAddAsset = ({
                 {
                   name: newSub.name,
                   numb: `0x${subClean}`.toLowerCase(),
+                  amount: myBalance.toString(),
+                  currency_amount: assetMrkt ? getUSDfromToken(myBalance.toString(), assetMrkt, decimal) : "0",
                 },
               ].sort((a, b) => {
                 return hexToNumber(a.numb)?.compare(hexToNumber(b.numb) || bigInt()) || 0;
@@ -203,21 +214,12 @@ const DialogAddAsset = ({
             };
           } else return tkn;
         });
-        const { balance } = IcrcLedgerCanister.create({
-          agent: userAgent,
-          canisterId: tknAddress as any,
-        });
-        const power = Math.pow(10, decimal);
-        const myBalance = await balance({
-          owner: userPrincipal,
-          subaccount: hexToUint8Array(`0x${subClean}`),
-          certified: false,
-        });
+
         saveLocalStorage(auxTokens);
         const savedSub = {
           ...newSub,
           sub_account_id: `0x${subClean}`.toLowerCase(),
-          amount: (Number(myBalance.toString()) / power).toString(),
+          amount: myBalance.toString(),
           currency_amount: assetMrkt ? getUSDfromToken(myBalance.toString(), assetMrkt, decimal) : "0",
         };
         dispatch(addSubAccount(idx, savedSub));

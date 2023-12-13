@@ -397,6 +397,7 @@ export const getMetadataInfo = (myMetadata: IcrcTokenMetadataResponse) => {
   let name = "symbol";
   let decimals = 0;
   let logo = "";
+  let fee = "";
 
   myMetadata.map((dt) => {
     if (dt[0] === "icrc1:symbol") {
@@ -415,9 +416,13 @@ export const getMetadataInfo = (myMetadata: IcrcTokenMetadataResponse) => {
       const auxName = dt[1] as { Text: string };
       logo = auxName.Text;
     }
+    if (dt[0] === "icrc1:fee") {
+      const auxName = dt[1] as { Text: string };
+      fee = auxName.Text;
+    }
   });
 
-  return { symbol, name, decimals, logo };
+  return { symbol, name, decimals, logo, fee };
 };
 
 export const getInitialFromName = (name: string, length: number) => {
