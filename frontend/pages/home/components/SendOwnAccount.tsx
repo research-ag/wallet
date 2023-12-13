@@ -82,7 +82,7 @@ const SendOwnAccount = ({
                 selectedAccount?.name === "-" ? `SubAc N°: ${selectedAccount.sub_account_id}` : selectedAccount?.name
               }`}</p>
               <p className="opacity-60">{`${t("balance")}: ${toFullDecimal(
-                selectedAccount?.amount || 0,
+                selectedAccount?.amount || "0",
                 selectedAccount?.decimal || 8,
               )}`}</p>
             </div>
@@ -120,7 +120,7 @@ const SendOwnAccount = ({
                         {sa.name === "-" ? `SubAc N°: ${sa.sub_account_id}` : sa.name}
                       </p>
                       <p className="opacity-60">{`${t("balance")}: ${toFullDecimal(
-                        sa?.amount || 0,
+                        sa?.amount || "0",
                         sa?.decimal || 8,
                       )}`}</p>
                     </div>
@@ -182,7 +182,9 @@ const SendOwnAccount = ({
         ) : Number(amount) > maxAmount().amount && maxAmount().valid ? (
           <p className="w-full text-left text-LockColor text-md whitespace-nowrap">{`${t(
             "max.amount.to.send",
-          )}: ${toFullDecimal(maxAmount().amount, selectedAccount?.decimal || 8)} ${selectedAsset?.symbol || ""}`}</p>
+          )}: ${toFullDecimal(maxAmount().amount.toString(), selectedAccount?.decimal || 8)} ${
+            selectedAsset?.symbol || ""
+          }`}</p>
         ) : (
           <p></p>
         )}
@@ -222,7 +224,7 @@ const SendOwnAccount = ({
   }
 
   function onMaxAmount() {
-    maxAmount().valid && setAmount(toFullDecimal(maxAmount().amount.toString(), selectedAccount?.decimal || "8"));
+    maxAmount().valid && setAmount(toFullDecimal(maxAmount().amount.toString(), selectedAccount?.decimal || 8));
   }
 
   function onCancel() {

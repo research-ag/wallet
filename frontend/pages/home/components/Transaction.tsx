@@ -130,8 +130,7 @@ const DrawerTransaction = ({ setDrawerOpen }: DrawerTransactionProps) => {
             <div className="flex flex-row justify-between items-center w-full font-normal">
               <p>{t("transaction.amount")}</p>
               <p className="">{`${toFullDecimal(
-                Number(selectedTransaction?.amount) / Math.pow(10, selectedAccount?.decimal || 8) +
-                  Number(selectedAccount?.transaction_fee),
+                BigInt(selectedTransaction?.amount || "0") + BigInt(selectedAccount?.transaction_fee || "0"),
                 selectedAccount?.decimal || 8,
               )} ${assetSymbol}`}</p>
             </div>
@@ -200,7 +199,7 @@ const DrawerTransaction = ({ setDrawerOpen }: DrawerTransactionProps) => {
             <div className="flex flex-row justify-between items-center w-full font-normal">
               <p>{t("transaction.amount")}</p>
               <p className="">{`${toFullDecimal(
-                Number(selectedTransaction?.amount) / Math.pow(10, selectedAccount?.decimal || 8),
+                BigInt(selectedTransaction?.amount || "0"),
                 selectedAccount?.decimal || 8,
               )} ${assetSymbol}`}</p>
             </div>
@@ -211,7 +210,7 @@ const DrawerTransaction = ({ setDrawerOpen }: DrawerTransactionProps) => {
             <div className="flex flex-row justify-between items-center w-full font-normal">
               <p className="font-bold">{t("fee")}</p>
               <p className="font-bold">{`${toFullDecimal(
-                Number(selectedAccount?.transaction_fee),
+                BigInt(selectedAccount?.transaction_fee || "0"),
                 selectedAccount?.decimal || 8,
               )} ${assetSymbol}`}</p>
             </div>
