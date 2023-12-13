@@ -124,7 +124,7 @@
   "transaction.transactions": "Transactions",
   "transaction.amount": "Amount",
   "drawer.send.account.error": "Address is not valid",
-  "add.asset.import.error": "Ledger interface not recognize",
+  "add.asset.import.error": "Ledger interface not recognized",
   "add.index.import.error": "Index interface not recognized",
   "icrc.acc": "ICRC-1 Identifier",
   "unknown": "Unknown",
