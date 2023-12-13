@@ -67,17 +67,18 @@ export const updateAllBalances = async (
           canisterId: tkn.address as any,
         });
 
-        const myMetadata = await metadata({
-          certified: false,
-        });
-        const myTransactionFee = await transactionFee({
-          certified: false,
-        });
+        const [myMetadata, myTransactionFee] = await Promise.all([
+          metadata({
+            certified: false,
+          }),
+          transactionFee({
+            certified: false,
+          }),
+        ]);
 
         const { decimals, name, symbol, logo } = getMetadataInfo(myMetadata);
 
         const assetMarket = tokenMarkets.find((tm) => tm.symbol === symbol);
-        const power = Math.pow(10, decimals);
         const subAccList: SubAccount[] = [];
         const userSubAcc: TokenSubAccount[] = [];
 
@@ -98,9 +99,9 @@ export const updateAllBalances = async (
                 name: i === 0 ? AccountDefaultEnum.Values.Default : "-",
                 sub_account_id: `0x${i.toString(16)}`,
                 address: myPrincipal.toString(),
-                amount: (Number(myBalance.toString()) / power).toString(),
+                amount: myBalance.toString(),
                 currency_amount: assetMarket ? getUSDfromToken(myBalance.toString(), assetMarket.price, decimals) : "0",
-                transaction_fee: (Number(myTransactionFee.toString()) / power).toString(),
+                transaction_fee: myTransactionFee.toString(),
                 decimal: decimals,
                 symbol: tkn.symbol,
               });
@@ -117,7 +118,6 @@ export const updateAllBalances = async (
           // Then search into first 1000 subaccount that are not looked yet under the 5 consecutive zeros logic
           // It iterates geting amount of each subaccount
           // If 5 consecutive subaccounts balances are zero, iteration stops
-          const idsPushed: string[] = [];
           await Promise.all(
             tkn.subAccounts.map(async (sa) => {
               const myBalance = await balance({
@@ -125,14 +125,13 @@ export const updateAllBalances = async (
                 subaccount: new Uint8Array(hexToUint8Array(sa.numb)),
                 certified: false,
               });
-              idsPushed.push(sa.numb);
               subAccList.push({
                 name: sa.name,
                 sub_account_id: sa.numb,
                 address: myPrincipal.toString(),
-                amount: (Number(myBalance.toString()) / power).toString(),
+                amount: myBalance.toString(),
                 currency_amount: assetMarket ? getUSDfromToken(myBalance.toString(), assetMarket.price, decimals) : "0",
-                transaction_fee: (Number(myTransactionFee.toString()) / power).toString(),
+                transaction_fee: myTransactionFee.toString(),
                 decimal: decimals,
                 symbol: tkn.symbol,
               });
@@ -142,37 +141,6 @@ export const updateAllBalances = async (
               });
             }),
           );
-          // let zeros = 0;
-          // for (let i = 0; i < 1000; i++) {
-          //   if (!idsPushed.includes(`0x${i.toString(16)}`)) {
-          //     const myBalance = await balance({
-          //       owner: myPrincipal,
-          //       subaccount: new Uint8Array(getSubAccountArray(i)),
-          //       certified: false,
-          //     });
-          //     if (Number(myBalance) > 0 || i === 0) {
-          //       zeros = 0;
-          //       subAccList.push({
-          //         name: i === 0 ? AccountDefaultEnum.Values.Default : "-",
-          //         sub_account_id: `0x${i.toString(16)}`,
-          //         address: myPrincipal.toString(),
-          //         amount: (Number(myBalance.toString()) / power).toString(),
-          //         currency_amount: assetMarket
-          //           ? getUSDfromToken(myBalance.toString(), assetMarket.price, decimals)
-          //           : "0",
-          //         transaction_fee: (Number(myTransactionFee.toString()) / power).toString(),
-          //         decimal: decimals,
-          //         symbol: tkn.symbol,
-          //       });
-          //       userSubAcc.push({
-          //         name: i === 0 ? AccountDefaultEnum.Values.Default : "-",
-          //         numb: `0x${i.toString(16)}`,
-          //       });
-          //     } else zeros++;
-
-          //     if (zeros === 5) break;
-          //   }
-          // }
         }
         newTokens.push({
           ...tkn,

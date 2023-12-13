@@ -85,7 +85,7 @@ const AssetElement = ({ asset, idx, acordeonIdx, setAssetInfo, setAssetOpen, tok
                 </div>
               </div>
               <div className="flex flex-col justify-center items-end">
-                <p>{`${toFullDecimal(getFullTokenAmount().token, asset.decimal)} ${asset.symbol}`}</p>
+                <p>{`${toFullDecimal(getFullTokenAmount().token, Number(asset.decimal))} ${asset.symbol}`}</p>
                 <p
                   className={`${asset?.tokenSymbol !== selectedAsset?.tokenSymbol ? "opacity-60" : ""}`}
                 >{`≈ $${getFullTokenAmount().currency.toFixed(2)}`}</p>
@@ -103,7 +103,7 @@ const AssetElement = ({ asset, idx, acordeonIdx, setAssetInfo, setAssetOpen, tok
                   alt="chevron-icon"
                 />
               )}
-              {getFullTokenAmount().token === 0 && (
+              {getFullTokenAmount().token === BigInt("0") && (
                 <TrashIcon
                   onClick={() => {
                     onDelete();
@@ -206,15 +206,14 @@ const AssetElement = ({ asset, idx, acordeonIdx, setAssetInfo, setAssetOpen, tok
 
   function getFullTokenAmount() {
     const assetMarket = tokensMarket.find((tm) => tm.symbol === asset.tokenSymbol);
-    const assetTotal = asset.subAccounts.reduce((count, sa) => {
-      return count + Number(sa.amount);
+    let total = BigInt("0");
+    asset.subAccounts.map((sa) => {
+      total = total + BigInt(sa.amount);
     }, 0);
-
-    const power = Math.pow(10, Number(asset.decimal));
-    const currencyTotal = assetMarket ? getUSDfromToken(assetTotal * power, assetMarket.price, asset.decimal) : "0.00";
+    const currencyTotal = assetMarket ? getUSDfromToken(total.toString(), assetMarket.price, asset.decimal) : "0.00";
 
     return {
-      token: assetTotal,
+      token: total,
       currency: Number(currencyTotal),
     };
   }
