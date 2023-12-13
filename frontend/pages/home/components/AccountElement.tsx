@@ -188,6 +188,8 @@ const AccountElement = ({
                 {
                   name: name.trim(),
                   numb: subAccount.sub_account_id,
+                  amount: "0",
+                  currency_amount: "0.00",
                 },
               ].sort((a, b) => {
                 return bigInt(a.numb).compare(bigInt(b.numb));

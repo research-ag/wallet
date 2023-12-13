@@ -108,6 +108,8 @@ export const updateAllBalances = async (
               userSubAcc.push({
                 name: i === 0 ? AccountDefaultEnum.Values.Default : "-",
                 numb: `0x${i.toString(16)}`,
+                amount: myBalance.toString(),
+                currency_amount: assetMarket ? getUSDfromToken(myBalance.toString(), assetMarket.price, decimals) : "0",
               });
             } else zeros++;
 
@@ -125,12 +127,15 @@ export const updateAllBalances = async (
                 subaccount: new Uint8Array(hexToUint8Array(sa.numb)),
                 certified: false,
               });
+
+              const amnt = myBalance.toString();
+              const crncyAmnt = assetMarket ? getUSDfromToken(myBalance.toString(), assetMarket.price, decimals) : "0";
               subAccList.push({
                 name: sa.name,
                 sub_account_id: sa.numb,
                 address: myPrincipal.toString(),
-                amount: myBalance.toString(),
-                currency_amount: assetMarket ? getUSDfromToken(myBalance.toString(), assetMarket.price, decimals) : "0",
+                amount: amnt,
+                currency_amount: crncyAmnt,
                 transaction_fee: myTransactionFee.toString(),
                 decimal: decimals,
                 symbol: tkn.symbol,
@@ -138,6 +143,8 @@ export const updateAllBalances = async (
               userSubAcc.push({
                 name: sa.name,
                 numb: sa.numb,
+                amount: amnt,
+                currency_amount: crncyAmnt,
               });
             }),
           );
@@ -145,6 +152,8 @@ export const updateAllBalances = async (
         newTokens.push({
           ...tkn,
           logo: logo,
+          tokenName: name,
+          tokenSymbol: symbol,
           decimal: decimals.toFixed(0),
           subAccounts: userSubAcc.sort((a, b) => {
             return hexToNumber(a.numb)?.compare(hexToNumber(b.numb) || bigInt()) || 0;
@@ -238,6 +247,43 @@ export const updateAllBalances = async (
       return a.id_number - b.id_number;
     }),
   };
+};
+
+export const setAssetFromLocalData = (tokens: Token[], myPrincipal: string) => {
+  const assets: Asset[] = [];
+
+  tokens.map((tkn) => {
+    const subAccList: SubAccount[] = [];
+    tkn.subAccounts.map((sa) => {
+      subAccList.push({
+        name: sa.name,
+        sub_account_id: sa.numb,
+        address: myPrincipal,
+        amount: sa.amount || "0",
+        currency_amount: sa.currency_amount || "0",
+        transaction_fee: tkn.fee || "0",
+        decimal: Number(tkn.decimal),
+        symbol: tkn.symbol,
+      });
+    });
+
+    assets.push({
+      symbol: tkn.symbol,
+      name: tkn.name,
+      address: tkn.address,
+      index: tkn.index,
+      subAccounts: subAccList.sort((a, b) => {
+        return hexToNumber(a.sub_account_id)?.compare(hexToNumber(b.sub_account_id) || bigInt()) || 0;
+      }),
+      sort_index: tkn.id_number,
+      decimal: tkn.decimal,
+      tokenName: tkn.tokenName,
+      tokenSymbol: tkn.tokenSymbol,
+      logo: tkn.logo,
+    });
+  });
+
+  store.dispatch(setAssets(assets));
 };
 
 export const getAllTransactionsICP = async (subaccount_index: string, loading: boolean, isOGY: boolean) => {

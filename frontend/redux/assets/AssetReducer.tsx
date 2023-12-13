@@ -146,6 +146,8 @@ const assetSlice = createSlice({
           state.tokens[Number(tokenIndex)].subAccounts.push({
             name: subaccount.name,
             numb: subaccount.sub_account_id,
+            amount: subaccount.amount,
+            currency_amount: subaccount.currency_amount,
           });
           state.tokens[Number(tokenIndex)].subAccounts.sort((a, b) => {
             return hexToNumber(a.numb)?.compare(hexToNumber(b.numb) || bigInt(0)) || 0;

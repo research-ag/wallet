@@ -234,7 +234,10 @@ const AddAssetManual = ({
       symbol: "",
       name: "",
       decimal: "",
-      subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default }],
+      tokenSymbol: "",
+      tokenName: "",
+      fee: "",
+      subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default, amount: "0", currency_amount: "0" }],
       index: "",
       id_number: 999,
     });
@@ -262,10 +265,19 @@ const AddAssetManual = ({
           certified: false,
         });
 
-        const { symbol, decimals, name, logo } = getMetadataInfo(myMetadata);
+        const { symbol, decimals, name, logo, fee } = getMetadataInfo(myMetadata);
 
         setNewToken((prev: any) => {
-          return { ...prev, decimal: decimals.toFixed(0), symbol: symbol, name: name, logo: logo };
+          return {
+            ...prev,
+            decimal: decimals.toFixed(0),
+            symbol: symbol,
+            name: name,
+            logo: logo,
+            tokenSymbol: symbol,
+            tokenName: name,
+            fee: fee,
+          };
         });
         setValidToken(true);
         validData = true;
