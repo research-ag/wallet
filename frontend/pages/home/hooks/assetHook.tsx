@@ -48,11 +48,12 @@ export const AssetHook = () => {
     let amount = 0;
     assets.map((tk) => {
       const market = tokensMarket.find((tm) => tm.symbol === tk.tokenSymbol);
-      let assetTotal = 0;
+      let assetTotal = BigInt(0);
       tk.subAccounts.map((sa) => {
-        assetTotal = assetTotal + Number(sa.amount);
+        assetTotal = assetTotal + BigInt(sa.amount);
       });
-      amount = amount + (market ? assetTotal * market.price : 0);
+      amount =
+        amount + (market ? (Number(assetTotal.toString()) * market.price) / Math.pow(10, Number(tk.decimal)) : 0);
     });
     return Math.round(amount * 100) / 100;
   };
