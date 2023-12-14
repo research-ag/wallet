@@ -11,7 +11,14 @@ import {
   hexToUint8Array,
   hexToNumber,
 } from "@/utils";
-import { setAssets, setTransactions, setTokenMarket, setICPSubaccounts, setAcordeonAssetIdx } from "./AssetReducer";
+import {
+  setAssets,
+  setTransactions,
+  setTokenMarket,
+  setICPSubaccounts,
+  setAcordeonAssetIdx,
+  setLoading,
+} from "./AssetReducer";
 import { AccountIdentifier, SubAccount as SubAccountNNS } from "@dfinity/nns";
 import { Asset, ICPSubAccount, SubAccount } from "@redux/models/AccountModels";
 import { Principal } from "@dfinity/principal";
@@ -56,10 +63,7 @@ export const updateAllBalances = async (
   store.dispatch(setTokenMarket(tokenMarkets));
 
   const myPrincipal = await myAgent.getPrincipal();
-  const newTokens: Token[] = [];
-  const assets: Asset[] = [];
-
-  await Promise.all(
+  const tokensAseets = await Promise.all(
     tokens.map(async (tkn, idNum) => {
       try {
         const { balance, metadata, transactionFee } = IcrcLedgerCanister.create({
@@ -81,6 +85,8 @@ export const updateAllBalances = async (
         const assetMarket = tokenMarkets.find((tm) => tm.symbol === symbol);
         const subAccList: SubAccount[] = [];
         const userSubAcc: TokenSubAccount[] = [];
+
+        let subAccts: { saAsset: SubAccount; saToken: TokenSubAccount }[] = [];
 
         // Basic Serach look into first 1000 subaccount under the 5 consecutive zeros logic
         // It iterates geting amount of each subaccount
@@ -120,7 +126,7 @@ export const updateAllBalances = async (
           // Then search into first 1000 subaccount that are not looked yet under the 5 consecutive zeros logic
           // It iterates geting amount of each subaccount
           // If 5 consecutive subaccounts balances are zero, iteration stops
-          await Promise.all(
+          subAccts = await Promise.all(
             tkn.subAccounts.map(async (sa) => {
               const myBalance = await balance({
                 owner: myPrincipal,
@@ -130,7 +136,7 @@ export const updateAllBalances = async (
 
               const amnt = myBalance.toString();
               const crncyAmnt = assetMarket ? getUSDfromToken(myBalance.toString(), assetMarket.price, decimals) : "0";
-              subAccList.push({
+              const saAsset: SubAccount = {
                 name: sa.name,
                 sub_account_id: sa.numb,
                 address: myPrincipal.toString(),
@@ -139,33 +145,40 @@ export const updateAllBalances = async (
                 transaction_fee: myTransactionFee.toString(),
                 decimal: decimals,
                 symbol: tkn.symbol,
-              });
-              userSubAcc.push({
+              };
+              const saToken: TokenSubAccount = {
                 name: sa.name,
                 numb: sa.numb,
                 amount: amnt,
                 currency_amount: crncyAmnt,
-              });
+              };
+
+              return { saAsset, saToken };
             }),
           );
         }
-        newTokens.push({
+        const saTokens = subAccts.map((saT) => {
+          return saT.saToken;
+        });
+        const saAssets = subAccts.map((saA) => {
+          return saA.saAsset;
+        });
+        const newToken: Token = {
           ...tkn,
           logo: logo,
           tokenName: name,
           tokenSymbol: symbol,
           decimal: decimals.toFixed(0),
-          subAccounts: userSubAcc.sort((a, b) => {
+          subAccounts: saTokens.sort((a, b) => {
             return hexToNumber(a.numb)?.compare(hexToNumber(b.numb) || bigInt()) || 0;
           }),
-        });
-
-        assets.push({
+        };
+        const newAsset: Asset = {
           symbol: tkn.symbol,
           name: tkn.name,
           address: tkn.address,
           index: tkn.index,
-          subAccounts: subAccList.sort((a, b) => {
+          subAccounts: saAssets.sort((a, b) => {
             return hexToNumber(a.sub_account_id)?.compare(hexToNumber(b.sub_account_id) || bigInt()) || 0;
           }),
           sort_index: idNum,
@@ -173,9 +186,10 @@ export const updateAllBalances = async (
           tokenName: name,
           tokenSymbol: symbol,
           logo: logo,
-        });
+        };
+        return { newToken, newAsset };
       } catch (e) {
-        assets.push({
+        const newAsset: Asset = {
           symbol: tkn.symbol,
           name: tkn.name,
           address: tkn.address,
@@ -196,31 +210,36 @@ export const updateAllBalances = async (
           sort_index: 99999 + idNum,
           tokenName: tkn.name,
           tokenSymbol: tkn.symbol,
-        });
-        newTokens.push(tkn);
+        };
+        return { newToken: tkn, newAsset };
       }
     }),
   );
-
+  const newAssetsUpload = tokensAseets.map((tA) => {
+    return tA.newAsset;
+  });
+  const newTokensUpload = tokensAseets.map((tA) => {
+    return tA.newToken;
+  });
   if (loading) {
-    store.dispatch(setAssets(assets));
-    if (newTokens.length !== 0) {
+    store.dispatch(setAssets(newAssetsUpload));
+    if (newTokensUpload.length !== 0) {
       localStorage.setItem(
         myPrincipal.toString(),
         JSON.stringify({
           from: "II",
-          tokens: newTokens.sort((a, b) => {
+          tokens: newTokensUpload.sort((a, b) => {
             return a.id_number - b.id_number;
           }),
         }),
       );
     }
     if (fromLogin) {
-      assets.length > 0 && store.dispatch(setAcordeonAssetIdx([assets[0].tokenSymbol]));
+      newAssetsUpload.length > 0 && store.dispatch(setAcordeonAssetIdx([newAssetsUpload[0].tokenSymbol]));
     }
   }
 
-  const icpAsset = assets.find((ast) => ast.tokenSymbol === "ICP");
+  const icpAsset = newAssetsUpload.find((ast) => ast.tokenSymbol === "ICP");
   if (icpAsset) {
     const sub: ICPSubAccount[] = [];
     icpAsset.subAccounts.map((saICP) => {
@@ -241,9 +260,11 @@ export const updateAllBalances = async (
 
     store.dispatch(setICPSubaccounts(sub));
   }
+
+  store.dispatch(setLoading(false));
   return {
-    assets,
-    tokens: newTokens.sort((a, b) => {
+    newAssetsUpload,
+    tokens: newTokensUpload.sort((a, b) => {
       return a.id_number - b.id_number;
     }),
   };
