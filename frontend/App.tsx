@@ -39,7 +39,7 @@ const App: React.FC = () => {
   return (
     <div className="App">
       <Provider store={store}>
-        <SwitchRoute></SwitchRoute>
+        <SwitchRoute />
       </Provider>
     </div>
   );
