@@ -1,8 +1,11 @@
 import { Fragment } from "react";
+
+import DisclaimerModal from "@pages/home/components/DisclaimerModal";
+
 import AssetsList from "./components/AssetsList";
-import "./style.scss";
 import DetailList from "./components/DetailList";
-import DisclaimerModal from "@pages/components/DisclaimerModal";
+
+import "./style.scss";
 
 const Home = () => {
   return (
