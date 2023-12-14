@@ -86,7 +86,9 @@ export const roundToDecimalN = (numb: number | string, decimal: number | string)
 
 export function toFullDecimal(numb: bigint | string, decimal: number) {
   let numbStr = numb.toString();
-  if (decimal > numbStr.length) {
+  if (decimal === numbStr.length) {
+    return "0." + numbStr;
+  } else if (decimal > numbStr.length) {
     for (let index = 0; index < decimal; index++) {
       numbStr = "0" + numbStr;
       if (numbStr.length > decimal) break;
