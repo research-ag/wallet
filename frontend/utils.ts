@@ -97,6 +97,21 @@ export function toFullDecimal(numb: bigint | string, decimal: number) {
   return decimalStr !== "" ? holeStr + "." + decimalStr : holeStr;
 }
 
+export function validateAmount(amnt: string, dec: number): boolean {
+  // Regular expression to match a valid number with at most 'dec' decimals
+  const regex = new RegExp(`^[0-9]+([.,][0-9]{0,${dec}})?$`);
+  // Check if amount is a valid number
+  if (!regex.test(amnt)) {
+    return false;
+  }
+  // Additional check for decimal places
+  const decimalPart = amnt.split(/[.,]/)[1];
+  if (decimalPart && decimalPart.length > dec) {
+    return false;
+  }
+  return true;
+}
+
 export const getUSDfromToken = (
   tokenAmount: string | number,
   marketPrice: string | number,

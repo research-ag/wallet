@@ -12,7 +12,14 @@ import { clsx } from "clsx";
 import { GeneralHook } from "../hooks/generalHook";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { useTranslation } from "react-i18next";
-import { hexToUint8Array, shortAddress, subUint8ArrayToHex, roundToDecimalN, toFullDecimal } from "@/utils";
+import {
+  hexToUint8Array,
+  shortAddress,
+  subUint8ArrayToHex,
+  roundToDecimalN,
+  toFullDecimal,
+  validateAmount,
+} from "@/utils";
 import { CustomInput } from "@components/Input";
 import { CustomButton } from "@components/Button";
 import { AssetHook } from "../hooks/assetHook";
@@ -162,10 +169,7 @@ const SendOwnAccount = ({
             placeholder={`0 ${selectedAsset?.symbol} `}
             value={amount}
             border={"none"}
-            type="number"
-            lang="en-US"
             onChange={onChangeAmount}
-            formNoValidate
           />
         </div>
         <button
@@ -220,7 +224,9 @@ const SendOwnAccount = ({
   }
 
   function onChangeAmount(e: ChangeEvent<HTMLInputElement>) {
-    if (Number(e.target.value) >= 0) setAmount(e.target.value);
+    const amnt = e.target.value;
+    if (Number(amnt) >= 0 && (validateAmount(amnt, Number(selectedAsset?.decimal || "8")) || amnt === ""))
+      setAmount(amnt.trim());
   }
 
   function onMaxAmount() {
