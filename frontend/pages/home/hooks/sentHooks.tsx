@@ -46,6 +46,7 @@ export const SentHook = (drower: boolean, baseAccount: SubAccount | undefined) =
   const [newAccount, setNewAccount] = useState("");
   const [newAccountErr, setNewAccountErr] = useState("");
   const [amount, setAmount] = useState("");
+  const [amountBI, setAmountBI] = useState(BigInt(0));
   const [assetDropOpen, setAssetDropOpen] = useState(false);
   const [selectedAccount, setSelectedAccount] = useState<SubAccount | undefined>(baseAccount);
   const [contactToSend, setContactToSend] = useState<{ name: string; subName: string; subId: string } | undefined>();
@@ -63,6 +64,8 @@ export const SentHook = (drower: boolean, baseAccount: SubAccount | undefined) =
     setShowAccounts,
     amount,
     setAmount,
+    amountBI,
+    setAmountBI,
     newAccountErr,
     setNewAccountErr,
     modal,

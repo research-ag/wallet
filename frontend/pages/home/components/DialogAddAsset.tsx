@@ -7,7 +7,7 @@ import { CustomCheck } from "@components/CheckBox";
 import { CustomButton } from "@components/Button";
 import { useTranslation } from "react-i18next";
 import { checkHexString, getUSDfromToken, hexToNumber, hexToUint8Array, removeLeadingZeros } from "@/utils";
-import { SubAccount } from "@redux/models/AccountModels";
+import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { GeneralHook } from "../hooks/generalHook";
 import { Token } from "@redux/models/TokenModels";
 import { useAppDispatch } from "@redux/Store";
@@ -29,6 +29,7 @@ interface DialogAddAssetProps {
   tokens: Token[];
   idx: number;
   authClient: string;
+  selectedAsset?: Asset;
 }
 
 const DialogAddAsset = ({
@@ -43,6 +44,7 @@ const DialogAddAsset = ({
   tokens,
   idx,
   authClient,
+  selectedAsset,
 }: DialogAddAssetProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
@@ -181,51 +183,54 @@ const DialogAddAsset = ({
         errIdx = true;
       }
       if (!errName && !errIdx) {
-        let tknAddress = "";
-        let decimal = 8;
-        let assetMrkt = 0;
-        const { balance } = IcrcLedgerCanister.create({
-          agent: userAgent,
-          canisterId: tknAddress as any,
-        });
-        const myBalance = await balance({
-          owner: userPrincipal,
-          subaccount: hexToUint8Array(`0x${subClean}`),
-          certified: false,
-        });
-        const auxTokens = tokens.map((tkn, k) => {
-          if (k === Number(idx)) {
-            tknAddress = tkn.address;
-            decimal = Number(tkn.decimal);
-            assetMrkt = tokensMarket.find((tm) => tm.symbol === tkn.symbol)?.price || 0;
-            return {
-              ...tkn,
-              subAccounts: [
-                ...tkn.subAccounts,
-                {
-                  name: newSub.name,
-                  numb: `0x${subClean}`.toLowerCase(),
-                  amount: myBalance.toString(),
-                  currency_amount: assetMrkt ? getUSDfromToken(myBalance.toString(), assetMrkt, decimal) : "0",
-                },
-              ].sort((a, b) => {
-                return hexToNumber(a.numb)?.compare(hexToNumber(b.numb) || bigInt()) || 0;
-              }),
-            };
-          } else return tkn;
-        });
+        try {
+          const tknAddress = selectedAsset?.address || "";
+          let decimal = 8;
+          let assetMrkt = 0;
+          const { balance } = IcrcLedgerCanister.create({
+            agent: userAgent,
+            canisterId: tknAddress as any,
+          });
+          const myBalance = await balance({
+            owner: userPrincipal,
+            subaccount: hexToUint8Array(`0x${subClean}`),
+            certified: false,
+          });
+          const auxTokens = tokens.map((tkn, k) => {
+            if (k === Number(idx)) {
+              decimal = Number(tkn.decimal);
+              assetMrkt = tokensMarket.find((tm) => tm.symbol === tkn.symbol)?.price || 0;
+              return {
+                ...tkn,
+                subAccounts: [
+                  ...tkn.subAccounts,
+                  {
+                    name: newSub.name,
+                    numb: `0x${subClean}`.toLowerCase(),
+                    amount: myBalance.toString(),
+                    currency_amount: assetMrkt ? getUSDfromToken(myBalance.toString(), assetMrkt, decimal) : "0",
+                  },
+                ].sort((a, b) => {
+                  return hexToNumber(a.numb)?.compare(hexToNumber(b.numb) || bigInt()) || 0;
+                }),
+              };
+            } else return tkn;
+          });
 
-        saveLocalStorage(auxTokens);
-        const savedSub = {
-          ...newSub,
-          sub_account_id: `0x${subClean}`.toLowerCase(),
-          amount: myBalance.toString(),
-          currency_amount: assetMrkt ? getUSDfromToken(myBalance.toString(), assetMrkt, decimal) : "0",
-        };
-        dispatch(addSubAccount(idx, savedSub));
-        setNewSub(undefined);
-        setHexChecked(false);
-        changeSelectedAccount(savedSub);
+          saveLocalStorage(auxTokens);
+          const savedSub = {
+            ...newSub,
+            sub_account_id: `0x${subClean}`.toLowerCase(),
+            amount: myBalance.toString(),
+            currency_amount: assetMrkt ? getUSDfromToken(myBalance.toString(), assetMrkt, decimal) : "0",
+          };
+          dispatch(addSubAccount(idx, savedSub));
+          setNewSub(undefined);
+          setHexChecked(false);
+          changeSelectedAccount(savedSub);
+        } catch (e) {
+          console.log("AddErr: ", e);
+        }
       } else {
         setNewErr({ name: errName, idx: errIdx });
       }
