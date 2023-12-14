@@ -71,7 +71,7 @@ export const TableHook = () => {
       header: () => (
         <div className="flex flex-row opacity-60 justify-center items-center w-full gap-1 cursor-pointer">
           <p className="flex justify-center font-normal my-2">{t("date")}</p>
-          <SortIcon className=" fill-PrimaryTextColorLight dark:fill-PrimaryTextColor" />
+          <SortIcon className=" fill-PrimaryTextColorLight dark:fill-PrimaryTextColor w-3 h-3" />
         </div>
       ),
     }),
