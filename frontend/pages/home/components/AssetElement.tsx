@@ -159,6 +159,7 @@ const AssetElement = ({ asset, idx, acordeonIdx, setAssetInfo, setAssetOpen, tok
         tokens={tokens}
         idx={idx}
         authClient={authClient}
+        selectedAsset={selectedAsset}
       ></DialogAddAsset>
       <DeleteAssetModal open={openDelete} setOpen={setOpenDelete} name={asset.name} symbol={asset.tokenSymbol} />
     </Fragment>

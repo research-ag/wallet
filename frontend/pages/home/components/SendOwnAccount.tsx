@@ -39,6 +39,7 @@ interface SendOwnAccountProps {
   setDrawerOpen(value: boolean): void;
   setSendingStatus(value: SendingStatus): void;
   setAmount(value: string): void;
+  setAmountBI(value: bigint): void;
   setNewAccount(value: string): void;
   setContactToSend(value: any): void;
 }
@@ -57,6 +58,7 @@ const SendOwnAccount = ({
   setDrawerOpen,
   setSendingStatus,
   setAmount,
+  setAmountBI,
   setNewAccount,
   setContactToSend,
 }: SendOwnAccountProps) => {
@@ -244,6 +246,10 @@ const SendOwnAccount = ({
         setSendingStatus(SendingStatusEnum.enum.error);
         showModal(true);
       } else {
+        const sentAmount = BigInt(
+          Math.floor(Math.round(Number(amount) * Math.pow(10, Number(selectedAsset?.decimal)))),
+        );
+        setAmountBI(sentAmount);
         let errorFound = false;
         setSendingStatus(SendingStatusEnum.enum.sending);
         showModal(true);
@@ -257,7 +263,7 @@ const SendOwnAccount = ({
               owner: receiver.icrcAccount.owner,
               subaccount: receiver.icrcAccount.subaccount ? [receiver.icrcAccount.subaccount] : [],
             },
-            amount: BigInt(Math.floor(Math.round(Number(amount) * Math.pow(10, Number(selectedAsset?.decimal))))),
+            amount: sentAmount,
             from_subaccount: hexToUint8Array(selectedAccount?.sub_account_id || "0"),
           });
         } catch (e) {
