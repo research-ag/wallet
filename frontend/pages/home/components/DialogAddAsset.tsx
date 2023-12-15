@@ -13,7 +13,7 @@ import { Token } from "@redux/models/TokenModels";
 import { useAppDispatch } from "@redux/Store";
 import { addSubAccount, setAcordeonAssetIdx } from "@redux/assets/AssetReducer";
 import bigInt from "big-integer";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useState } from "react";
 import { AssetHook } from "../hooks/assetHook";
 import { IcrcLedgerCanister } from "@dfinity/ledger";
 
@@ -54,6 +54,7 @@ const DialogAddAsset = ({
   const dispatch = useAppDispatch();
   const { tokensMarket } = AssetHook();
   const { asciiHex, userAgent, userPrincipal, changeSelectedAccount } = GeneralHook();
+  const [loading, setLoading] = useState(false);
 
   return (
     <Modal
@@ -175,73 +176,77 @@ const DialogAddAsset = ({
   }
 
   async function onEnter() {
-    if (newSub) {
-      const subClean = removeLeadingZeros(
-        newSub.sub_account_id.slice(0, 2).toLowerCase() === "0x"
-          ? newSub.sub_account_id.substring(2)
-          : newSub.sub_account_id,
-      );
-      let errName = false;
-      let errIdx = false;
-      if (newSub.name.trim() === "") errName = true;
-      const checkedIdx = subClean === "" ? "0x0" : `0x${subClean}`;
-      if (usedIdxs.includes(checkedIdx.toLowerCase())) {
-        errIdx = true;
-      }
-      if (!errName && !errIdx) {
-        addToAcordeonIdx();
-        try {
-          const tknAddress = selectedAsset?.address || "";
-          let decimal = 8;
-          let assetMrkt = 0;
-          const { balance } = IcrcLedgerCanister.create({
-            agent: userAgent,
-            canisterId: tknAddress as any,
-          });
-          const myBalance = await balance({
-            owner: userPrincipal,
-            subaccount: hexToUint8Array(`0x${subClean}`),
-            certified: false,
-          });
-          const auxTokens = tokens.map((tkn, k) => {
-            if (k === Number(idx)) {
-              decimal = Number(tkn.decimal);
-              assetMrkt = tokensMarket.find((tm) => tm.symbol === tkn.symbol)?.price || 0;
-              return {
-                ...tkn,
-                subAccounts: [
-                  ...tkn.subAccounts,
-                  {
-                    name: newSub.name,
-                    numb: `0x${subClean}`.toLowerCase(),
-                    amount: myBalance.toString(),
-                    currency_amount: assetMrkt ? getUSDfromToken(myBalance.toString(), assetMrkt, decimal) : "0",
-                  },
-                ].sort((a, b) => {
-                  return hexToNumber(a.numb)?.compare(hexToNumber(b.numb) || bigInt()) || 0;
-                }),
-              };
-            } else return tkn;
-          });
-
-          saveLocalStorage(auxTokens);
-          const savedSub = {
-            ...newSub,
-            sub_account_id: `0x${subClean}`.toLowerCase(),
-            amount: myBalance.toString(),
-            currency_amount: assetMrkt ? getUSDfromToken(myBalance.toString(), assetMrkt, decimal) : "0",
-          };
-          dispatch(addSubAccount(idx, savedSub));
-          setNewSub(undefined);
-          setAddOpen(false);
-          setHexChecked(false);
-          changeSelectedAccount(savedSub);
-        } catch (e) {
-          console.log("AddErr: ", e);
+    if (!loading) {
+      setLoading(true);
+      if (newSub) {
+        const subClean = removeLeadingZeros(
+          newSub.sub_account_id.slice(0, 2).toLowerCase() === "0x"
+            ? newSub.sub_account_id.substring(2)
+            : newSub.sub_account_id,
+        );
+        let errName = false;
+        let errIdx = false;
+        if (newSub.name.trim() === "") errName = true;
+        const checkedIdx = subClean === "" ? "0x0" : `0x${subClean}`;
+        if (usedIdxs.includes(checkedIdx.toLowerCase())) {
+          errIdx = true;
         }
-      } else {
-        setNewErr({ name: errName, idx: errIdx });
+        if (!errName && !errIdx) {
+          addToAcordeonIdx();
+          try {
+            const tknAddress = selectedAsset?.address || "";
+            let decimal = 8;
+            let assetMrkt = 0;
+            const { balance } = IcrcLedgerCanister.create({
+              agent: userAgent,
+              canisterId: tknAddress as any,
+            });
+            const myBalance = await balance({
+              owner: userPrincipal,
+              subaccount: hexToUint8Array(`0x${subClean}`),
+              certified: false,
+            });
+            const auxTokens = tokens.map((tkn, k) => {
+              if (k === Number(idx)) {
+                decimal = Number(tkn.decimal);
+                assetMrkt = tokensMarket.find((tm) => tm.symbol === tkn.symbol)?.price || 0;
+                return {
+                  ...tkn,
+                  subAccounts: [
+                    ...tkn.subAccounts,
+                    {
+                      name: newSub.name,
+                      numb: `0x${subClean}`.toLowerCase(),
+                      amount: myBalance.toString(),
+                      currency_amount: assetMrkt ? getUSDfromToken(myBalance.toString(), assetMrkt, decimal) : "0",
+                    },
+                  ].sort((a, b) => {
+                    return hexToNumber(a.numb)?.compare(hexToNumber(b.numb) || bigInt()) || 0;
+                  }),
+                };
+              } else return tkn;
+            });
+
+            saveLocalStorage(auxTokens);
+            const savedSub = {
+              ...newSub,
+              sub_account_id: `0x${subClean}`.toLowerCase(),
+              amount: myBalance.toString(),
+              currency_amount: assetMrkt ? getUSDfromToken(myBalance.toString(), assetMrkt, decimal) : "0",
+            };
+            dispatch(addSubAccount(idx, savedSub));
+            setNewSub(undefined);
+            setAddOpen(false);
+            setHexChecked(false);
+            changeSelectedAccount(savedSub);
+          } catch (e) {
+            console.log("AddErr: ", e);
+          }
+        } else {
+          setNewErr({ name: errName, idx: errIdx });
+        }
       }
+      setLoading(false);
     }
   }
   function addToAcordeonIdx() {
