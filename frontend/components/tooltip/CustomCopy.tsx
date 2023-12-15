@@ -83,7 +83,7 @@ export default function CustomCopy({
 const customCopy = cva("customCopy", {
   variants: {
     background: {
-      default: ["bg-AccpetButtonColor"],
+      default: ["bg-acceptButtonColor"],
       noBG: ["bg-transparent"],
     },
     rounded: {

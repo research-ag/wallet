@@ -127,7 +127,7 @@ const SendOutAccount = ({
                   </DropdownMenu.Trigger>
                   <DropdownMenu.Portal>
                     <DropdownMenu.Content
-                      className=" w-[22.6rem] max-h-[calc(100vh-15rem)] scroll-y-light bg-PrimaryColorLight rounded-lg dark:bg-SecondaryColor z-[999] text-PrimaryTextColorLight dark:text-PrimaryTextColor shadow-sm shadow-BorderColorTwoLight dark:shadow-BorderColorTwo border border-AccpetButtonColor cursor-pointer"
+                      className=" w-[22.6rem] max-h-[calc(100vh-15rem)] scroll-y-light bg-PrimaryColorLight rounded-lg dark:bg-SecondaryColor z-[999] text-PrimaryTextColorLight dark:text-PrimaryTextColor shadow-sm shadow-BorderColorTwoLight dark:shadow-BorderColorTwo border border-acceptButtonColor cursor-pointer"
                       sideOffset={12}
                       align="end"
                     >
@@ -155,7 +155,7 @@ const SendOutAccount = ({
                         );
                       })}
                       <DropdownMenu.Arrow
-                        className=" fill-AccpetButtonColor rounded-lg dark:fill-AccpetButtonColor"
+                        className=" fill-acceptButtonColor rounded-lg dark:fill-acceptButtonColor"
                         width={10}
                         hanging={10}
                       />

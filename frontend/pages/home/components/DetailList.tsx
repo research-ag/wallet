@@ -2,7 +2,6 @@ import { Fragment } from "react";
 
 import DetailsBalance from "./DetailBalance";
 import DetailsTable from "./DetailTable";
-
 const DetailList = () => {
   return (
     <Fragment>
