@@ -251,3 +251,10 @@ export const defaultTokens: Token[] = [
     ],
   },
 ];
+
+// Allowances & Transactions
+
+export enum DetailsTabs {
+  allowances = "allowances",
+  transactions = "transactions",
+}
