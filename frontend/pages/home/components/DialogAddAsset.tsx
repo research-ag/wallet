@@ -11,7 +11,7 @@ import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { GeneralHook } from "../hooks/generalHook";
 import { Token } from "@redux/models/TokenModels";
 import { useAppDispatch } from "@redux/Store";
-import { addSubAccount } from "@redux/assets/AssetReducer";
+import { addSubAccount, setAcordeonAssetIdx } from "@redux/assets/AssetReducer";
 import bigInt from "big-integer";
 import { ChangeEvent } from "react";
 import { AssetHook } from "../hooks/assetHook";
@@ -22,6 +22,7 @@ interface DialogAddAssetProps {
   setNewErr(value: any): void;
   newSub: SubAccount | undefined;
   setNewSub(value: any): void;
+  setAddOpen(value: boolean): void;
   usedIdxs: string[];
   getLowestMissing(value: string[]): any;
   hexChecked: boolean;
@@ -30,6 +31,7 @@ interface DialogAddAssetProps {
   idx: number;
   authClient: string;
   selectedAsset?: Asset;
+  acordeonIdx: string[];
 }
 
 const DialogAddAsset = ({
@@ -45,6 +47,8 @@ const DialogAddAsset = ({
   idx,
   authClient,
   selectedAsset,
+  setAddOpen,
+  acordeonIdx,
 }: DialogAddAssetProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
@@ -62,7 +66,9 @@ const DialogAddAsset = ({
         <CloseIcon
           className="absolute top-6 right-5 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
           onClick={() => {
+            addToAcordeonIdx();
             setNewSub(undefined);
+            setAddOpen(false);
             setHexChecked(false);
           }}
         />
@@ -183,6 +189,7 @@ const DialogAddAsset = ({
         errIdx = true;
       }
       if (!errName && !errIdx) {
+        addToAcordeonIdx();
         try {
           const tknAddress = selectedAsset?.address || "";
           let decimal = 8;
@@ -226,6 +233,7 @@ const DialogAddAsset = ({
           };
           dispatch(addSubAccount(idx, savedSub));
           setNewSub(undefined);
+          setAddOpen(false);
           setHexChecked(false);
           changeSelectedAccount(savedSub);
         } catch (e) {
@@ -234,6 +242,11 @@ const DialogAddAsset = ({
       } else {
         setNewErr({ name: errName, idx: errIdx });
       }
+    }
+  }
+  function addToAcordeonIdx() {
+    if (!acordeonIdx.includes(selectedAsset?.tokenSymbol || "")) {
+      dispatch(setAcordeonAssetIdx([...acordeonIdx, selectedAsset?.tokenSymbol || ""]));
     }
   }
 };

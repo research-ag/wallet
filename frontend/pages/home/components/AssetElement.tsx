@@ -26,9 +26,18 @@ interface AssetElementProps {
   setAssetInfo(value: Asset | undefined): void;
   setAssetOpen(value: boolean): void;
   tokens: Token[];
+  setAddOpen(value: boolean): void;
 }
 
-const AssetElement = ({ asset, idx, acordeonIdx, setAssetInfo, setAssetOpen, tokens }: AssetElementProps) => {
+const AssetElement = ({
+  asset,
+  idx,
+  acordeonIdx,
+  setAssetInfo,
+  setAssetOpen,
+  tokens,
+  setAddOpen,
+}: AssetElementProps) => {
   const { theme } = ThemeHook();
   const { authClient } = AccountHook();
 
@@ -138,6 +147,7 @@ const AssetElement = ({ asset, idx, acordeonIdx, setAssetInfo, setAssetOpen, tok
                     tokenIndex={idx}
                     newSub={false}
                     setNewSub={setNewSub}
+                    setAddOpen={setAddOpen}
                     tokens={tokens}
                     subaccountId={subIdx}
                   ></AccountElement>
@@ -152,6 +162,7 @@ const AssetElement = ({ asset, idx, acordeonIdx, setAssetInfo, setAssetOpen, tok
         setNewErr={setNewErr}
         newSub={newSub}
         setNewSub={setNewSub}
+        setAddOpen={setAddOpen}
         usedIdxs={usedIdxs}
         getLowestMissing={getLowestMissing}
         hexChecked={hexChecked}
@@ -160,6 +171,7 @@ const AssetElement = ({ asset, idx, acordeonIdx, setAssetInfo, setAssetOpen, tok
         idx={idx}
         authClient={authClient}
         selectedAsset={selectedAsset}
+        acordeonIdx={acordeonIdx}
       ></DialogAddAsset>
       <DeleteAssetModal open={openDelete} setOpen={setOpenDelete} name={asset.name} symbol={asset.tokenSymbol} />
     </Fragment>
@@ -169,6 +181,7 @@ const AssetElement = ({ asset, idx, acordeonIdx, setAssetInfo, setAssetOpen, tok
     changeSelectedAsset(asset);
     if (asset?.tokenSymbol !== selectedAsset?.tokenSymbol) {
       setNewSub(undefined);
+      setAddOpen(false);
       asset.subAccounts.length > 0 && changeSelectedAccount(asset.subAccounts[0]);
     }
     setName("");
@@ -181,6 +194,7 @@ const AssetElement = ({ asset, idx, acordeonIdx, setAssetInfo, setAssetOpen, tok
   }
 
   function onAddSub() {
+    setAddOpen(true);
     let newIdx = "0";
     const idxs = asset.subAccounts.map((sa) => {
       return sa.sub_account_id.toLowerCase();
