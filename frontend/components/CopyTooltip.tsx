@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 const customCopy = cva("customCopy", {
   variants: {
     background: {
-      default: ["bg-AccpetButtonColor"],
+      default: ["bg-acceptButtonColor"],
       noBG: ["bg-transparent"],
     },
     rounded: {
