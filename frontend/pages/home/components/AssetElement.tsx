@@ -182,13 +182,11 @@ const AssetElement = ({ asset, idx, acordeonIdx, setAssetInfo, setAssetOpen, tok
 
   function onAddSub() {
     let newIdx = "0";
-    if (asset.subAccounts.length !== 0) {
-      const idxs = asset.subAccounts.map((sa) => {
-        return sa.sub_account_id.toLowerCase();
-      });
-      newIdx = getLowestMissing(idxs).toString(16);
-      setUsedIdxs(idxs);
-    }
+    const idxs = asset.subAccounts.map((sa) => {
+      return sa.sub_account_id.toLowerCase();
+    });
+    newIdx = getLowestMissing(idxs).toString(16);
+    setUsedIdxs(idxs);
 
     setNewErr({ name: false, idx: false });
     setNewSub({
@@ -199,7 +197,7 @@ const AssetElement = ({ asset, idx, acordeonIdx, setAssetInfo, setAssetOpen, tok
       currency_amount: "0",
       transaction_fee: asset.subAccounts[0].transaction_fee,
       decimal: Number(asset.decimal),
-      symbol: asset.subAccounts[0].symbol,
+      symbol: asset.tokenSymbol,
     });
     setEditNameId(asset.subAccounts.length.toFixed());
     setName("");

@@ -47,7 +47,7 @@ export const TokenHook = (asset: Asset | undefined) => {
         tokenName: asset.tokenName,
         tokenSymbol: asset.tokenSymbol,
         decimal: asset.decimal,
-        fee: asset.subAccounts[0].transaction_fee,
+        fee: asset.subAccounts[0]?.transaction_fee || "0",
         subAccounts: asset.subAccounts.map((ast) => {
           return { name: ast.name, numb: ast.sub_account_id, amount: ast.amount, currency_amount: ast.currency_amount };
         }),
