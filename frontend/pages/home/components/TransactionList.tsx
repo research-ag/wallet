@@ -1,7 +1,7 @@
 import { flexRender, getCoreRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 import { DrawerHook } from "../hooks/drawerHook";
 import { UseTransaction } from "../hooks/useTransaction";
-import { TableHook } from "@pages/hooks/tableHook";
+import { TableHook } from "@/hooks/tableHook";
 import { GeneralHook } from "../hooks/generalHook";
 import clsx from "clsx";
 

@@ -10,7 +10,7 @@ import { GeneralHook } from "../hooks/generalHook";
 import { getAddress, getAssetSymbol, getICRC1Acc, hexToUint8Array, shortAddress, toFullDecimal } from "@/utils";
 import { AssetSymbolEnum, TransactionTypeEnum } from "@/const";
 import { Principal } from "@dfinity/principal";
-import { AccountHook } from "@pages/hooks/accountHook";
+import { AccountHook } from "@/hooks/accountHook";
 import { IcrcAccount } from "@dfinity/ledger";
 import { AssetHook } from "../hooks/assetHook";
 import { CustomCopy } from "@components/CopyTooltip";

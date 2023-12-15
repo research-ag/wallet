@@ -7,7 +7,7 @@ import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
 import { clsx } from "clsx";
 import * as RadioGroup from "@radix-ui/react-radio-group";
-import { ThemeHook } from "@pages/hooks/themeHook";
+import { ThemeHook } from "@/hooks/themeHook";
 import { ThemesEnum } from "@/const";
 
 interface ThemeModalProps {

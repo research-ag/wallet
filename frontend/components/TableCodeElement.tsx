@@ -1,6 +1,6 @@
 import { AssetSymbolEnum } from "@/const";
 import { getAddress, shortAddress } from "@/utils";
-import { AccountHook } from "@pages/hooks/accountHook";
+import { AccountHook } from "@/hooks/accountHook";
 import { useAppSelector } from "@redux/Store";
 import { Transaction } from "@redux/models/AccountModels";
 import { clsx } from "clsx";

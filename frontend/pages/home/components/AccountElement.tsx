@@ -14,7 +14,7 @@ import { toFullDecimal } from "@/utils";
 import { CustomInput } from "@components/Input";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch } from "@redux/Store";
-import { AccountHook } from "@pages/hooks/accountHook";
+import { AccountHook } from "@/hooks/accountHook";
 import { Token, TokenSubAccount } from "@redux/models/TokenModels";
 import { CustomCopy } from "@components/CopyTooltip";
 import { addSubAccount, removeSubAcc, setSubAccountName } from "@redux/assets/AssetReducer";

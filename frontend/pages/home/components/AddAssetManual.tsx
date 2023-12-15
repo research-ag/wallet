@@ -14,11 +14,11 @@ import { useAppDispatch } from "@redux/Store";
 import { Token } from "@redux/models/TokenModels";
 import { AccountDefaultEnum, IconTypeEnum } from "@/const";
 import { Asset } from "@redux/models/AccountModels";
-import { IdentityHook } from "@pages/hooks/identityHook";
+import { IdentityHook } from "@/hooks/identityHook";
 import { ChangeEvent, useState } from "react";
 import { Principal } from "@dfinity/principal";
 import LoadingLoader from "@components/Loader";
-import { AccountHook } from "@pages/hooks/accountHook";
+import { AccountHook } from "@/hooks/accountHook";
 
 interface AddAssetManualProps {
   manual: boolean;

@@ -7,7 +7,7 @@ import { ReactComponent as ExchangeIcon } from "@assets/svg/files/arrows-exchang
 import { IconTypeEnum, SendingStatus, SendingStatusEnum } from "@/const";
 import { IcrcAccount, IcrcLedgerCanister } from "@dfinity/ledger";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { IdentityHook } from "@hooks/identityHook";
+import { IdentityHook } from "@/hooks/identityHook";
 import { clsx } from "clsx";
 import { GeneralHook } from "../hooks/generalHook";
 import { Asset, SubAccount } from "@redux/models/AccountModels";

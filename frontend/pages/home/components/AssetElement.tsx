@@ -9,13 +9,13 @@ import AccountElement from "./AccountElement";
 import { Fragment, useState } from "react";
 import * as Accordion from "@radix-ui/react-accordion";
 import { GeneralHook } from "../hooks/generalHook";
-import { ThemeHook } from "@hooks/themeHook";
+import { ThemeHook } from "@/hooks/themeHook";
 import { IconTypeEnum, ThemesEnum } from "@/const";
 import { getFirstNChars, getUSDfromToken, hexToNumber, toFullDecimal } from "@/utils";
 import { AssetHook } from "../hooks/assetHook";
 import { Token } from "@redux/models/TokenModels";
 import bigInt from "big-integer";
-import { AccountHook } from "@pages/hooks/accountHook";
+import { AccountHook } from "@/hooks/accountHook";
 import DialogAddAsset from "./DialogAddAsset";
 import DeleteAssetModal from "./DeleteAssetModal";
 

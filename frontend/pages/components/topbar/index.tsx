@@ -13,11 +13,11 @@ import { ReactComponent as RefreshIcon } from "@/assets/svg/files/refresh-ccw.sv
 import { Fragment, useState } from "react";
 import { useTranslation } from "react-i18next";
 import i18n from "@/i18n";
-import { ThemeHook } from "@hooks/themeHook";
-import { LanguageHook } from "@hooks/languageHook";
+import { ThemeHook } from "@/hooks/themeHook";
+import { LanguageHook } from "@/hooks/languageHook";
 import { clsx } from "clsx";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { AccountHook } from "@hooks/accountHook";
+import { AccountHook } from "@/hooks/accountHook";
 import { shortAddress } from "@/utils";
 import { logout } from "@redux/CheckAuth";
 import Modal from "@components/Modal";

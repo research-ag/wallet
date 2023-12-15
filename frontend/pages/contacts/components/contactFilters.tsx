@@ -9,7 +9,7 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { useContacts } from "../hooks/contactsHook";
 import { CustomInput } from "@components/Input";
 import { GeneralHook } from "@pages/home/hooks/generalHook";
-import { ThemeHook } from "@pages/hooks/themeHook";
+import { ThemeHook } from "@/hooks/themeHook";
 import { IconTypeEnum, ThemesEnum } from "@/const";
 import { CustomCheck } from "@components/CheckBox";
 import { CustomButton } from "@components/Button";
