@@ -48,10 +48,6 @@ function FromServiceDisplay() {
         <p>{t("principal")}</p>
         <p>{transferState.fromPrincipal}</p>
       </div>
-      <div className="flex flex-row items-center justify-between w-full">
-        <p>{t("subaccount")}</p>
-        <p>{middleTruncation(transferState.fromSubAccount, 7, 5)}</p>
-      </div>
     </div>
   );
 

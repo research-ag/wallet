@@ -56,17 +56,19 @@ export function createApproveAllowanceParams(allowance: TAllowance): ApprovePara
 
   const spenderPrincipal = allowance.spender;
   const allowanceSubAccountId = allowance.subAccountId;
+  const allowanceSpenderSubAccountId = allowance.spenderSubaccount;
   const allowanceAssetDecimal = allowance.asset.decimal;
   const allowanceAmount = allowance.amount || "0";
 
   const owner = Principal.fromText(spenderPrincipal);
   const subAccountUint8Array = new Uint8Array(hexToUint8Array(allowanceSubAccountId));
+  const sependerSubAccountUint8Array = new Uint8Array(hexToUint8Array(allowanceSpenderSubAccountId || ""));
   const amount: bigint = toHoleBigInt(allowanceAmount, Number(allowanceAssetDecimal));
   const expiration = calculateExpirationAsBigInt(allowance.expiration);
   return {
     spender: {
       owner,
-      subaccount: [],
+      subaccount: allowanceSpenderSubAccountId ? [sependerSubAccountUint8Array] : [],
     },
     from_subaccount: subAccountUint8Array,
     amount: amount,
@@ -90,12 +92,14 @@ export async function submitAllowanceApproval(
 
 export async function getAllowanceDetails(params: CheckAllowanceParams) {
   try {
-    const { spenderPrincipal, allocatorSubaccount, allocatorPrincipal, assetAddress, assetDecimal } = params;
+    const { spenderPrincipal, allocatorSubaccount, allocatorPrincipal, assetAddress, assetDecimal, spenderSubaccount } =
+      params;
 
     const userPrincipal = store.getState().auth.userPrincipal;
     const agent = store.getState().auth.userAgent;
     const canisterId = Principal.fromText(assetAddress);
     const subAccountUint8Array = new Uint8Array(hexToUint8Array(allocatorSubaccount));
+    const spenderSubAccountUint8Array = new Uint8Array(hexToUint8Array(spenderSubaccount || ""));
 
     const ledgerActor = Actor.createActor<LedgerActor>(LedgerFactory, {
       agent,
@@ -105,7 +109,7 @@ export async function getAllowanceDetails(params: CheckAllowanceParams) {
     const result = await ledgerActor.icrc2_allowance({
       spender: {
         owner: spenderPrincipal ? Principal.fromText(spenderPrincipal) : userPrincipal,
-        subaccount: [],
+        subaccount: spenderSubaccount ? [spenderSubAccountUint8Array] : [],
       },
       account: {
         owner: allocatorPrincipal ? Principal.fromText(allocatorPrincipal) : userPrincipal,

@@ -26,6 +26,7 @@ export type GetBalanceParams = z.infer<typeof GetBalanceParamsSchema>;
 
 const CheckAllowanceParamsSchema = z.object({
   spenderPrincipal: z.string().optional(),
+  spenderSubaccount: z.string().optional(),
   allocatorSubaccount: z.string(),
   allocatorPrincipal: z.string().optional(),
   assetAddress: z.string(),

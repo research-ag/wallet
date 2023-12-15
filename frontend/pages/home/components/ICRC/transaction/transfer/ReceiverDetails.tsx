@@ -15,6 +15,7 @@ import { toFullDecimal } from "@common/utils/amount";
 import { useMemo } from "react";
 import { Principal } from "@dfinity/principal";
 import { Buffer } from "buffer";
+import { hexStringToPrincipal } from "@common/utils/unitArray";
 
 export default function ReceiverDetails() {
   const { t } = useTranslation();
@@ -46,6 +47,7 @@ function ToServiceDisplay() {
   const { transferState } = useTransfer();
   const services = useAppSelector((state) => state.services.services);
   const { contacts } = useAppSelector((state) => state.contacts);
+  const { authClient } = useAppSelector((state) => state.auth);
 
   const beneficiary = useMemo(() => {
     const auxContact = contacts.find((cntc) => {
@@ -54,7 +56,11 @@ function ToServiceDisplay() {
       return princSubId === transferState.toSubAccount;
     });
     return auxContact;
-  }, []);
+  }, [transferState.toSubAccount]);
+
+  const isSelf = useMemo(() => {
+    return hexStringToPrincipal(transferState.toSubAccount).toText() === authClient;
+  }, [transferState.toSubAccount]);
 
   return (
     <div className="flex flex-col items-center justify-start w-full gap-1 px-4 py-2 rounded-md dark:bg-secondary-color-2 bg-secondary-color-1-light text-start text-PrimaryTextColorLight/70 dark:text-PrimaryTextColor/70 text-md">
@@ -67,8 +73,14 @@ function ToServiceDisplay() {
         <p>{transferState.toPrincipal}</p>
       </div>
       <div className="flex flex-row items-center justify-between w-full">
-        <p>{t(beneficiary ? "beneficiary" : "subaccount")}</p>
-        <p>{beneficiary ? beneficiary.name : middleTruncation(transferState.toSubAccount, 7, 5)}</p>
+        <p>{t("beneficiary")}</p>
+        <p>
+          {isSelf
+            ? t("self")
+            : beneficiary
+            ? beneficiary.name
+            : middleTruncation(hexStringToPrincipal(transferState.toSubAccount).toText(), 12, 10)}
+        </p>
       </div>
     </div>
   );

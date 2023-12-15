@@ -38,7 +38,8 @@ export default function OwnSenderAccountSelector() {
       return [];
     }
 
-    if (!searchKey || searchKey.trim() == "") return selectedAsset.subAccounts.map(formatSubAccount);
+    if (!searchKey || searchKey.trim() == "")
+      return selectedAsset.subAccounts.map((sub) => formatSubAccount(sub, selectedAsset));
 
     return selectedAsset.subAccounts
       .filter(
@@ -46,7 +47,7 @@ export default function OwnSenderAccountSelector() {
           subAccount?.name?.toLowerCase().includes(searchKey.toLowerCase()) ||
           subAccount?.sub_account_id?.toLowerCase().includes(searchKey.toLowerCase()),
       )
-      .map(formatSubAccount);
+      .map((sub) => formatSubAccount(sub, selectedAsset));
   }
 
   function onSelect(option: SelectOption) {

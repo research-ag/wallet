@@ -3,6 +3,7 @@ import { ReactComponent as DepositIcon } from "@assets/svg/files/deposit-icon.sv
 import { ReactComponent as WithdrawIcon } from "@assets/svg/files/withdraw-icon.svg";
 import { ReactComponent as NotifyIcon } from "@assets/svg/files/notify-icon.svg";
 import { ReactComponent as MoreIcon } from "@assets/svg/files/more-alt.svg";
+import { ReactComponent as MoneyHandIcon } from "@assets/svg/files/money-hand.svg";
 import { TrashIcon } from "@radix-ui/react-icons";
 //
 import { IconTypeEnum } from "@common/const";
@@ -22,6 +23,8 @@ import { assetServiceToServiceSubAccount } from "@common/utils/service";
 import { useAppSelector } from "@redux/Store";
 import { Asset } from "@redux/models/AccountModels";
 import { CustomButton } from "@components/button";
+import AddAllowanceDrawer from "@pages/allowances/components/AddAllowanceDrawer";
+import useAllowanceDrawer from "@pages/allowances/hooks/useAllowanceDrawer";
 
 interface ServiceAssetsListProps {
   service: Service;
@@ -47,6 +50,7 @@ export default function ServiceAssetsList({ service }: ServiceAssetsListProps) {
   const [deleteAsset, setDeleteAsset] = useState<ServiceAsset>();
   const [assetToNotify, setAssetToNotify] = useState<ServiceAsset>();
   const [notifyLoading, setNotifyLoading] = useState(-1);
+  const { onOpenCreateAllowanceDrawerFromService } = useAllowanceDrawer();
 
   return (
     <Fragment>
@@ -54,22 +58,22 @@ export default function ServiceAssetsList({ service }: ServiceAssetsListProps) {
         <thead>
           <tr className="border-b text-PrimaryTextColorLight dark:text-PrimaryTextColor border-BorderColorTwoLight dark:border-BorderColorTwo ">
             <th className="p-2 text-left w-[5%]"></th>
-            <th className="p-2 text-left w-[17%] border-b border-BorderColorTwoLight dark:border-BorderColorTwo font-normal opacity-60">
+            <th className="p-2 text-left w-[22%] border-b border-BorderColorTwoLight dark:border-BorderColorTwo font-normal opacity-60">
               <p>{t("asset")}</p>
             </th>
-            <th className="p-2 text-left w-[13%] border-b border-BorderColorTwoLight dark:border-BorderColorTwo font-normal opacity-60">
+            <th className="p-2 text-left w-[18%] border-b border-BorderColorTwoLight dark:border-BorderColorTwo font-normal opacity-60">
               <p>{t("deposit")}</p>
             </th>
-            <th className="p-2 text-left w-[13%] border-b border-BorderColorTwoLight dark:border-BorderColorTwo font-normal opacity-60">
+            <th className="p-2 text-left w-[18%] border-b border-BorderColorTwoLight dark:border-BorderColorTwo font-normal opacity-60">
               <p>{t("credit")}</p>
             </th>
-            <th className="p-2 text-left w-[18%] border-b border-BorderColorTwoLight dark:border-BorderColorTwo font-normal opacity-60">
+            {/* <th className="p-2 text-left w-[18%] border-b border-BorderColorTwoLight dark:border-BorderColorTwo font-normal opacity-60">
               <div className="flex flex-col items-center justify-center">
                 <p>{t("deposit")}</p>
                 <p>{`${t("minimun")} | ${t("fee")}`}</p>
               </div>
-            </th>
-            <th className="p-2 w-[24%] border-b border-BorderColorTwoLight dark:border-BorderColorTwo font-normal"></th>
+            </th> */}
+            <th className="p-2 w-[27%] border-b border-BorderColorTwoLight dark:border-BorderColorTwo font-normal"></th>
             <th className="p-2 w-[5%] border-b border-BorderColorTwoLight dark:border-BorderColorTwo font-normal"></th>
             <th className="p-2 w-[5%] border-b border-BorderColorTwoLight dark:border-BorderColorTwo font-normal"></th>
           </tr>
@@ -120,7 +124,7 @@ export default function ServiceAssetsList({ service }: ServiceAssetsListProps) {
                       )}`}</p>
                     </div>
                   </td>
-                  <td className="px-2 py-2 border-b border-BorderColorTwoLight dark:border-BorderColorTwo">
+                  {/* <td className="px-2 py-2 border-b border-BorderColorTwoLight dark:border-BorderColorTwo">
                     <div className="flex flex-row items-center justify-center w-full">
                       <p>{`${toFullDecimal(
                         asst.minDeposit,
@@ -132,7 +136,7 @@ export default function ServiceAssetsList({ service }: ServiceAssetsListProps) {
                         Number(asst.shortDecimal || "8"),
                       )}`}</p>
                     </div>
-                  </td>
+                  </td> */}
                   <td className="py-2 border-b border-BorderColorTwoLight dark:border-BorderColorTwo">
                     {!watchOnlyMode && (
                       <div className="flex flex-row items-center justify-center w-full gap-2 px-10">
@@ -189,6 +193,24 @@ export default function ServiceAssetsList({ service }: ServiceAssetsListProps) {
                         >
                           <div className="p-1 border rounded-md border-SelectRowColor bg-SecondaryColorLight dark:bg-SecondaryColor">
                             <p className="text-sm text-SelectRowColor">{t("notify")}</p>
+                          </div>
+                        </CustomHoverCard>
+                        <CustomHoverCard
+                          arrowFill="fill-SelectRowColor"
+                          side="top"
+                          trigger={
+                            <button
+                              className="flex items-center justify-center w-10 h-10 p-0 rounded-md bg-SelectRowColor"
+                              onClick={() => {
+                                onAllowanceClic(ast, service.principal);
+                              }}
+                            >
+                              <MoneyHandIcon className="fill-PrimaryColorLight" />
+                            </button>
+                          }
+                        >
+                          <div className="p-1 border rounded-md border-SelectRowColor bg-SecondaryColorLight dark:bg-SecondaryColor">
+                            <p className="text-sm text-SelectRowColor">{t("Allowance")}</p>
                           </div>
                         </CustomHoverCard>
                       </div>
@@ -269,6 +291,7 @@ export default function ServiceAssetsList({ service }: ServiceAssetsListProps) {
           res={notifyRes}
         />
       )}
+      <AddAllowanceDrawer />
     </Fragment>
   );
   function onOpenMoreChange(k: number, e: boolean) {
@@ -306,5 +329,9 @@ export default function ServiceAssetsList({ service }: ServiceAssetsListProps) {
           ast,
           assetServiceToServiceSubAccount(authClient, service.name, service.principal, serviceAsset, ast!),
         );
+  }
+
+  function onAllowanceClic(myAsset: Asset | undefined, spender: string) {
+    if (myAsset) onOpenCreateAllowanceDrawerFromService(myAsset, spender);
   }
 }

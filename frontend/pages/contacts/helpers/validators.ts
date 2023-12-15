@@ -3,7 +3,7 @@ import { validatePrincipal } from "@common/utils/definityIdentity";
 import { isHexadecimalValid } from "@pages/home/helpers/checkers";
 
 export const isContactNameValid = (name: string): boolean => {
-  return name.trim() !== "" && name.length <= 15;
+  return name.trim() !== "" && name.length <= 32;
 };
 
 export const isContactPrincipalValid = (principal: string): boolean => {

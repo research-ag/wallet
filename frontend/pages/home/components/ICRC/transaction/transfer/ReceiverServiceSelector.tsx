@@ -14,6 +14,7 @@ import BeneficiaryContactBook from "./BeneficiaryContactBook";
 import { Contact } from "@redux/models/ContactsModels";
 import ReceiverContactBeneficiarySelector from "./ReceiverContactBeneficiarySelector";
 import { t } from "i18next";
+import { hexStringToPrincipal } from "@common/utils/unitArray";
 
 export default function ServiceBookReceiver() {
   const { transferState, setTransferState } = useTransfer();
@@ -27,13 +28,26 @@ export default function ServiceBookReceiver() {
   const [contactBeneficiary, setContactBeneficiary] = useState<Contact>();
 
   useEffect(() => {
-    const auxContact = contacts.find((contact) => {
+    let auxContact = contacts.find((contact) => {
       const princBytes = Principal.fromText(contact.principal).toUint8Array();
       const princSubId = `0x${princBytes.length.toString(16) + Buffer.from(princBytes).toString("hex")}`;
       return princSubId === transferState.toSubAccount;
     });
+
+    const selfPrincBytes = Principal.fromText(authClient).toUint8Array();
+    const selfPrincSubId = `0x${selfPrincBytes.length.toString(16) + Buffer.from(selfPrincBytes).toString("hex")}`;
+
+    if (selfPrincSubId === transferState.toSubAccount) {
+      auxContact = {
+        name: t("self"),
+        principal: authClient,
+        accountIdentifier: "",
+        accounts: [],
+      };
+    }
+
     if (auxContact) setContactBeneficiary(auxContact);
-    else setBeneficiary(authClient);
+    else setBeneficiary(hexStringToPrincipal(transferState.toSubAccount).toText());
   }, []);
 
   const filteredServices: ServiceSubAccount[] = useMemo(() => {
@@ -85,7 +99,7 @@ export default function ServiceBookReceiver() {
 
   return (
     <div className="flex flex-col justify-start items-start mx-4">
-      <p className="mt-2 text-md text-PrimaryTextColorLight/70 dark:text-PrimaryTeztColor/70">{t("service")}</p>
+      <p className="mt-2 text-md text-PrimaryTextColorLight/70 dark:text-PrimaryTextColor/60">{t("service")}</p>
       <BasicSelect
         onSelect={onSelect}
         options={formattedServices}
@@ -96,12 +110,13 @@ export default function ServiceBookReceiver() {
         componentWidth="21rem"
         margin="!mt-0"
       />
-      <p className="mt-2 text-md text-PrimaryTextColorLight/70 dark:text-PrimaryTeztColor/70">{t("beneficiary")}</p>
+      <p className="mt-2 text-md text-PrimaryTextColorLight/70 dark:text-PrimaryTextColor/60">{t("beneficiary")}</p>
       {contactBeneficiary ? (
         <ReceiverContactBeneficiarySelector
           setBeneficiary={setBeneficiary}
           selectedContact={contactBeneficiary}
           setSelectedContact={setContactBeneficiary}
+          onSelectOption={onSelectOption}
         />
       ) : (
         <CustomInput
@@ -112,7 +127,7 @@ export default function ServiceBookReceiver() {
               <button className="p-0" onClick={onSelf}>
                 <p className="text-sm text-slate-color-info underline">{t("self")}</p>
               </button>
-              <BeneficiaryContactBook setSelectedContact={setContactBeneficiary} />
+              <BeneficiaryContactBook onSelectContactBeneficiaty={onSelectContactBeneficiaty} />
             </div>
           }
           border={benefErr ? "error" : "primary"}
@@ -189,5 +204,47 @@ export default function ServiceBookReceiver() {
       ...prev,
       toSubAccount: princSubId,
     }));
+
+    setContactBeneficiary({
+      name: t("self"),
+      principal: authClient,
+      accountIdentifier: "",
+      accounts: [],
+    });
+  }
+  function onSelectOption(option: SelectOption) {
+    let contact = contacts.find((contact) => `${contact.principal}` === option.value);
+
+    if (option.value === authClient && option.label === t("self")) {
+      contact = {
+        name: t("self"),
+        principal: authClient,
+        accountIdentifier: "",
+        accounts: [],
+      };
+    }
+
+    if (!contact) {
+      logger.debug("ReceiverContactSelector: onSelect: contact not found");
+      return;
+    }
+
+    const princBytes = Principal.fromText(contact.principal).toUint8Array();
+    const princSubId = `0x${princBytes.length.toString(16) + Buffer.from(princBytes).toString("hex")}`;
+    setTransferState((prev) => ({
+      ...prev,
+      toSubAccount: princSubId,
+    }));
+    setContactBeneficiary(contact);
+  }
+
+  function onSelectContactBeneficiaty(contact: Contact) {
+    const princBytes = Principal.fromText(contact.principal).toUint8Array();
+    const princSubId = `0x${princBytes.length.toString(16) + Buffer.from(princBytes).toString("hex")}`;
+    setTransferState((prev) => ({
+      ...prev,
+      toSubAccount: princSubId,
+    }));
+    setContactBeneficiary(contact);
   }
 }

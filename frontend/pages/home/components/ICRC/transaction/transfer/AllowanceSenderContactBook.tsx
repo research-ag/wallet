@@ -7,7 +7,6 @@ import { ContactSubAccount } from "@/@types/transactions";
 import { useAppSelector } from "@redux/Store";
 import { useTransfer } from "@pages/home/contexts/TransferProvider";
 import logger from "@/common/utils/logger";
-import { getIconSrc } from "@common/utils/icons";
 import { AvatarEmpty } from "@components/avatar";
 import { useTranslation } from "react-i18next";
 
@@ -24,24 +23,19 @@ export default function AllowanceSenderContactBook() {
       <DropdownMenu.Root modal={isOpen} onOpenChange={onOpenChange}>
         <DropdownMenu.Trigger
           asChild
-          className="flex w-[21rem] items-center justify-between h-12 p-2 px-1 mt-2 border rounded-md cursor-pointer bg-ThemeColorSelectorLight dark:bg-SecondaryColor"
+          className="flex w-[21rem] items-center justify-between h-12 p-2 px-1 mt-2 border border-BorderColorLight dark:border-BorderColor rounded-md cursor-pointer bg-ThemeColorSelectorLight dark:bg-SecondaryColor"
         >
           <div className="flex items-center justify-center">
             <div>
               {transferState.fromSubAccount && (
                 <div className="flex items-center justify-between ">
-                  <AvatarEmpty title="H" size="large" />
+                  <AvatarEmpty title="H" size="medium" />
                   <div className="ml-2">
                     <p className="text-left text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
                       {getContactName()} {`[${getContactAccountName()}]`}
                     </p>
                     <span className="flex">
-                      <img
-                        className="w-5 h-5 mr-2"
-                        src={getIconSrc(getAssetLogo(), transferState.tokenSymbol)}
-                        alt={transferState.tokenSymbol}
-                      />
-                      <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
+                      <p className="opacity-50 text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
                         {getContactAllowanceAmount()} {transferState.tokenSymbol}
                       </p>
                     </span>
@@ -69,8 +63,7 @@ export default function AllowanceSenderContactBook() {
           </div>
           <div>
             {getOptions().map((contact) => {
-              const { contactName, assetLogo, assetSymbol, subAccountAllowance, subAccountName, assetTokenSymbol } =
-                contact;
+              const { contactName, assetSymbol, subAccountAllowance, subAccountName } = contact;
 
               return (
                 <DropdownMenu.Item
@@ -79,18 +72,13 @@ export default function AllowanceSenderContactBook() {
                   className="flex items-center justify-start px-2 py-2 bg-opacity-50 cursor-pointer hover:bg-RadioCheckColor"
                 >
                   <div className="flex items-center justify-between mr-2">
-                    <AvatarEmpty title={contactName} size="large" />
+                    <AvatarEmpty title={contactName} size="medium" />
                     <div className="ml-2">
                       <p className="text-left text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
                         {contactName} {`[${subAccountName}]`}
                       </p>
                       <span className="flex">
-                        <img
-                          className="w-5 h-5 mr-2"
-                          src={getIconSrc(assetLogo, assetTokenSymbol)}
-                          alt={assetTokenSymbol}
-                        />
-                        <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
+                        <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor opacity-50">
                           {subAccountAllowance?.amount} {assetSymbol}
                         </p>
                       </span>
@@ -226,17 +214,6 @@ export default function AllowanceSenderContactBook() {
     }
 
     return account.allowance.amount;
-  }
-
-  function getAssetLogo() {
-    const asset = assets.find((asset) => asset.tokenSymbol === transferState.tokenSymbol);
-
-    if (!asset) {
-      logger.error("getAssetLogo: Asset not found");
-      return "";
-    }
-
-    return asset.logo;
   }
 
   // ------------ USER EVENTS ------------

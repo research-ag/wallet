@@ -53,10 +53,9 @@ export default function InputSufixContactBook() {
                 <div className="flex items-center justify-between mr-2">
                   <AvatarEmpty title={contactName} size="large" />
                   <div className="ml-2">
-                    <p className="text-left text-md text-black-color dark:text-white">
-                      {contactName} {`[${subAccountName}]`}
-                    </p>
+                    <p className="text-left text-md text-black-color dark:text-white">{contactName}</p>
                     <p className="text-left opacity-50 text-md text-black-color dark:text-white">
+                      {`[${subAccountName}]`}{" "}
                       {contact.subAccountId.length > 20
                         ? middleTruncation(contact.subAccountId, 10, 10)
                         : contact.subAccountId}

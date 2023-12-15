@@ -46,6 +46,7 @@ import {
 import logger from "@/common/utils/logger";
 import { Contact } from "@redux/models/ContactsModels";
 import { ServiceData } from "@redux/models/ServiceModels";
+import { setServices as setServicesRedux, setServicesData } from "@redux/services/ServiceReducer";
 
 addRxPlugin(RxDBUpdatePlugin);
 addRxPlugin(RxDBMigrationPlugin);
@@ -207,6 +208,7 @@ export class RxdbDatabase extends IWalletDatabase {
       await this._assetStateSync();
       await this._contactStateSync();
       await this._allowanceStateSync();
+      await this._serviceStateSync();
     }
   }
 
@@ -624,6 +626,14 @@ export class RxdbDatabase extends IWalletDatabase {
       logger.debug("RxDb Getservices", e);
       return [];
     }
+  }
+
+  private async _serviceStateSync(newServices?: ServiceData[]): Promise<void> {
+    const documents = await (await this.services)?.find().exec();
+    const result = (documents && documents.map(this._mapserviceDoc)) || [];
+    const srvcs = newServices || result || [];
+    store.dispatch(setServicesData(srvcs));
+    if (srvcs.length === 0) store.dispatch(setServicesRedux([]));
   }
 
   async setServices(services: ServiceData[]): Promise<void> {

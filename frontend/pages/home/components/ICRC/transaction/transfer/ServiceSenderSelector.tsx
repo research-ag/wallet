@@ -13,6 +13,7 @@ import { Principal } from "@dfinity/principal";
 import { useTransfer } from "@pages/home/contexts/TransferProvider";
 import logger from "@/common/utils/logger";
 import { AvatarEmpty } from "@components/avatar";
+import { toFullDecimal } from "@common/utils/amount";
 
 export default function SenderServiceSelector() {
   const { t } = useTranslation();
@@ -20,6 +21,7 @@ export default function SenderServiceSelector() {
   const { services } = useAppSelector((state) => state.services);
   const { authClient } = useAppSelector((state) => state.auth);
   const [isOpen, setIsOpen] = useState(false);
+  const [usedAmount, setUsedAmount] = useState("");
   const [searchKey, setSearchKey] = useState<string>("");
   const assets = useAppSelector((state) => state.asset.list.assets);
 
@@ -33,7 +35,9 @@ export default function SenderServiceSelector() {
       <DropdownMenu.Root open={isOpen} onOpenChange={onOpenChange}>
         <DropdownMenu.Trigger
           asChild
-          className="flex flex-row items-center justify-between h-12 px-4 py-2 border rounded-md cursor-pointer bg-ThemeColorSelectorLight dark:bg-SecondaryColor border-BorderColorLight dark:border-BorderColor"
+          className={`flex flex-row items-center justify-between ${
+            transferState.fromPrincipal ? "h-16" : "h-12"
+          } px-4 py-2 border rounded-md cursor-pointer bg-ThemeColorSelectorLight dark:bg-SecondaryColor border-BorderColorLight dark:border-BorderColor`}
         >
           <div className="flex items-center justify-center w-full ">
             <div className="flex items-center mr-2">
@@ -47,6 +51,7 @@ export default function SenderServiceSelector() {
                   <div className="flex flex-col items-start justify-center">
                     <p className="text-start text-md ">{getServiceName(transferState.fromPrincipal)}</p>
                     <p className="font-light text-start text-md">{transferState.fromPrincipal}</p>
+                    <p className="font-light text-start text-md opacity-50">{usedAmount}</p>
                   </div>
                 </div>
               ) : (
@@ -83,26 +88,37 @@ export default function SenderServiceSelector() {
                   const isSelected = option.principal === transferState.fromPrincipal;
 
                   return (
-                    option.assets.find((ast) => ast.principal === currentAsset?.address && ast.visible) && isSearchKeyIncluded && !isSelected
+                    option.assets.find((ast) => ast.principal === currentAsset?.address && ast.visible) &&
+                    isSearchKeyIncluded &&
+                    !isSelected
                   );
                 })
-                .map((option, index) => (
-                  <div
-                    onClick={() => {
-                      handleSelectOption(option);
-                      setIsOpen(false);
-                    }}
-                    key={index}
-                  >
-                    <div className="flex flex-row items-center justify-start gap-2 px-2 py-2 cursor-pointer text-PrimaryTextColorLight dark:text-PrimaryTextColor hover:bg-RadioCheckColor">
-                      <AvatarEmpty title={option.name} size="medium" className="mr-4 text-PrimaryTextColor" />
-                      <div className="flex flex-col items-start justify-center">
-                        <p className="text-start text-md ">{option.name}</p>
-                        <p className="font-light text-start text-md">{option.principal}</p>
+                .map((option, index) => {
+                  const usedAsset = option.assets.find((ast) => ast.principal === currentAsset?.address && ast.visible);
+                  const amount = `${toFullDecimal(usedAsset?.credit || "0", Number(currentAsset?.decimal || "8"))} ${
+                    currentAsset?.symbol || ""
+                  }`;
+                  return (
+                    <div
+                      onClick={() => {
+                        handleSelectOption(option, amount);
+                        setIsOpen(false);
+                      }}
+                      key={index}
+                    >
+                      <div className="flex flex-row items-center justify-start gap-2 px-2 py-2 cursor-pointer text-PrimaryTextColorLight dark:text-PrimaryTextColor hover:bg-RadioCheckColor">
+                        <AvatarEmpty title={option.name} size="medium" className="mr-4 text-PrimaryTextColor" />
+                        <div className="flex flex-col items-start justify-center">
+                          <p className="text-start text-md ">{option.name}</p>
+                          <p className="font-light text-start text-md">{option.principal}</p>
+                          {usedAsset && currentAsset && (
+                            <p className=" opacity-50 font-light text-start text-md">{amount}</p>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
             </div>
           </DropdownMenu.Content>
         </DropdownMenu.Portal>
@@ -110,12 +126,13 @@ export default function SenderServiceSelector() {
     </div>
   );
 
-  function handleSelectOption(opt: Service) {
+  function handleSelectOption(opt: Service, amount: string) {
     setTransferState((prev) => ({
       ...prev,
       fromPrincipal: opt.principal,
       fromSubAccount: princSubId,
     }));
+    setUsedAmount(amount);
   }
 
   function getServiceName(principal: string) {

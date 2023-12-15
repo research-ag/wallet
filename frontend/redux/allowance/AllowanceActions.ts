@@ -9,6 +9,7 @@ import {
   setFullAllowanceErrors,
   setIsDeleteAllowance,
   setIsLoading,
+  setIsFromService,
 } from "@/redux/allowance/AllowanceReducer";
 
 export const setIsUpdateAllowanceAction = (isUpdate: boolean) => {
@@ -41,4 +42,8 @@ export const setFullAllowanceErrorsAction = (errors: string[]) => {
 
 export const setIsLoadingAllowanceAction = (isLoading: boolean) => {
   store.dispatch(setIsLoading(isLoading));
+};
+
+export const setIsFromServicesAction = (fromServices: boolean) => {
+  store.dispatch(setIsFromService(fromServices));
 };

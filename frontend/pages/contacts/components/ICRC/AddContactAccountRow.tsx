@@ -298,7 +298,13 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
     const withAllowances = await addAllowanceToSubaccounts(allowanceArgs);
 
     setNewAccount((prev) => {
-      if (prev) return { ...prev, ...withAllowances[0] };
+      if (prev)
+        return {
+          ...prev,
+          ...withAllowances[0],
+          subaccountId: newAccount.subaccountId,
+          subaccount: newAccount.subaccountId,
+        };
 
       return {
         name: "",

@@ -96,9 +96,10 @@ export default function ReceiverContactSelector() {
   function formatContact(contact: ContactSubAccount) {
     return {
       value: `${contact.contactPrincipal}-${contact.subAccountId}`,
-      label: `${contact.contactName} [${contact.subAccountName}]`,
-      subLabel:
-        contact.subAccountId.length > 20 ? middleTruncation(contact.subAccountId, 10, 10) : contact.subAccountId,
+      label: `${contact.contactName}`,
+      subLabel: `[${contact.subAccountName}] ${
+        contact.subAccountId.length > 20 ? middleTruncation(contact.subAccountId, 10, 10) : contact.subAccountId
+      }`,
       icon: <AvatarEmpty title={contact.contactName} size="medium" className="mr-4" />,
     };
   }

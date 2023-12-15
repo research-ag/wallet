@@ -29,6 +29,7 @@ interface AllowanceState {
     allowances: TAllowance[];
   };
   errors: string[];
+  isFromService: boolean;
 }
 
 const reducerName = "allowance";
@@ -43,6 +44,7 @@ const initialState: AllowanceState = {
     allowances: [],
   },
   errors: [],
+  isFromService: false,
 };
 
 const allowanceSlice = createSlice({
@@ -88,6 +90,9 @@ const allowanceSlice = createSlice({
     setFullAllowanceErrors(state: AllowanceState, action: PayloadAction<string[]>) {
       state.errors = action.payload;
     },
+    setIsFromService(state: AllowanceState, action: PayloadAction<boolean>) {
+      state.isFromService = action.payload;
+    },
   },
 });
 
@@ -104,5 +109,6 @@ export const {
   setAllowanceError,
   removeAllowanceError,
   setFullAllowanceErrors,
+  setIsFromService,
 } = allowanceSlice.actions;
 export default allowanceSlice.reducer;
