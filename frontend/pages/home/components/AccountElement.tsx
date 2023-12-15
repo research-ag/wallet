@@ -36,6 +36,7 @@ interface AccountElementProps {
   newSub: boolean;
   tokens: Token[];
   subaccountId: number;
+  setAddOpen(value: boolean): void;
 }
 
 const AccountElement = ({
@@ -52,6 +53,7 @@ const AccountElement = ({
   newSub,
   tokens,
   subaccountId,
+  setAddOpen,
 }: AccountElementProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
@@ -204,6 +206,8 @@ const AccountElement = ({
         saveLocalStorage(auxTokens);
         dispatch(addSubAccount(tokenIndex, { ...subAccount, name: name.trim() }));
         setNewSub(undefined);
+
+        setAddOpen(false);
       } else {
         const auxTokens = tokens.map((tkn, k) => {
           if (k === Number(tokenIndex)) {
@@ -227,6 +231,7 @@ const AccountElement = ({
   function onAdd() {
     setEditNameId("");
     setNewSub(undefined);
+    setAddOpen(false);
   }
 
   function onConfirm() {
@@ -260,6 +265,8 @@ const AccountElement = ({
     setEditNameId(subAccount.sub_account_id);
     setName(subAccount.name);
     setNewSub(undefined);
+
+    setAddOpen(false);
   }
 
   // Tailwind CSS
