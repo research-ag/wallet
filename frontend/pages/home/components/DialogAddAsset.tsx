@@ -259,6 +259,11 @@ const DialogAddAsset = ({
       dispatch(setAcordeonAssetIdx([...acordeonIdx, selectedAsset?.tokenSymbol || ""]));
     }
   }
+  function addToAcordeonIdx() {
+    if (!acordeonIdx.includes(selectedAsset?.tokenSymbol || "")) {
+      dispatch(setAcordeonAssetIdx([...acordeonIdx, selectedAsset?.tokenSymbol || ""]));
+    }
+  }
 };
 
 export default DialogAddAsset;
