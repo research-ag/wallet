@@ -169,7 +169,7 @@ export const updateAllBalances = async (
           tokenName: name,
           tokenSymbol: symbol,
           decimal: decimals.toFixed(0),
-          subAccounts: saTokens.sort((a, b) => {
+          subAccounts: (basicSearch ? userSubAcc : saTokens).sort((a, b) => {
             return hexToNumber(a.numb)?.compare(hexToNumber(b.numb) || bigInt()) || 0;
           }),
         };
@@ -178,7 +178,7 @@ export const updateAllBalances = async (
           name: tkn.name,
           address: tkn.address,
           index: tkn.index,
-          subAccounts: saAssets.sort((a, b) => {
+          subAccounts: (basicSearch ? subAccList : saAssets).sort((a, b) => {
             return hexToNumber(a.sub_account_id)?.compare(hexToNumber(b.sub_account_id) || bigInt()) || 0;
           }),
           sort_index: idNum,

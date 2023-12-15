@@ -59,12 +59,15 @@ export const handleSeedAuthenticated = (seed: string) => {
   const newIdentity = seedToIdentity(seed);
   if (newIdentity) {
     store.dispatch(setDebugMode(true));
-    handleLoginApp(newIdentity);
+    handleLoginApp(newIdentity, true);
   }
 };
 
-export const handleLoginApp = async (authIdentity: Identity) => {
-  if (localStorage.getItem("network_type") === null) logout();
+export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean) => {
+  if (localStorage.getItem("network_type") === null && !fromSeed) {
+    logout();
+    return;
+  }
   store.dispatch(setAuthLoading(true));
   const myAgent = new HttpAgent({
     identity: authIdentity,

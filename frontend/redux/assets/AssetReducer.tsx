@@ -243,6 +243,7 @@ const assetSlice = createSlice({
       state.selectedAccount = undefined;
       state.selectedAsset = undefined;
       state.selectedTransaction = undefined;
+      state.acordeonIdx = [];
     },
   },
 });
