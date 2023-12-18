@@ -108,6 +108,7 @@ const AssetsList = () => {
           setAssetInfo={setAssetInfo}
           tokens={tokens}
           assetOpen={assetOpen}
+          assets={assets}
         />
       </div>
     </Fragment>

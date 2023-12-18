@@ -84,7 +84,7 @@ export const roundToDecimalN = (numb: number | string, decimal: number | string)
   return Math.round(Number(numb) * Math.pow(10, Number(decimal))) / Math.pow(10, Number(decimal));
 };
 
-export function toFullDecimal(numb: bigint | string, decimal: number, maxDecimals?: number) {
+export const toFullDecimal = (numb: bigint | string, decimal: number, maxDecimals?: number) => {
   let numbStr = numb.toString();
   if (decimal === numbStr.length) {
     return "0." + numbStr.slice(0, maxDecimals || decimal);
@@ -97,9 +97,28 @@ export function toFullDecimal(numb: bigint | string, decimal: number, maxDecimal
   const holeStr = numbStr.slice(0, numbStr.length - decimal).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   const decimalStr = numbStr.slice(numbStr.length - decimal).replace(/0+$/, "");
   return decimalStr !== "" ? holeStr + "." + decimalStr.slice(0, maxDecimals || decimal) : holeStr;
-}
+};
 
-export function validateAmount(amnt: string, dec: number): boolean {
+export const toHoleBigInt = (numb: string, decimal: number) => {
+  const parts = numb.split(".");
+  if (parts.length === 1 || parts[1] === "") {
+    let addZeros = "";
+    for (let index = 0; index < decimal; index++) {
+      addZeros = "0" + addZeros;
+    }
+    return BigInt(parts[0] + addZeros);
+  } else {
+    const hole = parts[0];
+    const dec = parts[1];
+    let addZeros = "";
+    for (let index = 0; index < decimal - dec.length; index++) {
+      addZeros = "0" + addZeros;
+    }
+    return BigInt(hole + dec + addZeros);
+  }
+};
+
+export const validateAmount = (amnt: string, dec: number): boolean => {
   // Regular expression to match a valid number with at most 'dec' decimals
   const regex = new RegExp(`^[0-9]+([.,][0-9]{0,${dec}})?$`);
   // Check if amount is a valid number
@@ -112,7 +131,7 @@ export function validateAmount(amnt: string, dec: number): boolean {
     return false;
   }
   return true;
-}
+};
 
 export const getUSDfromToken = (
   tokenAmount: string | number,

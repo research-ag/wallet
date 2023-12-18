@@ -19,6 +19,7 @@ import {
   roundToDecimalN,
   toFullDecimal,
   validateAmount,
+  toHoleBigInt,
 } from "@/utils";
 import { CustomInput } from "@components/Input";
 import { CustomButton } from "@components/Button";
@@ -246,9 +247,7 @@ const SendOwnAccount = ({
         setSendingStatus(SendingStatusEnum.enum.error);
         showModal(true);
       } else {
-        const sentAmount = BigInt(
-          Math.floor(Math.round(Number(amount) * Math.pow(10, Number(selectedAsset?.decimal)))),
-        );
+        const sentAmount = toHoleBigInt(amount, Number(selectedAsset?.decimal));
         setAmountBI(sentAmount);
         let errorFound = false;
         setSendingStatus(SendingStatusEnum.enum.sending);
