@@ -22,9 +22,10 @@ interface AddAssetsProps {
   asset: Asset | undefined;
   setAssetInfo(value: Asset | undefined): void;
   tokens: Token[];
+  assets: Asset[];
 }
 
-const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens }: AddAssetsProps) => {
+const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens, assets }: AddAssetsProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
@@ -109,7 +110,7 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens }: AddA
             errToken={errToken}
             setManual={setManual}
             newAssetList={newAssetList}
-            tokens={tokens}
+            assets={assets}
           ></AddAssetAutomatic>
         )}
       </div>
