@@ -196,13 +196,6 @@ const assetSlice = createSlice({
       state.selectedAsset = action.payload;
     },
     setSelectedAccount(state, action) {
-      const txList = [...state.txWorker];
-
-      let auxTx = txList.find((tx: TransactionList) => {
-        return tx.symbol === action.payload.symbol && tx.subaccount === action.payload.sub_account_id;
-      });
-
-      state.transactions = auxTx?.tx || [];
       state.selectedAccount = action.payload;
     },
     setSelectedTransaction(state, action) {
@@ -225,6 +218,9 @@ const assetSlice = createSlice({
       }
 
       state.txWorker = txList;
+    },
+    addTxWorker(state, action: PayloadAction<TransactionList>) {
+      state.txWorker = [...state.txWorker, action.payload];
     },
     setTxLoad(state, action) {
       state.txLoad = action.payload;
@@ -267,6 +263,7 @@ export const {
   setSelectedAccount,
   setSelectedTransaction,
   setTxWorker,
+  addTxWorker,
   setTxLoad,
   setAcordeonAssetIdx,
 } = assetSlice.actions;
