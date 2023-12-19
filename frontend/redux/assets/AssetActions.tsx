@@ -31,6 +31,7 @@ export const updateAllBalances = async (
   tokens: Token[],
   basicSearch?: boolean,
   fromLogin?: boolean,
+  fromWorker?: boolean,
 ) => {
   let tokenMarkets: TokenMarketInfo[] = [];
   try {
@@ -126,6 +127,7 @@ export const updateAllBalances = async (
           // Then search into first 1000 subaccount that are not looked yet under the 5 consecutive zeros logic
           // It iterates geting amount of each subaccount
           // If 5 consecutive subaccounts balances are zero, iteration stops
+          const idsPushed: string[] = [];
           subAccts = await Promise.all(
             tkn.subAccounts.map(async (sa) => {
               const myBalance = await balance({
@@ -133,7 +135,7 @@ export const updateAllBalances = async (
                 subaccount: new Uint8Array(hexToUint8Array(sa.numb)),
                 certified: false,
               });
-
+              idsPushed.push(sa.numb);
               const amnt = myBalance.toString();
               const crncyAmnt = assetMarket ? getUSDfromToken(myBalance.toString(), assetMarket.price, decimals) : "0";
               const saAsset: SubAccount = {
@@ -156,6 +158,44 @@ export const updateAllBalances = async (
               return { saAsset, saToken };
             }),
           );
+          if (!fromWorker) {
+            let zeros = 0;
+            for (let i = 0; i < 1000; i++) {
+              if (!idsPushed.includes(`0x${i.toString(16)}`)) {
+                const myBalance = await balance({
+                  owner: myPrincipal,
+                  subaccount: new Uint8Array(getSubAccountArray(i)),
+                  certified: false,
+                });
+                if (Number(myBalance) > 0 || i === 0) {
+                  zeros = 0;
+                  const amnt = myBalance.toString();
+                  const crncyAmnt = assetMarket
+                    ? getUSDfromToken(myBalance.toString(), assetMarket.price, decimals)
+                    : "0";
+                  const saAsset: SubAccount = {
+                    name: i === 0 ? AccountDefaultEnum.Values.Default : "-",
+                    sub_account_id: `0x${i.toString(16)}`,
+                    address: myPrincipal.toString(),
+                    amount: amnt,
+                    currency_amount: crncyAmnt,
+                    transaction_fee: myTransactionFee.toString(),
+                    decimal: decimals,
+                    symbol: tkn.symbol,
+                  };
+                  const saToken: TokenSubAccount = {
+                    name: i === 0 ? AccountDefaultEnum.Values.Default : "-",
+                    numb: `0x${i.toString(16)}`,
+                    amount: amnt,
+                    currency_amount: crncyAmnt,
+                  };
+                  subAccts.push({ saAsset, saToken });
+                } else zeros++;
+
+                if (zeros === 5) break;
+              }
+            }
+          }
         }
         const saTokens = subAccts.map((saT) => {
           return saT.saToken;
