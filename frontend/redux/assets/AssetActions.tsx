@@ -31,6 +31,7 @@ export const updateAllBalances = async (
   tokens: Token[],
   basicSearch?: boolean,
   fromLogin?: boolean,
+  fromWorker?: boolean,
 ) => {
   let tokenMarkets: TokenMarketInfo[] = [];
   try {
