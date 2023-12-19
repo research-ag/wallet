@@ -366,7 +366,7 @@ export const getAllTransactionsICP = async (subaccount_index: string, loading: b
       `${isOGY ? import.meta.env.VITE_ROSETTA_URL_OGY : import.meta.env.VITE_ROSETTA_URL}/search/transactions`,
       {
         method: "POST",
-        mode: "no-cors",
+        // mode: "no-cors",
         body: JSON.stringify({
           network_identifier: {
             blockchain: isOGY ? import.meta.env.VITE_NET_ID_BLOCKCHAIN_OGY : import.meta.env.VITE_NET_ID_BLOCKCHAIN,
