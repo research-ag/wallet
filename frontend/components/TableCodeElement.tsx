@@ -1,4 +1,4 @@
-import { AssetSymbolEnum } from "@/const";
+import { AssetSymbolEnum, SpecialTxTypeEnum } from "@/const";
 import { getAddress, shortAddress } from "@/utils";
 import { AccountHook } from "@pages/hooks/accountHook";
 import { useAppSelector } from "@redux/Store";
@@ -104,9 +104,9 @@ const CodeElement = ({ tx }: CodeElementProps) => {
 
   return (
     <Fragment>
-      {tx.kind === "mint" || tx.kind === "burn" ? (
+      {tx.kind === SpecialTxTypeEnum.Enum.mint || tx.kind === SpecialTxTypeEnum.Enum.burn ? (
         <div className="flex flex-col items-start justify-center w-full my-2 min-h-12">
-          <p className={contcNameStyle}>{tx.kind === "mint" ? "Mint" : "Burn"}</p>
+          <p className={contcNameStyle}>{tx.kind === SpecialTxTypeEnum.Enum.mint ? "Mint" : "Burn"}</p>
         </div>
       ) : (
         <div className="flex flex-col items-start justify-center w-full my-2 min-h-12">

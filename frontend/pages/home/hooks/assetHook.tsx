@@ -1,4 +1,4 @@
-import { defaultTokens } from "@/const";
+import { defaultTokens } from "@/defaultsTokens";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { updateAllBalances } from "@redux/assets/AssetActions";
 import {

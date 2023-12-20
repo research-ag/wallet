@@ -6,7 +6,7 @@ import { Transaction } from "@redux/models/AccountModels";
 import moment from "moment";
 import { getAddress, getAssetSymbol, toFullDecimal } from "@/utils";
 import { useTranslation } from "react-i18next";
-import { TransactionTypeEnum } from "@/const";
+import { SpecialTxTypeEnum, TransactionTypeEnum } from "@/const";
 import { Fragment, useState } from "react";
 import { useAppSelector } from "@redux/Store";
 import CodeElement from "@components/TableCodeElement";
@@ -32,9 +32,9 @@ export const TableHook = () => {
             <div className="flex justify-center items-center p-2 rounded-md border border-BorderColorTwoLight dark:border-BorderColorTwo">
               <img
                 src={
-                  info.getValue().kind === "burn"
+                  info.getValue().kind === SpecialTxTypeEnum.Enum.burn
                     ? UpAmountIcon
-                    : info.getValue().kind === "mint"
+                    : info.getValue().kind === SpecialTxTypeEnum.Enum.mint
                     ? DownAmountIcon
                     : getAddress(
                         info.getValue().type,
@@ -79,7 +79,7 @@ export const TableHook = () => {
       id: "amount",
       cell: (info) => {
         let isTo =
-          info.getValue().kind !== "mint" &&
+          info.getValue().kind !== SpecialTxTypeEnum.Enum.mint &&
           getAddress(
             info.getValue().type,
             info.getValue().from || "",

@@ -6,7 +6,13 @@ import bigInt from "big-integer";
 import store from "@redux/Store";
 import { Transaction, Operation, RosettaTransaction, Asset } from "./redux/models/AccountModels";
 import { IcrcTokenMetadataResponse, IcrcAccount, encodeIcrcAccount } from "@dfinity/ledger";
-import { OperationStatusEnum, OperationTypeEnum, TransactionTypeEnum, TransactionType } from "./const";
+import {
+  OperationStatusEnum,
+  OperationTypeEnum,
+  TransactionTypeEnum,
+  TransactionType,
+  SpecialTxTypeEnum,
+} from "./const";
 import { Account, Transaction as T } from "@dfinity/ledger/dist/candid/icrc1_index";
 import { isNullish, uint8ArrayToHexString, bigEndianCrc32, encodeBase32 } from "@dfinity/utils";
 import { AccountIdentifier, SubAccount as SubAccountNNS } from "@dfinity/nns";
@@ -317,9 +323,11 @@ export const formatckBTCTransaccion = (
 ): Transaction => {
   const { timestamp, transfer, mint, burn, kind } = ckBTCTransaction;
   const trans = { status: OperationStatusEnum.Enum.COMPLETED, kind: kind } as Transaction;
-  if (kind === "mint")
+  // Check Tx type ["transfer", "mint", "burn"]
+  if (kind === SpecialTxTypeEnum.Enum.mint)
     mint.forEach(
       (operation: { to: Account; memo: [] | [Uint8Array]; created_at_time: [] | [bigint]; amount: bigint }) => {
+        // Get Tx data from Mint record
         const value = operation.amount;
         const amount = value.toString();
         trans.to = (operation.to.owner as Principal).toString();
@@ -331,6 +339,8 @@ export const formatckBTCTransaccion = (
         trans.canisterId = canister;
         trans.symbol = symbol;
         trans.amount = amount;
+
+        // Get AccountIdentifier of Receiver
         let subaccTo: SubAccountNNS | undefined = undefined;
         try {
           subaccTo = SubAccountNNS.fromBytes((operation.to.subaccount as [Uint8Array])[0]) as SubAccountNNS;
@@ -345,8 +355,9 @@ export const formatckBTCTransaccion = (
         trans.type = TransactionTypeEnum.Enum.RECEIVE;
       },
     );
-  else if (kind === "burn")
+  else if (kind === SpecialTxTypeEnum.Enum.burn)
     burn.forEach(
+      // Get Tx data from Burn record
       (operation: { from: Account; memo: [] | [Uint8Array]; created_at_time: [] | [bigint]; amount: bigint }) => {
         const value = operation.amount;
         const amount = value.toString();
@@ -359,6 +370,8 @@ export const formatckBTCTransaccion = (
         trans.canisterId = canister;
         trans.symbol = symbol;
         trans.amount = amount;
+
+        // Get AccountIdentifier of Sender
         let subaccFrom: SubAccountNNS | undefined = undefined;
         try {
           subaccFrom = SubAccountNNS.fromBytes((operation.from.subaccount as [Uint8Array])[0]) as SubAccountNNS;
@@ -375,6 +388,7 @@ export const formatckBTCTransaccion = (
     );
   else
     transfer?.forEach((operation: any) => {
+      // Get Tx data from transfer record
       const value = operation.amount;
       const amount = value.toString();
       trans.to = (operation.to.owner as Principal).toString();
@@ -400,6 +414,7 @@ export const formatckBTCTransaccion = (
       trans.amount = amount;
       trans.idx = id.toString();
 
+      // Get AccountIdentifier of Receiver
       let subaccTo: SubAccountNNS | undefined = undefined;
       try {
         subaccTo = SubAccountNNS.fromBytes((operation.to.subaccount as [Uint8Array])[0]) as SubAccountNNS;
@@ -411,6 +426,7 @@ export const formatckBTCTransaccion = (
         subAccount: subaccTo,
       }).toHex();
 
+      // Get AccountIdentifier of Sender
       let subaccFrom: SubAccountNNS | undefined = undefined;
       try {
         subaccFrom = SubAccountNNS.fromBytes((operation.to.subaccount as [Uint8Array])[0]) as SubAccountNNS;
