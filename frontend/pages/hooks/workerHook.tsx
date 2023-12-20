@@ -64,9 +64,9 @@ export const WorkerHook = () => {
     if (userData) {
       const userDataJson = JSON.parse(userData);
       store.dispatch(setTokens(userDataJson.tokens));
-      await updateAllBalances(true, userAgent, userDataJson.tokens, false, false, true);
+      await updateAllBalances(true, userAgent, userDataJson.tokens, false, false);
     } else {
-      const { tokens } = await updateAllBalances(true, userAgent, defaultTokens, true, false, true);
+      const { tokens } = await updateAllBalances(true, userAgent, defaultTokens, true, false);
       store.dispatch(setTokens(tokens));
     }
   };
