@@ -8,6 +8,7 @@ import { clsx } from "clsx";
 import { useTranslation } from "react-i18next";
 import { GeneralHook } from "../hooks/generalHook";
 import { Token } from "@redux/models/TokenModels";
+import { Asset } from "@redux/models/AccountModels";
 
 interface AddAssetAutomaticProps {
   setNetworkTOpen(value: boolean): void;
@@ -24,6 +25,7 @@ interface AddAssetAutomaticProps {
   errToken: string;
   setManual(value: boolean): void;
   newAssetList: Token[];
+  assets: Asset[];
 }
 
 const AddAssetAutomatic = ({
@@ -41,6 +43,7 @@ const AddAssetAutomatic = ({
   errToken,
   setManual,
   newAssetList,
+  assets,
 }: AddAssetAutomaticProps) => {
   const { t } = useTranslation();
 
@@ -146,22 +149,24 @@ const AddAssetAutomatic = ({
                 align="end"
               >
                 {newAssetList.map((newAsset, idx) => {
-                  return (
-                    <DropdownMenu.Item
-                      key={`net-${idx}`}
-                      className={`flex flex-row text-md justify-start items-center p-3 cursor-pointer ${
-                        idx > 0 ? "border-t border-BorderColorLight dark:border-BorderColor" : ""
-                      }`}
-                      onSelect={() => {
-                        onSelectToken(newAsset);
-                      }}
-                    >
-                      <div className="flex flex-row justify-start items-center">
-                        {getAssetIcon(IconTypeEnum.Enum.ASSET, newAsset.symbol, newToken.logo)}
-                        <p className="ml-3">{`${newAsset.symbol}`}</p>
-                      </div>
-                    </DropdownMenu.Item>
-                  );
+                  const tokenFounded = assets.find((asst) => asst.tokenSymbol === newAsset.tokenSymbol);
+                  if (!tokenFounded)
+                    return (
+                      <DropdownMenu.Item
+                        key={`net-${idx}`}
+                        className={`flex flex-row text-md justify-start items-center p-3 cursor-pointer ${
+                          idx > 0 ? "border-t border-BorderColorLight dark:border-BorderColor" : ""
+                        }`}
+                        onSelect={() => {
+                          onSelectToken(newAsset);
+                        }}
+                      >
+                        <div className="flex flex-row justify-start items-center">
+                          {getAssetIcon(IconTypeEnum.Enum.ASSET, newAsset.symbol, newToken.logo)}
+                          <p className="ml-3">{`${newAsset.symbol}`}</p>
+                        </div>
+                      </DropdownMenu.Item>
+                    );
                 })}
               </DropdownMenu.Content>
             </DropdownMenu.Portal>
@@ -187,8 +192,11 @@ const AddAssetAutomatic = ({
         address: "",
         symbol: "",
         name: "",
+        tokenName: "",
+        tokenSymbol: "",
         decimal: "",
-        subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default }],
+        fee: "0",
+        subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default, amount: "0", currency_amount: "0" }],
         index: "",
         id_number: 999,
       });
@@ -206,8 +214,11 @@ const AddAssetAutomatic = ({
       address: "",
       symbol: "",
       name: "",
+      tokenName: "",
+      tokenSymbol: "",
       decimal: "",
-      subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default }],
+      fee: "0",
+      subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default, amount: "0", currency_amount: "0" }],
       index: "",
       id_number: 999,
     });

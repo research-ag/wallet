@@ -23,6 +23,8 @@ const DrawerSend = ({ setDrawerOpen, drawerOpen }: DrawerSendProps) => {
     setShowAccounts,
     amount,
     setAmount,
+    amountBI,
+    setAmountBI,
     newAccountErr,
     setNewAccountErr,
     modal,
@@ -39,6 +41,14 @@ const DrawerSend = ({ setDrawerOpen, drawerOpen }: DrawerSendProps) => {
     contacts,
     contactToSend,
     setContactToSend,
+    errAddress,
+    setErrAddress,
+    manual,
+    setManual,
+    manualPrinc,
+    setManualPrinc,
+    manualSub,
+    setManualSub,
   } = SentHook(drawerOpen, baseAccount);
 
   return (
@@ -69,6 +79,14 @@ const DrawerSend = ({ setDrawerOpen, drawerOpen }: DrawerSendProps) => {
             setReciver={setReciver}
             setContactToSend={setContactToSend}
             setQRview={setQRview}
+            errAddress={errAddress}
+            setErrAddress={setErrAddress}
+            manual={manual}
+            setManual={setManual}
+            manualPrinc={manualPrinc}
+            setManualPrinc={setManualPrinc}
+            manualSub={manualSub}
+            setManualSub={setManualSub}
           ></SendOutAccount>
         )
       ) : (
@@ -86,6 +104,7 @@ const DrawerSend = ({ setDrawerOpen, drawerOpen }: DrawerSendProps) => {
           setDrawerOpen={setDrawerOpen}
           setSendingStatus={setSendingStatus}
           setAmount={setAmount}
+          setAmountBI={setAmountBI}
           setNewAccount={setNewAccount}
           setContactToSend={setContactToSend}
         ></SendOwnAccount>
@@ -97,7 +116,8 @@ const DrawerSend = ({ setDrawerOpen, drawerOpen }: DrawerSendProps) => {
           modal={modal}
           receiver={receiver}
           sendingStatus={sendingStatus}
-          amount={amount}
+          amountBI={amountBI}
+          setAmountBI={setAmountBI}
           selectedAccount={selectedAccount}
           selectedAsset={selectedAsset}
         ></DialogSendConfirmation>

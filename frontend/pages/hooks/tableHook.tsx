@@ -32,13 +32,17 @@ export const TableHook = () => {
             <div className="flex justify-center items-center p-2 rounded-md border border-BorderColorTwoLight dark:border-BorderColorTwo">
               <img
                 src={
-                  getAddress(
-                    info.getValue().type,
-                    info.getValue().from || "",
-                    info.getValue().fromSub || "",
-                    selectedAccount?.address || "",
-                    selectedAccount?.sub_account_id || "",
-                  )
+                  info.getValue().kind === "burn"
+                    ? UpAmountIcon
+                    : info.getValue().kind === "mint"
+                    ? DownAmountIcon
+                    : getAddress(
+                        info.getValue().type,
+                        info.getValue().from || "",
+                        info.getValue().fromSub || "",
+                        selectedAccount?.address || "",
+                        selectedAccount?.sub_account_id || "",
+                      )
                     ? UpAmountIcon
                     : DownAmountIcon
                 }
@@ -67,20 +71,22 @@ export const TableHook = () => {
       header: () => (
         <div className="flex flex-row opacity-60 justify-center items-center w-full gap-1 cursor-pointer">
           <p className="flex justify-center font-normal my-2">{t("date")}</p>
-          <SortIcon className=" fill-PrimaryTextColorLight dark:fill-PrimaryTextColor" />
+          <SortIcon className=" fill-PrimaryTextColorLight dark:fill-PrimaryTextColor w-3 h-3" />
         </div>
       ),
     }),
     columnHelper.accessor((row) => row, {
       id: "amount",
       cell: (info) => {
-        let isTo = getAddress(
-          info.getValue().type,
-          info.getValue().from || "",
-          info.getValue().fromSub || "",
-          selectedAccount?.address || "",
-          selectedAccount?.sub_account_id || "",
-        );
+        let isTo =
+          info.getValue().kind !== "mint" &&
+          getAddress(
+            info.getValue().type,
+            info.getValue().from || "",
+            info.getValue().fromSub || "",
+            selectedAccount?.address || "",
+            selectedAccount?.sub_account_id || "",
+          );
 
         return (
           <div className="flex flex-col justify-center items-end my-2 w-full pr-5">
@@ -89,14 +95,10 @@ export const TableHook = () => {
             }${
               info.getValue()?.type === TransactionTypeEnum.Enum.SEND
                 ? toFullDecimal(
-                    Number(info.getValue()?.amount) / Math.pow(10, selectedAccount?.decimal || 8) +
-                      Number(selectedAccount?.transaction_fee),
+                    BigInt(info.getValue()?.amount) + BigInt(selectedAccount?.transaction_fee || "0"),
                     selectedAccount?.decimal || 8,
                   )
-                : toFullDecimal(
-                    Number(info.getValue()?.amount) / Math.pow(10, selectedAccount?.decimal || 8),
-                    selectedAccount?.decimal || 8,
-                  )
+                : toFullDecimal(BigInt(info.getValue()?.amount), selectedAccount?.decimal || 8)
             } ${getAssetSymbol(info.getValue()?.symbol || "", assets)}`}</p>
           </div>
         );

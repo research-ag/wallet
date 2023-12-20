@@ -8,6 +8,7 @@ const defaultValue: any = {};
 interface AuthState {
   authLoading: boolean;
   authenticated: boolean;
+  debugMode: boolean;
   superAdmin: boolean;
   authClient: string;
   assetList: Asset[];
@@ -22,6 +23,7 @@ interface AuthState {
 const initialState: AuthState = {
   authLoading: true,
   authenticated: false,
+  debugMode: false,
   superAdmin: false,
   theme: ThemesEnum.enum.dark,
   blur: false,
@@ -47,6 +49,7 @@ const authSlice = createSlice({
       state.authenticated = false;
       state.superAdmin = false;
       state.authClient = "";
+      state.debugMode = false;
     },
     setAuthenticated: {
       reducer(state, action: PayloadAction<{ authenticated: boolean; superAdmin: boolean; authClient: string }>) {
@@ -61,6 +64,9 @@ const authSlice = createSlice({
           payload: { authenticated, superAdmin, authClient },
         };
       },
+    },
+    setDebugMode(state, action) {
+      state.debugMode = action.payload;
     },
     setAuthClient(state, action) {
       state.authClient = action.payload;
@@ -84,6 +90,7 @@ const authSlice = createSlice({
       state.userAgent = defaultValue;
       state.userPrincipal = defaultValue;
       state.authClient = "";
+      state.debugMode = false;
     },
   },
 });
@@ -92,6 +99,7 @@ export const {
   setAuth,
   setAuthLoading,
   setUnauthenticated,
+  setDebugMode,
   setAuthenticated,
   setAuthClient,
   setTheme,

@@ -3,7 +3,7 @@ import PlusIcon from "@assets/svg/files/plus-icon.svg";
 //
 import AssetElement from "./AssetElement";
 import { Asset } from "@redux/models/AccountModels";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import * as Accordion from "@radix-ui/react-accordion";
 import AddAsset from "./AddAsset";
 import { DrawerHook } from "../hooks/drawerHook";
@@ -19,7 +19,18 @@ const AssetsList = () => {
   WorkerHook();
   UseAsset();
   const { assetOpen, setAssetOpen } = DrawerHook();
-  const { assets, searchKey, setSearchKey, setAcordeonIdx, acordeonIdx, assetInfo, setAssetInfo, tokens } = AssetHook();
+  const {
+    assets,
+    searchKey,
+    setSearchKey,
+    setAcordeonIdx,
+    acordeonIdx,
+    assetInfo,
+    setAssetInfo,
+    tokens,
+    selectedAsset,
+  } = AssetHook();
+  const [addOpen, setAddOpen] = useState(false);
 
   return (
     <Fragment>
@@ -35,6 +46,8 @@ const AssetsList = () => {
             onChange={(e) => {
               setSearchKey(e.target.value);
             }}
+            autoComplete="false"
+            spellCheck={false}
           />
           <div
             className="flex flex-row justify-center items-center w-8 h-8 bg-SelectRowColor rounded-md cursor-pointer"
@@ -48,19 +61,24 @@ const AssetsList = () => {
           {assets?.length > 0 && (
             <Accordion.Root
               className=""
-              type="single"
-              defaultValue="asset-0"
-              collapsible
-              value={acordeonIdx}
+              type="multiple"
+              defaultValue={[]}
+              value={addOpen && selectedAsset ? [...acordeonIdx, selectedAsset.tokenSymbol] : acordeonIdx}
               onValueChange={onValueChange}
             >
               {assets?.map((asset: Asset, idx: number) => {
+                const mySearchKey = searchKey.toLowerCase().trim();
                 let includeInSub = false;
                 asset.subAccounts.map((sa) => {
-                  if (sa.name.toLowerCase().includes(searchKey.toLowerCase())) includeInSub = true;
+                  if (sa.name.toLowerCase().includes(mySearchKey)) includeInSub = true;
                 });
 
-                if (asset.name.toLowerCase().includes(searchKey.toLowerCase()) || includeInSub || searchKey === "")
+                if (
+                  asset.name.toLowerCase().includes(mySearchKey) ||
+                  asset.symbol.toLowerCase().includes(mySearchKey) ||
+                  includeInSub ||
+                  searchKey.trim() === ""
+                )
                   return (
                     <AssetElement
                       key={idx}
@@ -70,7 +88,8 @@ const AssetsList = () => {
                       setAssetInfo={setAssetInfo}
                       setAssetOpen={setAssetOpen}
                       tokens={tokens}
-                    ></AssetElement>
+                      setAddOpen={setAddOpen}
+                    />
                   );
               })}
             </Accordion.Root>
@@ -89,6 +108,7 @@ const AssetsList = () => {
           setAssetInfo={setAssetInfo}
           tokens={tokens}
           assetOpen={assetOpen}
+          assets={assets}
         />
       </div>
     </Fragment>
@@ -100,8 +120,8 @@ const AssetsList = () => {
     }, 150);
   }
 
-  function onValueChange(e: string) {
-    if (e !== "") setAcordeonIdx(e);
+  function onValueChange(e: string[]) {
+    setAcordeonIdx(e);
   }
 };
 

@@ -15,7 +15,8 @@ interface DialogSendConfirmationProps {
   modal: boolean;
   receiver: any;
   sendingStatus: SendingStatus;
-  amount: string;
+  amountBI: bigint;
+  setAmountBI(value: bigint): void;
   selectedAccount: SubAccount | undefined;
   selectedAsset: Asset | undefined;
 }
@@ -26,7 +27,8 @@ const DialogSendConfirmation = ({
   modal,
   receiver,
   sendingStatus,
-  amount,
+  amountBI,
+  setAmountBI,
   selectedAccount,
   selectedAsset,
 }: DialogSendConfirmationProps) => {
@@ -65,7 +67,7 @@ const DialogSendConfirmation = ({
               <p>{`0x${subUint8ArrayToHex(receiver?.icrcAccount?.subaccount || "")}`}</p>
               <CustomCopy size={"small"} copyText={subUint8ArrayToHex(receiver?.icrcAccount?.subaccount || "")} />
             </div>
-            <p>{`${toFullDecimal(amount, selectedAccount?.decimal || 0)} ${selectedAsset?.symbol || ""}`}</p>
+            <p>{`${toFullDecimal(amountBI, selectedAccount?.decimal || 0)} ${selectedAsset?.symbol || ""}`}</p>
           </div>
         </div>
       </div>
@@ -75,6 +77,7 @@ const DialogSendConfirmation = ({
   function onClose() {
     setDrawerOpen(false);
     showModal(false);
+    setAmountBI(BigInt(0));
   }
 
   function getStatusMessage(status: string) {

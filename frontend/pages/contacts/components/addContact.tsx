@@ -15,6 +15,7 @@ import { addContact } from "@redux/contacts/ContactsReducer";
 import { checkHexString, removeLeadingZeros } from "@/utils";
 import ContactAssetElement from "./contactAssetElement";
 import { AssetToAdd } from "@redux/models/AccountModels";
+import { Principal } from "@dfinity/principal";
 
 interface AddContactProps {
   setAddOpen(value: boolean): void;
@@ -243,11 +244,10 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
       if (subacc.slice(0, 2).toLowerCase() === "0x") subacc = subacc.substring(2);
       // Check if subaccount have data
       if (newSa.name.trim() !== "" || newSa.subaccount_index.trim() !== "") {
-        let subAccIdx = "";
         // Removing zeros and check if subaccount index is not empty
         if (removeLeadingZeros(subacc) === "") {
-          if (newSa.subaccount_index.length !== 0) subAccIdx = "0";
-        } else removeLeadingZeros(subacc);
+          if (newSa.subaccount_index.length !== 0) subacc = "0";
+        } else subacc = removeLeadingZeros(subacc);
         let valid = true;
         // Pushing position index of subaccounts that contains errors in the name (empty)
         if (newSa.name.trim() === "") {
@@ -255,16 +255,16 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
           valid = false;
           validSubaccounts = false;
         }
-        // Pushing position index of subaccounts that contains errors in the index (empty or invalid)
-        if (subAccIdx === "" || newSa.subaccount_index.trim().toLowerCase() === "0x" || ids.includes(subAccIdx)) {
+        // Pushing position index of sub
+        if (subacc === "" || newSa.subaccount_index.trim().toLowerCase() === "0x" || ids.includes(subacc)) {
           errId.push(j);
           valid = false;
           validSubaccounts = false;
         } else {
-          ids.push(subAccIdx);
+          ids.push(subacc);
         }
         // Adding SubAccountContact to the new contact
-        if (valid) auxNewSub.push({ name: newSa.name.trim(), subaccount_index: subAccIdx });
+        if (valid) auxNewSub.push({ name: newSa.name.trim(), subaccount_index: subacc });
       }
     });
     // Check if valid Subaccounts and Valid prev contact info
@@ -315,7 +315,14 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
       return { ...prev, principal: value };
     });
     setNewContactErr("");
-    setNewContactPrinErr(false);
+    if (value.trim() !== "")
+      try {
+        Principal.fromText(value);
+        setNewContactPrinErr(false);
+      } catch {
+        setNewContactPrinErr(true);
+      }
+    else setNewContactPrinErr(false);
   }
 
   function assetToAddEmpty(data: AssetToAdd[]) {

@@ -6,20 +6,23 @@ import { CustomInput } from "@components/Input";
 import { CustomCheck } from "@components/CheckBox";
 import { CustomButton } from "@components/Button";
 import { useTranslation } from "react-i18next";
-import { checkHexString, hexToNumber, removeLeadingZeros } from "@/utils";
-import { SubAccount } from "@redux/models/AccountModels";
+import { checkHexString, getUSDfromToken, hexToNumber, hexToUint8Array, removeLeadingZeros } from "@/utils";
+import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { GeneralHook } from "../hooks/generalHook";
 import { Token } from "@redux/models/TokenModels";
 import { useAppDispatch } from "@redux/Store";
-import { addSubAccount } from "@redux/assets/AssetReducer";
+import { addSubAccount, setAcordeonAssetIdx } from "@redux/assets/AssetReducer";
 import bigInt from "big-integer";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useState } from "react";
+import { AssetHook } from "../hooks/assetHook";
+import { IcrcLedgerCanister } from "@dfinity/ledger";
 
 interface DialogAddAssetProps {
   newErr: any;
   setNewErr(value: any): void;
   newSub: SubAccount | undefined;
   setNewSub(value: any): void;
+  setAddOpen(value: boolean): void;
   usedIdxs: string[];
   getLowestMissing(value: string[]): any;
   hexChecked: boolean;
@@ -27,6 +30,8 @@ interface DialogAddAssetProps {
   tokens: Token[];
   idx: number;
   authClient: string;
+  selectedAsset?: Asset;
+  acordeonIdx: string[];
 }
 
 const DialogAddAsset = ({
@@ -41,11 +46,15 @@ const DialogAddAsset = ({
   tokens,
   idx,
   authClient,
+  selectedAsset,
+  setAddOpen,
+  acordeonIdx,
 }: DialogAddAssetProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-
-  const { asciiHex } = GeneralHook();
+  const { tokensMarket } = AssetHook();
+  const { asciiHex, userAgent, userPrincipal, changeSelectedAccount } = GeneralHook();
+  const [loading, setLoading] = useState(false);
 
   return (
     <Modal
@@ -58,7 +67,9 @@ const DialogAddAsset = ({
         <CloseIcon
           className="absolute top-6 right-5 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
           onClick={() => {
+            addToAcordeonIdx();
             setNewSub(undefined);
+            setAddOpen(false);
             setHexChecked(false);
           }}
         />
@@ -91,6 +102,7 @@ const DialogAddAsset = ({
             onChange={onChangeIdx}
             onKeyUp={onKeyUp}
             onKeyDown={onKeyDown}
+            sufix={<p className="text-sm opacity-70">(Hex)</p>}
           />
         )}
         <div className="flex flex-row justify-end items-center w-full">
@@ -163,49 +175,83 @@ const DialogAddAsset = ({
     );
   }
 
-  function onEnter() {
-    if (newSub) {
-      const subClean = removeLeadingZeros(
-        newSub.sub_account_id.slice(0, 2).toLowerCase() === "0x"
-          ? newSub.sub_account_id.substring(2)
-          : newSub.sub_account_id,
-      );
-      let errName = false;
-      let errIdx = false;
-      if (newSub.name.trim() === "") errName = true;
-      const checkedIdx = subClean === "" ? "0x0" : `0x${subClean}`;
-      if (usedIdxs.includes(checkedIdx.toLowerCase())) {
-        errIdx = true;
-      }
-      if (!errName && !errIdx) {
-        const auxTokens = tokens.map((tkn, k) => {
-          if (k === Number(idx)) {
-            return {
-              ...tkn,
-              subAccounts: [
-                ...tkn.subAccounts,
-                {
-                  name: newSub.name,
-                  numb: `0x${subClean}`.toLowerCase(),
-                },
-              ].sort((a, b) => {
-                return hexToNumber(a.numb)?.compare(hexToNumber(b.numb) || bigInt()) || 0;
-              }),
-            };
-          } else return tkn;
-        });
-        saveLocalStorage(auxTokens);
-        dispatch(
-          addSubAccount(idx, {
-            ...newSub,
-            sub_account_id: `0x${subClean}`.toLowerCase(),
-          }),
+  async function onEnter() {
+    if (!loading) {
+      setLoading(true);
+      if (newSub) {
+        const subClean = removeLeadingZeros(
+          newSub.sub_account_id.slice(0, 2).toLowerCase() === "0x"
+            ? newSub.sub_account_id.substring(2)
+            : newSub.sub_account_id,
         );
-        setNewSub(undefined);
-        setHexChecked(false);
-      } else {
-        setNewErr({ name: errName, idx: errIdx });
+        let errName = false;
+        let errIdx = false;
+        if (newSub.name.trim() === "") errName = true;
+        const checkedIdx = subClean === "" ? "0x0" : `0x${subClean}`;
+        if (usedIdxs.includes(checkedIdx.toLowerCase())) {
+          errIdx = true;
+        }
+        if (!errName && !errIdx) {
+          addToAcordeonIdx();
+          try {
+            const tknAddress = selectedAsset?.address || "";
+            let decimal = 8;
+            let assetMrkt = 0;
+            const { balance } = IcrcLedgerCanister.create({
+              agent: userAgent,
+              canisterId: tknAddress as any,
+            });
+            const myBalance = await balance({
+              owner: userPrincipal,
+              subaccount: hexToUint8Array(`0x${subClean}`),
+              certified: false,
+            });
+            const auxTokens = tokens.map((tkn, k) => {
+              if (k === Number(idx)) {
+                decimal = Number(tkn.decimal);
+                assetMrkt = tokensMarket.find((tm) => tm.symbol === tkn.symbol)?.price || 0;
+                return {
+                  ...tkn,
+                  subAccounts: [
+                    ...tkn.subAccounts,
+                    {
+                      name: newSub.name,
+                      numb: `0x${subClean}`.toLowerCase(),
+                      amount: myBalance.toString(),
+                      currency_amount: assetMrkt ? getUSDfromToken(myBalance.toString(), assetMrkt, decimal) : "0",
+                    },
+                  ].sort((a, b) => {
+                    return hexToNumber(a.numb)?.compare(hexToNumber(b.numb) || bigInt()) || 0;
+                  }),
+                };
+              } else return tkn;
+            });
+
+            saveLocalStorage(auxTokens);
+            const savedSub = {
+              ...newSub,
+              sub_account_id: `0x${subClean}`.toLowerCase(),
+              amount: myBalance.toString(),
+              currency_amount: assetMrkt ? getUSDfromToken(myBalance.toString(), assetMrkt, decimal) : "0",
+            };
+            dispatch(addSubAccount(idx, savedSub));
+            setNewSub(undefined);
+            setAddOpen(false);
+            setHexChecked(false);
+            changeSelectedAccount(savedSub);
+          } catch (e) {
+            console.log("AddErr: ", e);
+          }
+        } else {
+          setNewErr({ name: errName, idx: errIdx });
+        }
       }
+      setLoading(false);
+    }
+  }
+  function addToAcordeonIdx() {
+    if (!acordeonIdx.includes(selectedAsset?.tokenSymbol || "")) {
+      dispatch(setAcordeonAssetIdx([...acordeonIdx, selectedAsset?.tokenSymbol || ""]));
     }
   }
 };

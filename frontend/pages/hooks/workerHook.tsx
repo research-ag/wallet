@@ -15,9 +15,13 @@ export const WorkerHook = () => {
 
   const getTransactionsWorker = async () => {
     assets.map((elementA: Asset) => {
-      if (elementA.tokenSymbol === AssetSymbolEnum.Enum.ICP) {
+      if (elementA.tokenSymbol === AssetSymbolEnum.Enum.ICP || elementA.tokenSymbol === AssetSymbolEnum.Enum.OGY) {
         elementA.subAccounts.map(async (elementS: SubAccount) => {
-          let transactionsICP = await getAllTransactionsICP(elementS.sub_account_id, false);
+          let transactionsICP = await getAllTransactionsICP(
+            elementS.sub_account_id,
+            false,
+            elementA.tokenSymbol === AssetSymbolEnum.Enum.OGY,
+          );
 
           store.dispatch(
             setTxWorker({
@@ -60,9 +64,9 @@ export const WorkerHook = () => {
     if (userData) {
       const userDataJson = JSON.parse(userData);
       store.dispatch(setTokens(userDataJson.tokens));
-      await updateAllBalances(true, userAgent, userDataJson.tokens);
+      await updateAllBalances(true, userAgent, userDataJson.tokens, false, false, true);
     } else {
-      const { tokens } = await updateAllBalances(true, userAgent, defaultTokens, true);
+      const { tokens } = await updateAllBalances(true, userAgent, defaultTokens, true, false, true);
       store.dispatch(setTokens(tokens));
     }
   };
@@ -94,6 +98,9 @@ export const WorkerHook = () => {
     };
 
     timerWorker.postMessage(postRequest);
+    return () => {
+      timerWorker.terminate();
+    };
   }, []);
 
   return { txWorker };

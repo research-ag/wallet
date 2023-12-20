@@ -7,7 +7,7 @@ import store from "@redux/Store";
 import { Transaction, Operation, RosettaTransaction, Asset } from "./redux/models/AccountModels";
 import { IcrcTokenMetadataResponse, IcrcAccount, encodeIcrcAccount } from "@dfinity/ledger";
 import { OperationStatusEnum, OperationTypeEnum, TransactionTypeEnum, TransactionType } from "./const";
-import { Transaction as T } from "@dfinity/ledger/dist/candid/icrc1_index";
+import { Account, Transaction as T } from "@dfinity/ledger/dist/candid/icrc1_index";
 import { isNullish, uint8ArrayToHexString, bigEndianCrc32, encodeBase32 } from "@dfinity/utils";
 import { AccountIdentifier, SubAccount as SubAccountNNS } from "@dfinity/nns";
 
@@ -84,18 +84,55 @@ export const roundToDecimalN = (numb: number | string, decimal: number | string)
   return Math.round(Number(numb) * Math.pow(10, Number(decimal))) / Math.pow(10, Number(decimal));
 };
 
-export function toFullDecimal(numb: number | string, decimal: number | string) {
-  if (Number(numb) === 0) return "0";
-  let x = Math.round(Number(numb) * Math.pow(10, Number(decimal))) / Math.pow(10, Number(decimal));
-  if (Math.abs(x) < 0.000001) {
-    const e = parseInt(x.toString().split("e-")[1]);
-    if (e) {
-      (x *= Math.pow(10, e - 1)), decimal;
-      return "0." + new Array(e).join("0") + roundToDecimalN(x, decimal).toString().substring(2);
+export const toFullDecimal = (numb: bigint | string, decimal: number, maxDecimals?: number) => {
+  let numbStr = numb.toString();
+  if (decimal === numbStr.length) {
+    return "0." + numbStr.slice(0, maxDecimals || decimal).replace(/0+$/, "");
+  } else if (decimal > numbStr.length) {
+    for (let index = 0; index < decimal; index++) {
+      numbStr = "0" + numbStr;
+      if (numbStr.length > decimal) break;
     }
   }
-  return x.toString();
-}
+  const holeStr = numbStr.slice(0, numbStr.length - decimal).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  const decimalStr = numbStr.slice(numbStr.length - decimal).replace(/0+$/, "");
+  return decimalStr !== "" ? holeStr + "." + decimalStr.slice(0, maxDecimals || decimal) : holeStr;
+};
+
+export const toHoleBigInt = (numb: string, decimal: number) => {
+  const parts = numb.split(".");
+  if (parts.length === 1 || parts[1] === "") {
+    let addZeros = "";
+    for (let index = 0; index < decimal; index++) {
+      addZeros = "0" + addZeros;
+    }
+    return BigInt(parts[0] + addZeros);
+  } else {
+    const hole = parts[0];
+    const dec = parts[1];
+    let addZeros = "";
+    for (let index = 0; index < decimal - dec.length; index++) {
+      addZeros = "0" + addZeros;
+    }
+    return BigInt(hole + dec + addZeros);
+  }
+};
+
+export const validateAmount = (amnt: string, dec: number): boolean => {
+  // Regular expression to match a valid number with at most 'dec' decimals
+  const regex = new RegExp(`^[0-9]+([.,][0-9]{0,${dec}})?$`);
+  // Check if amount is a valid number
+  if (!regex.test(amnt)) {
+    return false;
+  }
+  // Additional check for decimal places
+  const decimalPart = amnt.split(/[.,]/)[1];
+  if (decimalPart && decimalPart.length > dec) {
+    return false;
+  }
+  return true;
+};
+
 export const getUSDfromToken = (
   tokenAmount: string | number,
   marketPrice: string | number,
@@ -278,56 +315,113 @@ export const formatckBTCTransaccion = (
   canister: string,
   subNumber?: string,
 ): Transaction => {
-  const { timestamp, transfer } = ckBTCTransaction;
-  const trans = { status: OperationStatusEnum.Enum.COMPLETED } as Transaction;
-  transfer?.forEach((operation: any) => {
-    const value = operation.amount;
-    const amount = value.toString();
-    trans.to = (operation.to.owner as Principal).toString();
-    trans.from = (operation.from.owner as Principal).toString();
+  const { timestamp, transfer, mint, burn, kind } = ckBTCTransaction;
+  const trans = { status: OperationStatusEnum.Enum.COMPLETED, kind: kind } as Transaction;
+  if (kind === "mint")
+    mint.forEach(
+      (operation: { to: Account; memo: [] | [Uint8Array]; created_at_time: [] | [bigint]; amount: bigint }) => {
+        const value = operation.amount;
+        const amount = value.toString();
+        trans.to = (operation.to.owner as Principal).toString();
+        if (operation.to.subaccount.length > 0)
+          trans.toSub = `0x${subUint8ArrayToHex((operation.to.subaccount as [Uint8Array])[0])}`;
+        else trans.toSub = "0x0";
+        trans.from = "";
+        trans.fromSub = "";
+        trans.canisterId = canister;
+        trans.symbol = symbol;
+        trans.amount = amount;
+        let subaccTo: SubAccountNNS | undefined = undefined;
+        try {
+          subaccTo = SubAccountNNS.fromBytes((operation.to.subaccount as [Uint8Array])[0]) as SubAccountNNS;
+        } catch {
+          subaccTo = undefined;
+        }
+        trans.idx = id.toString();
+        trans.identityTo = AccountIdentifier.fromPrincipal({
+          principal: operation.to.owner as Principal,
+          subAccount: subaccTo,
+        }).toHex();
+        trans.type = TransactionTypeEnum.Enum.RECEIVE;
+      },
+    );
+  else if (kind === "burn")
+    burn.forEach(
+      (operation: { from: Account; memo: [] | [Uint8Array]; created_at_time: [] | [bigint]; amount: bigint }) => {
+        const value = operation.amount;
+        const amount = value.toString();
+        trans.from = (operation.from.owner as Principal).toString();
+        if (operation.from.subaccount.length > 0)
+          trans.fromSub = `0x${subUint8ArrayToHex((operation.from.subaccount as [Uint8Array])[0])}`;
+        else trans.fromSub = "0x0";
+        trans.to = "";
+        trans.toSub = "";
+        trans.canisterId = canister;
+        trans.symbol = symbol;
+        trans.amount = amount;
+        let subaccFrom: SubAccountNNS | undefined = undefined;
+        try {
+          subaccFrom = SubAccountNNS.fromBytes((operation.from.subaccount as [Uint8Array])[0]) as SubAccountNNS;
+        } catch {
+          subaccFrom = undefined;
+        }
+        trans.idx = id.toString();
+        trans.identityFrom = AccountIdentifier.fromPrincipal({
+          principal: operation.from.owner as Principal,
+          subAccount: subaccFrom,
+        }).toHex();
+        trans.type = TransactionTypeEnum.Enum.SEND;
+      },
+    );
+  else
+    transfer?.forEach((operation: any) => {
+      const value = operation.amount;
+      const amount = value.toString();
+      trans.to = (operation.to.owner as Principal).toString();
+      trans.from = (operation.from.owner as Principal).toString();
 
-    if (operation.to.subaccount.length > 0)
-      trans.toSub = `0x${subUint8ArrayToHex((operation.to.subaccount as [Uint8Array])[0])}`;
-    else trans.toSub = "0x0";
+      if (operation.to.subaccount.length > 0)
+        trans.toSub = `0x${subUint8ArrayToHex((operation.to.subaccount as [Uint8Array])[0])}`;
+      else trans.toSub = "0x0";
 
-    if (operation.from.subaccount.length > 0)
-      trans.fromSub = `0x${subUint8ArrayToHex((operation.from.subaccount as [Uint8Array])[0])}`;
-    else trans.fromSub = "0x0";
+      if (operation.from.subaccount.length > 0)
+        trans.fromSub = `0x${subUint8ArrayToHex((operation.from.subaccount as [Uint8Array])[0])}`;
+      else trans.fromSub = "0x0";
 
-    const subCheck = subNumber;
-    if (trans.from === principal && trans.fromSub === subCheck) {
-      trans.type = TransactionTypeEnum.Enum.SEND;
-    } else {
-      trans.type = TransactionTypeEnum.Enum.RECEIVE;
-    }
+      const subCheck = subNumber;
+      if (trans.from === principal && trans.fromSub === subCheck) {
+        trans.type = TransactionTypeEnum.Enum.SEND;
+      } else {
+        trans.type = TransactionTypeEnum.Enum.RECEIVE;
+      }
 
-    trans.canisterId = canister;
-    trans.symbol = symbol;
-    trans.amount = amount;
-    trans.idx = id.toString();
+      trans.canisterId = canister;
+      trans.symbol = symbol;
+      trans.amount = amount;
+      trans.idx = id.toString();
 
-    let subaccTo: SubAccountNNS | undefined = undefined;
-    try {
-      subaccTo = SubAccountNNS.fromBytes((operation.to.subaccount as [Uint8Array])[0]) as SubAccountNNS;
-    } catch {
-      subaccTo = undefined;
-    }
-    trans.identityTo = AccountIdentifier.fromPrincipal({
-      principal: operation.to.owner as Principal,
-      subAccount: subaccTo,
-    }).toHex();
+      let subaccTo: SubAccountNNS | undefined = undefined;
+      try {
+        subaccTo = SubAccountNNS.fromBytes((operation.to.subaccount as [Uint8Array])[0]) as SubAccountNNS;
+      } catch {
+        subaccTo = undefined;
+      }
+      trans.identityTo = AccountIdentifier.fromPrincipal({
+        principal: operation.to.owner as Principal,
+        subAccount: subaccTo,
+      }).toHex();
 
-    let subaccFrom: SubAccountNNS | undefined = undefined;
-    try {
-      subaccFrom = SubAccountNNS.fromBytes((operation.to.subaccount as [Uint8Array])[0]) as SubAccountNNS;
-    } catch {
-      subaccFrom = undefined;
-    }
-    trans.identityFrom = AccountIdentifier.fromPrincipal({
-      principal: operation.from.owner as Principal,
-      subAccount: subaccFrom,
-    }).toHex();
-  });
+      let subaccFrom: SubAccountNNS | undefined = undefined;
+      try {
+        subaccFrom = SubAccountNNS.fromBytes((operation.to.subaccount as [Uint8Array])[0]) as SubAccountNNS;
+      } catch {
+        subaccFrom = undefined;
+      }
+      trans.identityFrom = AccountIdentifier.fromPrincipal({
+        principal: operation.from.owner as Principal,
+        subAccount: subaccFrom,
+      }).toHex();
+    });
   return {
     ...trans,
     timestamp: Math.floor(Number(timestamp) / MILI_PER_SECOND),
@@ -339,6 +433,7 @@ export const getMetadataInfo = (myMetadata: IcrcTokenMetadataResponse) => {
   let name = "symbol";
   let decimals = 0;
   let logo = "";
+  let fee = "";
 
   myMetadata.map((dt) => {
     if (dt[0] === "icrc1:symbol") {
@@ -357,9 +452,13 @@ export const getMetadataInfo = (myMetadata: IcrcTokenMetadataResponse) => {
       const auxName = dt[1] as { Text: string };
       logo = auxName.Text;
     }
+    if (dt[0] === "icrc1:fee") {
+      const auxName = dt[1] as { Text: string };
+      fee = auxName.Text;
+    }
   });
 
-  return { symbol, name, decimals, logo };
+  return { symbol, name, decimals, logo, fee };
 };
 
 export const getInitialFromName = (name: string, length: number) => {

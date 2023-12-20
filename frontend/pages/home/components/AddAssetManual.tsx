@@ -2,7 +2,7 @@
 import { ReactComponent as InfoIcon } from "@assets/svg/files/info-icon.svg";
 //
 import { GeneralHook } from "../hooks/generalHook";
-import { IcrcLedgerCanister } from "@dfinity/ledger";
+import { IcrcIndexCanister, IcrcLedgerCanister } from "@dfinity/ledger";
 import { getMetadataInfo } from "@/utils";
 import { CustomInput } from "@components/Input";
 import { CustomCopy } from "@components/CopyTooltip";
@@ -15,15 +15,22 @@ import { Token } from "@redux/models/TokenModels";
 import { AccountDefaultEnum, IconTypeEnum } from "@/const";
 import { Asset } from "@redux/models/AccountModels";
 import { IdentityHook } from "@pages/hooks/identityHook";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useState } from "react";
+import { Principal } from "@dfinity/principal";
+import LoadingLoader from "@components/Loader";
+import { AccountHook } from "@pages/hooks/accountHook";
 
 interface AddAssetManualProps {
   manual: boolean;
   setManual(value: boolean): void;
   errToken: string;
   setErrToken(value: string): void;
+  errIndex: string;
+  setErrIndex(value: string): void;
   validToken: boolean;
   setValidToken(value: boolean): void;
+  validIndex: boolean;
+  setValidIndex(value: boolean): void;
   newToken: Token;
   setNewToken(value: any): void;
   asset: Asset | undefined;
@@ -38,8 +45,12 @@ const AddAssetManual = ({
   setManual,
   errToken,
   setErrToken,
+  errIndex,
+  setErrIndex,
   validToken,
   setValidToken,
+  validIndex,
+  setValidIndex,
   newToken,
   setNewToken,
   asset,
@@ -51,8 +62,10 @@ const AddAssetManual = ({
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
+  const { authClient } = AccountHook();
   const { getAssetIcon, checkAssetAdded } = GeneralHook();
   const { userAgent } = IdentityHook();
+  const [testLoading, setTestLoading] = useState(false);
 
   return (
     <div className="flex flex-col justify-start items-start w-full">
@@ -81,8 +94,9 @@ const AddAssetManual = ({
           compOutClass=""
           value={newToken.address}
           onChange={onLedgerChange}
+          border={errToken ? "error" : undefined}
         />
-        {errToken !== "" && <p className="text-LockColor text-left text-sm">{errToken}</p>}
+        {errToken !== "" && errToken !== "non" && <p className="text-LockColor text-left text-sm">{errToken}</p>}
         {validToken && <p className="text-BorderSuccessColor text-left text-sm">{t("token.validation.msg")}</p>}
       </div>
       <div className="flex flex-col items-start w-full mb-3">
@@ -95,7 +109,10 @@ const AddAssetManual = ({
           compOutClass=""
           value={newToken.index}
           onChange={onChangeIndex}
+          border={errToken ? "error" : undefined}
         />
+        {errIndex !== "" && errIndex !== "non" && <p className="text-LockColor text-left text-sm">{errIndex}</p>}
+        {validIndex && <p className="text-BorderSuccessColor text-left text-sm">{t("index.validation.msg")}</p>}
       </div>
       <div className="flex flex-col items-start w-full mb-3">
         <p className="opacity-60">{t("token.symbol")}</p>
@@ -146,7 +163,7 @@ const AddAssetManual = ({
               onClick={onTest}
               disabled={newToken.address.length <= 5}
             >
-              {t("test")}
+              {testLoading ? <LoadingLoader className="mt-1" /> : t("test")}
             </CustomButton>
           )}
           <CustomButton
@@ -162,17 +179,33 @@ const AddAssetManual = ({
   );
 
   function onLedgerChange(e: ChangeEvent<HTMLInputElement>) {
-    setErrToken("");
     setNewToken((prev: any) => {
       return { ...prev, address: e.target.value.trim() };
     });
     setValidToken(false);
+    if (e.target.value.trim() !== "")
+      try {
+        Principal.fromText(e.target.value.trim());
+        setErrToken("");
+      } catch {
+        setErrToken("non");
+      }
+    else setErrToken("");
   }
 
   function onChangeIndex(e: ChangeEvent<HTMLInputElement>) {
     setNewToken((prev: any) => {
       return { ...prev, index: e.target.value };
     });
+    setValidIndex(false);
+    if (e.target.value.trim() !== "")
+      try {
+        Principal.fromText(e.target.value.trim());
+        setErrIndex("");
+      } catch {
+        setErrIndex("non");
+      }
+    else setErrIndex("");
   }
 
   function onChangeSymbol(e: ChangeEvent<HTMLInputElement>) {
@@ -201,18 +234,26 @@ const AddAssetManual = ({
       symbol: "",
       name: "",
       decimal: "",
-      subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default }],
+      tokenSymbol: "",
+      tokenName: "",
+      fee: "",
+      subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default, amount: "0", currency_amount: "0" }],
       index: "",
       id_number: 999,
     });
     setErrToken("");
+    setErrIndex("");
     setValidToken(false);
+    setValidIndex(false);
   }
 
   async function onTest() {
+    setTestLoading(true);
+    let validData = false;
     if (checkAssetAdded(newToken.address)) {
       setErrToken(t("adding.asset.already.imported"));
       setValidToken(false);
+      validData = false;
     } else {
       try {
         const { metadata } = IcrcLedgerCanister.create({
@@ -224,16 +265,44 @@ const AddAssetManual = ({
           certified: false,
         });
 
-        const { symbol, decimals, name, logo } = getMetadataInfo(myMetadata);
+        const { symbol, decimals, name, logo, fee } = getMetadataInfo(myMetadata);
+
         setNewToken((prev: any) => {
-          return { ...prev, decimal: decimals.toFixed(0), symbol: symbol, name: name, logo: logo };
+          return {
+            ...prev,
+            decimal: decimals.toFixed(0),
+            symbol: symbol,
+            name: name,
+            logo: logo,
+            tokenSymbol: symbol,
+            tokenName: name,
+            fee: fee,
+          };
         });
         setValidToken(true);
+        validData = true;
       } catch (e) {
-        setErrToken(`${(e as Error).message} ${t("add.asset.import.error")}`);
+        setErrToken(t("add.asset.import.error"));
         setValidToken(false);
+        validData = false;
       }
     }
+    if (newToken.index && newToken.index !== "")
+      try {
+        const { getTransactions } = IcrcIndexCanister.create({
+          canisterId: newToken.index as any,
+        });
+        await getTransactions({ max_results: BigInt(1), account: { owner: Principal.fromText(authClient) } });
+        setValidIndex(true);
+      } catch {
+        validData = false;
+        setErrIndex(t("add.index.import.error"));
+        setValidIndex(false);
+      }
+    else setValidIndex(false);
+
+    setTestLoading(false);
+    return validData;
   }
 
   async function onSave() {
@@ -251,7 +320,7 @@ const AddAssetManual = ({
       // Edit tokens list and assets list
       dispatch(editToken(newToken, asset.tokenSymbol));
       setAssetOpen(false);
-    } else addAssetToData();
+    } else if (await onTest()) addAssetToData();
   }
 };
 

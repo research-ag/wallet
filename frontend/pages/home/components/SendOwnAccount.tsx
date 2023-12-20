@@ -12,7 +12,15 @@ import { clsx } from "clsx";
 import { GeneralHook } from "../hooks/generalHook";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { useTranslation } from "react-i18next";
-import { hexToUint8Array, shortAddress, subUint8ArrayToHex, roundToDecimalN, toFullDecimal } from "@/utils";
+import {
+  hexToUint8Array,
+  shortAddress,
+  subUint8ArrayToHex,
+  roundToDecimalN,
+  toFullDecimal,
+  validateAmount,
+  toHoleBigInt,
+} from "@/utils";
 import { CustomInput } from "@components/Input";
 import { CustomButton } from "@components/Button";
 import { AssetHook } from "../hooks/assetHook";
@@ -32,6 +40,7 @@ interface SendOwnAccountProps {
   setDrawerOpen(value: boolean): void;
   setSendingStatus(value: SendingStatus): void;
   setAmount(value: string): void;
+  setAmountBI(value: bigint): void;
   setNewAccount(value: string): void;
   setContactToSend(value: any): void;
 }
@@ -50,6 +59,7 @@ const SendOwnAccount = ({
   setDrawerOpen,
   setSendingStatus,
   setAmount,
+  setAmountBI,
   setNewAccount,
   setContactToSend,
 }: SendOwnAccountProps) => {
@@ -82,7 +92,7 @@ const SendOwnAccount = ({
                 selectedAccount?.name === "-" ? `SubAc N°: ${selectedAccount.sub_account_id}` : selectedAccount?.name
               }`}</p>
               <p className="opacity-60">{`${t("balance")}: ${toFullDecimal(
-                selectedAccount?.amount || 0,
+                selectedAccount?.amount || "0",
                 selectedAccount?.decimal || 8,
               )}`}</p>
             </div>
@@ -94,7 +104,7 @@ const SendOwnAccount = ({
             />
           </div>
         </DropdownMenu.Trigger>
-        <DropdownMenu.Portal className="w-full">
+        <DropdownMenu.Portal>
           <DropdownMenu.Content
             className="w-full text-lg max-h-[calc(100vh-17rem)] scroll-y-light bg-PrimaryColorLight rounded-lg dark:bg-SecondaryColor z-[999] text-PrimaryTextColorLight dark:text-PrimaryTextColor shadow-sm shadow-BorderColorTwoLight dark:shadow-BorderColorTwo border border-BorderColorLight dark:border-BorderColor"
             sideOffset={5}
@@ -120,7 +130,7 @@ const SendOwnAccount = ({
                         {sa.name === "-" ? `SubAc N°: ${sa.sub_account_id}` : sa.name}
                       </p>
                       <p className="opacity-60">{`${t("balance")}: ${toFullDecimal(
-                        sa?.amount || 0,
+                        sa?.amount || "0",
                         sa?.decimal || 8,
                       )}`}</p>
                     </div>
@@ -162,10 +172,7 @@ const SendOwnAccount = ({
             placeholder={`0 ${selectedAsset?.symbol} `}
             value={amount}
             border={"none"}
-            type="number"
-            lang="en-US"
             onChange={onChangeAmount}
-            formNoValidate
           />
         </div>
         <button
@@ -182,7 +189,9 @@ const SendOwnAccount = ({
         ) : Number(amount) > maxAmount().amount && maxAmount().valid ? (
           <p className="w-full text-left text-LockColor text-md whitespace-nowrap">{`${t(
             "max.amount.to.send",
-          )}: ${toFullDecimal(maxAmount().amount, selectedAccount?.decimal || 8)} ${selectedAsset?.symbol || ""}`}</p>
+          )}: ${toFullDecimal(maxAmount().amount.toString(), selectedAccount?.decimal || 8)} ${
+            selectedAsset?.symbol || ""
+          }`}</p>
         ) : (
           <p></p>
         )}
@@ -218,11 +227,13 @@ const SendOwnAccount = ({
   }
 
   function onChangeAmount(e: ChangeEvent<HTMLInputElement>) {
-    if (Number(e.target.value) >= 0) setAmount(e.target.value);
+    const amnt = e.target.value;
+    if (Number(amnt) >= 0 && (validateAmount(amnt, Number(selectedAsset?.decimal || "8")) || amnt === ""))
+      setAmount(amnt.trim());
   }
 
   function onMaxAmount() {
-    maxAmount().valid && setAmount(toFullDecimal(maxAmount().amount.toString(), selectedAccount?.decimal || "8"));
+    maxAmount().valid && setAmount(toFullDecimal(maxAmount().amount.toString(), selectedAccount?.decimal || 8));
   }
 
   function onCancel() {
@@ -236,6 +247,8 @@ const SendOwnAccount = ({
         setSendingStatus(SendingStatusEnum.enum.error);
         showModal(true);
       } else {
+        const sentAmount = toHoleBigInt(amount, Number(selectedAsset?.decimal));
+        setAmountBI(sentAmount);
         let errorFound = false;
         setSendingStatus(SendingStatusEnum.enum.sending);
         showModal(true);
@@ -249,7 +262,7 @@ const SendOwnAccount = ({
               owner: receiver.icrcAccount.owner,
               subaccount: receiver.icrcAccount.subaccount ? [receiver.icrcAccount.subaccount] : [],
             },
-            amount: BigInt(Math.floor(Math.round(Number(amount) * Math.pow(10, Number(selectedAsset?.decimal))))),
+            amount: sentAmount,
             from_subaccount: hexToUint8Array(selectedAccount?.sub_account_id || "0"),
           });
         } catch (e) {

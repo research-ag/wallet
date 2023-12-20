@@ -19,16 +19,21 @@ export const TokenHook = (asset: Asset | undefined) => {
   const [networkTOpen, setNetworkTOpen] = useState(false);
   const [assetTOpen, setAssetTOpen] = useState(false);
   const [errToken, setErrToken] = useState("");
+  const [errIndex, setErrIndex] = useState("");
   const [newToken, setNewToken] = useState<Token>({
     address: "",
     symbol: "",
     name: "",
+    tokenSymbol: "",
+    tokenName: "",
     decimal: "",
-    subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default }],
+    fee: "",
+    subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default, amount: "0", currency_amount: "0" }],
     index: "",
     id_number: 999,
   });
   const [validToken, setValidToken] = useState(false);
+  const [validIndex, setValidIndex] = useState(false);
   const [addAssetOpen, setAddAssetOpen] = useState<boolean>(false);
   const [modal, showModal] = useState(false);
   const [addStatus, setAddStatus] = useState<AddingAssets>(AddingAssetsEnum.Enum.none);
@@ -39,9 +44,12 @@ export const TokenHook = (asset: Asset | undefined) => {
         address: asset.address,
         symbol: asset.symbol,
         name: asset.name,
+        tokenName: asset.tokenName,
+        tokenSymbol: asset.tokenSymbol,
         decimal: asset.decimal,
+        fee: asset.subAccounts[0]?.transaction_fee || "0",
         subAccounts: asset.subAccounts.map((ast) => {
-          return { name: ast.name, numb: ast.sub_account_id };
+          return { name: ast.name, numb: ast.sub_account_id, amount: ast.amount, currency_amount: ast.currency_amount };
         }),
         index: asset.index,
         id_number: asset.sort_index,
@@ -62,8 +70,12 @@ export const TokenHook = (asset: Asset | undefined) => {
     setAddAssetOpen,
     validToken,
     setValidToken,
+    validIndex,
+    setValidIndex,
     errToken,
     setErrToken,
+    errIndex,
+    setErrIndex,
     modal,
     showModal,
     addStatus,
