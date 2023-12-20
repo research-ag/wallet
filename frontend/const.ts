@@ -12,7 +12,7 @@ import OrigynIcon from "@/assets/svg/files/ogy_icon.svg";
 import DragginzIcon from "@/assets/svg/files/dragginz.svg";
 import { z } from "zod";
 import { Token } from "@redux/models/TokenModels";
-import { ICRC1systemAssets } from "./defaultsTokens";
+import { ICRC1systemAssets } from "./defaultTokens";
 
 // Enums
 export const TransactionTypeEnum = z.enum(["RECEIVE", "SEND", "NONE"]);
