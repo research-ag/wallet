@@ -56,6 +56,7 @@ const DeleteAssetModal = ({ open, setOpen, symbol, name }: DeleteAssetModalPropr
     const auxTokens = tokens.filter((tkn) => tkn.symbol !== symbol);
     saveInLocalStorage(auxTokens);
     deleteAsset(symbol);
+    setOpen(false);
   }
 
   function saveInLocalStorage(tokens: Token[]) {

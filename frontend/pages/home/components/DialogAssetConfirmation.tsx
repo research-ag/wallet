@@ -67,7 +67,10 @@ const DialogAssetConfirmation = ({
       symbol: "",
       decimal: "",
       name: "",
-      subAccounts: [{ numb: "0x0", name: "Default" }],
+      tokenSymbol: "",
+      tokenName: "",
+      fee: "",
+      subAccounts: [{ numb: "0x0", name: "Default", amount: "0", currency_amount: "0" }],
       index: "",
       id_number: 999,
     });

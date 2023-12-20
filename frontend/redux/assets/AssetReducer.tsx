@@ -11,7 +11,7 @@ interface AssetState {
   tokensMarket: TokenMarketInfo[];
   assets: Array<Asset>;
   accounts: Array<SubAccount>;
-  acordeonIdx: string;
+  acordeonIdx: string[];
   transactions: Array<Transaction>;
   selectedAsset: Asset | undefined;
   selectedAccount: SubAccount | undefined;
@@ -27,7 +27,7 @@ const initialState: AssetState = {
   tokensMarket: [],
   assets: [],
   accounts: [],
-  acordeonIdx: "asset-0",
+  acordeonIdx: [],
   transactions: [],
   selectedAsset: undefined,
   selectedAccount: undefined,
@@ -144,6 +144,8 @@ const assetSlice = createSlice({
           state.tokens[Number(tokenIndex)].subAccounts.push({
             name: subaccount.name,
             numb: subaccount.sub_account_id,
+            amount: subaccount.amount,
+            currency_amount: subaccount.currency_amount,
           });
           state.tokens[Number(tokenIndex)].subAccounts.sort((a, b) => {
             return hexToNumber(a.numb)?.compare(hexToNumber(b.numb) || bigInt(0)) || 0;
@@ -194,13 +196,6 @@ const assetSlice = createSlice({
       state.selectedAsset = action.payload;
     },
     setSelectedAccount(state, action) {
-      const txList = [...state.txWorker];
-
-      let auxTx = txList.find((tx: TransactionList) => {
-        return tx.symbol === action.payload.symbol && tx.subaccount === action.payload.sub_account_id;
-      });
-
-      state.transactions = auxTx?.tx || [];
       state.selectedAccount = action.payload;
     },
     setSelectedTransaction(state, action) {
@@ -224,10 +219,13 @@ const assetSlice = createSlice({
 
       state.txWorker = txList;
     },
+    addTxWorker(state, action: PayloadAction<TransactionList>) {
+      state.txWorker = [...state.txWorker, action.payload];
+    },
     setTxLoad(state, action) {
       state.txLoad = action.payload;
     },
-    setAcordeonAssetIdx(state, action: PayloadAction<string>) {
+    setAcordeonAssetIdx(state, action: PayloadAction<string[]>) {
       state.acordeonIdx = action.payload;
     },
     clearDataAsset(state) {
@@ -241,6 +239,7 @@ const assetSlice = createSlice({
       state.selectedAccount = undefined;
       state.selectedAsset = undefined;
       state.selectedTransaction = undefined;
+      state.acordeonIdx = [];
     },
   },
 });
@@ -264,6 +263,7 @@ export const {
   setSelectedAccount,
   setSelectedTransaction,
   setTxWorker,
+  addTxWorker,
   setTxLoad,
   setAcordeonAssetIdx,
 } = assetSlice.actions;

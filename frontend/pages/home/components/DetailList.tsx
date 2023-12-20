@@ -1,7 +1,6 @@
 // svgs
 import ArrowBottomLeftIcon from "@assets/svg/files/arrow-bottom-left-icon.svg";
 import ArrowTopRightIcon from "@assets/svg/files/arrow-top-right-icon.svg";
-import WrapIcon from "@assets/svg/files/wrap-icon.svg";
 //
 import { Fragment } from "react";
 import DrawerSend from "./DrawerSend";
@@ -17,7 +16,7 @@ import { TableHook } from "@pages/hooks/tableHook";
 import { UseTransaction } from "../hooks/useTransaction";
 import { DrawerOption, DrawerOptionEnum, IconTypeEnum } from "@/const";
 import { toFullDecimal } from "@/utils";
-import clsx from "clsx";
+import { clsx } from "clsx";
 
 const DetailList = () => {
   const { transactions, getAssetIcon, selectedAsset, selectedAccount } = GeneralHook();
@@ -50,7 +49,8 @@ const DetailList = () => {
               <div className="flex flex-col justify-center items-end">
                 <p className="font-semibold text-[1.15rem] text-right">{`${toFullDecimal(
                   selectedAccount?.amount || "0",
-                  selectedAccount?.decimal || "8",
+                  selectedAccount?.decimal || 8,
+                  8,
                 )} ${selectedAsset?.symbol}`}</p>
                 <p className="font-semibold text-md">{`$${selectedAccount?.currency_amount}`}</p>
               </div>

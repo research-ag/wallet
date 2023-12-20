@@ -3,7 +3,7 @@ import PlusIcon from "@assets/svg/files/plus-icon.svg";
 //
 import AssetElement from "./AssetElement";
 import { Asset } from "@redux/models/AccountModels";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import * as Accordion from "@radix-ui/react-accordion";
 import AddAsset from "./AddAsset";
 import { DrawerHook } from "../hooks/drawerHook";
@@ -19,7 +19,18 @@ const AssetsList = () => {
   WorkerHook();
   UseAsset();
   const { assetOpen, setAssetOpen } = DrawerHook();
-  const { assets, searchKey, setSearchKey, setAcordeonIdx, acordeonIdx, assetInfo, setAssetInfo, tokens } = AssetHook();
+  const {
+    assets,
+    searchKey,
+    setSearchKey,
+    setAcordeonIdx,
+    acordeonIdx,
+    assetInfo,
+    setAssetInfo,
+    tokens,
+    selectedAsset,
+  } = AssetHook();
+  const [addOpen, setAddOpen] = useState(false);
 
   return (
     <Fragment>
@@ -50,10 +61,9 @@ const AssetsList = () => {
           {assets?.length > 0 && (
             <Accordion.Root
               className=""
-              type="single"
-              defaultValue="asset-0"
-              collapsible
-              value={acordeonIdx}
+              type="multiple"
+              defaultValue={[]}
+              value={addOpen && selectedAsset ? [...acordeonIdx, selectedAsset.tokenSymbol] : acordeonIdx}
               onValueChange={onValueChange}
             >
               {assets?.map((asset: Asset, idx: number) => {
@@ -78,6 +88,7 @@ const AssetsList = () => {
                       setAssetInfo={setAssetInfo}
                       setAssetOpen={setAssetOpen}
                       tokens={tokens}
+                      setAddOpen={setAddOpen}
                     />
                   );
               })}
@@ -97,6 +108,7 @@ const AssetsList = () => {
           setAssetInfo={setAssetInfo}
           tokens={tokens}
           assetOpen={assetOpen}
+          assets={assets}
         />
       </div>
     </Fragment>
@@ -108,8 +120,8 @@ const AssetsList = () => {
     }, 150);
   }
 
-  function onValueChange(e: string) {
-    if (e !== "") setAcordeonIdx(e);
+  function onValueChange(e: string[]) {
+    setAcordeonIdx(e);
   }
 };
 

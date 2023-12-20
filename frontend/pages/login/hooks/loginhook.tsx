@@ -24,21 +24,25 @@ export const LoginHook = () => {
     },
     {
       name: AuthNetworkNameEnum.Values.Metamask,
+      extra: "not.yet.available",
       icon: <img src={metamaskUrl} alt="metamask-logo" />,
       type: AuthNetworkTypeEnum.Values.MM,
       network: "",
     },
     {
-      name: AuthNetworkNameEnum.Values.xxxx,
+      name: AuthNetworkNameEnum.Values.Seed,
+      extra: "devs.only",
       icon: <img className={""} src={XxxxIcon} alt="" />,
       type: AuthNetworkTypeEnum.Values.NONE,
       network: "",
     },
   ];
   const [open, setOpen] = useState(false);
+  const [seedOpen, setSeedOpen] = useState(false);
+  const [seed, setSeed] = useState("");
   const handleOpenChange = (value: boolean) => {
     setOpen(value);
   };
 
-  return { handleOpenChange, loginOpts, open };
+  return { handleOpenChange, loginOpts, open, seedOpen, setSeedOpen, seed, setSeed };
 };

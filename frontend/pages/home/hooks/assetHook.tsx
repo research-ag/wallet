@@ -1,4 +1,4 @@
-import { defaultTokens } from "@/const";
+import { defaultTokens } from "@/defaultTokens";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { updateAllBalances } from "@redux/assets/AssetActions";
 import {
@@ -22,7 +22,7 @@ export const AssetHook = () => {
     dispatch(removeToken(symb));
   };
   const [searchKey, setSearchKey] = useState("");
-  const setAcordeonIdx = (assetIdx: string) => dispatch(setAcordeonAssetIdx(assetIdx));
+  const setAcordeonIdx = (assetIdx: string[]) => dispatch(setAcordeonAssetIdx(assetIdx));
   const [assetInfo, setAssetInfo] = useState<Asset | undefined>();
 
   const [editNameId, setEditNameId] = useState("");
@@ -39,11 +39,12 @@ export const AssetHook = () => {
     let amount = 0;
     assets.map((tk) => {
       const market = tokensMarket.find((tm) => tm.symbol === tk.tokenSymbol);
-      let assetTotal = 0;
+      let assetTotal = BigInt(0);
       tk.subAccounts.map((sa) => {
-        assetTotal = assetTotal + Number(sa.amount);
+        assetTotal = assetTotal + BigInt(sa.amount);
       });
-      amount = amount + (market ? assetTotal * market.price : 0);
+      amount =
+        amount + (market ? (Number(assetTotal.toString()) * market.price) / Math.pow(10, Number(tk.decimal)) : 0);
     });
     return Math.round(amount * 100) / 100;
   };
@@ -58,12 +59,21 @@ export const AssetHook = () => {
       return asset.name.toLowerCase().includes(searchKey.toLowerCase()) || includeInSub || searchKey === "";
     });
 
-    if (auxAssets.length > 0)
-      if (selectedAsset && !auxAssets.includes(selectedAsset)) {
-        setAcordeonIdx(`asset-${auxAssets[0].sort_index}`);
+    if (auxAssets.length > 0) {
+      const auxAccordion: string[] = [];
+      auxAssets.map((ast) => {
+        if (acordeonIdx.includes(ast.tokenSymbol)) auxAccordion.push(ast.tokenSymbol);
+      });
+      setAcordeonIdx(auxAccordion);
+
+      const isSelected = auxAssets.find((ast) => ast.tokenSymbol === selectedAsset?.tokenSymbol);
+      if (selectedAsset && !isSelected) {
         dispatch(setSelectedAsset(auxAssets[0]));
         auxAssets[0].subAccounts.length > 0 && dispatch(setSelectedAccount(auxAssets[0].subAccounts[0]));
       }
+    } else {
+      setAcordeonIdx([]);
+    }
   }, [searchKey]);
 
   return {

@@ -1,11 +1,5 @@
-import {
-  AddingAssets,
-  AddingAssetsEnum,
-  ICRC1systemAssets,
-  TokenNetwork,
-  TokenNetworkEnum,
-  AccountDefaultEnum,
-} from "@/const";
+import { AddingAssets, AddingAssetsEnum, TokenNetwork, TokenNetworkEnum, AccountDefaultEnum } from "@/const";
+import { ICRC1systemAssets } from "@/defaultTokens";
 import { useAppSelector } from "@redux/Store";
 import { Asset } from "@redux/models/AccountModels";
 import { Token } from "@redux/models/TokenModels";
@@ -24,8 +18,11 @@ export const TokenHook = (asset: Asset | undefined) => {
     address: "",
     symbol: "",
     name: "",
+    tokenSymbol: "",
+    tokenName: "",
     decimal: "",
-    subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default }],
+    fee: "",
+    subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default, amount: "0", currency_amount: "0" }],
     index: "",
     id_number: 999,
   });
@@ -41,9 +38,12 @@ export const TokenHook = (asset: Asset | undefined) => {
         address: asset.address,
         symbol: asset.symbol,
         name: asset.name,
+        tokenName: asset.tokenName,
+        tokenSymbol: asset.tokenSymbol,
         decimal: asset.decimal,
+        fee: asset.subAccounts[0]?.transaction_fee || "0",
         subAccounts: asset.subAccounts.map((ast) => {
-          return { name: ast.name, numb: ast.sub_account_id };
+          return { name: ast.name, numb: ast.sub_account_id, amount: ast.amount, currency_amount: ast.currency_amount };
         }),
         index: asset.index,
         id_number: asset.sort_index,
