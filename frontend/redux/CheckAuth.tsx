@@ -18,7 +18,7 @@ import { AuthNetworkTypeEnum } from "@/const";
 import { Ed25519KeyIdentity } from "@dfinity/identity";
 import { clearDataContacts, setContacts, setStorageCode } from "./contacts/ContactsReducer";
 import { Principal } from "@dfinity/principal";
-import { defaultTokens } from "@/defaultsTokens";
+import { defaultTokens } from "@/defaultTokens";
 
 const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${
   import.meta.env.VITE_APP_LOGO

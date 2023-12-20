@@ -1,5 +1,5 @@
 import { AddingAssets, AddingAssetsEnum, TokenNetwork, TokenNetworkEnum, AccountDefaultEnum } from "@/const";
-import { ICRC1systemAssets } from "@/defaultsTokens";
+import { ICRC1systemAssets } from "@/defaultTokens";
 import { useAppSelector } from "@redux/Store";
 import { Asset } from "@redux/models/AccountModels";
 import { Token } from "@redux/models/TokenModels";
