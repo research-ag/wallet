@@ -8,7 +8,7 @@ import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
 import { GeneralHook } from "../../hooks/generalHook";
 import { getAddress, getAssetSymbol, getICRC1Acc, hexToUint8Array, shortAddress, toFullDecimal } from "@/utils";
-import { AssetSymbolEnum, TransactionTypeEnum } from "@/const";
+import { AssetSymbolEnum, SpecialTxTypeEnum, TransactionTypeEnum } from "@/const";
 import { Principal } from "@dfinity/principal";
 import { AccountHook } from "@/hooks/accountHook";
 import { IcrcAccount } from "@dfinity/ledger";
@@ -42,9 +42,9 @@ const DrawerTransaction = ({ setDrawerOpen }: DrawerTransactionProps) => {
         <div className="flex flex-row justify-between items-center w-full mb-4 px-6">
           <div className="flex flex-row justify-start items-center gap-7">
             <p className="font-semibold text-lg text-PrimaryTextColorLight dark:text-PrimaryTextColor">
-              {selectedTransaction?.kind === "mint"
+              {selectedTransaction?.kind === SpecialTxTypeEnum.Enum.mint
                 ? "Mint"
-                : selectedTransaction?.kind === "burn"
+                : selectedTransaction?.kind === SpecialTxTypeEnum.Enum.burn
                 ? "Burn"
                 : selectedTransaction?.type === TransactionTypeEnum.Enum.RECEIVE
                 ? t("transaction.received")
@@ -52,9 +52,9 @@ const DrawerTransaction = ({ setDrawerOpen }: DrawerTransactionProps) => {
             </p>
             <img
               src={
-                selectedTransaction?.kind === "mint"
+                selectedTransaction?.kind === SpecialTxTypeEnum.Enum.mint
                   ? DownAmountIcon
-                  : selectedTransaction?.kind === "burn"
+                  : selectedTransaction?.kind === SpecialTxTypeEnum.Enum.burn
                   ? UpAmountIcon
                   : isTo
                   ? UpAmountIcon
@@ -72,7 +72,7 @@ const DrawerTransaction = ({ setDrawerOpen }: DrawerTransactionProps) => {
           />
         </div>
         {/* FROM SECTION */}
-        {selectedTransaction?.kind !== "mint" && (
+        {selectedTransaction?.kind !== SpecialTxTypeEnum.Enum.mint && (
           <div className="flex flex-col justify-center items-center gap-4 w-[calc(100%-3rem)] mx-6 p-4 bg-FromBoxColorLight dark:bg-FromBoxColor">
             <div className="flex flex-row justify-between items-center w-full">
               <p className="text-PrimaryTextColorLight dark:text-PrimaryTextColor font-medium">{t("from")}</p>
@@ -137,11 +137,10 @@ const DrawerTransaction = ({ setDrawerOpen }: DrawerTransactionProps) => {
           </div>
         )}
         {/* ARROW SECTION */}
-        {selectedTransaction?.kind !== "burn" && selectedTransaction?.kind !== "mint" && (
-          <DownBlueArrow className="my-3"></DownBlueArrow>
-        )}
+        {selectedTransaction?.kind !== SpecialTxTypeEnum.Enum.burn &&
+          selectedTransaction?.kind !== SpecialTxTypeEnum.Enum.mint && <DownBlueArrow className="my-3"></DownBlueArrow>}
         {/* TO SECTION */}
-        {selectedTransaction?.kind !== "burn" && (
+        {selectedTransaction?.kind !== SpecialTxTypeEnum.Enum.burn && (
           <div className="flex flex-col justify-center items-center gap-4 w-[calc(100%-3rem)] mx-6 p-4 bg-FromBoxColorLight dark:bg-FromBoxColor rounded-md">
             <div className="flex flex-row justify-between items-center w-full">
               <p className="text-PrimaryTextColorLight dark:text-PrimaryTextColor font-medium">{t("to")}</p>
@@ -205,7 +204,7 @@ const DrawerTransaction = ({ setDrawerOpen }: DrawerTransactionProps) => {
             </div>
           </div>
         )}
-        {selectedTransaction?.kind !== "mint" && (
+        {selectedTransaction?.kind !== SpecialTxTypeEnum.Enum.mint && (
           <div className="flex flex-col justify-center items-center gap-4 w-[calc(100%-3rem)] mx-6 mt-5 p-4 bg-FromBoxColorLight dark:bg-FromBoxColor rounded-md">
             <div className="flex flex-row justify-between items-center w-full font-normal">
               <p className="font-bold">{t("fee")}</p>

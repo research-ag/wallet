@@ -1,4 +1,5 @@
-import { AssetSymbolEnum, WorkerTaskEnum, defaultTokens } from "@/const";
+import { AssetSymbolEnum, WorkerTaskEnum } from "@/const";
+import { defaultTokens } from "@/defaultsTokens";
 import { hexToUint8Array } from "@/utils";
 // import { AssetList, Metadata } from "@candid/metadata/service.did";
 import store, { useAppSelector } from "@redux/Store";
