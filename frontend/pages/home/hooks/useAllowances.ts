@@ -1,5 +1,34 @@
+import { useEffect } from "react";
+import { listAllowances } from "@/services/allowance";
+import { useQuery } from "@tanstack/react-query";
+
 export default function useAllowances() {
-    // TODO: call redux actions here
-    // TODO: manage request life cycle stages
-  return {};
+  const executeQuery = async () => {
+    return await listAllowances();
+  };
+
+  const query = useQuery({
+    queryKey: ["allowances"],
+    queryFn: executeQuery,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+  });
+
+  const { data, isLoading, isError, error, isFetching, refetch } = query;
+
+  useEffect(() => {
+    if (isError) {
+      // TODO: show feedback error
+    }
+  }, [isError]);
+
+  return {
+    allowances: data || [],
+    isFetching,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  };
 }
