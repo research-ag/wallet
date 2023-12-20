@@ -1,6 +1,8 @@
 import Button from "@components/buttons/Button";
 import PlusIcon from "@assets/svg/files/plus-icon.svg";
 import { DetailsTabs } from "@/const";
+import { useState } from "react";
+import DrawerAllowance from "./allowance/AllowanceDrawer";
 
 interface Props {
   activeTab: string;
@@ -8,9 +10,12 @@ interface Props {
 }
 
 export default function DetailTab({ activeTab, setActiveTab }: Props) {
+  const [allowanceDrawerOpen, setAllowanceDrawerOpen] = useState(false);
   return (
-    <div className="flex justify-between items-center w-full">
-      <div className="columns-2 flex justify-between items-center">
+    <div className="flex items-center justify-between w-full">
+      <DrawerAllowance isDrawerOpen={allowanceDrawerOpen} setDrawerOpen={setAllowanceDrawerOpen} />
+
+      <div className="flex items-center justify-between columns-2">
         <button onClick={() => setActiveTab(DetailsTabs.transactions)}>
           <p
             className={`text-md ${
@@ -31,9 +36,9 @@ export default function DetailTab({ activeTab, setActiveTab }: Props) {
           </p>
         </button>
       </div>
-      <div className="columns-2 flex justify-between items-center">
+      <div className="flex items-center justify-between columns-2">
         <p className="mx-2 text-md">Add allowance</p>
-        <Button>
+        <Button onClick={() => setAllowanceDrawerOpen(!allowanceDrawerOpen)}>
           <img src={PlusIcon} alt="plus-icon" />
         </Button>
       </div>

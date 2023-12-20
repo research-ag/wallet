@@ -1,8 +1,8 @@
 import { useState } from "react";
 import DetailTab from "./DetailTab";
-import TransactionList from "./TransactionList";
+import TransactionList from "./transaction/TransactionList";
 import { DetailsTabs } from "@/const";
-import AllowanceList from "./AllowanceList";
+import AllowanceList from "./allowance/AllowanceList";
 
 export default function DetailsTable() {
   const [activeTab, setActiveTab] = useState<DetailsTabs>(DetailsTabs.allowances);

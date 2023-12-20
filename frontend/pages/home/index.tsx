@@ -1,8 +1,8 @@
 import { Fragment } from "react";
 
-import DisclaimerModal from "@pages/home/components/DisclaimerModal";
+// import DisclaimerModal from "@pages/home/components/DisclaimerModal";
 
-import AssetsList from "./components/AssetsList";
+import AssetsList from "./components/asset/AssetsList";
 import DetailList from "./components/DetailList";
 
 import "./style.scss";
@@ -14,7 +14,7 @@ const Home = () => {
         <AssetsList />
         <DetailList />
       </div>
-      <DisclaimerModal />
+      {/* <DisclaimerModal /> */}
     </Fragment>
   );
 };

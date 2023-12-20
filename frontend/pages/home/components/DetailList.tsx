@@ -2,19 +2,32 @@ import { Fragment } from "react";
 
 import DetailsBalance from "./DetailBalance";
 import DetailsTable from "./DetailTable";
-const DetailList = () => {
+import clsx from "clsx";
+
+export default function DetailList() {
   return (
     <Fragment>
-      <div
-        className={
-          "relative flex flex-col justify-start items-center bg-SecondaryColorLight dark:bg-SecondaryColor w-full pt-6 pr-9 pl-7 gap-2 h-fit min-h-full"
-        }
-      >
+      <div className={rootStyles}>
         <DetailsBalance />
         <DetailsTable />
       </div>
     </Fragment>
   );
-};
+}
 
-export default DetailList;
+const rootStyles = clsx(
+  "relative",
+  "flex",
+  "flex-col",
+  "justify-start",
+  "items-center",
+  "bg-SecondaryColorLight",
+  "dark:bg-SecondaryColor",
+  "w-full",
+  "pt-6",
+  "pr-9",
+  "pl-7",
+  "gap-2",
+  "h-fit",
+  "min-h-full",
+);

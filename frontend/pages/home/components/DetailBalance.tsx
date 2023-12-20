@@ -9,7 +9,7 @@ import { DrawerHook } from "../hooks/drawerHook";
 import { GeneralHook } from "../hooks/generalHook";
 import { Fragment } from "react";
 import { UseTransaction } from "../hooks/useTransaction";
-import DrawerTransaction from "./Transaction";
+import DrawerTransaction from "./transaction/Transaction";
 import DrawerAction from "./DrawerAction";
 import DrawerSend from "./DrawerSend";
 import DrawerReceive from "./DrawerReceive";
@@ -24,9 +24,9 @@ export default function DetailsBalance() {
     <Fragment>
       <div className="flex flex-row justify-between items-center w-full h-[4.75rem] bg-TransactionHeaderColorLight dark:bg-TransactionHeaderColor rounded-md">
         <div className="flex flex-col justify-center items-start bg-[#33b2ef] w-[17rem] h-full rounded-l-md p-4 text-[#ffff]">
-          <div className="flex flex-row justify-between items-center gap-1 w-full">
+          <div className="flex flex-row items-center justify-between w-full gap-1">
             {getAssetIcon(IconTypeEnum.Enum.HEADER, selectedAsset?.tokenSymbol, selectedAsset?.logo)}
-            <div className="flex flex-col justify-center items-end">
+            <div className="flex flex-col items-end justify-center">
               <p className="font-semibold text-[1.15rem] text-right">{`${toFullDecimal(
                 selectedAccount?.amount || "0",
                 selectedAccount?.decimal || 8,
@@ -36,7 +36,7 @@ export default function DetailsBalance() {
           </div>
         </div>
         <div className="flex flex-row justify-around items-center h-full w-[calc(100%-17rem)] text-ThirdTextColorLight dark:text-ThirdTextColor">
-          <div className="flex flex-col justify-center items-center w-1/3 gap-1">
+          <div className="flex flex-col items-center justify-center w-1/3 gap-1">
             <div
               className="flex flex-row justify-center items-center w-7 h-7 bg-[#33b2ef] rounded-md cursor-pointer"
               onClick={() => {
@@ -47,7 +47,7 @@ export default function DetailsBalance() {
             </div>
             <p className="text-md">{t("send")}</p>
           </div>
-          <div className="flex flex-col justify-center items-center w-1/3 gap-1">
+          <div className="flex flex-col items-center justify-center w-1/3 gap-1">
             <div
               className="flex flex-row justify-center items-center w-7 h-7 bg-[#33b2ef] rounded-md cursor-pointer"
               onClick={() => {
@@ -70,7 +70,7 @@ export default function DetailsBalance() {
         {selectedTransaction ? (
           <DrawerTransaction setDrawerOpen={setDrawerOpen} />
         ) : (
-          <div className="flex flex-col justify-start items-center bg-PrimaryColorLight dark:bg-PrimaryColor gap-5 w-full h-full pt-8 px-6">
+          <div className="flex flex-col items-center justify-start w-full h-full gap-5 px-6 pt-8 bg-PrimaryColorLight dark:bg-PrimaryColor">
             <DrawerAction drawerOption={drawerOption} setDrawerOption={setDrawerOption} setDrawerOpen={setDrawerOpen}>
               {drawerOption === DrawerOptionEnum.Enum.SEND && (
                 <DrawerSend drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />
@@ -85,6 +85,7 @@ export default function DetailsBalance() {
   );
 
   function setDrawer(drawer: DrawerOption) {
+    console.log(drawer);
     setDrawerOption(drawer);
     setTimeout(() => {
       setDrawerOpen(true);
