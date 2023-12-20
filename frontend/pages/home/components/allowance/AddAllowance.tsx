@@ -21,6 +21,9 @@ export default function AddAllowance() {
   return (
     <form className="flex flex-col text-left">
       <div className="mt-4">
+        <label htmlFor="asset">Asset</label>
+        <Select options={initialOptions} isLoading={false} onSelectChange={console.log} onSearchChange={console.log} />
+        <DatePicker />
       </div>
     </form>
   );
