@@ -117,9 +117,15 @@
   "adding.select": "Select Asset",
   "search.principal": "Search Principal",
   "search.contact": "Search by Contact, Sub-account or Principal",
+<<<<<<< HEAD
   "token.symbol": "Symbol",
   "token.name": "Name",
   "token.decimal": "Decimals",
+=======
+  "token.symbol": "Token symbol",
+  "token.name": "Token name",
+  "token.decimal": "Token decimal",
+>>>>>>> 63fd43f8 (display decimals for icrc amounts)
   "short.form.limit": "Short form limit",
   "total.balance": "Total Balance",
   "add.assets": "Add Assets",
