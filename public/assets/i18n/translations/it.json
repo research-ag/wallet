@@ -71,6 +71,7 @@
   "token.symbol": "Simbolo de token",
   "token.name": "Nome Token",
   "token.decimal": "Decimale del Token",
+  "short.form.limit": "Limite dei moduli brevi",
   "total.balance": "Saldo totale",
   "add.assets": "Aggiungi Risorsi",
   "add.asset": "Aggiungi Risorsa",

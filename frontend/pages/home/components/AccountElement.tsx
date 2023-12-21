@@ -125,11 +125,12 @@ const AccountElement = ({
           }`}
         >
           <div className="flex flex-col justify-center items-end">
-            <p className="whitespace-nowrap">{`${toFullDecimal(
-              subAccount?.amount,
-              subAccount.decimal,
-              8,
-            )} ${symbol}`}</p>
+            <p
+              onClick={() => {
+                console.log("asset:", asset);
+              }}
+              className="whitespace-nowrap"
+            >{`${toFullDecimal(subAccount?.amount, subAccount.decimal, Number(asset.shortDecimal))} ${symbol}`}</p>
             <p className={accCurrencyAmnt()}>{`≈ $${Number(subAccount?.currency_amount).toFixed(2)}`}</p>
           </div>
           {subAccount?.sub_account_id !== "0x0" && Number(subAccount?.amount) === 0 && !newSub && (

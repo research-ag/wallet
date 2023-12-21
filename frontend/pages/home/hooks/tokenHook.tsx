@@ -21,6 +21,7 @@ export const TokenHook = (asset: Asset | undefined) => {
     tokenSymbol: "",
     tokenName: "",
     decimal: "",
+    shortDecimal: "",
     fee: "",
     subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default, amount: "0", currency_amount: "0" }],
     index: "",
@@ -41,6 +42,7 @@ export const TokenHook = (asset: Asset | undefined) => {
         tokenName: asset.tokenName,
         tokenSymbol: asset.tokenSymbol,
         decimal: asset.decimal,
+        shortDecimal: asset.shortDecimal,
         fee: asset.subAccounts[0]?.transaction_fee || "0",
         subAccounts: asset.subAccounts.map((ast) => {
           return { name: ast.name, numb: ast.sub_account_id, amount: ast.amount, currency_amount: ast.currency_amount };
