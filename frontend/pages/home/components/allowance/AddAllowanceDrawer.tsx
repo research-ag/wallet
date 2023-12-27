@@ -6,6 +6,7 @@ import SubAccountFormItem from "./SubAccountFormItem";
 import SpenderFormItem from "./SpenderFormItem";
 import AmountFormItem from "./AmountFormItem";
 import ExpirationFormItem from "./ExpirationFormItem";
+import Button from "@components/core/buttons/Button";
 
 interface IAllowanceDrawerProps {
   isDrawerOpen: boolean;
@@ -53,15 +54,17 @@ export default function AddAllowanceDrawer(props: IAllowanceDrawerProps) {
         <ExpirationFormItem allowance={allowance} setAllowanceState={setAllowanceState} isLoading={isPending} />
 
         <div className="flex justify-end mt-4">
-          <button
-            className="bg-[#33B2EF] rounded-lg w-28"
+          <Button
             onClick={(e) => {
               e.preventDefault();
               createAllowance();
             }}
+            className="w-1/4"
+            disabled={isPending}
+            isLoading={isPending}
           >
             Save
-          </button>
+          </Button>
         </div>
       </form>
     </Drawer>

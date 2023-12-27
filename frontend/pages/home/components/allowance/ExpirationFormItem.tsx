@@ -7,7 +7,7 @@ import { useState } from "react";
 interface IExpirationFormItemProps {
   allowance: Allowance;
   setAllowanceState: (allowanceData: Partial<Allowance>) => void;
-  isLoading: boolean;
+  isLoading?: boolean;
 }
 
 export default function ExpirationFormItem(props: IExpirationFormItemProps) {
@@ -43,7 +43,7 @@ export default function ExpirationFormItem(props: IExpirationFormItemProps) {
             checkboxSize="small"
             onCheckedChange={onExpirationChange}
             className="relative right-2"
-            isLoading={isLoading}
+            disabled={isLoading}
           />
           <p className="text-md">No Expiration</p>
         </div>
