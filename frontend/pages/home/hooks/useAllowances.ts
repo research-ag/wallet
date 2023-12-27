@@ -1,15 +1,19 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { listAllowances } from "@/services/allowance";
 import { useQuery } from "@tanstack/react-query";
+import { useAppSelector } from "@redux/Store";
 
 export default function useAllowances() {
+  const { selectedAsset } = useAppSelector((state) => state.asset);
+
   const executeQuery = async () => {
-    return await listAllowances();
+    return await listAllowances(selectedAsset?.tokenSymbol);
   };
 
   const query = useQuery({
-    queryKey: ["allowances"],
+    queryKey: ["allowances", selectedAsset?.tokenSymbol],
     queryFn: executeQuery,
+    enabled: Boolean(selectedAsset?.tokenSymbol),
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     refetchOnReconnect: false,
@@ -19,12 +23,14 @@ export default function useAllowances() {
 
   useEffect(() => {
     if (isError) {
-      // TODO: show feedback error
+      console.log("An error has ocurred");
     }
   }, [isError]);
 
+  const allowances = useMemo(() => data || [], [data]);
+
   return {
-    allowances: data || [],
+    allowances,
     isLoading: isLoading || isFetching,
     isError,
     error,

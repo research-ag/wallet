@@ -12,10 +12,12 @@ export const useAllowanceTable = (onDrawerOpen: TOnDrawerOpen) => {
   const columns = [
     columnHelper.accessor("subAccount", {
       cell: (info) => {
+        const name = info?.getValue()?.name;
+        const subAccountId = info?.getValue()?.sub_account_id;
         return (
           <div>
-            <p>{info.getValue()?.name || "-"}</p>
-            <p>{info.getValue()?.sub_account_id || "-"}</p>
+            {name && <p className="text-md">{name}</p>}
+            {subAccountId && <p className="text-md">{subAccountId}</p>}
           </div>
         );
       },
@@ -27,8 +29,8 @@ export const useAllowanceTable = (onDrawerOpen: TOnDrawerOpen) => {
         const principal = info.getValue()?.principal;
         return (
           <div>
-            <p>{name || (principal ? principal : "-") || "-"}</p>
-            {name || principal ? <p>{middleTruncation(principal, 3, 3) || "-"}</p> : null}
+            {name && <p className="text-md">{name}</p>}
+            {principal && <p className="text-md">{middleTruncation(principal, 3, 3)}</p>}
           </div>
         );
       },
@@ -47,7 +49,7 @@ export const useAllowanceTable = (onDrawerOpen: TOnDrawerOpen) => {
     }),
     columnHelper.display({
       id: "action",
-      cell: () => <ActionCard onDrawerOpen={onDrawerOpen} />,
+      cell: (info) => <ActionCard onDrawerOpen={onDrawerOpen} allowance={info.row.original} />,
       header: () => "Action",
       enableSorting: false,
       enableHiding: false,

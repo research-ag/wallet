@@ -1,18 +1,12 @@
 import { Allowance } from "@/@types/allowance";
-import { postAllowance } from "@/services/allowance";
+import { postAllowance, removeAllowance } from "@/services/allowance";
 import { setIsCreateAllowance } from "@redux/allowances/AllowanceActions";
 import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
-
-const fakeRequest = (message: string) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve("mutation is done: " + message);
-    }, 3000);
-  });
-};
+import { useCallback, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 const initialAllowanceState: Allowance = {
+  id: "",
   asset: {
     logo: "",
     name: "",
@@ -56,15 +50,16 @@ export function useCreateAllowance() {
     setAllowance(allowanceData);
   };
 
-  const mutationFn = async () => {
+  const mutationFn = useCallback(async () => {
     try {
-      // const response = await postAllowance(allowance);
-      console.log("create", allowance);
+      const fullAllowance = { ...allowance, id: uuidv4() };
+      const response = await postAllowance(fullAllowance);
+      console.log("create allowance: ", response);
       resetAllowanceState();
     } catch (e) {
       console.log(e);
     }
-  };
+  }, [allowance, resetAllowanceState]);
 
   const { mutate: createAllowance, isPending, isError, error, isSuccess } = useMutation({ mutationFn });
 
@@ -82,10 +77,9 @@ export function useCreateAllowance() {
 }
 
 export function useUpdateAllowance() {
-  const mutationFn = async (allowanceData: Allowance) => {
+  const mutationFn = async () => {
     try {
-      const response = await fakeRequest("update");
-      console.log(response);
+      console.log("");
     } catch (e) {
       console.log(e);
     }
@@ -97,10 +91,9 @@ export function useUpdateAllowance() {
 }
 
 export function useDeleteAllowance() {
-  const mutationFn = async (allowanceData: Allowance) => {
+  const mutationFn = async (id: string) => {
     try {
-      const response = await fakeRequest("delete");
-      console.log(response);
+      await removeAllowance(id);
     } catch (e) {
       console.log(e);
     }

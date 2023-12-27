@@ -1,9 +1,9 @@
-import Button from "@components/core/buttons/Button";
-import PlusIcon from "@assets/svg/files/plus-icon.svg";
+import { ReactComponent as PlusIcon } from "@assets/svg/files/plus-icon.svg";
 import { DetailsTabs } from "@/const";
 import AddAllowanceDrawer from "./allowance/AddAllowanceDrawer";
 import { useAppSelector } from "@redux/Store";
 import { setIsCreateAllowance } from "@redux/allowances/AllowanceActions";
+import { IconButton } from "@components/core/buttons";
 
 interface Props {
   activeTab: string;
@@ -40,9 +40,7 @@ export default function DetailTab({ activeTab, setActiveTab }: Props) {
       </div>
       <div className="flex items-center justify-between columns-2">
         <p className="mx-2 text-md">Add allowance</p>
-        <Button onClick={() => setIsCreateAllowance(!isCreateAllowance)}>
-          <img src={PlusIcon} alt="plus-icon" />
-        </Button>
+        <IconButton icon={<PlusIcon />} onClick={() => setIsCreateAllowance(!isCreateAllowance)} />
       </div>
     </div>
   );

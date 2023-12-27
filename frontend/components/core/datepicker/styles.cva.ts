@@ -6,7 +6,15 @@ export const selectTriggerCVA = cva(
     "h-12 px-4 py-2 border-2 border-[#3C3867]",
   ],
   {
-    variants: {},
+    variants: {
+      disabled: {
+        true: ["opacity-60 pointer-events-none"],
+        false: "",
+      },
+    },
+    defaultVariants: {
+      disabled: false,
+    },
   },
 );
 

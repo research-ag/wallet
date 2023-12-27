@@ -56,15 +56,13 @@ export default function SpenderFormItem(props: ISpenderFormItemProps) {
     }
   }, [checked]);
 
-  console.log("checked", checked);
-
   return (
     <div className="mt-4">
       <label htmlFor="Spender" className="flex justify-between mb-2">
         <p className="text-lg">Spender</p>
         <div className=" w-3/6 bg-[#141231] rounded-md flex justify-between items-center px-2 py-1">
           <p className="text-md">Contact Book</p>
-          <Switch checked={checked} onChange={onContactBookChange} />
+          <Switch checked={checked} onChange={onContactBookChange} disabled={isLoading} />
           <p className="text-md">New</p>
         </div>
       </label>

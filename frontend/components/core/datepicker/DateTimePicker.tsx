@@ -1,7 +1,7 @@
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { useCalendar } from "@/hooks/useCalendar";
 import CalendarControls from "./CalendarControls";
-import CalendarTime from "./CalendarTime";
+import DateTimePicker from "./CalendarTime";
 import CalendarDays from "./CalendarDays";
 import dayjs, { Dayjs } from "dayjs";
 import { useEffect, useState } from "react";
@@ -14,7 +14,7 @@ interface DateTimePickerProps {
   onEnableChange?: (value: boolean) => void;
 }
 
-export default function DateTimePicker(props: DateTimePickerProps) {
+export default function DatePicker(props: DateTimePickerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { onChange, enabled, onEnableChange } = props;
   const { selectedDate, generateWeeksOfTheMonth, modifyDateTime, toggleAmPm, onDateChange } = useCalendar();
@@ -41,7 +41,7 @@ export default function DateTimePicker(props: DateTimePickerProps) {
           handleChangeDate={onDateChange}
           selectedDate={selectedDate}
         />
-        <CalendarTime selectedDate={selectedDate} modifyDateTime={modifyDateTime} toggleAmPm={toggleAmPm} />
+        <DateTimePicker selectedDate={selectedDate} modifyDateTime={modifyDateTime} toggleAmPm={toggleAmPm} />
       </DropdownMenu.Content>
     </DropdownMenu.Root>
   );

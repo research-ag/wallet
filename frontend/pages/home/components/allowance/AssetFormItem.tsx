@@ -37,7 +37,6 @@ export default function AssetFormItem(props: AssetFormItemProps) {
 
   useEffect(() => {
     setAllowanceState({ asset: selectedAsset });
-    console.log(selectedAsset);
   }, [selectedAsset]);
 
   return (

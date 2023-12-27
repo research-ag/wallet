@@ -5,11 +5,11 @@ import { checkBoxCVA } from "./styles.cva";
 interface CheckBoxProps extends InputHTMLAttributes<HTMLInputElement>, VariantProps<typeof checkBoxCVA> {
   checked: boolean;
   onCheckedChange: (isChecked: boolean) => void;
-  isLoading?: boolean;
+  disabled?: boolean;
 }
 
 export default function CheckBox(props: CheckBoxProps) {
-  const { onCheckedChange, className, checkboxSize, checked, isLoading } = props;
+  const { onCheckedChange, className, checkboxSize, checked, disabled } = props;
 
   const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const isCheckedValue = event.target.checked;
@@ -17,7 +17,7 @@ export default function CheckBox(props: CheckBoxProps) {
   };
 
   return (
-    <div className={checkBoxCVA({ className, isLoading })}>
+    <div className={checkBoxCVA({ className, disabled })}>
       <input
         type="checkbox"
         checked={checked}

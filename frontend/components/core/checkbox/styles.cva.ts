@@ -7,12 +7,13 @@ export const checkBoxCVA = cva([""], {
       medium: "h-5 w-5",
       large: "h-6 w-6",
     },
-    isLoading: {
+    disabled: {
       true: ["opacity-50 pointer-events-none"],
       false: "",
     },
   },
   defaultVariants: {
     checkboxSize: "small",
+    disabled: false
   },
 });
