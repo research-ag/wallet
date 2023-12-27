@@ -8,9 +8,14 @@ export const inputContainerCVA = cva(
         true: ["opacity-50 pointer-events-none"],
         false: "",
       },
+      isError: {
+        true: ["border border-[#FF9292]"],
+        false: "",
+      },
     },
     defaultVariants: {
       disabled: false,
+      isError: false,
     },
   },
 );

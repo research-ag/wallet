@@ -8,9 +8,9 @@ interface InputProps
     VariantProps<typeof inputContainerCVA> {}
 
 export default function Input(props: InputProps) {
-  const { disabled, ...additionalProps } = props;
+  const { disabled, isError, ...additionalProps } = props;
   return (
-    <div className={inputContainerCVA({ disabled })}>
+    <div className={inputContainerCVA({ disabled, isError })}>
       <input className={inputCVA({})} {...additionalProps} />
     </div>
   );
