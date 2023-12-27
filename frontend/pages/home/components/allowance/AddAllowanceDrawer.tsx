@@ -17,7 +17,7 @@ export default function AddAllowanceDrawer(props: IAllowanceDrawerProps) {
   const { isDrawerOpen, onClose } = props;
   const { contacts } = useAppSelector((state) => state.contacts);
   const { assets, selectedAsset } = useAppSelector((state) => state.asset);
-  const { allowance, setAllowanceState, createAllowance, isPending } = useCreateAllowance();
+  const { allowance, setAllowanceState, createAllowance, isPending, isPrincipalValid } = useCreateAllowance();
 
   return (
     <Drawer isDrawerOpen={isDrawerOpen} onClose={onClose} title="Add Allowance">
@@ -42,6 +42,7 @@ export default function AddAllowanceDrawer(props: IAllowanceDrawerProps) {
           contacts={contacts}
           setAllowanceState={setAllowanceState}
           isLoading={isPending}
+          isPrincipalValid={isPrincipalValid}
         />
 
         <AmountFormItem

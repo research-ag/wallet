@@ -1,8 +1,9 @@
 import { Allowance } from "@/@types/allowance";
 import { postAllowance, removeAllowance } from "@/services/allowance";
+import { validatePrincipal } from "@/utils/identity";
 import { setIsCreateAllowance } from "@redux/allowances/AllowanceActions";
 import { useMutation } from "@tanstack/react-query";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 const initialAllowanceState: Allowance = {
@@ -32,6 +33,7 @@ const initialAllowanceState: Allowance = {
 };
 
 export function useCreateAllowance() {
+  const [isPrincipalValid, setIsPrincipalValid] = useState(true);
   const [allowance, setAllowance] = useState<Allowance>(initialAllowanceState);
 
   const resetAllowanceState = () => {
@@ -53,8 +55,7 @@ export function useCreateAllowance() {
   const mutationFn = useCallback(async () => {
     try {
       const fullAllowance = { ...allowance, id: uuidv4() };
-      const response = await postAllowance(fullAllowance);
-      console.log("create allowance: ", response);
+      await postAllowance(fullAllowance);
       resetAllowanceState();
     } catch (e) {
       console.log(e);
@@ -63,12 +64,21 @@ export function useCreateAllowance() {
 
   const { mutate: createAllowance, isPending, isError, error, isSuccess } = useMutation({ mutationFn });
 
+  useEffect(() => {
+    if (allowance?.spender?.principal) {
+      const isValid = validatePrincipal(allowance?.spender?.principal);
+      console.log("principal validated: ", isValid);
+      setIsPrincipalValid(isValid);
+    }
+  }, [allowance?.spender?.principal]);
+
   return {
     allowance,
     isPending,
     isError,
     error,
     isSuccess,
+    isPrincipalValid,
     createAllowance,
     resetAllowanceState,
     setFullAllowance,

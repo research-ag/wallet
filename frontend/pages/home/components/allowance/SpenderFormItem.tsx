@@ -12,12 +12,13 @@ interface ISpenderFormItemProps {
   setAllowanceState: (allowanceData: Partial<Allowance>) => void;
   isLoading?: boolean;
   allowance: Allowance;
+  isPrincipalValid: boolean;
 }
 
 export default function SpenderFormItem(props: ISpenderFormItemProps) {
   const [checked, setChecked] = useState(false);
   const inputTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
-  const { contacts, setAllowanceState, isLoading, allowance } = props;
+  const { contacts, setAllowanceState, isLoading, allowance, isPrincipalValid } = props;
 
   const options = useMemo(() => {
     return contacts?.map((contact) => {
@@ -74,7 +75,9 @@ export default function SpenderFormItem(props: ISpenderFormItemProps) {
           currentValue={allowance?.spender?.principal || ""}
         />
       )}
-      {!checked && <Input placeholder="Principal" onChange={onInputChange} disabled={isLoading} />}
+      {!checked && (
+        <Input placeholder="Principal" onChange={onInputChange} disabled={isLoading} isError={!isPrincipalValid} />
+      )}
     </div>
   );
 }
