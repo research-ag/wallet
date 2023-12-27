@@ -4,7 +4,7 @@ const colors = require("tailwindcss/colors");
 
 module.exports = {
   darkMode: "class",
-  content: ["./index.html", "./frontend/**/*.{js,ts,jsx,tsx}"],
+  content: ["./index.html", "./frontend/**/*.{js,ts,jsx,tsx}", "./node_modules/tailwind-datepicker-react/dist/**/*.js"],
   variants: {
     extend: {},
   },

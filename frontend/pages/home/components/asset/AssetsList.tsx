@@ -30,14 +30,15 @@ const AssetsList = () => {
     tokens,
     selectedAsset,
   } = AssetHook();
-  const [addOpen, setAddOpen] = useState(false);
 
+  const [addOpen, setAddOpen] = useState(false);
+  
   return (
     <Fragment>
       <div className="flex flex-col justify-start items-start w-[60%] max-w-[30rem] h-full pl-9 pt-6 dark:bg-PrimaryColor bg-PrimaryColorLight">
         <Menu />
 
-        <div className="flex flex-row justify-start items-center w-full mb-4 gap-3 pr-5">
+        <div className="flex flex-row items-center justify-start w-full gap-3 pr-5 mb-4">
           <input
             className="dark:bg-PrimaryColor bg-PrimaryColorLight text-PrimaryTextColorLight dark:text-PrimaryTextColor border-SearchInputBorderLight dark:border-SearchInputBorder w-full h-8 rounded-lg border-[1px] outline-none px-3 text-md"
             type="text"
@@ -50,7 +51,7 @@ const AssetsList = () => {
             spellCheck={false}
           />
           <div
-            className="flex flex-row justify-center items-center w-8 h-8 bg-SelectRowColor rounded-md cursor-pointer"
+            className="flex flex-row items-center justify-center w-8 h-8 rounded-md cursor-pointer bg-SelectRowColor"
             onClick={onAddAsset}
           >
             <img src={PlusIcon} alt="plus-icon" />

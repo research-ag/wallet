@@ -1,60 +1,32 @@
 import { Allowance } from "@/@types/allowance";
+import { getFromLocalStorage, setInLocalStorage } from "../utils/localStorage";
+
+const LOCAL_STORAGE_PREFIX = "allowances";
 
 export function listAllowances(): Promise<Allowance[]> {
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve(mockAllowances);
+      const allowances = getFromLocalStorage<Allowance[]>(LOCAL_STORAGE_PREFIX);
+      resolve(allowances || []);
     }, 2000);
   });
 }
 
-export const mockAllowances: Allowance[] = [
-  {
-    subaccount: {
-      id: "0x0",
-      name: "Savings Account",
-    },
-    spender: {
-      id: "0xa5debe6wd4ba",
-      name: "John Doe",
-    },
-    amount: "100.00",
-    expiration: "2023-12-18T19:42:03.669Z",
-  },
-  {
-    subaccount: {
-      id: "0x1",
-      name: "School",
-    },
-    spender: {
-      id: "0xa5debe6wd4bb",
-      name: "George",
-    },
-    amount: "100.00",
-    expiration: "2023-12-18T19:42:03.669Z",
-  },
-  {
-    subaccount: {
-      id: "0x3",
-      name: "Holidays",
-    },
-    spender: {
-      id: "0xa5debe6wd4bc",
-      name: "Noah",
-    },
-    amount: "100.00",
-    expiration: "2023-12-18T19:42:03.669Z",
-  },
-  {
-    subaccount: {
-      id: "0x4",
-      name: "Harry Jackson",
-    },
-    spender: {
-      id: "0xa5debe6wd4bd",
-      name: "Sports",
-    },
-    amount: "100.00",
-    expiration: "2023-12-18T19:42:03.669Z",
-  },
-];
+export function postAllowance(newAllowance: Allowance): Promise<Allowance> {
+  return new Promise((resolve) => {
+    let allowances = getFromLocalStorage<Allowance[]>(LOCAL_STORAGE_PREFIX);
+
+    if (!allowances || !Array.isArray(allowances)) {
+      allowances = [newAllowance];
+    }
+
+    if (Array.isArray(allowances)) {
+      allowances.push(newAllowance);
+    }
+
+    setTimeout(() => {
+      setInLocalStorage(LOCAL_STORAGE_PREFIX, allowances);
+      resolve(newAllowance);
+    }, 5000);
+  });
+}

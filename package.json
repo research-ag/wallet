@@ -53,6 +53,7 @@
     "moment": "^2.29.4",
     "node-stdlib-browser": "^1.2.0",
     "react": "^18.2.0",
+    "react-datetime": "^3.2.0",
     "react-dom": "^18.2.0",
     "react-i18next": "^11.18.6",
     "react-qr-code": "^2.0.11",

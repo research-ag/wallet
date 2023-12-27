@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { z } from "zod";
 import { SupportedStandardEnum } from "./icrc";
 
@@ -48,3 +49,16 @@ export const AllowanceValidationErrorsEnum = z.enum([
   "error.self.allowance",
 ]);
 export type AllowanceValidationErrors = z.infer<typeof AllowanceValidationErrorsEnum>;
+=======
+import { Asset, SubAccount } from "@redux/models/AccountModels";
+import { Contact } from "@redux/models/ContactsModels";
+
+export interface Allowance {
+  asset: Asset;
+  subAccount: Partial<SubAccount>;
+  spender: Partial<Contact>;
+  amount: string;
+  expiration: string;
+  noExpire: boolean;
+}
+>>>>>>> 7e4ce2e2 (feat: allowances)
