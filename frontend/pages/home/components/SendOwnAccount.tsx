@@ -186,10 +186,10 @@ const SendOwnAccount = ({
       <div className="flex flex-row justify-between items-center w-full">
         {!maxAmount().valid ? (
           <p className="w-full text-left text-LockColor text-md  mr-3">{t("no.enought.balance")}</p>
-        ) : Number(amount) > maxAmount().amount && maxAmount().valid ? (
+        ) : Number(amount) > maxAmount().nAmount && maxAmount().valid ? (
           <p className="w-full text-left text-LockColor text-md whitespace-nowrap">{`${t(
             "max.amount.to.send",
-          )}: ${toFullDecimal(maxAmount().amount.toString(), selectedAccount?.decimal || 8)} ${
+          )}: ${toFullDecimal(maxAmount().nAmount.toString(), selectedAccount?.decimal || 8)} ${
             selectedAsset?.symbol || ""
           }`}</p>
         ) : (
@@ -233,7 +233,7 @@ const SendOwnAccount = ({
   }
 
   function onMaxAmount() {
-    maxAmount().valid && setAmount(toFullDecimal(maxAmount().amount.toString(), selectedAccount?.decimal || 8));
+    maxAmount().valid && setAmount(toFullDecimal(maxAmount().nAmount.toString(), selectedAccount?.decimal || 8));
   }
 
   function onCancel() {
@@ -243,7 +243,7 @@ const SendOwnAccount = ({
 
   async function onSend() {
     if (Number(amount) >= 0 && maxAmount().valid) {
-      if (Number(amount) > maxAmount().amount && maxAmount().valid) {
+      if (Number(amount) > maxAmount().nAmount && maxAmount().valid) {
         setSendingStatus(SendingStatusEnum.enum.error);
         showModal(true);
       } else {
@@ -281,14 +281,17 @@ const SendOwnAccount = ({
   }
 
   function maxAmount() {
-    const amount = roundToDecimalN(
+    const nAmount = roundToDecimalN(
       Number(selectedAccount?.amount || "0") - Number(selectedAccount?.transaction_fee || "0"),
       selectedAsset?.decimal || 8,
     );
     const over =
-      Number(amount) > Number(selectedAccount?.amount || "0") - Number(selectedAccount?.transaction_fee || "");
-    const valid = Number(selectedAccount?.amount || "0") >= Number(selectedAccount?.transaction_fee || "");
-    return { amount, over, valid };
+      BigInt(nAmount) > BigInt(selectedAccount?.amount || "0") - BigInt(selectedAccount?.transaction_fee || "");
+    const sentAmount = toHoleBigInt(amount, Number(selectedAsset?.decimal));
+    const valid =
+      BigInt(selectedAccount?.amount || "0") >= BigInt(selectedAccount?.transaction_fee || "") &&
+      BigInt(selectedAccount?.amount || "0") - BigInt(selectedAccount?.transaction_fee || "") >= BigInt(sentAmount);
+    return { nAmount, over, valid };
   }
 };
 
