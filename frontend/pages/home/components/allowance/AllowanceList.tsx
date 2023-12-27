@@ -11,8 +11,11 @@ import { flexRender, getCoreRowModel, useReactTable, getSortedRowModel, SortingS
 export default function AllowanceList() {
   const [isDrawerOpen, setDrawerOpen] = useState<boolean>(false);
   const [sorting, setSorting] = useState<SortingState>([]);
-  const { allowances, isLoading } = useAllowances();
-  const { columns } = useAllowanceTable(() => setDrawerOpen(true));
+  const { allowances, isLoading, refetch } = useAllowances();
+  const { columns } = useAllowanceTable({
+    onDrawerOpen: () => setDrawerOpen(true),
+    refetchAllowances: refetch,
+  });
 
   const table = useReactTable({
     data: allowances,

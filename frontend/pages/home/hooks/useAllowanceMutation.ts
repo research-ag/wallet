@@ -67,7 +67,6 @@ export function useCreateAllowance() {
   useEffect(() => {
     if (allowance?.spender?.principal) {
       const isValid = validatePrincipal(allowance?.spender?.principal);
-      console.log("principal validated: ", isValid);
       setIsPrincipalValid(isValid);
     }
   }, [allowance?.spender?.principal]);

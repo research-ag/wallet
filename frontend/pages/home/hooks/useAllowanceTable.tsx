@@ -4,9 +4,12 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { Allowance } from "@/@types/allowance";
 import ActionCard from "../components/allowance/ActionCard";
 
-type TOnDrawerOpen = () => void;
+interface IUseAllowanceTable {
+  refetchAllowances: () => void;
+  onDrawerOpen: () => void;
+}
 
-export const useAllowanceTable = (onDrawerOpen: TOnDrawerOpen) => {
+export const useAllowanceTable = ({ refetchAllowances, onDrawerOpen }: IUseAllowanceTable) => {
   const columnHelper = createColumnHelper<Allowance>();
 
   const columns = [
@@ -49,7 +52,7 @@ export const useAllowanceTable = (onDrawerOpen: TOnDrawerOpen) => {
     }),
     columnHelper.display({
       id: "action",
-      cell: (info) => <ActionCard onDrawerOpen={onDrawerOpen} allowance={info.row.original} />,
+      cell: (info) => <ActionCard onDrawerOpen={onDrawerOpen} allowance={info.row.original} refetchAllowances={refetchAllowances} />,
       header: () => "Action",
       enableSorting: false,
       enableHiding: false,
