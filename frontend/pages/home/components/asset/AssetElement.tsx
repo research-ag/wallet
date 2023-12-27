@@ -47,7 +47,7 @@ const AssetElement = ({
   const [usedIdxs, setUsedIdxs] = useState<string[]>([]);
   const [openDelete, setOpenDelete] = useState(false);
   const [newErr, setNewErr] = useState<{ name: boolean; idx: boolean }>({ name: false, idx: false });
-
+   
   return (
     <Fragment>
       <Accordion.Item value={asset.tokenSymbol}>

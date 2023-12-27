@@ -1,28 +1,40 @@
-import { useState } from "react";
 import useAllowances from "@pages/home/hooks/useAllowances";
-import { useAllowanceTable } from "@pages/home/hooks/useAllowanceTable";
-import { Table, TableBody, TableBodyCell, TableHead, TableHeaderCell, TableRow } from "@components/table";
-import { flexRender, getCoreRowModel, useReactTable, getSortedRowModel, SortingState } from "@tanstack/react-table";
+import LoadingLoader from "@components/Loader";
+import EditAllowanceDrawer from "./EditAllowanceDrawer";
 import clsx from "clsx";
+import { useState } from "react";
+import { useAllowanceTable } from "@pages/home/hooks/useAllowanceTable";
+import { Table, TableBody, TableBodyCell, TableHead, TableHeaderCell, TableRow } from "@components/core/table";
+import { ReactComponent as ArrowUp } from "@assets/svg/files/arrow-up.svg";
+import { flexRender, getCoreRowModel, useReactTable, getSortedRowModel, SortingState } from "@tanstack/react-table";
 
 export default function AllowanceList() {
+  const [isDrawerOpen, setDrawerOpen] = useState<boolean>(false);
   const [sorting, setSorting] = useState<SortingState>([]);
-  const { allowances } = useAllowances();
-  const { columns } = useAllowanceTable();
+  const { allowances, isLoading } = useAllowances();
+  const { columns } = useAllowanceTable(() => setDrawerOpen(true));
 
   const table = useReactTable({
     data: allowances,
     columns,
-    getCoreRowModel: getCoreRowModel(),
+    state: { sorting },
     onSortingChange: setSorting,
+    getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
 
+  if (isLoading) {
+    return <LoadingLoader className="mt-10" />;
+  }
+
   return (
-    <Table>
-      <TableHeadGroup />
-      <TableBodyGroup />
-    </Table>
+    <>
+      <EditAllowanceDrawer isDrawerOpen={isDrawerOpen} onClose={() => setDrawerOpen(false)} />
+      <Table>
+        <TableHeadGroup />
+        <TableBodyGroup />
+      </Table>
+    </>
   );
 
   function TableHeadGroup() {
@@ -33,23 +45,21 @@ export default function AllowanceList() {
             {headerGroup.headers.map((header, indexTR) => {
               return (
                 <TableHeaderCell key={`allowance-${indexTR}`} className={colStyle(indexTR)}>
-                  {header.isPlaceholder ? null : (
-                    <div
-                      {...{
-                        className: header.column.getCanSort() ? "cursor-pointer select-none w-full" : "w-full",
-                        onClick: () => {
-                          // header.column.getToggleSortingHandler()
-                          console.log("perform sort");
-                        },
-                      }}
-                    >
-                      {flexRender(header.column.columnDef.header, header.getContext())}
-                      {{
-                        asc: <span className="">Hola</span>,
-                        desc: <span className="">Hola</span>,
-                      }[header.column.getIsSorted() as string] ?? null}
-                    </div>
-                  )}
+                  <div
+                    {...{
+                      className: indexTR <= 1 && header.column.getCanSort() ? "cursor-pointer select-none" : "",
+                      onClick: indexTR <= 1 ? header.column.getToggleSortingHandler() : undefined,
+                    }}
+                    className="flex"
+                  >
+                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                    {indexTR <= 4 && header.column.getCanSort() && (
+                      <div className="relative flex top-1.5">
+                        <ArrowUp className="relative w-3 h-3 left-1" />
+                        <ArrowUp className="relative w-3 h-3 rotate-180" />
+                      </div>
+                    )}
+                  </div>
                 </TableHeaderCell>
               );
             })}

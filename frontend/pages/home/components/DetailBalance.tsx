@@ -85,7 +85,6 @@ export default function DetailsBalance() {
   );
 
   function setDrawer(drawer: DrawerOption) {
-    console.log(drawer);
     setDrawerOption(drawer);
     setTimeout(() => {
       setDrawerOpen(true);

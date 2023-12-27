@@ -25,8 +25,7 @@ export default function useAllowances() {
 
   return {
     allowances: data || [],
-    isFetching,
-    isLoading,
+    isLoading: isLoading || isFetching,
     isError,
     error,
     refetch,

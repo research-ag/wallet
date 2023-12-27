@@ -1,7 +1,4 @@
 import { Fragment } from "react";
-
-// import DisclaimerModal from "@pages/home/components/DisclaimerModal";
-
 import AssetsList from "./components/asset/AssetsList";
 import DetailList from "./components/DetailList";
 

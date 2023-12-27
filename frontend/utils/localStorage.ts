@@ -1,4 +1,4 @@
-const LOCAL_STORAGE_PREFIX = "HPL";
+const LOCAL_STORAGE_PREFIX = "ICRC2";
 
 export function setInLocalStorage<T>(key: string, value: T): T | null {
   try {

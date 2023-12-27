@@ -1,13 +1,11 @@
+import { Asset, SubAccount } from "@redux/models/AccountModels";
+import { Contact } from "@redux/models/ContactsModels";
+
 export interface Allowance {
-  subaccount: {
-    id: string;
-    name: string;
-  };
-  spender: {
-    id: string;
-    name: string;
-  };
+  asset: Asset;
+  subAccount: Partial<SubAccount>;
+  spender: Partial<Contact>;
   amount: string;
   expiration: string;
-  action?: string;
+  noExpire: boolean;
 }

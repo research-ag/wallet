@@ -83,7 +83,7 @@ const CodeElement = ({ tx }: CodeElementProps) => {
       }
     }
 
-    const contact = contacts.find((cntc) => cntc.accountIdentier === (isTo ? tx.to || "" : tx.from || ""));
+    const contact = contacts.find((cntc) => cntc.accountIdentifier === (isTo ? tx.to || "" : tx.from || ""));
     if (contact) {
       hasContactName = true;
       contactName = contact.name;
