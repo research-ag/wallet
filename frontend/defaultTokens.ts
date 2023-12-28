@@ -118,6 +118,19 @@ export const ICRC1systemAssets: Array<Token> = [
     subAccounts: [{ numb: "0", name: "Default", amount: "0", currency_amount: "0" }],
     index: "6dfr2-giaaa-aaaaq-aaawq-cai",
   },
+  {
+    id_number: 10010,
+    address: "tyyy3-4aaaa-aaaaq-aab7a-cai",
+    symbol: "GLDGov",
+    name: "Gold Governance Token",
+    tokenSymbol: "GLDGov",
+    tokenName: "Gold Governance Token",
+    decimal: "8",
+    shortDecimal: "8",
+    fee: "100000",
+    subAccounts: [{ numb: "0", name: "Default", amount: "0", currency_amount: "0" }],
+    index: "efv5g-kqaaa-aaaaq-aacaa-cai",
+  },
 ];
 
 //
