@@ -29,6 +29,7 @@ const Asset = z.object({
   subAccounts: z.array(SubAccount),
   address: z.string(),
   decimal: z.string(),
+  shortDecimal: z.string(),
   sort_index: z.number(),
   index: z.string().optional(),
   tokenName: z.string(),

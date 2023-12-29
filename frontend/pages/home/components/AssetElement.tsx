@@ -94,7 +94,9 @@ const AssetElement = ({
                 </div>
               </div>
               <div className="flex flex-col justify-center items-end">
-                <p>{`${toFullDecimal(getFullTokenAmount().token, Number(asset.decimal), 8)} ${asset.symbol}`}</p>
+                <p>{`${toFullDecimal(getFullTokenAmount().token, Number(asset.decimal), Number(asset.shortDecimal))} ${
+                  asset.symbol
+                }`}</p>
                 <p
                   className={`${asset?.tokenSymbol !== selectedAsset?.tokenSymbol ? "opacity-60" : ""}`}
                 >{`≈ $${getFullTokenAmount().currency.toFixed(2)}`}</p>

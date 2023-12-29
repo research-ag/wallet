@@ -18,6 +18,7 @@ const Token = z.object({
   tokenName: z.string(),
   tokenSymbol: z.string(),
   decimal: z.string(),
+  shortDecimal: z.string(),
   subAccounts: z.array(TokenSubAccount),
   fee: z.string(),
   index: z.string().optional(),

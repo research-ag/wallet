@@ -71,6 +71,7 @@
   "token.symbol": "Símbolo del token",
   "token.name": "Nombre del Token",
   "token.decimal": "Decimal del Token",
+  "short.form.limit": "Límite de formato corto",
   "total.balance": "Balance Total",
   "add.assets": "Agregar Activos",
   "add.asset": "Agregar activo",

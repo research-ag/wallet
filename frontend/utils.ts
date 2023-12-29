@@ -91,9 +91,12 @@ export const roundToDecimalN = (numb: number | string, decimal: number | string)
 };
 
 export const toFullDecimal = (numb: bigint | string, decimal: number, maxDecimals?: number) => {
+  if (BigInt(numb) === BigInt(0)) return "0";
   let numbStr = numb.toString();
   if (decimal === numbStr.length) {
-    return "0." + numbStr.slice(0, maxDecimals || decimal).replace(/0+$/, "");
+    if (maxDecimals === 0) return "0";
+    const newNumber = numbStr.slice(0, maxDecimals || decimal).replace(/0+$/, "");
+    return "0." + newNumber;
   } else if (decimal > numbStr.length) {
     for (let index = 0; index < decimal; index++) {
       numbStr = "0" + numbStr;
@@ -101,8 +104,16 @@ export const toFullDecimal = (numb: bigint | string, decimal: number, maxDecimal
     }
   }
   const holeStr = numbStr.slice(0, numbStr.length - decimal).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  if (maxDecimals === 0) return holeStr;
+
   const decimalStr = numbStr.slice(numbStr.length - decimal).replace(/0+$/, "");
-  return decimalStr !== "" ? holeStr + "." + decimalStr.slice(0, maxDecimals || decimal) : holeStr;
+  if (decimalStr === "") {
+    return holeStr;
+  } else {
+    const newNumber = holeStr + "." + decimalStr.slice(0, maxDecimals || decimal);
+    if (Number(newNumber) === 0) return "0";
+    else return holeStr + "." + decimalStr.slice(0, maxDecimals || decimal);
+  }
 };
 
 export const toHoleBigInt = (numb: string, decimal: number) => {
@@ -211,9 +222,9 @@ export const toUint8Array = (num: number) => {
 };
 
 export const toNumberFromUint8Array = (Uint8Arr: Uint8Array) => {
-  let size = Uint8Arr.length;
-  let buffer = Buffer.from(Uint8Arr);
-  let result = buffer.readUIntBE(0, size);
+  const size = Uint8Arr.length;
+  const buffer = Buffer.from(Uint8Arr);
+  const result = buffer.readUIntBE(0, size);
   return result;
 };
 
@@ -244,7 +255,7 @@ export const getAddress = (
 };
 
 export const getICPSubaccountsArray = async () => {
-  let sub: string[] = [];
+  const sub: string[] = [];
   const myAgent = store.getState().auth.userAgent;
   const myPrincipal = await myAgent.getPrincipal();
 

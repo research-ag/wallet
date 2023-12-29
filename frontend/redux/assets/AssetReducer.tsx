@@ -84,11 +84,23 @@ const assetSlice = createSlice({
         const auxTokens = state.tokens.map((tkn) => {
           if (tkn.id_number === token.id_number) {
             return token;
-          } else return tkn;
+          } else
+            return {
+              ...tkn,
+              shortDecimal:
+                tkn.shortDecimal === "" ? Number(tkn.decimal).toFixed() : Number(tkn.shortDecimal).toFixed(),
+            };
         });
         const auxAssets = state.assets.map((asst) => {
           if (asst.tokenSymbol === tokenSymbol) {
-            return { ...asst, symbol: token.symbol, name: token.name, index: token.index };
+            return {
+              ...asst,
+              symbol: token.symbol,
+              name: token.name,
+              index: token.index,
+              shortDecimal:
+                token.shortDecimal === "" ? Number(token.decimal).toFixed() : Number(token.shortDecimal).toFixed(),
+            };
           } else return asst;
         });
         state.tokens = auxTokens;

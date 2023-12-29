@@ -10,6 +10,7 @@ import HotOrNotIcon from "@/assets/svg/files/hot-or-not.svg";
 import GoldTokenIcon from "@/assets/svg/files/gldt_icon.svg";
 import OrigynIcon from "@/assets/svg/files/ogy_icon.svg";
 import DragginzIcon from "@/assets/svg/files/dragginz.svg";
+import GLDGovIcon from "@/assets/svg/files/GLDov_icon.svg";
 import { z } from "zod";
 import { Token } from "@redux/models/TokenModels";
 import { ICRC1systemAssets } from "./defaultTokens";
@@ -84,4 +85,5 @@ export const symbolIconDict: { [key: string]: string } = {
   HOT: HotOrNotIcon,
   GLDT: GoldTokenIcon,
   OGY: OrigynIcon,
+  GLDGov: GLDGovIcon,
 };
