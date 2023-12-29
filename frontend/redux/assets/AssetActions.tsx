@@ -31,7 +31,6 @@ export const updateAllBalances = async (
   tokens: Token[],
   basicSearch?: boolean,
   fromLogin?: boolean,
-  fromWorker?: boolean,
 ) => {
   let tokenMarkets: TokenMarketInfo[] = [];
   try {
@@ -158,42 +157,40 @@ export const updateAllBalances = async (
               return { saAsset, saToken };
             }),
           );
-          if (!fromWorker) {
-            let zeros = 0;
-            for (let i = 0; i < 1000; i++) {
-              if (!idsPushed.includes(`0x${i.toString(16)}`)) {
-                const myBalance = await balance({
-                  owner: myPrincipal,
-                  subaccount: new Uint8Array(getSubAccountArray(i)),
-                  certified: false,
-                });
-                if (Number(myBalance) > 0 || i === 0) {
-                  zeros = 0;
-                  const amnt = myBalance.toString();
-                  const crncyAmnt = assetMarket
-                    ? getUSDfromToken(myBalance.toString(), assetMarket.price, decimals)
-                    : "0";
-                  const saAsset: SubAccount = {
-                    name: i === 0 ? AccountDefaultEnum.Values.Default : "-",
-                    sub_account_id: `0x${i.toString(16)}`,
-                    address: myPrincipal.toString(),
-                    amount: amnt,
-                    currency_amount: crncyAmnt,
-                    transaction_fee: myTransactionFee.toString(),
-                    decimal: decimals,
-                    symbol: tkn.symbol,
-                  };
-                  const saToken: TokenSubAccount = {
-                    name: i === 0 ? AccountDefaultEnum.Values.Default : "-",
-                    numb: `0x${i.toString(16)}`,
-                    amount: amnt,
-                    currency_amount: crncyAmnt,
-                  };
-                  subAccts.push({ saAsset, saToken });
-                } else zeros++;
+          let zeros = 0;
+          for (let i = 0; i < 1000; i++) {
+            if (!idsPushed.includes(`0x${i.toString(16)}`)) {
+              const myBalance = await balance({
+                owner: myPrincipal,
+                subaccount: new Uint8Array(getSubAccountArray(i)),
+                certified: false,
+              });
+              if (Number(myBalance) > 0 || i === 0) {
+                zeros = 0;
+                const amnt = myBalance.toString();
+                const crncyAmnt = assetMarket
+                  ? getUSDfromToken(myBalance.toString(), assetMarket.price, decimals)
+                  : "0";
+                const saAsset: SubAccount = {
+                  name: i === 0 ? AccountDefaultEnum.Values.Default : "-",
+                  sub_account_id: `0x${i.toString(16)}`,
+                  address: myPrincipal.toString(),
+                  amount: amnt,
+                  currency_amount: crncyAmnt,
+                  transaction_fee: myTransactionFee.toString(),
+                  decimal: decimals,
+                  symbol: tkn.symbol,
+                };
+                const saToken: TokenSubAccount = {
+                  name: i === 0 ? AccountDefaultEnum.Values.Default : "-",
+                  numb: `0x${i.toString(16)}`,
+                  amount: amnt,
+                  currency_amount: crncyAmnt,
+                };
+                subAccts.push({ saAsset, saToken });
+              } else zeros++;
 
-                if (zeros === 5) break;
-              }
+              if (zeros === 5) break;
             }
           }
         }
@@ -223,6 +220,7 @@ export const updateAllBalances = async (
           }),
           sort_index: idNum,
           decimal: decimals.toFixed(0),
+          shortDecimal: tkn.shortDecimal || decimals.toFixed(0),
           tokenName: name,
           tokenSymbol: symbol,
           logo: logo,
@@ -247,6 +245,7 @@ export const updateAllBalances = async (
             },
           ],
           decimal: "8",
+          shortDecimal: "8",
           sort_index: 99999 + idNum,
           tokenName: tkn.name,
           tokenSymbol: tkn.symbol,
@@ -338,6 +337,7 @@ export const setAssetFromLocalData = (tokens: Token[], myPrincipal: string) => {
       }),
       sort_index: tkn.id_number,
       decimal: tkn.decimal,
+      shortDecimal: tkn.shortDecimal || tkn.decimal,
       tokenName: tkn.tokenName,
       tokenSymbol: tkn.tokenSymbol,
       logo: tkn.logo,

@@ -6,7 +6,13 @@ import bigInt from "big-integer";
 import store from "@redux/Store";
 import { Transaction, Operation, RosettaTransaction, Asset } from "./redux/models/AccountModels";
 import { IcrcTokenMetadataResponse, IcrcAccount, encodeIcrcAccount } from "@dfinity/ledger";
-import { OperationStatusEnum, OperationTypeEnum, TransactionTypeEnum, TransactionType } from "./const";
+import {
+  OperationStatusEnum,
+  OperationTypeEnum,
+  TransactionTypeEnum,
+  TransactionType,
+  SpecialTxTypeEnum,
+} from "./const";
 import { Account, Transaction as T } from "@dfinity/ledger/dist/candid/icrc1_index";
 import { isNullish, uint8ArrayToHexString, bigEndianCrc32, encodeBase32 } from "@dfinity/utils";
 import { AccountIdentifier, SubAccount as SubAccountNNS } from "@dfinity/nns";
@@ -85,9 +91,12 @@ export const roundToDecimalN = (numb: number | string, decimal: number | string)
 };
 
 export const toFullDecimal = (numb: bigint | string, decimal: number, maxDecimals?: number) => {
+  if (BigInt(numb) === BigInt(0)) return "0";
   let numbStr = numb.toString();
   if (decimal === numbStr.length) {
-    return "0." + numbStr.slice(0, maxDecimals || decimal).replace(/0+$/, "");
+    if (maxDecimals === 0) return "0";
+    const newNumber = numbStr.slice(0, maxDecimals || decimal).replace(/0+$/, "");
+    return "0." + newNumber;
   } else if (decimal > numbStr.length) {
     for (let index = 0; index < decimal; index++) {
       numbStr = "0" + numbStr;
@@ -95,8 +104,16 @@ export const toFullDecimal = (numb: bigint | string, decimal: number, maxDecimal
     }
   }
   const holeStr = numbStr.slice(0, numbStr.length - decimal).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  if (maxDecimals === 0) return holeStr;
+
   const decimalStr = numbStr.slice(numbStr.length - decimal).replace(/0+$/, "");
-  return decimalStr !== "" ? holeStr + "." + decimalStr.slice(0, maxDecimals || decimal) : holeStr;
+  if (decimalStr === "") {
+    return holeStr;
+  } else {
+    const newNumber = holeStr + "." + decimalStr.slice(0, maxDecimals || decimal);
+    if (Number(newNumber) === 0) return "0";
+    else return holeStr + "." + decimalStr.slice(0, maxDecimals || decimal);
+  }
 };
 
 export const toHoleBigInt = (numb: string, decimal: number) => {
@@ -205,9 +222,9 @@ export const toUint8Array = (num: number) => {
 };
 
 export const toNumberFromUint8Array = (Uint8Arr: Uint8Array) => {
-  let size = Uint8Arr.length;
-  let buffer = Buffer.from(Uint8Arr);
-  let result = buffer.readUIntBE(0, size);
+  const size = Uint8Arr.length;
+  const buffer = Buffer.from(Uint8Arr);
+  const result = buffer.readUIntBE(0, size);
   return result;
 };
 
@@ -238,7 +255,7 @@ export const getAddress = (
 };
 
 export const getICPSubaccountsArray = async () => {
-  let sub: string[] = [];
+  const sub: string[] = [];
   const myAgent = store.getState().auth.userAgent;
   const myPrincipal = await myAgent.getPrincipal();
 
@@ -317,9 +334,11 @@ export const formatckBTCTransaccion = (
 ): Transaction => {
   const { timestamp, transfer, mint, burn, kind } = ckBTCTransaction;
   const trans = { status: OperationStatusEnum.Enum.COMPLETED, kind: kind } as Transaction;
-  if (kind === "mint")
+  // Check Tx type ["transfer", "mint", "burn"]
+  if (kind === SpecialTxTypeEnum.Enum.mint)
     mint.forEach(
       (operation: { to: Account; memo: [] | [Uint8Array]; created_at_time: [] | [bigint]; amount: bigint }) => {
+        // Get Tx data from Mint record
         const value = operation.amount;
         const amount = value.toString();
         trans.to = (operation.to.owner as Principal).toString();
@@ -331,6 +350,8 @@ export const formatckBTCTransaccion = (
         trans.canisterId = canister;
         trans.symbol = symbol;
         trans.amount = amount;
+
+        // Get AccountIdentifier of Receiver
         let subaccTo: SubAccountNNS | undefined = undefined;
         try {
           subaccTo = SubAccountNNS.fromBytes((operation.to.subaccount as [Uint8Array])[0]) as SubAccountNNS;
@@ -345,8 +366,9 @@ export const formatckBTCTransaccion = (
         trans.type = TransactionTypeEnum.Enum.RECEIVE;
       },
     );
-  else if (kind === "burn")
+  else if (kind === SpecialTxTypeEnum.Enum.burn)
     burn.forEach(
+      // Get Tx data from Burn record
       (operation: { from: Account; memo: [] | [Uint8Array]; created_at_time: [] | [bigint]; amount: bigint }) => {
         const value = operation.amount;
         const amount = value.toString();
@@ -359,6 +381,8 @@ export const formatckBTCTransaccion = (
         trans.canisterId = canister;
         trans.symbol = symbol;
         trans.amount = amount;
+
+        // Get AccountIdentifier of Sender
         let subaccFrom: SubAccountNNS | undefined = undefined;
         try {
           subaccFrom = SubAccountNNS.fromBytes((operation.from.subaccount as [Uint8Array])[0]) as SubAccountNNS;
@@ -375,6 +399,7 @@ export const formatckBTCTransaccion = (
     );
   else
     transfer?.forEach((operation: any) => {
+      // Get Tx data from transfer record
       const value = operation.amount;
       const amount = value.toString();
       trans.to = (operation.to.owner as Principal).toString();
@@ -400,6 +425,7 @@ export const formatckBTCTransaccion = (
       trans.amount = amount;
       trans.idx = id.toString();
 
+      // Get AccountIdentifier of Receiver
       let subaccTo: SubAccountNNS | undefined = undefined;
       try {
         subaccTo = SubAccountNNS.fromBytes((operation.to.subaccount as [Uint8Array])[0]) as SubAccountNNS;
@@ -411,6 +437,7 @@ export const formatckBTCTransaccion = (
         subAccount: subaccTo,
       }).toHex();
 
+      // Get AccountIdentifier of Sender
       let subaccFrom: SubAccountNNS | undefined = undefined;
       try {
         subaccFrom = SubAccountNNS.fromBytes((operation.to.subaccount as [Uint8Array])[0]) as SubAccountNNS;

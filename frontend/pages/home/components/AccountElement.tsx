@@ -128,7 +128,7 @@ const AccountElement = ({
             <p className="whitespace-nowrap">{`${toFullDecimal(
               subAccount?.amount,
               subAccount.decimal,
-              8,
+              Number(asset.shortDecimal),
             )} ${symbol}`}</p>
             <p className={accCurrencyAmnt()}>{`≈ $${Number(subAccount?.currency_amount).toFixed(2)}`}</p>
           </div>
