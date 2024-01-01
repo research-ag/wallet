@@ -128,6 +128,8 @@ module.exports = {
       "switch-principal": "#161434",
       "no-allowance-icon": "#BFBFBF",
 
+      "dark-text-primary-light": "#1B183F",
+
       black: colors.black,
       white: colors.white,
       slate: colors.slate,

@@ -6,14 +6,24 @@ import { useState } from "react";
 import { useAllowanceTable } from "@pages/home/hooks/useAllowanceTable";
 import { Table, TableBody, TableBodyCell, TableHead, TableHeaderCell, TableRow } from "@components/core/table";
 import { ReactComponent as ArrowUp } from "@assets/svg/files/arrow-up.svg";
-import { flexRender, getCoreRowModel, useReactTable, getSortedRowModel, SortingState } from "@tanstack/react-table";
+import {
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+  getSortedRowModel,
+  SortingState,
+  Header,
+} from "@tanstack/react-table";
+import { useAppSelector } from "@redux/Store";
+import { EditActionType, setEditAllowanceDrawerState } from "@redux/allowances/AllowanceActions";
+import { Allowance } from "@/@types/allowance";
 
 export default function AllowanceList() {
-  const [isDrawerOpen, setDrawerOpen] = useState<boolean>(false);
+  const { isUpdateAllowance } = useAppSelector((state) => state.allowance);
   const [sorting, setSorting] = useState<SortingState>([]);
   const { allowances, isLoading, refetch } = useAllowances();
+
   const { columns } = useAllowanceTable({
-    onDrawerOpen: () => setDrawerOpen(true),
     refetchAllowances: refetch,
   });
 
@@ -32,7 +42,10 @@ export default function AllowanceList() {
 
   return (
     <>
-      <EditAllowanceDrawer isDrawerOpen={isDrawerOpen} onClose={() => setDrawerOpen(false)} />
+      <EditAllowanceDrawer
+        isDrawerOpen={isUpdateAllowance}
+        onClose={() => setEditAllowanceDrawerState(EditActionType.closeDrawer)}
+      />
       <Table>
         <TableHeadGroup />
         <TableBodyGroup />
@@ -41,24 +54,30 @@ export default function AllowanceList() {
   );
 
   function TableHeadGroup() {
+    const handleFilter = (column: string, header: Header<Allowance, unknown>) => {
+      console.log(column);
+      header.column;
+    };
+
     return (
       <TableHead>
         {table.getHeaderGroups().map((headerGroup, indexTH) => (
-          <TableRow key={`allowance-${indexTH}`}>
+          <TableRow key={`allowance-${indexTH}`} className="border-b border-BorderColorTwo">
             {headerGroup.headers.map((header, indexTR) => {
+              const column = header.column.id;
               return (
                 <TableHeaderCell key={`allowance-${indexTR}`} className={colStyle(indexTR)}>
                   <div
                     {...{
-                      className: indexTR <= 1 && header.column.getCanSort() ? "cursor-pointer select-none" : "",
-                      onClick: indexTR <= 1 ? header.column.getToggleSortingHandler() : undefined,
+                      className: indexTR <= 4 && header.column.getCanSort() ? "cursor-pointer select-none" : "",
+                      onClick: indexTR <= 4 ? () => handleFilter(column, header) : undefined,
                     }}
-                    className="flex"
+                    className="flex opacity-50 text-PrimaryTextColorLight dark:text-PrimaryTextColor"
                   >
                     {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                     {indexTR <= 4 && header.column.getCanSort() && (
-                      <div className="relative flex top-1.5">
-                        <ArrowUp className="relative w-3 h-3 left-1" />
+                      <div className="relative flex top-1.5 cursor-pointer">
+                        <ArrowUp className="relative w-3 h-3" />
                         <ArrowUp className="relative w-3 h-3 rotate-180" />
                       </div>
                     )}

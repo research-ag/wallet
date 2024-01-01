@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { listAllowances } from "@/services/allowance";
 import { useQuery } from "@tanstack/react-query";
 import { useAppSelector } from "@redux/Store";
@@ -20,13 +20,6 @@ export default function useAllowances() {
   });
 
   const { data, isLoading, isError, error, isFetching, refetch } = query;
-
-  useEffect(() => {
-    if (isError) {
-      console.log("An error has ocurred");
-    }
-  }, [isError]);
-
   const allowances = useMemo(() => data || [], [data]);
 
   return {

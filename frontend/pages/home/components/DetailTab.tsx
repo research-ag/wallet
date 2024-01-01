@@ -2,8 +2,8 @@ import { ReactComponent as PlusIcon } from "@assets/svg/files/plus-icon.svg";
 import { DetailsTabs } from "@/const";
 import AddAllowanceDrawer from "./allowance/AddAllowanceDrawer";
 import { useAppSelector } from "@redux/Store";
-import { setIsCreateAllowance } from "@redux/allowances/AllowanceActions";
 import { IconButton } from "@components/core/buttons";
+import { CreateActionType, setCreateAllowanceDrawerState } from "@redux/allowances/AllowanceActions";
 
 interface Props {
   activeTab: string;
@@ -15,7 +15,10 @@ export default function DetailTab({ activeTab, setActiveTab }: Props) {
 
   return (
     <div className="flex items-center justify-between w-full">
-      <AddAllowanceDrawer isDrawerOpen={isCreateAllowance} onClose={() => setIsCreateAllowance(false)} />
+      <AddAllowanceDrawer
+        isDrawerOpen={isCreateAllowance}
+        onClose={() => setCreateAllowanceDrawerState(CreateActionType.closeDrawer)}
+      />
 
       <div className="flex items-center justify-between columns-2">
         <button onClick={() => setActiveTab(DetailsTabs.transactions)}>
@@ -40,7 +43,7 @@ export default function DetailTab({ activeTab, setActiveTab }: Props) {
       </div>
       <div className="flex items-center justify-between columns-2">
         <p className="mx-2 text-md">Add allowance</p>
-        <IconButton icon={<PlusIcon />} onClick={() => setIsCreateAllowance(!isCreateAllowance)} />
+        <IconButton icon={<PlusIcon />} onClick={() => setCreateAllowanceDrawerState(CreateActionType.openDrawer)} />
       </div>
     </div>
   );

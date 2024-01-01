@@ -62,4 +62,15 @@ export interface Allowance {
   expiration: string;
   noExpire: boolean;
 }
+<<<<<<< HEAD
 >>>>>>> 7e4ce2e2 (feat: allowances)
+=======
+
+export const enum AllowancesTableColumns {
+  subAccount = "subAccount",
+  spender = "spender",
+  amount = "amount",
+  expiration = "expiration",
+  action = "action",
+}
+>>>>>>> ef24f489 (feat: react query and persist)
