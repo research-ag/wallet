@@ -6,3 +6,8 @@ export enum SortOrder {
 export enum ServerStateKeys {
   allowances = "allowances",
 }
+
+export interface Errors {
+  message: string;
+  field: string;
+}

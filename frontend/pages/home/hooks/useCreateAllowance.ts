@@ -5,6 +5,10 @@ import { CreateActionType, setCreateAllowanceDrawerState } from "@redux/allowanc
 import { useMutation } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { allowanceSchema } from "@/helpers/schemas/allowance";
+import { z } from "zod";
+import { queryClient } from "@/config/query";
+import { Errors, ServerStateKeys } from "@/@types/common";
 
 const initialAllowanceState: Allowance = {
   id: "",
@@ -33,14 +37,9 @@ const initialAllowanceState: Allowance = {
 };
 
 export function useCreateAllowance() {
+  const [validationErrors, setErrors] = useState<Errors[]>([]);
   const [isPrincipalValid, setIsPrincipalValid] = useState(true);
   const [allowance, setAllowance] = useState<Allowance>(initialAllowanceState);
-
-  const resetAllowanceState = () => {
-    const asset = allowance.asset;
-    setAllowance({ ...initialAllowanceState, asset });
-    setCreateAllowanceDrawerState(CreateActionType.closeDrawer);
-  };
 
   const setAllowanceState = (allowanceData: Partial<Allowance>) => {
     setAllowance({
@@ -49,18 +48,41 @@ export function useCreateAllowance() {
     });
   };
 
-  const mutationFn = useCallback(async () => {
-    try {
-      const fullAllowance = { ...allowance, id: uuidv4() };
-      console.log(fullAllowance);
-      //   await postAllowance(fullAllowance);
-      // resetAllowanceState();
-    } catch (e) {
-      console.log(e);
-    }
-  }, [allowance, resetAllowanceState]);
+  const mutationFn = useCallback(() => {
+    const fullAllowance = { ...allowance, id: uuidv4() };
+    const valid = allowanceSchema.safeParse(fullAllowance);
+    if (valid.success) return postAllowance(fullAllowance);
+    return Promise.reject(valid.error);
+  }, [allowance]);
 
-  const { mutate: createAllowance, isPending, isError, error, isSuccess } = useMutation({ mutationFn });
+  const onSuccess = async () => {
+    await queryClient.invalidateQueries({
+      queryKey: [ServerStateKeys.allowances],
+    });
+    await queryClient.refetchQueries({
+      queryKey: [ServerStateKeys.allowances],
+    });
+    setCreateAllowanceDrawerState(CreateActionType.closeDrawer);
+  };
+
+  const onError = (error: any) => {
+    if (error instanceof z.ZodError) {
+      const validationErrors = error.issues.map((issue) => ({
+        message: issue.message,
+        field: String(issue.path[0]),
+      }));
+
+      setErrors(validationErrors);
+    }
+  };
+
+  const {
+    mutate: createAllowance,
+    isPending,
+    isError,
+    error,
+    isSuccess,
+  } = useMutation({ onSuccess, onError, mutationFn });
 
   useEffect(() => {
     if (allowance?.spender?.principal) {
@@ -74,10 +96,10 @@ export function useCreateAllowance() {
     isPending,
     isError,
     error,
+    validationErrors,
     isSuccess,
     isPrincipalValid,
     createAllowance,
-    resetAllowanceState,
     setAllowanceState,
   };
 }
