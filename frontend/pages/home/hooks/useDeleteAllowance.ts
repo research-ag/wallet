@@ -13,13 +13,7 @@ export function useDeleteAllowance() {
     });
   };
 
-  const mutationFn = async (id: string) => {
-    try {
-      await removeAllowance(id);
-    } catch (e) {
-      console.log(e);
-    }
-  };
+  const mutationFn = async (id: string) => removeAllowance(id);
 
   const { mutate: deleteAllowance, isPending, isError, error, isSuccess } = useMutation({ mutationFn, onSuccess });
 

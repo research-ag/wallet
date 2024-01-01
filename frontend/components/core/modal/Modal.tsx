@@ -25,7 +25,7 @@ const DialogDemo = ({
     <Dialog.Trigger asChild>{triggerComponent}</Dialog.Trigger>
     <Dialog.Portal>
       <Dialog.Overlay className="fixed inset-0 transition-all bg-black/50" />
-      <Dialog.Content className="bg-ThemeColorSelectorLight border rounded-lg  dark:border-BorderColorFourth fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-4 w-[28rem]">
+      <Dialog.Content className="border rounded-lg fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-4 w-[28rem]">
         <div className="flex items-center justify-between">
           {icon}
           <Dialog.Close asChild>{cancelComponent}</Dialog.Close>
