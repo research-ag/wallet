@@ -3,6 +3,7 @@ import { SelectOption } from "@/@types/core";
 import { IconTypeEnum } from "@/const";
 import { getAssetIcon } from "@/utils/icons";
 import { Select } from "@components/core/select";
+import { Errors } from "@pages/home/hooks/useCreateAllowance";
 import { Asset } from "@redux/models/AccountModels";
 import { useEffect, useMemo } from "react";
 
@@ -12,10 +13,11 @@ interface AssetFormItemProps {
   selectedAsset: Asset | undefined;
   setAllowanceState: (allowanceData: Partial<Allowance>) => void;
   isLoading?: boolean;
+  errors?: Errors[];
 }
 
 export default function AssetFormItem(props: AssetFormItemProps) {
-  const { allowance, assets, selectedAsset, setAllowanceState, isLoading } = props;
+  const { allowance, assets, selectedAsset, setAllowanceState, isLoading, errors } = props;
   const { asset } = allowance;
 
   function formatAsset(asset: Asset) {

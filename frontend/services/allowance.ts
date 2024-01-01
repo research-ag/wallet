@@ -28,7 +28,7 @@ export function postAllowance(newAllowance: Allowance): Promise<Allowance> {
     setTimeout(() => {
       setInLocalStorage(LOCAL_STORAGE_PREFIX, allowances);
       resolve(newAllowance);
-    }, 5000);
+    }, 500);
   });
 }
 
@@ -46,7 +46,7 @@ export const updateAllowanceRequest = (newAllowance: Allowance): Promise<Allowan
         setInLocalStorage(LOCAL_STORAGE_PREFIX, newAllowances);
       }
       resolve(newAllowance as Allowance);
-    }, 2000);
+    }, 500);
     return newAllowance as Allowance;
   });
 };
@@ -60,6 +60,6 @@ export function removeAllowance(id: string): Promise<void> {
         setInLocalStorage(LOCAL_STORAGE_PREFIX, newAllowances);
       }
       resolve();
-    }, 2000);
+    }, 500);
   });
 }

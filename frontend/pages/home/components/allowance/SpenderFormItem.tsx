@@ -4,6 +4,7 @@ import { AvatarEmpty } from "@components/core/avatar";
 import { Input } from "@components/core/input";
 import { Select } from "@components/core/select";
 import { Switch } from "@components/core/switch";
+import { Errors } from "@pages/home/hooks/useCreateAllowance";
 import { Contact } from "@redux/models/ContactsModels";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -13,6 +14,7 @@ interface ISpenderFormItemProps {
   isLoading?: boolean;
   allowance: Allowance;
   isPrincipalValid: boolean;
+  errors?: Errors[];
 }
 
 export default function SpenderFormItem(props: ISpenderFormItemProps) {

@@ -16,7 +16,7 @@ export default function useAllowances() {
     queryKey: [ServerStateKeys.allowances],
     queryFn: executeQuery,
     staleTime: minutesToMilliseconds(10),
-    // enabled: Boolean(selectedAsset?.tokenSymbol),
+    enabled: Boolean(selectedAsset?.tokenSymbol),
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     refetchOnReconnect: false,

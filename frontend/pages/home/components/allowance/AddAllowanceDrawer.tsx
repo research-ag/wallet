@@ -17,7 +17,10 @@ export default function AddAllowanceDrawer(props: IAllowanceDrawerProps) {
   const { isDrawerOpen, onClose } = props;
   const { contacts } = useAppSelector((state) => state.contacts);
   const { assets, selectedAsset } = useAppSelector((state) => state.asset);
-  const { allowance, setAllowanceState, createAllowance, isPending, isPrincipalValid } = useCreateAllowance();
+  const { allowance, setAllowanceState, createAllowance, isPending, isPrincipalValid, isError, validationErrors } =
+    useCreateAllowance();
+
+  console.log("is error", isError);
 
   return (
     <Drawer isDrawerOpen={isDrawerOpen} onClose={onClose} title="Add Allowance">
@@ -28,6 +31,7 @@ export default function AddAllowanceDrawer(props: IAllowanceDrawerProps) {
           selectedAsset={selectedAsset}
           setAllowanceState={setAllowanceState}
           isLoading={isPending}
+          errors={validationErrors}
         />
 
         <SubAccountFormItem
