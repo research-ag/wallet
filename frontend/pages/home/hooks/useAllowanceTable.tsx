@@ -1,19 +1,18 @@
 import { momentDateTime } from "@/utils/formatTime";
 import { middleTruncation, toTitleCase } from "@/utils/strings";
 import { createColumnHelper } from "@tanstack/react-table";
-import { Allowance } from "@/@types/allowance";
+import { Allowance, AllowancesTableColumns } from "@/@types/allowance";
 import ActionCard from "../components/allowance/ActionCard";
 
 interface IUseAllowanceTable {
   refetchAllowances: () => void;
-  onDrawerOpen: () => void;
 }
 
-export const useAllowanceTable = ({ refetchAllowances, onDrawerOpen }: IUseAllowanceTable) => {
+export const useAllowanceTable = ({ refetchAllowances }: IUseAllowanceTable) => {
   const columnHelper = createColumnHelper<Allowance>();
 
   const columns = [
-    columnHelper.accessor("subAccount", {
+    columnHelper.accessor(AllowancesTableColumns.subAccount, {
       cell: (info) => {
         const name = info?.getValue()?.name;
         const subAccountId = info?.getValue()?.sub_account_id;
@@ -26,7 +25,7 @@ export const useAllowanceTable = ({ refetchAllowances, onDrawerOpen }: IUseAllow
       },
       header: ({ header }) => toTitleCase(header.id),
     }),
-    columnHelper.accessor("spender", {
+    columnHelper.accessor(AllowancesTableColumns.spender, {
       cell: (info) => {
         const name = info.getValue()?.name;
         const principal = info.getValue()?.principal;
@@ -39,20 +38,20 @@ export const useAllowanceTable = ({ refetchAllowances, onDrawerOpen }: IUseAllow
       },
       header: ({ header }) => toTitleCase(header.id),
     }),
-    columnHelper.accessor("amount", {
+    columnHelper.accessor(AllowancesTableColumns.amount, {
       cell: (info) => {
         const assetSymbol = info.row.original.asset.tokenSymbol;
         return `${info.getValue()} ${assetSymbol}`;
       },
       header: ({ header }) => toTitleCase(header.id),
     }),
-    columnHelper.accessor("expiration", {
+    columnHelper.accessor(AllowancesTableColumns.expiration, {
       cell: (info) => momentDateTime(info.getValue()),
       header: ({ header }) => toTitleCase(header.id),
     }),
     columnHelper.display({
-      id: "action",
-      cell: (info) => <ActionCard onDrawerOpen={onDrawerOpen} allowance={info.row.original} refetchAllowances={refetchAllowances} />,
+      id: AllowancesTableColumns.action,
+      cell: (info) => <ActionCard allowance={info.row.original} refetchAllowances={refetchAllowances} />,
       header: () => "Action",
       enableSorting: false,
       enableHiding: false,

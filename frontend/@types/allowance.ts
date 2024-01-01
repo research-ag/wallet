@@ -10,3 +10,11 @@ export interface Allowance {
   expiration: string;
   noExpire: boolean;
 }
+
+export const enum AllowancesTableColumns {
+  subAccount = "subAccount",
+  spender = "spender",
+  amount = "amount",
+  expiration = "expiration",
+  action = "action",
+}

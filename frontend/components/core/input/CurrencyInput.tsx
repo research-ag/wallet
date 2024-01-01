@@ -6,10 +6,11 @@ interface InputCurrencyProps extends InputHTMLAttributes<HTMLImageElement>, Vari
   onCurrencyChange: (currency: string) => void;
   icon?: ReactNode;
   currency: string;
+  value?: string;
 }
 
 export default function CurrencyInput(props: InputCurrencyProps) {
-  const { className, onCurrencyChange, icon, currency, isLoading } = props;
+  const { className, onCurrencyChange, icon, currency, isLoading, value } = props;
   const [amount, setAmount] = useState("");
   const searchTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
 
@@ -30,7 +31,7 @@ export default function CurrencyInput(props: InputCurrencyProps) {
         className="w-4/5 outline-none bg-inherit"
         autoComplete="false"
         onChange={handleCurrencyChange}
-        value={amount}
+        value={amount || value || ""}
       />
       <div className="flex items-center justify-between">
         {icon}

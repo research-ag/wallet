@@ -4,12 +4,14 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import RootReducer from "./RootReducer";
 
 const store = configureStore({
+  devTools: true,
   reducer: RootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
     }),
-});
+}); // Add Redux DevTools Extension
+
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;
 // Selector Typed Hook

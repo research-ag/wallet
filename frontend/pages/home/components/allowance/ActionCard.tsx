@@ -7,16 +7,20 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { useDeleteAllowance } from "@pages/home/hooks/useAllowanceMutation";
 import { Allowance } from "@/@types/allowance";
 import { Modal } from "@components/core/modal";
+import {
+  EditActionType,
+  setEditAllowanceDrawerState,
+  setSelectedAllowanceAction,
+} from "@redux/allowances/AllowanceActions";
 
 interface ActionCardProps {
-  onDrawerOpen: () => void;
   allowance: Allowance;
   refetchAllowances: () => void;
 }
 
 export default function ActionCard(props: ActionCardProps) {
-  const { onDrawerOpen, allowance, refetchAllowances } = props;
-  const { deleteAllowance } = useDeleteAllowance();
+  const { allowance, refetchAllowances } = props;
+  const { deleteAllowance, isPending } = useDeleteAllowance();
   const handleDelete = async () => {
     deleteAllowance(allowance.id);
     refetchAllowances();
@@ -32,7 +36,10 @@ export default function ActionCard(props: ActionCardProps) {
       <DropdownMenu.Content className="flex flex-col w-32 mr-10 rounded-md border border-[#2B2759]" sideOffset={5}>
         <DropdownMenu.Item
           className="flex items-center justify-start bg-[#332F60] rounded-t-md p-2 cursor-pointer"
-          onClick={onDrawerOpen}
+          onClick={() => {
+            setSelectedAllowanceAction(allowance);
+            setEditAllowanceDrawerState(EditActionType.openDrawer);
+          }}
         >
           <PencilIcon className="mr-4" fill="#ffffff" />
           <p className="font-bold ">Edit</p>
@@ -48,6 +55,8 @@ export default function ActionCard(props: ActionCardProps) {
           cancelComponent={<CloseIcon />}
           onConfirm={handleDelete}
           icon={<AlertIcon className="w-6 h-6" />}
+          isLoading={isPending}
+          disabled={isPending}
         />
       </DropdownMenu.Content>
     </DropdownMenu.Root>

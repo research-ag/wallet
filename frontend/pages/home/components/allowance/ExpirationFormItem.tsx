@@ -6,7 +6,7 @@ import { useState } from "react";
 
 interface IExpirationFormItemProps {
   allowance: Allowance;
-  setAllowanceState: (allowanceData: Partial<Allowance>) => void;
+  setAllowanceState: (allowanceData: Allowance) => void;
   isLoading?: boolean;
 }
 

@@ -7,7 +7,7 @@ import { useMemo } from "react";
 
 interface IAmountFormItemProps {
   allowance: Allowance;
-  selectedAsset: Asset | undefined;
+  selectedAsset?: Asset | undefined;
   setAllowanceState: (allowanceData: Partial<Allowance>) => void;
   isLoading?: boolean;
 }

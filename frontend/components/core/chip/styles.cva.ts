@@ -1,14 +1,8 @@
 import { cva } from "cva";
 
-export const chipCVA = cva(["w-fit", "rounded-md", "font-bold"], {
+export const chipCVA = cva(["h-6","rounded-md", "font-bold"], {
   variants: {
     type: {
-      primary: ["bg-[#00A76F]"],
-      secondary: ["bg-[#8E33FF]"],
-      error: ["bg-[#FF5630]"],
-      warning: ["bg-[#FFAB00]"],
-      info: ["bg-[#00B8D9]"],
-      success: ["bg-[#22C55E]"],
       gray: ["bg-[#7D7B91]"],
     },
     size: {

@@ -1,7 +1,13 @@
 import { Allowance } from "@/@types/allowance";
-import { postAllowance, removeAllowance } from "@/services/allowance";
+import { postAllowance, removeAllowance, updateAllowanceRequest } from "@/services/allowance";
 import { validatePrincipal } from "@/utils/identity";
-import { setIsCreateAllowance } from "@redux/allowances/AllowanceActions";
+import { useAppSelector } from "@redux/Store";
+import {
+  CreateActionType,
+  EditActionType,
+  setCreateAllowanceDrawerState,
+  setEditAllowanceDrawerState,
+} from "@redux/allowances/AllowanceActions";
 import { useMutation } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
@@ -37,8 +43,9 @@ export function useCreateAllowance() {
   const [allowance, setAllowance] = useState<Allowance>(initialAllowanceState);
 
   const resetAllowanceState = () => {
-    setAllowance(initialAllowanceState);
-    setIsCreateAllowance(false);
+    const asset = allowance.asset;
+    setAllowance({ ...initialAllowanceState, asset });
+    setCreateAllowanceDrawerState(CreateActionType.closeDrawer);
   };
 
   const setAllowanceState = (allowanceData: Partial<Allowance>) => {
@@ -86,9 +93,24 @@ export function useCreateAllowance() {
 }
 
 export function useUpdateAllowance() {
+  const { selectedAllowance } = useAppSelector((state) => state.allowance);
+  const [allowance, setAllowance] = useState<Allowance>(selectedAllowance);
+
+  useEffect(() => {
+    setAllowance(selectedAllowance);
+  }, [selectedAllowance]);
+
+  const setAllowanceState = (allowanceData: Partial<Allowance>) => {
+    setAllowance({
+      ...allowance,
+      ...allowanceData,
+    });
+  };
+
   const mutationFn = async () => {
     try {
-      console.log("");
+      await updateAllowanceRequest(allowance);
+      setEditAllowanceDrawerState(EditActionType.closeDrawer);
     } catch (e) {
       console.log(e);
     }
@@ -96,7 +118,15 @@ export function useUpdateAllowance() {
 
   const { mutate: updateAllowance, isPending, isError, error, isSuccess } = useMutation({ mutationFn });
 
-  return { updateAllowance, isPending, isError, error, isSuccess };
+  return {
+    updateAllowance,
+    isPending,
+    isError,
+    error,
+    isSuccess,
+    allowance,
+    setAllowanceState,
+  };
 }
 
 export function useDeleteAllowance() {

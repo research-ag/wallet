@@ -5,10 +5,6 @@ export interface CalendarState {
   selectedDate: Dayjs;
 }
 
-const initialState: CalendarState = {
-  selectedDate: dayjs(),
-};
-
 export enum ActionTypes {
   SetSelectedDate = "SET_SELECTED_DATE",
   AdjustDateTime = "ADJUST_DATE_TIME",
@@ -54,17 +50,29 @@ const reducer = (state: CalendarState, action: any): CalendarState => {
   }
 };
 
-export const useCalendar = () => {
+export const useCalendar = (ISODate?: string) => {
+  const initialState: CalendarState = useMemo(() => {
+    return {
+      selectedDate: dayjs(ISODate) || dayjs(),
+    };
+  }, []);
+
   const [state, dispatch] = useReducer(reducer, initialState);
   const { selectedDate } = state;
+
   const currentDay = useMemo(() => dayjs().toDate(), []);
 
-  const modifyDateTime = (unit: TUnit, increment: boolean) =>
+  const modifyDateTime = (unit: TUnit, increment: boolean) => {
     dispatch({ type: ActionTypes.AdjustDateTime, unit, increment });
+  };
 
-  const toggleAmPm = () => dispatch({ type: ActionTypes.ToggleAmPm });
+  const toggleAmPm = () => {
+    dispatch({ type: ActionTypes.ToggleAmPm });
+  };
 
-  const onDateChange = (date: Dayjs) => dispatch({ type: ActionTypes.SetSelectedDate, payload: date });
+  const onDateChange = (date: Dayjs) => {
+    dispatch({ type: ActionTypes.SetSelectedDate, payload: date });
+  };
 
   const firstDayOfTheMonth = useMemo(() => selectedDate.clone().startOf("month"), [selectedDate]);
 

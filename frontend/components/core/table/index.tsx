@@ -10,7 +10,7 @@ export function Table({ children, className }: CommonProps) {
 }
 
 export const TableHead = ({ children, className }: CommonProps) => {
-  return <thead className={`${className} border-b border-[#2b2759]`}>{children}</thead>;
+  return <thead className={`${className}`}>{children}</thead>;
 };
 
 export const TableBody = ({ children, className }: CommonProps) => {
@@ -18,7 +18,7 @@ export const TableBody = ({ children, className }: CommonProps) => {
 };
 
 export const TableRow = ({ children, className }: CommonProps) => {
-  return <tr className={`${className} border-b border-[#2b2759] text-md`}>{children}</tr>;
+  return <tr className={`${className}`}>{children}</tr>;
 };
 
 export const TableHeaderCell = ({ children, className }: CommonProps) => {
