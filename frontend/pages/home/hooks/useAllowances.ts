@@ -2,6 +2,8 @@ import { useMemo } from "react";
 import { listAllowances } from "@/services/allowance";
 import { useQuery } from "@tanstack/react-query";
 import { useAppSelector } from "@redux/Store";
+import { ServerStateKeys } from "@/@types/common";
+import { minutesToMilliseconds } from "@/utils/time";
 
 export default function useAllowances() {
   const { selectedAsset } = useAppSelector((state) => state.asset);
@@ -11,9 +13,10 @@ export default function useAllowances() {
   };
 
   const query = useQuery({
-    queryKey: ["allowances", selectedAsset?.tokenSymbol],
+    queryKey: [ServerStateKeys.allowances],
     queryFn: executeQuery,
-    enabled: Boolean(selectedAsset?.tokenSymbol),
+    staleTime: minutesToMilliseconds(10),
+    // enabled: Boolean(selectedAsset?.tokenSymbol),
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     refetchOnReconnect: false,

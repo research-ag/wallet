@@ -1,13 +1,7 @@
 import { Allowance } from "@/@types/allowance";
-import { postAllowance, removeAllowance, updateAllowanceRequest } from "@/services/allowance";
+import { postAllowance } from "@/services/allowance";
 import { validatePrincipal } from "@/utils/identity";
-import { useAppSelector } from "@redux/Store";
-import {
-  CreateActionType,
-  EditActionType,
-  setCreateAllowanceDrawerState,
-  setEditAllowanceDrawerState,
-} from "@redux/allowances/AllowanceActions";
+import { CreateActionType, setCreateAllowanceDrawerState } from "@redux/allowances/AllowanceActions";
 import { useMutation } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
@@ -55,15 +49,12 @@ export function useCreateAllowance() {
     });
   };
 
-  const setFullAllowance = (allowanceData: Allowance) => {
-    setAllowance(allowanceData);
-  };
-
   const mutationFn = useCallback(async () => {
     try {
       const fullAllowance = { ...allowance, id: uuidv4() };
-      await postAllowance(fullAllowance);
-      resetAllowanceState();
+      console.log(fullAllowance);
+      //   await postAllowance(fullAllowance);
+      // resetAllowanceState();
     } catch (e) {
       console.log(e);
     }
@@ -87,58 +78,6 @@ export function useCreateAllowance() {
     isPrincipalValid,
     createAllowance,
     resetAllowanceState,
-    setFullAllowance,
     setAllowanceState,
   };
-}
-
-export function useUpdateAllowance() {
-  const { selectedAllowance } = useAppSelector((state) => state.allowance);
-  const [allowance, setAllowance] = useState<Allowance>(selectedAllowance);
-
-  useEffect(() => {
-    setAllowance(selectedAllowance);
-  }, [selectedAllowance]);
-
-  const setAllowanceState = (allowanceData: Partial<Allowance>) => {
-    setAllowance({
-      ...allowance,
-      ...allowanceData,
-    });
-  };
-
-  const mutationFn = async () => {
-    try {
-      await updateAllowanceRequest(allowance);
-      setEditAllowanceDrawerState(EditActionType.closeDrawer);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const { mutate: updateAllowance, isPending, isError, error, isSuccess } = useMutation({ mutationFn });
-
-  return {
-    updateAllowance,
-    isPending,
-    isError,
-    error,
-    isSuccess,
-    allowance,
-    setAllowanceState,
-  };
-}
-
-export function useDeleteAllowance() {
-  const mutationFn = async (id: string) => {
-    try {
-      await removeAllowance(id);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const { mutate: deleteAllowance, isPending, isError, error, isSuccess } = useMutation({ mutationFn });
-
-  return { deleteAllowance, isPending, isError, error, isSuccess };
 }

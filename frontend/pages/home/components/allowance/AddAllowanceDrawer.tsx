@@ -1,4 +1,3 @@
-import { useCreateAllowance } from "@pages/home/hooks/useAllowanceMutation";
 import { useAppSelector } from "@redux/Store";
 import { Drawer } from "@components/core/drawer";
 import AssetFormItem from "./AssetFormItem";
@@ -7,6 +6,7 @@ import SpenderFormItem from "./SpenderFormItem";
 import AmountFormItem from "./AmountFormItem";
 import ExpirationFormItem from "./ExpirationFormItem";
 import Button from "@components/core/buttons/Button";
+import { useCreateAllowance } from "@pages/home/hooks/useCreateAllowance";
 
 interface IAllowanceDrawerProps {
   isDrawerOpen: boolean;
