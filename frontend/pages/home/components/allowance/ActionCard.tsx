@@ -4,7 +4,6 @@ import { ReactComponent as DotsIcon } from "@assets/svg/files/dots-icon.svg";
 import { ReactComponent as AlertIcon } from "@assets/svg/files/alert-icon.svg";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close-icon.svg";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { useDeleteAllowance } from "@pages/home/hooks/useAllowanceMutation";
 import { Allowance } from "@/@types/allowance";
 import { Modal } from "@components/core/modal";
 import {
@@ -12,6 +11,7 @@ import {
   setEditAllowanceDrawerState,
   setSelectedAllowanceAction,
 } from "@redux/allowances/AllowanceActions";
+import { useDeleteAllowance } from "@pages/home/hooks/useDeleteAllowance";
 
 interface ActionCardProps {
   allowance: Allowance;
@@ -21,6 +21,7 @@ interface ActionCardProps {
 export default function ActionCard(props: ActionCardProps) {
   const { allowance, refetchAllowances } = props;
   const { deleteAllowance, isPending } = useDeleteAllowance();
+
   const handleDelete = async () => {
     deleteAllowance(allowance.id);
     refetchAllowances();

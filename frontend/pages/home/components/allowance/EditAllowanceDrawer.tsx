@@ -12,7 +12,7 @@ import { useCallback, useMemo } from "react";
 import { DateTimePicker } from "@components/core/datepicker";
 import { CheckBox } from "@components/core/checkbox";
 import { Dayjs } from "dayjs";
-import { useUpdateAllowance } from "@pages/home/hooks/useAllowanceMutation";
+import { useUpdateAllowance } from "@pages/home/hooks/useUpdateAllowance";
 
 interface IAllowanceDrawerProps {
   isDrawerOpen: boolean;
