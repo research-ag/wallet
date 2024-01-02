@@ -18,3 +18,11 @@ export const enum AllowancesTableColumns {
   expiration = "expiration",
   action = "action",
 }
+
+export const enum ErrorFields {
+  spender = "spender",
+  asset = "asset",
+  amount = "amount",
+  expiration = "expiration",
+  subAccount = "subAccount",
+};

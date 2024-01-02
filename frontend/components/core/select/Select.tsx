@@ -17,7 +17,7 @@ interface TSelectProps extends VariantProps<typeof selectTriggerCVA>, VariantPro
 
 export default function Select(props: TSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const { disabled, options, initialValue, currentValue, onSelect, onSearch } = props;
+  const { disabled, options, initialValue, currentValue, onSelect, onSearch, border } = props;
   const searchTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
 
   const selectedValue = useMemo(() => {
@@ -38,7 +38,7 @@ export default function Select(props: TSelectProps) {
 
   return (
     <DropdownMenu.Root modal={isOpen} onOpenChange={handleOpenChange}>
-      <DropdownMenu.Trigger asChild className={selectTriggerCVA({ disabled })}>
+      <DropdownMenu.Trigger asChild className={selectTriggerCVA({ disabled, border })}>
         <div className="flex items-center justify-center">
           <div className="flex items-center mr-2">
             {selectedValue?.icon}

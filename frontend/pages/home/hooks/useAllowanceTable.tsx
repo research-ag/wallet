@@ -3,13 +3,20 @@ import { middleTruncation, toTitleCase } from "@/utils/strings";
 import { createColumnHelper } from "@tanstack/react-table";
 import { Allowance, AllowancesTableColumns } from "@/@types/allowance";
 import ActionCard from "../components/allowance/ActionCard";
+import { queryClient } from "@/config/query";
+import { ServerStateKeys } from "@/@types/common";
 
-interface IUseAllowanceTable {
-  refetchAllowances: () => void;
-}
-
-export const useAllowanceTable = ({ refetchAllowances }: IUseAllowanceTable) => {
+export const useAllowanceTable = () => {
   const columnHelper = createColumnHelper<Allowance>();
+
+  const refetchAllowances = async () => {
+    await queryClient.invalidateQueries({
+      queryKey: [ServerStateKeys.allowances],
+    });
+    await queryClient.refetchQueries({
+      queryKey: [ServerStateKeys.allowances],
+    });
+  };
 
   const columns = [
     columnHelper.accessor(AllowancesTableColumns.subAccount, {
@@ -32,7 +39,7 @@ export const useAllowanceTable = ({ refetchAllowances }: IUseAllowanceTable) => 
         return (
           <div>
             {name && <p className="text-md">{name}</p>}
-            {principal && <p className="text-md">{middleTruncation(principal, 3, 3)}</p>}
+            {principal && <p className={`text-md ${name ? "opacity-50" : ""}`}>{middleTruncation(principal, 3, 3)}</p>}
           </div>
         );
       },
@@ -46,7 +53,7 @@ export const useAllowanceTable = ({ refetchAllowances }: IUseAllowanceTable) => 
       header: ({ header }) => toTitleCase(header.id),
     }),
     columnHelper.accessor(AllowancesTableColumns.expiration, {
-      cell: (info) => momentDateTime(info.getValue()),
+      cell: (info) => (info.getValue() ? momentDateTime(info.getValue()) : "No expire"),
       header: ({ header }) => toTitleCase(header.id),
     }),
     columnHelper.display({

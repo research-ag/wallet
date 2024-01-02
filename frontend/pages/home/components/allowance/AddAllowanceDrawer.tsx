@@ -13,65 +13,78 @@ interface IAllowanceDrawerProps {
   onClose: () => void;
 }
 
-export default function AddAllowanceDrawer(props: IAllowanceDrawerProps) {
-  const { isDrawerOpen, onClose } = props;
+function AddForm() {
   const { contacts } = useAppSelector((state) => state.contacts);
   const { assets, selectedAsset } = useAppSelector((state) => state.asset);
-  const { allowance, setAllowanceState, createAllowance, isPending, isPrincipalValid, isError, validationErrors } =
+  const { allowance, setAllowanceState, createAllowance, isPending, isPrincipalValid, validationErrors } =
     useCreateAllowance();
 
-  console.log("is error", isError);
+  return (
+    <form className="flex flex-col text-left">
+      <AssetFormItem
+        allowance={allowance}
+        assets={assets}
+        selectedAsset={selectedAsset}
+        setAllowanceState={setAllowanceState}
+        isLoading={isPending}
+        errors={validationErrors}
+      />
+
+      <SubAccountFormItem
+        allowance={allowance}
+        selectedAsset={selectedAsset}
+        setAllowanceState={setAllowanceState}
+        isLoading={isPending}
+        errors={validationErrors}
+      />
+
+      <SpenderFormItem
+        allowance={allowance}
+        contacts={contacts}
+        setAllowanceState={setAllowanceState}
+        isLoading={isPending}
+        isPrincipalValid={isPrincipalValid}
+        errors={validationErrors}
+      />
+
+      <AmountFormItem
+        allowance={allowance}
+        selectedAsset={selectedAsset}
+        setAllowanceState={setAllowanceState}
+        isLoading={isPending}
+        errors={validationErrors}
+      />
+
+      <ExpirationFormItem
+        allowance={allowance}
+        setAllowanceState={setAllowanceState}
+        isLoading={isPending}
+        errors={validationErrors}
+      />
+
+      <div className="flex justify-end mt-4">
+        <Button
+          onClick={(e) => {
+            e.preventDefault();
+            createAllowance();
+          }}
+          className="w-1/4"
+          disabled={isPending}
+          isLoading={isPending}
+        >
+          Save
+        </Button>
+      </div>
+    </form>
+  );
+}
+
+export default function AddAllowanceDrawer(props: IAllowanceDrawerProps) {
+  const { isDrawerOpen, onClose } = props;
 
   return (
     <Drawer isDrawerOpen={isDrawerOpen} onClose={onClose} title="Add Allowance">
-      <form className="flex flex-col text-left">
-        <AssetFormItem
-          allowance={allowance}
-          assets={assets}
-          selectedAsset={selectedAsset}
-          setAllowanceState={setAllowanceState}
-          isLoading={isPending}
-          errors={validationErrors}
-        />
-
-        <SubAccountFormItem
-          allowance={allowance}
-          selectedAsset={selectedAsset}
-          setAllowanceState={setAllowanceState}
-          isLoading={isPending}
-        />
-
-        <SpenderFormItem
-          allowance={allowance}
-          contacts={contacts}
-          setAllowanceState={setAllowanceState}
-          isLoading={isPending}
-          isPrincipalValid={isPrincipalValid}
-        />
-
-        <AmountFormItem
-          allowance={allowance}
-          selectedAsset={selectedAsset}
-          setAllowanceState={setAllowanceState}
-          isLoading={isPending}
-        />
-
-        <ExpirationFormItem allowance={allowance} setAllowanceState={setAllowanceState} isLoading={isPending} />
-
-        <div className="flex justify-end mt-4">
-          <Button
-            onClick={(e) => {
-              e.preventDefault();
-              createAllowance();
-            }}
-            className="w-1/4"
-            disabled={isPending}
-            isLoading={isPending}
-          >
-            Save
-          </Button>
-        </div>
-      </form>
+      {!isDrawerOpen ? null : <AddForm />}
     </Drawer>
   );
 }

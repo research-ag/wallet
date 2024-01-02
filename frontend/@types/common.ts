@@ -7,7 +7,7 @@ export enum ServerStateKeys {
   allowances = "allowances",
 }
 
-export interface Errors {
+export interface ValidationErrors {
   message: string;
   field: string;
 }

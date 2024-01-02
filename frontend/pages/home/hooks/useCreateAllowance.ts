@@ -3,15 +3,15 @@ import { postAllowance } from "@/services/allowance";
 import { validatePrincipal } from "@/utils/identity";
 import { CreateActionType, setCreateAllowanceDrawerState } from "@redux/allowances/AllowanceActions";
 import { useMutation } from "@tanstack/react-query";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { allowanceSchema } from "@/helpers/schemas/allowance";
 import { z } from "zod";
 import { queryClient } from "@/config/query";
-import { Errors, ServerStateKeys } from "@/@types/common";
+import { ValidationErrors, ServerStateKeys } from "@/@types/common";
+import { useAppSelector } from "@redux/Store";
 
 const initialAllowanceState: Allowance = {
-  id: "",
   asset: {
     logo: "",
     name: "",
@@ -37,9 +37,20 @@ const initialAllowanceState: Allowance = {
 };
 
 export function useCreateAllowance() {
-  const [validationErrors, setErrors] = useState<Errors[]>([]);
+  const { selectedAsset, selectedAccount } = useAppSelector((state) => state.asset);
+  const [validationErrors, setErrors] = useState<ValidationErrors[]>([]);
   const [isPrincipalValid, setIsPrincipalValid] = useState(true);
-  const [allowance, setAllowance] = useState<Allowance>(initialAllowanceState);
+
+  const initial = useMemo(() => {
+    return {
+      ...initialAllowanceState,
+      asset: selectedAsset,
+      subAccount: selectedAccount,
+    };
+  }, [selectedAsset]) as Allowance;
+
+  const [allowance, setAllowance] = useState<Allowance>(initial);
+  console.log(allowance);
 
   const setAllowanceState = (allowanceData: Partial<Allowance>) => {
     setAllowance({

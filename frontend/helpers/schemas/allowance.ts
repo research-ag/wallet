@@ -14,6 +14,6 @@ export const allowanceSchema = z.object({
     })
     .required(),
   amount: z.string().min(1).max(10),
-  expiration: z.string().min(1).max(30),
+  expiration: z.string().refine((value) => !value || !isNaN(Date.parse(value)), { message: "Invalid expiration date" }),
   noExpire: z.boolean(),
 });

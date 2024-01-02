@@ -11,12 +11,12 @@ import { CustomInput } from "@components/Input";
 import { GeneralHook } from "@pages/home/hooks/generalHook";
 import { ThemeHook } from "@/hooks/themeHook";
 import { IconTypeEnum, ThemesEnum } from "@/const";
-import { CustomCheck } from "@components/CheckBox";
 import { CustomButton } from "@components/Button";
 import Modal from "@components/Modal";
 import AddContact from "./addContact";
 import clsx from "clsx";
 import { Asset } from "@redux/models/AccountModels";
+import { CheckBox } from "@components/checkbox";
 
 interface ContactFiltersProps {
   searchKey: string;
@@ -78,7 +78,7 @@ const ContactFilters = ({ searchKey, assetFilter, setSearchKey, setAssetFilter }
                 className="flex flex-row items-center justify-between w-full px-3 py-2 rounded-t-lg hover:bg-HoverColorLight hover:dark:bg-HoverColor"
               >
                 <p>{t("selected.all")}</p>
-                <CustomCheck
+                <CheckBox
                   className="border-BorderColorLight dark:border-BorderColor"
                   checked={assetFilter.length === assets.length}
                 />
@@ -97,7 +97,7 @@ const ContactFilters = ({ searchKey, assetFilter, setSearchKey, setAssetFilter }
                       <p>{asset.symbol}</p>
                     </div>
 
-                    <CustomCheck
+                    <CheckBox
                       className="border-BorderColorLight dark:border-BorderColor"
                       checked={assetFilter.includes(asset.tokenSymbol)}
                     />

@@ -1,22 +1,18 @@
 import { Allowance } from "@/@types/allowance";
-import { Errors, ServerStateKeys } from "@/@types/common";
+import { ValidationErrors, ServerStateKeys } from "@/@types/common";
 import { queryClient } from "@/config/query";
 import { allowanceSchema } from "@/helpers/schemas/allowance";
 import { updateAllowanceRequest } from "@/services/allowance";
 import { useAppSelector } from "@redux/Store";
 import { EditActionType, setEditAllowanceDrawerState } from "@redux/allowances/AllowanceActions";
 import { useMutation } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { z } from "zod";
 
 export function useUpdateAllowance() {
-  const [validationErrors, setErrors] = useState<Errors[]>([]);
+  const [validationErrors, setErrors] = useState<ValidationErrors[]>([]);
   const { selectedAllowance } = useAppSelector((state) => state.allowance);
   const [allowance, setAllowance] = useState<Allowance>(selectedAllowance);
-
-  useEffect(() => {
-    setAllowance(selectedAllowance);
-  }, [selectedAllowance]);
 
   const setAllowanceState = (allowanceData: Partial<Allowance>) => {
     setAllowance({
@@ -41,7 +37,7 @@ export function useUpdateAllowance() {
     setEditAllowanceDrawerState(EditActionType.closeDrawer);
   };
 
-  const onError = async () => {
+  const onError = (error: any) => {
     if (error instanceof z.ZodError) {
       const validationErrors = error.issues.map((issue) => ({
         message: issue.message,

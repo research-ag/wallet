@@ -1,15 +1,43 @@
-import { Allowance } from "@/@types/allowance";
+import { Allowance, AllowancesTableColumns } from "@/@types/allowance";
 import { getFromLocalStorage, setInLocalStorage } from "../utils/localStorage";
+import { SortOrder } from "@/@types/common";
 
 export const LOCAL_STORAGE_PREFIX = "allowances";
 
-export function listAllowances(tokenSymbol?: string): Promise<Allowance[]> {
+export function listAllowances(
+  tokenSymbol?: string,
+  column?: AllowancesTableColumns,
+  order?: SortOrder,
+): Promise<Allowance[]> {
   return new Promise((resolve) => {
     const allowances = getFromLocalStorage<Allowance[]>(LOCAL_STORAGE_PREFIX);
+
     const filteredAllowances = allowances?.filter((allowance) => {
       return allowance?.asset?.tokenSymbol === tokenSymbol;
     });
-    resolve(filteredAllowances || []);
+
+    let sorted;
+
+    if (column === AllowancesTableColumns.subAccount) {
+      console.log(`sort by ${column} in order ${order}`);
+    }
+
+    if (column === AllowancesTableColumns.spender) {
+      // sort asc or desc, first spender with no name and later spender with name.
+      console.log(`filter by ${column} in order ${order}`);
+    }
+
+    if (column === AllowancesTableColumns.expiration) {
+      // sort asc or desc, first where noExpire is true and later order by date
+      console.log(`filter by ${column} in order ${order}`);
+    }
+
+    if (column === AllowancesTableColumns.amount) {
+      // sort asc or desc, depending of the amount
+      console.log(`filter by ${column} in order ${order}`);
+    }
+
+    resolve(sorted || filteredAllowances || []);
   });
 }
 
