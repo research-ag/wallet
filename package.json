@@ -23,6 +23,8 @@
     "@radix-ui/react-select": "^1.2.2",
     "@radix-ui/react-switch": "^1.0.3",
     "@radix-ui/react-tooltip": "^1.0.6",
+    "@mui/styled-engine": "^5.14.13",
+    "@mui/x-date-pickers": "^6.16.1",
     "@reduxjs/toolkit": "^1.9.5",
     "@tanstack/query-sync-storage-persister": "^5.17.0",
     "@tanstack/react-query": "^5.14.1",
