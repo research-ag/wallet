@@ -1,11 +1,11 @@
-import { Allowance } from "@/@types/allowance";
+import { Allowance, ErrorFields } from "@/@types/allowance";
+import { ValidationErrors } from "@/@types/common";
 import { SelectOption } from "@/@types/core";
 import { IconTypeEnum } from "@/const";
 import { getAssetIcon } from "@/utils/icons";
 import { Select } from "@components/core/select";
-import { Errors } from "@pages/home/hooks/useCreateAllowance";
 import { Asset } from "@redux/models/AccountModels";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 
 interface AssetFormItemProps {
   allowance: Allowance;
@@ -13,12 +13,14 @@ interface AssetFormItemProps {
   selectedAsset: Asset | undefined;
   setAllowanceState: (allowanceData: Partial<Allowance>) => void;
   isLoading?: boolean;
-  errors?: Errors[];
+  errors?: ValidationErrors[];
 }
 
 export default function AssetFormItem(props: AssetFormItemProps) {
   const { allowance, assets, selectedAsset, setAllowanceState, isLoading, errors } = props;
   const { asset } = allowance;
+
+  const error = errors?.filter((error) => error.field === ErrorFields.asset)[0];
 
   function formatAsset(asset: Asset) {
     return {
@@ -37,10 +39,6 @@ export default function AssetFormItem(props: AssetFormItemProps) {
     setAllowanceState({ asset: fullAsset, subAccount: {} });
   };
 
-  useEffect(() => {
-    setAllowanceState({ asset: selectedAsset });
-  }, [selectedAsset]);
-
   return (
     <div className="mt-4">
       <label htmlFor="asset" className="text-lg">
@@ -52,6 +50,7 @@ export default function AssetFormItem(props: AssetFormItemProps) {
         initialValue={selectedAsset?.tokenName}
         currentValue={asset?.tokenName}
         disabled={isLoading}
+        border={error ? "error" : undefined}
       />
     </div>
   );

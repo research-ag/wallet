@@ -1,4 +1,5 @@
-import { Allowance } from "@/@types/allowance";
+import { Allowance, ErrorFields } from "@/@types/allowance";
+import { ValidationErrors } from "@/@types/common";
 import { IconTypeEnum } from "@/const";
 import { getAssetIcon } from "@/utils/icons";
 import { CurrencyInput } from "@components/core/input";
@@ -10,10 +11,12 @@ interface IAmountFormItemProps {
   selectedAsset?: Asset | undefined;
   setAllowanceState: (allowanceData: Partial<Allowance>) => void;
   isLoading?: boolean;
+  errors?: ValidationErrors[];
 }
 
 export default function AmountFormItem(props: IAmountFormItemProps) {
-  const { allowance, selectedAsset, setAllowanceState, isLoading } = props;
+  const { allowance, selectedAsset, setAllowanceState, isLoading, errors } = props;
+  const error = errors?.filter((error) => error.field === ErrorFields.amount)[0];
   const { asset } = allowance;
 
   const { icon, symbol } = useMemo(() => {
@@ -41,6 +44,7 @@ export default function AmountFormItem(props: IAmountFormItemProps) {
         icon={icon}
         className="mt-2"
         isLoading={isLoading}
+        border={error ? "error" : undefined}
       />
     </div>
   );

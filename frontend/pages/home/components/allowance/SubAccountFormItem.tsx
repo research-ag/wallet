@@ -1,4 +1,5 @@
-import { Allowance } from "@/@types/allowance";
+import { Allowance, ErrorFields } from "@/@types/allowance";
+import { ValidationErrors } from "@/@types/common";
 import { SelectOption } from "@/@types/core";
 import { Chip } from "@components/core/chip";
 import { Select } from "@components/core/select";
@@ -10,11 +11,14 @@ interface ISubAccountFormItemProps {
   selectedAsset: Asset | undefined;
   setAllowanceState: (allowanceData: Allowance) => void;
   isLoading?: boolean;
+  errors?: ValidationErrors[];
 }
 
 export default function SubAccountFormItem(props: ISubAccountFormItemProps) {
-  const { allowance, selectedAsset, setAllowanceState, isLoading } = props;
+  const { allowance, selectedAsset, setAllowanceState, isLoading, errors } = props;
   const { subAccount } = allowance;
+
+  const error = errors?.filter((error) => error.field === ErrorFields.subAccount)[0];
 
   const options = useMemo(() => {
     if (allowance?.asset?.subAccounts.length > 0)
@@ -41,7 +45,9 @@ export default function SubAccountFormItem(props: ISubAccountFormItemProps) {
 
   const onChange = (option: SelectOption) => {
     const fullSubAccount = allowance?.asset?.subAccounts.find((account) => account.sub_account_id === option.value);
-    setAllowanceState({ subAccount: fullSubAccount });
+
+    if (!fullSubAccount || !fullSubAccount.address) return;
+    setAllowanceState({ ...allowance, subAccount: fullSubAccount });
   };
 
   return (
@@ -56,6 +62,7 @@ export default function SubAccountFormItem(props: ISubAccountFormItemProps) {
         initialValue={allowance?.subAccount?.sub_account_id}
         currentValue={subAccount?.sub_account_id || ""}
         disabled={isLoading}
+        border={error ? "error" : undefined}
       />
     </div>
   );

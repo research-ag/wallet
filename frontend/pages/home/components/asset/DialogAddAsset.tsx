@@ -3,7 +3,6 @@ import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
 import Modal from "@components/Modal";
 import { CustomInput } from "@components/Input";
-import { CustomCheck } from "@components/CheckBox";
 import { CustomButton } from "@components/Button";
 import { useTranslation } from "react-i18next";
 import { checkHexString, getUSDfromToken, hexToNumber, hexToUint8Array, removeLeadingZeros } from "@/utils";
@@ -16,6 +15,7 @@ import bigInt from "big-integer";
 import { ChangeEvent, useState } from "react";
 import { AssetHook } from "../../hooks/assetHook";
 import { IcrcLedgerCanister } from "@dfinity/ledger";
+import { CheckBox } from "@components/checkbox";
 
 interface DialogAddAssetProps {
   newErr: any;
@@ -87,7 +87,7 @@ const DialogAddAsset = ({
           onKeyUp={onKeyUp}
         />
         <button className="flex flex-row gap-2 p-0" onClick={onChangeCheckboxHex}>
-          <CustomCheck className="border-BorderColorLight dark:border-BorderColor" checked={hexChecked} />
+          <CheckBox className="border-BorderColorLight dark:border-BorderColor" checked={hexChecked} />
           <p className="text-sm">{t("hex.check")}</p>
         </button>
         {hexChecked && (

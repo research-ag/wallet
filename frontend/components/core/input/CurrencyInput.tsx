@@ -1,5 +1,5 @@
 import { VariantProps } from "cva";
-import { InputHTMLAttributes, ReactNode, useRef, useState } from "react";
+import { InputHTMLAttributes, ReactNode, useState } from "react";
 import { inputCurrencyCVA } from "./styles.cva";
 
 interface InputCurrencyProps extends InputHTMLAttributes<HTMLImageElement>, VariantProps<typeof inputCurrencyCVA> {
@@ -10,22 +10,17 @@ interface InputCurrencyProps extends InputHTMLAttributes<HTMLImageElement>, Vari
 }
 
 export default function CurrencyInput(props: InputCurrencyProps) {
-  const { className, onCurrencyChange, icon, currency, isLoading, value } = props;
+  const { className, onCurrencyChange, icon, currency, isLoading, value, border } = props;
   const [amount, setAmount] = useState("");
-  const searchTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
 
   const handleCurrencyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newAmount = e.target.value;
     setAmount(newAmount);
-
-    if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
-    searchTimeoutRef.current = setTimeout(() => {
-      onCurrencyChange(newAmount);
-    }, 500);
+    onCurrencyChange(newAmount);
   };
 
   return (
-    <div className={inputCurrencyCVA({ className, isLoading })}>
+    <div className={inputCurrencyCVA({ className, isLoading, border })}>
       <input
         type="text"
         className="w-4/5 outline-none bg-inherit"

@@ -73,4 +73,15 @@ export const enum AllowancesTableColumns {
   expiration = "expiration",
   action = "action",
 }
+<<<<<<< HEAD
 >>>>>>> ef24f489 (feat: react query and persist)
+=======
+
+export const enum ErrorFields {
+  spender = "spender",
+  asset = "asset",
+  amount = "amount",
+  expiration = "expiration",
+  subAccount = "subAccount",
+};
+>>>>>>> ddc4df4a (feat: default sub account selected on create allowance)

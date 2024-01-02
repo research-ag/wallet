@@ -1,44 +1,25 @@
 import useAllowances from "@pages/home/hooks/useAllowances";
-import LoadingLoader from "@components/Loader";
 import EditAllowanceDrawer from "./EditAllowanceDrawer";
 import clsx from "clsx";
-import { useState } from "react";
 import { useAllowanceTable } from "@pages/home/hooks/useAllowanceTable";
 import { Table, TableBody, TableBodyCell, TableHead, TableHeaderCell, TableRow } from "@components/core/table";
 import { ReactComponent as ArrowUp } from "@assets/svg/files/arrow-up.svg";
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-  getSortedRowModel,
-  SortingState,
-  Header,
-} from "@tanstack/react-table";
+import { flexRender, getCoreRowModel, useReactTable, getSortedRowModel } from "@tanstack/react-table";
 import { useAppSelector } from "@redux/Store";
 import { EditActionType, setEditAllowanceDrawerState } from "@redux/allowances/AllowanceActions";
-import { Allowance } from "@/@types/allowance";
+import { AllowancesTableColumns } from "@/@types/allowance";
 
 export default function AllowanceList() {
   const { isUpdateAllowance } = useAppSelector((state) => state.allowance);
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const { allowances, isLoading, refetch } = useAllowances();
-
-  const { columns } = useAllowanceTable({
-    refetchAllowances: refetch,
-  });
+  const { allowances, setSorting } = useAllowances();
+  const { columns } = useAllowanceTable();
 
   const table = useReactTable({
     data: allowances,
     columns,
-    state: { sorting },
-    onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
-
-  if (isLoading) {
-    return <LoadingLoader className="mt-10" />;
-  }
 
   return (
     <>
@@ -54,9 +35,8 @@ export default function AllowanceList() {
   );
 
   function TableHeadGroup() {
-    const handleFilter = (column: string, header: Header<Allowance, unknown>) => {
-      console.log(column);
-      header.column;
+    const handleFilter = async (column: AllowancesTableColumns) => {
+      setSorting(column);
     };
 
     return (
@@ -70,7 +50,7 @@ export default function AllowanceList() {
                   <div
                     {...{
                       className: indexTR <= 4 && header.column.getCanSort() ? "cursor-pointer select-none" : "",
-                      onClick: indexTR <= 4 ? () => handleFilter(column, header) : undefined,
+                      onClick: indexTR <= 4 ? () => handleFilter(column as AllowancesTableColumns) : undefined,
                     }}
                     className="flex opacity-50 text-PrimaryTextColorLight dark:text-PrimaryTextColor"
                   >

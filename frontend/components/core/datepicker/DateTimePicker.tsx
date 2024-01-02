@@ -7,8 +7,9 @@ import dayjs, { Dayjs } from "dayjs";
 import { useState } from "react";
 import { ReactComponent as CalendarIcon } from "@/assets/svg/files/calendar-icon.svg";
 import { selectContentCVA, selectTriggerCVA } from "./styles.cva";
+import { VariantProps } from "cva";
 
-interface DateTimePickerProps {
+interface DateTimePickerProps extends VariantProps<typeof selectTriggerCVA> {
   onChange: (date: Dayjs) => void;
   onEnableChange?: (value: boolean) => void;
   enabled: boolean;
@@ -16,7 +17,7 @@ interface DateTimePickerProps {
 }
 
 function DateTimePicker(props: DateTimePickerProps) {
-  const { onChange, ISODate } = props;
+  const { onChange, ISODate, border } = props;
   const [isOpen, setIsOpen] = useState(false);
 
   const { selectedDate, generateWeeksOfTheMonth, modifyDateTime, toggleAmPm, onDateChange } = useCalendar(ISODate);
@@ -32,7 +33,7 @@ function DateTimePicker(props: DateTimePickerProps) {
 
   return (
     <DropdownMenu.Root modal={isOpen} onOpenChange={handleOpenChange}>
-      <DropdownMenu.Trigger className={selectTriggerCVA({})}>
+      <DropdownMenu.Trigger className={selectTriggerCVA({ border })}>
         <p className="text-md">{dayjs(selectedDate).format("DD/MM/YYYY, HH:mm:ss")}</p>
         <CalendarIcon className="w-4 h-4 ml-2" />
       </DropdownMenu.Trigger>
@@ -49,12 +50,12 @@ function DateTimePicker(props: DateTimePickerProps) {
   );
 }
 
-function DisabledDateTimePicker({ onEnableChange }: DateTimePickerProps) {
+function DisabledDateTimePicker({ onEnableChange, border }: DateTimePickerProps) {
   const handleEnableChange = () => onEnableChange?.(false);
 
   return (
-    <div className={selectTriggerCVA({})} onClick={handleEnableChange}>
-      <p className="text-md">Date</p>
+    <div className={selectTriggerCVA({ border })} onClick={handleEnableChange}>
+      <p className="opacity-50 text-md">Date</p>
     </div>
   );
 }

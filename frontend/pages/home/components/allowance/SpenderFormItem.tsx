@@ -1,10 +1,10 @@
-import { Allowance } from "@/@types/allowance";
+import { Allowance, ErrorFields } from "@/@types/allowance";
+import { ValidationErrors } from "@/@types/common";
 import { SelectOption } from "@/@types/core";
 import { AvatarEmpty } from "@components/core/avatar";
 import { Input } from "@components/core/input";
 import { Select } from "@components/core/select";
 import { Switch } from "@components/core/switch";
-import { Errors } from "@pages/home/hooks/useCreateAllowance";
 import { Contact } from "@redux/models/ContactsModels";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -14,13 +14,14 @@ interface ISpenderFormItemProps {
   isLoading?: boolean;
   allowance: Allowance;
   isPrincipalValid: boolean;
-  errors?: Errors[];
+  errors?: ValidationErrors[];
 }
 
 export default function SpenderFormItem(props: ISpenderFormItemProps) {
   const [checked, setChecked] = useState(false);
   const inputTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
-  const { contacts, setAllowanceState, isLoading, allowance, isPrincipalValid } = props;
+  const { contacts, setAllowanceState, isLoading, allowance, isPrincipalValid, errors } = props;
+  const error = errors?.filter((error) => error.field === ErrorFields.spender)[0];
 
   const options = useMemo(() => {
     return contacts?.map((contact) => {
@@ -75,10 +76,16 @@ export default function SpenderFormItem(props: ISpenderFormItemProps) {
           options={options}
           disabled={isLoading}
           currentValue={allowance?.spender?.principal || ""}
+          border={error || !isPrincipalValid  ? "error" : undefined}
         />
       )}
       {!checked && (
-        <Input placeholder="Principal" onChange={onInputChange} disabled={isLoading} isError={!isPrincipalValid} />
+        <Input
+          placeholder="Principal"
+          onChange={onInputChange}
+          disabled={isLoading}
+          border={error ? "error" : undefined}
+        />
       )}
     </div>
   );
