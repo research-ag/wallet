@@ -1,4 +1,4 @@
-import { ReactComponent as CloseIcon } from "@assets/svg/files/close-icon.svg";
+import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 import { getDrawerBlank, getDrawerContainerStyle } from "./styles.cva";
 
 interface IDrawerProps {
@@ -15,8 +15,11 @@ export default function Drawer(props: IDrawerProps) {
       <div className={getDrawerBlank(isDrawerOpen)} />
       <div className={getDrawerContainerStyle(isDrawerOpen)}>
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-xl font-bold">{title}</h1>
-          <CloseIcon onClick={onClose} className="w-6 h-6 cursor-pointer" />
+          <h1 className="text-xl font-bold text-PrimaryTextColorLight dark:text-PrimaryTextColor">{title}</h1>
+          <CloseIcon
+            onClick={onClose}
+            className="cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
+          />
         </div>
         {children}
       </div>

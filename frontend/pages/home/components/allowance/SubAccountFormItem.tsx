@@ -9,9 +9,9 @@ import { useMemo, useState } from "react";
 interface ISubAccountFormItemProps {
   allowance: Allowance;
   selectedAsset: Asset | undefined;
-  setAllowanceState: (allowanceData: Allowance) => void;
   isLoading?: boolean;
   errors?: ValidationErrors[];
+  setAllowanceState: (allowanceData: Allowance) => void;
 }
 
 export default function SubAccountFormItem(props: ISubAccountFormItemProps) {

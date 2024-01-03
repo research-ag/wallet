@@ -12,6 +12,7 @@ import { ValidationErrors } from "@/@types/common";
 import { Chip } from "@components/chip";
 import { CheckBox } from "@components/checkbox";
 import { CalendarPicker } from "@components/CalendarPicker";
+import clsx from "clsx";
 
 export default function UpdateForm() {
   const { allowance, setAllowanceState, updateAllowance, isPending, validationErrors } = useUpdateAllowance();
@@ -57,17 +58,17 @@ interface FixedFieldsProps {
 
 function FixedFields({ allowance }: FixedFieldsProps) {
   return (
-    <div className="w-full bg-[#141331] rounded-md p-4">
-      <p className="text-lg font-bold">Subaccount</p>
+    <div className="w-full p-4 border rounded-md bg-PrimaryColorLight dark:bg-PrimaryColor border-BorderColorLight dark:border-BorderColor">
+      <p className="text-lg font-bold text-PrimaryTextColorLight dark:text-PrimaryTextColor">Subaccount</p>
       <div className="flex items-center mt-4">
         <div className="flex flex-col items-start justify-center mr-4">
           {getAssetIcon(IconTypeEnum.Enum.ASSET, allowance.asset?.tokenSymbol, allowance.asset?.logo)}
-          <p className="mt-2">{allowance.asset?.tokenSymbol}</p>
+          <p className="mt-2 text-PrimaryTextColorLight dark:text-PrimaryTextColor">{allowance.asset?.tokenSymbol}</p>
         </div>
 
         <div className="flex items-center justify-start">
           <Chip size="medium" text={allowance.subAccount.sub_account_id || ""} className="mr-2" />
-          <p>{allowance.subAccount.name}</p>
+          <p className={textStyles}>{allowance.subAccount.name}</p>
         </div>
       </div>
 
@@ -75,13 +76,13 @@ function FixedFields({ allowance }: FixedFieldsProps) {
       <p className="text-lg font-bold">Spender</p>
 
       <div className="flex justify-between mt-4">
-        <p>Principal</p>
-        <p>{middleTruncation(allowance?.spender?.principal, 5, 5)}</p>
+        <p className={textStyles}>Principal</p>
+        <p className={textStyles}>{middleTruncation(allowance?.spender?.principal, 5, 5)}</p>
       </div>
 
       <div className="flex justify-between mt-4">
-        <p>Name</p>
-        <p>{allowance?.spender?.name}</p>
+        <p className={textStyles}>Name</p>
+        <p className={textStyles}>{allowance?.spender?.name ? allowance?.spender?.name : "-"}</p>
       </div>
     </div>
   );
@@ -179,9 +180,11 @@ function ExpirationFormItem(props: IExpirationFormItemProps) {
             className="mr-1 border-BorderColorLight dark:border-BorderColor"
             disabled={isLoading}
           />
-          <p className="text-md">No Expiration</p>
+          <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">No Expiration</p>
         </div>
       </div>
     </div>
   );
 }
+
+const textStyles = clsx("text-PrimaryTextColorLight dark:text-PrimaryTextColor");

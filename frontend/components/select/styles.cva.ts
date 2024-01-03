@@ -6,7 +6,7 @@ export const selectTriggerCVA = cva(
     "justify-between",
     "items-center",
     "p-2",
-    "bg-[#211E49]",
+    "bg-ThemeColorSelectorLight dark:bg-SecondaryColor",
     "border rounded-md",
     "mt-2 ",
     "cursor-pointer",
@@ -20,8 +20,8 @@ export const selectTriggerCVA = cva(
         false: "",
       },
       border: {
-        none: "border-[#3C3867]",
-        error: "border-TextErrorColor",
+        none: ["border", "border-BorderColorLight", "dark:border-BorderColor"],
+        error: "border border-TextErrorColor",
       },
     },
     defaultVariants: {
@@ -32,14 +32,22 @@ export const selectTriggerCVA = cva(
   },
 );
 
-export const selectContentCVA = cva(["w-[24rem] z-50 mt-2", "bg-[#151331] p-2", "rounded-md border border-[#33B0EC]"], {
-  variants: {
-    disabled: {
-      true: ["opacity-50 pointer-events-none"],
-      false: "",
+export const selectContentCVA = cva(
+  [
+    "w-[24rem] z-50 mt-2",
+    "bg-ThemeColorSelectorLight dark:bg-SecondaryColor",
+    "p-2",
+    "rounded-md border border-RadioCheckColor",
+  ],
+  {
+    variants: {
+      disabled: {
+        true: ["opacity-50 pointer-events-none"],
+        false: "",
+      },
+    },
+    defaultVariants: {
+      disabled: false,
     },
   },
-  defaultVariants: {
-    disabled: false,
-  },
-});
+);

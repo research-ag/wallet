@@ -1,7 +1,16 @@
 import { cva } from "cva";
 
 export const inputContainerCVA = cva(
-  ["flex", "justify-start", "items-center", "bg-[#211E49]", "border", "rounded-md", "mt-2 border-[#3C3867]", "h-14"],
+  [
+    "flex",
+    "justify-start",
+    "items-center",
+    "rounded-md",
+    "mt-2",
+    "h-14",
+    "bg-ThemeColorSelectorLight dark:bg-SecondaryColor",
+    "text-PrimaryTextColorLight dark:text-PrimaryTextColor",
+  ],
   {
     variants: {
       disabled: {
@@ -9,8 +18,8 @@ export const inputContainerCVA = cva(
         false: "",
       },
       border: {
-        error: ["border-[#FF9292]"],
-        none: "",
+        error: ["border border-TextErrorColor"],
+        none: ["border", "border-BorderColorLight", "dark:border-BorderColor"],
       },
     },
     defaultVariants: {
@@ -25,19 +34,29 @@ export const inputCVA = cva(["w-full", "bg-transparent", "outline-none", "px-4 p
   defaultVariants: {},
 });
 
-export const inputCurrencyCVA = cva(["flex", "bg-[#211E49]", "border", "py-2 px-4", "rounded-lg"], {
-  variants: {
-    isLoading: {
-      true: ["opacity-50 pointer-events-none"],
-      false: [""],
+export const inputCurrencyCVA = cva(
+  [
+    "flex",
+    "border",
+    "bg-ThemeColorSelectorLight dark:bg-SecondaryColor",
+    "text-PrimaryTextColorLight dark:text-PrimaryTextColor",
+    "py-2 px-4",
+    "rounded-lg",
+  ],
+  {
+    variants: {
+      isLoading: {
+        true: ["opacity-50 pointer-events-none"],
+        false: [""],
+      },
+      border: {
+        error: ["border border-TextErrorColor"],
+        none: ["border", "border-BorderColorLight", "dark:border-BorderColor"],
+      },
     },
-    border: {
-      error: ["border-[#FF9292]"],
-      none: "border-[#3C3867]",
+    defaultVariants: {
+      isLoading: false,
+      border: "none",
     },
   },
-  defaultVariants: {
-    isLoading: false,
-    border: "none",
-  },
-});
+);

@@ -92,8 +92,6 @@ module.exports = {
       ContactColor2: "#61A0BE",
       ContactColor3: "#5F8E88",
 
-      "dark-text-primary-light": "#1B183F",
-
       black: colors.black,
       white: colors.white,
       slate: colors.slate,

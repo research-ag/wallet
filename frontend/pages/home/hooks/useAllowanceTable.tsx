@@ -5,6 +5,7 @@ import { Allowance, AllowancesTableColumns } from "@/@types/allowance";
 import ActionCard from "../components/allowance/ActionCard";
 import { queryClient } from "@/config/query";
 import { ServerStateKeys } from "@/@types/common";
+import clsx from "clsx";
 
 export const useAllowanceTable = () => {
   const columnHelper = createColumnHelper<Allowance>();
@@ -25,8 +26,8 @@ export const useAllowanceTable = () => {
         const subAccountId = info?.getValue()?.sub_account_id;
         return (
           <div>
-            {name && <p className="text-md">{name}</p>}
-            {subAccountId && <p className="text-md">{subAccountId}</p>}
+            {name && <p className={getCellStyles()}>{name}</p>}
+            {subAccountId && <p className={getCellStyles()}>{subAccountId}</p>}
           </div>
         );
       },
@@ -38,8 +39,8 @@ export const useAllowanceTable = () => {
         const principal = info.getValue()?.principal;
         return (
           <div>
-            {name && <p className="text-md">{name}</p>}
-            {principal && <p className={`text-md ${name ? "opacity-50" : ""}`}>{middleTruncation(principal, 3, 3)}</p>}
+            {name && <p className={getCellStyles()}>{name}</p>}
+            {principal && <p className={getCellStyles()}>{middleTruncation(principal, 3, 3)}</p>}
           </div>
         );
       },
@@ -48,12 +49,18 @@ export const useAllowanceTable = () => {
     columnHelper.accessor(AllowancesTableColumns.amount, {
       cell: (info) => {
         const assetSymbol = info.row.original.asset.tokenSymbol;
-        return `${info.getValue()} ${assetSymbol}`;
+        return (
+          <p className={getCellStyles()}>
+            {info.getValue()} {assetSymbol}
+          </p>
+        );
       },
       header: ({ header }) => toTitleCase(header.id),
     }),
     columnHelper.accessor(AllowancesTableColumns.expiration, {
-      cell: (info) => (info.getValue() ? momentDateTime(info.getValue()) : "No expire"),
+      cell: (info) => (
+        <p className={getCellStyles()}>{info.getValue() ? momentDateTime(info.getValue()) : "No expire"}</p>
+      ),
       header: ({ header }) => toTitleCase(header.id),
     }),
     columnHelper.display({
@@ -69,3 +76,6 @@ export const useAllowanceTable = () => {
 
   return { columns };
 };
+
+const getCellStyles = (isOpacity = false) =>
+  clsx("text-PrimaryTextColorLight dark:text-PrimaryTextColor", isOpacity ? "opacity-50" : "");

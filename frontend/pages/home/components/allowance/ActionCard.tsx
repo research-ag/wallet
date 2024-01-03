@@ -12,6 +12,9 @@ import {
   setSelectedAllowanceAction,
 } from "@redux/allowances/AllowanceActions";
 import { useDeleteAllowance } from "@pages/home/hooks/useDeleteAllowance";
+import clsx from "clsx";
+import { ThemeHook } from "@/hooks/themeHook";
+import { ThemesEnum } from "@/const";
 
 interface ActionCardProps {
   allowance: Allowance;
@@ -21,8 +24,10 @@ interface ActionCardProps {
 export default function ActionCard(props: ActionCardProps) {
   const { allowance, refetchAllowances } = props;
   const { deleteAllowance, isPending } = useDeleteAllowance();
+  const { theme } = ThemeHook();
 
   const handleDelete = async () => {
+    if (!allowance.id) return;
     deleteAllowance(allowance.id);
     refetchAllowances();
   };
@@ -31,25 +36,28 @@ export default function ActionCard(props: ActionCardProps) {
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
         <span className="grid w-full py-3 cursor-pointer place-content-center">
-          <DotsIcon />
+          <DotsIcon className="w-6 h-6 cursor-pointer stroke-PrimaryTextColorLight dark:fill-PrimaryColorLight fill-PrimaryTextColorLight" />
         </span>
       </DropdownMenu.Trigger>
-      <DropdownMenu.Content className="flex flex-col w-32 mr-10 rounded-md border border-[#2B2759]" sideOffset={5}>
+      <DropdownMenu.Content
+        className="flex flex-col w-32 mr-10 border rounded-md dark:border-BorderColor"
+        sideOffset={5}
+      >
         <DropdownMenu.Item
-          className="flex items-center justify-start bg-[#332F60] rounded-t-md p-2 cursor-pointer"
+          className="flex items-center justify-start p-2 cursor-pointer dark:bg-PopSelectColor rounded-t-md"
           onClick={() => {
             setSelectedAllowanceAction(allowance);
             setEditAllowanceDrawerState(EditActionType.openDrawer);
           }}
         >
-          <PencilIcon className="mr-4" fill="#ffffff" />
-          <p className="font-bold ">Edit</p>
+          <PencilIcon className="mr-4" fill={theme === ThemesEnum.Enum.light ? "#000000" : "#ffffff"} />
+          <p className={getCellStyles()}>Edit</p>
         </DropdownMenu.Item>
         <Modal
           triggerComponent={
-            <div className="flex items-center justify-start bg-[#211E49] rounded-b-md p-2 cursor-pointer">
+            <div className="flex items-center justify-start p-2 cursor-pointer bg-ThirdColorLight dark:bg-SecondaryColor rounded-b-md">
               <TrashDarkIcon className="mr-4" fill="#B0736F" />
-              <p className="font-bold text-[#B0736F] ">Delete</p>
+              <p className="font-bold text-LockColor ">Delete</p>
             </div>
           }
           contentComponent={<ContentComponent />}
@@ -66,11 +74,16 @@ export default function ActionCard(props: ActionCardProps) {
   function ContentComponent() {
     return (
       <div className="mt-4">
-        <p className="text-lg">
-          Are you sure you want to Remove <span className="font-bold">Jack McDonald</span>?
+        <p className={textStyles}>
+          Are you sure you want to Remove <span className="font-bold">{allowance.spender.name}</span>?
         </p>
-        <p>This Allowance will be permanently deleted.</p>
+        <p className={textStyles}>This Allowance will be permanently deleted.</p>
       </div>
     );
   }
 }
+
+const getCellStyles = (isOpacity = false) =>
+  clsx("text-PrimaryTextColorLight dark:text-PrimaryTextColor", isOpacity ? "opacity-50" : "");
+
+const textStyles = clsx("text-PrimaryTextColorLight dark:text-PrimaryTextColor");
