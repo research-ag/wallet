@@ -6,7 +6,7 @@ import { updateAllowanceRequest } from "@/services/allowance";
 import { useAppSelector } from "@redux/Store";
 import { EditActionType, setEditAllowanceDrawerState } from "@redux/allowances/AllowanceActions";
 import { useMutation } from "@tanstack/react-query";
-import { debounce } from "lodash";
+import { throttle } from "lodash";
 import { useCallback, useState } from "react";
 import { z } from "zod";
 
@@ -58,7 +58,7 @@ export function useUpdateAllowance() {
     isSuccess,
     allowance,
     validationErrors,
-    updateAllowance: debounce(mutate, 1000),
+    updateAllowance: throttle(mutate, 1000),
     setAllowanceState,
   };
 }

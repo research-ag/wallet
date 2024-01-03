@@ -2,7 +2,7 @@ import useAllowances from "@pages/home/hooks/useAllowances";
 import EditAllowanceDrawer from "./EditAllowanceDrawer";
 import clsx from "clsx";
 import { useAllowanceTable } from "@pages/home/hooks/useAllowanceTable";
-import { Table, TableBody, TableBodyCell, TableHead, TableHeaderCell, TableRow } from "@components/core/table";
+import { Table, TableBody, TableBodyCell, TableHead, TableHeaderCell, TableRow } from "@components/table";
 import { ReactComponent as ArrowUp } from "@assets/svg/files/arrow-up.svg";
 import { flexRender, getCoreRowModel, useReactTable, getSortedRowModel } from "@tanstack/react-table";
 import { useAppSelector } from "@redux/Store";

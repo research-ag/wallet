@@ -9,7 +9,7 @@ import { allowanceSchema } from "@/helpers/schemas/allowance";
 import { z } from "zod";
 import { queryClient } from "@/config/query";
 import { ValidationErrors, ServerStateKeys } from "@/@types/common";
-import { debounce } from "lodash";
+import { throttle } from "lodash";
 import { useAppSelector } from "@redux/Store";
 
 const initialAllowanceState: Allowance = {
@@ -104,7 +104,7 @@ export function useCreateAllowance() {
     validationErrors,
     isSuccess,
     isPrincipalValid,
-    createAllowance: debounce(mutate, 1000),
+    createAllowance: throttle(mutate, 1000),
     setAllowanceState,
   };
 }

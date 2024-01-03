@@ -6,8 +6,8 @@ export const switchContainerCVA = cva(["p-0 relative rounded-full"], {
       true: ["opacity-60 pointer-events-none"],
     },
     checked: {
-      true: ["bg-[#33B2EF]"],
-      false: ["bg-[#7D7B91]"],
+      false: ["bg-[#33B2EF]"],
+      true: ["bg-[#26A17B]"],
     },
     size: {
       small: ["w-6 h-3"],
@@ -27,8 +27,8 @@ export const switchContainerCVA = cva(["p-0 relative rounded-full"], {
 export const thumbCVA = cva(["block top-0 m-0 bg-white rounded-full"], {
   variants: {
     checked: {
-      true: [""],
-      false: ["translate-x-4"],
+      true: ["translate-x-4"],
+      false: [""],
     },
     size: {
       small: ["w-2 h-2"],
