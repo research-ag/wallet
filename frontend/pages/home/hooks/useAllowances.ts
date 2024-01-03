@@ -6,32 +6,38 @@ import { ServerStateKeys, SortOrder } from "@/@types/common";
 import { minutesToMilliseconds } from "@/utils/time";
 import { AllowancesTableColumns } from "@/@types/allowance";
 import { queryClient } from "@/config/query";
+import { throttle } from "lodash";
 
 export default function useAllowances() {
-  const [order, setOrder] = useState<SortOrder>(SortOrder.ASC);
+  const [sorting, setSorting] = useState<SortOrder>(SortOrder.ASC);
   const [column, setColumn] = useState<AllowancesTableColumns>(AllowancesTableColumns.subAccount);
 
   const { selectedAsset } = useAppSelector((state) => state.asset);
 
-  const setSorting = async (orderColumn: AllowancesTableColumns) => {
+  const onSort = async (orderColumn: AllowancesTableColumns) => {
     if (orderColumn === column) {
-      setOrder(order === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC);
+      setSorting(sorting === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC);
     }
-    setColumn(orderColumn);
+
+    if (orderColumn !== column) {
+      setColumn(orderColumn);
+      setSorting(SortOrder.ASC);
+    }
+
     await queryClient.refetchQueries({
-      queryKey: [ServerStateKeys.allowances, selectedAsset?.tokenSymbol, order, column],
+      queryKey: [ServerStateKeys.allowances],
     });
   };
 
   const executeQuery = async () => {
-    return await listAllowances(selectedAsset?.tokenSymbol, column, order);
+    return await listAllowances(selectedAsset?.tokenSymbol, column, sorting);
   };
 
   const query = useQuery({
-    queryKey: [ServerStateKeys.allowances, selectedAsset?.tokenSymbol, order, column],
+    queryKey: [ServerStateKeys.allowances, selectedAsset?.tokenSymbol, column, sorting],
     queryFn: executeQuery,
     staleTime: minutesToMilliseconds(10),
-    enabled: Boolean(selectedAsset?.tokenSymbol && order && column),
+    enabled: Boolean(selectedAsset?.tokenSymbol && sorting && column),
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     refetchOnReconnect: false,
@@ -45,7 +51,10 @@ export default function useAllowances() {
     isLoading: isLoading || isFetching,
     isError,
     error,
+    sorting,
+    column,
     refetch,
     setSorting,
+    handleSortChange: throttle(onSort, 1000),
   };
 }
