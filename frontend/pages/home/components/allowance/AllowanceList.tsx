@@ -3,7 +3,7 @@ import EditAllowanceDrawer from "./EditAllowanceDrawer";
 import clsx from "clsx";
 import { useAllowanceTable } from "@pages/home/hooks/useAllowanceTable";
 import { Table, TableBody, TableBodyCell, TableHead, TableHeaderCell, TableRow } from "@components/table";
-import { ReactComponent as ArrowUp } from "@assets/svg/files/arrow-up.svg";
+import { ReactComponent as SortIcon } from "@assets/svg/files/sort.svg";
 import { flexRender, getCoreRowModel, useReactTable, getSortedRowModel } from "@tanstack/react-table";
 import { useAppSelector } from "@redux/Store";
 import { EditActionType, setEditAllowanceDrawerState } from "@redux/allowances/AllowanceActions";
@@ -42,7 +42,7 @@ export default function AllowanceList() {
     return (
       <TableHead>
         {table.getHeaderGroups().map((headerGroup, indexTH) => (
-          <TableRow key={`allowance-${indexTH}`} className="border-b border-BorderColorTwo">
+          <TableRow key={`allowance-${indexTH}`} className="border-b border-opacity-50 border-BorderColor">
             {headerGroup.headers.map((header, indexTR) => {
               const column = header.column.id;
               return (
@@ -57,8 +57,7 @@ export default function AllowanceList() {
                     {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                     {indexTR <= 4 && header.column.getCanSort() && (
                       <div className="relative flex top-1.5 cursor-pointer">
-                        <ArrowUp className="relative w-3 h-3" />
-                        <ArrowUp className="relative w-3 h-3 rotate-180" />
+                        <SortIcon className="w-3 h-3 ml-2 fill-PrimaryTextColorLight dark:fill-PrimaryTextColor" />
                       </div>
                     )}
                   </div>

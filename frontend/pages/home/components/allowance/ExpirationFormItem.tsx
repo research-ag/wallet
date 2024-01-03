@@ -53,7 +53,7 @@ export default function ExpirationFormItem(props: IExpirationFormItemProps) {
             }}
             disabled={isLoading}
           />
-          <p className="text-md">No Expiration</p>
+          <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">No Expiration</p>
         </div>
       </div>
     </div>

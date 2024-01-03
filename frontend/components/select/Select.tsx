@@ -6,6 +6,7 @@ import { CustomInput } from "@components/Input";
 import SearchIcon from "@assets/svg/files/icon-search.svg";
 import { SelectOption } from "@/@types/core";
 import { selectContentCVA, selectTriggerCVA } from "./styles.cva";
+import clsx from "clsx";
 
 interface TSelectProps extends VariantProps<typeof selectTriggerCVA>, VariantProps<typeof selectContentCVA> {
   options: SelectOption[];
@@ -29,7 +30,7 @@ export default function Select(props: TSelectProps) {
   const handleOpenChange = (open: boolean) => setIsOpen(open);
   const handleSelectOption = (option: SelectOption) => onSelect(option);
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newSearchValue = event.target.value;    
+    const newSearchValue = event.target.value;
     if (onSearch) {
       clearTimeout(searchTimeoutRef.current);
       searchTimeoutRef.current = setTimeout(() => onSearch(newSearchValue), 100);
@@ -43,8 +44,8 @@ export default function Select(props: TSelectProps) {
           <div className="flex items-center mr-2">
             {selectedValue?.icon}
             <div className="ml-2">
-              <p className="text-md">{selectedValue?.label}</p>
-              <p className="text-md">{selectedValue?.subLabel}</p>
+              <p className={textStyles}>{selectedValue?.label}</p>
+              <p className={textStyles}>{selectedValue?.subLabel}</p>
             </div>
           </div>
           <DropIcon className={isOpen ? "-rotate-90" : ""} />
@@ -69,8 +70,8 @@ export default function Select(props: TSelectProps) {
             >
               {option?.icon}
               <div className="ml-2">
-                <p>{option.label}</p>
-                <p>{option?.subLabel}</p>
+                <p className={textStyles}>{option.label}</p>
+                <p className={textStyles}>{option?.subLabel}</p>
               </div>
             </DropdownMenu.Item>
           ))}
@@ -79,3 +80,5 @@ export default function Select(props: TSelectProps) {
     </DropdownMenu.Root>
   );
 }
+
+const textStyles = clsx("text-PrimaryTextColorLight dark:text-PrimaryTextColor");
