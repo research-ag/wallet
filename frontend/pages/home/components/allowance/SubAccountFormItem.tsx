@@ -1,8 +1,8 @@
 import { Allowance, ErrorFields } from "@/@types/allowance";
 import { ValidationErrors } from "@/@types/common";
 import { SelectOption } from "@/@types/core";
-import { Chip } from "@components/core/chip";
-import { Select } from "@components/core/select";
+import { Chip } from "@components/chip";
+import { Select } from "@components/select";
 import { Asset } from "@redux/models/AccountModels";
 import { useMemo } from "react";
 

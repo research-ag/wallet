@@ -2,7 +2,7 @@ import { Allowance, ErrorFields } from "@/@types/allowance";
 import { ValidationErrors } from "@/@types/common";
 import { IconTypeEnum } from "@/const";
 import { getAssetIcon } from "@/utils/icons";
-import { CurrencyInput } from "@components/core/input";
+import { CurrencyInput } from "@components/input";
 import { Asset } from "@redux/models/AccountModels";
 import { useMemo } from "react";
 

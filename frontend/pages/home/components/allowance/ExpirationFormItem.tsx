@@ -19,13 +19,11 @@ export default function ExpirationFormItem(props: IExpirationFormItemProps) {
 
   const onDateChange = (date: dayjs.Dayjs | null) => {
     if (!date) return;
-    console.log("selected date", date?.format());
     setAllowanceState({ ...allowance, expiration: date.format() });
   };
 
   const onExpirationChange = (checked: boolean) => {
     setNotExpire(checked);
-    console.log("Executed and modified")
     const date = dayjs().format();
     if (!checked) setAllowanceState({ ...allowance, noExpire: checked, expiration: date });
     if (checked) setAllowanceState({ ...allowance, noExpire: checked, expiration: "" });

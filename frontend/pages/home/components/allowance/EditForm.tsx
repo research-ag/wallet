@@ -1,17 +1,17 @@
 import { middleTruncation } from "@/utils/strings";
-import Button from "@components/core/buttons/Button";
+import Button from "@components/buttons/Button";
 import { Allowance, ErrorFields } from "@/@types/allowance";
 import { Asset } from "@redux/models/AccountModels";
-import { CurrencyInput } from "@components/core/input";
+import { CurrencyInput } from "@components/input";
 import { getAssetIcon } from "@/utils/icons";
 import { IconTypeEnum } from "@/const";
-import { useCallback, useMemo } from "react";
-import { DateTimePicker } from "@components/core/datepicker";
-import { Dayjs } from "dayjs";
+import { useMemo } from "react";
+import dayjs from "dayjs";
 import { useUpdateAllowance } from "@pages/home/hooks/useUpdateAllowance";
 import { ValidationErrors } from "@/@types/common";
-import { Chip } from "@components/core/chip";
+import { Chip } from "@components/chip";
 import { CheckBox } from "@components/checkbox";
+import { CalendarPicker } from "@components/CalendarPicker";
 
 export default function UpdateForm() {
   const { allowance, setAllowanceState, updateAllowance, isPending, validationErrors } = useUpdateAllowance();
@@ -143,20 +143,17 @@ function ExpirationFormItem(props: IExpirationFormItemProps) {
   const { isLoading, allowance, setAllowanceState, errors } = props;
   const error = errors?.filter((error) => error.field === ErrorFields.expiration)[0];
 
-  const handleDateChange = useCallback(
-    (date: Dayjs) => {
-      setAllowanceState({ expiration: date.format() });
-    },
-    [allowance, setAllowanceState],
-  );
+  const onDateChange = (date: dayjs.Dayjs | null) => {
+    if (!date) return;
+    console.log("selected date", date?.format());
+    setAllowanceState({ ...allowance, expiration: date.format() });
+  };
 
-  const handleExpirationChange = useCallback(
-    (checked: boolean) => {
-      if (checked) setAllowanceState({ noExpire: checked });
-      setAllowanceState({ noExpire: checked, expiration: "" });
-    },
-    [allowance, setAllowanceState],
-  );
+  const onExpirationChange = (checked: boolean) => {
+    const date = dayjs().format();
+    if (!checked) setAllowanceState({ ...allowance, noExpire: checked, expiration: date });
+    if (checked) setAllowanceState({ ...allowance, noExpire: checked, expiration: "" });
+  };
 
   return (
     <div className="mt-4">
@@ -165,12 +162,11 @@ function ExpirationFormItem(props: IExpirationFormItemProps) {
       </label>
       <div className="flex items-center justify-between w-full mt-2">
         <div className="w-4/6 mt-">
-          <DateTimePicker
-            onChange={handleDateChange}
-            enabled={!allowance.noExpire && !isLoading}
-            onEnableChange={handleExpirationChange}
-            FormatedDate={allowance?.expiration || undefined}
-            border={error ? "error" : undefined}
+          <CalendarPicker
+            onDateChange={onDateChange}
+            disabled={allowance.noExpire || isLoading}
+            value={dayjs(allowance.expiration)}
+            onEnableChange={onExpirationChange}
           />
         </div>
         <div className="flex items-center justify-center h-full py-">
@@ -179,7 +175,7 @@ function ExpirationFormItem(props: IExpirationFormItemProps) {
             size="small"
             onClick={(e) => {
               e.preventDefault();
-              handleExpirationChange(!allowance.noExpire);
+              onExpirationChange(!allowance.noExpire);
             }}
             className="mr-1 border-BorderColorLight dark:border-BorderColor"
             disabled={isLoading}

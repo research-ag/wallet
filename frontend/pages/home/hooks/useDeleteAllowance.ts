@@ -2,7 +2,7 @@ import { ServerStateKeys } from "@/@types/common";
 import { queryClient } from "@/config/query";
 import { removeAllowance } from "@/services/allowance";
 import { useMutation } from "@tanstack/react-query";
-import { debounce } from "lodash";
+import { throttle } from "lodash";
 import { useCallback } from "react";
 
 export function useDeleteAllowance() {
@@ -19,5 +19,5 @@ export function useDeleteAllowance() {
 
   const { mutate, isPending, isError, error, isSuccess } = useMutation({ mutationFn, onSuccess });
 
-  return { deleteAllowance: debounce(mutate, 1000), isPending, isError, error, isSuccess };
+  return { deleteAllowance: throttle(mutate, 1000), isPending, isError, error, isSuccess };
 }

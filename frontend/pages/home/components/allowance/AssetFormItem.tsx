@@ -3,7 +3,7 @@ import { ValidationErrors } from "@/@types/common";
 import { SelectOption } from "@/@types/core";
 import { IconTypeEnum } from "@/const";
 import { getAssetIcon } from "@/utils/icons";
-import { Select } from "@components/core/select";
+import { Select } from "@components/select";
 import { Asset } from "@redux/models/AccountModels";
 import { useMemo } from "react";
 

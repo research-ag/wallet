@@ -1,11 +1,11 @@
 import { useAppSelector } from "@redux/Store";
-import { Drawer } from "@components/core/drawer";
+import { Drawer } from "@components/drawer";
 import AssetFormItem from "./AssetFormItem";
 import SubAccountFormItem from "./SubAccountFormItem";
 import SpenderFormItem from "./SpenderFormItem";
 import AmountFormItem from "./AmountFormItem";
 import ExpirationFormItem from "./ExpirationFormItem";
-import Button from "@components/core/buttons/Button";
+import Button from "@components/buttons/Button";
 import { useCreateAllowance } from "@pages/home/hooks/useCreateAllowance";
 
 interface IAllowanceDrawerProps {

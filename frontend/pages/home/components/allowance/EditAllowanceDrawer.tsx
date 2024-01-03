@@ -1,4 +1,4 @@
-import { Drawer } from "@components/core/drawer";
+import { Drawer } from "@components/drawer";
 import UpdateForm from "./EditForm";
 
 interface IAllowanceDrawerProps {

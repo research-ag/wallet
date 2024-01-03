@@ -5,7 +5,7 @@ import { ReactComponent as AlertIcon } from "@assets/svg/files/alert-icon.svg";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close-icon.svg";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { Allowance } from "@/@types/allowance";
-import { Modal } from "@components/core/modal";
+import { Modal } from "@components/modal";
 import {
   EditActionType,
   setEditAllowanceDrawerState,

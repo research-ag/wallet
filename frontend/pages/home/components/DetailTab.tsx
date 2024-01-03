@@ -2,7 +2,7 @@ import { ReactComponent as PlusIcon } from "@assets/svg/files/plus-icon.svg";
 import { DetailsTabs } from "@/const";
 import AddAllowanceDrawer from "./allowance/AddAllowanceDrawer";
 import { useAppSelector } from "@redux/Store";
-import { IconButton } from "@components/core/buttons";
+import { IconButton } from "@components/buttons";
 import { CreateActionType, setCreateAllowanceDrawerState } from "@redux/allowances/AllowanceActions";
 
 interface Props {
