@@ -145,7 +145,6 @@ function ExpirationFormItem(props: IExpirationFormItemProps) {
 
   const onDateChange = (date: dayjs.Dayjs | null) => {
     if (!date) return;
-    console.log("selected date", date?.format());
     setAllowanceState({ ...allowance, expiration: date.format() });
   };
 

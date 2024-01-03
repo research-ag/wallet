@@ -5,7 +5,7 @@ import { IconTypeEnum } from "@/const";
 import { getAssetIcon } from "@/utils/icons";
 import { Select } from "@components/select";
 import { Asset } from "@redux/models/AccountModels";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 interface AssetFormItemProps {
   allowance: Allowance;
@@ -17,6 +17,7 @@ interface AssetFormItemProps {
 }
 
 export default function AssetFormItem(props: AssetFormItemProps) {
+  const [search, setSearch] = useState<string | null>(null);
   const { allowance, assets, selectedAsset, setAllowanceState, isLoading, errors } = props;
   const { asset } = allowance;
 
@@ -31,12 +32,17 @@ export default function AssetFormItem(props: AssetFormItemProps) {
   }
 
   const options = useMemo(() => {
-    return assets.map(formatAsset);
-  }, []);
+    if (!search) return assets.map(formatAsset);
+    return assets.filter((asset) => asset.tokenName.toLowerCase().includes(search.toLowerCase())).map(formatAsset);
+  }, [search, assets]);
 
   const onAssetChange = (option: SelectOption) => {
     const fullAsset = assets.find((asset) => asset.tokenName === option.value);
     setAllowanceState({ asset: fullAsset, subAccount: {} });
+  };
+
+  const onSearchChange = (searchValue: string) => {
+    setSearch(searchValue);
   };
 
   return (
@@ -51,6 +57,7 @@ export default function AssetFormItem(props: AssetFormItemProps) {
         currentValue={asset?.tokenName}
         disabled={isLoading}
         border={error ? "error" : undefined}
+        onSearch={onSearchChange}
       />
     </div>
   );
