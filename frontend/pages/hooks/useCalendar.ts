@@ -50,10 +50,10 @@ const reducer = (state: CalendarState, action: any): CalendarState => {
   }
 };
 
-export const useCalendar = (ISODate?: string) => {
+export const useCalendar = (FormatedDate?: string) => {
   const initialState: CalendarState = useMemo(() => {
     return {
-      selectedDate: dayjs(ISODate) || dayjs(),
+      selectedDate: dayjs(FormatedDate) || dayjs(),
     };
   }, []);
 

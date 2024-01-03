@@ -50,9 +50,10 @@ export function useCreateAllowance() {
   }, [selectedAsset]) as Allowance;
 
   const [allowance, setAllowance] = useState<Allowance>(initial);
-  console.log(allowance);
+  console.log("allowance", allowance);
 
   const setAllowanceState = (allowanceData: Partial<Allowance>) => {
+    console.log("setAllowanceState", allowanceData);
     setAllowance({
       ...allowance,
       ...allowanceData,
