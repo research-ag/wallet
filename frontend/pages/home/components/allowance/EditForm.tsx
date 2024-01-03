@@ -145,7 +145,7 @@ function ExpirationFormItem(props: IExpirationFormItemProps) {
 
   const handleDateChange = useCallback(
     (date: Dayjs) => {
-      setAllowanceState({ expiration: date.toISOString() });
+      setAllowanceState({ expiration: date.format() });
     },
     [allowance, setAllowanceState],
   );
@@ -169,7 +169,7 @@ function ExpirationFormItem(props: IExpirationFormItemProps) {
             onChange={handleDateChange}
             enabled={!allowance.noExpire && !isLoading}
             onEnableChange={handleExpirationChange}
-            ISODate={allowance?.expiration || undefined}
+            FormatedDate={allowance?.expiration || undefined}
             border={error ? "error" : undefined}
           />
         </div>

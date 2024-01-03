@@ -1,8 +1,8 @@
 import { Allowance, ErrorFields } from "@/@types/allowance";
 import { ValidationErrors } from "@/@types/common";
+import { CalendarPicker } from "@components/CalendarPicker";
 import { CheckBox } from "@components/checkbox";
-import { DateTimePicker } from "@components/core/datepicker";
-import { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import { useState } from "react";
 
 interface IExpirationFormItemProps {
@@ -17,14 +17,18 @@ export default function ExpirationFormItem(props: IExpirationFormItemProps) {
   const { setAllowanceState, isLoading, allowance, errors } = props;
   const error = errors?.filter((error) => error.field === ErrorFields.expiration)[0];
 
-  const onDateChange = (date: Dayjs) => {
-    const ISODate = date.toISOString();
-    setAllowanceState({ ...allowance, expiration: ISODate });
+  const onDateChange = (date: dayjs.Dayjs | null) => {
+    if (!date) return;
+    console.log("selected date", date?.format());
+    setAllowanceState({ ...allowance, expiration: date.format() });
   };
 
-  const onExpirationChange = (value: boolean) => {
-    setNotExpire(value);
-    setAllowanceState({ ...allowance, noExpire: value });
+  const onExpirationChange = (checked: boolean) => {
+    setNotExpire(checked);
+    console.log("Executed and modified")
+    const date = dayjs().format();
+    if (!checked) setAllowanceState({ ...allowance, noExpire: checked, expiration: date });
+    if (checked) setAllowanceState({ ...allowance, noExpire: checked, expiration: "" });
   };
 
   return (
@@ -34,11 +38,11 @@ export default function ExpirationFormItem(props: IExpirationFormItemProps) {
       </label>
       <div className="flex items-center justify-between w-full mt-2">
         <div className="w-4/6 mt-">
-          <DateTimePicker
-            onChange={onDateChange}
-            enabled={!noExpire && !isLoading}
+          <CalendarPicker
+            onDateChange={onDateChange}
+            disabled={noExpire || isLoading}
+            value={dayjs(allowance.expiration)}
             onEnableChange={onExpirationChange}
-            border={error ? "error" : undefined}
           />
         </div>
         <div className="flex items-center justify-center h-full py-">

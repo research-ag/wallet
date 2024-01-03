@@ -13,21 +13,21 @@ interface DateTimePickerProps extends VariantProps<typeof selectTriggerCVA> {
   onChange: (date: Dayjs) => void;
   onEnableChange?: (value: boolean) => void;
   enabled: boolean;
-  ISODate?: string;
+  FormatedDate?: string;
 }
 
 function DateTimePicker(props: DateTimePickerProps) {
-  const { onChange, ISODate, border } = props;
+  const { onChange, FormatedDate, border } = props;
   const [isOpen, setIsOpen] = useState(false);
 
-  const { selectedDate, generateWeeksOfTheMonth, modifyDateTime, toggleAmPm, onDateChange } = useCalendar(ISODate);
+  const { selectedDate, generateWeeksOfTheMonth, modifyDateTime, toggleAmPm, onDateChange } = useCalendar(FormatedDate);
 
   const handleOpenChange = (open: boolean) => {
     if (!isOpen) setIsOpen(open);
   };
 
   const handleCloseFocus = () => {
-    if (dayjs(ISODate).isSame(selectedDate)) return;
+    if (dayjs(FormatedDate).isSame(selectedDate)) return;
     onChange(selectedDate);
   };
 

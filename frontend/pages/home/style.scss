@@ -1,1 +1,131 @@
 @import "../../App.scss";
+
+.date-picker {
+  width: 60%;
+  fieldset {
+    border-color: #68658b !important;
+  }
+  input {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    font-size: 0.75rem;
+    color: #ffffff;
+  }
+  input.Mui-disabled {
+    -webkit-text-fill-color: #ffffff5f !important;
+  }
+  svg {
+    path {
+      fill: #d5d5d5;
+    }
+  }
+}
+
+.date-picker-light {
+  fieldset {
+    border-color: #bfbfbf !important;
+  }
+  input {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    font-size: 0.75rem;
+    color: #1b183f !important;
+  }
+  svg {
+    path {
+      fill: #878787 !important;
+    }
+  }
+}
+
+.MuiDateCalendar-root {
+  background: #151331;
+  color: #ffffff;
+  svg {
+    path {
+      fill: #ffffff;
+    }
+  }
+  button {
+    color: #ffffff;
+  }
+  span {
+    color: #ffffff;
+  }
+}
+
+.MuiTimeClock-root {
+  background: #151331;
+  color: #ffffff;
+  svg {
+    path {
+      fill: #ffffff;
+    }
+  }
+  button {
+    color: #ffffff;
+  }
+  span {
+    color: #ffffff;
+  }
+  .MuiClock-squareMask {
+    background: #1b183f;
+  }
+}
+
+.light {
+  .MuiDateCalendar-root {
+    background: #ffffff;
+    color: #151331;
+    svg {
+      path {
+        fill: #151331;
+      }
+    }
+    button {
+      color: #151331;
+    }
+    span {
+      color: #151331;
+    }
+  }
+  .MuiTimeClock-root {
+    background: #ffffff;
+    color: #151331;
+    svg {
+      path {
+        fill: #151331;
+      }
+    }
+    button {
+      color: #151331;
+    }
+    span {
+      color: #151331;
+    }
+    .MuiClock-squareMask {
+      background: #f8f7fa;
+    }
+  }
+  .MuiClockPointer-root {
+    background-color: #63a5e8;
+  }
+  .MuiClockPointer-thumb {
+    border: 16px solid #63a5e8;
+    background-color: #63a5e8;
+  }
+  .css-qvwuqd-MuiButtonBase-root-MuiIconButton-root-MuiClock-amButton {
+    background-color: #63a5e8;
+  }
+  .css-1wq5v3b-MuiButtonBase-root-MuiIconButton-root-MuiClock-pmButton {
+    background-color: #63a5e8;
+  }
+  .MuiDayCalendar-monthContainer {
+    .Mui-selected {
+      background-color: #63a5e8;
+    }
+    .Mui-selected:focus {
+      background-color: #63a5e8;
+    }
+  }
+}
