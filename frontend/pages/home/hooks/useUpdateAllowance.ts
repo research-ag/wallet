@@ -6,7 +6,8 @@ import { updateAllowanceRequest } from "@/services/allowance";
 import { useAppSelector } from "@redux/Store";
 import { EditActionType, setEditAllowanceDrawerState } from "@redux/allowances/AllowanceActions";
 import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
+import { debounce } from "lodash";
+import { useCallback, useState } from "react";
 import { z } from "zod";
 
 export function useUpdateAllowance() {
@@ -21,11 +22,11 @@ export function useUpdateAllowance() {
     });
   };
 
-  const mutationFn = async () => {
+  const mutationFn = useCallback(async () => {
     const valid = allowanceSchema.safeParse(allowance);
     if (valid.success) return updateAllowanceRequest(allowance);
     return Promise.reject(valid.error);
-  };
+  }, [allowance, updateAllowanceRequest]);
 
   const onSuccess = async () => {
     await queryClient.invalidateQueries({
@@ -48,13 +49,7 @@ export function useUpdateAllowance() {
     }
   };
 
-  const {
-    mutate: updateAllowance,
-    isPending,
-    isError,
-    error,
-    isSuccess,
-  } = useMutation({ mutationFn, onError, onSuccess });
+  const { mutate, isPending, isError, error, isSuccess } = useMutation({ mutationFn, onError, onSuccess });
 
   return {
     isPending,
@@ -63,7 +58,7 @@ export function useUpdateAllowance() {
     isSuccess,
     allowance,
     validationErrors,
-    updateAllowance,
+    updateAllowance: debounce(mutate, 1000),
     setAllowanceState,
   };
 }

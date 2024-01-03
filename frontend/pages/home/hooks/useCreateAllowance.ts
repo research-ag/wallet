@@ -9,6 +9,7 @@ import { allowanceSchema } from "@/helpers/schemas/allowance";
 import { z } from "zod";
 import { queryClient } from "@/config/query";
 import { ValidationErrors, ServerStateKeys } from "@/@types/common";
+import { debounce } from "lodash";
 import { useAppSelector } from "@redux/Store";
 
 const initialAllowanceState: Allowance = {
@@ -50,10 +51,8 @@ export function useCreateAllowance() {
   }, [selectedAsset]) as Allowance;
 
   const [allowance, setAllowance] = useState<Allowance>(initial);
-  console.log("allowance", allowance);
 
   const setAllowanceState = (allowanceData: Partial<Allowance>) => {
-    console.log("setAllowanceState", allowanceData);
     setAllowance({
       ...allowance,
       ...allowanceData,
@@ -65,7 +64,7 @@ export function useCreateAllowance() {
     const valid = allowanceSchema.safeParse(fullAllowance);
     if (valid.success) return postAllowance(fullAllowance);
     return Promise.reject(valid.error);
-  }, [allowance]);
+  }, [allowance, postAllowance]);
 
   const onSuccess = async () => {
     await queryClient.invalidateQueries({
@@ -88,13 +87,7 @@ export function useCreateAllowance() {
     }
   };
 
-  const {
-    mutate: createAllowance,
-    isPending,
-    isError,
-    error,
-    isSuccess,
-  } = useMutation({ onSuccess, onError, mutationFn });
+  const { mutate, isPending, isError, error, isSuccess } = useMutation({ onSuccess, onError, mutationFn });
 
   useEffect(() => {
     if (allowance?.spender?.principal) {
@@ -111,7 +104,7 @@ export function useCreateAllowance() {
     validationErrors,
     isSuccess,
     isPrincipalValid,
-    createAllowance,
+    createAllowance: debounce(mutate, 1000),
     setAllowanceState,
   };
 }
