@@ -29,10 +29,10 @@ export default function Select(props: TSelectProps) {
   const handleOpenChange = (open: boolean) => setIsOpen(open);
   const handleSelectOption = (option: SelectOption) => onSelect(option);
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newSearchValue = event.target.value;
+    const newSearchValue = event.target.value;    
     if (onSearch) {
       clearTimeout(searchTimeoutRef.current);
-      searchTimeoutRef.current = setTimeout(() => onSearch(newSearchValue), 500);
+      searchTimeoutRef.current = setTimeout(() => onSearch(newSearchValue), 100);
     }
   };
 
