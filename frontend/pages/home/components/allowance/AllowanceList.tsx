@@ -3,7 +3,6 @@ import EditAllowanceDrawer from "./EditAllowanceDrawer";
 import clsx from "clsx";
 import { useAllowanceTable } from "@pages/home/hooks/useAllowanceTable";
 import { Table, TableBody, TableBodyCell, TableHead, TableHeaderCell, TableRow } from "@components/table";
-import { ReactComponent as SortIcon } from "@assets/svg/files/sort.svg";
 import { flexRender, getCoreRowModel, useReactTable, getSortedRowModel } from "@tanstack/react-table";
 import { useAppSelector } from "@redux/Store";
 import { EditActionType, setEditAllowanceDrawerState } from "@redux/allowances/AllowanceActions";
@@ -11,7 +10,7 @@ import { AllowancesTableColumns } from "@/@types/allowance";
 
 export default function AllowanceList() {
   const { isUpdateAllowance } = useAppSelector((state) => state.allowance);
-  const { allowances, setSorting } = useAllowances();
+  const { allowances, handleSortChange, sorting, column } = useAllowances();
   const { columns } = useAllowanceTable();
 
   const table = useReactTable({
@@ -35,8 +34,9 @@ export default function AllowanceList() {
   );
 
   function TableHeadGroup() {
-    const handleFilter = async (column: AllowancesTableColumns) => {
-      setSorting(column);
+    const handleSorter = async (column: AllowancesTableColumns) => {
+      handleSortChange(column);
+      // console.log(sorting);
     };
 
     return (
@@ -49,17 +49,12 @@ export default function AllowanceList() {
                 <TableHeaderCell key={`allowance-${indexTR}`} className={colStyle(indexTR)}>
                   <div
                     {...{
-                      className: indexTR <= 4 && header.column.getCanSort() ? "cursor-pointer select-none" : "",
-                      onClick: indexTR <= 4 ? () => handleFilter(column as AllowancesTableColumns) : undefined,
+                      className: indexTR <= 3 && header.column.getCanSort() ? "cursor-pointer select-none" : "",
+                      onClick: indexTR <= 3 ? () => handleSorter(column as AllowancesTableColumns) : undefined,
                     }}
                     className="flex opacity-50 text-PrimaryTextColorLight dark:text-PrimaryTextColor"
                   >
                     {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    {indexTR <= 4 && header.column.getCanSort() && (
-                      <div className="relative flex top-1.5 cursor-pointer">
-                        <SortIcon className="w-3 h-3 ml-2 fill-PrimaryTextColorLight dark:fill-PrimaryTextColor" />
-                      </div>
-                    )}
                   </div>
                 </TableHeaderCell>
               );

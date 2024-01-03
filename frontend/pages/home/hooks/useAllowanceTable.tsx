@@ -1,3 +1,4 @@
+import { ReactComponent as SortIcon } from "@assets/svg/files/sort.svg";
 import { momentDateTime } from "@/utils/formatTime";
 import { middleTruncation, toTitleCase } from "@/utils/strings";
 import { createColumnHelper } from "@tanstack/react-table";
@@ -31,7 +32,12 @@ export const useAllowanceTable = () => {
           </div>
         );
       },
-      header: ({ header }) => toTitleCase(header.id),
+      header: ({ header }) => (
+        <div className="flex items-center justify-center cursor-pointer">
+          <p>{toTitleCase(header.id)}</p>{" "}
+          <SortIcon className="w-3 h-3 ml-2 fill-PrimaryTextColorLight dark:fill-PrimaryTextColor" />
+        </div>
+      ),
     }),
     columnHelper.accessor(AllowancesTableColumns.spender, {
       cell: (info) => {
@@ -44,7 +50,12 @@ export const useAllowanceTable = () => {
           </div>
         );
       },
-      header: ({ header }) => toTitleCase(header.id),
+      header: ({ header }) => (
+        <div className="flex items-center justify-center cursor-pointer">
+          <p>{toTitleCase(header.id)}</p>{" "}
+          <SortIcon className="w-3 h-3 ml-2 fill-PrimaryTextColorLight dark:fill-PrimaryTextColor" />
+        </div>
+      ),
     }),
     columnHelper.accessor(AllowancesTableColumns.amount, {
       cell: (info) => {
@@ -55,13 +66,23 @@ export const useAllowanceTable = () => {
           </p>
         );
       },
-      header: ({ header }) => toTitleCase(header.id),
+      header: ({ header }) => (
+        <div className="flex items-center justify-center cursor-pointer">
+          <p>{toTitleCase(header.id)}</p>{" "}
+          <SortIcon className="w-3 h-3 ml-2 fill-PrimaryTextColorLight dark:fill-PrimaryTextColor" />
+        </div>
+      ),
     }),
     columnHelper.accessor(AllowancesTableColumns.expiration, {
       cell: (info) => (
         <p className={getCellStyles()}>{info.getValue() ? momentDateTime(info.getValue()) : "No expire"}</p>
       ),
-      header: ({ header }) => toTitleCase(header.id),
+      header: ({ header }) => (
+        <div className="flex items-center justify-center cursor-pointer">
+          <p>{toTitleCase(header.id)}</p>{" "}
+          <SortIcon className="w-3 h-3 ml-2 fill-PrimaryTextColorLight dark:fill-PrimaryTextColor" />
+        </div>
+      ),
     }),
     columnHelper.display({
       id: AllowancesTableColumns.action,

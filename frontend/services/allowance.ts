@@ -1,45 +1,52 @@
 import { Allowance, AllowancesTableColumns } from "@/@types/allowance";
 import { getFromLocalStorage, setInLocalStorage } from "../utils/localStorage";
 import { SortOrder } from "@/@types/common";
+import {
+  filterByAmount,
+  filterByAsset,
+  filterBySpender,
+  sortByExpiration,
+  sortBySubAccount,
+} from "@/utils/allowanceSorters";
 
 export const LOCAL_STORAGE_PREFIX = "allowances";
 
-export function listAllowances(
+type ListAllowances = (
   tokenSymbol?: string,
   column?: AllowancesTableColumns,
   order?: SortOrder,
-): Promise<Allowance[]> {
+) => Promise<Allowance[]>;
+
+export const listAllowances: ListAllowances = (tokenSymbol, column, order = SortOrder.ASC) => {
   return new Promise((resolve) => {
     const allowances = getFromLocalStorage<Allowance[]>(LOCAL_STORAGE_PREFIX);
+    if (!allowances || !Array.isArray(allowances)) resolve([]);
 
-    const filteredAllowances = allowances?.filter((allowance) => {
-      return allowance?.asset?.tokenSymbol === tokenSymbol;
-    });
-
-    let sorted;
+    const filteredAllowances = tokenSymbol && allowances ? filterByAsset(tokenSymbol, allowances) : allowances;
 
     if (column === AllowancesTableColumns.subAccount) {
       console.log(`sort by ${column} in order ${order}`);
+      resolve(sortBySubAccount(order, filteredAllowances || []));
     }
 
     if (column === AllowancesTableColumns.spender) {
-      // sort asc or desc, first spender with no name and later spender with name.
       console.log(`filter by ${column} in order ${order}`);
+      resolve(filterBySpender(order, filteredAllowances || []));
     }
 
     if (column === AllowancesTableColumns.expiration) {
-      // sort asc or desc, first where noExpire is true and later order by date
       console.log(`filter by ${column} in order ${order}`);
+      resolve(sortByExpiration(order, filteredAllowances || []));
     }
 
     if (column === AllowancesTableColumns.amount) {
-      // sort asc or desc, depending of the amount
       console.log(`filter by ${column} in order ${order}`);
+      resolve(filterByAmount(order, filteredAllowances || []));
     }
 
-    resolve(sorted || filteredAllowances || []);
+    resolve([]);
   });
-}
+};
 
 export function postAllowance(newAllowance: Allowance): Promise<Allowance> {
   return new Promise((resolve) => {
