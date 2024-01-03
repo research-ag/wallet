@@ -27,6 +27,8 @@ import { useAppDispatch } from "@redux/Store";
 import { setLoading } from "@redux/assets/AssetReducer";
 import { CustomCopy } from "@components/CopyTooltip";
 import { AssetHook } from "@pages/home/hooks/assetHook";
+import { queryClient } from "@/config/query";
+import { ServerStateKeys } from "@/@types/common";
 
 const TopBarComponent = () => {
   const { t } = useTranslation();
@@ -49,13 +51,13 @@ const TopBarComponent = () => {
   return (
     <Fragment>
       <div className="flex flex-row justify-between min-h-[4.5rem] w-full bg-PrimaryColorLight dark:bg-PrimaryColor text-PrimaryTextColorLight dark:text-PrimaryTextColor border-b border-BorderColorFourthLight dark:border-BorderColorFourth">
-        <div className="flex flex-row justify-start items-center pl-9 gap-24 text-md">
+        <div className="flex flex-row items-center justify-start gap-24 pl-9 text-md">
           {theme === ThemesEnum.enum.dark ? (
             <ICRC1LogoDark className="max-w-[7rem] h-auto" />
           ) : (
             <ICRC1Logo className="max-w-[7rem] h-auto" />
           )}
-          <div className="flex flex-row justify-start items-center gap-3">
+          <div className="flex flex-row items-center justify-start gap-3">
             <p className="opacity-50">{shortAddress(authClient, 12, 10)}</p>
             <CustomCopy size={"small"} copyText={authClient} />
             <RefreshIcon
@@ -66,8 +68,8 @@ const TopBarComponent = () => {
             />
           </div>
         </div>
-        <div className="flex flex-row justify-start items-center pr-9 gap-9">
-          <div className="flex flex-row justify-start items-center gap-2 text-md">
+        <div className="flex flex-row items-center justify-start pr-9 gap-9">
+          <div className="flex flex-row items-center justify-start gap-2 text-md">
             <WalletIcon className="fill-SvgColor dark:fill-SvgColor max-w-[1.5rem] h-auto"></WalletIcon>
             <p className="opacity-70">Total Balance:</p>
             <p className="font-medium">{`$${getTotalAmountInCurrency().toFixed(2)}`}</p>
@@ -142,9 +144,15 @@ const TopBarComponent = () => {
     </Fragment>
   );
 
-  function handleReloadButton() {
+  async function handleReloadButton() {
     dispatch(setLoading(true));
     reloadBallance();
+    await queryClient.invalidateQueries({
+      queryKey: [ServerStateKeys.allowances],
+    });
+    await queryClient.refetchQueries({
+      queryKey: [ServerStateKeys.allowances],
+    });
   }
 
   function changeLanguage(lang: string) {
