@@ -55,6 +55,6 @@ export default function useAllowances() {
     column,
     refetch,
     setSorting,
-    handleSortChange: throttle(onSort, 1000),
+    handleSortChange: onSort,
   };
 }

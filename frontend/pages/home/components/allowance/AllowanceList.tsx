@@ -10,7 +10,7 @@ import { AllowancesTableColumns } from "@/@types/allowance";
 
 export default function AllowanceList() {
   const { isUpdateAllowance } = useAppSelector((state) => state.allowance);
-  const { allowances, handleSortChange, sorting, column } = useAllowances();
+  const { allowances, handleSortChange } = useAllowances();
   const { columns } = useAllowanceTable();
 
   const table = useReactTable({
