@@ -30,11 +30,13 @@ export default function DetailsBalance() {
               <p className="font-semibold text-[1.15rem] text-right">{`${toFullDecimal(
                 selectedAccount?.amount || "0",
                 selectedAccount?.decimal || 8,
+                Number(selectedAsset?.shortDecimal),
               )} ${selectedAsset?.symbol}`}</p>
               <p className="font-semibold text-md">{`$${selectedAccount?.currency_amount}`}</p>
             </div>
           </div>
         </div>
+
         <div className="flex flex-row justify-around items-center h-full w-[calc(100%-17rem)] text-ThirdTextColorLight dark:text-ThirdTextColor">
           <div className="flex flex-col items-center justify-center w-1/3 gap-1">
             <div

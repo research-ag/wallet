@@ -44,6 +44,7 @@ export default function TransactionList() {
             </tr>
           ))}
         </thead>
+
         <tbody>
           {table.getRowModel().rows.map((row, idxTR) => (
             <tr

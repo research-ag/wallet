@@ -87,3 +87,9 @@ export const symbolIconDict: { [key: string]: string } = {
   OGY: OrigynIcon,
   GLDGov: GLDGovIcon,
 };
+
+export enum DetailsTabs {
+  transactions = "transactions",
+  allowances = "allowances",
+}
+
