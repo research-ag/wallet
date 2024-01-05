@@ -279,11 +279,11 @@ const AccountElement = ({
     });
   }
   function accName() {
-    return clsx({ ["text-[#33b2ef]"]: chechEqId() });
+    return clsx({ ["text-acceptButtonColor"]: chechEqId() });
   }
   function accId() {
     return clsx({
-      ["text-[#33b2ef]"]: chechEqId(),
+      ["text-acceptButtonColor"]: chechEqId(),
       ["opacity-60"]: subAccount?.sub_account_id !== selectedAccount?.sub_account_id,
     });
   }

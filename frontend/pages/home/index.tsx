@@ -3,6 +3,7 @@ import AssetsList from "./components/asset/AssetsList";
 import DetailList from "./components/DetailList";
 
 import "./style.scss";
+import DisclaimerModal from "./components/DisclaimerModal";
 
 const Home = () => {
   return (
@@ -11,7 +12,7 @@ const Home = () => {
         <AssetsList />
         <DetailList />
       </div>
-      {/* <DisclaimerModal /> */}
+      <DisclaimerModal />
     </Fragment>
   );
 };

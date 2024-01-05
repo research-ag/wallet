@@ -60,7 +60,7 @@ const AssetElement = ({
           onClick={onSelectAsset}
         >
           {asset?.tokenSymbol === selectedAsset?.tokenSymbol && (
-            <div className="absolute left-0 bg-[#33b2ef] h-full w-1"></div>
+            <div className="absolute left-0 bg-acceptButtonColor h-full w-1"></div>
           )}
           <Accordion.Trigger className="flex flex-row items-center justify-center w-full">
             <div className={"flex flex-row justify-between w-full h-full text-md"}>

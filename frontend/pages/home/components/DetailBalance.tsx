@@ -23,7 +23,7 @@ export default function DetailsBalance() {
   return (
     <Fragment>
       <div className="flex flex-row justify-between items-center w-full h-[4.75rem] bg-TransactionHeaderColorLight dark:bg-TransactionHeaderColor rounded-md">
-        <div className="flex flex-col justify-center items-start bg-[#33b2ef] w-[17rem] h-full rounded-l-md p-4 text-[#ffff]">
+        <div className="flex flex-col justify-center items-start bg-acceptButtonColor w-[17rem] h-full rounded-l-md p-4 text-[#ffff]">
           <div className="flex flex-row items-center justify-between w-full gap-1">
             {getAssetIcon(IconTypeEnum.Enum.HEADER, selectedAsset?.tokenSymbol, selectedAsset?.logo)}
             <div className="flex flex-col items-end justify-center">
@@ -40,7 +40,7 @@ export default function DetailsBalance() {
         <div className="flex flex-row justify-around items-center h-full w-[calc(100%-17rem)] text-ThirdTextColorLight dark:text-ThirdTextColor">
           <div className="flex flex-col items-center justify-center w-1/3 gap-1">
             <div
-              className="flex flex-row justify-center items-center w-7 h-7 bg-[#33b2ef] rounded-md cursor-pointer"
+              className="flex flex-row justify-center items-center w-7 h-7 bg-acceptButtonColor rounded-md cursor-pointer"
               onClick={() => {
                 setDrawer(DrawerOptionEnum.Enum.SEND);
               }}
@@ -51,7 +51,7 @@ export default function DetailsBalance() {
           </div>
           <div className="flex flex-col items-center justify-center w-1/3 gap-1">
             <div
-              className="flex flex-row justify-center items-center w-7 h-7 bg-[#33b2ef] rounded-md cursor-pointer"
+              className="flex flex-row justify-center items-center w-7 h-7 bg-acceptButtonColor rounded-md cursor-pointer"
               onClick={() => {
                 setDrawer(DrawerOptionEnum.Enum.RECEIVE);
               }}

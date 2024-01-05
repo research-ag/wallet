@@ -1,7 +1,7 @@
 import { VariantProps, cva } from "cva";
 import { ButtonHTMLAttributes, ReactNode } from "react";
 
-const iconButtonCVA = cva(["bg-[#33B2EF]", "p-1", "m-0", "rounded-md"], {
+const iconButtonCVA = cva(["bg-acceptButtonColor", "p-1", "m-0", "rounded-md"], {
   variants: {},
   defaultVariants: {},
 });

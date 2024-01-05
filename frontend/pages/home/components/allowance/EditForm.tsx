@@ -72,7 +72,7 @@ interface FixedFieldsProps {
 
 function FixedFields({ allowance }: FixedFieldsProps) {
   return (
-    <div className="w-full p-4 border rounded-md bg-PrimaryColorLight dark:bg-PrimaryColor border-BorderColorLight dark:border-BorderColor">
+    <div className="w-full p-4 rounded-md bg-PrimaryColorLight dark:bg-ThemeColorBack">
       <p className="text-lg font-bold text-PrimaryTextColorLight dark:text-PrimaryTextColor">Subaccount</p>
       <div className="flex items-center mt-4">
         <div className="flex flex-col items-start justify-center mr-4">
@@ -86,7 +86,8 @@ function FixedFields({ allowance }: FixedFieldsProps) {
         </div>
       </div>
 
-      <div className="w-full h-0.5 bg-[#2B2B3D] mt-4 mb-4" />
+      <div className="w-full mt-4 mb-4 border-b border-BorderColorThree" />
+
       <p className="text-lg font-bold">Spender</p>
 
       <div className="flex justify-between mt-4">
