@@ -41,7 +41,7 @@ export default function ActionCard(props: ActionCardProps) {
         </span>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content
-        className="flex flex-col w-32 mr-10 border rounded-md bg-PrimaryColorLight dark:border-BorderColor"
+        className="flex flex-col w-32 mr-10 border rounded-md bg-PrimaryColorLight dark:border-BorderColor "
         sideOffset={5}
       >
         <DropdownMenu.Item

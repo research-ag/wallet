@@ -24,14 +24,14 @@ export const TableBody = ({ children, className }: CommonProps) => {
   return <tbody className={className}>{children}</tbody>;
 };
 
-export const TableRow = ({ children, className, disabled }: CommonProps) => {
-  return <tr className={`${className}  ${disabled ? "opacity-20" : ""}`}>{children}</tr>;
+export const TableRow = ({ children, className }: CommonProps) => {
+  return <tr className={`${className}`}>{children}</tr>;
 };
 
 export const TableHeaderCell = ({ children, className }: CommonProps) => {
   return <th className={`${className} py-2 text-lg text-left`}>{children}</th>;
 };
 
-export const TableBodyCell = ({ children, className }: CommonProps) => {
-  return <td className={`${className} py-2 text-left`}>{children}</td>;
+export const TableBodyCell = ({ children, className, disabled }: CommonProps) => {
+  return <td className={`${className}  ${disabled ? "opacity-20" : ""} py-2 text-left`}>{children}</td>;
 };
