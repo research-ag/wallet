@@ -13,9 +13,21 @@ import { Chip } from "@components/chip";
 import { CheckBox } from "@components/checkbox";
 import { CalendarPicker } from "@components/CalendarPicker";
 import clsx from "clsx";
+import { validationMessage } from "@/helpers/schemas/allowance";
 
 export default function UpdateForm() {
   const { allowance, setAllowanceState, updateAllowance, isPending, validationErrors } = useUpdateAllowance();
+
+  const errorMessage = useMemo(() => {
+    let errorMessage = "";
+
+    if (validationErrors[0]?.message === validationMessage.lowBalance) errorMessage = validationErrors[0]?.message;
+
+    if (validationErrors[0]?.message === validationMessage.invalidAmount) errorMessage = validationErrors[0].message;
+    if (validationErrors[0]?.message === validationMessage.expiredDate) errorMessage = validationErrors[0].message;
+
+    return errorMessage;
+  }, [validationErrors]);
 
   return (
     <form className="flex flex-col text-left">
@@ -35,7 +47,9 @@ export default function UpdateForm() {
         errors={validationErrors}
       />
 
-      <div className="flex justify-end mt-4">
+      <div className={`flex items-center mt-4 ${errorMessage.length > 0 ? "justify-between" : "justify-end"}`}>
+        {errorMessage.length > 0 && <p className="text-TextErrorColor text-md">{errorMessage}</p>}
+
         <Button
           onClick={(e) => {
             e.preventDefault();

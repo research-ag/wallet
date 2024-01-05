@@ -49,9 +49,9 @@ export function sortByExpiration(order: SortOrder, filteredData: Allowance[]): A
 
 export function filterByAmount(order: SortOrder, filteredData: Allowance[]): Allowance[] {
   const orderedAllowances = filteredData.sort((a, b) => {
-    const aAmount = a.amount || "";
-    const bAmount = b.amount || "";
-    const comparisonResult = aAmount.localeCompare(bAmount);
+    const aAmount = Number(a.amount || 0);
+    const bAmount = Number(b.amount || 0);
+    const comparisonResult = aAmount - bAmount;
     return order === SortOrder.ASC ? comparisonResult : -comparisonResult;
   });
 

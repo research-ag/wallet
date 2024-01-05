@@ -31,11 +31,12 @@ export const CalendarPicker = (props: CalendarDatePickerProps) => {
   }
 
   function handleDateEnable() {
-    if (disabled) onEnableChange(false);
+    if (!disabled) return;
+    onEnableChange(false);
   }
 
   return (
-    <div className="flex flex-row items-center justify-start w-full gap-4" onClick={handleDateEnable}>
+    <div className="flex items-center justify-start w-full">
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <div className="relative">
           <DateTimePicker
@@ -53,6 +54,12 @@ export const CalendarPicker = (props: CalendarDatePickerProps) => {
             disablePast={disablePast}
             views={["day", "hours", "minutes", "seconds"]}
           />
+          {disabled && (
+            <div
+              className="absolute w-full h-8 bg-transparent cursor-pointer bottom-1"
+              onClick={handleDateEnable}
+            ></div>
+          )}
         </div>
       </LocalizationProvider>
     </div>

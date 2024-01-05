@@ -38,6 +38,7 @@ export default function SubAccountFormItem(props: ISubAccountFormItemProps) {
   }, [allowance.asset, searchValue, selectedAsset]);
 
   const onChange = (option: SelectOption) => {
+    setSearchValue(null);
     const fullSubAccount = allowance?.asset?.subAccounts.find((account) => account.sub_account_id === option.value);
 
     if (!fullSubAccount || !fullSubAccount.address) return;
@@ -47,6 +48,8 @@ export default function SubAccountFormItem(props: ISubAccountFormItemProps) {
   const onSearchChange = (searchValue: string) => {
     setSearchValue(searchValue);
   };
+
+  const onOpenChange = () => setSearchValue(null);
 
   return (
     <div className="mt-4">
@@ -62,6 +65,7 @@ export default function SubAccountFormItem(props: ISubAccountFormItemProps) {
         disabled={isLoading}
         border={error ? "error" : undefined}
         onSearch={onSearchChange}
+        onOpenChange={onOpenChange}
       />
     </div>
   );

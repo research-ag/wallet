@@ -2,7 +2,6 @@ import GenericTokenIcon from "@/assets/svg/files/generic-token.svg";
 import { IconType, IconTypeEnum, symbolIconDict } from "@/const";
 
 export const getAssetIcon = (type: IconType, symbol?: string, logo?: string) => {
-  // FIXME: The logo should not be undefined
   const sizeClass = getSizeClassByIconType(type);
   const iconSrc = getIconSrc(logo, symbol);
 

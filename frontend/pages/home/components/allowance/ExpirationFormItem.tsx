@@ -1,5 +1,4 @@
-import { Allowance, ErrorFields } from "@/@types/allowance";
-import { ValidationErrors } from "@/@types/common";
+import { Allowance } from "@/@types/allowance";
 import { CalendarPicker } from "@components/CalendarPicker";
 import { CheckBox } from "@components/checkbox";
 import dayjs from "dayjs";
@@ -9,13 +8,11 @@ interface IExpirationFormItemProps {
   allowance: Allowance;
   setAllowanceState: (allowanceData: Allowance) => void;
   isLoading?: boolean;
-  errors?: ValidationErrors[];
 }
 
 export default function ExpirationFormItem(props: IExpirationFormItemProps) {
   const [noExpire, setNotExpire] = useState(true);
-  const { setAllowanceState, isLoading, allowance, errors } = props;
-  const error = errors?.filter((error) => error.field === ErrorFields.expiration)[0];
+  const { setAllowanceState, isLoading, allowance } = props;
 
   const onDateChange = (date: dayjs.Dayjs | null) => {
     if (!date) return;
@@ -35,7 +32,7 @@ export default function ExpirationFormItem(props: IExpirationFormItemProps) {
         Expiration
       </label>
       <div className="flex items-center justify-between w-full mt-2">
-        <div className="w-4/6 mt-">
+        <div className="w-4/6">
           <CalendarPicker
             onDateChange={onDateChange}
             disabled={noExpire || isLoading}

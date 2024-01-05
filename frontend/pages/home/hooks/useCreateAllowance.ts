@@ -11,8 +11,9 @@ import { queryClient } from "@/config/query";
 import { ValidationErrors, ServerStateKeys } from "@/@types/common";
 import { throttle } from "lodash";
 import { useAppSelector } from "@redux/Store";
+import { ICRCApprove, generateApproveAllowance } from "@pages/helpers/allowance";
 
-const initialAllowanceState: Allowance = {
+export const initialAllowanceState: Allowance = {
   asset: {
     logo: "",
     name: "",
@@ -25,7 +26,16 @@ const initialAllowanceState: Allowance = {
     tokenName: "",
     tokenSymbol: "",
   },
-  subAccount: {},
+  subAccount: {
+    name: "",
+    sub_account_id: "",
+    address: "",
+    amount: "",
+    currency_amount: "",
+    transaction_fee: "",
+    decimal: 0,
+    symbol: "",
+  },
   spender: {
     assets: [],
     name: "",
@@ -59,12 +69,19 @@ export function useCreateAllowance() {
     });
   };
 
-  const mutationFn = useCallback(() => {
-    const fullAllowance = { ...allowance, id: uuidv4() };
-    const valid = allowanceSchema.safeParse(fullAllowance);
-    if (valid.success) return postAllowance(fullAllowance);
-    return Promise.reject(valid.error);
-  }, [allowance, postAllowance]);
+  const mutationFn = useCallback(async () => {
+    try {
+      const fullAllowance = { ...allowance, id: uuidv4() };
+      const valid = allowanceSchema.safeParse(fullAllowance);
+      if (!valid.success) return Promise.reject(valid.error);
+      const params = generateApproveAllowance(fullAllowance);      
+      await ICRCApprove(params, allowance.asset.address);
+      await postAllowance(fullAllowance);
+    } catch (error) {
+      console.log(error);
+      return { success: false, error };
+    }
+  }, [allowance]);
 
   const onSuccess = async () => {
     await queryClient.invalidateQueries({
@@ -81,9 +98,11 @@ export function useCreateAllowance() {
       const validationErrors = error.issues.map((issue) => ({
         message: issue.message,
         field: String(issue.path[0]),
+        code: issue.code,
       }));
 
       setErrors(validationErrors);
+      return;
     }
   };
 

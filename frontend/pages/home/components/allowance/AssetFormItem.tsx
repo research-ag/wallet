@@ -4,6 +4,7 @@ import { SelectOption } from "@/@types/core";
 import { IconTypeEnum } from "@/const";
 import { getAssetIcon } from "@/utils/icons";
 import { Select } from "@components/select";
+import { initialAllowanceState } from "@pages/home/hooks/useCreateAllowance";
 import { Asset } from "@redux/models/AccountModels";
 import { useMemo, useState } from "react";
 
@@ -26,24 +27,35 @@ export default function AssetFormItem(props: AssetFormItemProps) {
   function formatAsset(asset: Asset) {
     return {
       value: asset?.tokenName,
-      label: `${asset?.tokenName} ${asset?.tokenSymbol}`,
+      label: `${asset?.tokenName} / ${asset?.tokenSymbol}`,
       icon: getAssetIcon(IconTypeEnum.Enum.ASSET, asset?.tokenSymbol, asset?.logo),
     };
   }
 
   const options = useMemo(() => {
     if (!search) return assets.map(formatAsset);
-    return assets.filter((asset) => asset.tokenName.toLowerCase().includes(search.toLowerCase())).map(formatAsset);
+    const searchLower = search.toLowerCase();
+
+    return assets
+      .filter((asset) => {
+        return (
+          asset.tokenName.toLowerCase().includes(searchLower) || asset.tokenSymbol.toLowerCase().includes(searchLower)
+        );
+      })
+      .map(formatAsset);
   }, [search, assets]);
 
   const onAssetChange = (option: SelectOption) => {
+    setSearch(null);
     const fullAsset = assets.find((asset) => asset.tokenName === option.value);
-    setAllowanceState({ asset: fullAsset, subAccount: {} });
+    setAllowanceState({ asset: fullAsset, subAccount: initialAllowanceState.subAccount });
   };
 
   const onSearchChange = (searchValue: string) => {
     setSearch(searchValue);
   };
+
+  const onOpenChange = () => setSearch(null);
 
   return (
     <div className="mt-4">
@@ -58,6 +70,7 @@ export default function AssetFormItem(props: AssetFormItemProps) {
         disabled={isLoading}
         border={error ? "error" : undefined}
         onSearch={onSearchChange}
+        onOpenChange={onOpenChange}
       />
     </div>
   );
