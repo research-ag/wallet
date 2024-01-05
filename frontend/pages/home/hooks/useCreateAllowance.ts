@@ -74,7 +74,7 @@ export function useCreateAllowance() {
       const fullAllowance = { ...allowance, id: uuidv4() };
       const valid = allowanceSchema.safeParse(fullAllowance);
       if (!valid.success) return Promise.reject(valid.error);
-      const params = generateApproveAllowance(fullAllowance);      
+      const params = generateApproveAllowance(fullAllowance);
       await ICRCApprove(params, allowance.asset.address);
       await postAllowance(fullAllowance);
     } catch (error) {

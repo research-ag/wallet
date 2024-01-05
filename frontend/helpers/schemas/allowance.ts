@@ -22,10 +22,10 @@ export const allowanceSchema = z
       .required(),
     subAccount: z
       .object({
-        address: z.string(),
-        name: z.string(),
-        amount: z.string(),
-        sub_account_id: z.string(),
+        address: z.string().min(3),
+        name: z.string().min(1),
+        amount: z.string().min(1),
+        sub_account_id: z.string().min(3),
       })
       .required(),
     spender: z
@@ -75,7 +75,7 @@ export const allowanceSchema = z
       }
     }
 
-    if (Number(subAccount?.amount) <= 0) {
+    if (subAccount?.amount && Number(subAccount?.amount) <= 0) {
       refinementContext.addIssue({
         code: z.ZodIssueCode.custom,
         message: validationMessage.lowBalance,
