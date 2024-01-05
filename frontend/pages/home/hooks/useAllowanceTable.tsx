@@ -1,5 +1,5 @@
 import { ReactComponent as SortIcon } from "@assets/svg/files/sort.svg";
-import { momentDateTime } from "@/utils/formatTime";
+import { formatDateTime } from "@/utils/formatTime";
 import { middleTruncation, toTitleCase } from "@/utils/strings";
 import { createColumnHelper } from "@tanstack/react-table";
 import { Allowance, AllowancesTableColumns } from "@/@types/allowance";
@@ -87,7 +87,7 @@ export const useAllowanceTable = () => {
       cell: (info) => {
         let isExpired = false;
 
-        const userDate = info.getValue() ? momentDateTime(info.getValue() || "") : "No expiration";
+        const userDate = info.getValue() ? formatDateTime(info.getValue() || "") : "No expiration";
         const allowance = info.row.original;
 
         if (!allowance.noExpire && allowance?.expiration) {
