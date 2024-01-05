@@ -84,11 +84,23 @@ const assetSlice = createSlice({
         const auxTokens = state.tokens.map((tkn) => {
           if (tkn.id_number === token.id_number) {
             return token;
-          } else return tkn;
+          } else
+            return {
+              ...tkn,
+              shortDecimal:
+                tkn.shortDecimal === "" ? Number(tkn.decimal).toFixed() : Number(tkn.shortDecimal).toFixed(),
+            };
         });
         const auxAssets = state.assets.map((asst) => {
           if (asst.tokenSymbol === tokenSymbol) {
-            return { ...asst, symbol: token.symbol, name: token.name, index: token.index };
+            return {
+              ...asst,
+              symbol: token.symbol,
+              name: token.name,
+              index: token.index,
+              shortDecimal:
+                token.shortDecimal === "" ? Number(token.decimal).toFixed() : Number(token.shortDecimal).toFixed(),
+            };
           } else return asst;
         });
         state.tokens = auxTokens;
@@ -196,13 +208,6 @@ const assetSlice = createSlice({
       state.selectedAsset = action.payload;
     },
     setSelectedAccount(state, action) {
-      const txList = [...state.txWorker];
-
-      let auxTx = txList.find((tx: TransactionList) => {
-        return tx.symbol === action.payload.symbol && tx.subaccount === action.payload.sub_account_id;
-      });
-
-      state.transactions = auxTx?.tx || [];
       state.selectedAccount = action.payload;
     },
     setSelectedTransaction(state, action) {
@@ -225,6 +230,9 @@ const assetSlice = createSlice({
       }
 
       state.txWorker = txList;
+    },
+    addTxWorker(state, action: PayloadAction<TransactionList>) {
+      state.txWorker = [...state.txWorker, action.payload];
     },
     setTxLoad(state, action) {
       state.txLoad = action.payload;
@@ -267,6 +275,7 @@ export const {
   setSelectedAccount,
   setSelectedTransaction,
   setTxWorker,
+  addTxWorker,
   setTxLoad,
   setAcordeonAssetIdx,
 } = assetSlice.actions;

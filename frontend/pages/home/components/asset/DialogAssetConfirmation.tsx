@@ -66,6 +66,7 @@ const DialogAssetConfirmation = ({
       address: "",
       symbol: "",
       decimal: "",
+      shortDecimal: "",
       name: "",
       tokenSymbol: "",
       tokenName: "",

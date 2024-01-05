@@ -14,10 +14,11 @@ import { AuthClient } from "@dfinity/auth-client";
 import { setAssetFromLocalData, updateAllBalances } from "./assets/AssetActions";
 import { clearDataAsset, setTokens } from "./assets/AssetReducer";
 import { AuthNetwork } from "./models/TokenModels";
-import { AuthNetworkTypeEnum, defaultTokens } from "@/const";
+import { AuthNetworkTypeEnum } from "@/const";
 import { Ed25519KeyIdentity } from "@dfinity/identity";
 import { clearDataContacts, setContacts, setStorageCode } from "./contacts/ContactsReducer";
 import { Principal } from "@dfinity/principal";
+import { defaultTokens } from "@/defaultTokens";
 
 const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${
   import.meta.env.VITE_APP_LOGO

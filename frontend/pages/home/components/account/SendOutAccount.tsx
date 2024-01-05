@@ -46,6 +46,13 @@ interface ContactToSend {
   subaccount_index: string;
 }
 
+interface ContactToSend {
+  cName: string;
+  sName: string;
+  princ: string;
+  subaccount_index: string;
+}
+
 const SendOutAccount = ({
   setOpenContactList,
   contacts,

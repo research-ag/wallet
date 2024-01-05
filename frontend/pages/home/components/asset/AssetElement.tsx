@@ -47,7 +47,7 @@ const AssetElement = ({
   const [usedIdxs, setUsedIdxs] = useState<string[]>([]);
   const [openDelete, setOpenDelete] = useState(false);
   const [newErr, setNewErr] = useState<{ name: boolean; idx: boolean }>({ name: false, idx: false });
-   
+
   return (
     <Fragment>
       <Accordion.Item value={asset.tokenSymbol}>
@@ -94,7 +94,9 @@ const AssetElement = ({
                 </div>
               </div>
               <div className="flex flex-col items-end justify-center">
-                <p>{`${toFullDecimal(getFullTokenAmount().token, Number(asset.decimal), 8)} ${asset.symbol}`}</p>
+                <p>{`${toFullDecimal(getFullTokenAmount().token, Number(asset.decimal), Number(asset.shortDecimal))} ${
+                  asset.symbol
+                }`}</p>
                 <p
                   className={`${asset?.tokenSymbol !== selectedAsset?.tokenSymbol ? "opacity-60" : ""}`}
                 >{`≈ $${getFullTokenAmount().currency.toFixed(2)}`}</p>

@@ -66,6 +66,7 @@ const AddAssetManual = ({
   const { getAssetIcon, checkAssetAdded } = GeneralHook();
   const { userAgent } = IdentityHook();
   const [testLoading, setTestLoading] = useState(false);
+  const [errShortDec, serErrShortDec] = useState(false);
 
   return (
     <div className="flex flex-col justify-start items-start w-full">
@@ -136,20 +137,38 @@ const AddAssetManual = ({
           onChange={onChangeName}
         />
       </div>
-      <div className="flex flex-col items-start w-full mb-3">
-        <p className="opacity-60">{t("token.decimal")}</p>
-        <CustomInput
-          sizeInput={"medium"}
-          inputClass={asset ? "opacity-40" : ""}
-          intent={"secondary"}
-          placeholder="8"
-          disabled={asset ? true : false}
-          compOutClass=""
-          type="number"
-          value={newToken.decimal}
-          onChange={onChangeDecimal}
-        />
+      <div className={`flex flex-row justify-start items-center ${asset ? "w-[85%]" : "w-full"} gap-2`}>
+        <div className="flex flex-col items-start w-full mb-3">
+          <p className="opacity-60">{t("token.decimal")}</p>
+          <CustomInput
+            sizeInput={"medium"}
+            inputClass={asset ? "opacity-40" : ""}
+            intent={"secondary"}
+            placeholder="8"
+            disabled={asset ? true : false}
+            compOutClass=""
+            type="number"
+            value={newToken.decimal}
+            onChange={onChangeDecimal}
+          />
+        </div>
+        {asset && (
+          <div className="flex flex-col items-start w-full mb-3">
+            <p>{t("short.form.limit")}</p>
+            <CustomInput
+              sizeInput={"medium"}
+              intent={"secondary"}
+              placeholder=""
+              compOutClass=""
+              type="number"
+              value={newToken.shortDecimal}
+              onChange={onChangeShortDecimal}
+              border={errShortDec ? "error" : undefined}
+            />
+          </div>
+        )}
       </div>
+
       <div className="flex flex-row justify-between w-full gap-4">
         {manual && (
           <CustomButton intent="deny" className="mr-3 min-w-[5rem]" onClick={onBack}>
@@ -227,6 +246,15 @@ const AddAssetManual = ({
     });
   }
 
+  function onChangeShortDecimal(e: ChangeEvent<HTMLInputElement>) {
+    const value = e.target.value === "" ? "" : Number(e.target.value) === 0 ? "0" : e.target.value;
+    if (Number(value) <= Number(newToken.decimal))
+      setNewToken((prev: any) => {
+        return { ...prev, shortDecimal: value };
+      });
+    serErrShortDec(false);
+  }
+
   function onBack() {
     setManual(false);
     setNewToken({
@@ -234,6 +262,7 @@ const AddAssetManual = ({
       symbol: "",
       name: "",
       decimal: "",
+      shortDecimal: "",
       tokenSymbol: "",
       tokenName: "",
       fee: "",
@@ -271,6 +300,7 @@ const AddAssetManual = ({
           return {
             ...prev,
             decimal: decimals.toFixed(0),
+            shortDecimal: decimals.toFixed(0),
             symbol: symbol,
             name: name,
             logo: logo,
@@ -287,7 +317,7 @@ const AddAssetManual = ({
         validData = false;
       }
     }
-    if (newToken.index && newToken.index !== "")
+    if (newToken.index && newToken.index !== "" && newToken.shortDecimal !== "")
       try {
         const { getTransactions } = IcrcIndexCanister.create({
           canisterId: newToken.index as any,
@@ -307,12 +337,23 @@ const AddAssetManual = ({
 
   async function onSave() {
     if (asset) {
+      if (newToken.shortDecimal === "") {
+        serErrShortDec(true);
+        return;
+      }
       // Change contacts local and reducer
       dispatch(editAssetName(asset.tokenSymbol, newToken.symbol));
       // List all tokens modifying the one we selected
       const auxTokens = tokens.map((tkn) => {
         if (tkn.id_number === newToken.id_number) {
-          return newToken;
+          return {
+            ...newToken,
+            decimal: Number(newToken.decimal).toFixed(0),
+            shortDecimal:
+              newToken.shortDecimal === ""
+                ? Number(newToken.decimal).toFixed(0)
+                : Number(newToken.shortDecimal).toFixed(0),
+          };
         } else return tkn;
       });
       // Save tokens in list to local

@@ -13,7 +13,7 @@ import { AssetHook } from "../../hooks/assetHook";
 import { useAppDispatch } from "@redux/Store";
 import DialogAssetConfirmation from "./DialogAssetConfirmation";
 import AddAssetManual from "./AddAssetManual";
-import { addToken } from "@redux/assets/AssetReducer";
+import { addToken, setAcordeonAssetIdx } from "@redux/assets/AssetReducer";
 import AddAssetAutomatic from "./AddAssetAutomatic";
 
 interface AddAssetsProps {
@@ -22,9 +22,11 @@ interface AddAssetsProps {
   asset: Asset | undefined;
   setAssetInfo(value: Asset | undefined): void;
   tokens: Token[];
+  assets: Asset[];
+  acordeonIdx: string[];
 }
 
-const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens }: AddAssetsProps) => {
+const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens, assets, acordeonIdx }: AddAssetsProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
@@ -109,7 +111,7 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens }: AddA
             errToken={errToken}
             setManual={setManual}
             newAssetList={newAssetList}
-            tokens={tokens}
+            assets={assets}
           ></AddAssetAutomatic>
         )}
       </div>
@@ -129,6 +131,7 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens }: AddA
   );
 
   function onClose() {
+    addToAcordeonIdx();
     setAssetOpen(false);
     setNetwork(TokenNetworkEnum.enum["ICRC-1"]);
     setNewToken({
@@ -138,6 +141,7 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens }: AddA
       tokenSymbol: "",
       tokenName: "",
       decimal: "",
+      shortDecimal: "",
       fee: "0",
       subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default, amount: "0", currency_amount: "0" }],
       index: "",
@@ -186,6 +190,12 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens }: AddA
         }),
       );
       setAssetOpen(false);
+    }
+  }
+
+  function addToAcordeonIdx() {
+    if (!acordeonIdx.includes(asset?.tokenSymbol || "")) {
+      dispatch(setAcordeonAssetIdx([...acordeonIdx, asset?.tokenSymbol || ""]));
     }
   }
 };

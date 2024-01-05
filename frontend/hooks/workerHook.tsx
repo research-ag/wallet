@@ -1,4 +1,5 @@
-import { AssetSymbolEnum, WorkerTaskEnum, defaultTokens } from "@/const";
+import { AssetSymbolEnum, WorkerTaskEnum } from "@/const";
+import { defaultTokens } from "@/defaultTokens";
 import { hexToUint8Array } from "@/utils";
 // import { AssetList, Metadata } from "@candid/metadata/service.did";
 import store, { useAppSelector } from "@redux/Store";
@@ -64,9 +65,9 @@ export const WorkerHook = () => {
     if (userData) {
       const userDataJson = JSON.parse(userData);
       store.dispatch(setTokens(userDataJson.tokens));
-      await updateAllBalances(true, userAgent, userDataJson.tokens);
+      await updateAllBalances(true, userAgent, userDataJson.tokens, false, false);
     } else {
-      const { tokens } = await updateAllBalances(true, userAgent, defaultTokens, true);
+      const { tokens } = await updateAllBalances(true, userAgent, defaultTokens, true, false);
       store.dispatch(setTokens(tokens));
     }
   };

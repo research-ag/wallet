@@ -8,6 +8,7 @@ import { clsx } from "clsx";
 import { useTranslation } from "react-i18next";
 import { GeneralHook } from "../../hooks/generalHook";
 import { Token } from "@redux/models/TokenModels";
+import { Asset } from "@redux/models/AccountModels";
 
 interface AddAssetAutomaticProps {
   setNetworkTOpen(value: boolean): void;
@@ -24,7 +25,7 @@ interface AddAssetAutomaticProps {
   errToken: string;
   setManual(value: boolean): void;
   newAssetList: Token[];
-  tokens: Token[];
+  assets: Asset[];
 }
 
 const AddAssetAutomatic = ({
@@ -42,7 +43,7 @@ const AddAssetAutomatic = ({
   errToken,
   setManual,
   newAssetList,
-  tokens,
+  assets,
 }: AddAssetAutomaticProps) => {
   const { t } = useTranslation();
 
@@ -148,7 +149,7 @@ const AddAssetAutomatic = ({
                 align="end"
               >
                 {newAssetList.map((newAsset, idx) => {
-                  const tokenFounded = tokens.find((tkn) => tkn.address === newAsset.address);
+                  const tokenFounded = assets.find((asst) => asst.tokenSymbol === newAsset.tokenSymbol);
                   if (!tokenFounded)
                     return (
                       <DropdownMenu.Item
@@ -194,6 +195,7 @@ const AddAssetAutomatic = ({
         tokenName: "",
         tokenSymbol: "",
         decimal: "",
+        shortDecimal: "",
         fee: "0",
         subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default, amount: "0", currency_amount: "0" }],
         index: "",
@@ -216,6 +218,7 @@ const AddAssetAutomatic = ({
       tokenName: "",
       tokenSymbol: "",
       decimal: "",
+      shortDecimal: "",
       fee: "0",
       subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default, amount: "0", currency_amount: "0" }],
       index: "",
