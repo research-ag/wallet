@@ -6,7 +6,6 @@ import { ServerStateKeys, SortOrder } from "@/@types/common";
 import { minutesToMilliseconds } from "@/utils/time";
 import { AllowancesTableColumns } from "@/@types/allowance";
 import { queryClient } from "@/config/query";
-import { throttle } from "lodash";
 
 export default function useAllowances() {
   const [sorting, setSorting] = useState<SortOrder>(SortOrder.ASC);

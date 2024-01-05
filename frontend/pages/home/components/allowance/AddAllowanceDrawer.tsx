@@ -7,6 +7,8 @@ import AmountFormItem from "./AmountFormItem";
 import ExpirationFormItem from "./ExpirationFormItem";
 import Button from "@components/buttons/Button";
 import { useCreateAllowance } from "@pages/home/hooks/useCreateAllowance";
+import { useMemo } from "react";
+import { validationMessage } from "@/helpers/schemas/allowance";
 
 interface IAllowanceDrawerProps {
   isDrawerOpen: boolean;
@@ -18,6 +20,17 @@ function AddForm() {
   const { assets, selectedAsset } = useAppSelector((state) => state.asset);
   const { allowance, setAllowanceState, createAllowance, isPending, isPrincipalValid, validationErrors } =
     useCreateAllowance();
+
+  const errorMessage = useMemo(() => {
+    let errorMessage = "";
+
+    if (validationErrors[0]?.message === validationMessage.lowBalance) errorMessage = validationErrors[0]?.message;
+
+    if (validationErrors[0]?.message === validationMessage.invalidAmount) errorMessage = validationErrors[0].message;
+    if (validationErrors[0]?.message === validationMessage.expiredDate) errorMessage = validationErrors[0].message;
+
+    return errorMessage;
+  }, [validationErrors]);
 
   return (
     <form className="flex flex-col text-left">
@@ -55,14 +68,11 @@ function AddForm() {
         errors={validationErrors}
       />
 
-      <ExpirationFormItem
-        allowance={allowance}
-        setAllowanceState={setAllowanceState}
-        isLoading={isPending}
-        errors={validationErrors}
-      />
+      <ExpirationFormItem allowance={allowance} setAllowanceState={setAllowanceState} isLoading={isPending} />
 
-      <div className="flex justify-end mt-4">
+      <div className={`flex items-center mt-4 ${errorMessage.length > 0 ? "justify-between" : "justify-end"}`}>
+        {errorMessage.length > 0 && <p className="text-TextErrorColor text-md">{errorMessage}</p>}
+
         <Button
           onClick={(e) => {
             e.preventDefault();

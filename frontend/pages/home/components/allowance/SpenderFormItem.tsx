@@ -6,6 +6,7 @@ import { AvatarEmpty } from "@components/avatar";
 import { Input } from "@components/input";
 import { Select } from "@components/select";
 import { Switch } from "@components/switch";
+import { initialAllowanceState } from "@pages/home/hooks/useCreateAllowance";
 import { Contact } from "@redux/models/ContactsModels";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -19,27 +20,35 @@ interface ISpenderFormItemProps {
 }
 
 export default function SpenderFormItem(props: ISpenderFormItemProps) {
+  const [search, setSearch] = useState<string | null>(null);
   const [isNew, setIsNew] = useState(false);
   const inputTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
   const { contacts, setAllowanceState, isLoading, allowance, isPrincipalValid, errors } = props;
   const error = errors?.filter((error) => error.field === ErrorFields.spender)[0];
 
-  const options = useMemo(() => {
-    return contacts?.map((contact) => {
-      return {
-        value: contact.principal,
-        label: contact.name,
-        subLabel: middleTruncation(contact.principal, 3, 3),
-        icon: <AvatarEmpty title={contact.name} size="medium" className="mr-4" />,
-      };
-    });
-  }, [contacts]);
+  function formatContact(contact: Contact) {
+    return {
+      value: contact.principal,
+      label: contact.name,
+      subLabel: middleTruncation(contact.principal, 3, 3),
+      icon: <AvatarEmpty title={contact.name} size="medium" className="mr-4" />,
+    };
+  }
 
-  const onContactBookChange = (checked: boolean) => setIsNew(checked);
+  const options = useMemo(() => {
+    if (!search) contacts?.map(formatContact);
+    return contacts
+      ?.filter((contact) => contact.name.toLowerCase().includes(search?.toLowerCase() || ""))
+      .map(formatContact);
+  }, [search, contacts]);
+
+  const onContactBookChange = (checked: boolean) => {
+    setIsNew(checked);
+    setAllowanceState({ spender: initialAllowanceState.spender });
+  };
 
   const onInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newSearchValue = event.target.value;
-
     clearTimeout(inputTimeoutRef.current);
 
     inputTimeoutRef.current = setTimeout(() => {
@@ -49,6 +58,7 @@ export default function SpenderFormItem(props: ISpenderFormItemProps) {
   };
 
   const onSelectedChange = (option: SelectOption) => {
+    setSearch(null);
     const fullSpender = contacts.find((contact) => contact.principal === option.value);
     setAllowanceState({ spender: fullSpender });
   };
@@ -56,16 +66,17 @@ export default function SpenderFormItem(props: ISpenderFormItemProps) {
   useEffect(() => {
     if (isNew) {
       setAllowanceState({ spender: undefined });
-    } else {
-      setAllowanceState({ spender: contacts[0] });
     }
   }, [isNew]);
+
+  const onSearchChange = (searchValue: string) => setSearch(searchValue);
+  const onOpenChange = () => setSearch(null);
 
   return (
     <div className="mt-4">
       <label htmlFor="Spender" className="flex justify-between mb-2">
         <p className="text-lg">Spender</p>
-        <div className="flex items-center justify-between w-3/6 px-2 py-1 border rounded-md border-BorderColorLight dark:border-BorderColor bg-PrimaryColorLight dark:bg-PrimaryColor">
+        <div className="flex items-center justify-between w-3/6 px-2 py-1 rounded-md bg-PrimaryColorLight dark:bg-ThemeColorBack">
           <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">Contact Book</p>
           <Switch checked={isNew} onChange={onContactBookChange} disabled={isLoading} />
           <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">New</p>
@@ -78,6 +89,8 @@ export default function SpenderFormItem(props: ISpenderFormItemProps) {
           disabled={isLoading}
           currentValue={allowance?.spender?.principal || ""}
           border={error || !isPrincipalValid ? "error" : undefined}
+          onSearch={onSearchChange}
+          onOpenChange={onOpenChange}
         />
       )}
       {isNew && (
@@ -85,7 +98,7 @@ export default function SpenderFormItem(props: ISpenderFormItemProps) {
           placeholder="Principal"
           onChange={onInputChange}
           disabled={isLoading}
-          border={error ? "error" : undefined}
+          border={error || !isPrincipalValid ? "error" : undefined}
         />
       )}
     </div>

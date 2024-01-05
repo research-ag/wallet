@@ -14,11 +14,12 @@ interface TSelectProps extends VariantProps<typeof selectTriggerCVA>, VariantPro
   initialValue?: string | number;
   onSelect: (option: SelectOption) => void;
   onSearch?: (searchValue: string) => void;
+  onOpenChange?: (open: boolean) => void;
 }
 
 export default function Select(props: TSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const { disabled, options, initialValue, currentValue, onSelect, onSearch, border } = props;
+  const { disabled, options, initialValue, currentValue, onSelect, onSearch, onOpenChange, border } = props;
   const searchTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
 
   const selectedValue = useMemo(() => {
@@ -27,10 +28,15 @@ export default function Select(props: TSelectProps) {
     return options.find((option) => option.value === initialValue);
   }, [currentValue]);
 
-  const handleOpenChange = (open: boolean) => setIsOpen(open);
+  const handleOpenChange = (open: boolean) => {
+    setIsOpen(open);
+    onOpenChange?.(open);
+  };
+
   const handleSelectOption = (option: SelectOption) => onSelect(option);
+
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newSearchValue = event.target.value;
+    const newSearchValue = event.target.value.replace(/\s/g, "");
     if (onSearch) {
       clearTimeout(searchTimeoutRef.current);
       searchTimeoutRef.current = setTimeout(() => onSearch(newSearchValue), 100);
@@ -44,8 +50,8 @@ export default function Select(props: TSelectProps) {
           <div className="flex items-center mr-2">
             {selectedValue?.icon}
             <div className="ml-2">
-              <p className={textStyles}>{selectedValue?.label}</p>
-              <p className={textStyles}>{selectedValue?.subLabel}</p>
+              <p className={textStyles()}>{selectedValue?.label}</p>
+              <p className={textStyles(true)}>{selectedValue?.subLabel}</p>
             </div>
           </div>
           <DropIcon className={isOpen ? "-rotate-90" : ""} />
@@ -53,11 +59,12 @@ export default function Select(props: TSelectProps) {
       </DropdownMenu.Trigger>
       <DropdownMenu.Content className={selectContentCVA({ disabled })}>
         {onSearch && (
-          <DropdownMenu.Group>
+          <DropdownMenu.Group className="p-2">
             <CustomInput
               prefix={<img src={SearchIcon} className="mx-2" alt="search-icon" />}
               onChange={handleSearchChange}
               placeholder="Search"
+              className="dark:bg-SideColor bg-PrimaryColorLight"
             />
           </DropdownMenu.Group>
         )}
@@ -66,12 +73,12 @@ export default function Select(props: TSelectProps) {
             <DropdownMenu.Item
               onSelect={() => handleSelectOption(option)}
               key={index}
-              className="flex items-center justify-start p-3 cursor-pointer hover:bg-blue-600"
+              className="flex items-center justify-start px-2 py-2 bg-opacity-50 cursor-pointer hover:bg-RadioCheckColor"
             >
               {option?.icon}
               <div className="ml-2">
-                <p className={textStyles}>{option.label}</p>
-                <p className={textStyles}>{option?.subLabel}</p>
+                <p className={textStyles()}>{option.label}</p>
+                <p className={textStyles(true)}>{option?.subLabel}</p>
               </div>
             </DropdownMenu.Item>
           ))}
@@ -81,4 +88,5 @@ export default function Select(props: TSelectProps) {
   );
 }
 
-const textStyles = clsx("text-PrimaryTextColorLight dark:text-PrimaryTextColor");
+const textStyles = (isSubLabel = false) =>
+  clsx("text-PrimaryTextColorLight dark:text-PrimaryTextColor", isSubLabel && "opacity-50");

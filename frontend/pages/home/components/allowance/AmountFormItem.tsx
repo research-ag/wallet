@@ -15,18 +15,18 @@ interface IAmountFormItemProps {
 }
 
 export default function AmountFormItem(props: IAmountFormItemProps) {
-  const { allowance, selectedAsset, setAllowanceState, isLoading, errors } = props;
+  const { allowance, setAllowanceState, isLoading, errors } = props;
   const error = errors?.filter((error) => error.field === ErrorFields.amount)[0];
   const { asset } = allowance;
 
   const { icon, symbol } = useMemo(() => {
-    const symbol = asset?.tokenSymbol || selectedAsset?.tokenSymbol || "";
-    const logo = asset?.logo || selectedAsset?.logo;
+    const symbol = asset?.tokenSymbol;
+    const logo = asset?.logo;
     return {
       icon: getAssetIcon(IconTypeEnum.Enum.ASSET, symbol, logo),
       symbol,
     };
-  }, [allowance, selectedAsset]);
+  }, [allowance]);
 
   const onAmountChange = (value: string) => {
     const amount = value;

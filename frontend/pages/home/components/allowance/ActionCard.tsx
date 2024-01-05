@@ -15,6 +15,7 @@ import { useDeleteAllowance } from "@pages/home/hooks/useDeleteAllowance";
 import clsx from "clsx";
 import { ThemeHook } from "@/hooks/themeHook";
 import { ThemesEnum } from "@/const";
+import { middleTruncation } from "@/utils/strings";
 
 interface ActionCardProps {
   allowance: Allowance;
@@ -28,7 +29,7 @@ export default function ActionCard(props: ActionCardProps) {
 
   const handleDelete = async () => {
     if (!allowance.id) return;
-    deleteAllowance(allowance.id);
+    deleteAllowance(allowance);
     refetchAllowances();
   };
 
@@ -40,7 +41,7 @@ export default function ActionCard(props: ActionCardProps) {
         </span>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content
-        className="flex flex-col w-32 mr-10 border rounded-md dark:border-BorderColor"
+        className="flex flex-col w-32 mr-10 border rounded-md bg-PrimaryColorLight dark:border-BorderColor"
         sideOffset={5}
       >
         <DropdownMenu.Item
@@ -75,7 +76,11 @@ export default function ActionCard(props: ActionCardProps) {
     return (
       <div className="mt-4">
         <p className={textStyles}>
-          Are you sure you want to Remove <span className="font-bold">{allowance.spender.name}</span>?
+          Are you sure you want to Remove{" "}
+          <span className="font-bold">
+            {allowance.spender.name || middleTruncation(allowance.spender.principal, 4, 4)}
+          </span>
+          ?
         </p>
         <p className={textStyles}>This Allowance will be permanently deleted.</p>
       </div>

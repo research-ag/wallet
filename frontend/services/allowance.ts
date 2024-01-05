@@ -25,22 +25,18 @@ export const listAllowances: ListAllowances = (tokenSymbol, column, order = Sort
     const filteredAllowances = tokenSymbol && allowances ? filterByAsset(tokenSymbol, allowances) : allowances;
 
     if (column === AllowancesTableColumns.subAccount) {
-      console.log(`sort by ${column} in order ${order}`);
       resolve(sortBySubAccount(order, filteredAllowances || []));
     }
 
     if (column === AllowancesTableColumns.spender) {
-      console.log(`filter by ${column} in order ${order}`);
       resolve(filterBySpender(order, filteredAllowances || []));
     }
 
     if (column === AllowancesTableColumns.expiration) {
-      console.log(`filter by ${column} in order ${order}`);
       resolve(sortByExpiration(order, filteredAllowances || []));
     }
 
     if (column === AllowancesTableColumns.amount) {
-      console.log(`filter by ${column} in order ${order}`);
       resolve(filterByAmount(order, filteredAllowances || []));
     }
 

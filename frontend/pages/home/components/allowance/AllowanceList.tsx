@@ -7,6 +7,8 @@ import { flexRender, getCoreRowModel, useReactTable, getSortedRowModel } from "@
 import { useAppSelector } from "@redux/Store";
 import { EditActionType, setEditAllowanceDrawerState } from "@redux/allowances/AllowanceActions";
 import { AllowancesTableColumns } from "@/@types/allowance";
+import dayjs from "dayjs";
+import { isDateExpired } from "@/utils/time";
 
 export default function AllowanceList() {
   const { isUpdateAllowance } = useAppSelector((state) => state.allowance);
@@ -36,7 +38,6 @@ export default function AllowanceList() {
   function TableHeadGroup() {
     const handleSorter = async (column: AllowancesTableColumns) => {
       handleSortChange(column);
-      // console.log(sorting);
     };
 
     return (
@@ -67,10 +68,21 @@ export default function AllowanceList() {
 
   function TableBodyGroup() {
     return (
-      <TableBody>
+      <TableBody className="divide-y dark:divide-slate-200/5">
         {table.getRowModel().rows.map((row, idxTR) => {
+          let isExpired = false;
+          const allowance = table.getRowModel().rows[idxTR].original;
+
+          if (!allowance.noExpire && allowance?.expiration) {
+            isExpired = isDateExpired(allowance?.expiration);
+          }
+
           return (
-            <TableRow key={`allowance-${idxTR}`}>
+            <TableRow
+              key={`allowance-${idxTR}`}
+              disabled={isExpired}
+              className="order-b border-b-BorderColorTwoLight dark:border-b-BorderColorTwo"
+            >
               {row.getVisibleCells().map((cell, idxTD) => {
                 return (
                   <TableBodyCell key={`allowance-${idxTD}`} className={colStyle(idxTD)}>

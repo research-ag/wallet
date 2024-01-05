@@ -10,4 +10,9 @@ export enum ServerStateKeys {
 export interface ValidationErrors {
   message: string;
   field: string;
+  code: string;
+}
+
+export enum customError {
+  custom = "custom",
 }

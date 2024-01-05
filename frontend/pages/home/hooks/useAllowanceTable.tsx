@@ -7,6 +7,7 @@ import ActionCard from "../components/allowance/ActionCard";
 import { queryClient } from "@/config/query";
 import { ServerStateKeys } from "@/@types/common";
 import clsx from "clsx";
+import { isDateExpired } from "@/utils/time";
 
 export const useAllowanceTable = () => {
   const columnHelper = createColumnHelper<Allowance>();
@@ -28,7 +29,7 @@ export const useAllowanceTable = () => {
         return (
           <div>
             {name && <p className={getCellStyles()}>{name}</p>}
-            {subAccountId && <p className={getCellStyles()}>{subAccountId}</p>}
+            {subAccountId && <p className={getCellStyles(Boolean(name))}>{subAccountId}</p>}
           </div>
         );
       },
@@ -46,7 +47,7 @@ export const useAllowanceTable = () => {
         return (
           <div>
             {name && <p className={getCellStyles()}>{name}</p>}
-            {principal && <p className={getCellStyles()}>{middleTruncation(principal, 3, 3)}</p>}
+            {principal && <p className={getCellStyles(Boolean(name))}>{middleTruncation(principal, 3, 3)}</p>}
           </div>
         );
       },
@@ -59,10 +60,19 @@ export const useAllowanceTable = () => {
     }),
     columnHelper.accessor(AllowancesTableColumns.amount, {
       cell: (info) => {
+        let isExpired = false;
+        const allowance = info.row.original;
+
+        if (!allowance.noExpire && allowance?.expiration) {
+          isExpired = isDateExpired(allowance?.expiration);
+        }
+
         const assetSymbol = info.row.original.asset.tokenSymbol;
+
         return (
           <p className={getCellStyles()}>
-            {info.getValue()} {assetSymbol}
+            {isExpired && "-"}
+            {!isExpired && info.getValue()} {!isExpired && assetSymbol}
           </p>
         );
       },
@@ -74,9 +84,18 @@ export const useAllowanceTable = () => {
       ),
     }),
     columnHelper.accessor(AllowancesTableColumns.expiration, {
-      cell: (info) => (
-        <p className={getCellStyles()}>{info.getValue() ? momentDateTime(info.getValue()) : "No expire"}</p>
-      ),
+      cell: (info) => {
+        let isExpired = false;
+
+        const userDate = info.getValue() ? momentDateTime(info.getValue() || "") : "No expiration";
+        const allowance = info.row.original;
+
+        if (!allowance.noExpire && allowance?.expiration) {
+          isExpired = isDateExpired(allowance?.expiration);
+        }
+
+        return <p className={getCellStyles()}>{isExpired ? "-" : userDate}</p>;
+      },
       header: ({ header }) => (
         <div className="flex items-center justify-center cursor-pointer">
           <p>{toTitleCase(header.id)}</p>{" "}
@@ -99,4 +118,4 @@ export const useAllowanceTable = () => {
 };
 
 const getCellStyles = (isOpacity = false) =>
-  clsx("text-PrimaryTextColorLight dark:text-PrimaryTextColor", isOpacity ? "opacity-50" : "");
+  clsx("text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md", isOpacity ? "opacity-50" : "");

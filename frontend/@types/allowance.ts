@@ -4,10 +4,10 @@ import { Contact } from "@redux/models/ContactsModels";
 export interface Allowance {
   id?: string;
   asset: Asset;
-  subAccount: Partial<SubAccount>;
-  spender: Partial<Contact>;
+  subAccount: SubAccount;
+  spender: Contact;
   amount: string;
-  expiration: string;
+  expiration: string | undefined;
   noExpire: boolean;
 }
 
