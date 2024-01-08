@@ -1,28 +1,17 @@
-import { Asset, SubAccount } from "@redux/models/AccountModels";
-import { Contact } from "@redux/models/ContactsModels";
+import { z } from "zod";
 
-export interface Allowance {
-  id?: string;
-  asset: Asset;
-  subAccount: SubAccount;
-  spender: Contact;
-  amount: string;
-  expiration: string | undefined;
-  noExpire: boolean;
-}
+export const allowanceSchemaSchema = z.object({
+  id: z.string().optional(),
+  // asset: Asset,
+  // subAccount: SubAccount,
+  // spender: ContactSchema,
+  amount: z.string(),
+  expiration: z.string().optional(),
+  noExpire: z.boolean(),
+});
 
-export const enum AllowancesTableColumns {
-  subAccount = "subAccount",
-  spender = "spender",
-  amount = "amount",
-  expiration = "expiration",
-  action = "action",
-}
+export type TAllowance = z.infer<typeof allowanceSchemaSchema>;
 
-export const enum ErrorFields {
-  spender = "spender",
-  asset = "asset",
-  amount = "amount",
-  expiration = "expiration",
-  subAccount = "subAccount",
-};
+export const AllowancesTableColumnsSchema = z.enum(["subAccount", "spender", "amount", "expiration", "action"]);
+
+export const ErrorFieldsSchema = z.enum(["spender", "asset", "amount", "expiration", "subAccount"]);
