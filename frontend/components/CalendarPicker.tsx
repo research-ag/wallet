@@ -67,5 +67,7 @@ export const CalendarPicker = (props: CalendarDatePickerProps) => {
 };
 
 const dateTimePickerStyles = (theme: string) => {
-  return clsx("!cursor-pointer !w-full", theme === "light" ? "date-picker-light" : "date-picker");
+  return clsx("!cursor-pointer !w-full",
+  theme === "light" ? "date-picker-light" : "date-picker"
+  );
 };
