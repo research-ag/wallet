@@ -2,7 +2,7 @@
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
 import Modal from "@components/Modal";
-import { GeneralHook } from "../hooks/generalHook";
+import { GeneralHook } from "../../../hooks/generalHook";
 import { AddingAssetsEnum, TokenNetwork, IconTypeEnum, TokenNetworkEnum, AddingAssets } from "@/const";
 import { useTranslation } from "react-i18next";
 import { Token } from "@redux/models/TokenModels";

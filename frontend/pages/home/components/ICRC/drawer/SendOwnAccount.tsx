@@ -9,7 +9,7 @@ import { IcrcAccount, IcrcLedgerCanister } from "@dfinity/ledger";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { IdentityHook } from "@hooks/identityHook";
 import { clsx } from "clsx";
-import { GeneralHook } from "../hooks/generalHook";
+import { GeneralHook } from "../../../hooks/generalHook";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { useTranslation } from "react-i18next";
 import {
@@ -23,7 +23,7 @@ import {
 } from "@/utils";
 import { CustomInput } from "@components/Input";
 import { CustomButton } from "@components/Button";
-import { AssetHook } from "../hooks/assetHook";
+import { AssetHook } from "../../../hooks/assetHook";
 import { ChangeEvent } from "react";
 
 interface SendOwnAccountProps {

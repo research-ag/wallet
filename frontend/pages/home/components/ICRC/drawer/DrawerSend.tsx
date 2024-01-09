@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import { Fragment } from "react";
-import { GeneralHook } from "../hooks/generalHook";
-import { SentHook } from "../hooks/sentHooks";
+import { GeneralHook } from "../../../hooks/generalHook";
+import { SentHook } from "../../../hooks/sentHooks";
 import QRscanner from "@pages/components/QRscanner";
 import DialogSendConfirmation from "./DialogSendConfirmation";
 import SendOwnAccount from "./SendOwnAccount";

@@ -3,13 +3,13 @@ import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
 import { Fragment, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { GeneralHook } from "../hooks/generalHook";
+import { GeneralHook } from "../../../hooks/generalHook";
 import { AccountDefaultEnum, AddingAssetsEnum, TokenNetworkEnum } from "@/const";
-import { TokenHook } from "../hooks/tokenHook";
+import { TokenHook } from "../../../hooks/tokenHook";
 import { Asset } from "@redux/models/AccountModels";
 import { AccountHook } from "@pages/hooks/accountHook";
 import { Token } from "@redux/models/TokenModels";
-import { AssetHook } from "../hooks/assetHook";
+import { AssetHook } from "../../../hooks/assetHook";
 import { useAppDispatch } from "@redux/Store";
 import DialogAssetConfirmation from "./DialogAssetConfirmation";
 import AddAssetManual from "./AddAssetManual";

@@ -6,7 +6,7 @@ import { CustomButton } from "@components/Button";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { clsx } from "clsx";
 import { useTranslation } from "react-i18next";
-import { GeneralHook } from "../hooks/generalHook";
+import { GeneralHook } from "../../../hooks/generalHook";
 import { Token } from "@redux/models/TokenModels";
 import { Asset } from "@redux/models/AccountModels";
 

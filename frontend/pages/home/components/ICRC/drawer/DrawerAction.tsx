@@ -1,17 +1,22 @@
 // svgs
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
-import { Fragment } from "react";
+import { Fragment, PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
 import { CustomButton } from "@components/Button";
 import { clsx } from "clsx";
 import { DrawerOption, DrawerOptionEnum } from "@/const";
 
-interface DrawerActionProps {
+interface Option {
+  name: string;
+  type: DrawerOption;
+  disabled?: boolean;
+}
+interface DrawerActionProps extends PropsWithChildren {
   drawerOption: DrawerOption;
   setDrawerOption(value: DrawerOption): void;
   setDrawerOpen(value: boolean): void;
-  children: any;
+  options?: Array<Option>;
 }
 
 const DrawerAction = ({ drawerOption, setDrawerOption, setDrawerOpen, children }: DrawerActionProps) => {

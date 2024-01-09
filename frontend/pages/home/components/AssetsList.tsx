@@ -1,11 +1,11 @@
 // svgs
 import PlusIcon from "@assets/svg/files/plus-icon.svg";
 //
-import AssetElement from "./AssetElement";
+import AssetElement from "./ICRC/asset/AssetElement";
 import { Asset } from "@redux/models/AccountModels";
 import { Fragment, useState } from "react";
 import * as Accordion from "@radix-ui/react-accordion";
-import AddAsset from "./AddAsset";
+import AddAsset from "./ICRC/asset/AddAsset";
 import { DrawerHook } from "../hooks/drawerHook";
 import { useTranslation } from "react-i18next";
 import Menu from "@pages/components/Menu";

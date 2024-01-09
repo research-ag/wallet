@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import { GeneralHook } from "../hooks/generalHook";
+import { GeneralHook } from "../../../hooks/generalHook";
 import { encodeIcrcAccount } from "@dfinity/ledger";
 import { Principal } from "@dfinity/principal";
 import { hexToUint8Array } from "@/utils";
