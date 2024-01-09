@@ -5,10 +5,10 @@ import { validationMessage } from "@/helpers/schemas/allowance";
 import EditFormFixedFields from "./EditFormFixedFields";
 import AmountFormItem from "./AmountFormItem";
 import ExpirationFormItem from "./ExpirationFormItem";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
 export default function UpdateForm() {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const { allowance, setAllowanceState, updateAllowance, isPending, validationErrors } = useUpdateAllowance();
 
   const errorMessage = useMemo(() => {

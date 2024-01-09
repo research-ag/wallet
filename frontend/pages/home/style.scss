@@ -1,131 +1,142 @@
 @import "../../App.scss";
 
+$primary-color: #151331;
+$secondary-color: #ffffff;
+$light-gray: #bfbfbf;
+$disabled-text-color: #ffffff5f;
+$icon-gray: #d5d5d5;
+$light-text-color: #1b183f;
+$light-gray-icon: #878787;
+$light-background: #ffffff;
+$light-mask: #f8f7fa;
+$accent-color: #63a5e8;
+
 .date-picker {
   width: 60%;
   fieldset {
-    border-color: #68658b !important;
+    border-color: $primary-color !important;
   }
   input {
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
     font-size: 0.75rem;
-    color: #ffffff;
+    color: $secondary-color;
   }
   input.Mui-disabled {
-    -webkit-text-fill-color: #ffffff5f !important;
+    -webkit-text-fill-color: $disabled-text-color !important;
   }
   svg {
     path {
-      fill: #d5d5d5;
+      fill: $icon-gray;
     }
   }
 }
 
 .date-picker-light {
   fieldset {
-    border-color: #bfbfbf !important;
+    border-color: $light-gray !important;
   }
   input {
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
     font-size: 0.75rem;
-    color: #1b183f !important;
+    color: $light-text-color !important;
   }
   svg {
     path {
-      fill: #878787 !important;
+      fill: $light-gray-icon !important;
     }
   }
 }
 
 .MuiDateCalendar-root {
-  background: #151331;
-  color: #ffffff;
+  background: $primary-color;
+  color: $secondary-color;
   svg {
     path {
-      fill: #ffffff;
+      fill: $secondary-color;
     }
   }
   button {
-    color: #ffffff;
+    color: $secondary-color;
   }
   span {
-    color: #ffffff;
+    color: $secondary-color;
   }
 }
 
 .MuiTimeClock-root {
-  background: #151331;
-  color: #ffffff;
+  background: $primary-color;
+  color: $secondary-color;
   svg {
     path {
-      fill: #ffffff;
+      fill: $secondary-color;
     }
   }
   button {
-    color: #ffffff;
+    color: $secondary-color;
   }
   span {
-    color: #ffffff;
+    color: $secondary-color;
   }
   .MuiClock-squareMask {
-    background: #1b183f;
+    background: darken($primary-color, 4%);
   }
 }
 
 .light {
   .MuiDateCalendar-root {
-    background: #ffffff;
-    color: #151331;
+    background: $light-background;
+    color: $primary-color;
     svg {
       path {
-        fill: #151331;
+        fill: $primary-color;
       }
     }
     button {
-      color: #151331;
+      color: $primary-color;
     }
     span {
-      color: #151331;
+      color: $primary-color;
     }
   }
   .MuiTimeClock-root {
-    background: #ffffff;
-    color: #151331;
+    background: $light-background;
+    color: $primary-color;
     svg {
       path {
-        fill: #151331;
+        fill: $primary-color;
       }
     }
     button {
-      color: #151331;
+      color: $primary-color;
     }
     span {
-      color: #151331;
+      color: $primary-color;
     }
     .MuiClock-squareMask {
-      background: #f8f7fa;
+      background: $light-mask;
     }
   }
   .MuiClockPointer-root {
-    background-color: #63a5e8;
+    background-color: $accent-color;
   }
   .MuiClockPointer-thumb {
-    border: 16px solid #63a5e8;
-    background-color: #63a5e8;
+    border: 16px solid $accent-color;
+    background-color: $accent-color;
   }
   .css-qvwuqd-MuiButtonBase-root-MuiIconButton-root-MuiClock-amButton {
-    background-color: #63a5e8;
+    background-color: $accent-color;
   }
   .css-1wq5v3b-MuiButtonBase-root-MuiIconButton-root-MuiClock-pmButton {
-    background-color: #63a5e8;
+    background-color: $accent-color;
   }
   .MuiDayCalendar-monthContainer {
     .Mui-selected {
-      background-color: #63a5e8;
+      background-color: $accent-color;
     }
     .Mui-selected:focus {
-      background-color: #63a5e8;
+      background-color: $accent-color;
     }
   }
 }
