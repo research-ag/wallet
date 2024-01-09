@@ -9,6 +9,8 @@ import Button from "@components/buttons/Button";
 import { useCreateAllowance } from "@pages/home/hooks/useCreateAllowance";
 import { useMemo } from "react";
 import { validationMessage } from "@/helpers/schemas/allowance";
+import { t } from "i18next";
+import { useTranslation } from "react-i18next";
 
 interface IAllowanceDrawerProps {
   isDrawerOpen: boolean;
@@ -90,10 +92,11 @@ function AddForm() {
 }
 
 export default function AddAllowanceDrawer(props: IAllowanceDrawerProps) {
+  const { t } = useTranslation();
   const { isDrawerOpen, onClose } = props;
 
   return (
-    <Drawer isDrawerOpen={isDrawerOpen} onClose={onClose} title="Add TAllowance">
+    <Drawer isDrawerOpen={isDrawerOpen} onClose={onClose} title={`${t("allowance.add.allowance")}`}>
       {!isDrawerOpen ? null : <AddForm />}
     </Drawer>
   );

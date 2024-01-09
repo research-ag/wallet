@@ -1,4 +1,3 @@
-// TODO: migrate to cva instead of clsx
 import clsx from "clsx";
 
 export function getDrawerContainerStyle(isDrawerOpen: boolean) {

@@ -89,7 +89,7 @@ export const useAllowanceTable = () => {
       cell: (info) => {
         let isExpired = false;
 
-        const userDate = info.getValue() ? formatDateTime(info.getValue() || "") : "No expiration";
+        const userDate = info.getValue() ? formatDateTime(info.getValue() || "") : t("no.expiration");
         const allowance = info.row.original;
 
         if (!allowance.noExpire && allowance?.expiration) {

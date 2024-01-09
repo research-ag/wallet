@@ -18,7 +18,3 @@ export default function EditAllowanceDrawer(props: IAllowanceDrawerProps) {
     </Drawer>
   );
 }
-
-// if amount is empty show error
-// if no expiration, the expiration will be empty
-// if expiration, the no expiration will be false
