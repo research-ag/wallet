@@ -16,6 +16,7 @@ import clsx from "clsx";
 import { ThemeHook } from "@/hooks/themeHook";
 import { ThemesEnum } from "@/const";
 import { middleTruncation } from "@/utils/strings";
+import { useTranslation } from "react-i18next";
 
 interface ActionCardProps {
   allowance: TAllowance;
@@ -23,6 +24,7 @@ interface ActionCardProps {
 }
 
 export default function ActionCard(props: ActionCardProps) {
+  const { t } = useTranslation();
   const { allowance, refetchAllowances } = props;
   const { deleteAllowance, isPending } = useDeleteAllowance();
   const { theme } = ThemeHook();
@@ -52,13 +54,13 @@ export default function ActionCard(props: ActionCardProps) {
           }}
         >
           <PencilIcon className="mr-4" fill={theme === ThemesEnum.Enum.light ? "#000000" : "#ffffff"} />
-          <p className={getCellStyles()}>Edit</p>
+          <p className={getCellStyles()}>{t("edit")}</p>
         </DropdownMenu.Item>
         <Modal
           triggerComponent={
             <div className="flex items-center justify-start p-2 cursor-pointer bg-ThirdColorLight dark:bg-SecondaryColor rounded-b-md">
               <TrashDarkIcon className="mr-4" fill="#B0736F" />
-              <p className="font-bold text-LockColor ">Delete</p>
+              <p className="font-bold text-LockColor ">{t("delete")}</p>
             </div>
           }
           contentComponent={<ContentComponent />}
@@ -76,13 +78,13 @@ export default function ActionCard(props: ActionCardProps) {
     return (
       <div className="mt-4">
         <p className={textStyles}>
-          Are you sure you want to Remove{" "}
+          {t("allowance.sure.remove")}{" "}
           <span className="font-bold">
             {allowance.spender.name || middleTruncation(allowance.spender.principal, 4, 4)}
           </span>
           ?
         </p>
-        <p className={textStyles}>This TAllowance will be permanently deleted.</p>
+        <p className={textStyles}>{t("allowance.permanently.deleted")}</p>
       </div>
     );
   }

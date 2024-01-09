@@ -7,6 +7,7 @@ import { Select } from "@components/select";
 import { initialAllowanceState } from "@pages/home/hooks/useCreateAllowance";
 import { Asset } from "@redux/models/AccountModels";
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface AssetFormItemProps {
   allowance: TAllowance;
@@ -18,6 +19,7 @@ interface AssetFormItemProps {
 }
 
 export default function AssetFormItem(props: AssetFormItemProps) {
+  const {t} = useTranslation();
   const [search, setSearch] = useState<string | null>(null);
   const { allowance, assets, selectedAsset, setAllowanceState, isLoading, errors } = props;
   const { asset } = allowance;
@@ -60,7 +62,7 @@ export default function AssetFormItem(props: AssetFormItemProps) {
   return (
     <div className="mt-4">
       <label htmlFor="asset" className="text-lg">
-        Asset
+        {t("asset")}
       </label>
       <Select
         onSelect={onAssetChange}

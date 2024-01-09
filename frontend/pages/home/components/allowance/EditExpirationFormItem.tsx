@@ -3,6 +3,7 @@ import { TErrorValidation } from "@/@types/common";
 import { CalendarPicker } from "@components/CalendarPicker";
 import { CheckBox } from "@components/checkbox";
 import dayjs from "dayjs";
+import { useTranslation } from "react-i18next";
 
 interface IExpirationFormItemProps {
   allowance: TAllowance;
@@ -12,6 +13,7 @@ interface IExpirationFormItemProps {
 }
 
 export default function EditExpirationFormItem(props: IExpirationFormItemProps) {
+  const { t } = useTranslation();
   const { isLoading, allowance, setAllowanceState } = props;
 
   const onDateChange = (date: dayjs.Dayjs | null) => {
@@ -28,7 +30,7 @@ export default function EditExpirationFormItem(props: IExpirationFormItemProps) 
   return (
     <div className="mt-4">
       <label htmlFor="Expiration" className="text-lg">
-        Expiration
+        {t("expiration")}
       </label>
       <div className="flex items-center justify-between w-full mt-2">
         <div className="w-4/6 mt-">
@@ -50,7 +52,7 @@ export default function EditExpirationFormItem(props: IExpirationFormItemProps) 
             className="mr-1 border-BorderColorLight dark:border-BorderColor"
             disabled={isLoading}
           />
-          <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">No Expiration</p>
+          <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">No {t("expiration")}</p>
         </div>
       </div>
     </div>

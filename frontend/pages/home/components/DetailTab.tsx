@@ -7,6 +7,7 @@ import clsx from "clsx";
 import { useMemo } from "react";
 import useAllowances from "../hooks/useAllowances";
 import { DetailsTabs, DetailsTabsEnum } from "@/@types/common";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   activeTab: DetailsTabs;
@@ -19,6 +20,7 @@ export default function DetailTab({ activeTab, setActiveTab }: Props) {
   const { allowances } = useAllowances();
   const transactionsCount = useMemo(() => transactions.length, [transactions]);
   const allowancesCount = useMemo(() => allowances.length, [allowances]);
+  const { t } = useTranslation();
 
   return (
     <div className="flex items-center justify-between w-full">
@@ -30,18 +32,22 @@ export default function DetailTab({ activeTab, setActiveTab }: Props) {
       <div className="flex items-center justify-between columns-2">
         <button onClick={() => setActiveTab(DetailsTabsEnum.Values.TRANSACTIONS)}>
           <p className={getTabStyles(activeTab, DetailsTabsEnum.Values.TRANSACTIONS)}>
-            Transactions ({transactionsCount})
+            {t("transaction.transactions")} ({transactionsCount})
           </p>
         </button>
 
         <button onClick={() => setActiveTab(DetailsTabsEnum.Values.ALLOWANCES)}>
-          <p className={getTabStyles(activeTab, DetailsTabsEnum.Values.ALLOWANCES)}>Allowances ({allowancesCount})</p>
+          <p className={getTabStyles(activeTab, DetailsTabsEnum.Values.ALLOWANCES)}>
+            {t("allowance.allowances")} ({allowancesCount})
+          </p>
         </button>
       </div>
       <div className="flex items-center justify-between columns-2">
         {DetailsTabsEnum.Values.ALLOWANCES === activeTab && (
           <>
-            <p className="mx-2 text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">Add allowance</p>
+            <p className="mx-2 text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
+              {t("allowance.add.allowance")}
+            </p>
             <IconButton
               icon={<PlusIcon />}
               onClick={() => setCreateAllowanceDrawerState(CreateActionType.openDrawer)}

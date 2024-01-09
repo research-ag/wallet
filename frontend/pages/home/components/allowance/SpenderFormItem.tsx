@@ -10,6 +10,7 @@ import { initialAllowanceState } from "@pages/home/hooks/useCreateAllowance";
 import useSpenderFormItem from "@pages/home/hooks/useSpenderFormItem";
 import { Contact } from "@redux/models/ContactsModels";
 import { useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 interface ISpenderFormItemProps {
   contacts: Contact[];
@@ -21,6 +22,7 @@ interface ISpenderFormItemProps {
 }
 
 export default function SpenderFormItem(props: ISpenderFormItemProps) {
+  const {t} = useTranslation();
   const { search, isNew, inputTimeoutRef, setSearch, setIsNew, onSearchChange, onOpenChange } = useSpenderFormItem();
 
   const { contacts, setAllowanceState, isLoading, allowance, isPrincipalValid, errors } = props;
@@ -42,11 +44,11 @@ export default function SpenderFormItem(props: ISpenderFormItemProps) {
   return (
     <div className="mt-4">
       <label htmlFor="Spender" className="flex justify-between mb-2">
-        <p className="text-lg">Spender</p>
+        <p className="text-lg">{t("spender")}</p>
         <div className="flex items-center justify-between w-3/6 px-2 py-1 rounded-md bg-PrimaryColorLight dark:bg-ThemeColorBack">
-          <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">Contact Book</p>
+          <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("contact.book")}</p>
           <Switch checked={isNew} onChange={onContactBookChange} disabled={isLoading} />
-          <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">New</p>
+          <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("new")}</p>
         </div>
       </label>
       {!isNew && (

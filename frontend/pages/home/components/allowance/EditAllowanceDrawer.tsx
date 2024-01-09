@@ -1,5 +1,7 @@
 import { Drawer } from "@components/drawer";
 import UpdateForm from "./EditForm";
+import { t } from "i18next";
+import { useTranslation } from "react-i18next";
 
 interface IAllowanceDrawerProps {
   isDrawerOpen: boolean;
@@ -7,10 +9,11 @@ interface IAllowanceDrawerProps {
 }
 
 export default function EditAllowanceDrawer(props: IAllowanceDrawerProps) {
+  const { t } = useTranslation();
   const { isDrawerOpen, onClose } = props;
 
   return (
-    <Drawer isDrawerOpen={isDrawerOpen} onClose={onClose} title="Edit TAllowance">
+    <Drawer isDrawerOpen={isDrawerOpen} onClose={onClose} title={t("allowance.edit.allowance")}>
       {isDrawerOpen ? <UpdateForm /> : <></>}
     </Drawer>
   );

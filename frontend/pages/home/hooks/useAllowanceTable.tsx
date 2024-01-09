@@ -8,8 +8,10 @@ import { queryClient } from "@/config/query";
 import { ServerStateKeysEnum } from "@/@types/common";
 import clsx from "clsx";
 import { isDateExpired } from "@/utils/time";
+import { useTranslation } from "react-i18next";
 
 export const useAllowanceTable = () => {
+  const { t } = useTranslation();
   const columnHelper = createColumnHelper<TAllowance>();
 
   const refetchAllowances = async () => {
@@ -106,7 +108,7 @@ export const useAllowanceTable = () => {
     columnHelper.display({
       id: AllowancesTableColumnsEnum.Values.action,
       cell: (info) => <ActionCard allowance={info.row.original} refetchAllowances={refetchAllowances} />,
-      header: () => "Action",
+      header: () => t("action"),
       enableSorting: false,
       enableHiding: false,
       enableResizing: false,

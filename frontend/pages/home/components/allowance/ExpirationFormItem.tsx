@@ -3,6 +3,7 @@ import { CalendarPicker } from "@components/CalendarPicker";
 import { CheckBox } from "@components/checkbox";
 import dayjs from "dayjs";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface IExpirationFormItemProps {
   allowance: TAllowance;
@@ -11,6 +12,7 @@ interface IExpirationFormItemProps {
 }
 
 export default function ExpirationFormItem(props: IExpirationFormItemProps) {
+  const {t} = useTranslation();
   const [noExpire, setNotExpire] = useState(true);
   const { setAllowanceState, isLoading, allowance } = props;
 
@@ -29,7 +31,7 @@ export default function ExpirationFormItem(props: IExpirationFormItemProps) {
   return (
     <div className="mt-4">
       <label htmlFor="Expiration" className="text-lg">
-        Expiration
+        {t("expiration")}
       </label>
       <div className="flex items-center justify-between w-full mt-2">
         <div className="w-4/6">
@@ -50,7 +52,7 @@ export default function ExpirationFormItem(props: IExpirationFormItemProps) {
             }}
             disabled={isLoading}
           />
-          <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">No Expiration</p>
+          <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("no.expiration")}</p>
         </div>
       </div>
     </div>

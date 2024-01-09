@@ -132,5 +132,19 @@
   "acc.identifier": "Legacy Identifier",
   "acc.subacc": "Subaccount",
   "acc.principal": "Principal",
-  "congrats": "Congratulation"
+  "congrats": "Congratulation",  
+  "edit": "Edit",
+  "delete": "Delete",
+  "expiration": "Expiration",
+  "subAccount": "Subaccount",
+  "spender": "Spender",
+  "principal": "Principal",
+  "no.expiration": "No Expiration",
+  "contact.book": "Contact Book",
+  "new": "new",
+  "allowance.allowances": "Allowances",
+  "allowance.add.allowance": "Add Allowance",
+  "allowance.sure.remove": "Are you sure you want to Remove",
+  "allowance.permanently.deleted": "This Allowance will be permanently deleted.",
+  "allowance.edit.allowance": "Edit Allowance"  
 }

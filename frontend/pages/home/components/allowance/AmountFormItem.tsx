@@ -5,6 +5,7 @@ import { getAssetIcon } from "@/utils/icons";
 import { CurrencyInput } from "@components/input";
 import { Asset } from "@redux/models/AccountModels";
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 interface IAmountFormItemProps {
   allowance: TAllowance;
@@ -15,6 +16,7 @@ interface IAmountFormItemProps {
 }
 
 export default function AmountFormItem(props: IAmountFormItemProps) {
+  const { t } = useTranslation();
   const { allowance, setAllowanceState, isLoading, errors } = props;
   const error = errors?.filter((error) => error.field === AllowanceErrorFieldsEnum.Values.amount)[0];
   const { asset } = allowance;
@@ -36,7 +38,7 @@ export default function AmountFormItem(props: IAmountFormItemProps) {
   return (
     <div className="mt-4">
       <label htmlFor="Amount" className="text-lg">
-        Amount
+        {t("amount")}
       </label>
       <CurrencyInput
         onCurrencyChange={onAmountChange}
