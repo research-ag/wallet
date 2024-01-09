@@ -32,8 +32,8 @@ import { ServerStateKeysEnum } from "@/@types/common";
 
 const TopBarComponent = () => {
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
   const { onLanguageChange } = LanguageHook();
+  const dispatch = useAppDispatch();
 
   const { theme, themeOpen, setThemeOpen } = ThemeHook();
   const { authClient } = AccountHook();
@@ -145,6 +145,7 @@ const TopBarComponent = () => {
   );
 
   async function handleReloadButton() {
+    reloadBallance();
     dispatch(setLoading(true));
     reloadBallance();
     await queryClient.invalidateQueries({
