@@ -1,5 +1,5 @@
-import { Allowance } from "@/@types/allowance";
-import { ServerStateKeys } from "@/@types/common";
+import { TAllowance } from "@/@types/allowance";
+import { ServerStateKeysEnum } from "@/@types/common";
 import { queryClient } from "@/config/query";
 import { removeAllowance } from "@/services/allowance";
 import { ICRCApprove, generateApproveAllowance } from "@pages/helpers/allowance";
@@ -10,10 +10,10 @@ import { useCallback } from "react";
 export function useDeleteAllowance() {
   const onSuccess = async () => {
     await queryClient.invalidateQueries({
-      queryKey: [ServerStateKeys.allowances],
+      queryKey: [ServerStateKeysEnum.Values.allowances],
     });
     await queryClient.refetchQueries({
-      queryKey: [ServerStateKeys.allowances],
+      queryKey: [ServerStateKeysEnum.Values.allowances],
     });
   };
 
@@ -21,7 +21,7 @@ export function useDeleteAllowance() {
     console.log("Error", error);
   };
 
-  const mutationFn = useCallback(async (allowance: Allowance) => {
+  const mutationFn = useCallback(async (allowance: TAllowance) => {
     try {
       if (!allowance?.id) return new Error("Invalid allowance");
       const params = generateApproveAllowance({ ...allowance, amount: "0", expiration: undefined });

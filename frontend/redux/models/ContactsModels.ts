@@ -1,7 +1,5 @@
 import { z } from "zod";
 
-// Models
-
 const SubAccountContact = z.object({
   name: z.string(),
   subaccount_index: z.string(),

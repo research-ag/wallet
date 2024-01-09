@@ -1,6 +1,6 @@
-import { Allowance, ErrorFields } from "@/@types/allowance";
-import { ValidationErrors } from "@/@types/common";
-import { SelectOption } from "@/@types/core";
+import { TAllowance, AllowanceErrorFieldsEnum } from "@/@types/allowance";
+import { TErrorValidation } from "@/@types/common";
+import { SelectOption } from "@/@types/components";
 import { IconTypeEnum } from "@/const";
 import { getAssetIcon } from "@/utils/icons";
 import { Select } from "@components/select";
@@ -9,12 +9,12 @@ import { Asset } from "@redux/models/AccountModels";
 import { useMemo, useState } from "react";
 
 interface AssetFormItemProps {
-  allowance: Allowance;
+  allowance: TAllowance;
   assets: Asset[];
   selectedAsset: Asset | undefined;
-  setAllowanceState: (allowanceData: Partial<Allowance>) => void;
+  setAllowanceState: (allowanceData: Partial<TAllowance>) => void;
   isLoading?: boolean;
-  errors?: ValidationErrors[];
+  errors?: TErrorValidation[];
 }
 
 export default function AssetFormItem(props: AssetFormItemProps) {
@@ -22,7 +22,7 @@ export default function AssetFormItem(props: AssetFormItemProps) {
   const { allowance, assets, selectedAsset, setAllowanceState, isLoading, errors } = props;
   const { asset } = allowance;
 
-  const error = errors?.filter((error) => error.field === ErrorFields.asset)[0];
+  const error = errors?.filter((error) => error.field === AllowanceErrorFieldsEnum.Values.asset)[0];
 
   function formatAsset(asset: Asset) {
     return {

@@ -4,7 +4,7 @@ import { useMemo, useRef, useState } from "react";
 import { ReactComponent as DropIcon } from "@assets/svg/files/chevron-right-icon.svg";
 import { CustomInput } from "@components/Input";
 import SearchIcon from "@assets/svg/files/icon-search.svg";
-import { SelectOption } from "@/@types/core";
+import { SelectOption } from "@/@types/components";
 import { selectContentCVA, selectTriggerCVA } from "./styles.cva";
 import clsx from "clsx";
 

@@ -88,8 +88,3 @@ export const symbolIconDict: { [key: string]: string } = {
   GLDGov: GLDGovIcon,
 };
 
-export enum DetailsTabs {
-  transactions = "transactions",
-  allowances = "allowances",
-}
-

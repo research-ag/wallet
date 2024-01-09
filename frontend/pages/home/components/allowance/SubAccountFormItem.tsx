@@ -1,17 +1,17 @@
-import { Allowance, ErrorFields } from "@/@types/allowance";
-import { ValidationErrors } from "@/@types/common";
-import { SelectOption } from "@/@types/core";
+import { TAllowance, AllowanceErrorFieldsEnum } from "@/@types/allowance";
+import { TErrorValidation } from "@/@types/common";
+import { SelectOption } from "@/@types/components";
 import { Chip } from "@components/chip";
 import { Select } from "@components/select";
 import { Asset } from "@redux/models/AccountModels";
 import { useMemo, useState } from "react";
 
 interface ISubAccountFormItemProps {
-  allowance: Allowance;
+  allowance: TAllowance;
   selectedAsset: Asset | undefined;
   isLoading?: boolean;
-  errors?: ValidationErrors[];
-  setAllowanceState: (allowanceData: Allowance) => void;
+  errors?: TErrorValidation[];
+  setAllowanceState: (allowanceData: TAllowance) => void;
 }
 
 export default function SubAccountFormItem(props: ISubAccountFormItemProps) {
@@ -19,7 +19,7 @@ export default function SubAccountFormItem(props: ISubAccountFormItemProps) {
   const { allowance, selectedAsset, setAllowanceState, isLoading, errors } = props;
   const { subAccount } = allowance;
 
-  const error = errors?.filter((error) => error.field === ErrorFields.subAccount)[0];
+  const error = errors?.filter((error) => error.field === AllowanceErrorFieldsEnum.Values.subAccount)[0];
 
   const options = useMemo(() => {
     const accountsToMap = searchValue

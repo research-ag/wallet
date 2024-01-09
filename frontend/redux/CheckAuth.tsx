@@ -19,6 +19,8 @@ import { Ed25519KeyIdentity } from "@dfinity/identity";
 import { clearDataContacts, setContacts, setStorageCode } from "./contacts/ContactsReducer";
 import { Principal } from "@dfinity/principal";
 import { defaultTokens } from "@/defaultTokens";
+import { queryClient } from "@/config/query";
+import { ServerStateKeysEnum } from "@/@types/common";
 
 const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${
   import.meta.env.VITE_APP_LOGO
@@ -97,6 +99,14 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean)
     const contactsDataJson = JSON.parse(contactsData);
     store.dispatch(setContacts(contactsDataJson.contacts));
   }
+
+  await queryClient.invalidateQueries({
+    queryKey: [ServerStateKeysEnum.Values.allowances],
+  });
+
+  await queryClient.refetchQueries({
+    queryKey: [ServerStateKeysEnum.Values.allowances],
+  });
 };
 
 export const dispatchAuths = (authIdentity: Identity, myAgent: HttpAgent, myPrincipal: Principal) => {

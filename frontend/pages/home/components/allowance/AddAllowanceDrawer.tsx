@@ -93,7 +93,7 @@ export default function AddAllowanceDrawer(props: IAllowanceDrawerProps) {
   const { isDrawerOpen, onClose } = props;
 
   return (
-    <Drawer isDrawerOpen={isDrawerOpen} onClose={onClose} title="Add Allowance">
+    <Drawer isDrawerOpen={isDrawerOpen} onClose={onClose} title="Add TAllowance">
       {!isDrawerOpen ? null : <AddForm />}
     </Drawer>
   );

@@ -1,4 +1,4 @@
-import { Allowance } from "@/@types/allowance";
+import { TAllowance } from "@/@types/allowance";
 import { postAllowance } from "@/services/allowance";
 import { validatePrincipal } from "@/utils/identity";
 import { CreateActionType, setCreateAllowanceDrawerState } from "@redux/allowances/AllowanceActions";
@@ -8,12 +8,12 @@ import { v4 as uuidv4 } from "uuid";
 import { allowanceSchema } from "@/helpers/schemas/allowance";
 import { z } from "zod";
 import { queryClient } from "@/config/query";
-import { ValidationErrors, ServerStateKeys } from "@/@types/common";
+import { TErrorValidation, ServerStateKeysEnum } from "@/@types/common";
 import { throttle } from "lodash";
 import { useAppSelector } from "@redux/Store";
 import { ICRCApprove, generateApproveAllowance } from "@pages/helpers/allowance";
 
-export const initialAllowanceState: Allowance = {
+export const initialAllowanceState: TAllowance = {
   asset: {
     logo: "",
     name: "",
@@ -37,7 +37,6 @@ export const initialAllowanceState: Allowance = {
     symbol: "",
   },
   spender: {
-    assets: [],
     name: "",
     accountIdentifier: "",
     principal: "",
@@ -49,7 +48,7 @@ export const initialAllowanceState: Allowance = {
 
 export function useCreateAllowance() {
   const { selectedAsset, selectedAccount } = useAppSelector((state) => state.asset);
-  const [validationErrors, setErrors] = useState<ValidationErrors[]>([]);
+  const [validationErrors, setErrors] = useState<TErrorValidation[]>([]);
   const [isPrincipalValid, setIsPrincipalValid] = useState(true);
 
   const initial = useMemo(() => {
@@ -58,11 +57,11 @@ export function useCreateAllowance() {
       asset: selectedAsset,
       subAccount: selectedAccount,
     };
-  }, [selectedAsset]) as Allowance;
+  }, [selectedAsset]) as TAllowance;
 
-  const [allowance, setAllowance] = useState<Allowance>(initial);
+  const [allowance, setAllowance] = useState<TAllowance>(initial);
 
-  const setAllowanceState = (allowanceData: Partial<Allowance>) => {
+  const setAllowanceState = (allowanceData: Partial<TAllowance>) => {
     setAllowance({
       ...allowance,
       ...allowanceData,
@@ -85,10 +84,10 @@ export function useCreateAllowance() {
 
   const onSuccess = async () => {
     await queryClient.invalidateQueries({
-      queryKey: [ServerStateKeys.allowances],
+      queryKey: [ServerStateKeysEnum.Values.allowances],
     });
     await queryClient.refetchQueries({
-      queryKey: [ServerStateKeys.allowances],
+      queryKey: [ServerStateKeysEnum.Values.allowances],
     });
     setCreateAllowanceDrawerState(CreateActionType.closeDrawer);
   };

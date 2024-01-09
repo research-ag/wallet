@@ -1,6 +1,6 @@
 import { middleTruncation } from "@/utils/strings";
 import Button from "@components/buttons/Button";
-import { Allowance, ErrorFields } from "@/@types/allowance";
+import { TAllowance, AllowanceErrorFieldsEnum } from "@/@types/allowance";
 import { Asset } from "@redux/models/AccountModels";
 import { CurrencyInput } from "@components/input";
 import { getAssetIcon } from "@/utils/icons";
@@ -8,12 +8,12 @@ import { IconTypeEnum } from "@/const";
 import { useMemo } from "react";
 import dayjs from "dayjs";
 import { useUpdateAllowance } from "@pages/home/hooks/useUpdateAllowance";
-import { ValidationErrors } from "@/@types/common";
 import { Chip } from "@components/chip";
 import { CheckBox } from "@components/checkbox";
 import { CalendarPicker } from "@components/CalendarPicker";
 import clsx from "clsx";
 import { validationMessage } from "@/helpers/schemas/allowance";
+import { TErrorValidation } from "@/@types/common";
 
 export default function UpdateForm() {
   const { allowance, setAllowanceState, updateAllowance, isPending, validationErrors } = useUpdateAllowance();
@@ -67,7 +67,7 @@ export default function UpdateForm() {
 }
 
 interface FixedFieldsProps {
-  allowance: Allowance;
+  allowance: TAllowance;
 }
 
 function FixedFields({ allowance }: FixedFieldsProps) {
@@ -104,18 +104,18 @@ function FixedFields({ allowance }: FixedFieldsProps) {
 }
 
 interface IAmountFormItemProps {
-  allowance: Allowance;
+  allowance: TAllowance;
   selectedAsset?: Asset | undefined;
   isLoading?: boolean;
-  errors: ValidationErrors[];
-  setAllowanceState: (allowanceData: Partial<Allowance>) => void;
+  errors: TErrorValidation[];
+  setAllowanceState: (allowanceData: Partial<TAllowance>) => void;
 }
 
 function AmountFormItem(props: IAmountFormItemProps) {
   const { allowance, selectedAsset, isLoading, errors, setAllowanceState } = props;
   const { asset } = allowance;
 
-  const error = errors?.filter((error) => error.field === ErrorFields.amount)[0];
+  const error = errors?.filter((error) => error.field === AllowanceErrorFieldsEnum.Values.amount)[0];
 
   const { icon, symbol } = useMemo(() => {
     const symbol = asset?.tokenSymbol || selectedAsset?.tokenSymbol || "";
@@ -149,15 +149,15 @@ function AmountFormItem(props: IAmountFormItemProps) {
 }
 
 interface IExpirationFormItemProps {
-  allowance: Allowance;
+  allowance: TAllowance;
   isLoading?: boolean;
-  errors: ValidationErrors[];
-  setAllowanceState: (allowanceData: Partial<Allowance>) => void;
+  errors: TErrorValidation[];
+  setAllowanceState: (allowanceData: Partial<TAllowance>) => void;
 }
 
 function ExpirationFormItem(props: IExpirationFormItemProps) {
   const { isLoading, allowance, setAllowanceState, errors } = props;
-  const error = errors?.filter((error) => error.field === ErrorFields.expiration)[0];
+  const error = errors?.filter((error) => error.field === AllowanceErrorFieldsEnum.Values.expiration)[0];
 
   const onDateChange = (date: dayjs.Dayjs | null) => {
     if (!date) return;

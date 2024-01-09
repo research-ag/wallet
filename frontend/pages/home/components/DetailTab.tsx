@@ -1,5 +1,4 @@
 import { ReactComponent as PlusIcon } from "@assets/svg/files/plus-icon.svg";
-import { DetailsTabs } from "@/const";
 import AddAllowanceDrawer from "./allowance/AddAllowanceDrawer";
 import { useAppSelector } from "@redux/Store";
 import { IconButton } from "@components/buttons";
@@ -7,6 +6,7 @@ import { CreateActionType, setCreateAllowanceDrawerState } from "@redux/allowanc
 import clsx from "clsx";
 import { useMemo } from "react";
 import useAllowances from "../hooks/useAllowances";
+import { DetailsTabs, DetailsTabsEnum } from "@/@types/common";
 
 interface Props {
   activeTab: DetailsTabs;
@@ -28,16 +28,18 @@ export default function DetailTab({ activeTab, setActiveTab }: Props) {
       />
 
       <div className="flex items-center justify-between columns-2">
-        <button onClick={() => setActiveTab(DetailsTabs.transactions)}>
-          <p className={getTabStyles(activeTab, DetailsTabs.transactions)}>Transactions ({transactionsCount})</p>
+        <button onClick={() => setActiveTab(DetailsTabsEnum.Values.TRANSACTIONS)}>
+          <p className={getTabStyles(activeTab, DetailsTabsEnum.Values.TRANSACTIONS)}>
+            Transactions ({transactionsCount})
+          </p>
         </button>
 
-        <button onClick={() => setActiveTab(DetailsTabs.allowances)}>
-          <p className={getTabStyles(activeTab, DetailsTabs.allowances)}>Allowances ({allowancesCount})</p>
+        <button onClick={() => setActiveTab(DetailsTabsEnum.Values.ALLOWANCES)}>
+          <p className={getTabStyles(activeTab, DetailsTabsEnum.Values.ALLOWANCES)}>Allowances ({allowancesCount})</p>
         </button>
       </div>
       <div className="flex items-center justify-between columns-2">
-        {DetailsTabs.allowances === activeTab && (
+        {DetailsTabsEnum.Values.ALLOWANCES === activeTab && (
           <>
             <p className="mx-2 text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">Add allowance</p>
             <IconButton

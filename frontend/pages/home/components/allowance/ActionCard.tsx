@@ -4,7 +4,7 @@ import { ReactComponent as DotsIcon } from "@assets/svg/files/dots-icon.svg";
 import { ReactComponent as AlertIcon } from "@assets/svg/files/alert-icon.svg";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close-icon.svg";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { Allowance } from "@/@types/allowance";
+import { TAllowance } from "@/@types/allowance";
 import { Modal } from "@components/modal";
 import {
   EditActionType,
@@ -18,7 +18,7 @@ import { ThemesEnum } from "@/const";
 import { middleTruncation } from "@/utils/strings";
 
 interface ActionCardProps {
-  allowance: Allowance;
+  allowance: TAllowance;
   refetchAllowances: () => void;
 }
 
@@ -82,7 +82,7 @@ export default function ActionCard(props: ActionCardProps) {
           </span>
           ?
         </p>
-        <p className={textStyles}>This Allowance will be permanently deleted.</p>
+        <p className={textStyles}>This TAllowance will be permanently deleted.</p>
       </div>
     );
   }

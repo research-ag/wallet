@@ -1,6 +1,6 @@
-import { Allowance, AllowancesTableColumns } from "@/@types/allowance";
+import { TAllowance, AllowancesTableColumns, AllowancesTableColumnsEnum } from "@/@types/allowance";
 import { getFromLocalStorage, setInLocalStorage } from "../utils/localStorage";
-import { SortOrder } from "@/@types/common";
+import { SortOrder, SortOrderEnum } from "@/@types/common";
 import {
   filterByAmount,
   filterByAsset,
@@ -15,28 +15,28 @@ type ListAllowances = (
   tokenSymbol?: string,
   column?: AllowancesTableColumns,
   order?: SortOrder,
-) => Promise<Allowance[]>;
+) => Promise<TAllowance[]>;
 
-export const listAllowances: ListAllowances = (tokenSymbol, column, order = SortOrder.ASC) => {
+export const listAllowances: ListAllowances = (tokenSymbol, column, order = SortOrderEnum.Values.ASC) => {
   return new Promise((resolve) => {
-    const allowances = getFromLocalStorage<Allowance[]>(LOCAL_STORAGE_PREFIX);
+    const allowances = getFromLocalStorage<TAllowance[]>(LOCAL_STORAGE_PREFIX);
     if (!allowances || !Array.isArray(allowances)) resolve([]);
 
     const filteredAllowances = tokenSymbol && allowances ? filterByAsset(tokenSymbol, allowances) : allowances;
 
-    if (column === AllowancesTableColumns.subAccount) {
+    if (column === AllowancesTableColumnsEnum.Values.subAccount) {
       resolve(sortBySubAccount(order, filteredAllowances || []));
     }
 
-    if (column === AllowancesTableColumns.spender) {
+    if (column === AllowancesTableColumnsEnum.Values.spender) {
       resolve(filterBySpender(order, filteredAllowances || []));
     }
 
-    if (column === AllowancesTableColumns.expiration) {
+    if (column === AllowancesTableColumnsEnum.Values.expiration) {
       resolve(sortByExpiration(order, filteredAllowances || []));
     }
 
-    if (column === AllowancesTableColumns.amount) {
+    if (column === AllowancesTableColumnsEnum.Values.amount) {
       resolve(filterByAmount(order, filteredAllowances || []));
     }
 
@@ -44,9 +44,9 @@ export const listAllowances: ListAllowances = (tokenSymbol, column, order = Sort
   });
 };
 
-export function postAllowance(newAllowance: Allowance): Promise<Allowance> {
+export function postAllowance(newAllowance: TAllowance): Promise<TAllowance> {
   return new Promise((resolve) => {
-    let allowances = getFromLocalStorage<Allowance[]>(LOCAL_STORAGE_PREFIX);
+    let allowances = getFromLocalStorage<TAllowance[]>(LOCAL_STORAGE_PREFIX);
 
     if (!allowances || !Array.isArray(allowances)) {
       allowances = [newAllowance];
@@ -63,10 +63,10 @@ export function postAllowance(newAllowance: Allowance): Promise<Allowance> {
   });
 }
 
-export const updateAllowanceRequest = (newAllowance: Allowance): Promise<Allowance> => {
+export const updateAllowanceRequest = (newAllowance: TAllowance): Promise<TAllowance> => {
   return new Promise((resolve) => {
     setTimeout(() => {
-      const allowances = getFromLocalStorage<Allowance[]>(LOCAL_STORAGE_PREFIX);
+      const allowances = getFromLocalStorage<TAllowance[]>(LOCAL_STORAGE_PREFIX);
       if (Array.isArray(allowances)) {
         const newAllowances = allowances.map((allowance) => {
           if (allowance.id === newAllowance.id) {
@@ -76,16 +76,16 @@ export const updateAllowanceRequest = (newAllowance: Allowance): Promise<Allowan
         });
         setInLocalStorage(LOCAL_STORAGE_PREFIX, newAllowances);
       }
-      resolve(newAllowance as Allowance);
+      resolve(newAllowance as TAllowance);
     }, 500);
-    return newAllowance as Allowance;
+    return newAllowance as TAllowance;
   });
 };
 
 export function removeAllowance(id: string): Promise<void> {
   return new Promise((resolve) => {
     setTimeout(() => {
-      const allowances = getFromLocalStorage<Allowance[]>(LOCAL_STORAGE_PREFIX);
+      const allowances = getFromLocalStorage<TAllowance[]>(LOCAL_STORAGE_PREFIX);
       if (Array.isArray(allowances)) {
         const newAllowances = allowances.filter((allowance) => allowance.id !== id);
         setInLocalStorage(LOCAL_STORAGE_PREFIX, newAllowances);

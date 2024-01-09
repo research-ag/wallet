@@ -1,12 +1,12 @@
-import { Allowance } from "@/@types/allowance";
+import { TAllowance } from "@/@types/allowance";
 import { CalendarPicker } from "@components/CalendarPicker";
 import { CheckBox } from "@components/checkbox";
 import dayjs from "dayjs";
 import { useState } from "react";
 
 interface IExpirationFormItemProps {
-  allowance: Allowance;
-  setAllowanceState: (allowanceData: Allowance) => void;
+  allowance: TAllowance;
+  setAllowanceState: (allowanceData: TAllowance) => void;
   isLoading?: boolean;
 }
 

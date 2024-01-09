@@ -1,10 +1,10 @@
-import { Allowance } from "@/@types/allowance";
+import { TAllowance } from "@/@types/allowance";
 import { createSlice } from "@reduxjs/toolkit";
 
 interface AllowanceState {
   isCreateAllowance: boolean;
   isUpdateAllowance: boolean;
-  selectedAllowance: Allowance;
+  selectedAllowance: TAllowance;
 }
 
 const initialState: AllowanceState = {

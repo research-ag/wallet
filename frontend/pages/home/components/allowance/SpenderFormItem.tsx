@@ -1,6 +1,6 @@
-import { Allowance, ErrorFields } from "@/@types/allowance";
-import { ValidationErrors } from "@/@types/common";
-import { SelectOption } from "@/@types/core";
+import { AllowanceErrorFieldsEnum, TAllowance } from "@/@types/allowance";
+import { TErrorValidation } from "@/@types/common";
+import { SelectOption } from "@/@types/components";
 import { middleTruncation } from "@/utils/strings";
 import { AvatarEmpty } from "@components/avatar";
 import { Input } from "@components/input";
@@ -12,11 +12,11 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 interface ISpenderFormItemProps {
   contacts: Contact[];
-  setAllowanceState: (allowanceData: Partial<Allowance>) => void;
+  setAllowanceState: (allowanceData: Partial<TAllowance>) => void;
   isLoading?: boolean;
-  allowance: Allowance;
+  allowance: TAllowance;
   isPrincipalValid: boolean;
-  errors?: ValidationErrors[];
+  errors?: TErrorValidation[];
 }
 
 export default function SpenderFormItem(props: ISpenderFormItemProps) {
@@ -24,7 +24,7 @@ export default function SpenderFormItem(props: ISpenderFormItemProps) {
   const [isNew, setIsNew] = useState(false);
   const inputTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
   const { contacts, setAllowanceState, isLoading, allowance, isPrincipalValid, errors } = props;
-  const error = errors?.filter((error) => error.field === ErrorFields.spender)[0];
+  const error = errors?.filter((error) => error.field === AllowanceErrorFieldsEnum.Values.spender)[0];
 
   function formatContact(contact: Contact) {
     return {

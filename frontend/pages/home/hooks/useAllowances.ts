@@ -2,29 +2,29 @@ import { useMemo, useState } from "react";
 import { listAllowances } from "@/services/allowance";
 import { useQuery } from "@tanstack/react-query";
 import { useAppSelector } from "@redux/Store";
-import { ServerStateKeys, SortOrder } from "@/@types/common";
+import { ServerStateKeysEnum, SortOrder, SortOrderEnum } from "@/@types/common";
 import { minutesToMilliseconds } from "@/utils/time";
-import { AllowancesTableColumns } from "@/@types/allowance";
 import { queryClient } from "@/config/query";
+import { AllowancesTableColumnsEnum, AllowancesTableColumns } from "@/@types/allowance";
 
 export default function useAllowances() {
-  const [sorting, setSorting] = useState<SortOrder>(SortOrder.ASC);
-  const [column, setColumn] = useState<AllowancesTableColumns>(AllowancesTableColumns.subAccount);
+  const [sorting, setSorting] = useState<SortOrder>(SortOrderEnum.Values.ASC);
+  const [column, setColumn] = useState<AllowancesTableColumns>(AllowancesTableColumnsEnum.Values.subAccount);
 
   const { selectedAsset } = useAppSelector((state) => state.asset);
 
   const onSort = async (orderColumn: AllowancesTableColumns) => {
     if (orderColumn === column) {
-      setSorting(sorting === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC);
+      setSorting(sorting === SortOrderEnum.Values.ASC ? SortOrderEnum.Values.DESC : SortOrderEnum.Values.ASC);
     }
 
     if (orderColumn !== column) {
       setColumn(orderColumn);
-      setSorting(SortOrder.ASC);
+      setSorting(SortOrderEnum.Values.ASC);
     }
 
     await queryClient.refetchQueries({
-      queryKey: [ServerStateKeys.allowances],
+      queryKey: [ServerStateKeysEnum.Values.allowances],
     });
   };
 
@@ -33,7 +33,7 @@ export default function useAllowances() {
   };
 
   const query = useQuery({
-    queryKey: [ServerStateKeys.allowances, selectedAsset?.tokenSymbol, column, sorting],
+    queryKey: [ServerStateKeysEnum.Values.allowances, selectedAsset?.tokenSymbol, column, sorting],
     queryFn: executeQuery,
     staleTime: minutesToMilliseconds(10),
     enabled: Boolean(selectedAsset?.tokenSymbol && sorting && column),

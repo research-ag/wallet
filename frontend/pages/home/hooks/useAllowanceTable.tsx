@@ -2,27 +2,27 @@ import { ReactComponent as SortIcon } from "@assets/svg/files/sort.svg";
 import { formatDateTime } from "@/utils/formatTime";
 import { middleTruncation, toTitleCase } from "@/utils/strings";
 import { createColumnHelper } from "@tanstack/react-table";
-import { Allowance, AllowancesTableColumns } from "@/@types/allowance";
+import { TAllowance, AllowancesTableColumnsEnum } from "@/@types/allowance";
 import ActionCard from "../components/allowance/ActionCard";
 import { queryClient } from "@/config/query";
-import { ServerStateKeys } from "@/@types/common";
+import { ServerStateKeysEnum } from "@/@types/common";
 import clsx from "clsx";
 import { isDateExpired } from "@/utils/time";
 
 export const useAllowanceTable = () => {
-  const columnHelper = createColumnHelper<Allowance>();
+  const columnHelper = createColumnHelper<TAllowance>();
 
   const refetchAllowances = async () => {
     await queryClient.invalidateQueries({
-      queryKey: [ServerStateKeys.allowances],
+      queryKey: [ServerStateKeysEnum.Values.allowances],
     });
     await queryClient.refetchQueries({
-      queryKey: [ServerStateKeys.allowances],
+      queryKey: [ServerStateKeysEnum.Values.allowances],
     });
   };
 
   const columns = [
-    columnHelper.accessor(AllowancesTableColumns.subAccount, {
+    columnHelper.accessor(AllowancesTableColumnsEnum.Values.subAccount, {
       cell: (info) => {
         const name = info?.getValue()?.name;
         const subAccountId = info?.getValue()?.sub_account_id;
@@ -40,7 +40,7 @@ export const useAllowanceTable = () => {
         </div>
       ),
     }),
-    columnHelper.accessor(AllowancesTableColumns.spender, {
+    columnHelper.accessor(AllowancesTableColumnsEnum.Values.spender, {
       cell: (info) => {
         const name = info.getValue()?.name;
         const principal = info.getValue()?.principal;
@@ -58,7 +58,7 @@ export const useAllowanceTable = () => {
         </div>
       ),
     }),
-    columnHelper.accessor(AllowancesTableColumns.amount, {
+    columnHelper.accessor(AllowancesTableColumnsEnum.Values.amount, {
       cell: (info) => {
         let isExpired = false;
         const allowance = info.row.original;
@@ -83,7 +83,7 @@ export const useAllowanceTable = () => {
         </div>
       ),
     }),
-    columnHelper.accessor(AllowancesTableColumns.expiration, {
+    columnHelper.accessor(AllowancesTableColumnsEnum.Values.expiration, {
       cell: (info) => {
         let isExpired = false;
 
@@ -104,7 +104,7 @@ export const useAllowanceTable = () => {
       ),
     }),
     columnHelper.display({
-      id: AllowancesTableColumns.action,
+      id: AllowancesTableColumnsEnum.Values.action,
       cell: (info) => <ActionCard allowance={info.row.original} refetchAllowances={refetchAllowances} />,
       header: () => "Action",
       enableSorting: false,

@@ -28,7 +28,7 @@ import { setLoading } from "@redux/assets/AssetReducer";
 import { CustomCopy } from "@components/CopyTooltip";
 import { AssetHook } from "@pages/home/hooks/assetHook";
 import { queryClient } from "@/config/query";
-import { ServerStateKeys } from "@/@types/common";
+import { ServerStateKeysEnum } from "@/@types/common";
 
 const TopBarComponent = () => {
   const { t } = useTranslation();
@@ -148,10 +148,10 @@ const TopBarComponent = () => {
     dispatch(setLoading(true));
     reloadBallance();
     await queryClient.invalidateQueries({
-      queryKey: [ServerStateKeys.allowances],
+      queryKey: [ServerStateKeysEnum.Values.allowances],
     });
     await queryClient.refetchQueries({
-      queryKey: [ServerStateKeys.allowances],
+      queryKey: [ServerStateKeysEnum.Values.allowances],
     });
   }
 

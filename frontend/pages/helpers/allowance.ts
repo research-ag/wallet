@@ -1,4 +1,4 @@
-import { Allowance } from "@/@types/allowance";
+import { TAllowance } from "@/@types/allowance";
 import { hexToUint8Array } from "@/utils";
 import { ApproveParams, IcrcLedgerCanister } from "@dfinity/ledger";
 import { Principal } from "@dfinity/principal";
@@ -7,7 +7,7 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 dayjs.extend(utc);
 
-export function generateApproveAllowance(allowance: Allowance): ApproveParams {
+export function generateApproveAllowance(allowance: TAllowance): ApproveParams {
   const spenderPrincipal = allowance.spender.principal;
   const allowanceSubAccountId = allowance.subAccount.sub_account_id;
   const allowanceAssetDecimal = allowance.asset.decimal;

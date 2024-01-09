@@ -6,8 +6,8 @@ import { Table, TableBody, TableBodyCell, TableHead, TableHeaderCell, TableRow }
 import { flexRender, getCoreRowModel, useReactTable, getSortedRowModel } from "@tanstack/react-table";
 import { useAppSelector } from "@redux/Store";
 import { EditActionType, setEditAllowanceDrawerState } from "@redux/allowances/AllowanceActions";
-import { AllowancesTableColumns } from "@/@types/allowance";
 import { isDateExpired } from "@/utils/time";
+import { AllowancesTableColumns } from "@/@types/allowance";
 
 export default function AllowanceList() {
   const { isUpdateAllowance } = useAppSelector((state) => state.allowance);

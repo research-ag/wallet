@@ -1,4 +1,4 @@
-import { Allowance } from "@/@types/allowance";
+import { TAllowance } from "@/@types/allowance";
 import { setCreateAllowance, setSelectedAllowance, setUpdateAllowance } from "./AllowanceReducer";
 import store from "@redux/Store";
 
@@ -44,7 +44,7 @@ export const setEditAllowanceDrawerState = (drawerState: EditActionType) => {
   }
 };
 
-export const setSelectedAllowanceAction = (allowance: Allowance) => {
+export const setSelectedAllowanceAction = (allowance: TAllowance) => {
   const { dispatch } = store;
   dispatch(setSelectedAllowance(allowance));
 };

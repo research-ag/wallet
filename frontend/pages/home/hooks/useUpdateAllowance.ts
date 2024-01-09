@@ -1,5 +1,5 @@
-import { Allowance } from "@/@types/allowance";
-import { ValidationErrors, ServerStateKeys } from "@/@types/common";
+import { TAllowance } from "@/@types/allowance";
+import { TErrorValidation, ServerStateKeysEnum } from "@/@types/common";
 import { queryClient } from "@/config/query";
 import { allowanceSchema } from "@/helpers/schemas/allowance";
 import { updateAllowanceRequest } from "@/services/allowance";
@@ -12,11 +12,11 @@ import { useCallback, useState } from "react";
 import { z } from "zod";
 
 export function useUpdateAllowance() {
-  const [validationErrors, setErrors] = useState<ValidationErrors[]>([]);
+  const [validationErrors, setErrors] = useState<TErrorValidation[]>([]);
   const { selectedAllowance } = useAppSelector((state) => state.allowance);
-  const [allowance, setAllowance] = useState<Allowance>(selectedAllowance);
+  const [allowance, setAllowance] = useState<TAllowance>(selectedAllowance);
 
-  const setAllowanceState = (allowanceData: Partial<Allowance>) => {
+  const setAllowanceState = (allowanceData: Partial<TAllowance>) => {
     setAllowance({
       ...allowance,
       ...allowanceData,
@@ -37,10 +37,10 @@ export function useUpdateAllowance() {
 
   const onSuccess = async () => {
     await queryClient.invalidateQueries({
-      queryKey: [ServerStateKeys.allowances],
+      queryKey: [ServerStateKeysEnum.Values.allowances],
     });
     await queryClient.refetchQueries({
-      queryKey: [ServerStateKeys.allowances],
+      queryKey: [ServerStateKeysEnum.Values.allowances],
     });
     setEditAllowanceDrawerState(EditActionType.closeDrawer);
   };
