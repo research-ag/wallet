@@ -14,9 +14,9 @@ const ICRCSubInfo = ({ subInfoType, setSubInfoType, children }: ICRCSubInfoProps
   const selectedButton = "border-AccpetButtonColor border-b-2";
   const unselectedButton = "text-PrimaryTextColorLight dark:text-PrimaryTextColor opacity-60 !font-light";
   return (
-    <div className="flex flex-col justify-start items-start w-full mt-2">
-      <div className="flex flex-row justify-between items-center w-full mb-4">
-        <div className="flex flex-row justify-start items-center gap-10  mb-4">
+    <div className="flex flex-col items-start justify-start w-full mt-2">
+      <div className="flex flex-row items-center justify-between w-full mb-4">
+        <div className="flex flex-row items-center justify-start gap-10 mb-4">
           <CustomButton
             intent={"noBG"}
             border={"underline"}
@@ -37,7 +37,7 @@ const ICRCSubInfo = ({ subInfoType, setSubInfoType, children }: ICRCSubInfoProps
               setSubInfoType(ICRCSubaccountInfoEnum.Enum.ALLOWANCES);
             }}
           >
-            <p>{t("allawances")}</p>
+            <p>{t("allowance")}</p>
           </CustomButton>
         </div>
       </div>
