@@ -2,6 +2,7 @@ import { ICRCSubaccountInfo, ICRCSubaccountInfoEnum } from "@/const";
 import { CustomButton } from "@components/Button";
 import { useTranslation } from "react-i18next";
 import { PropsWithChildren } from "react";
+import AddAllowanceButton from "../allowance/AddAllowanceButton";
 
 interface ICRCSubInfoProps extends PropsWithChildren {
   subInfoType: ICRCSubaccountInfo;
@@ -40,6 +41,8 @@ const ICRCSubInfo = ({ subInfoType, setSubInfoType, children }: ICRCSubInfoProps
             <p>{t("allowance")}</p>
           </CustomButton>
         </div>
+
+        <AddAllowanceButton />
       </div>
 
       <div className="flex w-full">{children}</div>

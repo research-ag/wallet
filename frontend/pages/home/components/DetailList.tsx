@@ -9,6 +9,7 @@ import ICRCSubaccountAction from "./ICRC/detail/SubaccountAction";
 import ICRCTransactionsTable from "./ICRC/detail/transaction/TransactionsTable";
 import DrawerTransaction from "./ICRC/detail/transaction/Transaction";
 import ICRCSubInfo from "./ICRC/detail/subaccountTableInfo";
+import AllowanceList from "./ICRC/allowance/AllowanceList";
 
 const icrc1DrawerOptions = [
   { name: "send", type: DrawerOptionEnum.Enum.SEND },
@@ -35,6 +36,7 @@ const DetailList = () => {
           {subInfoType === ICRCSubaccountInfoEnum.Enum.TRANSACTIONS && (
             <ICRCTransactionsTable setDrawerOpen={setDrawerOpen} />
           )}
+          {subInfoType === ICRCSubaccountInfoEnum.Enum.ALLOWANCES && <AllowanceList />}
         </ICRCSubInfo>
       </div>
       <div
@@ -58,7 +60,7 @@ const DetailList = () => {
     return selectedTransaction ? (
       <DrawerTransaction setDrawerOpen={setDrawerOpen} />
     ) : (
-      <div className="flex flex-col justify-start items-center bg-PrimaryColorLight dark:bg-PrimaryColor gap-5 w-full h-full pt-8 px-6">
+      <div className="flex flex-col items-center justify-start w-full h-full gap-5 px-6 pt-8 bg-PrimaryColorLight dark:bg-PrimaryColor">
         <DrawerAction
           options={icrc1DrawerOptions}
           drawerOption={drawerOption}
