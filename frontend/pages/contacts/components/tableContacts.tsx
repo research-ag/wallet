@@ -333,7 +333,7 @@ const TableContacts = ({
         {
           ...contactEdited,
           assets: cntc.assets,
-          accountIdentier: AccountIdentifier.fromPrincipal({
+          accountIdentifier: AccountIdentifier.fromPrincipal({
             principal: Principal.fromText(contactEdited.principal),
           }).toHex(),
         },

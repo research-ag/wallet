@@ -1,10 +1,10 @@
 // svgs
-import { ReactComponent as FlagSpain } from "../../../assets/svg/files/españa.svg";
-import { ReactComponent as FlagUSA } from "../../../assets/svg/files/usa.svg";
-import { ReactComponent as FlagItaly } from "../../../assets/svg/files/italia.svg";
-import { ReactComponent as BrazilFlag } from "../../../assets/svg/files/brazil.svg";
+import { ReactComponent as FlagSpain } from "@/assets/svg/files/españa.svg";
+import { ReactComponent as FlagUSA } from "@/assets/svg/files/usa.svg";
+import { ReactComponent as FlagItaly } from "@/assets/svg/files/italia.svg";
+import { ReactComponent as BrazilFlag } from "@/assets/svg/files/brazil.svg";
 //
-import { LanguageHook } from "@hooks/languageHook";
+import { LanguageHook } from "@/hooks/languageHook";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 
 interface FlagSelectorProps {

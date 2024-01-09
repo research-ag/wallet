@@ -506,3 +506,45 @@ export const getAssetSymbol = (symbol: string, assets: Array<Asset>) => {
     return a.tokenSymbol === symbol;
   })?.symbol;
 };
+
+export function decimalToBigInt(amount: string, decimalCount: string) {
+  const [integerPart, decimalPart] = amount.split(".");
+  if (!validateAmount(amount, Number(decimalCount))) throw new Error("Invalid amount");
+
+  const bigIntPart = BigInt(integerPart);
+
+  if (decimalPart) {
+    const decimalMultiplier = BigInt(10) ** BigInt(decimalCount);
+    const bigDecimalPart = BigInt(decimalPart) * decimalMultiplier;
+    return bigIntPart + bigDecimalPart;
+  } else {
+    return bigIntPart;
+  }
+}
+
+export function fromTimeStampNumberToNat64(timeStamp: number): bigint {
+  // Ensure timestamp is a valid number
+  if (isNaN(timeStamp)) {
+    throw new Error('Invalid timestamp provided');
+  }
+
+  // Convert timestamp to milliseconds since Unix epoch (if not already in milliseconds)
+  const milliseconds = timeStamp * 1000;
+
+  // Prepare a temporary variable to store adjusted milliseconds
+  let adjustedMilliseconds = milliseconds;
+
+  // Adjust for potential 32-bit timestamp overflow (if necessary)
+  if (milliseconds < 0 && milliseconds > Number.MIN_SAFE_INTEGER) {
+    adjustedMilliseconds += 2 ** 32 * 1000;
+  }
+
+  // Convert adjusted milliseconds to a BigInt representing nanoseconds
+  const nanoseconds = BigInt(adjustedMilliseconds) * BigInt(1000000);
+
+  // Shift right by 27 bits to create a 64-bit integer representation
+  const nat64 = nanoseconds >> BigInt(27);
+
+  return nat64;
+}
+
