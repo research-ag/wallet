@@ -12,7 +12,7 @@ export const validationMessage = {
   invalidAmount: "Amount has not a valid format",
 };
 
-export const allowanceSchema = z
+export const allowanceValidationSchema = z
   .object({
     id: z.string().uuid(),
     asset: z

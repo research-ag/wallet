@@ -9,7 +9,6 @@ import Button from "@components/buttons/Button";
 import { useCreateAllowance } from "@pages/home/hooks/useCreateAllowance";
 import { useMemo } from "react";
 import { validationMessage } from "@/helpers/schemas/allowance";
-import { t } from "i18next";
 import { useTranslation } from "react-i18next";
 
 interface IAllowanceDrawerProps {

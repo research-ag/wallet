@@ -5,7 +5,7 @@ import { CreateActionType, setCreateAllowanceDrawerState } from "@redux/allowanc
 import { useMutation } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { allowanceSchema } from "@/helpers/schemas/allowance";
+import { allowanceValidationSchema } from "@/helpers/schemas/allowance";
 import { z } from "zod";
 import { queryClient } from "@/config/query";
 import { TErrorValidation, ServerStateKeysEnum } from "@/@types/common";
@@ -71,7 +71,7 @@ export function useCreateAllowance() {
   const mutationFn = useCallback(async () => {
     try {
       const fullAllowance = { ...allowance, id: uuidv4() };
-      const valid = allowanceSchema.safeParse(fullAllowance);
+      const valid = allowanceValidationSchema.safeParse(fullAllowance);
       if (!valid.success) return Promise.reject(valid.error);
       const params = generateApproveAllowance(fullAllowance);
       await ICRCApprove(params, allowance.asset.address);

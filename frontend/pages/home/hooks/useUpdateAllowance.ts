@@ -1,7 +1,7 @@
 import { TAllowance } from "@/@types/allowance";
 import { TErrorValidation, ServerStateKeysEnum } from "@/@types/common";
 import { queryClient } from "@/config/query";
-import { allowanceSchema } from "@/helpers/schemas/allowance";
+import { allowanceValidationSchema } from "@/helpers/schemas/allowance";
 import { updateAllowanceRequest } from "@/services/allowance";
 import { ICRCApprove, generateApproveAllowance } from "@pages/helpers/allowance";
 import { useAppSelector } from "@redux/Store";
@@ -25,7 +25,7 @@ export function useUpdateAllowance() {
 
   const mutationFn = useCallback(async () => {
     try {
-      const valid = allowanceSchema.safeParse(allowance);
+      const valid = allowanceValidationSchema.safeParse(allowance);
       if (!valid.success) return Promise.reject(valid.error);
       const params = generateApproveAllowance(allowance);
       await ICRCApprove(params, allowance.asset.address);
