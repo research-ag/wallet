@@ -1,6 +1,7 @@
 import { validateAmount } from "@/utils";
 import { validatePrincipal } from "@/utils/identity";
 import * as z from "zod";
+// TODO: implement validation from allowance types
 
 export const validationMessage = {
   spender: "Invalid principal",

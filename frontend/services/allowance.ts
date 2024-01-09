@@ -56,41 +56,35 @@ export function postAllowance(newAllowance: TAllowance): Promise<TAllowance> {
       allowances.push(newAllowance);
     }
 
-    setTimeout(() => {
-      setInLocalStorage(LOCAL_STORAGE_PREFIX, allowances);
-      resolve(newAllowance);
-    }, 500);
+    setInLocalStorage(LOCAL_STORAGE_PREFIX, allowances);
+    resolve(newAllowance);
   });
 }
 
 export const updateAllowanceRequest = (newAllowance: TAllowance): Promise<TAllowance> => {
   return new Promise((resolve) => {
-    setTimeout(() => {
-      const allowances = getFromLocalStorage<TAllowance[]>(LOCAL_STORAGE_PREFIX);
-      if (Array.isArray(allowances)) {
-        const newAllowances = allowances.map((allowance) => {
-          if (allowance.id === newAllowance.id) {
-            return { ...allowance, ...newAllowance };
-          }
-          return allowance;
-        });
-        setInLocalStorage(LOCAL_STORAGE_PREFIX, newAllowances);
-      }
-      resolve(newAllowance as TAllowance);
-    }, 500);
+    const allowances = getFromLocalStorage<TAllowance[]>(LOCAL_STORAGE_PREFIX);
+    if (Array.isArray(allowances)) {
+      const newAllowances = allowances.map((allowance) => {
+        if (allowance.id === newAllowance.id) {
+          return { ...allowance, ...newAllowance };
+        }
+        return allowance;
+      });
+      setInLocalStorage(LOCAL_STORAGE_PREFIX, newAllowances);
+    }
+    resolve(newAllowance as TAllowance);
     return newAllowance as TAllowance;
   });
 };
 
 export function removeAllowance(id: string): Promise<void> {
   return new Promise((resolve) => {
-    setTimeout(() => {
-      const allowances = getFromLocalStorage<TAllowance[]>(LOCAL_STORAGE_PREFIX);
-      if (Array.isArray(allowances)) {
-        const newAllowances = allowances.filter((allowance) => allowance.id !== id);
-        setInLocalStorage(LOCAL_STORAGE_PREFIX, newAllowances);
-      }
-      resolve();
-    }, 500);
+    const allowances = getFromLocalStorage<TAllowance[]>(LOCAL_STORAGE_PREFIX);
+    if (Array.isArray(allowances)) {
+      const newAllowances = allowances.filter((allowance) => allowance.id !== id);
+      setInLocalStorage(LOCAL_STORAGE_PREFIX, newAllowances);
+    }
+    resolve();
   });
 }

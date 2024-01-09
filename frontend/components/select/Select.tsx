@@ -28,21 +28,6 @@ export default function Select(props: TSelectProps) {
     return options.find((option) => option.value === initialValue);
   }, [currentValue]);
 
-  const handleOpenChange = (open: boolean) => {
-    setIsOpen(open);
-    onOpenChange?.(open);
-  };
-
-  const handleSelectOption = (option: SelectOption) => onSelect(option);
-
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newSearchValue = event.target.value.replace(/\s/g, "");
-    if (onSearch) {
-      clearTimeout(searchTimeoutRef.current);
-      searchTimeoutRef.current = setTimeout(() => onSearch(newSearchValue), 100);
-    }
-  };
-
   return (
     <DropdownMenu.Root modal={isOpen} onOpenChange={handleOpenChange}>
       <DropdownMenu.Trigger asChild className={selectTriggerCVA({ disabled, border })}>
@@ -86,7 +71,25 @@ export default function Select(props: TSelectProps) {
       </DropdownMenu.Content>
     </DropdownMenu.Root>
   );
+
+  function handleOpenChange(open: boolean) {
+    setIsOpen(open);
+    onOpenChange?.(open);
+  }
+
+  function handleSelectOption(option: SelectOption) {
+    onSelect(option);
+  }
+
+  function handleSearchChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const newSearchValue = event.target.value.replace(/\s/g, "");
+    if (onSearch) {
+      clearTimeout(searchTimeoutRef.current);
+      searchTimeoutRef.current = setTimeout(() => onSearch(newSearchValue), 100);
+    }
+  }
 }
 
-const textStyles = (isSubLabel = false) =>
-  clsx("text-PrimaryTextColorLight dark:text-PrimaryTextColor", isSubLabel && "opacity-50");
+function textStyles(isSubLabel = false) {
+  return clsx("text-PrimaryTextColorLight dark:text-PrimaryTextColor", isSubLabel && "opacity-50");
+}

@@ -3,8 +3,9 @@ import { TErrorValidation } from "@/@types/common";
 import { SelectOption } from "@/@types/components";
 import { Chip } from "@components/chip";
 import { Select } from "@components/select";
+import useSubAccountFormItem from "@pages/home/hooks/useSubAccountFormItem";
 import { Asset } from "@redux/models/AccountModels";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 
 interface ISubAccountFormItemProps {
   allowance: TAllowance;
@@ -15,7 +16,7 @@ interface ISubAccountFormItemProps {
 }
 
 export default function SubAccountFormItem(props: ISubAccountFormItemProps) {
-  const [searchValue, setSearchValue] = useState<string | null>(null);
+  const { searchValue, setSearchValue, onOpenChange, onSearchChange } = useSubAccountFormItem();
   const { allowance, selectedAsset, setAllowanceState, isLoading, errors } = props;
   const { subAccount } = allowance;
 
@@ -37,20 +38,6 @@ export default function SubAccountFormItem(props: ISubAccountFormItemProps) {
     );
   }, [allowance.asset, searchValue, selectedAsset]);
 
-  const onChange = (option: SelectOption) => {
-    setSearchValue(null);
-    const fullSubAccount = allowance?.asset?.subAccounts.find((account) => account.sub_account_id === option.value);
-
-    if (!fullSubAccount || !fullSubAccount.address) return;
-    setAllowanceState({ ...allowance, subAccount: fullSubAccount });
-  };
-
-  const onSearchChange = (searchValue: string) => {
-    setSearchValue(searchValue);
-  };
-
-  const onOpenChange = () => setSearchValue(null);
-
   return (
     <div className="mt-4">
       <label htmlFor="Subaccount" className="text-lg">
@@ -69,4 +56,12 @@ export default function SubAccountFormItem(props: ISubAccountFormItemProps) {
       />
     </div>
   );
+
+  function onChange(option: SelectOption) {
+    setSearchValue(null);
+    const fullSubAccount = allowance?.asset?.subAccounts.find((account) => account.sub_account_id === option.value);
+
+    if (!fullSubAccount || !fullSubAccount.address) return;
+    setAllowanceState({ ...allowance, subAccount: fullSubAccount });
+  }
 }

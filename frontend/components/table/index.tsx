@@ -16,22 +16,22 @@ export function Table({ children, className }: CommonProps) {
   );
 }
 
-export const TableHead = ({ children, className }: CommonProps) => {
+export function TableHead({ children, className }: CommonProps) {
   return <thead className={`${className}`}>{children}</thead>;
-};
+}
 
-export const TableBody = ({ children, className }: CommonProps) => {
+export function TableBody({ children, className }: CommonProps) {
   return <tbody className={className}>{children}</tbody>;
-};
+}
 
-export const TableRow = ({ children, className }: CommonProps) => {
+export function TableRow({ children, className }: CommonProps) {
   return <tr className={`${className}`}>{children}</tr>;
-};
+}
 
-export const TableHeaderCell = ({ children, className }: CommonProps) => {
+export function TableHeaderCell({ children, className }: CommonProps) {
   return <th className={`${className} py-2 text-lg text-left`}>{children}</th>;
-};
+}
 
-export const TableBodyCell = ({ children, className, disabled }: CommonProps) => {
+export function TableBodyCell({ children, className, disabled }: CommonProps) {
   return <td className={`${className}  ${disabled ? "opacity-20" : ""} py-2 text-left`}>{children}</td>;
-};
+}

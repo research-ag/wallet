@@ -8,4 +8,3 @@ const SelectOptionSchema = z.object({
 });
 
 export type SelectOption = z.infer<typeof SelectOptionSchema>;
-

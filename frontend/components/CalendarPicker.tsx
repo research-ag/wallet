@@ -24,17 +24,6 @@ export const CalendarPicker = (props: CalendarDatePickerProps) => {
   } = props;
 
   const { theme } = ThemeHook();
-
-  function handleDateChange(date: dayjs.Dayjs | null) {
-    if (!date) return;
-    onDateChange(date);
-  }
-
-  function handleDateEnable() {
-    if (!disabled) return;
-    onEnableChange(false);
-  }
-
   return (
     <div className="flex items-center justify-start w-full">
       <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -64,10 +53,18 @@ export const CalendarPicker = (props: CalendarDatePickerProps) => {
       </LocalizationProvider>
     </div>
   );
+
+  function handleDateChange(date: dayjs.Dayjs | null) {
+    if (!date) return;
+    onDateChange(date);
+  }
+
+  function handleDateEnable() {
+    if (!disabled) return;
+    onEnableChange(false);
+  }
 };
 
-const dateTimePickerStyles = (theme: string) => {
-  return clsx("!cursor-pointer !w-full",
-  theme === "light" ? "date-picker-light" : "date-picker"
-  );
-};
+function dateTimePickerStyles(theme: string) {
+  return clsx("!cursor-pointer !w-full", theme === "light" ? "date-picker-light" : "date-picker");
+}

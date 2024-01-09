@@ -11,7 +11,7 @@ const subAccount = z.object({
   symbol: z.string(),
 });
 
-export const allowanceSchemaSchema = z.object({
+export const allowanceSchema = z.object({
   id: z.string().optional(),
   asset: z.object({
     logo: z.string().optional(),
@@ -37,7 +37,7 @@ export const allowanceSchemaSchema = z.object({
   noExpire: z.boolean(),
 });
 
-export type TAllowance = z.infer<typeof allowanceSchemaSchema>;
+export type TAllowance = z.infer<typeof allowanceSchema>;
 
 export const AllowancesTableColumnsEnum = z.enum(["subAccount", "spender", "amount", "expiration", "action"]);
 export type AllowancesTableColumns = z.infer<typeof AllowancesTableColumnsEnum>;
