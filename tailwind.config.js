@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable no-undef */
-const colors = require("tailwindcss/colors");
+const colors = require('tailwindcss/colors')
 
-module.exports = {
+module.exports =  {
   darkMode: "class",
-  content: ["./index.html", "./frontend/**/*.{js,ts,jsx,tsx}", "./node_modules/tailwind-datepicker-react/dist/**/*.js"],
+  content: ["./index.html", "./frontend/**/*.{js,ts,jsx,tsx}"],
   variants: {
     extend: {},
   },
@@ -12,10 +12,10 @@ module.exports = {
   theme: {
     extend: {
       transitionProperty: {
-        height: "height",
-        spacing: "margin, padding",
-        width: "width",
-      },
+        "height": "height",
+        "spacing": "margin, padding",
+        "width": "width"
+      }
     },
     fontSize: {
       xm: ".55rem",
@@ -31,7 +31,7 @@ module.exports = {
       "7xl": "5rem",
     },
     screens: {
-      defaults: "1475px",
+      "defaults":"1475px",
     },
     colors: {
       PrimaryColor: "#1b183f",
@@ -50,8 +50,8 @@ module.exports = {
       ThemeColorBackLight: "#e3e3e3",
       ThemeColorSelector: "#19173a",
       ThemeColorSelectorLight: "#ffffff",
-      HoverColorLight: "#bfbfbf",
-      HoverColor: "#332F60",
+      HoverColorLight:"#bfbfbf",
+      HoverColor:"#332F60",
       BorderColor: "#68658b",
       BorderColorLight: "#bfbfbf",
       BorderColorTwo: "#2B2759",
@@ -69,7 +69,7 @@ module.exports = {
       RadioNoCheckColorLight: "#4442777f",
       SvgColorLight: "#6F6C99",
       SvgColor: "#6F6C99",
-      acceptButtonColor: "#33B2EF",
+      AccpetButtonColor: "#33B2EF",
       DenyButtonColor: "#332F60",
       SearchInputBorder: "#444277",
       SearchInputBorderLight: "#DFDFE6",
@@ -79,7 +79,7 @@ module.exports = {
       TextSendColor: "#F5797D",
       TextReceiveColor: "#3BC9A9",
       SelectRowColor: "#33B2EF",
-      AddSubAccount: "#0D4864",
+      AddSubaccount: "#0D4864",
       ReceiverColor: "#8A9CB7",
       FromBoxColor: "#1C1940",
       FromBoxColorLight: "#DBE4ED",
@@ -91,6 +91,7 @@ module.exports = {
       ContactColor1: "#8A9CB7",
       ContactColor2: "#61A0BE",
       ContactColor3: "#5F8E88",
+
 
       black: colors.black,
       white: colors.white,
@@ -119,6 +120,7 @@ module.exports = {
       transparent: colors.transparent,
       current: colors.current,
       inherit: colors.inherit,
-    },
+    }
   },
-};
+}
+

@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+// Models
+
 const SubAccountContact = z.object({
   name: z.string(),
   subaccount_index: z.string(),
@@ -40,7 +42,7 @@ const Contact = z.object({
   name: z.string(),
   principal: z.string(),
   assets: z.array(AssetContact),
-  accountIdentifier: z.string().optional(),
+  accountIdentier: z.string().optional(),
 });
 
 export type Contact = z.infer<typeof Contact>;

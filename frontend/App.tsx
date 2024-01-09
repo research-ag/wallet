@@ -1,22 +1,16 @@
+import React, { useEffect } from "react";
+import SwitchRoute from "./pages";
+import { Provider } from "react-redux";
+import store from "./redux/Store";
+import { useTranslation } from "react-i18next";
 import "./App.scss";
 import { AuthClient } from "@dfinity/auth-client";
-import { GlobalDebug } from "./RemoveLogs";
 import { handleLoginApp } from "@redux/CheckAuth";
-import { Provider } from "react-redux";
-import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { setAuth } from "@redux/auth/AuthReducer";
-import { useTranslation } from "react-i18next";
-import { persister, queryClient } from "@/config/query";
-import React, { useEffect } from "react";
-import store from "./redux/Store";
-import SwitchRoute from "./pages";
+import { GlobalDebug } from "./RemoveLogs";
 
 const App: React.FC = () => {
   const { i18n } = useTranslation();
-
-  if (typeof window !== "undefined") {
-    window.React = React;
-  }
 
   useEffect(() => {
     const language = localStorage.getItem("language");
@@ -44,11 +38,9 @@ const App: React.FC = () => {
 
   return (
     <div className="App">
-      <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
-        <Provider store={store}>
-          <SwitchRoute />
-        </Provider>
-      </PersistQueryClientProvider>
+      <Provider store={store}>
+        <SwitchRoute></SwitchRoute>
+      </Provider>
     </div>
   );
 };

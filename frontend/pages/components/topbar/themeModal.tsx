@@ -7,7 +7,7 @@ import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
 import { clsx } from "clsx";
 import * as RadioGroup from "@radix-ui/react-radio-group";
-import { ThemeHook } from "@/hooks/themeHook";
+import { ThemeHook } from "@pages/hooks/themeHook";
 import { ThemesEnum } from "@/const";
 
 interface ThemeModalProps {
@@ -21,7 +21,7 @@ const ThemeModal = ({ setOpen }: ThemeModalProps) => {
 
   return (
     <Fragment>
-      <div className="flex flex-row items-center justify-between w-full mb-2 top-modal">
+      <div className="flex flex-row justify-between items-center w-full mb-2 top-modal">
         <p className="font-bold text-[1.15rem]">{t("themes")}</p>
         <CloseIcon
           className="cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
@@ -30,7 +30,7 @@ const ThemeModal = ({ setOpen }: ThemeModalProps) => {
           }}
         />
       </div>
-      <p className="mb-2 font-light">{t("theme.modal.msg")}</p>
+      <p className="font-light mb-2">{t("theme.modal.msg")}</p>
       <button
         className={clsx(themeBox, "bg-ThemeColorSelectorLight", "border-BorderColor")}
         onClick={() => {
@@ -60,7 +60,7 @@ const ThemeModal = ({ setOpen }: ThemeModalProps) => {
               >
                 <RadioGroup.Indicator className="flex items-center justify-center w-full h-full relative after:content-[''] after:block after:w-3 after:h-3 after:rounded-full after:bg-RadioCheckColor" />
               </RadioGroup.Item>
-              <p className="ml-4 opacity-50 text-PrimaryTextColorLight dark:text-PrimaryTextColor">
+              <p className="text-PrimaryTextColorLight dark:text-PrimaryTextColor opacity-50 ml-4">
                 {t(ThemesEnum.enum.light)}
               </p>
             </div>
@@ -98,7 +98,7 @@ const ThemeModal = ({ setOpen }: ThemeModalProps) => {
               >
                 <RadioGroup.Indicator className="flex items-center justify-center w-full h-full relative after:content-[''] after:block after:w-3 after:h-3 after:rounded-full after:bg-RadioCheckColor" />
               </RadioGroup.Item>
-              <p className="ml-4 opacity-50 text-PrimaryTextColorLight dark:text-PrimaryTextColor">
+              <p className="text-PrimaryTextColorLight dark:text-PrimaryTextColor opacity-50 ml-4">
                 {t(ThemesEnum.enum.dark)}
               </p>
             </div>

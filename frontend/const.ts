@@ -87,4 +87,3 @@ export const symbolIconDict: { [key: string]: string } = {
   OGY: OrigynIcon,
   GLDGov: GLDGovIcon,
 };
-

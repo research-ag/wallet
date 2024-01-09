@@ -7,7 +7,7 @@ import LayoutComponent from "./components/LayoutComponent";
 import history from "./history";
 import PrivateRoute from "./components/privateRoute";
 import { useAppSelector } from "@redux/Store";
-import { ThemeHook } from "@/hooks/themeHook";
+import { ThemeHook } from "./hooks/themeHook";
 import Loader from "./components/Loader";
 import { ThemesEnum } from "@/const";
 const Home = lazy(() => import("./home"));

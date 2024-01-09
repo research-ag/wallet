@@ -1,6 +1,6 @@
 // svg
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
-import { ReactComponent as TrashIcon } from "@assets/svg/files/trash-icon.svg";
+import { ReactComponent as TrashIcon } from "@assets/svg/files/trash-empty.svg";
 //
 import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
@@ -47,15 +47,15 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
 
   return (
     <Fragment>
-      <div className="flex flex-col items-start justify-start w-full gap-4 reative text-md">
+      <div className="reative flex flex-col justify-start items-start w-full gap-4 text-md">
         <CloseIcon
-          className="absolute cursor-pointer top-5 right-5 stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
+          className="absolute top-5 right-5 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
           onClick={() => {
             setAddOpen(false);
           }}
         />
         <p>{t("add.contact")}</p>
-        <div className="flex flex-row items-start justify-start w-full gap-3">
+        <div className="flex flex-row justify-start items-start w-full gap-3">
           <div className="flex flex-col justify-start items-start w-[50%]">
             <p>{t("name")}</p>
             <CustomInput
@@ -68,7 +68,7 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
               }}
             />
           </div>
-          <div className="flex flex-col items-start justify-start w-full">
+          <div className="flex flex-col justify-start items-start w-full">
             <p>{"Principal"}</p>
             <CustomInput
               sizeInput={"medium"}
@@ -81,7 +81,7 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
             />
           </div>
         </div>
-        <div className="flex flex-row items-center justify-center w-full gap-3 rounded-sm h-72 bg-ThirdColorLight dark:bg-ThirdColor">
+        <div className="flex flex-row justify-center items-center w-full h-72 rounded-sm bg-ThirdColorLight dark:bg-ThirdColor gap-3">
           {newContact.assets.length === 0 ? (
             <ContactAssetPop
               assets={assets}
@@ -91,9 +91,9 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
               }}
             />
           ) : (
-            <div className="flex flex-row items-start justify-start w-full h-full">
+            <div className="flex flex-row justify-start items-start w-full h-full">
               <div className="flex flex-col justify-start items-start w-[70%] h-full">
-                <div className="flex flex-row items-center justify-between w-full p-3">
+                <div className="flex flex-row justify-between items-center w-full p-3">
                   <p className="whitespace-nowrap">{t("add.assets")}</p>
                   {assets.filter((ast) => {
                     let isIncluded = false;
@@ -140,10 +140,10 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
                   })}
                 </div>
               </div>
-              <div className="flex flex-col items-start justify-start w-full h-full gap-4 p-3 bg-SecondaryColorLight dark:bg-SecondaryColor">
+              <div className="flex flex-col justify-start items-start w-full h-full p-3 bg-SecondaryColorLight dark:bg-SecondaryColor gap-4">
                 <p>{`${t("sub-acc")} (${newSubAccounts.length})`}</p>
                 <div className="flex flex-row justify-start items-start w-full gap-2 max-h-[15rem] scroll-y-light">
-                  <div className="flex flex-col items-start justify-start w-full gap-2">
+                  <div className="flex flex-col justify-start items-start w-full gap-2">
                     <p className="opacity-60">{t("name.sub.account")}</p>
                     {newSubAccounts.map((newSA, k) => {
                       return (
@@ -166,7 +166,7 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
                     <p className="opacity-60">{t("sub-acc")}</p>
                     {newSubAccounts.map((newSA, k) => {
                       return (
-                        <div key={k} className="flex flex-row items-center justify-start w-full gap-2">
+                        <div key={k} className="flex flex-row justify-start items-center w-full gap-2">
                           <CustomInput
                             sizeInput={"small"}
                             sizeComp={"small"}
@@ -185,7 +185,7 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
                             onClick={() => {
                               onDeleteSubAccount(k);
                             }}
-                            className="w-5 h-5 cursor-pointer fill-PrimaryTextColorLight dark:fill-PrimaryTextColor"
+                            className="w-5 h-5 fill-PrimaryTextColorLight dark:fill-PrimaryTextColor cursor-pointer"
                           />
                         </div>
                       );
@@ -196,7 +196,7 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
             </div>
           )}
         </div>
-        <div className="flex flex-row items-center justify-end w-full gap-3">
+        <div className="flex flex-row justify-end items-center w-full gap-3">
           <p className="text-TextErrorColor">{t(newContactErr)}</p>
           <CustomButton className="min-w-[5rem]" onClick={onAddContact}>
             <p>{t("add.contact")}</p>

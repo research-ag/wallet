@@ -132,19 +132,5 @@
   "acc.identifier": "Identificador de conta",
   "acc.subacc": "Sub conta",
   "acc.principal": "Diretora",
-  "congrats": "Parabéns",
-  "edit": "Editar",
-  "delete": "Excluir",
-  "expiration": "Expiração",
-  "subAccount": "Subconta",
-  "spender": "Gastador",
-  "principal": "Principal",
-  "no.expiration": "Sem Expiração",
-  "contact.book": "Livro de Contatos",
-  "new": "novo",
-  "allowance.allowances": "Mesadas",
-  "allowance.add.allowance": "Adicionar Mesada",
-  "allowance.sure.remove": "Tem certeza de que deseja Remover?",
-  "allowance.permanently.deleted": "Esta Mesada será excluída permanentemente.",
-  "allowance.edit.allowance": "Editar Mesada"
+  "congrats": "Parabéns"
 }

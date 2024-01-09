@@ -5,7 +5,7 @@ import { Principal } from "@dfinity/principal";
 import { hexToUint8Array } from "@/utils";
 import QRCode from "react-qr-code";
 import { CustomCopy } from "@components/CopyTooltip";
-import { AccountHook } from "@/hooks/accountHook";
+import { AccountHook } from "@pages/hooks/accountHook";
 
 const DrawerReceive = () => {
   const { selectedAccount } = GeneralHook();

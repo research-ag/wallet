@@ -4,10 +4,10 @@ import { cva, type VariantProps } from "cva";
 const button = cva("button", {
   variants: {
     intent: {
-      accept: ["bg-acceptButtonColor", "text-white"],
+      accept: ["bg-AccpetButtonColor", "text-white"],
       deny: ["bg-DenyButtonColor", "text-white"],
       success: ["bg-BorderSuccessColor", "text-white"],
-      noBG: ["bg-transparent", "text-acceptButtonColor"],
+      noBG: ["bg-transparent", "text-AccpetButtonColor"],
     },
     size: {
       icon: ["p-2", "rounded-md"],
@@ -40,7 +40,7 @@ const button = cva("button", {
   },
 });
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof button> {}
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof button> {}
 
 export const CustomButton: FC<ButtonProps> = ({ className, intent, size, border, focusBorder, ...props }) => (
   <button className={button({ intent, size, border, focusBorder, className })} {...props} />

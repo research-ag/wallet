@@ -132,19 +132,5 @@
   "acc.identifier": "Identificador de Cuenta",
   "acc.subacc": "Subcuenta",
   "acc.principal": "Principal",
-  "congrats": "Felicitaciones",
-  "edit": "Editar",
-  "delete": "Eliminar",
-  "expiration": "Expiración",
-  "subAccount": "Subcuenta",
-  "spender": "Gastador",
-  "principal": "Principal",
-  "no.expiration": "Sin Expiración",
-  "contact.book": "Libro de Contactos",
-  "new": "nuevo",
-  "allowance.allowances": "Asignaciones",
-  "allowance.add.allowance": "Agregar Asignación",
-  "allowance.sure.remove": "¿Estás seguro de que quieres Eliminar?",
-  "allowance.permanently.deleted": "Esta Asignación se eliminará permanentemente.",
-  "allowance.edit.allowance": "Editar Asignación"
+  "congrats": "Felicitaciones"
 }

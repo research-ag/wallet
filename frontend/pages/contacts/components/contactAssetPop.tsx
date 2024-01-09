@@ -3,7 +3,7 @@ import { IconType, IconTypeEnum } from "@/const";
 import PlusIcon from "@assets/svg/files/plus-icon.svg";
 //
 import { CustomButton } from "@components/Button";
-import { CheckBox } from "@components/checkbox";
+import { CustomCheck } from "@components/CheckBox";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { Asset, AssetToAdd } from "@redux/models/AccountModels";
 import { Fragment, useEffect, useState } from "react";
@@ -67,7 +67,7 @@ const ContactAssetPop = ({
                     onClick={handleSelectAll}
                   >
                     <p>{t("selected.all")}</p>
-                    <CheckBox
+                    <CustomCheck
                       className="border-BorderColorLight dark:border-BorderColor"
                       checked={assetsToAdd.length === assets.length}
                     />
@@ -85,12 +85,12 @@ const ContactAssetPop = ({
                           handleSelectAsset(asset);
                         }}
                       >
-                        <div className="flex items-center justify-start gap-2 flex-start">
+                        <div className="flex flex-start justify-start items-center gap-2">
                           {getAssetIcon(IconTypeEnum.Enum.FILTER, asset.tokenSymbol, asset.logo)}
                           <p>{asset.symbol}</p>
                         </div>
 
-                        <CheckBox
+                        <CustomCheck
                           className="border-BorderColorLight dark:border-BorderColor"
                           checked={symbolToAdd.includes(asset.tokenSymbol)}
                         />
@@ -99,7 +99,7 @@ const ContactAssetPop = ({
                   })}
                 </div>
 
-                <div className="flex items-center justify-center w-full p-2 pt-4 rounded-b-lg">
+                <div className="flex justify-center items-center p-2 pt-4 w-full rounded-b-lg">
                   <CustomButton onClick={handleAddAssetButton} size={"small"} className="w-full">
                     <p>{t("add.asset")}</p>
                   </CustomButton>

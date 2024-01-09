@@ -14,7 +14,7 @@ const Loader: FunctionComponent<LoaderProps> = ({
     <div className="one bg-PrimaryTextColorLight dark:bg-PrimaryTextColor "></div>
     <div className="two bg-SecondaryTextColorLight dark:bg-SecondaryTextColor"></div>
     <div className="three bg-BorderSuccessColor dark:bg-BorderSuccessColor"></div>
-    <div className="four bg-acceptButtonColor dark:bg-acceptButtonColor"></div>
+    <div className="four bg-AccpetButtonColor dark:bg-AccpetButtonColor"></div>
   </div>
 );
 export default Loader;

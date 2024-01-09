@@ -8,7 +8,7 @@ import { ReactComponent as CheckIcon } from "@assets/svg/files/edit-check.svg";
 import { LoginHook } from "./hooks/loginhook";
 import FlagSelector from "./components/flagSelector";
 import { useTranslation } from "react-i18next";
-import { ThemeHook } from "@/hooks/themeHook";
+import { ThemeHook } from "@hooks/themeHook";
 import { ChangeEvent, Fragment } from "react";
 import { handleAuthenticated, handleSeedAuthenticated } from "@/redux/CheckAuth";
 import { AuthNetworkTypeEnum, ThemesEnum } from "@/const";

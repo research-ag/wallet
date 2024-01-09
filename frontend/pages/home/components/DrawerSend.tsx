@@ -4,8 +4,8 @@ import { GeneralHook } from "../hooks/generalHook";
 import { SentHook } from "../hooks/sentHooks";
 import QRscanner from "@pages/components/QRscanner";
 import DialogSendConfirmation from "./DialogSendConfirmation";
-import SendOwnAccount from "./account/SendOwnAccount";
-import SendOutAccount from "./account/SendOutAccount";
+import SendOwnAccount from "./SendOwnAccount";
+import SendOutAccount from "./SendOutAccount";
 
 interface DrawerSendProps {
   setDrawerOpen(value: boolean): void;

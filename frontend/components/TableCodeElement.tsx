@@ -1,6 +1,6 @@
 import { AssetSymbolEnum, SpecialTxTypeEnum } from "@/const";
 import { getAddress, shortAddress } from "@/utils";
-import { AccountHook } from "@/hooks/accountHook";
+import { AccountHook } from "@pages/hooks/accountHook";
 import { useAppSelector } from "@redux/Store";
 import { Transaction } from "@redux/models/AccountModels";
 import { clsx } from "clsx";
@@ -83,7 +83,7 @@ const CodeElement = ({ tx }: CodeElementProps) => {
       }
     }
 
-    const contact = contacts.find((cntc) => cntc.accountIdentifier === (isTo ? tx.to || "" : tx.from || ""));
+    const contact = contacts.find((cntc) => cntc.accountIdentier === (isTo ? tx.to || "" : tx.from || ""));
     if (contact) {
       hasContactName = true;
       contactName = contact.name;

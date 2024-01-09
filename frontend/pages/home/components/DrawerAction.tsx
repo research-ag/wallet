@@ -17,7 +17,7 @@ interface DrawerActionProps {
 const DrawerAction = ({ drawerOption, setDrawerOption, setDrawerOpen, children }: DrawerActionProps) => {
   const { t } = useTranslation();
 
-  const selectedButton = "border-acceptButtonColor";
+  const selectedButton = "border-AccpetButtonColor";
   const unselectedButton = "text-PrimaryTextColorLight dark:text-PrimaryTextColor";
   const drawerOptions = [
     { name: "send", style: customSend(), type: DrawerOptionEnum.Enum.SEND },
