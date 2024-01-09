@@ -2,15 +2,16 @@ import { AssetSymbolEnum, WorkerTaskEnum } from "@/const";
 import { defaultTokens } from "@/defaultTokens";
 import { hexToUint8Array } from "@/utils";
 // import { AssetList, Metadata } from "@candid/metadata/service.did";
-import store, { useAppSelector } from "@redux/Store";
+import store, { useAppDispatch, useAppSelector } from "@redux/Store";
 import { getAllTransactionsICP, getAllTransactionsICRC1, updateAllBalances } from "@redux/assets/AssetActions";
-import { setTokens, setTxWorker } from "@redux/assets/AssetReducer";
+import { setLoading, setTokens, setTxWorker } from "@redux/assets/AssetReducer";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { Token } from "@redux/models/TokenModels";
 import timer_script from "@workers/timerWorker";
 import { useEffect } from "react";
 
 export const WorkerHook = () => {
+  const dispatch = useAppDispatch();
   const { tokens, assets, txWorker } = useAppSelector((state) => state.asset);
   const { authClient, userAgent } = useAppSelector((state) => state.auth);
 
@@ -61,6 +62,7 @@ export const WorkerHook = () => {
   };
 
   const getAssetsWorker = async () => {
+    dispatch(setLoading(true));
     const userData = localStorage.getItem(authClient);
     if (userData) {
       const userDataJson = JSON.parse(userData);
