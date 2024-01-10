@@ -39,8 +39,6 @@ export default function useCreateAllowance() {
     });
   };
 
-  console.log("create allowance", allowance);
-
   const mutationFn = useCallback(async () => {
     try {
       const fullAllowance = { ...allowance, id: uuidv4() };
