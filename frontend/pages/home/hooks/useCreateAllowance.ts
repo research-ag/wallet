@@ -39,7 +39,7 @@ export default function useCreateAllowance() {
     });
   };
 
-  console.log("allowance", allowance);
+  console.log("create allowance", allowance);
 
   const mutationFn = useCallback(async () => {
     try {

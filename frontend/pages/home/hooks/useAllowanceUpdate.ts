@@ -17,6 +17,8 @@ export function useUpdateAllowance() {
   const { selectedAllowance } = useAppSelector((state) => state.allowance);
   const [allowance, setAllowance] = useState<TAllowance>(selectedAllowance);
 
+  console.log("update allowance", allowance);
+
   const setAllowanceState = (allowanceData: Partial<TAllowance>) => {
     setAllowance({
       ...allowance,
