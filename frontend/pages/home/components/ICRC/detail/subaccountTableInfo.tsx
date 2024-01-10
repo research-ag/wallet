@@ -28,7 +28,7 @@ const ICRCSubInfo = ({ subInfoType, setSubInfoType, children }: ICRCSubInfoProps
               setSubInfoType(ICRCSubaccountInfoEnum.Enum.TRANSACTIONS);
             }}
           >
-            <p>{t("transactions")}</p>
+            <p>{t("transaction.transactions")}</p>
           </CustomButton>
           <CustomButton
             intent={"noBG"}
@@ -38,7 +38,7 @@ const ICRCSubInfo = ({ subInfoType, setSubInfoType, children }: ICRCSubInfoProps
               setSubInfoType(ICRCSubaccountInfoEnum.Enum.ALLOWANCES);
             }}
           >
-            <p>{t("allowance")}</p>
+            <p>{t("allowance.allowances")}</p>
           </CustomButton>
         </div>
 
