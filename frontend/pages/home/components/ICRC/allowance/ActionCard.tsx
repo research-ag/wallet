@@ -6,17 +6,15 @@ import { ReactComponent as CloseIcon } from "@assets/svg/files/close-icon.svg";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { TAllowance } from "@/@types/allowance";
 import { Modal } from "@components/modal";
-// import {
-//   EditActionType,
-//   setEditAllowanceDrawerState,
-//   setSelectedAllowanceAction,
-// } from "@redux/allowances/AllowanceActions";
 import clsx from "clsx";
 import { ThemesEnum } from "@/const";
 import { useTranslation } from "react-i18next";
 import useDeleteAllowance from "@pages/home/hooks/useDeleteAllowance";
 import { ThemeHook } from "@pages/hooks/themeHook";
 import { middleTruncation } from "@/utils/strings";
+import { useAppDispatch } from "@redux/Store";
+import { setSelectedAllowance } from "@redux/allowance/AllowanceReducer";
+import useAllowanceDrawer from "@pages/home/hooks/useAllowanceDrawer";
 
 interface ActionCardProps {
   allowance: TAllowance;
@@ -24,17 +22,12 @@ interface ActionCardProps {
 }
 
 export default function ActionCard(props: ActionCardProps) {
+  const { onOpenUpdateAllowanceDrawer } = useAllowanceDrawer();
+  const dispatch = useAppDispatch();
   const { allowance, refetchAllowances } = props;
   const { t } = useTranslation();
   const { deleteAllowance, isPending } = useDeleteAllowance();
   const { theme } = ThemeHook();
-
-  const handleDelete = async () => {
-    if (!allowance.id) return;
-    deleteAllowance(allowance);
-    // TODO: refetch allowances not from props instead from query functions
-    refetchAllowances();
-  };
 
   return (
     <DropdownMenu.Root>
@@ -49,10 +42,7 @@ export default function ActionCard(props: ActionCardProps) {
       >
         <DropdownMenu.Item
           className="flex items-center justify-start p-2 cursor-pointer dark:bg-PopSelectColor rounded-t-md"
-          onClick={() => {
-            // setSelectedAllowanceAction(allowance);
-            // setEditAllowanceDrawerState(EditActionType.openDrawer);
-          }}
+          onClick={onUpdateHandler}
         >
           <PencilIcon className="mr-4" fill={theme === ThemesEnum.Enum.light ? "#000000" : "#ffffff"} />
           <p className={getCellStyles()}>{t("edit")}</p>
@@ -88,6 +78,18 @@ export default function ActionCard(props: ActionCardProps) {
         <p className={textStyles}>{t("allowance.permanently.deleted")}</p>
       </div>
     );
+  }
+
+  function onUpdateHandler() {
+    dispatch(setSelectedAllowance(allowance));
+    onOpenUpdateAllowanceDrawer();
+  }
+
+  async function handleDelete() {
+    if (!allowance.id) return;
+    deleteAllowance(allowance);
+    // TODO: refetch allowances not from props instead from query functions
+    refetchAllowances();
   }
 }
 

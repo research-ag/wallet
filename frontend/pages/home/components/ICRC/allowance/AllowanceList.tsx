@@ -1,11 +1,11 @@
 import { AllowancesTableColumns } from "@/@types/allowance";
 import { isDateExpired } from "@/utils/time";
 import { Table, TableBody, TableBodyCell, TableHead, TableHeaderCell, TableRow } from "@components/table";
-import useAllowanceDrawer from "@pages/home/hooks/useAllowanceDrawer";
 import useAllowanceTable from "@pages/home/hooks/useAllowanceTable";
 import useAllowances from "@pages/home/hooks/useAllowances";
 import { flexRender, getCoreRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 import clsx from "clsx";
+import UpdateAllowanceDrawer from "./UpdateAllowanceDrawer";
 
 export default function AllowanceList() {
   const { allowances, handleSortChange } = useAllowances();
@@ -19,10 +19,13 @@ export default function AllowanceList() {
   });
 
   return (
-    <Table>
-      <TableHeadGroup />
-      <TableBodyGroup />
-    </Table>
+    <>
+      <UpdateAllowanceDrawer />
+      <Table>
+        <TableHeadGroup />
+        <TableBodyGroup />
+      </Table>
+    </>
   );
 
   function TableHeadGroup() {
