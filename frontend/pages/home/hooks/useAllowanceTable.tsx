@@ -7,15 +7,10 @@ import clsx from "clsx";
 import { isDateExpired } from "@/utils/time";
 import { useTranslation } from "react-i18next";
 import ActionCard from "../components/ICRC/allowance/ActionCard";
-import { allowanceFullReload } from "../helpers/allowanceCache";
 
 export default function useAllowanceTable() {
   const { t } = useTranslation();
   const columnHelper = createColumnHelper<TAllowance>();
-
-  async function refetchAllowances() {
-    await allowanceFullReload();
-  };
 
   const columns = [
     columnHelper.accessor(AllowancesTableColumnsEnum.Values.subAccount, {
@@ -101,7 +96,7 @@ export default function useAllowanceTable() {
     }),
     columnHelper.display({
       id: AllowancesTableColumnsEnum.Values.action,
-      cell: (info) => <ActionCard allowance={info.row.original} refetchAllowances={refetchAllowances} />,
+      cell: (info) => <ActionCard allowance={info.row.original} />,
       header: () => t("action"),
       enableSorting: false,
       enableHiding: false,

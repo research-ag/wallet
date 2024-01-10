@@ -15,16 +15,16 @@ import { middleTruncation } from "@/utils/strings";
 import { useAppDispatch } from "@redux/Store";
 import { setSelectedAllowance } from "@redux/allowance/AllowanceReducer";
 import useAllowanceDrawer from "@pages/home/hooks/useAllowanceDrawer";
+import { allowanceFullReload } from "@pages/home/helpers/allowanceCache";
 
 interface ActionCardProps {
   allowance: TAllowance;
-  refetchAllowances: () => void;
 }
 
 export default function ActionCard(props: ActionCardProps) {
   const { onOpenUpdateAllowanceDrawer } = useAllowanceDrawer();
   const dispatch = useAppDispatch();
-  const { allowance, refetchAllowances } = props;
+  const { allowance } = props;
   const { t } = useTranslation();
   const { deleteAllowance, isPending } = useDeleteAllowance();
   const { theme } = ThemeHook();
@@ -88,8 +88,7 @@ export default function ActionCard(props: ActionCardProps) {
   async function handleDelete() {
     if (!allowance.id) return;
     deleteAllowance(allowance);
-    // TODO: refetch allowances not from props instead from query functions
-    refetchAllowances();
+    await allowanceFullReload();
   }
 }
 
