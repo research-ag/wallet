@@ -8,9 +8,9 @@ import {
   sortByExpiration,
   sortBySubAccount,
 } from "@/utils/allowanceSorters";
-import { getStringPrincipal } from "@/utils/identity";
+import store from "@redux/Store";
 
-export const LOCAL_STORAGE_PREFIX = `allowances-${getStringPrincipal()}`;
+export const LOCAL_STORAGE_PREFIX = `allowances-${store.getState().auth.userPrincipal.toText()}`;
 
 type ListAllowances = (
   tokenSymbol?: string,
