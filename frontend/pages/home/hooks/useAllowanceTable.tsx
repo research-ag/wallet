@@ -3,24 +3,18 @@ import { formatDateTime } from "@/utils/formatTime";
 import { middleTruncation, toTitleCase } from "@/utils/strings";
 import { createColumnHelper } from "@tanstack/react-table";
 import { TAllowance, AllowancesTableColumnsEnum } from "@/@types/allowance";
-import { queryClient } from "@/config/query";
-import { ServerStateKeysEnum } from "@/@types/common";
 import clsx from "clsx";
 import { isDateExpired } from "@/utils/time";
 import { useTranslation } from "react-i18next";
 import ActionCard from "../components/ICRC/allowance/ActionCard";
+import { allowanceFullReload } from "../helpers/allowanceCache";
 
 export default function useAllowanceTable() {
   const { t } = useTranslation();
   const columnHelper = createColumnHelper<TAllowance>();
 
-  const refetchAllowances = async () => {
-    await queryClient.invalidateQueries({
-      queryKey: [ServerStateKeysEnum.Values.allowances],
-    });
-    await queryClient.refetchQueries({
-      queryKey: [ServerStateKeysEnum.Values.allowances],
-    });
+  async function refetchAllowances() {
+    await allowanceFullReload();
   };
 
   const columns = [

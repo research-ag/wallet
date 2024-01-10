@@ -1,6 +1,5 @@
 import { TAllowance } from "@/@types/allowance";
-import { ServerStateKeysEnum, TErrorValidation } from "@/@types/common";
-import { queryClient } from "@/config/query";
+import { TErrorValidation } from "@/@types/common";
 import { ICRCApprove, generateApproveAllowance } from "@/helpers/icrc";
 import { allowanceValidationSchema } from "@/helpers/schemas/allowance";
 import { updateAllowanceRequest } from "@/services/allowance";
@@ -10,6 +9,7 @@ import { throttle } from "lodash";
 import { useCallback, useState } from "react";
 import { z } from "zod";
 import useAllowanceDrawer from "./useAllowanceDrawer";
+import { allowanceFullReload } from "../helpers/allowanceCache";
 
 export function useUpdateAllowance() {
   const { onCloseUpdateAllowanceDrawer } = useAllowanceDrawer();
@@ -37,12 +37,7 @@ export function useUpdateAllowance() {
   }, [allowance]);
 
   const onSuccess = async () => {
-    await queryClient.invalidateQueries({
-      queryKey: [ServerStateKeysEnum.Values.allowances],
-    });
-    await queryClient.refetchQueries({
-      queryKey: [ServerStateKeysEnum.Values.allowances],
-    });
+    await allowanceFullReload();
     onCloseUpdateAllowanceDrawer();
   };
 

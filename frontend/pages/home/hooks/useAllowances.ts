@@ -1,11 +1,11 @@
 import { AllowancesTableColumns, AllowancesTableColumnsEnum } from "@/@types/allowance";
 import { ServerStateKeysEnum, SortOrder, SortOrderEnum } from "@/@types/common";
-import { queryClient } from "@/config/query";
 import { listAllowances } from "@/services/allowance";
 import { minutesToMilliseconds } from "@/utils/time";
 import { useAppSelector } from "@redux/Store";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
+import { reloadAllowancesCache } from "../helpers/allowanceCache";
 
 export default function useAllowances() {
   const [sorting, setSorting] = useState<SortOrder>(SortOrderEnum.Values.ASC);
@@ -23,9 +23,7 @@ export default function useAllowances() {
       setSorting(SortOrderEnum.Values.ASC);
     }
 
-    await queryClient.refetchQueries({
-      queryKey: [ServerStateKeysEnum.Values.allowances],
-    });
+    await reloadAllowancesCache();
   };
 
   const executeQuery = async () => {

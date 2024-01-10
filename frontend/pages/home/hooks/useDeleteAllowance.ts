@@ -1,20 +1,14 @@
 import { TAllowance } from "@/@types/allowance";
-import { ServerStateKeysEnum } from "@/@types/common";
-import { queryClient } from "@/config/query";
 import { ICRCApprove, generateApproveAllowance } from "@/helpers/icrc";
 import { removeAllowance } from "@/services/allowance";
 import { useMutation } from "@tanstack/react-query";
 import { throttle } from "lodash";
 import { useCallback } from "react";
+import { allowanceFullReload } from "../helpers/allowanceCache";
 
 export default function useDeleteAllowance() {
   const onSuccess = async () => {
-    await queryClient.invalidateQueries({
-      queryKey: [ServerStateKeysEnum.Values.allowances],
-    });
-    await queryClient.refetchQueries({
-      queryKey: [ServerStateKeysEnum.Values.allowances],
-    });
+    await allowanceFullReload();
   };
 
   const onError = (error: any) => {

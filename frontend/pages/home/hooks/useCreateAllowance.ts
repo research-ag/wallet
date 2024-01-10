@@ -1,12 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 
-import { ServerStateKeysEnum, TErrorValidation } from "@/@types/common";
+import { TErrorValidation } from "@/@types/common";
 import { TAllowance } from "@/@types/allowance";
 import { allowanceValidationSchema } from "@/helpers/schemas/allowance";
 import { ICRCApprove, generateApproveAllowance } from "@/helpers/icrc";
 import { postAllowance } from "@/services/allowance";
-import { queryClient } from "@/config/query";
 import { validatePrincipal } from "@/utils/identity";
 import useAllowanceDrawer from "./useAllowanceDrawer";
 
@@ -15,6 +14,7 @@ import { useAppSelector } from "@redux/Store";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 import { initialAllowanceState } from "@redux/allowance/AllowanceReducer";
+import { allowanceFullReload } from "../helpers/allowanceCache";
 
 export default function useCreateAllowance() {
   const { onCloseCreateAllowanceDrawer } = useAllowanceDrawer();
@@ -54,12 +54,7 @@ export default function useCreateAllowance() {
   }, [allowance]);
 
   const onSuccess = async () => {
-    await queryClient.invalidateQueries({
-      queryKey: [ServerStateKeysEnum.Values.allowances],
-    });
-    await queryClient.refetchQueries({
-      queryKey: [ServerStateKeysEnum.Values.allowances],
-    });
+    await allowanceFullReload();
     onCloseCreateAllowanceDrawer();
   };
 
