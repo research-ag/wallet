@@ -1,16 +1,24 @@
 import { ICRCSubaccountInfo, ICRCSubaccountInfoEnum } from "@/const";
 import { CustomButton } from "@components/Button";
 import { useTranslation } from "react-i18next";
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useMemo } from "react";
 import AddAllowanceButton from "../allowance/AddAllowanceButton";
+import { useAppSelector } from "@redux/Store";
+import useAllowances from "@pages/home/hooks/useAllowances";
+import LoadingLoader from "@components/Loader";
 
 interface ICRCSubInfoProps extends PropsWithChildren {
   subInfoType: ICRCSubaccountInfo;
   setSubInfoType(value: ICRCSubaccountInfo): void;
 }
 
-const ICRCSubInfo = ({ subInfoType, setSubInfoType, children }: ICRCSubInfoProps) => {
+export default function ICRCSubInfo({ subInfoType, setSubInfoType, children }: ICRCSubInfoProps) {
   const { t } = useTranslation();
+
+  const { transactions } = useAppSelector((state) => state.asset);
+  const { allowances } = useAllowances();
+  const transactionsCount = useMemo(() => transactions.length, [transactions]);
+  const allowancesCount = useMemo(() => allowances.length, [allowances]);
 
   const selectedButton = "border-AccpetButtonColor border-b-2";
   const unselectedButton = "text-PrimaryTextColorLight dark:text-PrimaryTextColor opacity-60 !font-light";
@@ -28,7 +36,9 @@ const ICRCSubInfo = ({ subInfoType, setSubInfoType, children }: ICRCSubInfoProps
               setSubInfoType(ICRCSubaccountInfoEnum.Enum.TRANSACTIONS);
             }}
           >
-            <p>{t("transaction.transactions")}</p>
+            <p>
+              {t("transaction.transactions")} ({transactionsCount || <LoadingLoader width="h-2" height="h-2" />})
+            </p>
           </CustomButton>
           <CustomButton
             intent={"noBG"}
@@ -38,16 +48,15 @@ const ICRCSubInfo = ({ subInfoType, setSubInfoType, children }: ICRCSubInfoProps
               setSubInfoType(ICRCSubaccountInfoEnum.Enum.ALLOWANCES);
             }}
           >
-            <p>{t("allowance.allowances")}</p>
+            <p>
+              {t("allowance.allowances")} ({allowancesCount || <LoadingLoader width="h-2" height="h-2" />})
+            </p>
           </CustomButton>
         </div>
-
-        <AddAllowanceButton />
+        {subInfoType === ICRCSubaccountInfoEnum.Enum.ALLOWANCES && <AddAllowanceButton />}
       </div>
 
       <div className="flex w-full">{children}</div>
     </div>
   );
-};
-
-export default ICRCSubInfo;
+}
