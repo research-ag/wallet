@@ -6,7 +6,7 @@ import { AvatarEmpty } from "@components/avatar";
 import { Input } from "@components/input";
 import { Select } from "@components/select";
 import { Switch } from "@components/switch";
-import { initialAllowanceState } from "@pages/home/hooks/useCreateAllowance";
+import { initialAllowanceState } from "@redux/allowance/AllowanceReducer";
 import { Contact } from "@redux/models/ContactsModels";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";

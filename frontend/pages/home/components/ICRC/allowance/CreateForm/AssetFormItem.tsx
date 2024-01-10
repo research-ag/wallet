@@ -4,7 +4,7 @@ import { SelectOption } from "@/@types/components";
 import { IconTypeEnum } from "@/const";
 import { getAssetIcon } from "@/utils/icons";
 import { Select } from "@components/select";
-import { initialAllowanceState } from "@pages/home/hooks/useCreateAllowance";
+import { initialAllowanceState } from "@redux/allowance/AllowanceReducer";
 import { Asset } from "@redux/models/AccountModels";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
