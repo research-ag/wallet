@@ -5,7 +5,6 @@ import { PropsWithChildren, useMemo } from "react";
 import AddAllowanceButton from "../allowance/AddAllowanceButton";
 import { useAppSelector } from "@redux/Store";
 import useAllowances from "@pages/home/hooks/useAllowances";
-import LoadingLoader from "@components/Loader";
 
 interface ICRCSubInfoProps extends PropsWithChildren {
   subInfoType: ICRCSubaccountInfo;
@@ -37,7 +36,7 @@ export default function ICRCSubInfo({ subInfoType, setSubInfoType, children }: I
             }}
           >
             <p>
-              {t("transaction.transactions")} ({transactionsCount || <LoadingLoader width="h-2" height="h-2" />})
+              {t("transaction.transactions")} ({transactionsCount || 0})
             </p>
           </CustomButton>
           <CustomButton
@@ -49,7 +48,7 @@ export default function ICRCSubInfo({ subInfoType, setSubInfoType, children }: I
             }}
           >
             <p>
-              {t("allowance.allowances")} ({allowancesCount || <LoadingLoader width="h-2" height="h-2" />})
+              {t("allowance.allowances")} ({allowancesCount || 0})
             </p>
           </CustomButton>
         </div>
