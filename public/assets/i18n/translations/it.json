@@ -132,5 +132,19 @@
   "acc.identifier": "Identificatore dell'account",
   "acc.subacc": "Account secondario",
   "acc.principal": "Principale",
-  "congrats": "Congratulazioni"
+  "congrats": "Congratulazioni",
+  "edit": "Modifica",
+  "delete": "Elimina",
+  "expiration": "Scadenza",
+  "subAccount": "Sottoconto",
+  "spender": "Spender",
+  "principal": "Principale",
+  "no.expiration": "Nessuna Scadenza",
+  "contact.book": "Rubrica",
+  "new": "nuovo",
+  "allowance.allowances": "Allocazioni",
+  "allowance.add.allowance": "Aggiungi Allocazione",
+  "allowance.sure.remove": "Sei sicuro di voler Eliminare?",
+  "allowance.permanently.deleted": "Questa Allocazione verrà eliminata definitivamente.",
+  "allowance.edit.allowance": "Modifica Allocazione"
 }

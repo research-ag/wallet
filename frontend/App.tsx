@@ -8,6 +8,8 @@ import { AuthClient } from "@dfinity/auth-client";
 import { handleLoginApp } from "@redux/CheckAuth";
 import { setAuth } from "@redux/auth/AuthReducer";
 import { GlobalDebug } from "./RemoveLogs";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
+import { queryClient, persister } from "./config/query";
 
 const App: React.FC = () => {
   const { i18n } = useTranslation();
@@ -38,9 +40,11 @@ const App: React.FC = () => {
 
   return (
     <div className="App">
-      <Provider store={store}>
-        <SwitchRoute></SwitchRoute>
-      </Provider>
+      <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
+        <Provider store={store}>
+          <SwitchRoute></SwitchRoute>
+        </Provider>
+      </PersistQueryClientProvider>
     </div>
   );
 };
