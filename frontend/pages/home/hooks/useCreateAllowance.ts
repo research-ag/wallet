@@ -1,4 +1,7 @@
 import { TAllowance } from "@/@types/allowance";
+import { TErrorValidation } from "@/@types/common";
+import { useAppSelector } from "@redux/Store";
+import { useMemo, useState } from "react";
 
 export const initialAllowanceState: TAllowance = {
   asset: {
@@ -34,6 +37,18 @@ export const initialAllowanceState: TAllowance = {
   noExpire: true,
 };
 
-export default function AllowanceList() {
-  return <p>Allowance list</p>;
+export default function useCreateAllowance() {
+  const { selectedAsset, selectedAccount } = useAppSelector(({ asset }) => asset);
+  const [validationErrors, setErrors] = useState<TErrorValidation[]>([]);
+  const [isPrincipalValid, setIsPrincipalValid] = useState(true);
+
+  const initial = useMemo(() => {
+    return {
+      ...initialAllowanceState,
+      asset: selectedAsset,
+      subAccount: selectedAccount,
+    };
+  }, [selectedAsset]) as TAllowance;
+
+  return {};
 }
