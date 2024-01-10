@@ -12,7 +12,6 @@ export default function AddAllowanceDrawer() {
       title={`${t("allowance.add.allowance")}`}
     >
       {!isCreateAllowance ? null : <CreateForm />}
-      <p>Hello</p>
     </Drawer>
   );
 }

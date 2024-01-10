@@ -1,7 +1,7 @@
 import { VariantProps, cva } from "cva";
 import { ButtonHTMLAttributes, ReactNode } from "react";
 
-const iconButtonCVA = cva(["bg-acceptButtonColor", "m-0", "rounded-md"], {
+const iconButtonCVA = cva(["bg-AccpetButtonColor", "m-0", "rounded-md"], {
   variants: {
     color: {
       inherit: [],
