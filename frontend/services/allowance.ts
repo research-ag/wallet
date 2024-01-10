@@ -8,8 +8,9 @@ import {
   sortByExpiration,
   sortBySubAccount,
 } from "@/utils/allowanceSorters";
+import { getStringPrincipal } from "@/utils/identity";
 
-export const LOCAL_STORAGE_PREFIX = "allowances";
+export const LOCAL_STORAGE_PREFIX = `allowances-${getStringPrincipal()}`;
 
 type ListAllowances = (
   tokenSymbol?: string,
@@ -53,6 +54,8 @@ export function postAllowance(newAllowance: TAllowance): Promise<TAllowance> {
     }
 
     if (Array.isArray(allowances)) {
+      const allowanceId = newAllowance.id;
+      allowances = allowances.filter((allowance) => allowance.id !== allowanceId);
       allowances.push(newAllowance);
     }
 
