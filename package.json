@@ -31,6 +31,7 @@
     "big-integer": "^1.6.51",
     "buffer": "^6.0.3",
     "clsx": "^1.2.1",
+    "dayjs": "^1.11.10",
     "cva": "npm:class-variance-authority@^0.6.0",
     "html5-qrcode": "^2.3.8",
     "i18next": "^22.5.0",
