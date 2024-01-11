@@ -3,6 +3,7 @@ import { hexToUint8Array } from "@/utils";
 import { ApproveParams, IcrcLedgerCanister } from "@dfinity/ledger";
 import { Principal } from "@dfinity/principal";
 import store from "@redux/Store";
+import { AssetContact } from "@redux/models/ContactsModels";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 dayjs.extend(utc);
@@ -62,7 +63,7 @@ const toHoleBigInt = (numb: string, decimal: number) => {
   }
 };
 
-async function hasAllowance(principal: string, assetAddress: string, allowanceSubAccountId: string) {
+export async function hasAllowance(principal: string, assetAddress: string, allowanceSubAccountId: string) {
   try {
     const accountId = store.getState().auth.userPrincipal;
     const myAgent = store.getState().auth.userAgent;
@@ -86,4 +87,41 @@ async function hasAllowance(principal: string, assetAddress: string, allowanceSu
     console.log(e);
     throw new Error("Error verifying");
   }
+}
+
+// TODO: add assets AssetContact type after contacts is correct
+export async function hasSubAccountAllowances(spenderPrincipal: string, assets: any[]): Promise<AssetContact[] | []> {
+  const newAssets = [];
+
+  for (let assetIndex = 0; assetIndex < assets.length; assetIndex++) {
+    const subAccounts = assets[assetIndex].subaccounts;
+    const currentAsset = {
+      ...assets[assetIndex],
+      subAccounts: [],
+    };
+
+    for (let subAccountIndex = 0; subAccountIndex < subAccounts?.length; subAccountIndex++) {
+      const subAccountId = subAccounts[subAccountIndex]?.sub_account_id;
+      const assetAddress = assets[assetIndex].address;
+
+      const response = await hasAllowance(spenderPrincipal, assetAddress, subAccountId);
+      if (response?.allowance) {
+        currentAsset.subAccounts.push({
+          ...subAccounts[subAccountIndex],
+          allowance: response,
+        });
+      } else {
+        currentAsset.subAccounts.push(subAccounts[subAccountIndex]);
+      }
+    }
+
+    const assetHasAllowance = currentAsset.subAccounts.some((subAccount) => subAccount?.allowance);
+
+    if (assetHasAllowance) {
+      currentAsset.hasAllowance = true;
+    }
+
+    newAssets.push(currentAsset);
+  }
+  return newAssets;
 }

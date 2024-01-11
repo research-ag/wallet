@@ -2,9 +2,16 @@ import { z } from "zod";
 
 // Models
 
+// TODO: check the type of allowance and expire at correctly
 const SubAccountContact = z.object({
   name: z.string(),
   subaccount_index: z.string(),
+  allowance: z
+    .object({
+      allowance: z.string(),
+      expires_at: z.string(),
+    })
+    .optional(),
 });
 
 export type SubAccountContact = z.infer<typeof SubAccountContact>;
@@ -12,6 +19,7 @@ export type SubAccountContact = z.infer<typeof SubAccountContact>;
 const SubAccountContactErr = z.object({
   name: z.boolean(),
   subaccount_index: z.boolean(),
+  // TODO: add sub account id
 });
 
 export type SubAccountContactErr = z.infer<typeof SubAccountContactErr>;
@@ -34,6 +42,9 @@ const AssetContact = z.object({
   tokenSymbol: z.string(),
   logo: z.string().optional(),
   subaccounts: z.array(SubAccountContact),
+  // TODO: should be required
+  address: z.string().optional(),
+  hasAllowances: z.boolean().optional(),
 });
 
 export type AssetContact = z.infer<typeof AssetContact>;

@@ -1,5 +1,5 @@
 import { VariantProps } from "cva";
-import { ButtonHTMLAttributes, ReactNode } from "react";
+import { ButtonHTMLAttributes } from "react";
 import { buttonCVA } from "./syles.cva";
 import LoadingLoader from "@components/Loader";
 
@@ -8,7 +8,7 @@ export interface IButtonCVAProps extends ButtonHTMLAttributes<HTMLButtonElement>
   isLoading?: boolean;
 }
 
-export default function Button({ className, children, disabled, isLoading, ...props }: IButtonCVAProps): ReactNode {
+export default function Button({ className, children, disabled, isLoading, ...props }: IButtonCVAProps) {
   return (
     <button className={buttonCVA({ disabled, className })} {...props}>
       {isLoading && <LoadingLoader className="mr-2" />}
