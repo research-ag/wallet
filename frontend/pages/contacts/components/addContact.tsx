@@ -11,13 +11,12 @@ import { GeneralHook } from "@pages/home/hooks/generalHook";
 import { AssetContact, Contact, SubAccountContact } from "@redux/models/ContactsModels";
 import { useAppDispatch } from "@redux/Store";
 import { addContact } from "@redux/contacts/ContactsReducer";
-import { checkHexString, removeLeadingZeros } from "@/utils";
 import { AssetToAdd } from "@redux/models/AccountModels";
 import { Principal } from "@dfinity/principal";
 import NameFormItem from "./AddContact/NameFormItem";
 import PrincipalFormItem from "./AddContact/PrincipalFormItem";
 import SubAccountFormItem from "./AddContact/SubAccountFormItem";
-import { Button } from "@components/button";
+import { removeLeadingZeros } from "@/utils";
 
 interface AddContactProps {
   setAddOpen(value: boolean): void;
@@ -26,6 +25,8 @@ interface AddContactProps {
 const AddContact = ({ setAddOpen }: AddContactProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const { assets, getAssetIcon, asciiHex } = GeneralHook();
+
   const {
     newContact,
     setNewContact,
@@ -45,7 +46,6 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
     setNewContactSubIdErr,
     checkPrincipalValid,
   } = useContacts();
-  const { assets, getAssetIcon, asciiHex } = GeneralHook();
 
   return (
     <Fragment>
@@ -59,7 +59,6 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
         <p>{t("add.contact")}</p>
         <div className="flex flex-row items-start justify-start w-full gap-3">
           <NameFormItem newContactNameErr={newContactNameErr} newContact={newContact} onNameChange={onNameChange} />
-
           <PrincipalFormItem
             newContactPrinErr={newContactPrinErr}
             newContact={newContact}
@@ -80,18 +79,17 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
             <SubAccountFormItem
               assets={assets}
               newContact={newContact}
-              assetToAdd={assetToAdd}
               selAstContact={selAstContact}
               isValidSubacc={isValidSubacc}
               newSubAccounts={newSubAccounts}
-              isAvailableAddContact={isAvailableAddContact}
               setNewSubaccounts={setNewSubaccounts}
               newContactSubNameErr={newContactSubNameErr}
-              onChangeSubName={onChangeSubName}
               newContactSubIdErr={newContactSubIdErr}
-              onchangeSubIdx={onchangeSubIdx}
-              onKeyPressSubIdx={onKeyPressSubIdx}
-              onDeleteSubAccount={onDeleteSubAccount}
+              setNewContact={setNewContact}
+              setNewContactSubNameErr={setNewContactSubNameErr}
+              setNewContactErr={setNewContactErr}
+              setNewContactSubIdErr={setNewContactSubIdErr}
+              asciiHex={asciiHex}
             />
           )}
         </div>
@@ -109,31 +107,60 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
     </Fragment>
   );
 
-  function isAvailableAddContact() {
-    let isAvailable = true;
-    const ids: string[] = [];
-
-    for (let index = 0; index < newSubAccounts.length; index++) {
-      const newSa = newSubAccounts[index];
-      let subAccIdx = "";
-      if (removeLeadingZeros(newSa.subaccount_index.trim()) === "") {
-        if (newSa.subaccount_index.length !== 0) subAccIdx = "0";
-      } else subAccIdx = removeLeadingZeros(newSa.subaccount_index.trim());
-
-      if (newSa.name.trim() === "") {
-        isAvailable = false;
-        break;
-      }
-
-      if (subAccIdx === "" || ids.includes(subAccIdx)) {
-        isAvailable = false;
-        break;
-      } else {
-        ids.push(subAccIdx);
-      }
+  function assetToAddEmpty(data: AssetToAdd[]) {
+    let auxConatct: Contact = {
+      name: "",
+      principal: "",
+      assets: [],
+    };
+    setNewContact((prev) => {
+      auxConatct = {
+        ...prev,
+        assets: data.map((ata) => {
+          return {
+            symbol: ata.symbol,
+            subaccounts: [],
+            tokenSymbol: ata.tokenSymbol,
+            logo: ata.logo,
+          };
+        }),
+      };
+      return auxConatct;
+    });
+    if (data[0]) {
+      setSelAstContact(data[0].tokenSymbol);
+      const auxAsset = auxConatct.assets.find((ast) => ast.tokenSymbol === data[0].tokenSymbol);
+      if (auxAsset)
+        setNewSubaccounts(
+          auxAsset.subaccounts.length === 0 ? [{ name: "", subaccount_index: "" }] : auxAsset.subaccounts,
+        );
     }
-    return isAvailable;
   }
+
+  function onPrincipalChange(value: string) {
+    setNewContact((prev) => {
+      return { ...prev, principal: value };
+    });
+    setNewContactErr("");
+    if (value.trim() !== "")
+      try {
+        Principal.fromText(value);
+        setNewContactPrinErr(false);
+      } catch {
+        setNewContactPrinErr(true);
+      }
+    else setNewContactPrinErr(false);
+  }
+
+  function onNameChange(value: string) {
+    setNewContact((prev) => {
+      return { ...prev, name: value };
+    });
+    setNewContactErr("");
+    setNewContactNameErr(false);
+  }
+
+  // ----------------------------- here ------------------------------------
 
   function isValidSubacc(from: string, validContact: boolean, contAst?: AssetContact) {
     const auxNewSub: SubAccountContact[] = [];
@@ -203,114 +230,6 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
       if (errName.length > 0 || errId.length > 0) setNewContactErr("check.add.contact.subacc.err");
     }
     return { validSubaccounts, auxNewSub, errName, errId };
-  }
-
-  function onNameChange(value: string) {
-    setNewContact((prev) => {
-      return { ...prev, name: value };
-    });
-    setNewContactErr("");
-    setNewContactNameErr(false);
-  }
-
-  function onPrincipalChange(value: string) {
-    setNewContact((prev) => {
-      return { ...prev, principal: value };
-    });
-    setNewContactErr("");
-    if (value.trim() !== "")
-      try {
-        Principal.fromText(value);
-        setNewContactPrinErr(false);
-      } catch {
-        setNewContactPrinErr(true);
-      }
-    else setNewContactPrinErr(false);
-  }
-
-  function assetToAddEmpty(data: AssetToAdd[]) {
-    let auxConatct: Contact = {
-      name: "",
-      principal: "",
-      assets: [],
-    };
-    setNewContact((prev) => {
-      auxConatct = {
-        ...prev,
-        assets: data.map((ata) => {
-          return {
-            symbol: ata.symbol,
-            subaccounts: [],
-            tokenSymbol: ata.tokenSymbol,
-            logo: ata.logo,
-          };
-        }),
-      };
-      return auxConatct;
-    });
-    if (data[0]) {
-      setSelAstContact(data[0].tokenSymbol);
-      const auxAsset = auxConatct.assets.find((ast) => ast.tokenSymbol === data[0].tokenSymbol);
-      if (auxAsset)
-        setNewSubaccounts(
-          auxAsset.subaccounts.length === 0 ? [{ name: "", subaccount_index: "" }] : auxAsset.subaccounts,
-        );
-    }
-  }
-
-  function assetToAdd(data: AssetToAdd[]) {
-    setNewContact((prev) => {
-      return {
-        ...prev,
-        assets: [
-          ...prev.assets,
-          ...data.map((ata) => {
-            return {
-              symbol: ata.symbol,
-              subaccounts: [],
-              tokenSymbol: ata.tokenSymbol,
-              logo: ata.logo,
-            };
-          }),
-        ],
-      };
-    });
-  }
-
-  function onChangeSubName(value: string, k: number) {
-    const auxSubs = [...newSubAccounts];
-    auxSubs[k].name = value;
-    setNewSubaccounts(auxSubs);
-    setNewContactSubNameErr([...newContactSubNameErr].filter((num) => num !== k));
-    setNewContactErr("");
-  }
-
-  function onchangeSubIdx(value: string, k: number) {
-    if (checkHexString(value)) {
-      const auxSubs = [...newSubAccounts];
-      auxSubs[k].subaccount_index = value.trim();
-      setNewSubaccounts(auxSubs);
-      setNewContactSubIdErr([...newContactSubIdErr].filter((num) => num !== k));
-      setNewContactErr("");
-    }
-  }
-
-  function onKeyPressSubIdx(e: React.KeyboardEvent<HTMLInputElement>, newSA: SubAccountContact) {
-    if (!asciiHex.includes(e.key)) {
-      e.preventDefault();
-    }
-    if (newSA.subaccount_index.includes("0x") || newSA.subaccount_index.includes("0X")) {
-      if (e.key === "X" || e.key == "x") {
-        e.preventDefault();
-      }
-    }
-  }
-
-  function onDeleteSubAccount(k: number) {
-    const auxSubs = [...newSubAccounts];
-    auxSubs.splice(k, 1);
-    setNewSubaccounts(auxSubs);
-    setNewContactErr("");
   }
 
   function onAddContact() {

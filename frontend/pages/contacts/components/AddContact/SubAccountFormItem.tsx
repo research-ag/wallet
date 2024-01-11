@@ -6,34 +6,32 @@ import { useTranslation } from "react-i18next";
 import ContactAssetElement from "../contactAssetElement";
 import { CustomInput } from "@components/Input";
 import { getAssetIcon } from "@/utils/icons";
+import { checkHexString, removeLeadingZeros } from "@/utils";
 
 interface SubAccountFormItemProps {
   assets: Array<Asset>;
   newContact: Contact;
-  assetToAdd: (data: AssetToAdd[]) => void;
-  selAstContact: any;
-  isValidSubacc: (from: string, validContact: boolean, contAst?: AssetContact) => any;
   newSubAccounts: SubAccountContact[];
-  isAvailableAddContact: () => boolean;
-  setNewSubaccounts: any;
   newContactSubNameErr: number[];
-  onChangeSubName: (value: string, k: number) => void;
   newContactSubIdErr: number[];
-  onchangeSubIdx: (value: string, k: number) => void;
-  onKeyPressSubIdx: (e: React.KeyboardEvent<HTMLInputElement>, newSA: SubAccountContact) => void;
-  onDeleteSubAccount: (k: number) => void;
+  asciiHex: string[];
+  selAstContact: string;
+  isValidSubacc: (from: string, validContact: boolean, contAst?: AssetContact) => any;
+  setNewSubaccounts: any;
+  setNewContact: any;
+  setNewContactSubNameErr: any;
+  setNewContactErr: any;
+  setNewContactSubIdErr: any;
 }
 
 export default function SubAccountFormItem(props: SubAccountFormItemProps) {
   const { t } = useTranslation();
   const {
-    assetToAdd,
     isValidSubacc,
-    isAvailableAddContact,
-    onChangeSubName,
-    onchangeSubIdx,
-    onKeyPressSubIdx,
-    onDeleteSubAccount,
+    asciiHex,
+    setNewContactSubNameErr,
+    setNewContactErr,
+    setNewContact,
     assets,
     newContact,
     selAstContact,
@@ -41,6 +39,7 @@ export default function SubAccountFormItem(props: SubAccountFormItemProps) {
     setNewSubaccounts,
     newContactSubNameErr,
     newContactSubIdErr,
+    setNewContactSubIdErr,
   } = props;
   return (
     <div className="flex flex-row items-start justify-start w-full h-full">
@@ -147,4 +146,85 @@ export default function SubAccountFormItem(props: SubAccountFormItemProps) {
       </div>
     </div>
   );
+
+  function isAvailableAddContact() {
+    let isAvailable = true;
+    const ids: string[] = [];
+
+    for (let index = 0; index < newSubAccounts.length; index++) {
+      const newSa = newSubAccounts[index];
+      let subAccIdx = "";
+      if (removeLeadingZeros(newSa.subaccount_index.trim()) === "") {
+        if (newSa.subaccount_index.length !== 0) subAccIdx = "0";
+      } else subAccIdx = removeLeadingZeros(newSa.subaccount_index.trim());
+
+      if (newSa.name.trim() === "") {
+        isAvailable = false;
+        break;
+      }
+
+      if (subAccIdx === "" || ids.includes(subAccIdx)) {
+        isAvailable = false;
+        break;
+      } else {
+        ids.push(subAccIdx);
+      }
+    }
+    return isAvailable;
+  }
+
+  function assetToAdd(data: AssetToAdd[]) {
+    setNewContact((prev: Contact) => {
+      return {
+        ...prev,
+        assets: [
+          ...prev.assets,
+          ...data.map((ata) => {
+            return {
+              symbol: ata.symbol,
+              subaccounts: [],
+              tokenSymbol: ata.tokenSymbol,
+              logo: ata.logo,
+            };
+          }),
+        ],
+      };
+    });
+  }
+
+  function onChangeSubName(value: string, k: number) {
+    const auxSubs = [...newSubAccounts];
+    auxSubs[k].name = value;
+    setNewSubaccounts(auxSubs);
+    setNewContactSubNameErr([...newContactSubNameErr].filter((num) => num !== k));
+    setNewContactErr("");
+  }
+
+  function onchangeSubIdx(value: string, k: number) {
+    if (checkHexString(value)) {
+      const auxSubs = [...newSubAccounts];
+      auxSubs[k].subaccount_index = value.trim();
+      setNewSubaccounts(auxSubs);
+      setNewContactSubIdErr([...newContactSubIdErr].filter((num) => num !== k));
+      setNewContactErr("");
+    }
+  }
+
+  function onKeyPressSubIdx(e: React.KeyboardEvent<HTMLInputElement>, newSA: SubAccountContact) {
+    if (!asciiHex.includes(e.key)) {
+      e.preventDefault();
+    }
+    if (newSA.subaccount_index.includes("0x") || newSA.subaccount_index.includes("0X")) {
+      if (e.key === "X" || e.key == "x") {
+        e.preventDefault();
+      }
+    }
+  }
+
+  function onDeleteSubAccount(k: number) {
+    const auxSubs = [...newSubAccounts];
+    auxSubs.splice(k, 1);
+    setNewSubaccounts(auxSubs);
+    setNewContactErr("");
+  }
 }
