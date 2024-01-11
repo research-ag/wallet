@@ -24,8 +24,9 @@ import { clsx } from "clsx";
 import { DeleteContactTypeEnum } from "@/const";
 import { Principal } from "@dfinity/principal";
 import { GeneralHook } from "@pages/home/hooks/generalHook";
-import { useContacts } from "../hooks/contactsHook";
 import { AssetToAdd } from "@redux/models/AccountModels";
+import useContactTable from "../hooks/useContactTable";
+import usePrincipalValidator from "../hooks/usePrincipalValidator";
 
 interface TableContactsProps {
   changeName(value: string): void;
@@ -55,13 +56,11 @@ const TableContacts = ({
   assetFilter,
 }: TableContactsProps) => {
   const { t } = useTranslation();
-
+  const { contacts, checkPrincipalValid } = usePrincipalValidator();
   const { assets, getAssetIcon } = GeneralHook();
   const {
-    contacts,
     selContactPrin,
     setSelContactPrin,
-    checkPrincipalValid,
     updateContact,
     addAsset,
     selCntcPrinAddAsst,
@@ -78,10 +77,10 @@ const TableContacts = ({
     setContactEditedErr,
     addSub,
     setAddSub,
-  } = useContacts();
+  } = useContactTable();
 
   return (
-    <table className="w-full  text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md">
+    <table className="w-full text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md">
       <thead className="border-b border-BorderColorTwoLight dark:border-BorderColorTwo text-PrimaryTextColor/70 sticky top-0 z-[1]">
         <tr className="text-PrimaryTextColorLight dark:text-PrimaryTextColor">
           <th className="p-2 text-left w-[30%] bg-PrimaryColorLight dark:bg-PrimaryColor ">
@@ -104,7 +103,7 @@ const TableContacts = ({
           <Fragment key={k}>
             <tr className={contactStyle(cntc)}>
               <td className="">
-                <div className="relative flex flex-row justify-start items-center w-full min-h-14 gap-2 px-4">
+                <div className="relative flex flex-row items-center justify-start w-full gap-2 px-4 min-h-14">
                   {(cntc.principal === selContactPrin ||
                     cntc.principal === openAssetsPrin ||
                     cntc.principal === selCntcPrinAddAsst) && (
@@ -120,7 +119,7 @@ const TableContacts = ({
                       onChange={onContactNameChange}
                     />
                   ) : (
-                    <div className="flex flex-row justify-start items-center w-full gap-2">
+                    <div className="flex flex-row items-center justify-start w-full gap-2">
                       <div
                         className={`flex justify-center items-center !min-w-[2rem] w-8 h-8 rounded-md ${getContactColor(
                           k,
@@ -134,13 +133,13 @@ const TableContacts = ({
                 </div>
               </td>
               <td className="py-2">
-                <div className="flex flex-row justify-start items-center gap-2 opacity-70 px-2">
+                <div className="flex flex-row items-center justify-start gap-2 px-2 opacity-70">
                   <p>{shortAddress(cntc.principal, 12, 9)}</p>
                   <CustomCopy size={"xSmall"} className="p-0" copyText={cntc.principal} />
                 </div>
               </td>
               <td className="py-2">
-                <div className="flex flex-row justify-center items-center w-full">
+                <div className="flex flex-row items-center justify-center w-full">
                   <div
                     className={
                       "flex flex-row justify-between items-center w-28 h-8 rounded bg-black/10 dark:bg-white/10"
@@ -166,39 +165,39 @@ const TableContacts = ({
                 </div>
               </td>
               <td className="py-2">
-                <div className="flex flex-row justify-center items-start gap-4 w-full">
+                <div className="flex flex-row items-start justify-center w-full gap-4">
                   {cntc.principal === selContactPrin ? (
                     <CheckIcon
                       onClick={() => {
                         onSave(cntc);
                       }}
-                      className="w-4 h-4 stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor opacity-50 cursor-pointer"
+                      className="w-4 h-4 opacity-50 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
                     />
                   ) : (
                     <PencilIcon
                       onClick={() => {
                         onEdit(cntc);
                       }}
-                      className="w-4 h-4 fill-PrimaryTextColorLight dark:fill-PrimaryTextColor opacity-50 cursor-pointer"
+                      className="w-4 h-4 opacity-50 cursor-pointer fill-PrimaryTextColorLight dark:fill-PrimaryTextColor"
                     />
                   )}
                   {cntc.principal === selContactPrin ? (
                     <CloseIcon
                       onClick={onClose}
-                      className="w-5 h-5 stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor opacity-50 cursor-pointer"
+                      className="w-5 h-5 opacity-50 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
                     />
                   ) : (
                     <TrashIcon
                       onClick={() => {
                         onDelete(cntc);
                       }}
-                      className="w-4 h-4 fill-PrimaryTextColorLight dark:fill-PrimaryTextColor cursor-pointer"
+                      className="w-4 h-4 cursor-pointer fill-PrimaryTextColorLight dark:fill-PrimaryTextColor"
                     />
                   )}
                 </div>
               </td>
               <td className="py-2">
-                <div className="flex flex-row justify-center items-start gap-2 w-full">
+                <div className="flex flex-row items-start justify-center w-full gap-2">
                   <ChevIcon
                     onClick={() => {
                       onChevIconClic(cntc);

@@ -19,9 +19,10 @@ import {
   SubAccountContactErr,
 } from "@redux/models/ContactsModels";
 import { DeleteContactTypeEnum } from "@/const";
-import { useContacts } from "../hooks/contactsHook";
+import { useCreateContact } from "../hooks/useCreateContact";
 import { GeneralHook } from "@pages/home/hooks/generalHook";
 import bigInt from "big-integer";
+import { isSubAccountIdValid } from "@/utils/checkers";
 
 interface TableSubAccountsProps {
   asst: AssetContact;
@@ -63,7 +64,7 @@ const TableSubAccounts = ({
   const { t } = useTranslation();
 
   const { asciiHex } = GeneralHook();
-  const { checkSubIndxValid, editCntctSubacc, addCntctSubacc } = useContacts();
+  const { editCntctSubacc, addCntctSubacc } = useCreateContact();
 
   return (
     <table className="w-full text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md ">
@@ -96,7 +97,7 @@ const TableSubAccounts = ({
             <tr key={l}>
               <td></td>
               <td className="h-full">
-                <div className="relative flex flex-col justify-center items-center w-full h-full">
+                <div className="relative flex flex-col items-center justify-center w-full h-full">
                   <div className="w-1 h-1 bg-SelectRowColor"></div>
                   {l !== 0 && (
                     <div className="absolute bottom-0 w-1 ml-[-1px] left-1/2 border-l h-14 border-dotted border-SelectRowColor"></div>
@@ -108,7 +109,7 @@ const TableSubAccounts = ({
                   sa.subaccount_index === selSubaccIdx ? "bg-SelectRowColor/10" : ""
                 }`}
               >
-                <div className="relative flex flex-row justify-start items-center w-full h-10 gap-2 px-4">
+                <div className="relative flex flex-row items-center justify-start w-full h-10 gap-2 px-4">
                   {sa.subaccount_index === selSubaccIdx ? (
                     <CustomInput
                       intent={"primary"}
@@ -121,7 +122,7 @@ const TableSubAccounts = ({
                       }}
                     />
                   ) : (
-                    <div className="flex flex-row justify-start items-center w-full gap-2">
+                    <div className="flex flex-row items-center justify-start w-full gap-2">
                       <div
                         className={
                           "flex justify-center items-center w-8 h-8 min-w-[2rem] min-h-[2rem] rounded-md bg-SelectRowColor"
@@ -129,7 +130,7 @@ const TableSubAccounts = ({
                       >
                         <p className="text-PrimaryTextColor">{getInitialFromName(sa.name, 1)}</p>
                       </div>
-                      <p className="opacity-70 break-all text-left">
+                      <p className="text-left break-all opacity-70">
                         {sa.name.length > 105 ? `${sa.name.slice(0, 105)}...` : sa.name}
                       </p>
                     </div>
@@ -141,7 +142,7 @@ const TableSubAccounts = ({
                   sa.subaccount_index === selSubaccIdx ? "bg-SelectRowColor/10" : ""
                 }`}
               >
-                <div className="relative flex flex-row justify-start items-center w-full h-10 gap-2 px-4">
+                <div className="relative flex flex-row items-center justify-start w-full h-10 gap-2 px-4">
                   {sa.subaccount_index === selSubaccIdx ? (
                     <CustomInput
                       intent={"primary"}
@@ -156,7 +157,7 @@ const TableSubAccounts = ({
                       onKeyDown={onKeyDownIndex}
                     />
                   ) : (
-                    <div className="flex flex-row justify-center items-center gap-2 opacity-70 px-2 w-full">
+                    <div className="flex flex-row items-center justify-center w-full gap-2 px-2 opacity-70">
                       <p className=" whitespace-nowrap">{`0x${sa.subaccount_index || "0"}`}</p>
                       <CustomCopy size={"xSmall"} className="p-0" copyText={sa.subaccount_index || "0"} />
                     </div>
@@ -168,7 +169,7 @@ const TableSubAccounts = ({
                   sa.subaccount_index === selSubaccIdx ? "bg-SelectRowColor/10" : ""
                 }`}
               >
-                <div className="flex flex-row justify-center items-center gap-2 opacity-70 px-2 w-full">
+                <div className="flex flex-row items-center justify-center w-full gap-2 px-2 opacity-70">
                   <p>{shortAddress(encodedAcc, 12, 10)}</p>
                   <CustomCopy size={"xSmall"} className="p-0" copyText={encodedAcc} />
                 </div>
@@ -178,20 +179,20 @@ const TableSubAccounts = ({
                   sa.subaccount_index === selSubaccIdx ? "bg-SelectRowColor/10" : ""
                 }`}
               >
-                <div className="flex flex-row justify-center items-start gap-4 w-full">
+                <div className="flex flex-row items-start justify-center w-full gap-4">
                   {sa.subaccount_index === selSubaccIdx ? (
                     <CheckIcon
                       onClick={() => {
                         checkSubAcc(true, cntc, asst, sa);
                       }}
-                      className="w-4 h-4 stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor opacity-50 cursor-pointer"
+                      className="w-4 h-4 opacity-50 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
                     />
                   ) : (
                     <PencilIcon
                       onClick={() => {
                         onEdit(sa);
                       }}
-                      className="w-4 h-4 fill-PrimaryTextColorLight dark:fill-PrimaryTextColor opacity-50 cursor-pointer"
+                      className="w-4 h-4 opacity-50 cursor-pointer fill-PrimaryTextColorLight dark:fill-PrimaryTextColor"
                     />
                   )}
                   {sa.subaccount_index === selSubaccIdx ? (
@@ -199,14 +200,14 @@ const TableSubAccounts = ({
                       onClick={() => {
                         setSelSubaccIdx("");
                       }}
-                      className="w-5 h-5 stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor opacity-50 cursor-pointer"
+                      className="w-5 h-5 opacity-50 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
                     />
                   ) : (
                     <TrashIcon
                       onClick={() => {
                         onDelete(sa);
                       }}
-                      className="w-4 h-4 fill-PrimaryTextColorLight dark:fill-PrimaryTextColor cursor-pointer"
+                      className="w-4 h-4 cursor-pointer fill-PrimaryTextColorLight dark:fill-PrimaryTextColor"
                     />
                   )}
                 </div>
@@ -216,7 +217,7 @@ const TableSubAccounts = ({
                   sa.subaccount_index === selSubaccIdx ? "bg-SelectRowColor/10" : ""
                 }`}
               >
-                <div className="flex flex-row justify-center items-start gap-2 w-full">
+                <div className="flex flex-row items-start justify-center w-full gap-2">
                   <ChevIcon className="invisible" />
                 </div>
               </td>
@@ -227,13 +228,13 @@ const TableSubAccounts = ({
           <tr>
             <td></td>
             <td className="h-full">
-              <div className="relative flex flex-col justify-center items-center w-full h-full">
+              <div className="relative flex flex-col items-center justify-center w-full h-full">
                 <div className="w-1 h-1 bg-SelectRowColor"></div>
                 <div className="absolute bottom-0 w-1 ml-[-1px] left-1/2 border-l h-14 border-dotted border-SelectRowColor"></div>
               </div>
             </td>
             <td className={"py-2 border-b border-BorderColorTwoLight dark:border-BorderColorTwo bg-SelectRowColor/10"}>
-              <div className="relative flex flex-row justify-start items-center w-full h-10 gap-2 px-4">
+              <div className="relative flex flex-row items-center justify-start w-full h-10 gap-2 px-4">
                 <CustomInput
                   intent={"primary"}
                   border={subaccEditedErr.name ? "error" : "selected"}
@@ -248,7 +249,7 @@ const TableSubAccounts = ({
               </div>
             </td>
             <td className={"py-2 border-b border-BorderColorTwoLight dark:border-BorderColorTwo bg-SelectRowColor/10"}>
-              <div className="relative flex flex-row justify-start items-center w-full h-10 gap-2 px-4">
+              <div className="relative flex flex-row items-center justify-start w-full h-10 gap-2 px-4">
                 <CustomInput
                   intent={"primary"}
                   border={subaccEditedErr.subaccount_index ? "error" : "selected"}
@@ -264,27 +265,27 @@ const TableSubAccounts = ({
               </div>
             </td>
             <td className={"py-2 border-b border-BorderColorTwoLight dark:border-BorderColorTwo bg-SelectRowColor/10"}>
-              <div className="flex flex-row justify-center items-center gap-2 opacity-70 px-2 w-full">
+              <div className="flex flex-row items-center justify-center w-full gap-2 px-2 opacity-70">
                 <p>{shortAddress(getSubAcc(cntc.principal), 12, 10)}</p>
                 <CustomCopy size={"xSmall"} className="p-0" copyText={getSubAcc(cntc.principal)} />
               </div>
             </td>
             <td className={"py-2 border-b border-BorderColorTwoLight dark:border-BorderColorTwo bg-SelectRowColor/10"}>
-              <div className="flex flex-row justify-center items-start gap-4 w-full">
+              <div className="flex flex-row items-start justify-center w-full gap-4">
                 <CheckIcon
                   onClick={() => {
                     checkSubAcc(false, cntc, asst || ({} as AssetContact));
                   }}
-                  className="w-4 h-4 stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor opacity-50 cursor-pointer"
+                  className="w-4 h-4 opacity-50 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
                 />
                 <CloseIcon
                   onClick={onCloseClic}
-                  className="w-5 h-5 stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor opacity-50 cursor-pointer"
+                  className="w-5 h-5 opacity-50 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
                 />
               </div>
             </td>
             <td className={"py-2 border-b border-BorderColorTwoLight dark:border-BorderColorTwo bg-SelectRowColor/10"}>
-              <div className="flex flex-row justify-center items-start gap-2 w-full">
+              <div className="flex flex-row items-start justify-center w-full gap-2">
                 <ChevIcon className="invisible" />
               </div>
             </td>
@@ -299,7 +300,7 @@ const TableSubAccounts = ({
     if (subacc.slice(0, 2).toLowerCase() === "0x") subacc = subacc.substring(2);
 
     const checkedIdx = removeLeadingZeros(subacc) === "" ? "0" : removeLeadingZeros(subacc);
-    const checkedIdxValid = checkSubIndxValid(checkedIdx, asst.subaccounts);
+    const checkedIdxValid = isSubAccountIdValid(checkedIdx, asst.subaccounts);
 
     let eqHexValid = false;
     let eqHex = false;

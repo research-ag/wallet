@@ -4,12 +4,12 @@ import { CustomButton } from "@components/Button";
 import history from "@pages/history";
 import { CONTACTS, HOME } from "@pages/paths";
 import { AssetHook } from "@pages/home/hooks/assetHook";
-import { useContacts } from "@pages/contacts/hooks/contactsHook";
+import { useAppSelector } from "@redux/Store";
 
 const Menu = () => {
+  const { contacts } = useAppSelector((state) => state.contacts);
   const { t } = useTranslation();
   const { assets, assetLoading } = AssetHook();
-  const { contacts } = useContacts();
 
   const menuList = [
     {
@@ -26,14 +26,14 @@ const Menu = () => {
 
   return (
     <Fragment>
-      <div className="flex flex-row gap-3 justify-start items-center w-full">
+      <div className="flex flex-row items-center justify-start w-full gap-3">
         {menuList.map((menu, k) => (
           <CustomButton
             key={k}
             size={"small"}
             intent={"noBG"}
             border={"underline"}
-            className="flex flex-row justify-start items-center mb-4"
+            className="flex flex-row items-center justify-start mb-4"
             onClick={() => {
               handleMenuClic(menu.path);
             }}

@@ -1,7 +1,5 @@
 import { z } from "zod";
 
-// Models
-
 // TODO: check the type of allowance and expire at correctly
 const SubAccountContact = z.object({
   name: z.string(),
@@ -19,7 +17,6 @@ export type SubAccountContact = z.infer<typeof SubAccountContact>;
 const SubAccountContactErr = z.object({
   name: z.boolean(),
   subaccount_index: z.boolean(),
-  // TODO: add sub account id
 });
 
 export type SubAccountContactErr = z.infer<typeof SubAccountContactErr>;

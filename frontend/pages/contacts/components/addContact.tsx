@@ -4,7 +4,7 @@ import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
 import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
-import { useContacts } from "../hooks/contactsHook";
+import { useCreateContact } from "../hooks/useCreateContact";
 import { CustomButton } from "@components/Button";
 import ContactAssetPop from "./contactAssetPop";
 import { GeneralHook } from "@pages/home/hooks/generalHook";
@@ -17,6 +17,7 @@ import NameFormItem from "./AddContact/NameFormItem";
 import PrincipalFormItem from "./AddContact/PrincipalFormItem";
 import SubAccountFormItem from "./AddContact/SubAccountFormItem";
 import { removeLeadingZeros } from "@/utils";
+import usePrincipalValidator from "../hooks/usePrincipalValidator";
 
 interface AddContactProps {
   setAddOpen(value: boolean): void;
@@ -26,6 +27,7 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { assets, getAssetIcon, asciiHex } = GeneralHook();
+  const { checkPrincipalValid } = usePrincipalValidator();
 
   const {
     newContact,
@@ -44,8 +46,7 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
     setNewContactSubNameErr,
     newContactSubIdErr,
     setNewContactSubIdErr,
-    checkPrincipalValid,
-  } = useContacts();
+  } = useCreateContact();
 
   return (
     <Fragment>

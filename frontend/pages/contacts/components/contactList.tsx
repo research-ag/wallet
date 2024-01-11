@@ -1,10 +1,10 @@
 import { Fragment } from "react";
-import { useContacts } from "../hooks/contactsHook";
 import { useTranslation } from "react-i18next";
 import { checkHexString } from "@/utils";
 import { DeleteContactTypeEnum } from "@/const";
 import RemoveModal from "./removeModal";
 import TableContacts from "./tableContacts";
+import useContactTable from "../hooks/useContactTable";
 
 interface ContactListProps {
   searchKey: string;
@@ -24,7 +24,7 @@ const ContactList = ({ searchKey, assetFilter }: ContactListProps) => {
     setDeleteObject,
     subaccEditedErr,
     setSubaccEditedErr,
-  } = useContacts();
+  } = useContactTable();
 
   return (
     <Fragment>
