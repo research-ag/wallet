@@ -36,6 +36,7 @@ const ContactFilters = ({
     <Fragment>
       <div className="flex flex-row items-center justify-start w-full gap-3 text-md">
         <p className="text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("asset")}</p>
+
         <DropdownMenu.Root
           onOpenChange={(e: boolean) => {
             setAssetOpen(e);

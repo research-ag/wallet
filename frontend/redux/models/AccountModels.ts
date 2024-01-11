@@ -110,5 +110,9 @@ const AssetToAdd = z.object({
   symbol: z.string(),
   tokenSymbol: z.string(),
   logo: z.string().optional(),
+  address: z.string(),
+  hasAllowance: z.boolean(),
+  decimal: z.string(),
+  shortDecimal: z.string(),
 });
 export type AssetToAdd = z.infer<typeof AssetToAdd>;

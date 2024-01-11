@@ -85,7 +85,7 @@ const ContactAssetPop = ({
                           handleSelectAsset(asset);
                         }}
                       >
-                        <div className="flex flex-start justify-start items-center gap-2">
+                        <div className="flex items-center justify-start gap-2 flex-start">
                           {getAssetIcon(IconTypeEnum.Enum.FILTER, asset.tokenSymbol, asset.logo)}
                           <p>{asset.symbol}</p>
                         </div>
@@ -99,7 +99,7 @@ const ContactAssetPop = ({
                   })}
                 </div>
 
-                <div className="flex justify-center items-center p-2 pt-4 w-full rounded-b-lg">
+                <div className="flex items-center justify-center w-full p-2 pt-4 rounded-b-lg">
                   <CustomButton onClick={handleAddAssetButton} size={"small"} className="w-full">
                     <p>{t("add.asset")}</p>
                   </CustomButton>
@@ -123,7 +123,15 @@ const ContactAssetPop = ({
     } else {
       setToAdd(
         assets.map((ast) => {
-          return { symbol: ast.symbol, tokenSymbol: ast.tokenSymbol, logo: ast.logo };
+          return {
+            symbol: ast.symbol,
+            tokenSymbol: ast.tokenSymbol,
+            logo: ast.logo,
+            address: ast.address,
+            decimal: ast.decimal,
+            shortDecimal: ast.shortDecimal,
+            hasAllowance: false,
+          };
         }),
         assets.map((ast) => {
           return ast.tokenSymbol;
@@ -140,7 +148,18 @@ const ContactAssetPop = ({
       );
     } else {
       setToAdd(
-        [...assetsToAdd, { symbol: asset.symbol, tokenSymbol: asset.tokenSymbol, logo: asset.logo }],
+        [
+          ...assetsToAdd,
+          {
+            symbol: asset.symbol,
+            tokenSymbol: asset.tokenSymbol,
+            logo: asset.logo,
+            address: asset.address,
+            decimal: asset.decimal,
+            shortDecimal: asset.shortDecimal,
+            hasAllowance: false,
+          },
+        ],
         [...symbolToAdd, asset.tokenSymbol],
       );
     }

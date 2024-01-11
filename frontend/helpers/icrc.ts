@@ -1,5 +1,5 @@
 import { TAllowance } from "@/@types/allowance";
-import { hexToUint8Array } from "@/utils";
+import { hexToUint8Array, toFullDecimal, toHoleBigInt } from "@/utils";
 import { ApproveParams, IcrcLedgerCanister } from "@dfinity/ledger";
 import { Principal } from "@dfinity/principal";
 import store from "@redux/Store";
@@ -44,26 +44,12 @@ export async function ICRCApprove(params: ApproveParams, assetAddress: string): 
   }
 }
 
-const toHoleBigInt = (numb: string, decimal: number) => {
-  const parts = numb.split(".");
-  if (parts.length === 1 || parts[1] === "") {
-    let addZeros = "";
-    for (let index = 0; index < decimal; index++) {
-      addZeros = "0" + addZeros;
-    }
-    return BigInt(parts[0] + addZeros);
-  } else {
-    const hole = parts[0];
-    const dec = parts[1];
-    let addZeros = "";
-    for (let index = 0; index < decimal - dec.length; index++) {
-      addZeros = "0" + addZeros;
-    }
-    return BigInt(hole + dec + addZeros);
-  }
-};
-
-export async function hasAllowance(principal: string, assetAddress: string, allowanceSubAccountId: string) {
+export async function hasAllowance(
+  principal: string,
+  assetAddress: string,
+  allowanceSubAccountId: string,
+  decimal: number,
+) {
   try {
     const accountId = store.getState().auth.userPrincipal;
     const myAgent = store.getState().auth.userAgent;
@@ -82,40 +68,48 @@ export async function hasAllowance(principal: string, assetAddress: string, allo
       },
     });
 
-    return result;
+    return {
+      allowance: toFullDecimal(result.allowance, decimal),
+      expires_at: dayjs(Number(result.expires_at) / 1000000).format("YYYY-MM-DD HH:mm:ss"),
+    };
   } catch (e) {
     console.log(e);
     throw new Error("Error verifying");
   }
 }
 
-// TODO: add assets AssetContact type after contacts is correct
-export async function hasSubAccountAllowances(spenderPrincipal: string, assets: any[]): Promise<AssetContact[] | []> {
-  const newAssets = [];
+export async function hasSubAccountAllowances(
+  spenderPrincipal: string,
+  assets: AssetContact[],
+): Promise<AssetContact[] | []> {
+  const newAssets: AssetContact[] = [];
 
   for (let assetIndex = 0; assetIndex < assets.length; assetIndex++) {
     const subAccounts = assets[assetIndex].subaccounts;
-    const currentAsset = {
+
+    const currentAsset: AssetContact = {
       ...assets[assetIndex],
-      subAccounts: [],
+      subaccounts: [],
     };
 
     for (let subAccountIndex = 0; subAccountIndex < subAccounts?.length; subAccountIndex++) {
       const subAccountId = subAccounts[subAccountIndex]?.sub_account_id;
       const assetAddress = assets[assetIndex].address;
+      const assetDecimal = assets[assetIndex].decimal;
 
-      const response = await hasAllowance(spenderPrincipal, assetAddress, subAccountId);
+      const response = await hasAllowance(spenderPrincipal, assetAddress, subAccountId, Number(assetDecimal));
+
       if (response?.allowance) {
-        currentAsset.subAccounts.push({
+        currentAsset.subaccounts.push({
           ...subAccounts[subAccountIndex],
           allowance: response,
         });
       } else {
-        currentAsset.subAccounts.push(subAccounts[subAccountIndex]);
+        currentAsset.subaccounts.push(subAccounts[subAccountIndex]);
       }
     }
 
-    const assetHasAllowance = currentAsset.subAccounts.some((subAccount) => subAccount?.allowance);
+    const assetHasAllowance = currentAsset.subaccounts.some((subaccount) => subaccount?.allowance);
 
     if (assetHasAllowance) {
       currentAsset.hasAllowance = true;

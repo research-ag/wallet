@@ -50,7 +50,7 @@ const SwitchRoute = () => {
                 allowByRole={true}
                 Component={Contacts}
               />
-              <Redirect to={CONTACTS} />
+              <Redirect to={HOME} />
             </Switch>
           </LayoutComponent>
         )}

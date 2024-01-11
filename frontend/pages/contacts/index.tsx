@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 import Menu from "@pages/components/Menu";
 import ContactFilters from "./components/contactFilters";
-import ContactList from "./components/contactList";
+// import ContactList from "./components/contactList";
 import useContactFilters from "./hooks/useContactFilters";
 
 const Contacts = () => {
@@ -23,7 +23,7 @@ const Contacts = () => {
             setSearchKey={setSearchKey}
             setAssetFilter={setAssetFilter}
           />
-          <ContactList searchKey={searchKey} assetFilter={assetFilter} />
+          {/* <ContactList searchKey={searchKey} assetFilter={assetFilter} /> */}
         </div>
       </div>
     </Fragment>

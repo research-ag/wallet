@@ -1,9 +1,9 @@
 import { z } from "zod";
 
-// TODO: check the type of allowance and expire at correctly
 const SubAccountContact = z.object({
   name: z.string(),
   subaccount_index: z.string(),
+  sub_account_id: z.string(),
   allowance: z
     .object({
       allowance: z.string(),
@@ -39,9 +39,10 @@ const AssetContact = z.object({
   tokenSymbol: z.string(),
   logo: z.string().optional(),
   subaccounts: z.array(SubAccountContact),
-  // TODO: should be required
-  address: z.string().optional(),
-  hasAllowances: z.boolean().optional(),
+  address: z.string(),
+  hasAllowance: z.boolean(),
+  decimal: z.string(),
+  shortDecimal: z.string(),
 });
 
 export type AssetContact = z.infer<typeof AssetContact>;

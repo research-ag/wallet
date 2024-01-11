@@ -2,7 +2,7 @@
 import { ReactComponent as MoneyHandIcon } from "@assets/svg/files/money-hand.svg";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useCreateContact } from "../hooks/useCreateContact";
 import { CustomButton } from "@components/Button";
@@ -18,12 +18,15 @@ import PrincipalFormItem from "./AddContact/PrincipalFormItem";
 import SubAccountFormItem from "./AddContact/SubAccountFormItem";
 import { removeLeadingZeros } from "@/utils";
 import usePrincipalValidator from "../hooks/usePrincipalValidator";
+import { hasSubAccountAllowances } from "@/helpers/icrc";
+import LoadingLoader from "@components/Loader";
 
 interface AddContactProps {
   setAddOpen(value: boolean): void;
 }
 
 const AddContact = ({ setAddOpen }: AddContactProps) => {
+  const [isAllowancesChecking, setIsAllowancesChecking] = useState<boolean>(false);
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { assets, getAssetIcon, asciiHex } = GeneralHook();
@@ -47,6 +50,23 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
     newContactSubIdErr,
     setNewContactSubIdErr,
   } = useCreateContact();
+
+  console.log(newContact);
+
+  async function onAllowanceNewContactCheck() {
+    try {
+      setIsAllowancesChecking(true);
+      if (newContact.assets.length === 0 || !newContact.principal) return;
+      const fullAssets = await hasSubAccountAllowances(newContact.principal, newContact.assets);
+      setNewContact({ ...newContact, assets: fullAssets });
+      // TODO: add the allowance icon in the SubAccountFormItem
+      // TODO: manage cache on asset to avoid fetch new
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsAllowancesChecking(false);
+    }
+  }
 
   return (
     <Fragment>
@@ -97,7 +117,12 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
 
         <div className="flex flex-row items-center justify-end w-full gap-3">
           <p className="text-TextErrorColor">{t(newContactErr)}</p>
-          <CustomButton className="bg-BorderSuccessColor min-w-[5rem] flex justify-between items-center">
+          {isAllowancesChecking && <LoadingLoader />}
+          <CustomButton
+            className="bg-BorderSuccessColor min-w-[5rem] flex justify-between items-center"
+            onClick={onAllowanceNewContactCheck}
+            disabled={isAllowancesChecking}
+          >
             <MoneyHandIcon className="fill-PrimaryColorLight" /> {t("test")}
           </CustomButton>
           <CustomButton className="min-w-[5rem]" onClick={onAddContact}>
@@ -120,9 +145,13 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
         assets: data.map((ata) => {
           return {
             symbol: ata.symbol,
-            subaccounts: [],
             tokenSymbol: ata.tokenSymbol,
+            subaccounts: [],
             logo: ata.logo,
+            address: ata.address,
+            decimal: ata.decimal,
+            shortDecimal: ata.shortDecimal,
+            hasAllowance: ata.hasAllowance,
           };
         }),
       };
@@ -133,7 +162,9 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
       const auxAsset = auxConatct.assets.find((ast) => ast.tokenSymbol === data[0].tokenSymbol);
       if (auxAsset)
         setNewSubaccounts(
-          auxAsset.subaccounts.length === 0 ? [{ name: "", subaccount_index: "" }] : auxAsset.subaccounts,
+          auxAsset.subaccounts.length === 0
+            ? [{ name: "", subaccount_index: "", sub_account_id: "" }]
+            : auxAsset.subaccounts,
         );
     }
   }
@@ -160,8 +191,6 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
     setNewContactErr("");
     setNewContactNameErr(false);
   }
-
-  // ----------------------------- here ------------------------------------
 
   function isValidSubacc(from: string, validContact: boolean, contAst?: AssetContact) {
     const auxNewSub: SubAccountContact[] = [];
@@ -195,7 +224,7 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
           ids.push(subacc);
         }
         // Adding SubAccountContact to the new contact
-        if (valid) auxNewSub.push({ name: newSa.name.trim(), subaccount_index: subacc });
+        if (valid) auxNewSub.push({ name: newSa.name.trim(), subaccount_index: subacc, sub_account_id: "" });
       }
     });
     // Check if valid Subaccounts and Valid prev contact info
@@ -215,7 +244,9 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
         setNewContact(auxContact);
         setSelAstContact(contAst.tokenSymbol);
         setNewSubaccounts(
-          contAst.subaccounts.length === 0 ? [{ name: "", subaccount_index: "" }] : contAst.subaccounts,
+          contAst.subaccounts.length === 0
+            ? [{ name: "", subaccount_index: "", sub_account_id: "" }]
+            : contAst.subaccounts,
         );
       } else {
         dispatch(addContact(auxContact));
@@ -236,6 +267,7 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
   function onAddContact() {
     let validContact = true;
     let err = { msg: "", name: false, prin: false };
+
     if (newContact.name.trim() === "" && newContact.principal.trim() === "") {
       validContact = false;
       err = { msg: "check.add.contact.both.err", name: true, prin: true };
@@ -252,6 +284,7 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
         err = { ...err, msg: "check.add.contact.prin.err", prin: true };
       }
     }
+
     setNewContactErr(err.msg);
     setNewContactNameErr(err.name);
     setNewContactPrinErr(err.prin);
