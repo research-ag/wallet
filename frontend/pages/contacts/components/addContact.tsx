@@ -1,4 +1,5 @@
 // svg
+import { ReactComponent as MoneyHandIcon } from "@assets/svg/files/money-hand.svg";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
 import { Fragment } from "react";
@@ -16,6 +17,7 @@ import { Principal } from "@dfinity/principal";
 import NameFormItem from "./AddContact/NameFormItem";
 import PrincipalFormItem from "./AddContact/PrincipalFormItem";
 import SubAccountFormItem from "./AddContact/SubAccountFormItem";
+import { Button } from "@components/button";
 
 interface AddContactProps {
   setAddOpen(value: boolean): void;
@@ -96,6 +98,9 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
 
         <div className="flex flex-row items-center justify-end w-full gap-3">
           <p className="text-TextErrorColor">{t(newContactErr)}</p>
+          <CustomButton className="bg-BorderSuccessColor min-w-[5rem] flex justify-between items-center">
+            <MoneyHandIcon className="fill-PrimaryColorLight" /> {t("test")}
+          </CustomButton>
           <CustomButton className="min-w-[5rem]" onClick={onAddContact}>
             <p>{t("add.contact")}</p>
           </CustomButton>
