@@ -1,10 +1,8 @@
 // svg
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
-import { ReactComponent as TrashIcon } from "@assets/svg/files/trash-empty.svg";
 //
 import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
-import { CustomInput } from "@components/Input";
 import { useContacts } from "../hooks/contactsHook";
 import { CustomButton } from "@components/Button";
 import ContactAssetPop from "./contactAssetPop";
@@ -13,9 +11,11 @@ import { AssetContact, Contact, SubAccountContact } from "@redux/models/Contacts
 import { useAppDispatch } from "@redux/Store";
 import { addContact } from "@redux/contacts/ContactsReducer";
 import { checkHexString, removeLeadingZeros } from "@/utils";
-import ContactAssetElement from "./contactAssetElement";
 import { AssetToAdd } from "@redux/models/AccountModels";
 import { Principal } from "@dfinity/principal";
+import NameFormItem from "./AddContact/NameFormItem";
+import PrincipalFormItem from "./AddContact/PrincipalFormItem";
+import SubAccountFormItem from "./AddContact/SubAccountFormItem";
 
 interface AddContactProps {
   setAddOpen(value: boolean): void;
@@ -47,7 +47,7 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
 
   return (
     <Fragment>
-      <div className="flex flex-col items-start justify-start w-full gap-4 reative text-md">
+      <div className="relative flex flex-col items-start justify-start w-full gap-4 text-md">
         <CloseIcon
           className="absolute cursor-pointer top-5 right-5 stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
           onClick={() => {
@@ -56,31 +56,15 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
         />
         <p>{t("add.contact")}</p>
         <div className="flex flex-row items-start justify-start w-full gap-3">
-          <div className="flex flex-col justify-start items-start w-[50%]">
-            <p>{t("name")}</p>
-            <CustomInput
-              sizeInput={"medium"}
-              placeholder={""}
-              border={newContactNameErr ? "error" : undefined}
-              value={newContact.name}
-              onChange={(e) => {
-                onNameChange(e.target.value);
-              }}
-            />
-          </div>
-          <div className="flex flex-col items-start justify-start w-full">
-            <p>{"Principal"}</p>
-            <CustomInput
-              sizeInput={"medium"}
-              placeholder={""}
-              border={newContactPrinErr ? "error" : undefined}
-              value={newContact.principal}
-              onChange={(e) => {
-                onPrincipalChange(e.target.value);
-              }}
-            />
-          </div>
+          <NameFormItem newContactNameErr={newContactNameErr} newContact={newContact} onNameChange={onNameChange} />
+
+          <PrincipalFormItem
+            newContactPrinErr={newContactPrinErr}
+            newContact={newContact}
+            onPrincipalChange={onPrincipalChange}
+          />
         </div>
+
         <div className="flex flex-row items-center justify-center w-full gap-3 rounded-sm h-72 bg-ThirdColorLight dark:bg-ThirdColor">
           {newContact.assets.length === 0 ? (
             <ContactAssetPop
@@ -91,111 +75,25 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
               }}
             />
           ) : (
-            <div className="flex flex-row items-start justify-start w-full h-full">
-              <div className="flex flex-col justify-start items-start w-[70%] h-full">
-                <div className="flex flex-row items-center justify-between w-full p-3">
-                  <p className="whitespace-nowrap">{t("add.assets")}</p>
-                  {assets.filter((ast) => {
-                    let isIncluded = false;
-                    for (let index = 0; index < newContact.assets.length; index++) {
-                      if (newContact.assets[index].tokenSymbol === ast.tokenSymbol) {
-                        isIncluded = true;
-                        break;
-                      }
-                    }
-                    return !isIncluded;
-                  }).length != 0 && (
-                    <ContactAssetPop
-                      assets={assets.filter((ast) => {
-                        let isIncluded = false;
-                        newContact.assets.map((contAst) => {
-                          if (ast.tokenSymbol === contAst.tokenSymbol) isIncluded = true;
-                        });
-                        return !isIncluded;
-                      })}
-                      compClass="flex flex-row justify-end items-center w-full"
-                      getAssetIcon={getAssetIcon}
-                      onAdd={(data) => {
-                        assetToAdd(data);
-                      }}
-                    />
-                  )}
-                </div>
-                <div className="flex flex-col w-full h-full scroll-y-light">
-                  {newContact.assets.map((contAst, k) => {
-                    return (
-                      <ContactAssetElement
-                        key={k}
-                        contAst={contAst}
-                        k={k}
-                        selAstContact={selAstContact}
-                        isValidSubacc={() => {
-                          isValidSubacc("change", true, contAst);
-                        }}
-                        isAvailableAddContact={isAvailableAddContact}
-                        newSubAccounts={newSubAccounts}
-                        setNewSubaccounts={setNewSubaccounts}
-                      ></ContactAssetElement>
-                    );
-                  })}
-                </div>
-              </div>
-              <div className="flex flex-col items-start justify-start w-full h-full gap-4 p-3 bg-SecondaryColorLight dark:bg-SecondaryColor">
-                <p>{`${t("sub-acc")} (${newSubAccounts.length})`}</p>
-                <div className="flex flex-row justify-start items-start w-full gap-2 max-h-[15rem] scroll-y-light">
-                  <div className="flex flex-col items-start justify-start w-full gap-2">
-                    <p className="opacity-60">{t("name.sub.account")}</p>
-                    {newSubAccounts.map((newSA, k) => {
-                      return (
-                        <CustomInput
-                          key={k}
-                          sizeInput={"small"}
-                          sizeComp={"small"}
-                          intent={"primary"}
-                          border={newContactSubNameErr.includes(k) ? "error" : undefined}
-                          placeholder={t("name")}
-                          value={newSA.name}
-                          onChange={(e) => {
-                            onChangeSubName(e.target.value, k);
-                          }}
-                        />
-                      );
-                    })}
-                  </div>
-                  <div className="flex flex-col justify-start items-start w-[40%] gap-2">
-                    <p className="opacity-60">{t("sub-acc")}</p>
-                    {newSubAccounts.map((newSA, k) => {
-                      return (
-                        <div key={k} className="flex flex-row items-center justify-start w-full gap-2">
-                          <CustomInput
-                            sizeInput={"small"}
-                            sizeComp={"small"}
-                            intent={"primary"}
-                            border={newContactSubIdErr.includes(k) ? "error" : undefined}
-                            placeholder={"Hex"}
-                            value={newSA.subaccount_index}
-                            onChange={(e) => {
-                              onchangeSubIdx(e.target.value, k);
-                            }}
-                            onKeyDown={(e) => {
-                              onKeyPressSubIdx(e, newSA);
-                            }}
-                          />
-                          <TrashIcon
-                            onClick={() => {
-                              onDeleteSubAccount(k);
-                            }}
-                            className="w-5 h-5 cursor-pointer fill-PrimaryTextColorLight dark:fill-PrimaryTextColor"
-                          />
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-            </div>
+            <SubAccountFormItem
+              assets={assets}
+              newContact={newContact}
+              assetToAdd={assetToAdd}
+              selAstContact={selAstContact}
+              isValidSubacc={isValidSubacc}
+              newSubAccounts={newSubAccounts}
+              isAvailableAddContact={isAvailableAddContact}
+              setNewSubaccounts={setNewSubaccounts}
+              newContactSubNameErr={newContactSubNameErr}
+              onChangeSubName={onChangeSubName}
+              newContactSubIdErr={newContactSubIdErr}
+              onchangeSubIdx={onchangeSubIdx}
+              onKeyPressSubIdx={onKeyPressSubIdx}
+              onDeleteSubAccount={onDeleteSubAccount}
+            />
           )}
         </div>
+
         <div className="flex flex-row items-center justify-end w-full gap-3">
           <p className="text-TextErrorColor">{t(newContactErr)}</p>
           <CustomButton className="min-w-[5rem]" onClick={onAddContact}>

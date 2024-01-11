@@ -1,8 +1,8 @@
 // svgs
 import SearchIcon from "@assets/svg/files/icon-search.svg";
+import { ReactComponent as PlusIcon } from "@assets/svg/files/plus-icon.svg";
 import ChevronRightIcon from "@assets/svg/files/chevron-right-icon.svg";
 import ChevronRightDarkIcon from "@assets/svg/files/chevron-right-dark-icon.svg";
-import PlusIcon from "@assets/svg/files/plus-icon.svg";
 import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
@@ -11,12 +11,12 @@ import { GeneralHook } from "@pages/home/hooks/generalHook";
 import { ThemeHook } from "@pages/hooks/themeHook";
 import { IconTypeEnum, ThemesEnum } from "@/const";
 import { CustomCheck } from "@components/CheckBox";
-import { CustomButton } from "@components/Button";
 import Modal from "@components/Modal";
-import AddContact from "./addContact";
 import clsx from "clsx";
 import { Asset } from "@redux/models/AccountModels";
 import { IUseContactFilters } from "../hooks/useContactFilters";
+import AddContact from "./addContact";
+import { IconButton } from "@components/button";
 
 const ContactFilters = ({
   searchKey,
@@ -122,14 +122,13 @@ const ContactFilters = ({
             setSearchKey(e.target.value);
           }}
         />
-        <CustomButton
-          size={"icon"}
+        <IconButton
+          icon={<PlusIcon className="w-6 h-6" />}
+          size="medium"
           onClick={() => {
             setAddOpen(true);
           }}
-        >
-          <img src={PlusIcon} alt="plus-icon" className="w-5 h-5" />
-        </CustomButton>
+        />
       </div>
       <Modal
         open={addOpen}

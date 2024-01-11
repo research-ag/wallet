@@ -37,10 +37,10 @@ export interface IconButtonProps
 }
 
 export default function IconButton(props: IconButtonProps) {
-  const { icon, className, onClick } = props;
+  const { icon, className, onClick, color, enabled, size } = props;
 
   return (
-    <button className={iconButtonCVA({ className })} onClick={onClick}>
+    <button className={iconButtonCVA({ className, color, enabled, size })} onClick={onClick}>
       {icon}
     </button>
   );

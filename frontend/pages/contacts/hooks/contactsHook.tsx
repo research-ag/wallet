@@ -55,7 +55,6 @@ export const useContacts = () => {
     principal: "",
     assets: [],
   });
-
   const [selAstContact, setSelAstContact] = useState("");
   const [newSubAccounts, setNewSubaccounts] = useState<SubAccountContact[]>([]);
   const [newContactErr, setNewContactErr] = useState("");
