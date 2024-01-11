@@ -61,3 +61,29 @@ const toHoleBigInt = (numb: string, decimal: number) => {
     return BigInt(hole + dec + addZeros);
   }
 };
+
+async function hasAllowance(principal: string, assetAddress: string, allowanceSubAccountId: string) {
+  try {
+    const accountId = store.getState().auth.userPrincipal;
+    const myAgent = store.getState().auth.userAgent;
+    const canisterId = Principal.fromText(assetAddress);
+    const canister = IcrcLedgerCanister.create({ agent: myAgent, canisterId });
+    const subAccountUint8Array = new Uint8Array(hexToUint8Array(allowanceSubAccountId));
+
+    const result = await canister.allowance({
+      spender: {
+        owner: Principal.fromText(principal),
+        subaccount: [],
+      },
+      account: {
+        owner: accountId,
+        subaccount: [subAccountUint8Array],
+      },
+    });
+
+    return result;
+  } catch (e) {
+    console.log(e);
+    throw new Error("Error verifying");
+  }
+}
