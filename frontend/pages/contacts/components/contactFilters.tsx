@@ -35,7 +35,6 @@ const ContactFilters = ({
   return (
     <Fragment>
       <div className="flex flex-row items-center justify-start w-full gap-3 text-md">
-        {/* INFO: filters for assets list */}
         <p className="text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("asset")}</p>
         <DropdownMenu.Root
           onOpenChange={(e: boolean) => {
@@ -110,7 +109,6 @@ const ContactFilters = ({
           </DropdownMenu.Portal>
         </DropdownMenu.Root>
 
-        {/* INFO: add button actions and modal */}
         <CustomInput
           compOutClass="!w-[40%]"
           prefix={<img src={SearchIcon} className="mx-2" alt="search-icon" />}
