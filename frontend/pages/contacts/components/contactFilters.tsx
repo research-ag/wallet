@@ -6,7 +6,6 @@ import PlusIcon from "@assets/svg/files/plus-icon.svg";
 import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { useContacts } from "../hooks/contactsHook";
 import { CustomInput } from "@components/Input";
 import { GeneralHook } from "@pages/home/hooks/generalHook";
 import { ThemeHook } from "@pages/hooks/themeHook";
@@ -17,23 +16,26 @@ import Modal from "@components/Modal";
 import AddContact from "./addContact";
 import clsx from "clsx";
 import { Asset } from "@redux/models/AccountModels";
+import { IUseContactFilters } from "../hooks/useContactFilters";
 
-interface ContactFiltersProps {
-  searchKey: string;
-  assetFilter: string[];
-  setSearchKey(value: string): void;
-  setAssetFilter(value: string[]): void;
-}
-
-const ContactFilters = ({ searchKey, assetFilter, setSearchKey, setAssetFilter }: ContactFiltersProps) => {
+const ContactFilters = ({
+  searchKey,
+  assetFilter,
+  assetOpen,
+  addOpen,
+  setAssetFilter,
+  setAssetOpen,
+  setSearchKey,
+  setAddOpen,
+}: IUseContactFilters) => {
   const { t } = useTranslation();
   const { theme } = ThemeHook();
-  const { assetOpen, setAssetOpen, setAddOpen, addOpen } = useContacts();
   const { assets, getAssetIcon } = GeneralHook();
 
   return (
     <Fragment>
-      <div className="text-md flex flex-row justify-start items-center gap-3 w-full">
+      <div className="flex flex-row items-center justify-start w-full gap-3 text-md">
+        {/* INFO: filters for assets list */}
         <p className="text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("asset")}</p>
         <DropdownMenu.Root
           onOpenChange={(e: boolean) => {
@@ -42,11 +44,11 @@ const ContactFilters = ({ searchKey, assetFilter, setSearchKey, setAssetFilter }
         >
           <DropdownMenu.Trigger asChild>
             <div className="flex flex-row justify-start items-center border border-BorderColorLight dark:border-BorderColor rounded px-2 py-1 w-[10rem] h-[2.5rem] bg-SecondaryColorLight dark:bg-SecondaryColor">
-              <div className="flex flex-row justify-between items-center w-full">
+              <div className="flex flex-row items-center justify-between w-full">
                 {assetFilter.length === 0 || assetFilter.length === assets.length ? (
                   <p className="text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("all")}</p>
                 ) : assetFilter.length === 1 ? (
-                  <div className="flex flex-start justify-start items-center gap-2">
+                  <div className="flex items-center justify-start gap-2 flex-start">
                     {getAssetIcon(
                       IconTypeEnum.Enum.FILTER,
                       assetFilter[0],
@@ -75,7 +77,7 @@ const ContactFilters = ({ searchKey, assetFilter, setSearchKey, setAssetFilter }
             >
               <button
                 onClick={handleSelectAll}
-                className="flex flex-row justify-between items-center rounded-t-lg px-3 py-2 w-full hover:bg-HoverColorLight hover:dark:bg-HoverColor"
+                className="flex flex-row items-center justify-between w-full px-3 py-2 rounded-t-lg hover:bg-HoverColorLight hover:dark:bg-HoverColor"
               >
                 <p>{t("selected.all")}</p>
                 <CustomCheck
@@ -92,7 +94,7 @@ const ContactFilters = ({ searchKey, assetFilter, setSearchKey, setAssetFilter }
                       handleSelectAsset(asset);
                     }}
                   >
-                    <div className="flex flex-start justify-start items-center gap-2">
+                    <div className="flex items-center justify-start gap-2 flex-start">
                       {getAssetIcon(IconTypeEnum.Enum.FILTER, asset.tokenSymbol, asset.logo)}
                       <p>{asset.symbol}</p>
                     </div>
@@ -107,6 +109,8 @@ const ContactFilters = ({ searchKey, assetFilter, setSearchKey, setAssetFilter }
             </DropdownMenu.Content>
           </DropdownMenu.Portal>
         </DropdownMenu.Root>
+
+        {/* INFO: add button actions and modal */}
         <CustomInput
           compOutClass="!w-[40%]"
           prefix={<img src={SearchIcon} className="mx-2" alt="search-icon" />}
