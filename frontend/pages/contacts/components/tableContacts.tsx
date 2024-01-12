@@ -306,6 +306,10 @@ const TableContacts = ({
         tokenSymbol: dt.tokenSymbol,
         logo: dt.logo,
         subaccounts: [],
+        address: dt.address,
+        decimal: dt.decimal,
+        shortDecimal: dt.shortDecimal,
+        hasAllowance: dt.hasAllowance,
       };
     });
     addAsset(auxAsst, cntc.principal);

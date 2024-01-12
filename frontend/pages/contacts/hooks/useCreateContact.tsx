@@ -8,9 +8,9 @@ export const useCreateContact = () => {
     principal: "",
     assets: [],
   });
-
   const [selAstContact, setSelAstContact] = useState("");
   const [newSubAccounts, setNewSubaccounts] = useState<SubAccountContact[]>([]);
+
   const [newContactErr, setNewContactErr] = useState("");
   const [newContactNameErr, setNewContactNameErr] = useState(false);
   const [newContactPrinErr, setNewContactPrinErr] = useState(false);

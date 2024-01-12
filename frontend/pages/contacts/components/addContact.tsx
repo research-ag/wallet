@@ -18,8 +18,10 @@ import PrincipalFormItem from "./AddContact/PrincipalFormItem";
 import SubAccountFormItem from "./AddContact/SubAccountFormItem";
 import { removeLeadingZeros } from "@/utils";
 import usePrincipalValidator from "../hooks/usePrincipalValidator";
-import { hasSubAccountAllowances } from "@/helpers/icrc";
+import { hasSubAccountAllowances, hasSubAccountAssetAllowances } from "@/helpers/icrc";
 import LoadingLoader from "@components/Loader";
+import AllowanceTooltip from "./AllowanceTooltip";
+import { formatSubAccountIds } from "@/utils/checkers";
 
 interface AddContactProps {
   setAddOpen(value: boolean): void;
@@ -51,16 +53,26 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
     setNewContactSubIdErr,
   } = useCreateContact();
 
-  console.log(newContact);
-
   async function onAllowanceNewContactCheck() {
     try {
       setIsAllowancesChecking(true);
       if (newContact.assets.length === 0 || !newContact.principal) return;
-      const fullAssets = await hasSubAccountAllowances(newContact.principal, newContact.assets);
-      setNewContact({ ...newContact, assets: fullAssets });
-      // TODO: add the allowance icon in the SubAccountFormItem
-      // TODO: manage cache on asset to avoid fetch new
+
+      const { address, decimal } = assets.filter((asset) => asset.tokenSymbol === selAstContact)[0];
+
+      if (!address || !decimal) return;
+
+      const { formattedSubAccounts, subAccountNamesErrors, subAccountIdsErrors } = formatSubAccountIds(newSubAccounts);
+
+      if (formattedSubAccounts.length === 0 || subAccountNamesErrors.length > 0 || subAccountIdsErrors.length > 0)
+        return;
+      const fullSubAccounts = await hasSubAccountAllowances(
+        newContact.principal,
+        formattedSubAccounts,
+        address,
+        decimal,
+      );
+      setNewSubaccounts(fullSubAccounts);
     } catch (error) {
       console.log(error);
     } finally {
@@ -198,6 +210,7 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
     const errId: number[] = [];
     let validSubaccounts = true;
     const ids: string[] = [];
+
     newSubAccounts.map((newSa, j) => {
       let subacc = newSa.subaccount_index.trim();
       // Check if string contains prefix "0x" and remove it if is the case
@@ -227,6 +240,7 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
         if (valid) auxNewSub.push({ name: newSa.name.trim(), subaccount_index: subacc, sub_account_id: "" });
       }
     });
+
     // Check if valid Subaccounts and Valid prev contact info
     if (validSubaccounts && validContact) {
       const auxContact = { ...newContact };

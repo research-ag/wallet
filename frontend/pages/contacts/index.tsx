@@ -3,6 +3,7 @@ import Menu from "@pages/components/Menu";
 import ContactFilters from "./components/contactFilters";
 // import ContactList from "./components/contactList";
 import useContactFilters from "./hooks/useContactFilters";
+import AllowanceTooltip from "./components/AllowanceTooltip";
 
 const Contacts = () => {
   const { assetOpen, addOpen, searchKey, assetFilter, setAssetOpen, setAddOpen, setSearchKey, setAssetFilter } =

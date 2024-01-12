@@ -7,6 +7,7 @@ import ContactAssetElement from "../contactAssetElement";
 import { CustomInput } from "@components/Input";
 import { getAssetIcon } from "@/utils/icons";
 import { checkHexString, removeLeadingZeros } from "@/utils";
+import AllowanceTooltip from "../AllowanceTooltip";
 
 interface SubAccountFormItemProps {
   assets: Array<Asset>;
@@ -41,6 +42,7 @@ export default function SubAccountFormItem(props: SubAccountFormItemProps) {
     newContactSubIdErr,
     setNewContactSubIdErr,
   } = props;
+
   return (
     <div className="flex flex-row items-start justify-start w-full h-full">
       <div className="flex flex-col justify-start items-start w-[70%] h-full">
@@ -98,18 +100,22 @@ export default function SubAccountFormItem(props: SubAccountFormItemProps) {
             <p className="opacity-60">{t("name.sub.account")}</p>
             {newSubAccounts.map((newSA, k) => {
               return (
-                <CustomInput
-                  key={k}
-                  sizeInput={"small"}
-                  sizeComp={"small"}
-                  intent={"primary"}
-                  border={newContactSubNameErr.includes(k) ? "error" : undefined}
-                  placeholder={t("name")}
-                  value={newSA.name}
-                  onChange={(e) => {
-                    onChangeSubName(e.target.value, k);
-                  }}
-                />
+                <div key={k} className="relative flex items-center justify-between w-full">
+                  {newSA?.allowance && (
+                    <AllowanceTooltip amount={newSA.allowance?.allowance} expiration={newSA.allowance.expires_at} />
+                  )}
+                  <CustomInput
+                    sizeInput={"small"}
+                    sizeComp={"small"}
+                    intent={"primary"}
+                    border={newContactSubNameErr.includes(k) ? "error" : undefined}
+                    placeholder={t("name")}
+                    value={newSA.name}
+                    onChange={(e) => {
+                      onChangeSubName(e.target.value, k);
+                    }}
+                  />
+                </div>
               );
             })}
           </div>
@@ -182,9 +188,13 @@ export default function SubAccountFormItem(props: SubAccountFormItemProps) {
           ...data.map((ata) => {
             return {
               symbol: ata.symbol,
-              subaccounts: [],
               tokenSymbol: ata.tokenSymbol,
               logo: ata.logo,
+              subaccounts: [],
+              address: ata.address,
+              decimal: ata.decimal,
+              shortDecimal: ata.shortDecimal,
+              hasAllowance: ata.hasAllowance,
             };
           }),
         ],

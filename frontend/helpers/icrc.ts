@@ -3,7 +3,7 @@ import { hexToUint8Array, toFullDecimal, toHoleBigInt } from "@/utils";
 import { ApproveParams, IcrcLedgerCanister } from "@dfinity/ledger";
 import { Principal } from "@dfinity/principal";
 import store from "@redux/Store";
-import { AssetContact } from "@redux/models/ContactsModels";
+import { AssetContact, SubAccountContact } from "@redux/models/ContactsModels";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 dayjs.extend(utc);
@@ -44,6 +44,7 @@ export async function ICRCApprove(params: ApproveParams, assetAddress: string): 
   }
 }
 
+// WARNING: analyze the work of the function
 export async function hasAllowance(
   principal: string,
   assetAddress: string,
@@ -51,11 +52,18 @@ export async function hasAllowance(
   decimal: number,
 ) {
   try {
+    console.log({
+      principal,
+      assetAddress,
+      allowanceSubAccountId,
+      decimal,
+    });
+
     const accountId = store.getState().auth.userPrincipal;
     const myAgent = store.getState().auth.userAgent;
     const canisterId = Principal.fromText(assetAddress);
     const canister = IcrcLedgerCanister.create({ agent: myAgent, canisterId });
-    const subAccountUint8Array = new Uint8Array(hexToUint8Array(allowanceSubAccountId));
+    const subAccountUint8Array = new Uint8Array(hexToUint8Array(""));
 
     const result = await canister.allowance({
       spender: {
@@ -68,17 +76,43 @@ export async function hasAllowance(
       },
     });
 
+    console.log(result)
+
     return {
       allowance: toFullDecimal(result.allowance, decimal),
-      expires_at: dayjs(Number(result.expires_at) / 1000000).format("YYYY-MM-DD HH:mm:ss"),
+      expires_at: dayjs(Number(result?.expires_at) / 1000000).format("YYYY-MM-DD HH:mm:ss"),
     };
   } catch (e) {
     console.log(e);
-    throw new Error("Error verifying");
   }
 }
 
 export async function hasSubAccountAllowances(
+  spenderPrincipal: string,
+  subAccounts: SubAccountContact[],
+  assetAddress: string,
+  assetDecimal: string,
+) {
+  const newSubAccounts = [];
+
+  for (let subAccountIndex = 0; subAccountIndex < subAccounts.length; subAccountIndex++) {
+    const subAccountId = subAccounts[subAccountIndex]?.sub_account_id;
+    const response = await hasAllowance(spenderPrincipal, assetAddress, subAccountId, Number(assetDecimal));
+
+    if (response?.allowance) {
+      newSubAccounts.push({
+        ...subAccounts[subAccountIndex],
+        allowance: response,
+      });
+    } else {
+      newSubAccounts.push(subAccounts[subAccountIndex]);
+    }
+  }
+
+  return newSubAccounts;
+}
+
+export async function hasSubAccountAssetAllowances(
   spenderPrincipal: string,
   assets: AssetContact[],
 ): Promise<AssetContact[] | []> {

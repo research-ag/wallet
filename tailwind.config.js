@@ -91,6 +91,7 @@ module.exports =  {
       ContactColor1: "#8A9CB7",
       ContactColor2: "#61A0BE",
       ContactColor3: "#5F8E88",
+      TooltipBackground: "#1F2B55",
 
 
       black: colors.black,

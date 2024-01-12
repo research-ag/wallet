@@ -12,6 +12,8 @@ interface ModalProps {
   text?: string;
   border?: string;
   children: any;
+  overlayZIndex?: string;
+  contentZIndex?: string;
 }
 
 const Modal = ({
@@ -24,14 +26,18 @@ const Modal = ({
   padding = "p-6",
   rounded = "rounded-lg",
   border = "",
+  overlayZIndex = "1999",
+  contentZIndex = "2000",
   children,
 }: ModalProps) => {
   return (
     <Fragment>
       <Dialog.Root open={open}>
         <Dialog.Portal>
-          <Dialog.Overlay className=" bg-black/50 data-[state=open]:animate-overlayShow fixed inset-0 z-[1999]" />
-          <Dialog.Content className={`fixed ${top} left-[50%] outline-none shadow-md z-[2000] `}>
+          <Dialog.Overlay
+            className={`bg-black/50 data-[state=open]:animate-overlayShow fixed inset-0 z-[${overlayZIndex}]`}
+          />
+          <Dialog.Content className={`fixed ${top} left-[50%] outline-none shadow-md z-[${contentZIndex}] `}>
             <div
               className={`absolute flex flex-col justify-start items-start text-lg translate-x-[-50%] translate-y-[-50%] ${width} ${height}  ${background} ${padding} ${rounded} ${text} ${border}`}
             >

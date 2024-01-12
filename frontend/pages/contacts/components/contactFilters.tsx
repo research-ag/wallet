@@ -134,6 +134,8 @@ const ContactFilters = ({
         width="w-[48rem]"
         padding="py-5 px-8"
         border="border border-BorderColorTwoLight dark:border-BorderColorTwo"
+        overlayZIndex="0"
+        contentZIndex="0"
       >
         <AddContact setAddOpen={setAddOpen} />
       </Modal>
