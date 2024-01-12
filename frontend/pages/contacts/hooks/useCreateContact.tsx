@@ -18,9 +18,6 @@ export const useCreateContact = () => {
   const [newContactSubNameErr, setNewContactSubNameErr] = useState<number[]>([]);
   const [newContactSubIdErr, setNewContactSubIdErr] = useState<number[]>([]);
 
-  console.log("newSubAccounts", newSubAccounts);
-  console.log("newContact", newContact);
-
   return {
     isCreating,
     setIsCreating,

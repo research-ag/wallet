@@ -24,6 +24,7 @@ import bigInt from "big-integer";
 import { isSubAccountIdValid } from "@/utils/checkers";
 import AllowanceTooltip from "./AllowanceTooltip";
 import useContactTable from "../hooks/useContactTable";
+import { checkAllowanceExist } from "@/helpers/icrc";
 
 interface TableSubAccountsProps {
   asst: AssetContact;
@@ -299,7 +300,7 @@ const TableSubAccounts = ({
     </table>
   );
 
-  function checkSubAcc(edit: boolean, cntc: Contact, asst: AssetContact, sa?: SubAccountContact) {
+  async function checkSubAcc(edit: boolean, cntc: Contact, asst: AssetContact, sa?: SubAccountContact) {
     let subacc = subaccEdited.subaccount_index.trim();
     if (subacc.slice(0, 2).toLowerCase() === "0x") subacc = subacc.substring(2);
 
@@ -308,6 +309,7 @@ const TableSubAccounts = ({
 
     let eqHexValid = false;
     let eqHex = false;
+
     if (edit) {
       eqHex = (hexToNumber(`0x${subacc}`) || bigInt()).eq(hexToNumber(`0x${sa?.subaccount_index}`) || bigInt());
       if (!eqHex) {
@@ -322,6 +324,13 @@ const TableSubAccounts = ({
       subaccount_index: subacc === "" || eqHexValid,
     });
 
+    const allowance = await checkAllowanceExist(
+      cntc.principal,
+      asst.address,
+      subaccEdited.sub_account_id,
+      Number(asst.decimal),
+    );
+
     if (edit) {
       if (subacc !== "" && subaccEdited.name.trim() !== "" && (eqHex || checkedIdxValid)) {
         editCntctSubacc(
@@ -330,6 +339,7 @@ const TableSubAccounts = ({
           sa?.subaccount_index || "0",
           subaccEdited.name.trim(),
           checkedIdx,
+          allowance,
         );
         setSelSubaccIdx("");
       }
@@ -340,6 +350,8 @@ const TableSubAccounts = ({
           asst.tokenSymbol,
           subaccEdited.name.trim(),
           removeLeadingZeros(subacc) === "" ? "0" : removeLeadingZeros(subacc),
+          subaccEdited.sub_account_id,
+          allowance,
         );
         setSelSubaccIdx("");
         setAddSub(false);

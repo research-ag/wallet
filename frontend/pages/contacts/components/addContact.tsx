@@ -249,8 +249,6 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
 
   async function isValidSubacc(from: string, validContact: boolean, contAst?: AssetContact) {
     const { auxNewSub, errName, errId, validSubaccounts } = validateSubaccounts(newSubAccounts);
-    console.log("BUTE", newContact.assets);
-
     // Check if valid Subaccounts and Valid prev contact info
     if (validSubaccounts && validContact) {
       const auxContact = { ...newContact };

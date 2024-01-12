@@ -27,7 +27,6 @@ const contactsSlice = createSlice({
     addContact(state, action: PayloadAction<Contact>) {
       const auxContact = { ...action.payload, accountIdentier: getAccountIdentifier(action.payload.principal, 0) };
       const auxContacts = [...state.contacts, auxContact];
-      console.log(auxContacts);
       state.contacts = auxContacts;
       setLocalContacts(auxContacts, state.storageCode);
     },
@@ -117,6 +116,8 @@ const contactsSlice = createSlice({
           tokenSymbol: string;
           newName: string;
           newIndex: string;
+          subAccountId: string;
+          allowance?: { allowance: string; expires_at: string } | undefined;
         }>,
       ) {
         const auxContacts = state.contacts.map((cnts) => {
@@ -132,13 +133,19 @@ const contactsSlice = createSlice({
                     ...asst,
                     subaccounts: [
                       ...asst.subaccounts,
-                      { name: action.payload.newName, subaccount_index: action.payload.newIndex },
+                      {
+                        name: action.payload.newName,
+                        subaccount_index: action.payload.newIndex,
+                        sub_account_id: action.payload.subAccountId,
+                        allowance: action.payload.allowance,
+                      },
                     ].sort(
                       (a, b) =>
                         hexToNumber(`0x${a.subaccount_index}`)?.compare(
                           hexToNumber(`0x${b.subaccount_index}`) || bigInt(0),
                         ) || 0,
                     ),
+                    hasAllowance: asst.subaccounts.some((subaccount) => subaccount?.allowance),
                   };
                 }
               }),
@@ -148,9 +155,16 @@ const contactsSlice = createSlice({
         state.contacts = auxContacts;
         setLocalContacts(auxContacts, state.storageCode);
       },
-      prepare(principal: string, tokenSymbol: string, newName: string, newIndex: string) {
+      prepare(
+        principal: string,
+        tokenSymbol: string,
+        newName: string,
+        newIndex: string,
+        subAccountId: string,
+        allowance?: { allowance: string; expires_at: string } | undefined,
+      ) {
         return {
-          payload: { principal, tokenSymbol, newName, newIndex },
+          payload: { principal, tokenSymbol, newName, newIndex, subAccountId, allowance },
         };
       },
     },
@@ -163,6 +177,7 @@ const contactsSlice = createSlice({
           subIndex: string;
           newName: string;
           newIndex: string;
+          allowance: { allowance: string; expires_at: string } | undefined;
         }>,
       ) {
         const auxContacts = state.contacts.map((cnts) => {
@@ -183,6 +198,8 @@ const contactsSlice = createSlice({
                           return {
                             name: action.payload.newName,
                             subaccount_index: action.payload.newIndex,
+                            sub_account_id: sa.sub_account_id,
+                            allowance: action.payload.allowance,
                           };
                         }
                       })
@@ -198,12 +215,20 @@ const contactsSlice = createSlice({
             };
           }
         });
+
         state.contacts = auxContacts;
         setLocalContacts(auxContacts, state.storageCode);
       },
-      prepare(principal: string, tokenSymbol: string, subIndex: string, newName: string, newIndex: string) {
+      prepare(
+        principal: string,
+        tokenSymbol: string,
+        subIndex: string,
+        newName: string,
+        newIndex: string,
+        allowance: { allowance: string; expires_at: string } | undefined,
+      ) {
         return {
-          payload: { principal, tokenSymbol, subIndex, newName, newIndex },
+          payload: { principal, tokenSymbol, subIndex, newName, newIndex, allowance },
         };
       },
     },

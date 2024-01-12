@@ -26,11 +26,14 @@ export default function useContactTable() {
   const dispatch = useAppDispatch();
 
   // edit contact up contact list
-  const updateContact = (editedContact: Contact, pastPrincipal: string) => dispatch(editContact(editedContact, pastPrincipal));
+  const updateContact = (editedContact: Contact, pastPrincipal: string) =>
+    dispatch(editContact(editedContact, pastPrincipal));
+
   const addAsset = (asset: AssetContact[], pastPrincipal: string) => dispatch(addAssetToContact(asset, pastPrincipal));
   const removeCntct = (principal: string) => dispatch(removeContact(principal));
   const removeAsset = (principal: string, tokenSymbol: string) => dispatch(removeContactAsset(principal, tokenSymbol));
-  const removeSubacc = (principal: string, tokenSymbol: string, subIndex: string) => dispatch(removeContactSubacc(principal, tokenSymbol, subIndex));
+  const removeSubacc = (principal: string, tokenSymbol: string, subIndex: string) =>
+    dispatch(removeContactSubacc(principal, tokenSymbol, subIndex));
 
   const editCntctSubacc = (
     principal: string,
@@ -38,10 +41,17 @@ export default function useContactTable() {
     subIndex: string,
     newName: string,
     newIndex: string,
-  ) => dispatch(editContactSubacc(principal, tokenSymbol, subIndex, newName, newIndex));
+    allowance: { allowance: string; expires_at: string } | undefined,
+  ) => dispatch(editContactSubacc(principal, tokenSymbol, subIndex, newName, newIndex, allowance));
 
-  const addCntctSubacc = (principal: string, tokenSymbol: string, newName: string, newIndex: string) =>
-    dispatch(addContactSubacc(principal, tokenSymbol, newName, newIndex));
+  const addCntctSubacc = (
+    principal: string,
+    tokenSymbol: string,
+    newName: string,
+    newIndex: string,
+    subAccountId: string,
+    allowance?: { allowance: string; expires_at: string },
+  ) => dispatch(addContactSubacc(principal, tokenSymbol, newName, newIndex, subAccountId, allowance));
 
   // contact list
   const [deleteModal, setDeleteModal] = useState(false);
@@ -68,6 +78,7 @@ export default function useContactTable() {
     subaccount_index: "",
     sub_account_id: "",
   });
+
   const [subaccEditedErr, setSubaccEditedErr] = useState<SubAccountContactErr>({
     name: false,
     subaccount_index: false,
