@@ -20,7 +20,6 @@ import { removeLeadingZeros } from "@/utils";
 import usePrincipalValidator from "../hooks/usePrincipalValidator";
 import { hasSubAccountAllowances, hasSubAccountAssetAllowances } from "@/helpers/icrc";
 import LoadingLoader from "@components/Loader";
-import AllowanceTooltip from "./AllowanceTooltip";
 import { formatSubAccountIds } from "@/utils/checkers";
 
 interface AddContactProps {
@@ -35,6 +34,8 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
   const { checkPrincipalValid } = usePrincipalValidator();
 
   const {
+    isCreating,
+    setIsCreating,
     newContact,
     setNewContact,
     selAstContact,
@@ -133,11 +134,11 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
           <CustomButton
             className="bg-BorderSuccessColor min-w-[5rem] flex justify-between items-center"
             onClick={onAllowanceNewContactCheck}
-            disabled={isAllowancesChecking}
+            disabled={isAllowancesChecking || isCreating}
           >
             <MoneyHandIcon className="fill-PrimaryColorLight" /> {t("test")}
           </CustomButton>
-          <CustomButton className="min-w-[5rem]" onClick={onAddContact}>
+          <CustomButton className="min-w-[5rem]" onClick={onAddContact} disabled={isCreating}>
             <p>{t("add.contact")}</p>
           </CustomButton>
         </div>
@@ -246,7 +247,7 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
 
   async function isValidSubacc(from: string, validContact: boolean, contAst?: AssetContact) {
     const { auxNewSub, errName, errId, validSubaccounts } = validateSubaccounts(newSubAccounts);
-    console.log("BUTE", newContact.assets)
+    console.log("BUTE", newContact.assets);
 
     // Check if valid Subaccounts and Valid prev contact info
     if (validSubaccounts && validContact) {
@@ -271,6 +272,7 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
             : contAst.subaccounts,
         );
       } else {
+        setIsCreating(true);
         // FIX: the newContact.assets are not coming and check fails
         console.log("newContact: ", newContact.assets);
         // const result = await hasSubAccountAssetAllowances(newContact.principal, newContact.assets);
@@ -280,6 +282,7 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
         // };
         // dispatch(addContact(toStoreContact));
         // setAddOpen(false);
+        setIsCreating(false);
       }
       setNewContactSubNameErr([]);
       setNewContactSubIdErr([]);

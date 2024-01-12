@@ -8,6 +8,7 @@ export const useCreateContact = () => {
     principal: "",
     assets: [],
   });
+  const [isCreating, setIsCreating] = useState(false);
   const [selAstContact, setSelAstContact] = useState("");
   const [newSubAccounts, setNewSubaccounts] = useState<SubAccountContact[]>([]);
 
@@ -18,6 +19,8 @@ export const useCreateContact = () => {
   const [newContactSubIdErr, setNewContactSubIdErr] = useState<number[]>([]);
 
   return {
+    isCreating,
+    setIsCreating,
     newContact,
     setNewContact,
     selAstContact,
