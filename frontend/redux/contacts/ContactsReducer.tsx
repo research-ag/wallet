@@ -28,8 +28,8 @@ const contactsSlice = createSlice({
       const auxContact = { ...action.payload, accountIdentier: getAccountIdentifier(action.payload.principal, 0) };
       const auxContacts = [...state.contacts, auxContact];
       console.log(auxContacts);
-      state.contacts = auxContacts;
-      setLocalContacts(auxContacts, state.storageCode);
+      // state.contacts = auxContacts;
+      // setLocalContacts(auxContacts, state.storageCode);
     },
     deleteContatc(state, action: PayloadAction<string>) {
       const auxContacts = state.contacts.filter((cnts) => cnts.principal !== action.payload);

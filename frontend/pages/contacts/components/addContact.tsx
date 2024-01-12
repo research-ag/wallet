@@ -246,6 +246,7 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
 
   async function isValidSubacc(from: string, validContact: boolean, contAst?: AssetContact) {
     const { auxNewSub, errName, errId, validSubaccounts } = validateSubaccounts(newSubAccounts);
+    console.log("BUTE", newContact.assets)
 
     // Check if valid Subaccounts and Valid prev contact info
     if (validSubaccounts && validContact) {
@@ -270,13 +271,15 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
             : contAst.subaccounts,
         );
       } else {
-        const result = await hasSubAccountAssetAllowances(newContact.principal, newContact.assets);
-        const toStoreContact = {
-          ...auxContact,
-          assets: result,
-        };
-        dispatch(addContact(toStoreContact));
-        setAddOpen(false);
+        // FIX: the newContact.assets are not coming and check fails
+        console.log("newContact: ", newContact.assets);
+        // const result = await hasSubAccountAssetAllowances(newContact.principal, newContact.assets);
+        // const toStoreContact = {
+        //   ...auxContact,
+        //   assets: result,
+        // };
+        // dispatch(addContact(toStoreContact));
+        // setAddOpen(false);
       }
       setNewContactSubNameErr([]);
       setNewContactSubIdErr([]);
