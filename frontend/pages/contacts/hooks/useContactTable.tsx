@@ -66,6 +66,7 @@ export default function useContactTable() {
   const [subaccEdited, setSubaccEdited] = useState<SubAccountContact>({
     name: "",
     subaccount_index: "",
+    sub_account_id: "",
   });
   const [subaccEditedErr, setSubaccEditedErr] = useState<SubAccountContactErr>({
     name: false,

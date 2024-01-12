@@ -27,6 +27,7 @@ const contactsSlice = createSlice({
     addContact(state, action: PayloadAction<Contact>) {
       const auxContact = { ...action.payload, accountIdentier: getAccountIdentifier(action.payload.principal, 0) };
       const auxContacts = [...state.contacts, auxContact];
+      console.log(auxContacts);
       state.contacts = auxContacts;
       setLocalContacts(auxContacts, state.storageCode);
     },

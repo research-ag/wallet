@@ -19,10 +19,11 @@ import {
   SubAccountContactErr,
 } from "@redux/models/ContactsModels";
 import { DeleteContactTypeEnum } from "@/const";
-import { useCreateContact } from "../hooks/useCreateContact";
 import { GeneralHook } from "@pages/home/hooks/generalHook";
 import bigInt from "big-integer";
 import { isSubAccountIdValid } from "@/utils/checkers";
+import AllowanceTooltip from "./AllowanceTooltip";
+import useContactTable from "../hooks/useContactTable";
 
 interface TableSubAccountsProps {
   asst: AssetContact;
@@ -64,7 +65,7 @@ const TableSubAccounts = ({
   const { t } = useTranslation();
 
   const { asciiHex } = GeneralHook();
-  const { editCntctSubacc, addCntctSubacc } = useCreateContact();
+  const { editCntctSubacc, addCntctSubacc } = useContactTable();
 
   return (
     <table className="w-full text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md ">
@@ -133,6 +134,9 @@ const TableSubAccounts = ({
                       <p className="text-left break-all opacity-70">
                         {sa.name.length > 105 ? `${sa.name.slice(0, 105)}...` : sa.name}
                       </p>
+                      {sa.allowance?.allowance && (
+                        <AllowanceTooltip amount={sa.allowance.allowance} expiration={sa.allowance.expires_at} />
+                      )}
                     </div>
                   )}
                 </div>

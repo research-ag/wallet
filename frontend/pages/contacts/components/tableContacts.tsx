@@ -27,6 +27,7 @@ import { GeneralHook } from "@pages/home/hooks/generalHook";
 import { AssetToAdd } from "@redux/models/AccountModels";
 import useContactTable from "../hooks/useContactTable";
 import usePrincipalValidator from "../hooks/usePrincipalValidator";
+import { ReactComponent as MoneyHandIcon } from "@assets/svg/files/money-hand.svg";
 
 interface TableContactsProps {
   changeName(value: string): void;
@@ -99,143 +100,151 @@ const TableContacts = ({
         </tr>
       </thead>
       <tbody>
-        {getContactsToShow().map((cntc, k) => (
-          <Fragment key={k}>
-            <tr className={contactStyle(cntc)}>
-              <td className="">
-                <div className="relative flex flex-row items-center justify-start w-full gap-2 px-4 min-h-14">
-                  {(cntc.principal === selContactPrin ||
-                    cntc.principal === openAssetsPrin ||
-                    cntc.principal === selCntcPrinAddAsst) && (
-                    <div className="absolute left-0 w-1 h-14 bg-SelectRowColor"></div>
-                  )}
-                  {cntc.principal === selContactPrin ? (
-                    <CustomInput
-                      intent={"primary"}
-                      border={contactEditedErr.name ? "error" : "selected"}
-                      sizeComp={"xLarge"}
-                      sizeInput="small"
-                      value={contactEdited.name}
-                      onChange={onContactNameChange}
-                    />
-                  ) : (
-                    <div className="flex flex-row items-center justify-start w-full gap-2">
-                      <div
-                        className={`flex justify-center items-center !min-w-[2rem] w-8 h-8 rounded-md ${getContactColor(
-                          k,
-                        )}`}
-                      >
-                        <p className="text-PrimaryTextColor">{getInitialFromName(cntc.name, 2)}</p>
+        {getContactsToShow().map((cntc, k) => {
+          const hasContactAllowance = cntc.assets.some((a) => a.hasAllowance);
+
+          return (
+            <Fragment key={k}>
+              <tr className={contactStyle(cntc)}>
+                <td className="">
+                  <div className="relative flex flex-row items-center justify-start w-full gap-2 px-4 min-h-14">
+                    {(cntc.principal === selContactPrin ||
+                      cntc.principal === openAssetsPrin ||
+                      cntc.principal === selCntcPrinAddAsst) && (
+                      <div className="absolute left-0 w-1 h-14 bg-SelectRowColor"></div>
+                    )}
+                    {cntc.principal === selContactPrin ? (
+                      <CustomInput
+                        intent={"primary"}
+                        border={contactEditedErr.name ? "error" : "selected"}
+                        sizeComp={"xLarge"}
+                        sizeInput="small"
+                        value={contactEdited.name}
+                        onChange={onContactNameChange}
+                      />
+                    ) : (
+                      <div className="flex flex-row items-center justify-start w-full gap-2">
+                        <div
+                          className={`flex justify-center items-center !min-w-[2rem] w-8 h-8 rounded-md ${getContactColor(
+                            k,
+                          )}`}
+                        >
+                          <p className="text-PrimaryTextColor">{getInitialFromName(cntc.name, 2)}</p>
+                        </div>
+                        <p className="text-left opacity-70 break-words max-w-[14rem]">{cntc.name}</p>
+                        {cntc.assets[0].hasAllowance}
+                        {hasContactAllowance && (
+                          <MoneyHandIcon className="relative w-5 h-5 cursor-pointer fill-RadioCheckColor" />
+                        )}
                       </div>
-                      <p className="text-left opacity-70 break-words w-full max-w-[14rem]">{cntc.name}</p>
+                    )}
+                  </div>
+                </td>
+                <td className="py-2">
+                  <div className="flex flex-row items-center justify-start gap-2 px-2 opacity-70">
+                    <p>{shortAddress(cntc.principal, 12, 9)}</p>
+                    <CustomCopy size={"xSmall"} className="p-0" copyText={cntc.principal} />
+                  </div>
+                </td>
+                <td className="py-2">
+                  <div className="flex flex-row items-center justify-center w-full">
+                    <div
+                      className={
+                        "flex flex-row justify-between items-center w-28 h-8 rounded bg-black/10 dark:bg-white/10"
+                      }
+                    >
+                      <p className="ml-2">{`${cntc.assets.length} ${t("assets")}`}</p>
+                      <ContactAssetPop
+                        compClass="flex flex-row justify-center items-center"
+                        btnClass="!w-8 !h-8 bg-AddSecondaryButton rounded-l-none"
+                        assets={getFilteredAssets(cntc)}
+                        getAssetIcon={getAssetIcon}
+                        onAdd={(data) => {
+                          onAddAssets(data, cntc);
+                        }}
+                        onOpen={() => {
+                          onAddAssetPopOpen(cntc);
+                        }}
+                        onClose={() => {
+                          setSelCntcPrinAddAsst("");
+                        }}
+                      />
                     </div>
-                  )}
-                </div>
-              </td>
-              <td className="py-2">
-                <div className="flex flex-row items-center justify-start gap-2 px-2 opacity-70">
-                  <p>{shortAddress(cntc.principal, 12, 9)}</p>
-                  <CustomCopy size={"xSmall"} className="p-0" copyText={cntc.principal} />
-                </div>
-              </td>
-              <td className="py-2">
-                <div className="flex flex-row items-center justify-center w-full">
-                  <div
-                    className={
-                      "flex flex-row justify-between items-center w-28 h-8 rounded bg-black/10 dark:bg-white/10"
-                    }
-                  >
-                    <p className="ml-2">{`${cntc.assets.length} ${t("assets")}`}</p>
-                    <ContactAssetPop
-                      compClass="flex flex-row justify-center items-center"
-                      btnClass="!w-8 !h-8 bg-AddSecondaryButton rounded-l-none"
-                      assets={getFilteredAssets(cntc)}
-                      getAssetIcon={getAssetIcon}
-                      onAdd={(data) => {
-                        onAddAssets(data, cntc);
+                  </div>
+                </td>
+                <td className="py-2">
+                  <div className="flex flex-row items-start justify-center w-full gap-4">
+                    {cntc.principal === selContactPrin ? (
+                      <CheckIcon
+                        onClick={() => {
+                          onSave(cntc);
+                        }}
+                        className="w-4 h-4 opacity-50 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
+                      />
+                    ) : (
+                      <PencilIcon
+                        onClick={() => {
+                          onEdit(cntc);
+                        }}
+                        className="w-4 h-4 opacity-50 cursor-pointer fill-PrimaryTextColorLight dark:fill-PrimaryTextColor"
+                      />
+                    )}
+                    {cntc.principal === selContactPrin ? (
+                      <CloseIcon
+                        onClick={onClose}
+                        className="w-5 h-5 opacity-50 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
+                      />
+                    ) : (
+                      <TrashIcon
+                        onClick={() => {
+                          onDelete(cntc);
+                        }}
+                        className="w-4 h-4 cursor-pointer fill-PrimaryTextColorLight dark:fill-PrimaryTextColor"
+                      />
+                    )}
+                  </div>
+                </td>
+                <td className="py-2">
+                  <div className="flex flex-row items-start justify-center w-full gap-2">
+                    <ChevIcon
+                      onClick={() => {
+                        onChevIconClic(cntc);
                       }}
-                      onOpen={() => {
-                        onAddAssetPopOpen(cntc);
-                      }}
-                      onClose={() => {
-                        setSelCntcPrinAddAsst("");
-                      }}
+                      className={`w-8 h-8 stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor stroke-0  cursor-pointer ${
+                        cntc.principal === openAssetsPrin ? "" : "rotate-90"
+                      }`}
                     />
                   </div>
-                </div>
-              </td>
-              <td className="py-2">
-                <div className="flex flex-row items-start justify-center w-full gap-4">
-                  {cntc.principal === selContactPrin ? (
-                    <CheckIcon
-                      onClick={() => {
-                        onSave(cntc);
-                      }}
-                      className="w-4 h-4 opacity-50 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
-                    />
-                  ) : (
-                    <PencilIcon
-                      onClick={() => {
-                        onEdit(cntc);
-                      }}
-                      className="w-4 h-4 opacity-50 cursor-pointer fill-PrimaryTextColorLight dark:fill-PrimaryTextColor"
-                    />
-                  )}
-                  {cntc.principal === selContactPrin ? (
-                    <CloseIcon
-                      onClick={onClose}
-                      className="w-5 h-5 opacity-50 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
-                    />
-                  ) : (
-                    <TrashIcon
-                      onClick={() => {
-                        onDelete(cntc);
-                      }}
-                      className="w-4 h-4 cursor-pointer fill-PrimaryTextColorLight dark:fill-PrimaryTextColor"
-                    />
-                  )}
-                </div>
-              </td>
-              <td className="py-2">
-                <div className="flex flex-row items-start justify-center w-full gap-2">
-                  <ChevIcon
-                    onClick={() => {
-                      onChevIconClic(cntc);
-                    }}
-                    className={`w-8 h-8 stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor stroke-0  cursor-pointer ${
-                      cntc.principal === openAssetsPrin ? "" : "rotate-90"
-                    }`}
-                  />
-                </div>
-              </td>
-            </tr>
-            {cntc.principal === openAssetsPrin && (
-              <tr className="bg-SecondaryColorLight dark:bg-SecondaryColor">
-                <td colSpan={5} className="w-full h-4 border-BorderColorTwoLight dark:border-BorderColorTwo">
-                  <TableAssets
-                    cntc={cntc}
-                    openSubaccToken={openSubaccToken}
-                    setOpenSubaccToken={setOpenSubaccToken}
-                    setSelSubaccIdx={setSelSubaccIdx}
-                    changeName={changeName}
-                    addSub={addSub}
-                    setAddSub={setAddSub}
-                    setDeleteType={setDeleteType}
-                    setDeleteObject={setDeleteObject}
-                    setSelContactPrin={setSelContactPrin}
-                    setSubaccEdited={setSubaccEdited}
-                    setSubaccEditedErr={setSubaccEditedErr}
-                    changeSubIdx={changeSubIdx}
-                    setDeleteModal={setDeleteModal}
-                    selSubaccIdx={selSubaccIdx}
-                    subaccEdited={subaccEdited}
-                    subaccEditedErr={subaccEditedErr}
-                  ></TableAssets>
                 </td>
               </tr>
-            )}
-          </Fragment>
-        ))}
+              {cntc.principal === openAssetsPrin && (
+                <tr className="bg-SecondaryColorLight dark:bg-SecondaryColor">
+                  <td colSpan={5} className="w-full h-4 border-BorderColorTwoLight dark:border-BorderColorTwo">
+                    <TableAssets
+                      cntc={cntc}
+                      openSubaccToken={openSubaccToken}
+                      setOpenSubaccToken={setOpenSubaccToken}
+                      setSelSubaccIdx={setSelSubaccIdx}
+                      changeName={changeName}
+                      addSub={addSub}
+                      setAddSub={setAddSub}
+                      setDeleteType={setDeleteType}
+                      setDeleteObject={setDeleteObject}
+                      setSelContactPrin={setSelContactPrin}
+                      setSubaccEdited={setSubaccEdited}
+                      setSubaccEditedErr={setSubaccEditedErr}
+                      changeSubIdx={changeSubIdx}
+                      setDeleteModal={setDeleteModal}
+                      selSubaccIdx={selSubaccIdx}
+                      subaccEdited={subaccEdited}
+                      subaccEditedErr={subaccEditedErr}
+                    ></TableAssets>
+                  </td>
+                </tr>
+              )}
+            </Fragment>
+          );
+        })}
       </tbody>
     </table>
   );
@@ -249,6 +258,7 @@ const TableContacts = ({
   function getContactsToShow() {
     return contacts.filter((cntc) => {
       let incSubName = false;
+
       for (let i = 0; i < cntc.assets.length; i++) {
         const ast = cntc.assets[i];
         for (let j = 0; j < ast.subaccounts.length; j++) {

@@ -204,7 +204,7 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
     setNewContactNameErr(false);
   }
 
-  function isValidSubacc(from: string, validContact: boolean, contAst?: AssetContact) {
+  function validateSubaccounts(newSubAccounts: SubAccountContact[]) {
     const auxNewSub: SubAccountContact[] = [];
     const errName: number[] = [];
     const errId: number[] = [];
@@ -241,6 +241,12 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
       }
     });
 
+    return { auxNewSub, errName, errId, validSubaccounts };
+  }
+
+  async function isValidSubacc(from: string, validContact: boolean, contAst?: AssetContact) {
+    const { auxNewSub, errName, errId, validSubaccounts } = validateSubaccounts(newSubAccounts);
+
     // Check if valid Subaccounts and Valid prev contact info
     if (validSubaccounts && validContact) {
       const auxContact = { ...newContact };
@@ -252,6 +258,7 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
           break;
         }
       }
+
       if (auxContact.assets.length > 0) auxContact.assets[editKey].subaccounts = auxNewSub;
       // Verify if is an asset change or Add Contact action
       if (from === "change" && contAst) {
@@ -263,7 +270,12 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
             : contAst.subaccounts,
         );
       } else {
-        dispatch(addContact(auxContact));
+        const result = await hasSubAccountAssetAllowances(newContact.principal, newContact.assets);
+        const toStoreContact = {
+          ...auxContact,
+          assets: result,
+        };
+        dispatch(addContact(toStoreContact));
         setAddOpen(false);
       }
       setNewContactSubNameErr([]);
@@ -275,6 +287,7 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
       setNewContactSubIdErr(errId);
       if (errName.length > 0 || errId.length > 0) setNewContactErr("check.add.contact.subacc.err");
     }
+
     return { validSubaccounts, auxNewSub, errName, errId };
   }
 
