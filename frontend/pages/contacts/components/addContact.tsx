@@ -152,6 +152,7 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
       principal: "",
       assets: [],
     };
+
     setNewContact((prev) => {
       auxConatct = {
         ...prev,
@@ -170,6 +171,7 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
       };
       return auxConatct;
     });
+
     if (data[0]) {
       setSelAstContact(data[0].tokenSymbol);
       const auxAsset = auxConatct.assets.find((ast) => ast.tokenSymbol === data[0].tokenSymbol);
@@ -238,7 +240,7 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
           ids.push(subacc);
         }
         // Adding SubAccountContact to the new contact
-        if (valid) auxNewSub.push({ name: newSa.name.trim(), subaccount_index: subacc, sub_account_id: "" });
+        if (valid) auxNewSub.push({ name: newSa.name.trim(), subaccount_index: subacc, sub_account_id: newSa.sub_account_id, allowance: newSa.allowance });
       }
     });
 
@@ -262,27 +264,26 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
       }
 
       if (auxContact.assets.length > 0) auxContact.assets[editKey].subaccounts = auxNewSub;
-      // Verify if is an asset change or Add Contact action
       if (from === "change" && contAst) {
+        // INFO: change asset tab
         setNewContact(auxContact);
         setSelAstContact(contAst.tokenSymbol);
         setNewSubaccounts(
           contAst.subaccounts.length === 0
-            ? [{ name: "", subaccount_index: "", sub_account_id: "" }]
-            : contAst.subaccounts,
-        );
-      } else {
+          ? [{ name: "", subaccount_index: "", sub_account_id: "" }]
+          : contAst.subaccounts,
+          );
+        } else {
+        // INFO: create contact into redux and local storage
         setIsCreating(true);
-        // FIX: the newContact.assets are not coming and check fails
-        console.log("newContact: ", newContact.assets);
-        // const result = await hasSubAccountAssetAllowances(newContact.principal, newContact.assets);
-        // const toStoreContact = {
-        //   ...auxContact,
-        //   assets: result,
-        // };
-        // dispatch(addContact(toStoreContact));
-        // setAddOpen(false);
+        const result = await hasSubAccountAssetAllowances(newContact.principal, newContact.assets);
+        const toStoreContact = {
+          ...auxContact,
+          assets: result,
+        };
+        dispatch(addContact(toStoreContact));
         setIsCreating(false);
+        setAddOpen(false);
       }
       setNewContactSubNameErr([]);
       setNewContactSubIdErr([]);

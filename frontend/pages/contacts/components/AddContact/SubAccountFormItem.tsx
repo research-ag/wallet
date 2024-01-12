@@ -214,6 +214,7 @@ export default function SubAccountFormItem(props: SubAccountFormItemProps) {
     if (checkHexString(value)) {
       const auxSubs = [...newSubAccounts];
       auxSubs[k].subaccount_index = value.trim();
+      auxSubs[k].sub_account_id = `0x${value.trim()}`;
       setNewSubaccounts(auxSubs);
       setNewContactSubIdErr([...newContactSubIdErr].filter((num) => num !== k));
       setNewContactErr("");
@@ -224,6 +225,7 @@ export default function SubAccountFormItem(props: SubAccountFormItemProps) {
     if (!asciiHex.includes(e.key)) {
       e.preventDefault();
     }
+
     if (newSA.subaccount_index.includes("0x") || newSA.subaccount_index.includes("0X")) {
       if (e.key === "X" || e.key == "x") {
         e.preventDefault();
