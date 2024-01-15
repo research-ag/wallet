@@ -19,7 +19,7 @@ import { Ed25519KeyIdentity } from "@dfinity/identity";
 import { clearDataContacts, setContacts, setStorageCode } from "./contacts/ContactsReducer";
 import { Principal } from "@dfinity/principal";
 import { defaultTokens } from "@/defaultTokens";
-import { allowanceFullReload } from "@pages/home/helpers/allowanceCache";
+import { allowanceFullReload, refreshAllowanceCache } from "@pages/home/helpers/allowanceCache";
 import contactCachedRefresh from "@pages/contacts/helpers/contacts";
 
 const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${
@@ -97,7 +97,7 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean)
 
   // ALLOWANCES
   // FIXME: not updating allowances
-  await allowanceFullReload();
+  refreshAllowanceCache(authIdentity)
 };
 
 export const dispatchAuths = (authIdentity: Identity, myAgent: HttpAgent, myPrincipal: Principal) => {
