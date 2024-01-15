@@ -120,19 +120,20 @@ const contactsSlice = createSlice({
           allowance?: { allowance: string; expires_at: string } | undefined;
         }>,
       ) {
-        const auxContacts = state.contacts.map((cnts) => {
-          if (cnts.principal !== action.payload.principal) return cnts;
+        const auxContacts = state.contacts.map((contact) => {
+          if (contact.principal !== action.payload.principal) return contact;
           else {
             return {
-              ...cnts,
-              assets: cnts.assets.map((asst) => {
-                if (asst.tokenSymbol !== action.payload.tokenSymbol) {
-                  return asst;
+              ...contact,
+              assets: contact.assets.map((asset) => {
+                if (asset.tokenSymbol !== action.payload.tokenSymbol) {
+                  return asset;
                 } else {
                   return {
-                    ...asst,
+                    ...asset,
+                    hasAllowance: Boolean(action.payload.allowance?.allowance),
                     subaccounts: [
-                      ...asst.subaccounts,
+                      ...asset.subaccounts,
                       {
                         name: action.payload.newName,
                         subaccount_index: action.payload.newIndex,
@@ -145,7 +146,6 @@ const contactsSlice = createSlice({
                           hexToNumber(`0x${b.subaccount_index}`) || bigInt(0),
                         ) || 0,
                     ),
-                    hasAllowance: asst.subaccounts.some((subaccount) => subaccount?.allowance),
                   };
                 }
               }),
@@ -180,25 +180,26 @@ const contactsSlice = createSlice({
           allowance: { allowance: string; expires_at: string } | undefined;
         }>,
       ) {
-        const auxContacts = state.contacts.map((cnts) => {
-          if (cnts.principal !== action.payload.principal) return cnts;
+        const auxContacts = state.contacts.map((contact) => {
+          if (contact.principal !== action.payload.principal) return contact;
           else {
             return {
-              ...cnts,
-              assets: cnts.assets.map((asst) => {
-                if (asst.tokenSymbol !== action.payload.tokenSymbol) {
-                  return asst;
+              ...contact,
+              assets: contact.assets.map((asset) => {
+                if (asset.tokenSymbol !== action.payload.tokenSymbol) {
+                  return asset;
                 } else {
                   return {
-                    ...asst,
-                    subaccounts: asst.subaccounts
-                      .map((sa) => {
-                        if (sa.subaccount_index !== action.payload.subIndex) return sa;
+                    ...asset,
+                    hasAllowance: Boolean(action.payload.allowance?.allowance),
+                    subaccounts: asset.subaccounts
+                      .map((subAccount) => {
+                        if (subAccount.subaccount_index !== action.payload.subIndex) return subAccount;
                         else {
                           return {
                             name: action.payload.newName,
                             subaccount_index: action.payload.newIndex,
-                            sub_account_id: sa.sub_account_id,
+                            sub_account_id: `0x${action.payload.newIndex}`,
                             allowance: action.payload.allowance,
                           };
                         }
@@ -215,7 +216,6 @@ const contactsSlice = createSlice({
             };
           }
         });
-
         state.contacts = auxContacts;
         setLocalContacts(auxContacts, state.storageCode);
       },

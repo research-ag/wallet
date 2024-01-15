@@ -4,6 +4,7 @@ import store from "@redux/Store";
 import { setContacts } from "@redux/contacts/ContactsReducer";
 import { hasSubAccountAssetAllowances } from "@/helpers/icrc";
 
+// TODO: restore
 export default async function contactCachedRefresh(authIdentity: Identity) {
   try {
     const contactPrefix = `contacts-${authIdentity.getPrincipal().toString()}`;
@@ -11,12 +12,12 @@ export default async function contactCachedRefresh(authIdentity: Identity) {
     const { contacts } = JSON.parse(contactsData || "[]") as { contacts: Contact[] };
     const updatedContacts = [];
 
-    for (const contact of contacts) {
-      const updatedAsset = await hasSubAccountAssetAllowances(contact.principal, contact.assets);
-      updatedContacts.push({ ...contact, assets: updatedAsset });
-    }
+    // for (const contact of contacts) {
+    //   const updatedAsset = await hasSubAccountAssetAllowances(contact.principal, contact.assets);
+    //   updatedContacts.push({ ...contact, assets: updatedAsset });
+    // }
 
-    store.dispatch(setContacts(updatedContacts));
+    store.dispatch(setContacts(contacts));
   } catch (error) {
     console.log(error);
   }
