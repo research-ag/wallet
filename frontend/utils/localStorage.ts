@@ -1,8 +1,8 @@
-const LOCAL_STORAGE_PREFIX = "ICRC2";
+const LOCAL_STORAGE_PREFIX = "";
 
 export function setInLocalStorage<T>(key: string, value: T): T | null {
   try {
-    localStorage.setItem(`${LOCAL_STORAGE_PREFIX}-${key}`, JSON.stringify(value));
+    localStorage.setItem(`${LOCAL_STORAGE_PREFIX}${key}`, JSON.stringify(value));
     return value;
   } catch (error) {
     return null;
@@ -10,12 +10,12 @@ export function setInLocalStorage<T>(key: string, value: T): T | null {
 }
 
 export function getFromLocalStorage<T>(key: string): T | null {
-  const value = localStorage.getItem(`${LOCAL_STORAGE_PREFIX}-${key}`);
+  const value = localStorage.getItem(`${LOCAL_STORAGE_PREFIX}${key}`);
   return value ? JSON.parse(value) : null;
 }
 
 export const removeFromLocalStorage = (key: string): void => {
-  localStorage.removeItem(`${LOCAL_STORAGE_PREFIX}-${key}`);
+  localStorage.removeItem(`${LOCAL_STORAGE_PREFIX}${key}`);
 };
 
 export const existInLocalStorage = (key: string): boolean => {
