@@ -307,6 +307,7 @@ export const updateAllBalances = async (
       return a.id_number - b.id_number;
     }),
   };
+
 };
 
 export const setAssetFromLocalData = (tokens: Token[], myPrincipal: string) => {

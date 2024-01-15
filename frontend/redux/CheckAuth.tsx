@@ -94,10 +94,7 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean)
   }
 
   await contactCachedRefresh(authIdentity);
-
-  // ALLOWANCES
-  // FIXME: not updating allowances
-  refreshAllowanceCache(authIdentity)
+  refreshAllowanceCache(authIdentity.getPrincipal().toString())
 };
 
 export const dispatchAuths = (authIdentity: Identity, myAgent: HttpAgent, myPrincipal: Principal) => {
