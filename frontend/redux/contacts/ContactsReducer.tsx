@@ -283,20 +283,27 @@ const contactsSlice = createSlice({
           subIndex: string;
         }>,
       ) {
-        const auxContacts = state.contacts.map((cnts) => {
-          if (cnts.principal !== action.payload.principal) return cnts;
+        const auxContacts = state.contacts.map((contact) => {
+          if (contact.principal !== action.payload.principal) return contact;
           else {
             return {
-              ...cnts,
-              assets: cnts.assets.map((asst) => {
-                if (asst.tokenSymbol !== action.payload.tokenSymbol) {
-                  return asst;
-                } else {
-                  return {
-                    ...asst,
-                    subaccounts: asst.subaccounts.filter((sa) => sa.subaccount_index !== action.payload.subIndex),
-                  };
+              ...contact,
+              assets: contact.assets.map((asset) => {
+                const subaccounts = asset.subaccounts.filter(
+                  (subAccount) => subAccount.subaccount_index !== action.payload.subIndex,
+                );
+
+                const hasAllowance = subaccounts.some((subAccount) => subAccount.allowance?.allowance);
+
+                if (asset.tokenSymbol !== action.payload.tokenSymbol) {
+                  return asset;
                 }
+
+                return {
+                  ...asset,
+                  hasAllowance,
+                  subaccounts,
+                };
               }),
             };
           }
