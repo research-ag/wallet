@@ -1,4 +1,5 @@
 import { defaultTokens } from "@/defaultTokens";
+import contactCachedRefresh from "@pages/contacts/helpers/contacts";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { updateAllBalances } from "@redux/assets/AssetActions";
 import {
@@ -30,9 +31,11 @@ export const AssetHook = () => {
   const [newSub, setNewSub] = useState<SubAccount | undefined>();
   const [hexChecked, setHexChecked] = useState<boolean>(false);
 
-  const reloadBallance = (tkns?: Token[]) => {
+  const reloadBallance = async (tkns?: Token[]) => {
     dispatch(setLoading(true));
     updateAllBalances(true, userAgent, tkns ? tkns : tokens.length > 0 ? tokens : defaultTokens);
+    const principal = (await userAgent.getPrincipal()).toText();
+    await contactCachedRefresh(principal);
   };
 
   const getTotalAmountInCurrency = () => {

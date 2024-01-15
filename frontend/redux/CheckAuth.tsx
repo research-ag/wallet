@@ -67,6 +67,7 @@ export const handleSeedAuthenticated = (seed: string) => {
 };
 
 export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean) => {
+  const principal = await authIdentity.getPrincipal().toString();
   if (localStorage.getItem("network_type") === null && !fromSeed) {
     logout();
     return;
@@ -93,10 +94,7 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean)
     dispatchAuths(authIdentity, myAgent, myPrincipal);
   }
 
-  await contactCachedRefresh(authIdentity);
-
-  // ALLOWANCES
-  // FIXME: not updating allowances
+  await contactCachedRefresh(principal);
   await allowanceFullReload();
 };
 
