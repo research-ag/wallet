@@ -67,6 +67,7 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
 
       if (formattedSubAccounts.length === 0 || subAccountNamesErrors.length > 0 || subAccountIdsErrors.length > 0)
         return;
+
       const fullSubAccounts = await hasSubAccountAllowances(
         newContact.principal,
         formattedSubAccounts,
@@ -240,7 +241,13 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
           ids.push(subacc);
         }
         // Adding SubAccountContact to the new contact
-        if (valid) auxNewSub.push({ name: newSa.name.trim(), subaccount_index: subacc, sub_account_id: newSa.sub_account_id, allowance: newSa.allowance });
+        if (valid)
+          auxNewSub.push({
+            name: newSa.name.trim(),
+            subaccount_index: subacc,
+            sub_account_id: newSa.sub_account_id,
+            allowance: newSa.allowance,
+          });
       }
     });
 
@@ -268,10 +275,10 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
         setSelAstContact(contAst.tokenSymbol);
         setNewSubaccounts(
           contAst.subaccounts.length === 0
-          ? [{ name: "", subaccount_index: "", sub_account_id: "" }]
-          : contAst.subaccounts,
-          );
-        } else {
+            ? [{ name: "", subaccount_index: "", sub_account_id: "" }]
+            : contAst.subaccounts,
+        );
+      } else {
         // INFO: create contact into redux and local storage
         setIsCreating(true);
         const result = await hasSubAccountAssetAllowances(newContact.principal, newContact.assets);

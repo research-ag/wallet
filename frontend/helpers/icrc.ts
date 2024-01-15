@@ -99,6 +99,8 @@ export async function hasSubAccountAllowances(
     }
   }
 
+  console.log(newSubAccounts);
+
   return newSubAccounts;
 }
 
