@@ -98,9 +98,6 @@ export async function hasSubAccountAllowances(
       newSubAccounts.push(subAccounts[subAccountIndex]);
     }
   }
-
-  console.log(newSubAccounts);
-
   return newSubAccounts;
 }
 

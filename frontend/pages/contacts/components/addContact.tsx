@@ -2,7 +2,7 @@
 import { ReactComponent as MoneyHandIcon } from "@assets/svg/files/money-hand.svg";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useCreateContact } from "../hooks/useCreateContact";
 import { CustomButton } from "@components/Button";
@@ -12,15 +12,13 @@ import { AssetContact, Contact, SubAccountContact } from "@redux/models/Contacts
 import { useAppDispatch } from "@redux/Store";
 import { addContact } from "@redux/contacts/ContactsReducer";
 import { AssetToAdd } from "@redux/models/AccountModels";
-import { Principal } from "@dfinity/principal";
-import NameFormItem from "./AddContact/NameFormItem";
-import PrincipalFormItem from "./AddContact/PrincipalFormItem";
 import SubAccountFormItem from "./AddContact/SubAccountFormItem";
 import { removeLeadingZeros } from "@/utils";
 import usePrincipalValidator from "../hooks/usePrincipalValidator";
 import { hasSubAccountAllowances, hasSubAccountAssetAllowances } from "@/helpers/icrc";
 import LoadingLoader from "@components/Loader";
 import { formatSubAccountIds } from "@/utils/checkers";
+import ContactMainDetails from "./AddContact/ContactMainDetails";
 
 interface AddContactProps {
   setAddOpen(value: boolean): void;
@@ -83,68 +81,68 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
   }
 
   return (
-    <Fragment>
-      <div className="relative flex flex-col items-start justify-start w-full gap-4 text-md">
-        <CloseIcon
-          className="absolute cursor-pointer top-5 right-5 stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
-          onClick={() => {
-            setAddOpen(false);
-          }}
-        />
-        <p>{t("add.contact")}</p>
-        <div className="flex flex-row items-start justify-start w-full gap-3">
-          <NameFormItem newContactNameErr={newContactNameErr} newContact={newContact} onNameChange={onNameChange} />
-          <PrincipalFormItem
-            newContactPrinErr={newContactPrinErr}
-            newContact={newContact}
-            onPrincipalChange={onPrincipalChange}
+    <div className="relative flex flex-col items-start justify-start w-full gap-4 text-md">
+      <CloseIcon
+        className="absolute cursor-pointer top-5 right-5 stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
+        onClick={() => {
+          setAddOpen(false);
+        }}
+      />
+      <p>{t("add.contact")}</p>
+
+      <ContactMainDetails
+        newContact={newContact}
+        setNewContact={setNewContact}
+        setNewContactErr={setNewContactErr}
+        newContactNameErr={newContactNameErr}
+        setNewContactNameErr={setNewContactNameErr}
+        newContactPrinErr={newContactPrinErr}
+        setNewContactPrinErr={setNewContactPrinErr}
+      />
+
+      <div className="flex flex-row items-center justify-center w-full gap-3 rounded-sm h-72 bg-ThirdColorLight dark:bg-ThirdColor">
+        {newContact.assets.length === 0 ? (
+          <ContactAssetPop
+            assets={assets}
+            getAssetIcon={getAssetIcon}
+            onAdd={(data) => {
+              assetToAddEmpty(data);
+            }}
           />
-        </div>
-
-        <div className="flex flex-row items-center justify-center w-full gap-3 rounded-sm h-72 bg-ThirdColorLight dark:bg-ThirdColor">
-          {newContact.assets.length === 0 ? (
-            <ContactAssetPop
-              assets={assets}
-              getAssetIcon={getAssetIcon}
-              onAdd={(data) => {
-                assetToAddEmpty(data);
-              }}
-            />
-          ) : (
-            <SubAccountFormItem
-              assets={assets}
-              newContact={newContact}
-              selAstContact={selAstContact}
-              isValidSubacc={isValidSubacc}
-              newSubAccounts={newSubAccounts}
-              setNewSubaccounts={setNewSubaccounts}
-              newContactSubNameErr={newContactSubNameErr}
-              newContactSubIdErr={newContactSubIdErr}
-              setNewContact={setNewContact}
-              setNewContactSubNameErr={setNewContactSubNameErr}
-              setNewContactErr={setNewContactErr}
-              setNewContactSubIdErr={setNewContactSubIdErr}
-              asciiHex={asciiHex}
-            />
-          )}
-        </div>
-
-        <div className="flex flex-row items-center justify-end w-full gap-3">
-          <p className="text-TextErrorColor">{t(newContactErr)}</p>
-          {isAllowancesChecking && <LoadingLoader />}
-          <CustomButton
-            className="bg-BorderSuccessColor min-w-[5rem] flex justify-between items-center"
-            onClick={onAllowanceNewContactCheck}
-            disabled={isAllowancesChecking || isCreating}
-          >
-            <MoneyHandIcon className="fill-PrimaryColorLight" /> {t("test")}
-          </CustomButton>
-          <CustomButton className="min-w-[5rem]" onClick={onAddContact} disabled={isCreating}>
-            <p>{t("add.contact")}</p>
-          </CustomButton>
-        </div>
+        ) : (
+          <SubAccountFormItem
+            assets={assets}
+            newContact={newContact}
+            selAstContact={selAstContact}
+            isValidSubacc={isValidSubacc}
+            newSubAccounts={newSubAccounts}
+            setNewSubaccounts={setNewSubaccounts}
+            newContactSubNameErr={newContactSubNameErr}
+            newContactSubIdErr={newContactSubIdErr}
+            setNewContact={setNewContact}
+            setNewContactSubNameErr={setNewContactSubNameErr}
+            setNewContactErr={setNewContactErr}
+            setNewContactSubIdErr={setNewContactSubIdErr}
+            asciiHex={asciiHex}
+          />
+        )}
       </div>
-    </Fragment>
+
+      <div className="flex flex-row items-center justify-end w-full gap-3">
+        <p className="text-TextErrorColor">{t(newContactErr)}</p>
+        {isAllowancesChecking && <LoadingLoader />}
+        <CustomButton
+          className="bg-BorderSuccessColor min-w-[5rem] flex justify-between items-center"
+          onClick={onAllowanceNewContactCheck}
+          disabled={isAllowancesChecking || isCreating}
+        >
+          <MoneyHandIcon className="fill-PrimaryColorLight" /> {t("test")}
+        </CustomButton>
+        <CustomButton className="min-w-[5rem]" onClick={onAddContact} disabled={isCreating}>
+          <p>{t("add.contact")}</p>
+        </CustomButton>
+      </div>
+    </div>
   );
 
   function assetToAddEmpty(data: AssetToAdd[]) {
@@ -183,29 +181,6 @@ const AddContact = ({ setAddOpen }: AddContactProps) => {
             : auxAsset.subaccounts,
         );
     }
-  }
-
-  function onPrincipalChange(value: string) {
-    setNewContact((prev) => {
-      return { ...prev, principal: value };
-    });
-    setNewContactErr("");
-    if (value.trim() !== "")
-      try {
-        Principal.fromText(value);
-        setNewContactPrinErr(false);
-      } catch {
-        setNewContactPrinErr(true);
-      }
-    else setNewContactPrinErr(false);
-  }
-
-  function onNameChange(value: string) {
-    setNewContact((prev) => {
-      return { ...prev, name: value };
-    });
-    setNewContactErr("");
-    setNewContactNameErr(false);
   }
 
   function validateSubaccounts(newSubAccounts: SubAccountContact[]) {
