@@ -16,7 +16,7 @@ import { clearDataAsset, setTokens } from "./assets/AssetReducer";
 import { AuthNetwork } from "./models/TokenModels";
 import { AuthNetworkTypeEnum } from "@/const";
 import { Ed25519KeyIdentity } from "@dfinity/identity";
-import { clearDataContacts, setContacts, setStorageCode } from "./contacts/ContactsReducer";
+import { clearDataContacts, setStorageCode } from "./contacts/ContactsReducer";
 import { Principal } from "@dfinity/principal";
 import { defaultTokens } from "@/defaultTokens";
 import { allowanceFullReload } from "@pages/home/helpers/allowanceCache";

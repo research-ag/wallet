@@ -188,14 +188,14 @@ const TableSubAccounts = ({
                   {sa.subaccount_index === selSubaccIdx ? (
                     <CheckIcon
                       onClick={() => {
-                        checkSubAcc(true, cntc, asst, sa);
+                        checkSubAccount(true, cntc, asst, sa);
                       }}
                       className="w-4 h-4 opacity-50 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
                     />
                   ) : (
                     <PencilIcon
                       onClick={() => {
-                        onEdit(sa);
+                        onEditSubAccount(sa);
                       }}
                       className="w-4 h-4 opacity-50 cursor-pointer fill-PrimaryTextColorLight dark:fill-PrimaryTextColor"
                     />
@@ -210,7 +210,7 @@ const TableSubAccounts = ({
                   ) : (
                     <TrashIcon
                       onClick={() => {
-                        onDelete(sa);
+                        onDeleteSubAccount(sa);
                       }}
                       className="w-4 h-4 cursor-pointer fill-PrimaryTextColorLight dark:fill-PrimaryTextColor"
                     />
@@ -271,15 +271,15 @@ const TableSubAccounts = ({
             </td>
             <td className={"py-2 border-b border-BorderColorTwoLight dark:border-BorderColorTwo bg-SelectRowColor/10"}>
               <div className="flex flex-row items-center justify-center w-full gap-2 px-2 opacity-70">
-                <p>{shortAddress(getSubAcc(cntc.principal), 12, 10)}</p>
-                <CustomCopy size={"xSmall"} className="p-0" copyText={getSubAcc(cntc.principal)} />
+                <p>{shortAddress(getSubAccount(cntc.principal), 12, 10)}</p>
+                <CustomCopy size={"xSmall"} className="p-0" copyText={getSubAccount(cntc.principal)} />
               </div>
             </td>
             <td className={"py-2 border-b border-BorderColorTwoLight dark:border-BorderColorTwo bg-SelectRowColor/10"}>
               <div className="flex flex-row items-start justify-center w-full gap-4">
                 <CheckIcon
                   onClick={() => {
-                    checkSubAcc(false, cntc, asst || ({} as AssetContact));
+                    checkSubAccount(false, cntc, asst || ({} as AssetContact));
                   }}
                   className="w-4 h-4 opacity-50 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
                 />
@@ -300,7 +300,7 @@ const TableSubAccounts = ({
     </table>
   );
 
-  async function checkSubAcc(edit: boolean, cntc: Contact, asst: AssetContact, sa?: SubAccountContact) {
+  async function checkSubAccount(edit: boolean, cntc: Contact, asst: AssetContact, sa?: SubAccountContact) {
     setIsPending(true);
     let subacc = subaccEdited.subaccount_index.trim();
     if (subacc.slice(0, 2).toLowerCase() === "0x") subacc = subacc.substring(2);
@@ -361,7 +361,7 @@ const TableSubAccounts = ({
     setIsPending(false);
   }
 
-  function getSubAcc(princ: string) {
+  function getSubAccount(princ: string) {
     return encodeIcrcAccount({
       owner: Principal.fromText(princ || ""),
       subaccount: hexToUint8Array(`0x${subaccEdited.subaccount_index}` || "0"),
@@ -379,7 +379,7 @@ const TableSubAccounts = ({
     }
   }
 
-  function onEdit(sa: SubAccountContact) {
+  function onEditSubAccount(sa: SubAccountContact) {
     setAddSub(false);
     setSelContactPrin("");
     setSelSubaccIdx(sa.subaccount_index);
@@ -390,7 +390,7 @@ const TableSubAccounts = ({
     });
   }
 
-  function onDelete(sa: SubAccountContact) {
+  function onDeleteSubAccount(sa: SubAccountContact) {
     setAddSub(false);
     setSelContactPrin("");
     setSelSubaccIdx("");

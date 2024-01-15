@@ -184,7 +184,7 @@ const TableContacts = ({
                     ) : (
                       <PencilIcon
                         onClick={() => {
-                          onEdit(cntc);
+                          onEditSubAccount(cntc);
                         }}
                         className="w-4 h-4 opacity-50 cursor-pointer fill-PrimaryTextColorLight dark:fill-PrimaryTextColor"
                       />
@@ -197,7 +197,7 @@ const TableContacts = ({
                     ) : (
                       <TrashIcon
                         onClick={() => {
-                          onDelete(cntc);
+                          onDeleteSubAccount(cntc);
                         }}
                         className="w-4 h-4 cursor-pointer fill-PrimaryTextColorLight dark:fill-PrimaryTextColor"
                       />
@@ -356,7 +356,7 @@ const TableContacts = ({
     }
   }
 
-  function onEdit(cntc: Contact) {
+  function onEditSubAccount(cntc: Contact) {
     setAddSub(false);
     setSelSubaccIdx("");
     setSelContactPrin(cntc.principal);
@@ -372,7 +372,7 @@ const TableContacts = ({
     setSubaccEditedErr({ name: false, subaccount_index: false });
   }
 
-  function onDelete(cntc: Contact) {
+  function onDeleteSubAccount(cntc: Contact) {
     setAddSub(false);
     setSelContactPrin("");
     setSelSubaccIdx("");

@@ -1,15 +1,16 @@
 import { Principal } from "@dfinity/principal";
 import NameFormItem from "./NameFormItem";
 import PrincipalFormItem from "./PrincipalFormItem";
+import { Contact } from "@redux/models/ContactsModels";
 
 interface ContactMainDetailsProps {
-  newContact: any;
-  setNewContact: any;
+  newContact: Contact;
   setNewContactErr: any;
   newContactNameErr: any;
   setNewContactNameErr: any;
   newContactPrinErr: any;
   setNewContactPrinErr: any;
+  setNewContact: any;
 }
 export default function ContactMainDetails(props: ContactMainDetailsProps) {
   const {
@@ -34,7 +35,7 @@ export default function ContactMainDetails(props: ContactMainDetailsProps) {
   );
 
   function onPrincipalChange(value: string) {
-    setNewContact((prev) => {
+    setNewContact((prev: Contact) => {
       return { ...prev, principal: value };
     });
     setNewContactErr("");
@@ -49,7 +50,7 @@ export default function ContactMainDetails(props: ContactMainDetailsProps) {
   }
 
   function onNameChange(value: string) {
-    setNewContact((prev) => {
+    setNewContact((prev: Contact) => {
       return { ...prev, name: value };
     });
     setNewContactErr("");
