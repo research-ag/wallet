@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable no-undef */
-const colors = require('tailwindcss/colors')
+const colors = require("tailwindcss/colors");
 
-module.exports =  {
+module.exports = {
   darkMode: "class",
   content: ["./index.html", "./frontend/**/*.{js,ts,jsx,tsx}"],
   variants: {
@@ -12,10 +12,10 @@ module.exports =  {
   theme: {
     extend: {
       transitionProperty: {
-        "height": "height",
-        "spacing": "margin, padding",
-        "width": "width"
-      }
+        height: "height",
+        spacing: "margin, padding",
+        width: "width",
+      },
     },
     fontSize: {
       xm: ".55rem",
@@ -31,7 +31,7 @@ module.exports =  {
       "7xl": "5rem",
     },
     screens: {
-      "defaults":"1475px",
+      defaults: "1475px",
     },
     colors: {
       PrimaryColor: "#1b183f",
@@ -50,8 +50,8 @@ module.exports =  {
       ThemeColorBackLight: "#e3e3e3",
       ThemeColorSelector: "#19173a",
       ThemeColorSelectorLight: "#ffffff",
-      HoverColorLight:"#bfbfbf",
-      HoverColor:"#332F60",
+      HoverColorLight: "#bfbfbf",
+      HoverColor: "#332F60",
       BorderColor: "#68658b",
       BorderColorLight: "#bfbfbf",
       BorderColorTwo: "#2B2759",
@@ -93,7 +93,6 @@ module.exports =  {
       ContactColor3: "#5F8E88",
       TooltipBackground: "#1F2B55",
 
-
       black: colors.black,
       white: colors.white,
       slate: colors.slate,
@@ -121,7 +120,6 @@ module.exports =  {
       transparent: colors.transparent,
       current: colors.current,
       inherit: colors.inherit,
-    }
+    },
   },
-}
-
+};

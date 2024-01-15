@@ -20,6 +20,7 @@ import { clearDataContacts, setContacts, setStorageCode } from "./contacts/Conta
 import { Principal } from "@dfinity/principal";
 import { defaultTokens } from "@/defaultTokens";
 import { allowanceFullReload } from "@pages/home/helpers/allowanceCache";
+import contactCachedRefresh from "@pages/contacts/helpers/contacts";
 
 const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${
   import.meta.env.VITE_APP_LOGO
@@ -92,14 +93,10 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean)
     dispatchAuths(authIdentity, myAgent, myPrincipal);
   }
 
-  // CONTACTS
-  const contactsData = localStorage.getItem("contacts-" + authIdentity.getPrincipal().toString());
-  if (contactsData) {
-    const contactsDataJson = JSON.parse(contactsData);
-    store.dispatch(setContacts(contactsDataJson.contacts));
-  }
+  await contactCachedRefresh(authIdentity);
 
   // ALLOWANCES
+  // FIXME: not updating allowances
   await allowanceFullReload();
 };
 
