@@ -82,7 +82,7 @@ const TableContacts = ({
 
   return (
     <table className="w-full text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md">
-      <thead className="border-b border-BorderColorTwoLight dark:border-BorderColorTwo text-PrimaryTextColor/70 sticky top-0 z-[1]">
+      <thead className="sticky top-0 border-b border-BorderColorTwoLight dark:border-BorderColorTwo text-PrimaryTextColor/70">
         <tr className="text-PrimaryTextColorLight dark:text-PrimaryTextColor">
           <th className="p-2 text-left w-[30%] bg-PrimaryColorLight dark:bg-PrimaryColor ">
             <p>{t("name")}</p>
@@ -333,7 +333,6 @@ const TableContacts = ({
   }
 
   function onSave(cntc: Contact) {
-    
     setContactEditedErr({
       name: contactEdited.name.trim() === "",
       principal: contactEdited.principal !== cntc.principal && !checkPrincipalValid(contactEdited.principal),
