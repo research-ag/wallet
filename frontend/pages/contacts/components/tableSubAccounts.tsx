@@ -111,7 +111,7 @@ const TableSubAccounts = ({
                   sa.subaccount_index === selSubaccIdx ? "bg-SelectRowColor/10" : ""
                 }`}
               >
-                <div className="relative flex flex-row items-center justify-start w-full h-10 gap-2 px-4">
+                <div className="relative flex flex-row items-center justify-start w-full h-10 gap-2 px-4 opac">
                   {sa.subaccount_index === selSubaccIdx ? (
                     <CustomInput
                       intent={"primary"}

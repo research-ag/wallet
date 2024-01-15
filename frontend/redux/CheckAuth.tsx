@@ -93,7 +93,7 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean)
     store.dispatch(setTokens(tokens));
     dispatchAuths(authIdentity, myAgent, myPrincipal);
   }
-
+  console.log(principal);
   await contactCachedRefresh(principal);
   await allowanceFullReload();
 };
