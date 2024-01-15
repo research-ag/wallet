@@ -66,7 +66,7 @@ const TableSubAccounts = ({
   const { t } = useTranslation();
 
   const { asciiHex } = GeneralHook();
-  const { editCntctSubacc, addCntctSubacc } = useContactTable();
+  const { editCntctSubacc, addCntctSubacc, isPending, setIsPending } = useContactTable();
 
   return (
     <table className="w-full text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md ">
@@ -96,7 +96,7 @@ const TableSubAccounts = ({
             subaccount: hexToUint8Array(`0x${sa.subaccount_index}`),
           });
           return (
-            <tr key={l}>
+            <tr key={l} className={`${isPending ? "opacity-50 pointer-events-none" : ""}`}>
               <td></td>
               <td className="h-full">
                 <div className="relative flex flex-col items-center justify-center w-full h-full">
@@ -111,7 +111,7 @@ const TableSubAccounts = ({
                   sa.subaccount_index === selSubaccIdx ? "bg-SelectRowColor/10" : ""
                 }`}
               >
-                <div className="relative flex flex-row items-center justify-start w-full h-10 gap-2 px-4 opac">
+                <div className="relative flex flex-row items-center justify-start w-full h-10 gap-2 px-4">
                   {sa.subaccount_index === selSubaccIdx ? (
                     <CustomInput
                       intent={"primary"}
@@ -301,6 +301,7 @@ const TableSubAccounts = ({
   );
 
   async function checkSubAcc(edit: boolean, cntc: Contact, asst: AssetContact, sa?: SubAccountContact) {
+    setIsPending(true);
     let subacc = subaccEdited.subaccount_index.trim();
     if (subacc.slice(0, 2).toLowerCase() === "0x") subacc = subacc.substring(2);
 
@@ -357,6 +358,7 @@ const TableSubAccounts = ({
         setAddSub(false);
       }
     }
+    setIsPending(false);
   }
 
   function getSubAcc(princ: string) {
