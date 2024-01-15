@@ -4,13 +4,12 @@ import { removeAllowance } from "@/services/allowance";
 import { useMutation } from "@tanstack/react-query";
 import { throttle } from "lodash";
 import { useCallback } from "react";
-import { allowanceFullReload } from "../helpers/allowanceCache";
 import dayjs from "dayjs";
+import { useAppDispatch } from "@redux/Store";
+import { setAllowances } from "@redux/allowance/AllowanceReducer";
 
 export default function useDeleteAllowance() {
-  const onSuccess = async () => {
-    await allowanceFullReload();
-  };
+  const dispatch = useAppDispatch();
 
   const onError = (error: any) => {
     console.log("Error", error);
@@ -32,7 +31,8 @@ export default function useDeleteAllowance() {
         }
       }
 
-      await removeAllowance(allowance.id);
+      const latestAllowances = await removeAllowance(allowance.id);
+      dispatch(setAllowances(latestAllowances));
       return { success: true };
     } catch (error) {
       console.error(error);
@@ -40,7 +40,7 @@ export default function useDeleteAllowance() {
     }
   }, []);
 
-  const { mutate, isPending, isError, error, isSuccess } = useMutation({ mutationFn, onSuccess, onError });
+  const { mutate, isPending, isError, error, isSuccess } = useMutation({ mutationFn, onError });
 
   return { deleteAllowance: throttle(mutate, 1000), isPending, isError, error, isSuccess };
 }

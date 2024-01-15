@@ -10,13 +10,13 @@ import { validatePrincipal } from "@/utils/identity";
 import useAllowanceDrawer from "./useAllowanceDrawer";
 
 import { throttle } from "lodash";
-import { useAppSelector } from "@redux/Store";
+import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
-import { initialAllowanceState } from "@redux/allowance/AllowanceReducer";
-import { allowanceFullReload } from "../helpers/allowanceCache";
+import { initialAllowanceState, setAllowances } from "@redux/allowance/AllowanceReducer";
 
 export default function useCreateAllowance() {
+  const dispatch = useAppDispatch();
   const { onCloseCreateAllowanceDrawer } = useAllowanceDrawer();
   const { selectedAsset, selectedAccount } = useAppSelector(({ asset }) => asset);
   const [validationErrors, setErrors] = useState<TErrorValidation[]>([]);
@@ -46,7 +46,8 @@ export default function useCreateAllowance() {
       if (!valid.success) return Promise.reject(valid.error);
       const params = generateApproveAllowance(fullAllowance);
       await ICRCApprove(params, allowance.asset.address);
-      await postAllowance(fullAllowance);
+      const savedAllowances = await postAllowance(fullAllowance);
+      dispatch(setAllowances(savedAllowances));
     } catch (error) {
       console.log(error);
       return { success: false, error };
@@ -54,7 +55,6 @@ export default function useCreateAllowance() {
   }, [allowance]);
 
   const onSuccess = async () => {
-    await allowanceFullReload();
     onCloseCreateAllowanceDrawer();
   };
 

@@ -3,15 +3,16 @@ import { TErrorValidation } from "@/@types/common";
 import { ICRCApprove, generateApproveAllowance } from "@/helpers/icrc";
 import { allowanceValidationSchema } from "@/helpers/schemas/allowance";
 import { updateAllowanceRequest } from "@/services/allowance";
-import { useAppSelector } from "@redux/Store";
+import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { useMutation } from "@tanstack/react-query";
 import { throttle } from "lodash";
 import { useCallback, useState } from "react";
 import { z } from "zod";
 import useAllowanceDrawer from "./useAllowanceDrawer";
-import { allowanceFullReload } from "../helpers/allowanceCache";
+import { setAllowances } from "@redux/allowance/AllowanceReducer";
 
 export function useUpdateAllowance() {
+  const dispatch = useAppDispatch();
   const { onCloseUpdateAllowanceDrawer } = useAllowanceDrawer();
   const [validationErrors, setErrors] = useState<TErrorValidation[]>([]);
   const { selectedAllowance } = useAppSelector((state) => state.allowance);
@@ -30,14 +31,14 @@ export function useUpdateAllowance() {
       if (!valid.success) return Promise.reject(valid.error);
       const params = generateApproveAllowance(allowance);
       await ICRCApprove(params, allowance.asset.address);
-      await updateAllowanceRequest(allowance);
+      const updatedAllowances = await updateAllowanceRequest(allowance);
+      dispatch(setAllowances(updatedAllowances));
     } catch (error) {
       console.log(error);
     }
   }, [allowance]);
 
   const onSuccess = async () => {
-    await allowanceFullReload();
     onCloseUpdateAllowanceDrawer();
   };
 

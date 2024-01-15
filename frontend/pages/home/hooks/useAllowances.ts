@@ -2,7 +2,6 @@ import { AllowancesTableColumns, AllowancesTableColumnsEnum } from "@/@types/all
 import { SortOrder, SortOrderEnum } from "@/@types/common";
 import { useAppSelector } from "@redux/Store";
 import { useMemo, useState } from "react";
-import { reloadAllowancesCache } from "../helpers/allowanceCache";
 import {
   filterByAmount,
   filterByAsset,
@@ -27,8 +26,6 @@ export default function useAllowances() {
       setColumn(orderColumn);
       setSorting(SortOrderEnum.Values.ASC);
     }
-
-    await reloadAllowancesCache();
   };
 
   const allowances = useMemo(() => {
