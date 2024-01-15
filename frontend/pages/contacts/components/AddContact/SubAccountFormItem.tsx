@@ -103,7 +103,9 @@ export default function SubAccountFormItem(props: SubAccountFormItemProps) {
                 <div key={k} className="relative flex items-center justify-between w-full">
                   {newSA?.allowance ? (
                     <AllowanceTooltip amount={newSA.allowance?.allowance} expiration={newSA.allowance.expires_at} />
-                  ) : <div className="w-8 h-4"></div>}
+                  ) : (
+                    <div className="w-8 h-4"></div>
+                  )}
                   <CustomInput
                     sizeInput={"small"}
                     sizeComp={"small"}
