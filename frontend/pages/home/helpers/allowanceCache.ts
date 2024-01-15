@@ -7,7 +7,7 @@ export async function invalidateAllowancesCache(): Promise<void> {
       queryKey: [ServerStateKeysEnum.Values.allowances],
     });
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 }
 
@@ -17,7 +17,7 @@ export async function reloadAllowancesCache(): Promise<void> {
       queryKey: [ServerStateKeysEnum.Values.allowances],
     });
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 }
 

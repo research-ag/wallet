@@ -5,8 +5,7 @@ import ContactList from "./components/contactList";
 import useContactFilters from "./hooks/useContactFilters";
 
 const Contacts = () => {
-  const { assetOpen, addOpen, searchKey, assetFilter, setAssetOpen, setAddOpen, setSearchKey, setAssetFilter } =
-    useContactFilters();
+  const { assetOpen, addOpen, searchKey, assetFilter, setAssetOpen, setAddOpen, setSearchKey, setAssetFilter } = useContactFilters();
 
   return (
     <Fragment>

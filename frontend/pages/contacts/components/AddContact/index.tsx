@@ -1,4 +1,4 @@
-j// svg
+// svg
 import { ReactComponent as MoneyHandIcon } from "@assets/svg/files/money-hand.svg";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
@@ -124,7 +124,7 @@ export default function AddContact({ setAddOpen }: AddContactProps) {
       );
       setNewSubaccounts(fullSubAccounts);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     } finally {
       setIsAllowancesChecking(false);
     }

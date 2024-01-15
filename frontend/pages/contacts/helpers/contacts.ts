@@ -19,6 +19,6 @@ export default async function contactCachedRefresh(authIdentity: string) {
 
     store.dispatch(setContacts(updatedContacts));
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 }
