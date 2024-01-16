@@ -1,8 +1,7 @@
 import { TAllowance, AllowanceErrorFieldsEnum } from "@/@types/allowance";
 import { TErrorValidation } from "@/@types/common";
 import { SelectOption } from "@/@types/components";
-import { IconTypeEnum } from "@/const";
-import { getAssetIcon } from "@/utils/icons";
+import formatAsset from "@/utils/formatAsset";
 import { Select } from "@components/select";
 import { initialAllowanceState } from "@redux/allowance/AllowanceReducer";
 import { Asset } from "@redux/models/AccountModels";
@@ -25,14 +24,6 @@ export default function AssetFormItem(props: AssetFormItemProps) {
   const { asset } = allowance;
 
   const error = errors?.filter((error) => error.field === AllowanceErrorFieldsEnum.Values.asset)[0];
-
-  function formatAsset(asset: Asset) {
-    return {
-      value: asset?.tokenName,
-      label: `${asset?.tokenName} / ${asset?.tokenSymbol}`,
-      icon: getAssetIcon(IconTypeEnum.Enum.ASSET, asset?.tokenSymbol, asset?.logo),
-    };
-  }
 
   const options = useMemo(() => {
     if (!search) return assets.map(formatAsset);

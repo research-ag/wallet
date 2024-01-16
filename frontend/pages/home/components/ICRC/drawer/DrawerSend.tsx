@@ -7,14 +7,25 @@ import DialogSendConfirmation from "./DialogSendConfirmation";
 import SendOwnAccount from "./SendOwnAccount";
 import SendOutAccount from "./SendOutAccount";
 import SendForm from "../detail/transaction/SendForm";
+import useSendFrom from "@pages/home/hooks/useSendFrom";
 
 interface DrawerSendProps {
   setDrawerOpen(value: boolean): void;
   drawerOpen: boolean;
 }
 
-const DrawerSend = (props: DrawerSendProps) => {
-  // const { selectedAsset, selectedAccount: baseAccount } = GeneralHook();
+function Drawer(props: DrawerSendProps) {
+  return <SendForm />;
+}
+
+function DrawerSend(props: DrawerSendProps) {
+  if (!props.drawerOpen) return <></>;
+  return <Drawer {...props} />;
+}
+
+export default DrawerSend;
+
+function OldComponent() {
   // const {
   //   receiver,
   //   setReciver,
@@ -51,16 +62,7 @@ const DrawerSend = (props: DrawerSendProps) => {
   //   newAccountErr,
   // } = SentHook(drawerOpen, baseAccount);
 
-  return (
-    <Fragment>
-      <SendForm />
-    </Fragment>
-  );
-};
-
-export default DrawerSend;
-
-function OldComponent() {
+  // const { selectedAsset, selectedAccount: baseAccount } = GeneralHook();
   return (
     <Fragment>
       {/* {!receiver.icrcAccount.owner ? (
