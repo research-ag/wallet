@@ -45,6 +45,7 @@ const DetailList = () => {
           )}
         </ICRCSubInfo>
       </div>
+
       <div
         id="right-drower"
         className={`h-full fixed z-[999] top-0 w-[28rem] overflow-x-hidden transition-{right} duration-500 ${
@@ -62,8 +63,10 @@ const DetailList = () => {
       setDrawerOpen(true);
     }, 150);
   }
+
   function getDrawers() {
     return selectedTransaction ? (
+      // INFO: show transactions details on click a transaction
       <DrawerTransaction setDrawerOpen={setDrawerOpen} />
     ) : (
       <div className="flex flex-col items-center justify-start w-full h-full gap-5 px-6 pt-8 bg-PrimaryColorLight dark:bg-PrimaryColor">
@@ -74,8 +77,10 @@ const DetailList = () => {
           setDrawerOpen={setDrawerOpen}
         >
           {drawerOption === DrawerOptionEnum.Enum.SEND && (
+            // INFO: show the field to send
             <DrawerSend drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />
           )}
+          {/* INFO: show the field to receive */}
           {drawerOption === DrawerOptionEnum.Enum.RECEIVE && <DrawerReceive />}
         </DrawerAction>
       </div>

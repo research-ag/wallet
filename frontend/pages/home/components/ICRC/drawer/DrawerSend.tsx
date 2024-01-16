@@ -6,54 +6,64 @@ import QRscanner from "@pages/components/QRscanner";
 import DialogSendConfirmation from "./DialogSendConfirmation";
 import SendOwnAccount from "./SendOwnAccount";
 import SendOutAccount from "./SendOutAccount";
+import SendForm from "../detail/transaction/SendForm";
 
 interface DrawerSendProps {
   setDrawerOpen(value: boolean): void;
   drawerOpen: boolean;
 }
 
-const DrawerSend = ({ setDrawerOpen, drawerOpen }: DrawerSendProps) => {
-  const { selectedAsset, selectedAccount: baseAccount } = GeneralHook();
-  const {
-    receiver,
-    setReciver,
-    newAccount,
-    setNewAccount,
-    showAccounts,
-    setShowAccounts,
-    amount,
-    setAmount,
-    amountBI,
-    setAmountBI,
-    newAccountErr,
-    setNewAccountErr,
-    modal,
-    showModal,
-    qrView,
-    setQRview,
-    setOpenContactList,
-    sendingStatus,
-    setSendingStatus,
-    assetDropOpen,
-    setAssetDropOpen,
-    selectedAccount,
-    setSelectedAccount,
-    contacts,
-    contactToSend,
-    setContactToSend,
-    errAddress,
-    setErrAddress,
-    manual,
-    setManual,
-    manualPrinc,
-    setManualPrinc,
-    manualSub,
-    setManualSub,
-  } = SentHook(drawerOpen, baseAccount);
+const DrawerSend = (props: DrawerSendProps) => {
+  // const { selectedAsset, selectedAccount: baseAccount } = GeneralHook();
+  // const {
+  //   receiver,
+  //   setReciver,
+  //   setNewAccount,
+  //   amount,
+  //   setAmount,
+  //   amountBI,
+  //   setAmountBI,
+  //   modal,
+  //   showModal,
+  //   qrView,
+  //   setQRview,
+  //   sendingStatus,
+  //   assetDropOpen,
+  //   setSelectedAccount,
+  //   contactToSend,
+  //   setContactToSend,
+  //   selectedAccount,
+  //   showAccounts,
+  //   setOpenContactList,
+  //   setManualSub,
+  //   manualSub,
+  //   setManualPrinc,
+  //   manualPrinc,
+  //   setManual,
+  //   manual,
+  //   setErrAddress,
+  //   errAddress,
+  //   setShowAccounts,
+  //   setNewAccountErr,
+  //   newAccount,
+  //   setAssetDropOpen,
+  //   setSendingStatus,
+  //   newAccountErr,
+  // } = SentHook(drawerOpen, baseAccount);
 
   return (
     <Fragment>
-      {!receiver.icrcAccount.owner ? (
+      <SendForm />
+    </Fragment>
+  );
+};
+
+export default DrawerSend;
+
+function OldComponent() {
+  return (
+    <Fragment>
+      {/* {!receiver.icrcAccount.owner ? (
         qrView ? (
           <QRscanner
             setQRview={setQRview}
@@ -66,19 +76,19 @@ const DrawerSend = ({ setDrawerOpen, drawerOpen }: DrawerSendProps) => {
           />
         ) : (
           <SendOutAccount
-            setOpenContactList={setOpenContactList}
-            contacts={contacts}
             selectedAccount={selectedAccount}
+            setNewAccount={setNewAccount}
+            setContactToSend={setContactToSend}
             selectedAsset={selectedAsset}
-            setShowAccounts={setShowAccounts}
+            setQRview={setQRview}
+            setReciver={setReciver}
+            // TODO: refactor in a hook
             showAccounts={showAccounts}
+            setShowAccounts={setShowAccounts}
+            setOpenContactList={setOpenContactList}
             setNewAccountErr={setNewAccountErr}
             newAccountErr={newAccountErr}
-            setNewAccount={setNewAccount}
             newAccount={newAccount}
-            setReciver={setReciver}
-            setContactToSend={setContactToSend}
-            setQRview={setQRview}
             errAddress={errAddress}
             setErrAddress={setErrAddress}
             manual={manual}
@@ -108,8 +118,10 @@ const DrawerSend = ({ setDrawerOpen, drawerOpen }: DrawerSendProps) => {
           setNewAccount={setNewAccount}
           setContactToSend={setContactToSend}
         ></SendOwnAccount>
-      )}
-      {modal && (
+      )} */}
+
+      {/* INFO: confirm transference */}
+      {/* {modal && (
         <DialogSendConfirmation
           setDrawerOpen={setDrawerOpen}
           showModal={showModal}
@@ -121,9 +133,7 @@ const DrawerSend = ({ setDrawerOpen, drawerOpen }: DrawerSendProps) => {
           selectedAccount={selectedAccount}
           selectedAsset={selectedAsset}
         ></DialogSendConfirmation>
-      )}
+      )} */}
     </Fragment>
   );
-};
-
-export default DrawerSend;
+}
