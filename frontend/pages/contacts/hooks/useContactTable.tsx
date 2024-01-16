@@ -24,6 +24,7 @@ import { useState } from "react";
 
 export default function useContactTable() {
   const dispatch = useAppDispatch();
+  const [isPending, setIsPending] = useState(false);
 
   // edit contact up contact list
   const updateContact = (editedContact: Contact, pastPrincipal: string) =>
@@ -96,6 +97,8 @@ export default function useContactTable() {
   });
 
   return {
+    isPending,
+    setIsPending,
     selCntcPrinAddAsst,
     setSelCntcPrinAddAsst,
     selContactPrin,

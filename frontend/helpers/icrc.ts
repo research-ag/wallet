@@ -39,7 +39,7 @@ export async function ICRCApprove(params: ApproveParams, assetAddress: string): 
     const result = await canister.approve(params);
     return result;
   } catch (e) {
-    console.log(e);
+    console.error(e);
     throw new Error("Error approving");
   }
 }
@@ -73,7 +73,7 @@ export async function checkAllowanceExist(
         result.expires_at.length <= 0 ? "" : dayjs(Number(result?.expires_at) / 1000000).format("YYYY-MM-DD HH:mm:ss"),
     };
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 }
 
@@ -98,7 +98,6 @@ export async function hasSubAccountAllowances(
       newSubAccounts.push(subAccounts[subAccountIndex]);
     }
   }
-
   return newSubAccounts;
 }
 

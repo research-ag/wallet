@@ -16,7 +16,7 @@ import { clearDataAsset, setTokens } from "./assets/AssetReducer";
 import { AuthNetwork } from "./models/TokenModels";
 import { AuthNetworkTypeEnum } from "@/const";
 import { Ed25519KeyIdentity } from "@dfinity/identity";
-import { clearDataContacts, setContacts, setStorageCode } from "./contacts/ContactsReducer";
+import { clearDataContacts, setStorageCode } from "./contacts/ContactsReducer";
 import { Principal } from "@dfinity/principal";
 import { defaultTokens } from "@/defaultTokens";
 import { refreshAllowanceCache } from "@pages/home/helpers/allowanceCache";
@@ -67,6 +67,7 @@ export const handleSeedAuthenticated = (seed: string) => {
 };
 
 export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean) => {
+  const principal = await authIdentity.getPrincipal().toString();
   if (localStorage.getItem("network_type") === null && !fromSeed) {
     logout();
     return;
@@ -93,8 +94,8 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean)
     dispatchAuths(authIdentity, myAgent, myPrincipal);
   }
 
-  await contactCachedRefresh(authIdentity);
-  refreshAllowanceCache(authIdentity.getPrincipal().toString())
+  refreshAllowanceCache(principal);
+  await contactCachedRefresh(principal);
 };
 
 export const dispatchAuths = (authIdentity: Identity, myAgent: HttpAgent, myPrincipal: Principal) => {

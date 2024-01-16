@@ -120,9 +120,13 @@ const contactsSlice = createSlice({
           allowance?: { allowance: string; expires_at: string } | undefined;
         }>,
       ) {
-        const auxContacts = state.contacts.map((contact) => {
+        const auxContacts = state.contacts.map((contact: Contact) => {
           if (contact.principal !== action.payload.principal) return contact;
           else {
+            const hasAllowance = contact.assets.some((asset) =>
+              asset.subaccounts.some((subAccount) => subAccount.allowance?.allowance),
+            );
+
             return {
               ...contact,
               assets: contact.assets.map((asset) => {
@@ -131,7 +135,7 @@ const contactsSlice = createSlice({
                 } else {
                   return {
                     ...asset,
-                    hasAllowance: Boolean(action.payload.allowance?.allowance),
+                    hasAllowance: Boolean(action.payload.allowance?.allowance || hasAllowance),
                     subaccounts: [
                       ...asset.subaccounts,
                       {

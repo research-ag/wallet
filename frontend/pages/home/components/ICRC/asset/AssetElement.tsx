@@ -117,7 +117,7 @@ const AssetElement = ({
               {getFullTokenAmount().token === BigInt("0") && (
                 <TrashIcon
                   onClick={() => {
-                    onDelete();
+                    onDeleteSubAccount();
                   }}
                   className="w-3 h-3 fill-PrimaryTextColorLight dark:fill-PrimaryTextColor cursor-pointer "
                 />
@@ -243,7 +243,7 @@ const AssetElement = ({
     return lowestMissing;
   }
 
-  function onDelete() {
+  function onDeleteSubAccount() {
     setOpenDelete(true);
   }
 };
