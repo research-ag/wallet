@@ -10,14 +10,26 @@ import FlagSelector from "./components/flagSelector";
 import { useTranslation } from "react-i18next";
 import { ThemeHook } from "@hooks/themeHook";
 import { ChangeEvent, Fragment } from "react";
-import { handleAuthenticated, handleSeedAuthenticated } from "@/redux/CheckAuth";
+import { handleAuthenticated, handleSeedAuthenticated, handlePrincipalAuthenticated } from "@/redux/CheckAuth";
 import { AuthNetworkTypeEnum, ThemesEnum } from "@/const";
 import { AuthNetwork } from "@redux/models/TokenModels";
 import { CustomInput } from "@components/Input";
 
 const Login = () => {
   const { t } = useTranslation();
-  const { handleOpenChange, loginOpts, open, seedOpen, setSeedOpen, seed, setSeed } = LoginHook();
+  const {
+    handleOpenChange,
+    loginOpts,
+    open,
+    seedOpen,
+    setSeedOpen,
+    seed,
+    setSeed,
+    watchOnlyOpen,
+    setWatchOnlyOpen,
+    principalAddress,
+    setPrincipalAddress,
+  } = LoginHook();
   const { theme } = ThemeHook();
   return (
     <Fragment>
@@ -54,7 +66,7 @@ const Login = () => {
                       </h3>
                       {opt.icon}
                     </div>
-                    {seedOpen && opt.type === AuthNetworkTypeEnum.Enum.NONE && (
+                    {seedOpen && opt.type === AuthNetworkTypeEnum.Enum.S && (
                       <CustomInput
                         sizeInput={"medium"}
                         intent={"secondary"}
@@ -79,6 +91,19 @@ const Login = () => {
                         }
                         onKeyDown={(e) => {
                           if (e.key === "Enter") handleSeedAuthenticated(seed);
+                        }}
+                      />
+                    )}
+                    {watchOnlyOpen && opt.type === AuthNetworkTypeEnum.Enum.WO && (
+                      <CustomInput
+                        sizeInput={"medium"}
+                        intent={"secondary"}
+                        compOutClass=""
+                        value={principalAddress}
+                        onChange={onPrincipalChange}
+                        autoFocus
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") handlePrincipalAuthenticated(principalAddress);
                         }}
                       />
                     )}
@@ -115,15 +140,22 @@ const Login = () => {
   async function handleLogin(opt: AuthNetwork) {
     if (opt.type === AuthNetworkTypeEnum.Values.IC || opt.type === AuthNetworkTypeEnum.Values.NFID) {
       setSeedOpen(false);
+      setWatchOnlyOpen(false);
       localStorage.setItem("network_type", JSON.stringify({ type: opt.type, network: opt.network, name: opt.name }));
       handleAuthenticated(opt);
-    } else if (opt.type === AuthNetworkTypeEnum.Enum.NONE) {
+    } else if (opt.type === AuthNetworkTypeEnum.Enum.S) {
       setSeedOpen((prev) => !prev);
       setSeed("");
+    } else if (opt.type === AuthNetworkTypeEnum.Enum.WO) {
+      setWatchOnlyOpen((prev) => !prev);
+      setPrincipalAddress("");
     }
   }
   function onSeedChange(e: ChangeEvent<HTMLInputElement>) {
     if (e.target.value.length <= 32) setSeed(e.target.value);
+  }
+  function onPrincipalChange(e: ChangeEvent<HTMLInputElement>) {
+    setPrincipalAddress(e.target.value);
   }
 };
 
