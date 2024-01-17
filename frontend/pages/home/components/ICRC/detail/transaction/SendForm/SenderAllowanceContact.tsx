@@ -3,7 +3,7 @@ import { Switch } from "@components/switch";
 import { useTranslation } from "react-i18next";
 import { ReactComponent as QRScanIcon } from "@assets/svg/files/qr.svg";
 import { AllowanceContactBook } from "./AllowanceContactBook";
-import NewContact from "./NewContact";
+import SenderNewContact from "./SenderNewContact";
 import { SenderInitialState, SetSenderAllowanceContact, SetSenderNewAllowanceContact } from "@/@types/transactions";
 
 interface SenderAllowanceContactProps {
@@ -31,7 +31,7 @@ export default function SenderAllowanceContact(props: SenderAllowanceContactProp
         </div>
         <QRScanIcon />
       </label>
-      {isNew && <NewContact sender={sender} setSenderNewAllowanceContact={setSenderNewAllowanceContact} />}
+      {isNew && <SenderNewContact sender={sender} setSenderNewAllowanceContact={setSenderNewAllowanceContact} />}
       {!isNew && <AllowanceContactBook sender={sender} setSenderAllowanceContact={setSenderAllowanceContact} />}
     </div>
   );

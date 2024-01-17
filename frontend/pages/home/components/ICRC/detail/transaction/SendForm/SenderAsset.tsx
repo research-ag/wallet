@@ -6,12 +6,12 @@ import { useAppSelector } from "@redux/Store";
 import { Asset } from "@redux/models/AccountModels";
 import { useMemo, useState } from "react";
 
-export interface SendAssetItemProps {
+export interface SenderAssetProps {
   asset: Asset;
   setSenderAsset: SetSenderAsset;
 }
 
-export default function SendAssetItem(props: SendAssetItemProps) {
+export default function SenderAsset(props: SenderAssetProps) {
   const { asset, setSenderAsset } = props;
   const [searchAsset, setSearchAsset] = useState<string | null>(null);
   const { assets } = useAppSelector((state) => state.asset);
