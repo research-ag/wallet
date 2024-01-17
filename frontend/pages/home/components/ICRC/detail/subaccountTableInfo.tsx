@@ -15,6 +15,7 @@ export default function ICRCSubInfo({ subInfoType, setSubInfoType, children }: I
   const { t } = useTranslation();
 
   const { transactions } = useAppSelector((state) => state.asset);
+  const { watchOnlyMode } = useAppSelector((state) => state.auth);
   const { allowances } = useAllowances();
   const transactionsCount = useMemo(() => transactions.length, [transactions]);
   const allowancesCount = useMemo(() => allowances.length, [allowances]);
@@ -52,7 +53,7 @@ export default function ICRCSubInfo({ subInfoType, setSubInfoType, children }: I
             </p>
           </CustomButton>
         </div>
-        {subInfoType === ICRCSubaccountInfoEnum.Enum.ALLOWANCES && <AddAllowanceButton />}
+        {!watchOnlyMode && subInfoType === ICRCSubaccountInfoEnum.Enum.ALLOWANCES && <AddAllowanceButton />}
       </div>
 
       <div className="flex w-full">{children}</div>
