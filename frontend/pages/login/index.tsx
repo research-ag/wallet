@@ -9,11 +9,12 @@ import { LoginHook } from "./hooks/loginhook";
 import FlagSelector from "./components/flagSelector";
 import { useTranslation } from "react-i18next";
 import { ThemeHook } from "@hooks/themeHook";
-import { ChangeEvent, Fragment } from "react";
+import { ChangeEvent, Fragment, useState } from "react";
 import { handleAuthenticated, handleSeedAuthenticated, handlePrincipalAuthenticated } from "@/redux/CheckAuth";
 import { AuthNetworkTypeEnum, ThemesEnum } from "@/const";
 import { AuthNetwork } from "@redux/models/TokenModels";
 import { CustomInput } from "@components/Input";
+import { decodeIcrcAccount } from "@dfinity/ledger";
 
 const Login = () => {
   const { t } = useTranslation();
@@ -31,6 +32,8 @@ const Login = () => {
     setPrincipalAddress,
   } = LoginHook();
   const { theme } = ThemeHook();
+  const [watchOnlyLoginErr, setWatchOnlyLoginErr] = useState(false);
+
   return (
     <Fragment>
       <div className="flex flex-row w-full h-full bg-PrimaryColorLight dark:bg-PrimaryColor">
@@ -101,7 +104,17 @@ const Login = () => {
                         compOutClass=""
                         value={principalAddress}
                         onChange={onPrincipalChange}
+                        border={watchOnlyLoginErr ? "error" : undefined}
                         autoFocus
+                        sufix={
+                          <CheckIcon
+                            className={`w-4 h-4 ${
+                              principalAddress.length > 0 && !watchOnlyLoginErr
+                                ? "stroke-BorderSuccessColor"
+                                : "stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
+                            } opacity-50 mr-2`}
+                          />
+                        }
                         onKeyDown={(e) => {
                           if (e.key === "Enter") handlePrincipalAuthenticated(principalAddress);
                         }}
@@ -156,6 +169,12 @@ const Login = () => {
   }
   function onPrincipalChange(e: ChangeEvent<HTMLInputElement>) {
     setPrincipalAddress(e.target.value);
+    try {
+      decodeIcrcAccount(e.target.value);
+      setWatchOnlyLoginErr(false);
+    } catch {
+      setWatchOnlyLoginErr(true);
+    }
   }
 };
 
