@@ -4,11 +4,15 @@ import SenderItem from "./SenderItem";
 import SendToItem from "./SendToItem";
 
 export default function SendForm() {
-  const { sender, setSenderAsset, setSenderSubAccount } = useSender();
+  const { sender, setSenderAsset, setSenderSubAccount, setSenderAllowanceContact } = useSender();
   return (
     <div className="w-full">
       <SendAssetItem asset={sender.asset} setSenderAsset={setSenderAsset} />
-      <SenderItem sender={sender} setSenderSubAccount={setSenderSubAccount}  />
+      <SenderItem
+        sender={sender}
+        setSenderSubAccount={setSenderSubAccount}
+        setSenderAllowanceContact={setSenderAllowanceContact}
+      />
       {/* <SendToItem /> */}
     </div>
   );

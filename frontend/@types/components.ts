@@ -5,6 +5,7 @@ const SelectOptionSchema = z.object({
   label: z.string(),
   subLabel: z.string().optional(),
   icon: z.any().optional(),
+  subIcon: z.any().optional(),
 });
 
 export type SelectOption = z.infer<typeof SelectOptionSchema>;
