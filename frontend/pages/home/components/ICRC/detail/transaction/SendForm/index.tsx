@@ -1,15 +1,15 @@
-import useSendFrom from "@pages/home/hooks/useSendFrom";
+import useSender from "@pages/home/hooks/useSender";
 import SendAssetItem from "./SendAssetItem";
-import SendFromItem from "./SendFromItem";
+import SenderItem from "./SenderItem";
 import SendToItem from "./SendToItem";
 
 export default function SendForm() {
-  const { sender, setSender } = useSendFrom();
+  const { sender, setSenderAsset, setSenderSubAccount } = useSender();
   return (
     <div className="w-full">
-      <SendAssetItem asset={sender.asset} setSender={setSender} />
-      <SendFromItem />
-      <SendToItem />
+      <SendAssetItem asset={sender.asset} setSenderAsset={setSenderAsset} />
+      <SenderItem sender={sender} setSenderSubAccount={setSenderSubAccount}  />
+      {/* <SendToItem /> */}
     </div>
   );
 }
