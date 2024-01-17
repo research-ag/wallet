@@ -48,3 +48,8 @@ export enum SenderOption {
   own = "Own",
   allowance = "Allowance",
 }
+
+export enum ReceiverOption {
+  own = "Own",
+  third = "Third",
+}

@@ -2,12 +2,12 @@ import { SenderOption } from "@/@types/transactions";
 import * as RadioGroup from "@radix-ui/react-radio-group";
 import { Dispatch, SetStateAction } from "react";
 
-interface SenderTypeSelectProps {
+interface SenderTypeProps {
   senderOption: SenderOption;
   setSenderOption: Dispatch<SetStateAction<SenderOption>>;
 }
 
-export default function SenderTypeSelect(props: SenderTypeSelectProps) {
+export default function SenderType(props: SenderTypeProps) {
   const { senderOption, setSenderOption } = props;
 
   const onValueChange = (selected: SenderOption) => {

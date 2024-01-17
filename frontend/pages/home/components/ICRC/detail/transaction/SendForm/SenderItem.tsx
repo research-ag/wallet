@@ -1,4 +1,4 @@
-import SenderTypeSelect from "./SenderTypeSelect";
+import SenderType from "./SenderType";
 import SenderSubAccount from "./SenderSubAccount";
 import {
   SenderInitialState,
@@ -24,7 +24,7 @@ export default function SenderItem(props: SenderItemProps) {
   return (
     <div className="w-full mt-4 rounded-md bg-ToBoxColor">
       <div className="w-full py-2 border-b border-BorderColor">
-        <SenderTypeSelect senderOption={senderOption} setSenderOption={setSenderOption} />
+        <SenderType senderOption={senderOption} setSenderOption={setSenderOption} />
       </div>
       <div className="p-4">
         {senderOption === SenderOption.own && (
