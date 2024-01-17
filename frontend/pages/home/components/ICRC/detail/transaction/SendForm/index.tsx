@@ -1,8 +1,16 @@
 import useSender from "@pages/home/hooks/useSender";
 import SendAssetItem from "./SendAssetItem";
 import SenderItem from "./SenderItem";
+import { ReactComponent as DownAmountIcon } from "@assets/svg/files/down-blue-arrow.svg";
+import SendToItem from "./SendToItem";
 
-export default function SendForm() {
+interface SendFormProps {
+  setDrawerOpen(value: boolean): void;
+  drawerOpen: boolean;
+}
+
+export default function SendForm(props: SendFormProps) {
+  const { setDrawerOpen, drawerOpen } = props;
   const { sender, setSenderAsset, setSenderSubAccount, setSenderAllowanceContact, setSenderNewAllowanceContact } =
     useSender();
   return (
@@ -14,7 +22,8 @@ export default function SendForm() {
         setSenderAllowanceContact={setSenderAllowanceContact}
         setSenderNewAllowanceContact={setSenderNewAllowanceContact}
       />
-      {/* <SendToItem /> */}
+      <DownAmountIcon className="w-full mt-4" />
+      <SendToItem setDrawerOpen={setDrawerOpen} drawerOpen={drawerOpen} />
     </div>
   );
 }
