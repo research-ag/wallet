@@ -1,27 +1,42 @@
 import SenderTypeSelect from "./SenderTypeSelect";
 import SenderSubAccount from "./SenderSubAccount";
-import { AllowanceContactSubAccount, SenderInitialState } from "@pages/home/hooks/useSender";
-import { SubAccount } from "@redux/models/AccountModels";
+import {
+  SenderInitialState,
+  SenderOption,
+  SetSenderAllowanceContact,
+  SetSenderNewAllowanceContact,
+  SetSenderSubAccount,
+} from "@/@types/transactions";
+import { useState } from "react";
 import SenderAllowanceContact from "./SenderAllowanceContact";
 
-interface SenderItemProps {
+export interface SenderItemProps {
   sender: SenderInitialState;
-  setSenderSubAccount: (subAccount: SubAccount) => void;
-  setSenderAllowanceContact: (allowanceContact: AllowanceContactSubAccount) => void;
+  setSenderSubAccount: SetSenderSubAccount;
+  setSenderAllowanceContact: SetSenderAllowanceContact;
+  setSenderNewAllowanceContact: SetSenderNewAllowanceContact;
 }
 
 export default function SenderItem(props: SenderItemProps) {
-  const { sender, setSenderSubAccount, setSenderAllowanceContact } = props;
+  const [senderOption, setSenderOption] = useState<SenderOption>(SenderOption.own);
+  const { sender, setSenderSubAccount, setSenderAllowanceContact, setSenderNewAllowanceContact } = props;
+
   return (
-    <div className="w-full rounded-md bg-ToBoxColor">
+    <div className="w-full mt-4 rounded-md bg-ToBoxColor">
       <div className="w-full py-2 border-b border-BorderColor">
-        <SenderTypeSelect />
+        <SenderTypeSelect senderOption={senderOption} setSenderOption={setSenderOption} />
       </div>
-      <div className="p-2">
-        <SenderSubAccount sender={sender} setSenderSubAccount={setSenderSubAccount} />
-      </div>
-      <div className="p-2">
-        <SenderAllowanceContact setSenderAllowanceContact={setSenderAllowanceContact} sender={sender} />
+      <div className="p-4">
+        {senderOption === SenderOption.own && (
+          <SenderSubAccount sender={sender} setSenderSubAccount={setSenderSubAccount} />
+        )}
+        {senderOption === SenderOption.allowance && (
+          <SenderAllowanceContact
+            setSenderAllowanceContact={setSenderAllowanceContact}
+            sender={sender}
+            setSenderNewAllowanceContact={setSenderNewAllowanceContact}
+          />
+        )}
       </div>
     </div>
   );

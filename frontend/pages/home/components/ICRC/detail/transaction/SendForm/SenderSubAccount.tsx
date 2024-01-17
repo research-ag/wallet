@@ -1,16 +1,15 @@
 import { SelectOption } from "@/@types/components";
+import { SenderInitialState, SetSenderSubAccount } from "@/@types/transactions";
 import formatSubAccount from "@/utils/formatSubAccount";
 import { Select } from "@components/select";
-import { SenderInitialState } from "@pages/home/hooks/useSender";
-import { SubAccount } from "@redux/models/AccountModels";
 import { useMemo, useState } from "react";
 
-interface SenderItemProps {
+export interface SenderSubAccountItemProps {
   sender: SenderInitialState;
-  setSenderSubAccount: (subAccount: SubAccount) => void;
+  setSenderSubAccount: SetSenderSubAccount;
 }
 
-export default function SenderSubAccount(props: SenderItemProps) {
+export default function SenderSubAccount(props: SenderSubAccountItemProps) {
   const { sender, setSenderSubAccount } = props;
   const [searchSubAccountValue, setSearchSubAccountValue] = useState<string | null>(null);
 

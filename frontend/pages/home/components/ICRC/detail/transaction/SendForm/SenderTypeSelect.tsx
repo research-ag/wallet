@@ -1,10 +1,16 @@
+import { SenderOption } from "@/@types/transactions";
 import * as RadioGroup from "@radix-ui/react-radio-group";
-import { useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 
-export default function SenderTypeSelect() {
-  const [senderOption, setSenderOption] = useState("Own");
+interface SenderTypeSelectProps {
+  senderOption: SenderOption;
+  setSenderOption: Dispatch<SetStateAction<SenderOption>>;
+}
 
-  const onValueChange = (selected: string) => {
+export default function SenderTypeSelect(props: SenderTypeSelectProps) {
+  const { senderOption, setSenderOption } = props;
+
+  const onValueChange = (selected: SenderOption) => {
     setSenderOption(selected);
     console.log(selected);
   };
@@ -17,9 +23,9 @@ export default function SenderTypeSelect() {
         <div className="flex flex-row items-center p-1">
           <RadioGroup.Item
             className={`w-5 h-5 rounded-full border-2  outline-none p-0 ${
-              senderOption === "Own" ? "border-RadioCheckColor" : "border-RadioNoCheckColorLight"
+              senderOption === SenderOption.own ? "border-RadioCheckColor" : "border-RadioNoCheckColorLight"
             }`}
-            value="Own"
+            value={SenderOption.own}
             id="r-light"
           >
             <RadioGroup.Indicator className="flex items-center justify-center w-full h-full relative after:content-[''] after:block after:w-3 after:h-3 after:rounded-full after:bg-RadioCheckColor" />
@@ -29,9 +35,9 @@ export default function SenderTypeSelect() {
         <div className="flex flex-row items-center p-1">
           <RadioGroup.Item
             className={`w-5 h-5 rounded-full border-2  outline-none p-0 ${
-              senderOption === "Allowance" ? "border-RadioCheckColor" : "border-RadioNoCheckColorLight"
+              senderOption === SenderOption.allowance ? "border-RadioCheckColor" : "border-RadioNoCheckColorLight"
             }`}
-            value="Allowance"
+            value={SenderOption.allowance}
             id="r-light"
           >
             <RadioGroup.Indicator className="flex items-center justify-center w-full h-full relative after:content-[''] after:block after:w-3 after:h-3 after:rounded-full after:bg-RadioCheckColor" />
