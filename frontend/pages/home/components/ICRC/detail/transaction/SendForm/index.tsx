@@ -4,11 +4,13 @@ import { ReactComponent as DownAmountIcon } from "@assets/svg/files/down-blue-ar
 import ReceiverItem from "./ReceiverItem";
 import { ScannerOption } from "@/@types/transactions";
 import { useAppSelector } from "@redux/Store";
+import SenderQRScanner from "./SenderQRScanner";
+import ReceiverQRScanner from "./ReceiverQRScanner";
 
 export default function SendForm() {
   const { scannerActiveOption } = useAppSelector((state) => state.transaction);
-  if (scannerActiveOption === ScannerOption.sender) return <p>QR Scanner Sender</p>;
-  if (scannerActiveOption === ScannerOption.receiver) return <p>QR Scanner Receiver</p>;
+  if (scannerActiveOption === ScannerOption.sender) return <SenderQRScanner />;
+  if (scannerActiveOption === ScannerOption.receiver) return <ReceiverQRScanner />;
 
   return (
     <div className="w-full">

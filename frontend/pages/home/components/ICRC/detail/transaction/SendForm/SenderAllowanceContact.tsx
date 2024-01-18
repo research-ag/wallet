@@ -23,7 +23,7 @@ export default function SenderAllowanceContact() {
           <Switch checked={isNew} onChange={onContactBookChange} disabled={false} />
           <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("new")}</p>
         </div>
-        <QRScanIcon onClick={onSenderScannerShow} />
+        <QRScanIcon onClick={onSenderScannerShow} className="cursor-pointer" />
       </label>
       {isNew && <SenderNewContact />}
       {!isNew && <AllowanceContactBook />}

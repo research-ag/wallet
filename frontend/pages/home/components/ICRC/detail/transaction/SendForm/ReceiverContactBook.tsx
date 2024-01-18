@@ -1,6 +1,6 @@
 import { CustomInput } from "@components/Input";
 import { ReactComponent as SearchIcon } from "@assets/svg/files/icon-search.svg";
-import { ReactComponent as QRIcon } from "@assets/svg/files/qr.svg";
+import { ReactComponent as QRScanIcon } from "@assets/svg/files/qr.svg";
 import { ReactComponent as SendUserIcon } from "@assets/svg/files/send-user-icon.svg";
 import { useAppSelector } from "@redux/Store";
 import { useMemo } from "react";
@@ -57,7 +57,7 @@ function ContactSuffix() {
   return (
     <div className="flex flex-row items-center justify-center gap-2 mx-2">
       <SendUserIcon className="cursor-pointer" />
-      <QRIcon onClick={onSenderScannerShow} />
+      <QRScanIcon onClick={onSenderScannerShow} className="cursor-pointer" />
     </div>
   );
   function onSenderScannerShow() {
