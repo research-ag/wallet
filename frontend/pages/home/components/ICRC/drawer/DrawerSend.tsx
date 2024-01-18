@@ -12,14 +12,9 @@ interface DrawerSendProps {
   drawerOpen: boolean;
 }
 
-function Drawer(props: DrawerSendProps) {
-  console.log(props);
-  return <SendForm />;
-}
-
 function DrawerSend(props: DrawerSendProps) {
   if (!props.drawerOpen) return <></>;
-  return <Drawer {...props} />;
+  return <SendForm />;
 }
 
 export default DrawerSend;
