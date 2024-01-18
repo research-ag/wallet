@@ -269,6 +269,7 @@ const SendOutAccount = ({
       princ: e.target.value,
     });
   }
+
   function onChangeIdx(e: ChangeEvent<HTMLInputElement>) {
     if (checkHexString(e.target.value)) setManualSub(e.target.value.trim());
   }
