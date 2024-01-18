@@ -1,7 +1,7 @@
 import SenderType from "./SenderType";
 import SenderSubAccount from "./SenderSubAccount";
 import {
-  SenderInitialState,
+  SenderState,
   SenderOption,
   SetSenderAllowanceContact,
   SetSenderNewAllowanceContact,
@@ -11,7 +11,7 @@ import { useState } from "react";
 import SenderAllowanceContact from "./SenderAllowanceContact";
 
 export interface SenderItemProps {
-  sender: SenderInitialState;
+  sender: SenderState;
   setSenderSubAccount: SetSenderSubAccount;
   setSenderAllowanceContact: SetSenderAllowanceContact;
   setSenderNewAllowanceContact: SetSenderNewAllowanceContact;

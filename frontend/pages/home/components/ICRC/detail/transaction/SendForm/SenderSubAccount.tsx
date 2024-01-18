@@ -1,31 +1,17 @@
 import { SelectOption } from "@/@types/components";
-import { SenderInitialState, SetSenderSubAccount } from "@/@types/transactions";
+import { SenderState, SetSenderSubAccount } from "@/@types/transactions";
 import formatSubAccount from "@/utils/formatSubAccount";
 import { Select } from "@components/select";
 import { useMemo, useState } from "react";
 
 export interface SenderSubAccountItemProps {
-  sender: SenderInitialState;
+  sender: SenderState;
   setSenderSubAccount: SetSenderSubAccount;
 }
 
 export default function SenderSubAccount(props: SenderSubAccountItemProps) {
   const { sender, setSenderSubAccount } = props;
   const [searchSubAccountValue, setSearchSubAccountValue] = useState<string | null>(null);
-
-  function onSelect(option: SelectOption) {
-    const subAccount = sender?.asset?.subAccounts?.find((subAccount) => subAccount?.sub_account_id === option.value);
-    if (!subAccount) return;
-    setSenderSubAccount(subAccount);
-  }
-
-  function onSearchChange(searchValue: string) {
-    setSearchSubAccountValue(searchValue);
-  }
-
-  function onOpenChange() {
-    setSearchSubAccountValue(null);
-  }
 
   const options = useMemo(() => {
     if (!sender?.asset?.subAccounts) return [];
@@ -48,4 +34,18 @@ export default function SenderSubAccount(props: SenderSubAccountItemProps) {
       onOpenChange={onOpenChange}
     />
   );
+
+  function onSelect(option: SelectOption) {
+    const subAccount = sender?.asset?.subAccounts?.find((subAccount) => subAccount?.sub_account_id === option.value);
+    if (!subAccount) return;
+    setSenderSubAccount(subAccount);
+  }
+
+  function onSearchChange(searchValue: string) {
+    setSearchSubAccountValue(searchValue);
+  }
+
+  function onOpenChange() {
+    setSearchSubAccountValue(null);
+  }
 }

@@ -1,8 +1,8 @@
-import { NewAllowanceContact, SenderInitialState } from "@/@types/transactions";
+import { NewAllowanceContact, SenderState } from "@/@types/transactions";
 import { CustomInput } from "@components/Input";
 
 interface NewContactProps {
-  sender: SenderInitialState;
+  sender: SenderState;
   setSenderNewAllowanceContact: (newAllowanceContact: NewAllowanceContact) => void;
 }
 

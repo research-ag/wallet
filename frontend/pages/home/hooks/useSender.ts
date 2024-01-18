@@ -1,16 +1,11 @@
-import {
-  AllowanceContactSubAccount,
-  NewAllowanceContact,
-  SenderActions,
-  SenderInitialState,
-} from "@/@types/transactions";
+import { AllowanceContactSubAccount, NewAllowanceContact, SenderActions, SenderState } from "@/@types/transactions";
 import { useAppSelector } from "@redux/Store";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { useEffect, useReducer } from "react";
 
-const initialState = {} as SenderInitialState;
+const initialState = {} as SenderState;
 
-function senderReducer(state: SenderInitialState, action: any) {
+function senderReducer(state: SenderState, action: any) {
   switch (action.type) {
     case SenderActions.SET_SENDER_ASSET:
       return { ...state, asset: action.payload };
@@ -28,8 +23,6 @@ function senderReducer(state: SenderInitialState, action: any) {
 export default function useSender() {
   const { selectedAsset, selectedAccount } = useAppSelector((state) => state.asset);
   const [state, dispatch] = useReducer(senderReducer, initialState);
-
-  console.log("STATE", state);
 
   function setSenderAsset(asset: Asset) {
     dispatch({ type: SenderActions.SET_SENDER_ASSET, payload: asset });

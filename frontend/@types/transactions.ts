@@ -5,6 +5,7 @@ export type SetSenderAsset = (asset: Asset) => void;
 export type SetSenderSubAccount = (subAccount: SubAccount) => void;
 export type SetSenderAllowanceContact = (allowanceContact: AllowanceContactSubAccount) => void;
 export type SetSenderNewAllowanceContact = (newAllowanceContact: NewAllowanceContact) => void;
+export type SetReceiverOwnSubAccount = (subAccount: SubAccount) => void;
 
 export interface AllowanceContactSubAccount {
   contactName: string;
@@ -23,12 +24,20 @@ export interface AllowanceContactSubAccount {
   subAccountName: string;
 }
 
+export interface ReceiverState {
+  ownSubAccount: SubAccount;
+}
+
+export enum ReceiverActions {
+  SET_RECEIVER_OWN_SUB_ACCOUNT = "SET_OWN_SUB_ACCOUNT",
+}
+
 export interface NewAllowanceContact {
   principal: string;
   subAccountId: string;
 }
 
-export interface SenderInitialState {
+export interface SenderState {
   asset: Asset;
   subAccount: SubAccount;
   allowanceContactSubAccount: AllowanceContactSubAccount;

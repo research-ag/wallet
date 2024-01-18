@@ -4,10 +4,10 @@ import { useTranslation } from "react-i18next";
 import { ReactComponent as QRScanIcon } from "@assets/svg/files/qr.svg";
 import { AllowanceContactBook } from "./AllowanceContactBook";
 import SenderNewContact from "./SenderNewContact";
-import { SenderInitialState, SetSenderAllowanceContact, SetSenderNewAllowanceContact } from "@/@types/transactions";
+import { SenderState, SetSenderAllowanceContact, SetSenderNewAllowanceContact } from "@/@types/transactions";
 
 interface SenderAllowanceContactProps {
-  sender: SenderInitialState;
+  sender: SenderState;
   setSenderAllowanceContact: SetSenderAllowanceContact;
   setSenderNewAllowanceContact: SetSenderNewAllowanceContact;
 }

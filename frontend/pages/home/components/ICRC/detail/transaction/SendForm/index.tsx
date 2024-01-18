@@ -23,7 +23,7 @@ export default function SendForm(props: SendFormProps) {
         setSenderNewAllowanceContact={setSenderNewAllowanceContact}
       />
       <DownAmountIcon className="w-full mt-4" />
-      <ReceiverItem setDrawerOpen={setDrawerOpen} drawerOpen={drawerOpen} />
+      <ReceiverItem setDrawerOpen={setDrawerOpen} drawerOpen={drawerOpen} sender={sender} />
     </div>
   );
 }

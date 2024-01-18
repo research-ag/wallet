@@ -1,46 +1,101 @@
 //
-import { SendingStatus } from "@/const";
-import { clsx } from "clsx";
-import { Asset, SubAccount } from "@redux/models/AccountModels";
+// import { SendingStatus } from "@/const";
+// import { Asset, SubAccount } from "@redux/models/AccountModels";
+import { ReceiverState, SenderState, SetReceiverOwnSubAccount } from "@/@types/transactions";
+import { useMemo, useState } from "react";
+import { Select } from "@components/select";
+import { useAppSelector } from "@redux/Store";
+import formatSubAccount from "@/utils/formatSubAccount";
+import { SelectOption } from "@/@types/components";
 
-interface SendOwnAccountProps {
-  selectedAccount: SubAccount | undefined;
-  setSelectedAccount(value: SubAccount | undefined): void;
-  selectedAsset: Asset | undefined;
-  receiver: any;
-  setReciver(value: any): void;
-  contactToSend: any;
-  assetDropOpen: boolean;
-  setAssetDropOpen(value: boolean): void;
-  showModal(value: boolean): void;
-  amount: string;
-  setDrawerOpen(value: boolean): void;
-  setSendingStatus(value: SendingStatus): void;
-  setAmount(value: string): void;
-  setAmountBI(value: bigint): void;
-  setNewAccount(value: string): void;
-  setContactToSend(value: any): void;
+// interface SendOwnAccountProps {
+//   selectedAccount: SubAccount | undefined;
+//   setSelectedAccount(value: SubAccount | undefined): void;
+//   selectedAsset: Asset | undefined;
+//   receiver: any;
+//   setReciver(value: any): void;
+//   contactToSend: any;
+//   assetDropOpen: boolean;
+//   setAssetDropOpen(value: boolean): void;
+//   showModal(value: boolean): void;
+//   amount: string;
+//   setDrawerOpen(value: boolean): void;
+//   setSendingStatus(value: SendingStatus): void;
+//   setAmount(value: string): void;
+//   setAmountBI(value: bigint): void;
+//   setNewAccount(value: string): void;
+//   setContactToSend(value: any): void;
+// }
+
+interface ReceiverOwnerProps {
+  setReceiverOwnSubAccount: SetReceiverOwnSubAccount;
+  receiver: ReceiverState;
+  sender: SenderState;
 }
 
-export default function ReceiverOwner() {
+export default function ReceiverOwner(props: ReceiverOwnerProps) {
+  const [searchSubAccountValue, setSearchSubAccountValue] = useState<string | null>(null);
+  const { assets } = useAppSelector((state) => state.asset);
+
+  const { setReceiverOwnSubAccount, receiver, sender } = props;
+
+  const currentAsset = useMemo(() => {
+    return assets.find((asset) => asset?.tokenSymbol === sender?.asset?.tokenSymbol);
+  }, [assets, sender]);
+
+  function onSelect(option: SelectOption) {
+    const subAccount = currentAsset?.subAccounts.find((subAccount) => subAccount?.sub_account_id === option.value);
+    if (!subAccount) return;
+    setReceiverOwnSubAccount(subAccount);
+  }
+
+  function onSearchChange(searchValue: string) {
+    setSearchSubAccountValue(searchValue);
+  }
+
+  function onOpenChange() {
+    setSearchSubAccountValue(null);
+  }
+
+  const options = useMemo(() => {
+    const subAccounts = currentAsset?.subAccounts;
+    const filterValue = searchSubAccountValue?.toLowerCase().trim() || "";
+
+    if (!subAccounts) return [];
+
+    const isSenderOwnSubAccount = sender?.subAccount?.address;
+
+    if (isSenderOwnSubAccount) {
+      const filteredSubAccounts = subAccounts.filter(
+        (subAccount) => subAccount?.sub_account_id !== sender?.subAccount?.sub_account_id,
+      );
+
+      return filteredSubAccounts
+        .filter(
+          (subAccount) =>
+            subAccount?.name?.toLowerCase().includes(filterValue) ||
+            subAccount?.symbol?.toLocaleLowerCase().includes(filterValue),
+        )
+        .map(formatSubAccount);
+    }
+
+    return subAccounts.map(formatSubAccount);
+
+    // INFO: should a sub account be selected as default?
+  }, [sender, currentAsset]);
+
+  console.log(options);
+
   return (
-    <div className="flex flex-col items-center justify-start w-full h-full text-lg text-PrimaryTextColorLight dark:text-PrimaryTextColor">
-      
-    </div>
+    <Select
+      onSelect={onSelect}
+      options={options}
+      initialValue={receiver?.ownSubAccount?.sub_account_id}
+      currentValue={receiver?.ownSubAccount?.sub_account_id || ""}
+      //   disabled={isLoading}
+      //   border={error ? "error" : undefined}
+      onSearch={onSearchChange}
+      onOpenChange={onOpenChange}
+    />
   );
 }
-
-// Tailwind CSS constants
-const sendBox = clsx(
-  "flex",
-  "flex-row",
-  "w-full",
-  "justify-between",
-  "items-start",
-  "rounded",
-  "border",
-  "p-3",
-  "mb-4",
-);
-
-const accountInfo = clsx("flex", "flex-col", "justify-start", "items-start", "w-full", "pl-2", "pr-2");

@@ -6,10 +6,10 @@ import { AvatarEmpty } from "@components/avatar";
 import { ReactComponent as DropIcon } from "@assets/svg/files/chevron-right-icon.svg";
 import { getIconSrc } from "@/utils/icons";
 import { CustomInput } from "@components/Input";
-import { AllowanceContactSubAccount, SenderInitialState, SetSenderAllowanceContact } from "@/@types/transactions";
+import { AllowanceContactSubAccount, SenderState, SetSenderAllowanceContact } from "@/@types/transactions";
 
 interface SenderAllowanceContactProps {
-  sender: SenderInitialState;
+  sender: SenderState;
   setSenderAllowanceContact: SetSenderAllowanceContact;
 }
 
