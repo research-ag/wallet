@@ -1,14 +1,11 @@
-import { NewContact, ReceiverState, SetReceiverNewContact } from "@/@types/transactions";
+import { NewContact } from "@/@types/transactions";
 import { CustomInput } from "@components/Input";
+import { useAppSelector } from "@redux/Store";
+import { setReceiverNewContactAction } from "@redux/transaction/TransactionActions";
 import { useTranslation } from "react-i18next";
 
-interface ReceiverManualProps {
-  setReceiverNewContact: SetReceiverNewContact;
-  receiver: ReceiverState;
-}
-
-export default function ReceiverManual(props: ReceiverManualProps) {
-  const { setReceiverNewContact, receiver } = props;
+export default function ReceiverManual() {
+  const { receiver } = useAppSelector((state) => state.transaction);
 
   const { t } = useTranslation();
   function onPrincipalChange(event: any) {
@@ -18,7 +15,7 @@ export default function ReceiverManual(props: ReceiverManualProps) {
       ...receiver.thirdNewContact,
       principal: principalValue,
     };
-    setReceiverNewContact(contact);
+    setReceiverNewContactAction(contact);
   }
 
   function onSubAccountChange(event: any) {
@@ -28,7 +25,7 @@ export default function ReceiverManual(props: ReceiverManualProps) {
       ...receiver.thirdNewContact,
       subAccountId: subAccountIndex,
     };
-    setReceiverNewContact(contact);
+    setReceiverNewContactAction(contact);
   }
 
   return (

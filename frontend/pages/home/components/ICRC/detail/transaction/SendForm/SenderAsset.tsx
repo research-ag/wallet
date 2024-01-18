@@ -1,20 +1,14 @@
-import { SetSenderAsset } from "@/@types/transactions";
 import { SelectOption } from "@/@types/components";
 import formatAsset from "@/utils/formatAsset";
 import { Select } from "@components/select";
 import { useAppSelector } from "@redux/Store";
-import { Asset } from "@redux/models/AccountModels";
+import { setSenderAssetAction } from "@redux/transaction/TransactionActions";
 import { useMemo, useState } from "react";
 
-export interface SenderAssetProps {
-  asset: Asset;
-  setSenderAsset: SetSenderAsset;
-}
-
-export default function SenderAsset(props: SenderAssetProps) {
-  const { asset, setSenderAsset } = props;
-  const [searchAsset, setSearchAsset] = useState<string | null>(null);
+export default function SenderAsset() {
   const { assets } = useAppSelector((state) => state.asset);
+  const { sender } = useAppSelector((state) => state.transaction);
+  const [searchAsset, setSearchAsset] = useState<string | null>(null);
 
   const options = useMemo(() => {
     if (!searchAsset) return assets.map(formatAsset);
@@ -33,8 +27,8 @@ export default function SenderAsset(props: SenderAssetProps) {
     <Select
       onSelect={onAssetChange}
       options={options}
-      initialValue={asset?.tokenName}
-      currentValue={asset?.tokenName}
+      initialValue={sender?.asset?.tokenName}
+      currentValue={sender?.asset?.tokenName}
       disabled={false}
       onSearch={onSearchChange}
       onOpenChange={onOpenChange}
@@ -45,7 +39,7 @@ export default function SenderAsset(props: SenderAssetProps) {
     setSearchAsset(null);
     const asset = assets.find((asset) => asset.tokenName === option.value);
     if (!asset) return;
-    setSenderAsset(asset);
+    setSenderAssetAction(asset);
   }
 
   function onSearchChange(searchValue: string) {

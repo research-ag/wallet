@@ -6,18 +6,14 @@ import { AvatarEmpty } from "@components/avatar";
 import { ReactComponent as DropIcon } from "@assets/svg/files/chevron-right-icon.svg";
 import { getIconSrc } from "@/utils/icons";
 import { CustomInput } from "@components/Input";
-import { ContactSubAccount, SenderState, SetSenderAllowanceContact } from "@/@types/transactions";
+import { ContactSubAccount } from "@/@types/transactions";
+import { setSenderContactAction } from "@redux/transaction/TransactionActions";
 
-interface SenderAllowanceContactProps {
-  sender: SenderState;
-  setSenderAllowanceContact: SetSenderAllowanceContact;
-}
-
-export function AllowanceContactBook(props: SenderAllowanceContactProps) {
-  const [isOpen, setIsOpen] = useState(false);
+export function AllowanceContactBook() {
+  const { sender } = useAppSelector((state) => state.transaction);
   const { contacts } = useAppSelector((state) => state.contacts);
+  const [isOpen, setIsOpen] = useState(false);
   const [searchSubAccountValue, setSearchSubAccountValue] = useState<string | null>(null);
-  const { sender, setSenderAllowanceContact } = props;
 
   const options = useMemo(() => {
     if (!contacts || !contacts.length) return [];
@@ -147,7 +143,7 @@ export function AllowanceContactBook(props: SenderAllowanceContactProps) {
   );
 
   function onSelect(contact: ContactSubAccount) {
-    setSenderAllowanceContact(contact);
+    setSenderContactAction(contact);
   }
 
   function onSearchChange(event: React.ChangeEvent<HTMLInputElement>) {

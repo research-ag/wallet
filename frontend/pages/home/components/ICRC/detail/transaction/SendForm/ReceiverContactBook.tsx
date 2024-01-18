@@ -4,25 +4,14 @@ import { ReactComponent as QRIcon } from "@assets/svg/files/qr.svg";
 import { ReactComponent as SendUserIcon } from "@assets/svg/files/send-user-icon.svg";
 import { useAppSelector } from "@redux/Store";
 import { useMemo } from "react";
-import { ContactSubAccount, SenderState, SetReceiverThirdContactSubAccount } from "@/@types/transactions";
+import { ContactSubAccount } from "@/@types/transactions";
 
-interface ReceiverContactBookProps {
-  sender: SenderState;
-  setReceiverThirdContactSubAccount: SetReceiverThirdContactSubAccount;
+export default function ReceiverContactBook() {
+  return <CustomInput prefix={<SearchIcon className="mx-2" />} sufix={<ContactSuffix />} />;
 }
 
-export default function ReceiverContactBook(props: ReceiverContactBookProps) {
-  const { sender, setReceiverThirdContactSubAccount } = props;
-  return (
-    <CustomInput
-      prefix={<SearchIcon className="mx-2" />}
-      sufix={<ContactSuffix sender={sender} setReceiverThirdContactSubAccount={setReceiverThirdContactSubAccount} />}
-    />
-  );
-}
-
-function ContactSuffix(props: ReceiverContactBookProps) {
-  const { sender, setReceiverThirdContactSubAccount } = props;
+function ContactSuffix() {
+  const { sender } = useAppSelector((state) => state.transaction);
   const { contacts } = useAppSelector((state) => state.contacts);
 
   const filteredContacts = useMemo(() => {
@@ -61,7 +50,8 @@ function ContactSuffix(props: ReceiverContactBookProps) {
     return allowanceContacts;
   }, [sender, contacts]);
 
-  function onSelectContact() {}
+  // function onSelectContact() {}
+  console.log(filteredContacts);
 
   return (
     <div className="flex flex-row items-center justify-center gap-2 mx-2">

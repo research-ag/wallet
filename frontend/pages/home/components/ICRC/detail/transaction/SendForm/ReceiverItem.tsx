@@ -5,22 +5,11 @@
 // import SendOwnAccount from "../../../drawer/SendOwnAccount";
 import ReceiverType from "./ReceiverType";
 import { useState } from "react";
-import { ReceiverOption, SenderState } from "@/@types/transactions";
+import { ReceiverOption } from "@/@types/transactions";
 import ReceiverOwner from "./ReceiverOwner";
 import ReceiverThird from "./ReceiverThird";
-import useReceiver from "@pages/home/hooks/useReceiver";
 
-interface ReceiverItemProps {
-  setDrawerOpen(value: boolean): void;
-  drawerOpen: boolean;
-  sender: SenderState;
-}
-
-export default function ReceiverItem(props: ReceiverItemProps) {
-  const { setDrawerOpen, sender } = props;
-  const { setReceiverOwnSubAccount, setReceiverNewContact, receiver, setReceiverThirdContactSubAccount } =
-    useReceiver();
-
+export default function ReceiverItem() {
   const [receiverOption, setReceiverOption] = useState<ReceiverOption>(ReceiverOption.third);
   const [isManual, setIsManual] = useState<boolean>(false);
   // const { selectedAsset, selectedAccount: baseAccount } = GeneralHook();
@@ -67,17 +56,9 @@ export default function ReceiverItem(props: ReceiverItemProps) {
       </div>
 
       <div className="p-4">
-        {receiverOption === ReceiverOption.own && (
-          <ReceiverOwner setReceiverOwnSubAccount={setReceiverOwnSubAccount} receiver={receiver} sender={sender} />
-        )}
+        {receiverOption === ReceiverOption.own && <ReceiverOwner />}
         {receiverOption === ReceiverOption.third && (
-          <ReceiverThird
-            setReceiverNewContact={setReceiverNewContact}
-            receiver={receiver}
-            sender={sender}
-            setReceiverThirdContactSubAccount={setReceiverThirdContactSubAccount}
-            isManual={isManual}
-          />
+          <ReceiverThird isManual={isManual} />
         )}
       </div>
 

@@ -1,14 +1,10 @@
-import { NewContact, SenderState } from "@/@types/transactions";
+import { NewContact } from "@/@types/transactions";
 import { CustomInput } from "@components/Input";
+import { useAppSelector } from "@redux/Store";
+import { setSenderContactNewAction } from "@redux/transaction/TransactionActions";
 
-interface NewContactProps {
-  sender: SenderState;
-  setSenderNewAllowanceContact: (newAllowanceContact: NewContact) => void;
-}
-
-export default function SenderNewContact(props: NewContactProps) {
-  const { sender, setSenderNewAllowanceContact } = props;
-
+export default function SenderNewContact() {
+  const { sender } = useAppSelector((state) => state.transaction);
   function onPrincipalChange(event: any) {
     // TODO: validate principal value
     const principalValue = event.target.value.trim();
@@ -18,7 +14,7 @@ export default function SenderNewContact(props: NewContactProps) {
       principal: principalValue,
     };
 
-    setSenderNewAllowanceContact(newAllowanceContact);
+    setSenderContactNewAction(newAllowanceContact);
   }
 
   function onSubAccountChange(event: any) {
@@ -28,7 +24,7 @@ export default function SenderNewContact(props: NewContactProps) {
       ...sender.newAllowanceContact,
       subAccountId: subAccountIndex,
     };
-    setSenderNewAllowanceContact(newAllowanceContact);
+    setSenderContactNewAction(newAllowanceContact);
   }
 
   return (

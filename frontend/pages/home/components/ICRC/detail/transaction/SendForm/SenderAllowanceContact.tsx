@@ -4,18 +4,10 @@ import { useTranslation } from "react-i18next";
 import { ReactComponent as QRScanIcon } from "@assets/svg/files/qr.svg";
 import { AllowanceContactBook } from "./AllowanceContactBook";
 import SenderNewContact from "./SenderNewContact";
-import { SenderState, SetSenderAllowanceContact, SetSenderNewAllowanceContact } from "@/@types/transactions";
 
-interface SenderAllowanceContactProps {
-  sender: SenderState;
-  setSenderAllowanceContact: SetSenderAllowanceContact;
-  setSenderNewAllowanceContact: SetSenderNewAllowanceContact;
-}
-
-export default function SenderAllowanceContact(props: SenderAllowanceContactProps) {
+export default function SenderAllowanceContact() {
   const { t } = useTranslation();
   const [isNew, setIsNew] = useState(false);
-  const { sender, setSenderAllowanceContact, setSenderNewAllowanceContact } = props;
 
   function onContactBookChange(checked: boolean) {
     setIsNew(checked);
@@ -31,8 +23,8 @@ export default function SenderAllowanceContact(props: SenderAllowanceContactProp
         </div>
         <QRScanIcon />
       </label>
-      {isNew && <SenderNewContact sender={sender} setSenderNewAllowanceContact={setSenderNewAllowanceContact} />}
-      {!isNew && <AllowanceContactBook sender={sender} setSenderAllowanceContact={setSenderAllowanceContact} />}
+      {isNew && <SenderNewContact />}
+      {!isNew && <AllowanceContactBook />}
     </div>
   );
 }

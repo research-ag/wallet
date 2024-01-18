@@ -13,8 +13,8 @@ interface DrawerSendProps {
 }
 
 function Drawer(props: DrawerSendProps) {
-  const { setDrawerOpen, drawerOpen } = props;
-  return <SendForm setDrawerOpen={setDrawerOpen} drawerOpen={drawerOpen} />;
+  console.log(props);
+  return <SendForm />;
 }
 
 function DrawerSend(props: DrawerSendProps) {

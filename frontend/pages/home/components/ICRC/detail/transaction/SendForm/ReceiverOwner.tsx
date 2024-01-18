@@ -1,21 +1,14 @@
-import { ReceiverState, SenderState, SetReceiverOwnSubAccount } from "@/@types/transactions";
 import { useMemo, useState } from "react";
 import { Select } from "@components/select";
 import { useAppSelector } from "@redux/Store";
 import formatSubAccount from "@/utils/formatSubAccount";
 import { SelectOption } from "@/@types/components";
+import { setReceiverOwnSubAccountAction } from "@redux/transaction/TransactionActions";
 
-interface ReceiverOwnerProps {
-  setReceiverOwnSubAccount: SetReceiverOwnSubAccount;
-  receiver: ReceiverState;
-  sender: SenderState;
-}
-
-export default function ReceiverOwner(props: ReceiverOwnerProps) {
+export default function ReceiverOwner() {
+  const { sender, receiver } = useAppSelector((state) => state.transaction);
   const [searchSubAccountValue, setSearchSubAccountValue] = useState<string | null>(null);
   const { assets } = useAppSelector((state) => state.asset);
-
-  const { setReceiverOwnSubAccount, receiver, sender } = props;
 
   const currentAsset = useMemo(() => {
     return assets.find((asset) => asset?.tokenSymbol === sender?.asset?.tokenSymbol);
@@ -24,7 +17,7 @@ export default function ReceiverOwner(props: ReceiverOwnerProps) {
   function onSelect(option: SelectOption) {
     const subAccount = currentAsset?.subAccounts.find((subAccount) => subAccount?.sub_account_id === option.value);
     if (!subAccount) return;
-    setReceiverOwnSubAccount(subAccount);
+    setReceiverOwnSubAccountAction(subAccount);
   }
 
   function onSearchChange(searchValue: string) {
