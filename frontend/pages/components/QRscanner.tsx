@@ -12,6 +12,7 @@ const QRscanner = ({ qrView, onSuccess, setQRview }: QRscannerProps) => {
   const { t } = useTranslation();
   const [myScanner, setScanner] = useState<Html5QrcodeScanner>();
   const [myScannerErr, setScannerErr] = useState("");
+
   useEffect(() => {
     if (qrView) {
       const scanner = new Html5QrcodeScanner(
