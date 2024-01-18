@@ -1,16 +1,19 @@
-import { ContactSubAccount, NewContact, ReceiverState, SenderState } from "@/@types/transactions";
+import { ContactSubAccount, NewContact, ReceiverState, ScannerOption, SenderState } from "@/@types/transactions";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 interface TransactionState {
+  scannerActiveOption: ScannerOption;
   sender: SenderState;
   receiver: ReceiverState;
 }
 
 export const initialTransactionState = {
+  scannerActiveOption: ScannerOption.none,
   sender: {},
   receiver: {},
 } as TransactionState;
+
 const name = "transaction";
 
 const transactionSlice = createSlice({
@@ -19,6 +22,9 @@ const transactionSlice = createSlice({
   reducers: {
     setSenderAsset(state: TransactionState, action: PayloadAction<Asset>) {
       state.sender.asset = action.payload;
+    },
+    setScannerActiveOption(state: TransactionState, action: PayloadAction<ScannerOption>) {
+      state.scannerActiveOption = action.payload;
     },
     setSenderSubAccount(state: TransactionState, action: PayloadAction<SubAccount>) {
       // INFO: Set a own account as sender
@@ -61,6 +67,7 @@ const transactionSlice = createSlice({
 
 export const {
   setSenderAsset,
+  setScannerActiveOption,
   setSenderSubAccount,
   setSenderContact,
   setSenderContactNew,
@@ -68,4 +75,5 @@ export const {
   setReceiverNewContact,
   setReceiverContact,
 } = transactionSlice.actions;
+
 export default transactionSlice.reducer;

@@ -68,3 +68,9 @@ export enum ReceiverOption {
   own = "Own",
   third = "Third",
 }
+
+export enum ScannerOption {
+  sender = "sender",
+  receiver = "receiver",
+  none = "none",
+}

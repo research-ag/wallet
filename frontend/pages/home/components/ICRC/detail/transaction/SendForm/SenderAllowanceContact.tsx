@@ -4,6 +4,8 @@ import { useTranslation } from "react-i18next";
 import { ReactComponent as QRScanIcon } from "@assets/svg/files/qr.svg";
 import { AllowanceContactBook } from "./AllowanceContactBook";
 import SenderNewContact from "./SenderNewContact";
+import { ScannerOption } from "@/@types/transactions";
+import { setScannerActiveOptionAction } from "@redux/transaction/TransactionActions";
 
 export default function SenderAllowanceContact() {
   const { t } = useTranslation();
@@ -21,10 +23,14 @@ export default function SenderAllowanceContact() {
           <Switch checked={isNew} onChange={onContactBookChange} disabled={false} />
           <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("new")}</p>
         </div>
-        <QRScanIcon />
+        <QRScanIcon onClick={onSenderScannerShow} />
       </label>
       {isNew && <SenderNewContact />}
       {!isNew && <AllowanceContactBook />}
     </div>
   );
+
+  function onSenderScannerShow() {
+    setScannerActiveOptionAction(ScannerOption.sender);
+  }
 }

@@ -4,7 +4,8 @@ import { ReactComponent as QRIcon } from "@assets/svg/files/qr.svg";
 import { ReactComponent as SendUserIcon } from "@assets/svg/files/send-user-icon.svg";
 import { useAppSelector } from "@redux/Store";
 import { useMemo } from "react";
-import { ContactSubAccount } from "@/@types/transactions";
+import { ContactSubAccount, ScannerOption } from "@/@types/transactions";
+import { setScannerActiveOptionAction } from "@redux/transaction/TransactionActions";
 
 export default function ReceiverContactBook() {
   return <CustomInput prefix={<SearchIcon className="mx-2" />} sufix={<ContactSuffix />} />;
@@ -56,7 +57,10 @@ function ContactSuffix() {
   return (
     <div className="flex flex-row items-center justify-center gap-2 mx-2">
       <SendUserIcon className="cursor-pointer" />
-      <QRIcon onClick={() => console.log("Change to qr view")} />
+      <QRIcon onClick={onSenderScannerShow} />
     </div>
   );
+  function onSenderScannerShow() {
+    setScannerActiveOptionAction(ScannerOption.receiver);
+  }
 }
