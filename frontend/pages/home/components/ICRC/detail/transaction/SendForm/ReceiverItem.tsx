@@ -18,7 +18,8 @@ interface ReceiverItemProps {
 
 export default function ReceiverItem(props: ReceiverItemProps) {
   const { setDrawerOpen, sender } = props;
-  const { setReceiverOwnSubAccount, receiver } = useReceiver();
+  const { setReceiverOwnSubAccount, setReceiverNewContact, receiver, setReceiverThirdContactSubAccount } =
+    useReceiver();
   const [receiverOption, setReceiverOption] = useState<ReceiverOption>(ReceiverOption.third);
   const [isManual, setIsManual] = useState<boolean>(false);
   // const { selectedAsset, selectedAccount: baseAccount } = GeneralHook();
@@ -63,10 +64,22 @@ export default function ReceiverItem(props: ReceiverItemProps) {
       <div className="w-full py-2 border-b border-BorderColor">
         <ReceiverType isManual={isManual} setIsManual={setIsManual} />
       </div>
+
       <div className="p-4">
-        {receiverOption === ReceiverOption.own && <ReceiverOwner setReceiverOwnSubAccount={setReceiverOwnSubAccount} receiver={receiver} sender={sender} />}
-        {receiverOption === ReceiverOption.third && <ReceiverThird />}
+        {receiverOption === ReceiverOption.own && (
+          <ReceiverOwner setReceiverOwnSubAccount={setReceiverOwnSubAccount} receiver={receiver} sender={sender} />
+        )}
+        {receiverOption === ReceiverOption.third && (
+          <ReceiverThird
+            setReceiverNewContact={setReceiverNewContact}
+            receiver={receiver}
+            sender={sender}
+            setReceiverThirdContactSubAccount={setReceiverThirdContactSubAccount}
+            isManual={isManual}
+          />
+        )}
       </div>
+
       <div className="flex p-4">
         {receiverOption === ReceiverOption.third && (
           <button onClick={onTransferToOwn}>

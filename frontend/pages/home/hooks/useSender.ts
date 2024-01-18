@@ -1,4 +1,4 @@
-import { AllowanceContactSubAccount, NewAllowanceContact, SenderActions, SenderState } from "@/@types/transactions";
+import { ContactSubAccount, NewContact, SenderActions, SenderState } from "@/@types/transactions";
 import { useAppSelector } from "@redux/Store";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { useEffect, useReducer } from "react";
@@ -34,13 +34,13 @@ export default function useSender() {
     dispatch({ type: SenderActions.SET_SENDER_SUB_ACCOUNT, payload: subAccount });
   }
 
-  function setSenderAllowanceContact(allowanceContactSubAccount: AllowanceContactSubAccount) {
+  function setSenderAllowanceContact(allowanceContactSubAccount: ContactSubAccount) {
     dispatch({ type: SenderActions.SET_SENDER_NEW_ALLOWANCE_CONTACT, payload: {} });
     dispatch({ type: SenderActions.SET_SENDER_SUB_ACCOUNT, payload: {} });
     dispatch({ type: SenderActions.SET_SENDER_ALLOWANCE_CONTACT, payload: allowanceContactSubAccount });
   }
 
-  function setSenderNewAllowanceContact(newAllowanceContact: NewAllowanceContact) {
+  function setSenderNewAllowanceContact(newAllowanceContact: NewContact) {
     dispatch({ type: SenderActions.SET_SENDER_SUB_ACCOUNT, payload: {} });
     dispatch({ type: SenderActions.SET_SENDER_ALLOWANCE_CONTACT, payload: {} });
     dispatch({ type: SenderActions.SET_SENDER_NEW_ALLOWANCE_CONTACT, payload: newAllowanceContact });

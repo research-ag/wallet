@@ -1,4 +1,4 @@
-import { ReceiverActions, ReceiverState } from "@/@types/transactions";
+import { ContactSubAccount, NewContact, ReceiverActions, ReceiverState } from "@/@types/transactions";
 import { SubAccount } from "@redux/models/AccountModels";
 import { useReducer } from "react";
 
@@ -11,6 +11,16 @@ function receiverReducer(state = initialState, action: any) {
         ...state,
         ownSubAccount: action.payload,
       };
+    case ReceiverActions.SET_RECEIVER_THIRD_NEW_CONTACT:
+      return {
+        ...state,
+        thirdNewContact: action.payload,
+      };
+    case ReceiverActions.SET_RECEIVER_THIRD_CONTACT_SUB_ACCOUNT:
+      return {
+        ...state,
+        thirdContactSubAccount: action.payload,
+      };
     default:
       return state;
   }
@@ -20,8 +30,22 @@ export default function useReceiver() {
   const [state, dispatch] = useReducer(receiverReducer, initialState);
 
   function setReceiverOwnSubAccount(subAccount: SubAccount) {
+    // TODO: clean third new contact
+    // TODO: clean thirdContactSubAccount
     dispatch({ type: ReceiverActions.SET_RECEIVER_OWN_SUB_ACCOUNT, payload: subAccount });
   }
 
-  return { receiver: state, setReceiverOwnSubAccount };
+  function setReceiverNewContact(newContact: NewContact) {
+    // TODO: clean ownSubAccount
+    // TODO: clean thirdContactSubAccount
+    dispatch({ type: ReceiverActions.SET_RECEIVER_THIRD_NEW_CONTACT, payload: newContact });
+  }
+
+  function setReceiverThirdContactSubAccount(subAccount: ContactSubAccount) {
+    // TODO: clean ownSubAccount
+    // TODO: clean thirdNewContact
+    dispatch({ type: ReceiverActions.SET_RECEIVER_THIRD_CONTACT_SUB_ACCOUNT, payload: subAccount });
+  }
+
+  return { receiver: state, setReceiverOwnSubAccount, setReceiverNewContact, setReceiverThirdContactSubAccount };
 }

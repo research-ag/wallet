@@ -1,19 +1,19 @@
-import { NewAllowanceContact, SenderState } from "@/@types/transactions";
+import { NewContact, SenderState } from "@/@types/transactions";
 import { CustomInput } from "@components/Input";
 
 interface NewContactProps {
   sender: SenderState;
-  setSenderNewAllowanceContact: (newAllowanceContact: NewAllowanceContact) => void;
+  setSenderNewAllowanceContact: (newAllowanceContact: NewContact) => void;
 }
 
-export default function NewContact(props: NewContactProps) {
+export default function SenderNewContact(props: NewContactProps) {
   const { sender, setSenderNewAllowanceContact } = props;
 
   function onPrincipalChange(event: any) {
     // TODO: validate principal value
     const principalValue = event.target.value.trim();
 
-    const newAllowanceContact: NewAllowanceContact = {
+    const newAllowanceContact: NewContact = {
       ...sender.newAllowanceContact,
       principal: principalValue,
     };
@@ -24,7 +24,7 @@ export default function NewContact(props: NewContactProps) {
   function onSubAccountChange(event: any) {
     // TODO: validate sub account
     const subAccountIndex = event.target.value.trim();
-    const newAllowanceContact: NewAllowanceContact = {
+    const newAllowanceContact: NewContact = {
       ...sender.newAllowanceContact,
       subAccountId: subAccountIndex,
     };

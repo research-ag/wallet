@@ -1,31 +1,9 @@
-//
-// import { SendingStatus } from "@/const";
-// import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { ReceiverState, SenderState, SetReceiverOwnSubAccount } from "@/@types/transactions";
 import { useMemo, useState } from "react";
 import { Select } from "@components/select";
 import { useAppSelector } from "@redux/Store";
 import formatSubAccount from "@/utils/formatSubAccount";
 import { SelectOption } from "@/@types/components";
-
-// interface SendOwnAccountProps {
-//   selectedAccount: SubAccount | undefined;
-//   setSelectedAccount(value: SubAccount | undefined): void;
-//   selectedAsset: Asset | undefined;
-//   receiver: any;
-//   setReciver(value: any): void;
-//   contactToSend: any;
-//   assetDropOpen: boolean;
-//   setAssetDropOpen(value: boolean): void;
-//   showModal(value: boolean): void;
-//   amount: string;
-//   setDrawerOpen(value: boolean): void;
-//   setSendingStatus(value: SendingStatus): void;
-//   setAmount(value: string): void;
-//   setAmountBI(value: bigint): void;
-//   setNewAccount(value: string): void;
-//   setContactToSend(value: any): void;
-// }
 
 interface ReceiverOwnerProps {
   setReceiverOwnSubAccount: SetReceiverOwnSubAccount;

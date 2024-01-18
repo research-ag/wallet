@@ -6,7 +6,7 @@ import { AvatarEmpty } from "@components/avatar";
 import { ReactComponent as DropIcon } from "@assets/svg/files/chevron-right-icon.svg";
 import { getIconSrc } from "@/utils/icons";
 import { CustomInput } from "@components/Input";
-import { AllowanceContactSubAccount, SenderState, SetSenderAllowanceContact } from "@/@types/transactions";
+import { ContactSubAccount, SenderState, SetSenderAllowanceContact } from "@/@types/transactions";
 
 interface SenderAllowanceContactProps {
   sender: SenderState;
@@ -21,7 +21,7 @@ export function AllowanceContactBook(props: SenderAllowanceContactProps) {
 
   const options = useMemo(() => {
     if (!contacts || !contacts.length) return [];
-    const allowanceContacts: AllowanceContactSubAccount[] = [];
+    const allowanceContacts: ContactSubAccount[] = [];
 
     for (let contactIndex = 0; contactIndex < contacts.length; contactIndex++) {
       const currentContact = contacts[contactIndex];
@@ -146,7 +146,7 @@ export function AllowanceContactBook(props: SenderAllowanceContactProps) {
     </DropdownMenu.Root>
   );
 
-  function onSelect(contact: AllowanceContactSubAccount) {
+  function onSelect(contact: ContactSubAccount) {
     setSenderAllowanceContact(contact);
   }
 
