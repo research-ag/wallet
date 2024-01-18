@@ -1,8 +1,8 @@
-import QRscanner from "@pages/components/QRscanner";
-import { GeneralHook } from "@pages/home/hooks/generalHook";
-import { SentHook } from "@pages/home/hooks/sentHooks";
-import SendOutAccount from "../../../drawer/SendOutAccount";
-import SendOwnAccount from "../../../drawer/SendOwnAccount";
+// import QRscanner from "@pages/components/QRscanner";
+// import { GeneralHook } from "@pages/home/hooks/generalHook";
+// import { SentHook } from "@pages/home/hooks/sentHooks";
+// import SendOutAccount from "../../../drawer/SendOutAccount";
+// import SendOwnAccount from "../../../drawer/SendOwnAccount";
 import ReceiverType from "./ReceiverType";
 import { useState } from "react";
 import { ReceiverOption } from "@/@types/transactions";
@@ -60,37 +60,31 @@ export default function ReceiverItem(props: ReceiverItemProps) {
       <div className="w-full py-2 border-b border-BorderColor">
         <ReceiverType isManual={isManual} setIsManual={setIsManual} />
       </div>
-      {/* <div className="p-4">
-        {receiverOption === ReceiverOption.own && <ReceiverOwner
-          selectedAccount={selectedAccount}
-          setSelectedAccount={setSelectedAccount}
-          selectedAsset={selectedAsset}
-          receiver={receiver}
-          setReciver={setReciver}
-          contactToSend={contactToSend}
-          assetDropOpen={assetDropOpen}
-          setAssetDropOpen={setAssetDropOpen}
-          showModal={showModal}
-          amount={amount}
-          setDrawerOpen={setDrawerOpen}
-          setSendingStatus={setSendingStatus}
-          setAmount={setAmount}
-          setAmountBI={setAmountBI}
-          setNewAccount={setNewAccount}
-          setContactToSend={setContactToSend}
-        />}
+      <div className="p-4">
+        {receiverOption === ReceiverOption.own && <ReceiverOwner />}
         {receiverOption === ReceiverOption.third && <ReceiverThird />}
-      </div> */}
+      </div>
       <div className="flex p-4">
-        <button onClick={onTransferToOwn}>
-          <p className="text-md text-RadioCheckColor text-start">Transfer to own account</p>
-        </button>
+        {receiverOption === ReceiverOption.third && (
+          <button onClick={onTransferToOwn}>
+            <p className="text-md text-RadioCheckColor text-start">Transfer to own account</p>
+          </button>
+        )}
+        {receiverOption === ReceiverOption.own && (
+          <button onClick={onTransferToThird}>
+            <p className="text-md text-RadioCheckColor text-start">Transfer to third</p>
+          </button>
+        )}
       </div>
     </div>
   );
 
   function onTransferToOwn() {
     setReceiverOption(ReceiverOption.own);
+  }
+
+  function onTransferToThird() {
+    setReceiverOption(ReceiverOption.third);
   }
 
   // return (
