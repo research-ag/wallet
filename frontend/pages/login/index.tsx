@@ -15,6 +15,7 @@ import { AuthNetworkTypeEnum, ThemesEnum } from "@/const";
 import { AuthNetwork } from "@redux/models/TokenModels";
 import { CustomInput } from "@components/Input";
 import { decodeIcrcAccount } from "@dfinity/ledger";
+import { clsx } from "clsx";
 
 const Login = () => {
   const { t } = useTranslation();
@@ -83,11 +84,12 @@ const Login = () => {
                               onClick={() => {
                                 handleSeedAuthenticated(seed);
                               }}
-                              className={`w-4 h-4 ${
+                              className={clsx(
+                                "w-4 h-4 opacity-50 cursor-pointer",
                                 seed.length > 0
                                   ? "stroke-BorderSuccessColor"
-                                  : "stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
-                              } opacity-50 cursor-pointer`}
+                                  : "stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor",
+                              )}
                             />
                             <p className="text-sm text-PrimaryTextColorLight dark:text-PrimaryTextColor">Max 32</p>
                           </div>
@@ -108,11 +110,12 @@ const Login = () => {
                         autoFocus
                         sufix={
                           <CheckIcon
-                            className={`w-4 h-4 ${
+                            className={clsx(
+                              "w-4 h-4 opacity-50 mr-2",
                               principalAddress.length > 0 && !watchOnlyLoginErr
                                 ? "stroke-BorderSuccessColor"
-                                : "stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
-                            } opacity-50 mr-2`}
+                                : "stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor",
+                            )}
                           />
                         }
                         onKeyDown={(e) => {
