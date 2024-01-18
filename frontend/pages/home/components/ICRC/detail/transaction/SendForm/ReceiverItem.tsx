@@ -20,6 +20,7 @@ export default function ReceiverItem(props: ReceiverItemProps) {
   const { setDrawerOpen, sender } = props;
   const { setReceiverOwnSubAccount, setReceiverNewContact, receiver, setReceiverThirdContactSubAccount } =
     useReceiver();
+
   const [receiverOption, setReceiverOption] = useState<ReceiverOption>(ReceiverOption.third);
   const [isManual, setIsManual] = useState<boolean>(false);
   // const { selectedAsset, selectedAccount: baseAccount } = GeneralHook();
@@ -124,7 +125,6 @@ export default function ReceiverItem(props: ReceiverItemProps) {
   //           selectedAsset={selectedAsset}
   //           setQRview={setQRview}
   //           setReciver={setReciver}
-  //           // TODO: refactor in a hook
   //           showAccounts={showAccounts}
   //           setShowAccounts={setShowAccounts}
   //           setOpenContactList={setOpenContactList}

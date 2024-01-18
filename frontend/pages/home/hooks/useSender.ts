@@ -23,6 +23,7 @@ function senderReducer(state: SenderState, action: any) {
 export default function useSender() {
   const { selectedAsset, selectedAccount } = useAppSelector((state) => state.asset);
   const [state, dispatch] = useReducer(senderReducer, initialState);
+  console.log("SENDER STATE", state);
 
   function setSenderAsset(asset: Asset) {
     dispatch({ type: SenderActions.SET_SENDER_ASSET, payload: asset });

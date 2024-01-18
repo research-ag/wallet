@@ -28,6 +28,7 @@ function receiverReducer(state = initialState, action: any) {
 
 export default function useReceiver() {
   const [state, dispatch] = useReducer(receiverReducer, initialState);
+  console.log("RECEIVER STATE", state);
 
   function setReceiverOwnSubAccount(subAccount: SubAccount) {
     // TODO: clean third new contact

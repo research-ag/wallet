@@ -13,6 +13,7 @@ export default function SendForm(props: SendFormProps) {
   const { setDrawerOpen, drawerOpen } = props;
   const { sender, setSenderAsset, setSenderSubAccount, setSenderAllowanceContact, setSenderNewAllowanceContact } =
     useSender();
+
   return (
     <div className="w-full">
       <SenderAsset asset={sender.asset} setSenderAsset={setSenderAsset} />
