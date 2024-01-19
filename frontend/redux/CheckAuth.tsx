@@ -19,7 +19,7 @@ import { Ed25519KeyIdentity } from "@dfinity/identity";
 import { clearDataContacts, setStorageCode } from "./contacts/ContactsReducer";
 import { Principal } from "@dfinity/principal";
 import { defaultTokens } from "@/defaultTokens";
-import { refreshAllowanceCache } from "@pages/home/helpers/allowanceCache";
+import { allowanceCacheRefresh } from "@pages/home/helpers/allowanceCache";
 import contactCachedRefresh from "@pages/contacts/helpers/contacts";
 
 const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${
@@ -94,7 +94,7 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean)
     dispatchAuths(authIdentity, myAgent, myPrincipal);
   }
 
-  refreshAllowanceCache(principal);
+  allowanceCacheRefresh(principal);
   await contactCachedRefresh(principal);
 };
 

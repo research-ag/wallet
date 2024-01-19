@@ -5,7 +5,6 @@ import { hasSubAccountAssetAllowances } from "@/pages/home/helpers/icrc";
 
 export default async function contactCachedRefresh(authIdentity: string) {
   try {
-    console.log("Refreshing contacts cached");
     const contactPrefix = `contacts-${authIdentity}`;
     const contactsData = localStorage.getItem(contactPrefix);
 

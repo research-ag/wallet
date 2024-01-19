@@ -1,7 +1,7 @@
 import store from "@redux/Store";
 import { setAllowances } from "@redux/allowance/AllowanceReducer";
 
-export function refreshAllowanceCache(principal: string) {
+export function allowanceCacheRefresh(principal: string) {
   const allowancePrefix = `allowances-${principal}`;
   const allowanceData = localStorage.getItem(allowancePrefix);
   const allowances = JSON.parse(allowanceData || "[]");

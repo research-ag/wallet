@@ -12,7 +12,7 @@ import {
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { Token } from "@redux/models/TokenModels";
 import { useEffect, useState } from "react";
-import { refreshAllowanceCache } from "../helpers/allowanceCache";
+import { allowanceCacheRefresh } from "../helpers/allowanceCache";
 
 export const AssetHook = () => {
   const dispatch = useAppDispatch();
@@ -36,7 +36,7 @@ export const AssetHook = () => {
     dispatch(setLoading(true));
     updateAllBalances(true, userAgent, tkns ? tkns : tokens.length > 0 ? tokens : defaultTokens);
     const principal = (await userAgent.getPrincipal()).toText();
-    refreshAllowanceCache(principal);
+    allowanceCacheRefresh(principal);
     await contactCachedRefresh(principal);
   };
 
