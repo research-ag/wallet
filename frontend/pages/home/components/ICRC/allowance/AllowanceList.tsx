@@ -36,7 +36,7 @@ export default function AllowanceList() {
     return (
       <TableHead>
         {table.getHeaderGroups().map((headerGroup, indexTH) => (
-          <TableRow key={`allowance-${indexTH}`} className="border-b border-opacity-50 border-BorderColor">
+          <TableRow key={`allowance-${indexTH}`}>
             {headerGroup.headers.map((header, indexTR) => {
               const column = header.column.id;
               return (

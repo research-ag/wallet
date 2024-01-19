@@ -33,21 +33,35 @@ export default function useAllowances() {
       ? filterByAsset(selectedAsset?.tokenSymbol, rawAllowances)
       : rawAllowances;
 
-    if (column === AllowancesTableColumnsEnum.Values.subAccount) {
-      return sortBySubAccount(sorting, filtered || []);
-    }
+    // if (column === AllowancesTableColumnsEnum.Values.subAccount) {
+    //   return sortBySubAccount(sorting, filtered || []);
+    // }
 
-    if (column === AllowancesTableColumnsEnum.Values.spender) {
-      return filterBySpender(sorting, filtered || []);
-    }
+    // if (column === AllowancesTableColumnsEnum.Values.spender) {
+    //   return filterBySpender(sorting, filtered || []);
+    // }
 
-    if (column === AllowancesTableColumnsEnum.Values.expiration) {
-      return sortByExpiration(sorting, filtered || []);
-    }
+    // if (column === AllowancesTableColumnsEnum.Values.expiration) {
+    //   return sortByExpiration(sorting, filtered || []);
+    // }
 
-    if (column === AllowancesTableColumnsEnum.Values.amount) {
-      return filterByAmount(sorting, filtered || []);
-    }
+    // if (column === AllowancesTableColumnsEnum.Values.amount) {
+    //   return filterByAmount(sorting, filtered || []);
+    // }
+
+    // TODO: return filtered allowances duplicated as mockup purpose
+    return [
+      ...filtered,
+      ...filtered,
+      ...filtered,
+      ...filtered,
+      ...filtered,
+      ...filtered,
+      ...filtered,
+      ...filtered,
+      ...filtered,
+      ...filtered,
+    ]
 
     return [];
   }, [rawAllowances, sorting, column]);

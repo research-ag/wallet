@@ -9,7 +9,7 @@ interface CommonProps {
 export function Table({ children, className }: CommonProps) {
   return (
     <table
-      className={`${className} w-full relative p-1 flex flex-col overflow-y-scroll  max-h-[calc(90vh-11.25rem)] scroll-y-light`}
+      className={`${className} w-full relative flex flex-col overflow-y-scroll  max-h-[calc(90vh-11.25rem)] scroll-y-light`}
     >
       {children}
     </table>
@@ -17,7 +17,13 @@ export function Table({ children, className }: CommonProps) {
 }
 
 export function TableHead({ children, className }: CommonProps) {
-  return <thead className={`${className}`}>{children}</thead>;
+  return (
+    <thead
+      className={`sticky top-0 border-b border-BorderColorTwoLight dark:border-BorderColorTwo bg-SecondaryColorLight dark:bg-SecondaryColor z-[1] ${className}`}
+    >
+      {children}
+    </thead>
+  );
 }
 
 export function TableBody({ children, className }: CommonProps) {
