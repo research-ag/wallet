@@ -87,7 +87,7 @@ export default function AddContact({ setAddOpen }: AddContactProps) {
       />
 
       <div className="flex flex-row items-center justify-end w-full gap-3">
-        <p className="text-TextErrorColor">{t(newContactErr)}</p>
+        <p className="text-TextErrorColor">{newContactErr ? t(newContactErr) : ""}</p>
         {isAllowancesChecking && <LoadingLoader />}
         <CustomButton
           className="bg-BorderSuccessColor min-w-[5rem] flex justify-between items-center"
