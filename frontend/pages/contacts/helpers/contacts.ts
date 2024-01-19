@@ -5,11 +5,14 @@ import { hasSubAccountAssetAllowances } from "@/pages/home/helpers/icrc";
 
 export default async function contactCachedRefresh(authIdentity: string) {
   try {
+    console.log("Refreshing contacts cached");
     const contactPrefix = `contacts-${authIdentity}`;
     const contactsData = localStorage.getItem(contactPrefix);
-    const { contacts } = JSON.parse(contactsData || "[]") as { contacts: Contact[] };
-    const updatedContacts = [];
 
+    const { contacts } = JSON.parse(contactsData || "[]") as { contacts: Contact[] };
+    store.dispatch(setContacts(contacts));
+
+    const updatedContacts = [];
     if (contacts) {
       for (const contact of contacts) {
         const updatedAsset = await hasSubAccountAssetAllowances(contact.principal, contact.assets);
