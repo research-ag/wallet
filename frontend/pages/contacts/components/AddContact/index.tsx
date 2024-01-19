@@ -16,6 +16,7 @@ import { hasSubAccountAllowances, hasSubAccountAssetAllowances } from "@/pages/h
 import { addContact } from "@redux/contacts/ContactsReducer";
 import { AssetContact } from "@redux/models/ContactsModels";
 import { formatSubAccountIds, validateSubaccounts } from "@/utils/checkers";
+import clsx from "clsx";
 interface AddContactProps {
   setAddOpen(value: boolean): void;
 }
@@ -51,7 +52,7 @@ export default function AddContact({ setAddOpen }: AddContactProps) {
   return (
     <div className="relative flex flex-col items-start justify-start w-full gap-4 text-md">
       <CloseIcon
-        className="absolute cursor-pointer top-5 right-5 stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
+        className={getCloseIconStyles(isCreating)}
         onClick={() => {
           setAddOpen(false);
         }}
@@ -205,4 +206,11 @@ export default function AddContact({ setAddOpen }: AddContactProps) {
     setNewContactPrinErr(err.prin);
     isValidSubacc("add", validContact);
   }
+}
+
+function getCloseIconStyles(isCreating: boolean) {
+  return clsx(
+    "absolute cursor-pointer top-5 right-5 stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor",
+    isCreating && "opacity-50 pointer-events-none",
+  );
 }
