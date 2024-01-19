@@ -8,12 +8,16 @@ import { toFullDecimal } from "@/utils";
 import { GeneralHook } from "@pages/home/hooks/generalHook";
 import { FC, Fragment } from "react";
 import { useTranslation } from "react-i18next";
+import { useAppSelector } from "@redux/Store";
+import { clsx } from "clsx";
+
 interface ICRCSubaccountActionProps {
   onActionClick(value: DrawerOption): void;
 }
 
 const ICRCSubaccountAction: FC<ICRCSubaccountActionProps> = ({ onActionClick }) => {
   const { getAssetIcon, selectedAsset, selectedAccount } = GeneralHook();
+  const { watchOnlyMode } = useAppSelector((state) => state.auth);
   const { t } = useTranslation();
 
   return (
@@ -32,9 +36,17 @@ const ICRCSubaccountAction: FC<ICRCSubaccountActionProps> = ({ onActionClick }) 
         </div>
       </div>
       <div className="flex flex-row justify-around items-center h-full w-[calc(100%-17rem)] text-ThirdTextColorLight dark:text-ThirdTextColor">
-        <div className="flex flex-col justify-center items-center w-1/3 gap-1">
+        <div
+          className={clsx(
+            "flex flex-col justify-center items-center w-1/3 gap-1",
+            watchOnlyMode && "pointer-events-none",
+          )}
+        >
           <div
-            className="flex flex-row justify-center items-center w-7 h-7 bg-SelectRowColor rounded-md cursor-pointer"
+            className={clsx(
+              "flex flex-row justify-center items-center w-7 h-7 rounded-md cursor-pointer",
+              (watchOnlyMode && "bg-GrayColor") || "bg-SelectRowColor",
+            )}
             onClick={() => {
               onActionClick(DrawerOptionEnum.Enum.SEND);
             }}

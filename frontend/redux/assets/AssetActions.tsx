@@ -31,6 +31,7 @@ export const updateAllBalances = async (
   tokens: Token[],
   basicSearch?: boolean,
   fromLogin?: boolean,
+  fixedPrincipal?: Principal,
 ) => {
   let tokenMarkets: TokenMarketInfo[] = [];
   try {
@@ -62,7 +63,7 @@ export const updateAllBalances = async (
   }
   store.dispatch(setTokenMarket(tokenMarkets));
 
-  const myPrincipal = await myAgent.getPrincipal();
+  const myPrincipal = fixedPrincipal || (await myAgent.getPrincipal());
   const tokensAseets = await Promise.all(
     tokens.map(async (tkn, idNum) => {
       try {
@@ -349,8 +350,7 @@ export const setAssetFromLocalData = (tokens: Token[], myPrincipal: string) => {
 };
 
 export const getAllTransactionsICP = async (subaccount_index: string, loading: boolean, isOGY: boolean) => {
-  const myAgent = store.getState().auth.userAgent;
-  const myPrincipal = await myAgent.getPrincipal();
+  const myPrincipal = store.getState().auth.userPrincipal;
   let subacc: SubAccountNNS | undefined = undefined;
   try {
     subacc = SubAccountNNS.fromBytes(hexToUint8Array(subaccount_index)) as SubAccountNNS;
@@ -412,7 +412,7 @@ export const getAllTransactionsICRC1 = async (
 ) => {
   try {
     const myAgent = store.getState().auth.userAgent;
-    const myPrincipal = await myAgent.getPrincipal();
+    const myPrincipal = store.getState().auth.userPrincipal;
     const canisterPrincipal = Principal.fromText(canister_id);
 
     const { getTransactions: ICRC1_getTransactions } = IcrcIndexCanister.create({

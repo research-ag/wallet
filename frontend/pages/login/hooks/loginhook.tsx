@@ -1,8 +1,8 @@
 // svgs
-import XxxxIcon from "../../../assets/svg/files/xxxx-logo.svg";
-import icUrl from "../../../assets/img/icp-logo.png";
-import nfidUrl from "../../../assets/img/nfid-logo.png";
-import metamaskUrl from "../../../assets/img/metamask-logo.png";
+import XxxxIcon from "@/assets/svg/files/xxxx-logo.svg";
+import icUrl from "@/assets/img/icp-logo.png";
+import nfidUrl from "@/assets/img/nfid-logo.png";
+import metamaskUrl from "@/assets/img/metamask-logo.png";
 //
 import { useState } from "react";
 import { AuthNetworkNameEnum, AuthNetworkTypeEnum } from "@/const";
@@ -33,16 +33,36 @@ export const LoginHook = () => {
       name: AuthNetworkNameEnum.Values.Seed,
       extra: "devs.only",
       icon: <img className={""} src={XxxxIcon} alt="" />,
-      type: AuthNetworkTypeEnum.Values.NONE,
+      type: AuthNetworkTypeEnum.Values.S,
+      network: "",
+    },
+    {
+      name: AuthNetworkNameEnum.Values["Watch-Only"],
+      icon: <img className={""} src={XxxxIcon} alt="" />,
+      type: AuthNetworkTypeEnum.Values.WO,
       network: "",
     },
   ];
   const [open, setOpen] = useState(false);
   const [seedOpen, setSeedOpen] = useState(false);
   const [seed, setSeed] = useState("");
+  const [watchOnlyOpen, setWatchOnlyOpen] = useState(false);
+  const [principalAddress, setPrincipalAddress] = useState("");
   const handleOpenChange = (value: boolean) => {
     setOpen(value);
   };
 
-  return { handleOpenChange, loginOpts, open, seedOpen, setSeedOpen, seed, setSeed };
+  return {
+    handleOpenChange,
+    loginOpts,
+    open,
+    seedOpen,
+    setSeedOpen,
+    seed,
+    setSeed,
+    watchOnlyOpen,
+    setWatchOnlyOpen,
+    principalAddress,
+    setPrincipalAddress,
+  };
 };

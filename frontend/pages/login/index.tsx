@@ -9,16 +9,32 @@ import { LoginHook } from "./hooks/loginhook";
 import FlagSelector from "./components/flagSelector";
 import { useTranslation } from "react-i18next";
 import { ThemeHook } from "@hooks/themeHook";
-import { ChangeEvent, Fragment } from "react";
-import { handleAuthenticated, handleSeedAuthenticated } from "@/redux/CheckAuth";
+import { ChangeEvent, Fragment, useState } from "react";
+import { handleAuthenticated, handleSeedAuthenticated, handlePrincipalAuthenticated } from "@/redux/CheckAuth";
 import { AuthNetworkTypeEnum, ThemesEnum } from "@/const";
 import { AuthNetwork } from "@redux/models/TokenModels";
 import { CustomInput } from "@components/Input";
+import { decodeIcrcAccount } from "@dfinity/ledger";
+import { clsx } from "clsx";
 
 const Login = () => {
   const { t } = useTranslation();
-  const { handleOpenChange, loginOpts, open, seedOpen, setSeedOpen, seed, setSeed } = LoginHook();
+  const {
+    handleOpenChange,
+    loginOpts,
+    open,
+    seedOpen,
+    setSeedOpen,
+    seed,
+    setSeed,
+    watchOnlyOpen,
+    setWatchOnlyOpen,
+    principalAddress,
+    setPrincipalAddress,
+  } = LoginHook();
   const { theme } = ThemeHook();
+  const [watchOnlyLoginErr, setWatchOnlyLoginErr] = useState(false);
+
   return (
     <Fragment>
       <div className="flex flex-row w-full h-full bg-PrimaryColorLight dark:bg-PrimaryColor">
@@ -54,7 +70,7 @@ const Login = () => {
                       </h3>
                       {opt.icon}
                     </div>
-                    {seedOpen && opt.type === AuthNetworkTypeEnum.Enum.NONE && (
+                    {seedOpen && opt.type === AuthNetworkTypeEnum.Enum.S && (
                       <CustomInput
                         sizeInput={"medium"}
                         intent={"secondary"}
@@ -68,17 +84,42 @@ const Login = () => {
                               onClick={() => {
                                 handleSeedAuthenticated(seed);
                               }}
-                              className={`w-4 h-4 ${
+                              className={clsx(
+                                "w-4 h-4 opacity-50 cursor-pointer",
                                 seed.length > 0
                                   ? "stroke-BorderSuccessColor"
-                                  : "stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
-                              } opacity-50 cursor-pointer`}
+                                  : "stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor",
+                              )}
                             />
                             <p className="text-sm text-PrimaryTextColorLight dark:text-PrimaryTextColor">Max 32</p>
                           </div>
                         }
                         onKeyDown={(e) => {
                           if (e.key === "Enter") handleSeedAuthenticated(seed);
+                        }}
+                      />
+                    )}
+                    {watchOnlyOpen && opt.type === AuthNetworkTypeEnum.Enum.WO && (
+                      <CustomInput
+                        sizeInput={"medium"}
+                        intent={"secondary"}
+                        compOutClass=""
+                        value={principalAddress}
+                        onChange={onPrincipalChange}
+                        border={watchOnlyLoginErr ? "error" : undefined}
+                        autoFocus
+                        sufix={
+                          <CheckIcon
+                            className={clsx(
+                              "w-4 h-4 opacity-50 mr-2",
+                              principalAddress.length > 0 && !watchOnlyLoginErr
+                                ? "stroke-BorderSuccessColor"
+                                : "stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor",
+                            )}
+                          />
+                        }
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") handlePrincipalAuthenticated(principalAddress);
                         }}
                       />
                     )}
@@ -115,15 +156,28 @@ const Login = () => {
   async function handleLogin(opt: AuthNetwork) {
     if (opt.type === AuthNetworkTypeEnum.Values.IC || opt.type === AuthNetworkTypeEnum.Values.NFID) {
       setSeedOpen(false);
+      setWatchOnlyOpen(false);
       localStorage.setItem("network_type", JSON.stringify({ type: opt.type, network: opt.network, name: opt.name }));
       handleAuthenticated(opt);
-    } else if (opt.type === AuthNetworkTypeEnum.Enum.NONE) {
+    } else if (opt.type === AuthNetworkTypeEnum.Enum.S) {
       setSeedOpen((prev) => !prev);
       setSeed("");
+    } else if (opt.type === AuthNetworkTypeEnum.Enum.WO) {
+      setWatchOnlyOpen((prev) => !prev);
+      setPrincipalAddress("");
     }
   }
   function onSeedChange(e: ChangeEvent<HTMLInputElement>) {
     if (e.target.value.length <= 32) setSeed(e.target.value);
+  }
+  function onPrincipalChange(e: ChangeEvent<HTMLInputElement>) {
+    setPrincipalAddress(e.target.value);
+    try {
+      decodeIcrcAccount(e.target.value);
+      setWatchOnlyLoginErr(false);
+    } catch {
+      setWatchOnlyLoginErr(true);
+    }
   }
 };
 

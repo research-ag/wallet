@@ -146,5 +146,6 @@
   "allowance.add.allowance": "Adicionar Mesada",
   "allowance.sure.remove": "Tem certeza de que deseja Remover?",
   "allowance.permanently.deleted": "Esta Mesada será excluída permanentemente.",
-  "allowance.edit.allowance": "Editar Mesada"
+  "allowance.edit.allowance": "Editar Mesada",
+  "watchOnlyMode.title": "Modo Assistir-Apenas"
 }

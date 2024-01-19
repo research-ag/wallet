@@ -20,7 +20,7 @@ import { clearDataContacts, setStorageCode } from "./contacts/ContactsReducer";
 import { Principal } from "@dfinity/principal";
 import { defaultTokens } from "@/defaultTokens";
 import { allowanceCacheRefresh } from "@pages/home/helpers/allowanceCache";
-import contactCachedRefresh from "@pages/contacts/helpers/contacts";
+import contactCacheRefresh from "@pages/contacts/helpers/contacts";
 
 const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${
   import.meta.env.VITE_APP_LOGO
@@ -32,7 +32,7 @@ export const handleAuthenticated = async (opt: AuthNetwork) => {
     authClient.login({
       maxTimeToLive: BigInt(24 * 60 * 60 * 1000 * 1000 * 1000),
       identityProvider:
-        opt?.type === AuthNetworkTypeEnum.Values.NFID && opt?.type !== undefined && opt?.type !== null
+        !!opt?.type && opt?.type === AuthNetworkTypeEnum.Values.NFID
           ? opt?.network + AUTH_PATH
           : "https://identity.ic0.app/#authorize",
       onSuccess: () => {
@@ -66,8 +66,17 @@ export const handleSeedAuthenticated = (seed: string) => {
   }
 };
 
-export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean) => {
-  const principal = await authIdentity.getPrincipal().toString();
+export const handlePrincipalAuthenticated = async (principalAddress: string) => {
+  try {
+    const authClient = await AuthClient.create();
+    const principal = Principal.fromText(principalAddress);
+    handleLoginApp(authClient.getIdentity(), false, principal);
+  } catch {
+    return;
+  }
+};
+
+export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean, fixedPrincipal?: Principal) => {
   if (localStorage.getItem("network_type") === null && !fromSeed) {
     logout();
     return;
@@ -78,29 +87,35 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean)
     host: "https://identity.ic0.app",
   });
 
-  const myPrincipal = await myAgent.getPrincipal();
+  const myPrincipal = fixedPrincipal || (await myAgent.getPrincipal());
+  const identityPrincipalStr = fixedPrincipal?.toString() || authIdentity.getPrincipal().toString();
 
   // TOKENS
-  const userData = localStorage.getItem(authIdentity.getPrincipal().toString());
+  const userData = localStorage.getItem(identityPrincipalStr);
   if (userData) {
     const userDataJson = JSON.parse(userData);
     store.dispatch(setTokens(userDataJson.tokens));
     setAssetFromLocalData(userDataJson.tokens, myPrincipal.toText());
-    dispatchAuths(authIdentity, myAgent, myPrincipal);
-    await updateAllBalances(true, myAgent, userDataJson.tokens, false, true);
+    dispatchAuths(identityPrincipalStr.toLocaleLowerCase(), myAgent, myPrincipal, !!fixedPrincipal);
+    await updateAllBalances(true, myAgent, userDataJson.tokens, false, true, fixedPrincipal);
   } else {
-    const { tokens } = await updateAllBalances(true, myAgent, defaultTokens, true, true);
+    const { tokens } = await updateAllBalances(true, myAgent, defaultTokens, true, true, fixedPrincipal);
     store.dispatch(setTokens(tokens));
-    dispatchAuths(authIdentity, myAgent, myPrincipal);
+    dispatchAuths(identityPrincipalStr.toLocaleLowerCase(), myAgent, myPrincipal, !!fixedPrincipal);
   }
 
-  allowanceCacheRefresh(principal);
-  await contactCachedRefresh(principal);
+  allowanceCacheRefresh(myPrincipal.toText());
+  await contactCacheRefresh(myPrincipal.toText());
 };
 
-export const dispatchAuths = (authIdentity: Identity, myAgent: HttpAgent, myPrincipal: Principal) => {
-  store.dispatch(setAuthenticated(true, false, authIdentity.getPrincipal().toText().toLowerCase()));
-  store.dispatch(setStorageCode("contacts-" + authIdentity.getPrincipal().toText().toLowerCase()));
+export const dispatchAuths = (
+  identityPrincipal: string,
+  myAgent: HttpAgent,
+  myPrincipal: Principal,
+  watchOnlyMode: boolean,
+) => {
+  store.dispatch(setAuthenticated(true, false, watchOnlyMode, identityPrincipal));
+  store.dispatch(setStorageCode("contacts-" + identityPrincipal));
   store.dispatch(setUserAgent(myAgent));
   store.dispatch(setUserPrincipal(myPrincipal));
 };

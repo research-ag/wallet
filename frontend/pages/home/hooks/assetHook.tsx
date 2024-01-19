@@ -1,5 +1,5 @@
 import { defaultTokens } from "@/defaultTokens";
-import contactCachedRefresh from "@pages/contacts/helpers/contacts";
+import contactCacheRefresh from "@pages/contacts/helpers/contacts";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { updateAllBalances } from "@redux/assets/AssetActions";
 import {
@@ -37,7 +37,7 @@ export const AssetHook = () => {
     updateAllBalances(true, userAgent, tkns ? tkns : tokens.length > 0 ? tokens : defaultTokens);
     const principal = (await userAgent.getPrincipal()).toText();
     allowanceCacheRefresh(principal);
-    await contactCachedRefresh(principal);
+    await contactCacheRefresh(principal);
   };
 
   const getTotalAmountInCurrency = () => {
