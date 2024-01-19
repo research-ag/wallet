@@ -101,6 +101,7 @@ module.exports = {
       "secondary-color-2": "#262250",
       "secondary-color-3": "#2A316B",
       "secondary-color-4": "#FF7A00",
+      "secondary-color-6": "#293F70",
       // GRAY COLORS
       "black-color": "#201D47",
       "gray-color-1": "#363459",
