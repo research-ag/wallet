@@ -1,5 +1,5 @@
 import { TAllowance } from "@/@types/allowance";
-import { getFromLocalStorage, setInLocalStorage } from "../utils/localStorage";
+import { getFromLocalStorage, setInLocalStorage } from "../../../utils/localStorage";
 import store from "@redux/Store";
 
 export const LOCAL_STORAGE_PREFIX = `allowances-${store.getState().auth.userPrincipal.toText()}`;

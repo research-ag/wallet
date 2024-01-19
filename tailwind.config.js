@@ -93,7 +93,7 @@ module.exports = {
       ContactColor3: "#5F8E88",
       TooltipBackground: "#1F2B55",
 
-      // INFO: This colors MUST be prioritized, as a part of new design system provided.  
+      // WARNING: These colors MUST be used in new feature, which are part of new design system provided.
       // MAIN COLORS
       "gold-color": "#805E0C",
       "primary-color": "#33B2EF",
