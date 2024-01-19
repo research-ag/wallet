@@ -2,6 +2,7 @@ import { validateAmount } from "@/utils";
 import { validatePrincipal } from "@/utils/identity";
 import * as z from "zod";
 
+// TODO: add translation to errors
 export const validationMessage = {
   spender: "Invalid principal",
   expiration: "Invalid expiration date",

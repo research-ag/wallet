@@ -12,7 +12,7 @@ import ContactMainDetails from "./ContactMainDetails";
 import ContactAssetDetails from "./ContactAssetDetails";
 import LoadingLoader from "@components/Loader";
 import { CustomButton } from "@components/Button";
-import { hasSubAccountAllowances, hasSubAccountAssetAllowances } from "@/helpers/icrc";
+import { hasSubAccountAllowances, hasSubAccountAssetAllowances } from "@/pages/home/helpers/icrc";
 import { addContact } from "@redux/contacts/ContactsReducer";
 import { AssetContact } from "@redux/models/ContactsModels";
 import { formatSubAccountIds, validateSubaccounts } from "@/utils/checkers";

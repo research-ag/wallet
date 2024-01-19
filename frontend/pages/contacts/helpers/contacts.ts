@@ -1,7 +1,7 @@
 import { Contact } from "@redux/models/ContactsModels";
 import store from "@redux/Store";
 import { setContacts } from "@redux/contacts/ContactsReducer";
-import { hasSubAccountAssetAllowances } from "@/helpers/icrc";
+import { hasSubAccountAssetAllowances } from "@/pages/home/helpers/icrc";
 
 export default async function contactCachedRefresh(authIdentity: string) {
   try {

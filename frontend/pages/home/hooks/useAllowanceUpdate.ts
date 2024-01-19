@@ -1,6 +1,6 @@
 import { TAllowance } from "@/@types/allowance";
 import { TErrorValidation } from "@/@types/common";
-import { ICRCApprove, generateApproveAllowance } from "@/helpers/icrc";
+import { ICRCApprove, generateApproveAllowance } from "@/pages/home/helpers/icrc";
 import { allowanceValidationSchema } from "@/helpers/schemas/allowance";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { useMutation } from "@tanstack/react-query";

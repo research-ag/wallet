@@ -1,5 +1,5 @@
 import { TAllowance } from "@/@types/allowance";
-import { ICRCApprove, generateApproveAllowance } from "@/helpers/icrc";
+import { ICRCApprove, generateApproveAllowance } from "@/pages/home/helpers/icrc";
 import { useMutation } from "@tanstack/react-query";
 import { throttle } from "lodash";
 import { useCallback } from "react";

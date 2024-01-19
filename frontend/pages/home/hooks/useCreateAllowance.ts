@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { TErrorValidation } from "@/@types/common";
 import { TAllowance } from "@/@types/allowance";
 import { allowanceValidationSchema } from "@/helpers/schemas/allowance";
-import { ICRCApprove, generateApproveAllowance } from "@/helpers/icrc";
+import { ICRCApprove, generateApproveAllowance } from "@/pages/home/helpers/icrc";
 import { validatePrincipal } from "@/utils/identity";
 import useAllowanceDrawer from "./useAllowanceDrawer";
 
