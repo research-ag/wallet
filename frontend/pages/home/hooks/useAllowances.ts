@@ -8,7 +8,7 @@ import {
   filterBySpender,
   sortByExpiration,
   sortBySubAccount,
-} from "@/utils/allowanceSorters";
+} from "@/pages/home/helpers/allowanceSorters";
 
 export default function useAllowances() {
   const { allowances: rawAllowances } = useAppSelector((state) => state.allowance);
@@ -48,7 +48,6 @@ export default function useAllowances() {
     if (column === AllowancesTableColumnsEnum.Values.amount) {
       return filterByAmount(sorting, filtered || []);
     }
-
 
     return [];
   }, [rawAllowances, sorting, column]);
