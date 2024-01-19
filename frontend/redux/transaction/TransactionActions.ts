@@ -8,7 +8,10 @@ import {
   setReceiverNewContact,
   setReceiverContact,
   setScannerActiveOption,
+  setReceiverICRCScannerContact,
+  setSenderICRCScannerContact,
 } from "./TransactionReducer";
+
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { ContactSubAccount, NewContact, ScannerOption } from "@/@types/transactions";
 
@@ -34,6 +37,11 @@ export function setReceiverContactAction(contact: ContactSubAccount) {
   store.dispatch(setReceiverContact(contact));
 }
 export function setScannerActiveOptionAction(scannerActiveOption: ScannerOption) {
-  console.log(scannerActiveOption);
   store.dispatch(setScannerActiveOption(scannerActiveOption));
+}
+export function setReceiverICRCScannerContactAction(icrcAccount: string) {
+  store.dispatch(setReceiverICRCScannerContact(icrcAccount));
+}
+export function setSenderICRCScannerContactAction(icrcAccount: string) {
+  store.dispatch(setSenderICRCScannerContact(icrcAccount));
 }

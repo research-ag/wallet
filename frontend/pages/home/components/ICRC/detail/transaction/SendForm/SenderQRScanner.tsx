@@ -1,6 +1,6 @@
 import { ScannerOption } from "@/@types/transactions";
 import QRscanner from "@pages/components/QRscanner";
-import { setScannerActiveOptionAction } from "@redux/transaction/TransactionActions";
+import { setScannerActiveOptionAction, setSenderICRCScannerContactAction } from "@redux/transaction/TransactionActions";
 
 export default function SenderQRScanner() {
   return (
@@ -8,9 +8,8 @@ export default function SenderQRScanner() {
       setQRview={onGoBack}
       qrView={true}
       onSuccess={(value: string) => {
-        console.log(value);
-        //   setNewAccount(value);
-        //   onGoBack();
+        setSenderICRCScannerContactAction(value);
+        // onGoBack();
         //   navigator.clipboard.writeText(value);
       }}
     />

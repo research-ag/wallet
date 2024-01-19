@@ -27,40 +27,52 @@ const transactionSlice = createSlice({
       state.scannerActiveOption = action.payload;
     },
     setSenderSubAccount(state: TransactionState, action: PayloadAction<SubAccount>) {
-      // INFO: Set a own account as sender
       state.sender.subAccount = action.payload;
       state.sender.newAllowanceContact = {} as NewContact;
       state.sender.allowanceContactSubAccount = {} as ContactSubAccount;
+      state.sender.scannerContact = "";
     },
     setSenderContact(state: TransactionState, action: PayloadAction<ContactSubAccount>) {
-      // INFO: set contact book sub account with allowance as sender
       state.sender.allowanceContactSubAccount = action.payload;
       state.sender.newAllowanceContact = {} as NewContact;
       state.sender.subAccount = {} as SubAccount;
+      state.sender.scannerContact = "";
     },
     setSenderContactNew(state: TransactionState, action: PayloadAction<NewContact>) {
-      // INFO: set new contact principal and sub account id as sender (Allowance no registered in contact book)
       state.sender.newAllowanceContact = action.payload;
       state.sender.allowanceContactSubAccount = {} as ContactSubAccount;
       state.sender.subAccount = {} as SubAccount;
+      state.sender.scannerContact = "";
+    },
+    setSenderICRCScannerContact(state: TransactionState, action: PayloadAction<string>) {
+      state.sender.scannerContact = action.payload;
+      state.sender.allowanceContactSubAccount = {} as ContactSubAccount;
+      state.sender.newAllowanceContact = {} as NewContact;
+      state.sender.subAccount = {} as SubAccount;
     },
     setReceiverOwnSubAccount(state: TransactionState, action: PayloadAction<SubAccount>) {
-      // INFO: set own sub account as receiver
       state.receiver.ownSubAccount = action.payload;
-      // TODO: clean third new contact
-      // TODO: clean thirdContactSubAccount
+      state.receiver.thirdContactSubAccount = {} as ContactSubAccount;
+      state.receiver.scannerContact = "";
+      state.receiver.thirdNewContact = {} as NewContact;
     },
     setReceiverNewContact(state: TransactionState, action: PayloadAction<NewContact>) {
-      // INFO: set new contact principal and sub account id as receiver (Allowance no registered in contact book)
       state.receiver.thirdNewContact = action.payload;
-      // TODO: clean ownSubAccount
-      // TODO: clean thirdContactSubAccount
+      state.receiver.thirdContactSubAccount = {} as ContactSubAccount;
+      state.receiver.scannerContact = "";
+      state.receiver.ownSubAccount = {} as SubAccount;
     },
     setReceiverContact(state: TransactionState, action: PayloadAction<ContactSubAccount>) {
-      // INFO: set contact book sub account receiver
       state.receiver.thirdContactSubAccount = action.payload;
-      // TODO: clean ownSubAccount
-      // TODO: clean thirdNewContact
+      state.receiver.scannerContact = "";
+      state.receiver.thirdNewContact = {} as NewContact;
+      state.receiver.ownSubAccount = {} as SubAccount;
+    },
+    setReceiverICRCScannerContact(state: TransactionState, action: PayloadAction<string>) {
+      state.receiver.scannerContact = action.payload;
+      state.receiver.thirdContactSubAccount = {} as ContactSubAccount;
+      state.receiver.thirdNewContact = {} as NewContact;
+      state.receiver.ownSubAccount = {} as SubAccount;
     },
   },
 });
@@ -74,6 +86,8 @@ export const {
   setReceiverOwnSubAccount,
   setReceiverNewContact,
   setReceiverContact,
+  setReceiverICRCScannerContact,
+  setSenderICRCScannerContact,
 } = transactionSlice.actions;
 
 export default transactionSlice.reducer;

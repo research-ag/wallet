@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import SenderAllowanceContact from "./SenderAllowanceContact";
 import { useAppSelector } from "@redux/Store";
 import { setSenderAssetAction, setSenderSubAccountAction } from "@redux/transaction/TransactionActions";
+import { isObjectValid } from "@/utils/checkers";
 
 export default function SenderItem() {
   const [senderOption, setSenderOption] = useState<SenderOption>(SenderOption.own);
@@ -26,16 +27,23 @@ export default function SenderItem() {
 
 function SenderInitializer({ children }: { children: JSX.Element }) {
   const { selectedAsset, selectedAccount } = useAppSelector((state) => state.asset);
+  const { sender } = useAppSelector((state) => state.transaction);
 
   useEffect(() => {
-    if (selectedAsset) {
+    if (selectedAsset && selectedAsset?.tokenName !== sender?.asset?.tokenName) {
       setSenderAssetAction(selectedAsset);
     }
   }, [selectedAsset]);
 
   useEffect(() => {
     if (selectedAccount) {
-      setSenderSubAccountAction(selectedAccount);
+      if (
+        !isObjectValid(sender.newAllowanceContact) &&
+        !isObjectValid(sender.allowanceContactSubAccount) &&
+        !sender.scannerContact
+      ) {
+        setSenderSubAccountAction(selectedAccount);
+      }
     }
   }, [selectedAccount]);
 

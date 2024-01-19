@@ -8,9 +8,14 @@ import SenderQRScanner from "./SenderQRScanner";
 import ReceiverQRScanner from "./ReceiverQRScanner";
 
 export default function SendForm() {
-  const { scannerActiveOption } = useAppSelector((state) => state.transaction);
+  const { sender, receiver, scannerActiveOption } = useAppSelector((state) => state.transaction);
   if (scannerActiveOption === ScannerOption.sender) return <SenderQRScanner />;
   if (scannerActiveOption === ScannerOption.receiver) return <ReceiverQRScanner />;
+
+  console.log({
+    sender,
+    receiver,
+  });
 
   return (
     <div className="w-full">

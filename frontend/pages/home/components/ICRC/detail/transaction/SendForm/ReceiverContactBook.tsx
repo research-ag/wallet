@@ -52,7 +52,6 @@ function ContactSuffix() {
   }, [sender, contacts]);
 
   // function onSelectContact() {}
-  console.log(filteredContacts);
 
   return (
     <div className="flex flex-row items-center justify-center gap-2 mx-2">

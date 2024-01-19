@@ -31,13 +31,14 @@ export interface ReceiverState {
   ownSubAccount: SubAccount;
   thirdNewContact: NewContact;
   thirdContactSubAccount: ContactSubAccount;
-  // icrcScannerContact: IcrcAccount;
+  scannerContact: string;
 }
 
 export enum ReceiverActions {
   SET_RECEIVER_OWN_SUB_ACCOUNT = "SET_OWN_SUB_ACCOUNT",
   SET_RECEIVER_THIRD_NEW_CONTACT = "SET_RECEIVER_THIRD_NEW_CONTACT",
   SET_RECEIVER_THIRD_CONTACT_SUB_ACCOUNT = "SET_RECEIVER_THIRD_CONTACT_SUB_ACCOUNT",
+  SET_RECEIVER_ICRC_SCANNER_CONTACT = "SET_RECEIVER_ICRC_SCANNER_CONTACT",
 }
 
 export interface NewContact {
@@ -50,7 +51,7 @@ export interface SenderState {
   subAccount: SubAccount;
   allowanceContactSubAccount: ContactSubAccount;
   newAllowanceContact: NewContact;
-  // scannerContact: IcrcAccount;
+  scannerContact: string;
 }
 
 // CONSTANTS
