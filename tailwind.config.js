@@ -93,6 +93,31 @@ module.exports = {
       ContactColor3: "#5F8E88",
       TooltipBackground: "#1F2B55",
 
+      // INFO: This colors MUST be prioritized, as a part of new design system provided.  
+      // MAIN COLORS
+      "gold-color": "#805E0C",
+      "primary-color": "#33B2EF",
+      "secondary-color-1": "#201D47",
+      "secondary-color-2": "#262250",
+      "secondary-color-3": "#2A316B",
+      "secondary-color-4": "#FF7A00",
+      // GRAY COLORS
+      "black-color": "#201D47",
+      "gray-color-1": "#363459",
+      "gray-color-2": "#4D4A6C",
+      "gray-color-3": "#63617E",
+      "gray-color-4": "#797791",
+      "gray-color-5": "#8F8EA3",
+      "gray-color-6": "#A6A5B5",
+      "gray-color-7": "#B4B6C1",
+      "gray-color-8": "#E9E8ED",
+      "gray-color-9": "#F6F6F6",
+      // SLATE COLORS
+      "slate-color-info": "#33B2EF",
+      "slate-color-success": "#50E2C2",
+      "slate-color-warning": "#E2B93B",
+      "slate-color-error": "#E2507A",
+
       black: colors.black,
       white: colors.white,
       slate: colors.slate,
