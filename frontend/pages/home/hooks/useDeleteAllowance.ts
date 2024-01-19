@@ -1,12 +1,12 @@
 import { TAllowance } from "@/@types/allowance";
-import { ICRCApprove, generateApproveAllowance } from "@/helpers/icrc";
-import { removeAllowance } from "@/services/allowance";
+import { ICRCApprove, generateApproveAllowance } from "@/pages/home/helpers/icrc";
 import { useMutation } from "@tanstack/react-query";
 import { throttle } from "lodash";
 import { useCallback } from "react";
 import dayjs from "dayjs";
 import { useAppDispatch } from "@redux/Store";
 import { setAllowances } from "@redux/allowance/AllowanceReducer";
+import { removeAllowance } from "../services/allowance";
 
 export default function useDeleteAllowance() {
   const dispatch = useAppDispatch();

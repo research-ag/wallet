@@ -26,7 +26,7 @@ const Modal = ({
   padding = "p-6",
   rounded = "rounded-lg",
   border = "",
-  overlayZIndex = "1999",
+  overlayZIndex = "1000",
   contentZIndex = "2000",
   children,
 }: ModalProps) => {

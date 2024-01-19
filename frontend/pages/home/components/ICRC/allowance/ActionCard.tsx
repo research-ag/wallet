@@ -31,8 +31,8 @@ export default function ActionCard(props: ActionCardProps) {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
-        <span className="grid w-full py-3 cursor-pointer place-content-center">
-          <DotsIcon className="w-6 h-6 cursor-pointer stroke-PrimaryTextColorLight dark:fill-PrimaryColorLight fill-PrimaryTextColorLight" />
+        <span className="grid w-full cursor-pointer place-content-center">
+          <DotsIcon className="w-6 h-6 cursor-pointer stroke-gray-color-3 dark:fill-PrimaryColorLight fill-gray-color-3" />
         </span>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content
@@ -40,17 +40,17 @@ export default function ActionCard(props: ActionCardProps) {
         sideOffset={5}
       >
         <DropdownMenu.Item
-          className="flex items-center justify-start p-2 cursor-pointer dark:bg-PopSelectColor rounded-t-md"
+          className="flex items-center justify-start p-2 cursor-pointer dark:bg-secondary-color-6 rounded-t-md"
           onClick={onUpdateHandler}
         >
-          <PencilIcon className="mr-4" fill={theme === ThemesEnum.Enum.light ? "#000000" : "#ffffff"} />
+          <PencilIcon className="mr-4 fill-gray-color-3 dark:fill-gray-color-7" />
           <p className={getCellStyles()}>{t("edit")}</p>
         </DropdownMenu.Item>
         <Modal
           triggerComponent={
-            <div className="flex items-center justify-start p-2 cursor-pointer bg-ThirdColorLight dark:bg-SecondaryColor rounded-b-md">
-              <TrashDarkIcon className="mr-4" fill="#B0736F" />
-              <p className="font-bold text-LockColor ">{t("delete")}</p>
+            <div className="flex items-center justify-start p-2 cursor-pointer bg-ThirdColorLight dark:bg-secondary-color-2 rounded-b-md">
+              <TrashDarkIcon className="mr-4 fill-slate-color-error" />
+              <p className="font-bold text-slate-color-error ">{t("delete")}</p>
             </div>
           }
           contentComponent={<ContentComponent />}
@@ -91,7 +91,7 @@ export default function ActionCard(props: ActionCardProps) {
 }
 
 function getCellStyles(isOpacity = false) {
-  return clsx("text-PrimaryTextColorLight dark:text-PrimaryTextColor", isOpacity ? "opacity-50" : "");
+  return clsx("text-gray-color-3 dark:text-gray-color-7", isOpacity ? "opacity-50" : "");
 }
 
-const textStyles = clsx("text-PrimaryTextColorLight dark:text-PrimaryTextColor");
+const textStyles = clsx("text-gray-color-3 dark:text-gray-color-7");

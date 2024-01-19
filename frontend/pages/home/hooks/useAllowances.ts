@@ -8,7 +8,7 @@ import {
   filterBySpender,
   sortByExpiration,
   sortBySubAccount,
-} from "@/utils/allowanceSorters";
+} from "@/pages/home/helpers/allowanceSorters";
 
 export default function useAllowances() {
   const { allowances: rawAllowances } = useAppSelector((state) => state.allowance);

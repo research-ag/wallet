@@ -21,7 +21,7 @@ import {
 } from "@redux/models/ContactsModels";
 import { isSubAccountIdValid } from "@/utils/checkers";
 import bigInt from "big-integer";
-import { checkAllowanceExist } from "@/helpers/icrc";
+import { checkAllowanceExist } from "@/pages/home/helpers/icrc";
 import { DeleteContactTypeEnum } from "@/const";
 import useContactTable from "../hooks/useContactTable";
 import { GeneralHook } from "@pages/home/hooks/generalHook";

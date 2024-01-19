@@ -24,9 +24,9 @@ const ICRCTransactionsTable = ({ setDrawerOpen }: ICRCTransactionsTableProps) =>
   });
 
   return (
-    <div className="w-full max-h-[calc(100vh-13rem)] scroll-y-light">
+    <div className="w-full max-h-[calc(100vh-18rem)] scroll-y-light z-[1]">
       <table className="w-full text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md">
-        <thead className="border-b border-BorderColorTwoLight dark:border-BorderColorTwo bg-SecondaryColorLight dark:bg-SecondaryColor sticky top-0 z-[1]">
+        <thead className="sticky top-0 border-b border-BorderColorTwoLight dark:border-BorderColorTwo bg-SecondaryColorLight dark:bg-SecondaryColor">
           {table.getHeaderGroups().map((headerGroup, idxTR) => (
             <tr key={`tr-transac-${idxTR}`}>
               {headerGroup.headers.map((header, idxTH) => (

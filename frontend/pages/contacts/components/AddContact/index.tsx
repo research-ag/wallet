@@ -12,10 +12,11 @@ import ContactMainDetails from "./ContactMainDetails";
 import ContactAssetDetails from "./ContactAssetDetails";
 import LoadingLoader from "@components/Loader";
 import { CustomButton } from "@components/Button";
-import { hasSubAccountAllowances, hasSubAccountAssetAllowances } from "@/helpers/icrc";
+import { hasSubAccountAllowances, hasSubAccountAssetAllowances } from "@/pages/home/helpers/icrc";
 import { addContact } from "@redux/contacts/ContactsReducer";
 import { AssetContact } from "@redux/models/ContactsModels";
 import { formatSubAccountIds, validateSubaccounts } from "@/utils/checkers";
+import clsx from "clsx";
 interface AddContactProps {
   setAddOpen(value: boolean): void;
 }
@@ -51,7 +52,7 @@ export default function AddContact({ setAddOpen }: AddContactProps) {
   return (
     <div className="relative flex flex-col items-start justify-start w-full gap-4 text-md">
       <CloseIcon
-        className="absolute cursor-pointer top-5 right-5 stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
+        className={getCloseIconStyles(isCreating)}
         onClick={() => {
           setAddOpen(false);
         }}
@@ -86,7 +87,7 @@ export default function AddContact({ setAddOpen }: AddContactProps) {
       />
 
       <div className="flex flex-row items-center justify-end w-full gap-3">
-        <p className="text-TextErrorColor">{t(newContactErr)}</p>
+        <p className="text-TextErrorColor">{newContactErr ? t(newContactErr) : ""}</p>
         {isAllowancesChecking && <LoadingLoader />}
         <CustomButton
           className="bg-BorderSuccessColor min-w-[5rem] flex justify-between items-center"
@@ -205,4 +206,11 @@ export default function AddContact({ setAddOpen }: AddContactProps) {
     setNewContactPrinErr(err.prin);
     isValidSubacc("add", validContact);
   }
+}
+
+function getCloseIconStyles(isCreating: boolean) {
+  return clsx(
+    "absolute cursor-pointer top-5 right-5 stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor",
+    isCreating && "opacity-50 pointer-events-none",
+  );
 }
