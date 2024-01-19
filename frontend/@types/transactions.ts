@@ -1,3 +1,4 @@
+import { IcrcAccount } from "@dfinity/ledger";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 
 // DATA SCHEMAS
@@ -30,6 +31,7 @@ export interface ReceiverState {
   ownSubAccount: SubAccount;
   thirdNewContact: NewContact;
   thirdContactSubAccount: ContactSubAccount;
+  // icrcScannerContact: IcrcAccount;
 }
 
 export enum ReceiverActions {
@@ -48,6 +50,7 @@ export interface SenderState {
   subAccount: SubAccount;
   allowanceContactSubAccount: ContactSubAccount;
   newAllowanceContact: NewContact;
+  // scannerContact: IcrcAccount;
 }
 
 // CONSTANTS
@@ -57,6 +60,7 @@ export enum SenderActions {
   SET_SENDER_SUB_ACCOUNT = "SET_SENDER_SUB_ACCOUNT",
   SET_SENDER_ALLOWANCE_CONTACT = "SET_SENDER_ALLOWANCE_CONTACT",
   SET_SENDER_NEW_ALLOWANCE_CONTACT = "SET_SENDER_NEW_ALLOWANCE_CONTACT",
+  SET_SENDER_ICRC_SCANNER_CONTACT = "SET_SENDER_ICRC_SCANNER_CONTACT",
 }
 
 export enum SenderOption {

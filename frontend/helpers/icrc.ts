@@ -13,26 +13,30 @@ export async function transferAmount(
   assetAddress: string,
   transferAmount: string,
   decimal: string,
+  fromSubAccount: string,
+  toSubAccount: string,
 ) {
-  const agent = store.getState().auth.userAgent;
-  const canisterId = Principal.fromText(assetAddress);
-  const canister = IcrcLedgerCanister.create({
-    agent,
-    canisterId,
-  });
+  try {
+    const agent = store.getState().auth.userAgent;
+    const canisterId = Principal.fromText(assetAddress);
+    const canister = IcrcLedgerCanister.create({
+      agent,
+      canisterId,
+    });
 
-  const to = {
-    owner: Principal.fromText(receiverPrincipal),
-    subaccount: [],
-  };
+    const amount = toHoleBigInt(transferAmount, Number(decimal));
 
-  const amount = toHoleBigInt(transferAmount, Number(decimal));
-
-  await canister.transfer({
-    to,
-    amount,
-    from_subaccount: hexToUint8Array("0"),
-  });
+    await canister.transfer({
+      to: {
+        owner: Principal.fromText(receiverPrincipal),
+        subaccount: [hexToUint8Array("0")],
+      },
+      amount,
+      from_subaccount: hexToUint8Array("0"),
+    });
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 export function generateApproveAllowance(allowance: TAllowance): ApproveParams {

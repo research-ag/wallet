@@ -4,6 +4,7 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import RootReducer from "./RootReducer";
 
 const store = configureStore({
+  devTools: true,
   reducer: RootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
