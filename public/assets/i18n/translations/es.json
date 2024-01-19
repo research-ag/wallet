@@ -146,5 +146,6 @@
   "allowance.add.allowance": "Agregar Asignación",
   "allowance.sure.remove": "¿Estás seguro de que quieres Eliminar?",
   "allowance.permanently.deleted": "Esta Asignación se eliminará permanentemente.",
-  "allowance.edit.allowance": "Editar Asignación"
+  "allowance.edit.allowance": "Editar Asignación",
+  "watchOnlyMode.title": "Modo Solo-Mirar"
 }

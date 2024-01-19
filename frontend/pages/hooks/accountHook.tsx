@@ -5,7 +5,7 @@ export const AccountHook = () => {
   const dispatch = useAppDispatch();
   const { authClient, userAgent } = useAppSelector((state) => state.auth);
   const setAuthClient = (authClient: string) => {
-    dispatch(setAuthenticated(true, false, authClient.toLowerCase()));
+    dispatch(setAuthenticated(true, false, false, authClient.toLowerCase()));
   };
   return { authClient, setAuthClient, userAgent };
 };

@@ -146,5 +146,6 @@
   "allowance.add.allowance": "Add Allowance",
   "allowance.sure.remove": "Are you sure you want to Remove",
   "allowance.permanently.deleted": "This Allowance will be permanently deleted.",
-  "allowance.edit.allowance": "Edit Allowance"
+  "allowance.edit.allowance": "Edit Allowance",
+  "watchOnlyMode.title": "Watch-Only Mode"
 }

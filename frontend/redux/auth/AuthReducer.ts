@@ -10,6 +10,7 @@ interface AuthState {
   authenticated: boolean;
   debugMode: boolean;
   superAdmin: boolean;
+  watchOnlyMode: boolean;
   authClient: string;
   assetList: Asset[];
   theme: string;
@@ -25,6 +26,7 @@ const initialState: AuthState = {
   authenticated: false,
   debugMode: false,
   superAdmin: false,
+  watchOnlyMode: false,
   theme: ThemesEnum.enum.dark,
   blur: false,
   authClient: "",
@@ -48,20 +50,22 @@ const authSlice = createSlice({
       state.authLoading = false;
       state.authenticated = false;
       state.superAdmin = false;
+      state.watchOnlyMode = false;
       state.authClient = "";
       state.debugMode = false;
     },
     setAuthenticated: {
-      reducer(state, action: PayloadAction<{ authenticated: boolean; superAdmin: boolean; authClient: string }>) {
-        const { authenticated, superAdmin, authClient } = action.payload;
+      reducer(state, action: PayloadAction<{ authenticated: boolean; superAdmin: boolean; watchOnlyMode: boolean; authClient: string }>) {
+        const { authenticated, superAdmin, watchOnlyMode, authClient } = action.payload;
         state.authLoading = false;
         state.authenticated = authenticated;
         state.superAdmin = superAdmin;
+        state.watchOnlyMode = watchOnlyMode;
         state.authClient = authClient;
       },
-      prepare(authenticated: boolean, superAdmin: boolean, authClient: string) {
+      prepare(authenticated: boolean, superAdmin: boolean, watchOnlyMode: boolean, authClient: string) {
         return {
-          payload: { authenticated, superAdmin, authClient },
+          payload: { authenticated, superAdmin, watchOnlyMode, authClient },
         };
       },
     },
