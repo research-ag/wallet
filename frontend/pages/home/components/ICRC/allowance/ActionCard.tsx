@@ -7,10 +7,8 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { TAllowance } from "@/@types/allowance";
 import { Modal } from "@components/modal";
 import clsx from "clsx";
-import { ThemesEnum } from "@/const";
 import { useTranslation } from "react-i18next";
 import useDeleteAllowance from "@pages/home/hooks/useDeleteAllowance";
-import { ThemeHook } from "@pages/hooks/themeHook";
 import { middleTruncation } from "@/utils/strings";
 import { useAppDispatch } from "@redux/Store";
 import { setSelectedAllowance } from "@redux/allowance/AllowanceReducer";
@@ -26,7 +24,6 @@ export default function ActionCard(props: ActionCardProps) {
   const { allowance } = props;
   const { t } = useTranslation();
   const { deleteAllowance, isPending } = useDeleteAllowance();
-  const { theme } = ThemeHook();
 
   return (
     <DropdownMenu.Root>

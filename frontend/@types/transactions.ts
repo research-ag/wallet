@@ -1,4 +1,3 @@
-import { IcrcAccount } from "@dfinity/ledger";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 
 // DATA SCHEMAS
