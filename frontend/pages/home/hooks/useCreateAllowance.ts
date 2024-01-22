@@ -3,7 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 
 import { TErrorValidation } from "@/@types/common";
 import { TAllowance } from "@/@types/allowance";
-import { allowanceValidationSchema } from "@/helpers/schemas/allowance";
+import { allowanceValidationSchema, validationMessage } from "@/helpers/schemas/allowance";
 import { ICRCApprove, generateApproveAllowance } from "@/pages/home/helpers/icrc";
 import { validatePrincipal } from "@/utils/identity";
 import useAllowanceDrawer from "./useAllowanceDrawer";
@@ -18,6 +18,8 @@ import { postAllowance } from "../services/allowance";
 export default function useCreateAllowance() {
   const dispatch = useAppDispatch();
   const { onCloseCreateAllowanceDrawer } = useAllowanceDrawer();
+  const { allowances } = useAppSelector((state) => state.allowance);
+
   const { selectedAsset, selectedAccount } = useAppSelector(({ asset }) => asset);
   const [validationErrors, setErrors] = useState<TErrorValidation[]>([]);
   const [isPrincipalValid, setIsPrincipalValid] = useState(true);
@@ -42,6 +44,14 @@ export default function useCreateAllowance() {
   const mutationFn = useCallback(async () => {
     try {
       const fullAllowance = { ...allowance, id: uuidv4() };
+      const allowanceExists = allowances.find(
+        (allowance) =>
+          allowance.subAccount.sub_account_id === fullAllowance.subAccount.sub_account_id &&
+          allowance.spender.principal === fullAllowance.spender.principal,
+      );
+
+      if (allowanceExists) return Promise.reject(validationMessage.duplicatedAllowance);
+
       const valid = allowanceValidationSchema.safeParse(fullAllowance);
       if (!valid.success) return Promise.reject(valid.error);
       const params = generateApproveAllowance(fullAllowance);
@@ -67,6 +77,11 @@ export default function useCreateAllowance() {
       }));
 
       setErrors(validationErrors);
+      return;
+    }
+
+    if (error === validationMessage.duplicatedAllowance) {
+      setErrors([{ message: error, field: "", code: "duplicated" }]);
       return;
     }
   };

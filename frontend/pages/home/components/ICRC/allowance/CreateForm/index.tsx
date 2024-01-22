@@ -15,13 +15,16 @@ export default function CreateForm() {
   const { allowance, setAllowanceState, createAllowance, isPending, isPrincipalValid, validationErrors } =
     useCreateAllowance();
 
+    console.log(validationErrors);
   const errorMessage = useMemo(() => {
     let errorMessage = "";
 
+    
     if (validationErrors[0]?.message === validationMessage.lowBalance) errorMessage = validationErrors[0]?.message;
-
     if (validationErrors[0]?.message === validationMessage.invalidAmount) errorMessage = validationErrors[0].message;
     if (validationErrors[0]?.message === validationMessage.expiredDate) errorMessage = validationErrors[0].message;
+    if (validationErrors[0]?.message === validationMessage.duplicatedAllowance)
+      errorMessage = validationErrors[0].message;
 
     return errorMessage;
   }, [validationErrors]);

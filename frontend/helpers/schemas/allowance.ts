@@ -2,7 +2,6 @@ import { validateAmount } from "@/utils";
 import { validatePrincipal } from "@/utils/identity";
 import * as z from "zod";
 
-// TODO: add translation to errors
 export const validationMessage = {
   spender: "Invalid principal",
   expiration: "Invalid expiration date",
@@ -11,6 +10,7 @@ export const validationMessage = {
   expiredDate: "Select a Expiration Date after the present",
   lowBalance: "Sub account balance is not enough",
   invalidAmount: "Amount has not a valid format",
+  duplicatedAllowance: "Duplicated allowance",
 };
 
 export const allowanceValidationSchema = z
