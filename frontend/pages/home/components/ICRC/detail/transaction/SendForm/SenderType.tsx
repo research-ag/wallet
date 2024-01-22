@@ -11,8 +11,10 @@ export default function SenderType(props: SenderTypeProps) {
   const { senderOption, setSenderOption } = props;
 
   const onValueChange = (selected: SenderOption) => {
-    setSenderOption(selected);
-    console.log(selected);
+    if (senderOption !== selected) {
+      setSenderOption(selected);
+      // TODO; clear all senders
+    };
   };
 
   return (

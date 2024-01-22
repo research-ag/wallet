@@ -16,7 +16,7 @@ export default function SenderSubAccount() {
     return sender.asset?.subAccounts
       .filter((subAccount) => subAccount?.name?.toLowerCase().includes(searchSubAccountValue.toLowerCase()))
       .map(formatSubAccount);
-  }, [sender]);
+  }, [sender, searchSubAccountValue]);
 
   return (
     <Select
