@@ -8,6 +8,43 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 dayjs.extend(utc);
 
+export async function transferAmount(
+  // Who will receiver the transaction
+  receiverPrincipal: string,
+  // Asset canister address where the transaction will be sent
+  assetAddress: string,
+  // Amount of the asset that will be sent
+  transferAmount: string,
+  // How many decimal support this asset amount
+  decimal: string,
+  // Sub Account id hex where is transaction is coming from
+  fromSubAccount: string,
+  // Sub Account id hex where the transaction if going to
+  toSubAccount: string,
+) {
+  try {
+    const agent = store.getState().auth.userAgent;
+    const canisterId = Principal.fromText(assetAddress);
+    const canister = IcrcLedgerCanister.create({
+      agent,
+      canisterId,
+    });
+
+    const amount = toHoleBigInt(transferAmount, Number(decimal));
+
+    await canister.transfer({
+      to: {
+        owner: Principal.fromText(receiverPrincipal),
+        subaccount: [hexToUint8Array("0")],
+      },
+      amount,
+      from_subaccount: hexToUint8Array("0"),
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 export function generateApproveAllowance(allowance: TAllowance): ApproveParams {
   const spenderPrincipal = allowance.spender.principal;
   const allowanceSubAccountId = allowance.subAccount.sub_account_id;

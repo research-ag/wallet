@@ -4,12 +4,12 @@ import { ReactElement } from "react";
 
 interface ModalProps {
   triggerComponent: ReactElement;
-  onConfirm: () => void;
   cancelComponent: ReactElement;
   contentComponent: ReactElement;
   icon: ReactElement;
   isLoading?: boolean;
   disabled?: boolean;
+  onConfirm: () => void;
 }
 
 const DialogDemo = ({

@@ -9,7 +9,6 @@ import { IcrcAccount, IcrcLedgerCanister } from "@dfinity/ledger";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { IdentityHook } from "@hooks/identityHook";
 import { clsx } from "clsx";
-import { GeneralHook } from "../../../hooks/generalHook";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { useTranslation } from "react-i18next";
 import {
@@ -23,8 +22,9 @@ import {
 } from "@/utils";
 import { CustomInput } from "@components/Input";
 import { CustomButton } from "@components/Button";
-import { AssetHook } from "../../../hooks/assetHook";
 import { ChangeEvent } from "react";
+import { AssetHook } from "@pages/home/hooks/assetHook";
+import { GeneralHook } from "@pages/home/hooks/generalHook";
 
 interface SendOwnAccountProps {
   selectedAccount: SubAccount | undefined;
@@ -45,9 +45,7 @@ interface SendOwnAccountProps {
   setContactToSend(value: any): void;
 }
 
-// INFO: show the details when sending to a own sub account
-
-const SendOwnAccount = ({
+export default function ReceiverOwner({
   selectedAccount,
   setSelectedAccount,
   selectedAsset,
@@ -64,9 +62,8 @@ const SendOwnAccount = ({
   setAmountBI,
   setNewAccount,
   setContactToSend,
-}: SendOwnAccountProps) => {
+}: SendOwnAccountProps) {
   const { t } = useTranslation();
-
   const { reloadBallance } = AssetHook();
   const { getAssetIcon } = GeneralHook();
   const { userAgent } = IdentityHook();
@@ -144,6 +141,7 @@ const SendOwnAccount = ({
       </DropdownMenu.Root>
       <div className="flex items-center justify-center w-full"></div>
       <p className="w-full text-left opacity-60">{t("to")}</p>
+
       <div className={clsx(sendBox, "border-BorderSuccessColor")}>
         <img src={SuccesIcon} alt="success-icon" />
         <div className={clsx(accountInfo)}>
@@ -295,7 +293,7 @@ const SendOwnAccount = ({
       BigInt(selectedAccount?.amount || "0") - BigInt(selectedAccount?.transaction_fee || "") >= BigInt(sentAmount);
     return { nAmount, over, valid };
   }
-};
+}
 
 // Tailwind CSS constants
 const sendBox = clsx(
@@ -309,6 +307,5 @@ const sendBox = clsx(
   "p-3",
   "mb-4",
 );
-const accountInfo = clsx("flex", "flex-col", "justify-start", "items-start", "w-full", "pl-2", "pr-2");
 
-export default SendOwnAccount;
+const accountInfo = clsx("flex", "flex-col", "justify-start", "items-start", "w-full", "pl-2", "pr-2");

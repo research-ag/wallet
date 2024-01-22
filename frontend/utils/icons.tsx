@@ -19,7 +19,7 @@ const getSizeClassByIconType = (type: IconType): string => {
   }
 };
 
-const getIconSrc = (logo?: string, symbol?: string): string => {
+export const getIconSrc = (logo?: string, symbol?: string): string => {
   if (logo && logo !== "") {
     return logo;
   } else if (symbol) {
