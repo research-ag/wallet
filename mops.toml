@@ -1,0 +1,4 @@
+[dependencies]
+base = "0.10.4"
+rxmodb = "0.1.4"
+vector = "0.2.0"

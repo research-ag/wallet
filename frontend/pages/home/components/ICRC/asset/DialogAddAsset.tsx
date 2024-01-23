@@ -14,8 +14,8 @@ import { useAppDispatch } from "@redux/Store";
 import { addSubAccount, setAcordeonAssetIdx } from "@redux/assets/AssetReducer";
 import bigInt from "big-integer";
 import { ChangeEvent, useState } from "react";
-import { AssetHook } from "../../../hooks/assetHook";
 import { IcrcLedgerCanister } from "@dfinity/ledger";
+import { db } from "@/database/db";
 
 interface DialogAddAssetProps {
   newErr: any;
@@ -29,7 +29,6 @@ interface DialogAddAssetProps {
   setHexChecked(value: any): void;
   tokens: Token[];
   idx: number;
-  authClient: string;
   selectedAsset?: Asset;
   acordeonIdx: string[];
 }
@@ -45,14 +44,12 @@ const DialogAddAsset = ({
   setHexChecked,
   tokens,
   idx,
-  authClient,
   selectedAsset,
   setAddOpen,
   acordeonIdx,
 }: DialogAddAssetProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const { tokensMarket } = AssetHook();
   const { asciiHex, userAgent, userPrincipal, changeSelectedAccount } = GeneralHook();
   const [loading, setLoading] = useState(false);
 
@@ -163,18 +160,6 @@ const DialogAddAsset = ({
     });
   }
 
-  function saveLocalStorage(auxTokens: Token[]) {
-    localStorage.setItem(
-      authClient,
-      JSON.stringify({
-        from: "II",
-        tokens: auxTokens.sort((a, b) => {
-          return a.id_number - b.id_number;
-        }),
-      }),
-    );
-  }
-
   async function onEnter() {
     if (!loading) {
       setLoading(true);
@@ -210,29 +195,22 @@ const DialogAddAsset = ({
               subaccount: hexToUint8Array(`0x${subClean}`),
               certified: false,
             });
-            const auxTokens = tokens.map((tkn, k) => {
-              if (k === Number(idx)) {
-                decimal = Number(tkn.decimal);
-                assetMrkt = tokensMarket.find((tm) => tm.symbol === tkn.symbol)?.price || 0;
-                return {
-                  ...tkn,
-                  subAccounts: [
-                    ...tkn.subAccounts,
-                    {
-                      name: newSub.name,
-                      numb: `0x${subClean}`.toLowerCase(),
-                      amount: myBalance.toString(),
-                      currency_amount: assetMrkt ? getUSDfromToken(myBalance.toString(), assetMrkt, decimal) : "0",
-                    },
-                  ].sort((a, b) => {
-                    return hexToNumber(a.numb)?.compare(hexToNumber(b.numb) || bigInt()) || 0;
-                  }),
-                };
-              } else return tkn;
+            const token = tokens[Number(idx)];
+            const subAccounts = token.subAccounts
+              .map((sa) => ({
+                ...sa,
+                name: newSub.name,
+                numb: `0x${subClean}`.toLowerCase(),
+              }))
+              .sort((a, b) => {
+                return hexToNumber(a.numb)?.compare(hexToNumber(b.numb) || bigInt()) || 0;
+              });
+
+            await db().updateToken(token.id_number, {
+              ...token,
+              subAccounts: subAccounts,
             });
 
-            // Save the new sub Account in localstorage and Redux
-            saveLocalStorage(auxTokens);
             const savedSub = {
               ...newSub,
               sub_account_id: `0x${subClean}`.toLowerCase(),

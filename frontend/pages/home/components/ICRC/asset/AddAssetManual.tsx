@@ -19,6 +19,7 @@ import { ChangeEvent, useState } from "react";
 import { Principal } from "@dfinity/principal";
 import LoadingLoader from "@components/Loader";
 import { AccountHook } from "@pages/hooks/accountHook";
+import { db } from "@/database/db";
 
 interface AddAssetManualProps {
   manual: boolean;
@@ -37,7 +38,6 @@ interface AddAssetManualProps {
   setAssetOpen(value: boolean): void;
   tokens: Token[];
   addAssetToData(): void;
-  saveInLocalStorage(value: Token[]): void;
 }
 
 const AddAssetManual = ({
@@ -55,9 +55,7 @@ const AddAssetManual = ({
   setNewToken,
   asset,
   setAssetOpen,
-  tokens,
   addAssetToData,
-  saveInLocalStorage,
 }: AddAssetManualProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
@@ -344,20 +342,10 @@ const AddAssetManual = ({
       // Change contacts local and reducer
       dispatch(editAssetName(asset.tokenSymbol, newToken.symbol));
       // List all tokens modifying the one we selected
-      const auxTokens = tokens.map((tkn) => {
-        if (tkn.id_number === newToken.id_number) {
-          return {
-            ...newToken,
-            decimal: Number(newToken.decimal).toFixed(0),
-            shortDecimal:
-              newToken.shortDecimal === ""
-                ? Number(newToken.decimal).toFixed(0)
-                : Number(newToken.shortDecimal).toFixed(0),
-          };
-        } else return tkn;
-      });
-      // Save tokens in list to local
-      saveInLocalStorage(auxTokens);
+      const token = await db().getToken(newToken.id_number);
+      if (token) {
+        await db().updateToken(token.id_number, newToken);
+      }
       // Edit tokens list and assets list
       dispatch(editToken(newToken, asset.tokenSymbol));
       setAssetOpen(false);

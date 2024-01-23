@@ -11,15 +11,16 @@ import {
   setUserPrincipal,
 } from "./auth/AuthReducer";
 import { AuthClient } from "@dfinity/auth-client";
-import { setAssetFromLocalData, updateAllBalances } from "./assets/AssetActions";
-import { clearDataAsset, setTokens } from "./assets/AssetReducer";
+import { updateAllBalances } from "./assets/AssetActions";
+import { clearDataAsset } from "./assets/AssetReducer";
 import { AuthNetwork } from "./models/TokenModels";
 import { AuthNetworkTypeEnum } from "@/const";
 import { Ed25519KeyIdentity } from "@dfinity/identity";
-import { clearDataContacts, setContacts, setStorageCode } from "./contacts/ContactsReducer";
+import { clearDataContacts } from "./contacts/ContactsReducer";
 import { Principal } from "@dfinity/principal";
 import { defaultTokens } from "@/defaultTokens";
 import { allowanceFullReload } from "@pages/home/helpers/allowanceCache";
+import { db } from "@/database/db";
 
 const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${
   import.meta.env.VITE_APP_LOGO
@@ -76,10 +77,11 @@ export const handlePrincipalAuthenticated = async (principalAddress: string) => 
 };
 
 export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean, fixedPrincipal?: Principal) => {
-  if (localStorage.getItem("network_type") === null && !fromSeed) {
-    logout();
-    return;
-  }
+  const opt: AuthNetwork | null = db().getNetworkType();
+  if (opt === null && !fromSeed) logout();
+
+  db().setIdentity(authIdentity);
+
   store.dispatch(setAuthLoading(true));
   const myAgent = new HttpAgent({
     identity: authIdentity,
@@ -90,24 +92,13 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean,
   const identityPrincipalStr = fixedPrincipal?.toString() || authIdentity.getPrincipal().toString();
 
   // TOKENS
-  const userData = localStorage.getItem(identityPrincipalStr);
-  if (userData) {
-    const userDataJson = JSON.parse(userData);
-    store.dispatch(setTokens(userDataJson.tokens));
-    setAssetFromLocalData(userDataJson.tokens, myPrincipal.toText());
+  const dbTokens = await db().getTokens();
+  if (dbTokens) {
+    await updateAllBalances(true, myAgent, dbTokens, false, true, fixedPrincipal);
     dispatchAuths(identityPrincipalStr.toLocaleLowerCase(), myAgent, myPrincipal, !!fixedPrincipal);
-    await updateAllBalances(true, myAgent, userDataJson.tokens, false, true, fixedPrincipal);
   } else {
-    const { tokens } = await updateAllBalances(true, myAgent, defaultTokens, true, true, fixedPrincipal);
-    store.dispatch(setTokens(tokens));
+    await updateAllBalances(true, myAgent, defaultTokens, true, true, fixedPrincipal);
     dispatchAuths(identityPrincipalStr.toLocaleLowerCase(), myAgent, myPrincipal, !!fixedPrincipal);
-  }
-
-  // CONTACTS
-  const contactsData = localStorage.getItem("contacts-" + identityPrincipalStr);
-  if (contactsData) {
-    const contactsDataJson = JSON.parse(contactsData);
-    store.dispatch(setContacts(contactsDataJson.contacts));
   }
 
   // ALLOWANCES
@@ -121,7 +112,6 @@ export const dispatchAuths = (
   watchOnlyMode: boolean,
 ) => {
   store.dispatch(setAuthenticated(true, false, watchOnlyMode, identityPrincipal));
-  store.dispatch(setStorageCode("contacts-" + identityPrincipal));
   store.dispatch(setUserAgent(myAgent));
   store.dispatch(setUserPrincipal(myPrincipal));
 };
@@ -132,6 +122,7 @@ export const logout = async () => {
   store.dispatch({
     type: "USER_LOGGED_OUT",
   });
+  db().setIdentity(null);
   store.dispatch(clearDataContacts());
   store.dispatch(clearDataAsset());
   store.dispatch(clearDataAuth());

@@ -16,6 +16,7 @@ import { AuthNetwork } from "@redux/models/TokenModels";
 import { CustomInput } from "@components/Input";
 import { decodeIcrcAccount } from "@dfinity/ledger";
 import { clsx } from "clsx";
+import { db } from "@/database/db";
 
 const Login = () => {
   const { t } = useTranslation();
@@ -157,7 +158,7 @@ const Login = () => {
     if (opt.type === AuthNetworkTypeEnum.Values.IC || opt.type === AuthNetworkTypeEnum.Values.NFID) {
       setSeedOpen(false);
       setWatchOnlyOpen(false);
-      localStorage.setItem("network_type", JSON.stringify({ type: opt.type, network: opt.network, name: opt.name }));
+      db().setNetworkType(opt);
       handleAuthenticated(opt);
     } else if (opt.type === AuthNetworkTypeEnum.Enum.S) {
       setSeedOpen((prev) => !prev);

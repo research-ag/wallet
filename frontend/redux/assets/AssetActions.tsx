@@ -24,6 +24,7 @@ import { Asset, ICPSubAccount, SubAccount } from "@redux/models/AccountModels";
 import { Principal } from "@dfinity/principal";
 import { AccountDefaultEnum } from "@/const";
 import bigInt from "big-integer";
+import { db } from "@/database/db";
 
 export const updateAllBalances = async (
   loading: boolean,
@@ -263,17 +264,7 @@ export const updateAllBalances = async (
   });
   if (loading) {
     store.dispatch(setAssets(newAssetsUpload));
-    if (newTokensUpload.length !== 0) {
-      localStorage.setItem(
-        myPrincipal.toString(),
-        JSON.stringify({
-          from: "II",
-          tokens: newTokensUpload.sort((a, b) => {
-            return a.id_number - b.id_number;
-          }),
-        }),
-      );
-    }
+    await Promise.all(newTokensUpload.map((t) => db().updateToken(t.id_number, t)));
     if (fromLogin) {
       newAssetsUpload.length > 0 && store.dispatch(setAcordeonAssetIdx([newAssetsUpload[0].tokenSymbol]));
     }

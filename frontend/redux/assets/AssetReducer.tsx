@@ -3,6 +3,8 @@ import { Token, TokenMarketInfo } from "@redux/models/TokenModels";
 import { Asset, ICPSubAccount, SubAccount, Transaction, TransactionList } from "@redux/models/AccountModels";
 import bigInt from "big-integer";
 import { hexToNumber } from "@/utils";
+import { db } from "@/database/db";
+import store from "@redux/Store";
 
 interface AssetState {
   ICPSubaccounts: Array<ICPSubAccount>;
@@ -40,17 +42,14 @@ const assetSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
+    setReduxTokens(state, action: PayloadAction<Token[]>) {
+      state.tokens = action.payload;
+    },
     setICPSubaccounts(state, action: PayloadAction<ICPSubAccount[]>) {
       state.ICPSubaccounts = action.payload;
     },
     setLoading(state, action: PayloadAction<boolean>) {
       state.assetLoading = action.payload;
-    },
-    setTokens(state, action: PayloadAction<Token[]>) {
-      state.tokens = action.payload;
-    },
-    addToken(state, action: PayloadAction<Token>) {
-      state.tokens.push(action.payload);
     },
     removeToken(state, action: PayloadAction<string>) {
       let count = 0;
@@ -256,12 +255,14 @@ const assetSlice = createSlice({
   },
 });
 
+db()
+  .subscribeToAllTokens()
+  .subscribe((x) => store.dispatch(assetSlice.actions.setReduxTokens(x)));
+
 export const {
   clearDataAsset,
   setICPSubaccounts,
   setLoading,
-  setTokens,
-  addToken,
   removeToken,
   editToken,
   setTokenMarket,

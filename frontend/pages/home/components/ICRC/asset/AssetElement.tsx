@@ -171,7 +171,6 @@ const AssetElement = ({
         setHexChecked={setHexChecked}
         tokens={tokens}
         idx={idx}
-        authClient={authClient}
         selectedAsset={selectedAsset}
         acordeonIdx={acordeonIdx}
       ></DialogAddAsset>
