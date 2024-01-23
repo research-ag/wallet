@@ -1,11 +1,13 @@
 import {
   ContactSubAccount,
+  KeyValidationErrors,
   NewContact,
   ReceiverOption,
   ReceiverState,
   ScannerOption,
-  SenderOption,
   SenderState,
+  TransactionSenderOption,
+  TransactionSenderOptionEnum,
 } from "@/@types/transactions";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
@@ -13,6 +15,7 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 interface TransactionState {
   scannerActiveOption: ScannerOption;
   isInspectTransference: boolean;
+  errors?: KeyValidationErrors[];
   sender: SenderState;
   receiver: ReceiverState;
 }
@@ -21,7 +24,7 @@ export const initialTransactionState = {
   scannerActiveOption: ScannerOption.none,
   isInspectTransference: false,
   sender: {
-    senderOption: SenderOption.own,
+    senderOption: TransactionSenderOptionEnum.Values.own,
     isNewSender: false,
   },
   receiver: {
@@ -49,11 +52,14 @@ const transactionSlice = createSlice({
     setIsInspectDetail(state: TransactionState, action: PayloadAction<boolean>) {
       state.isInspectTransference = action.payload;
     },
-    setSenderOption(state: TransactionState, action: PayloadAction<SenderOption>) {
+    setSenderOption(state: TransactionState, action: PayloadAction<TransactionSenderOption>) {
       state.sender.senderOption = action.payload;
     },
     setIsNewSender(state: TransactionState, action: PayloadAction<boolean>) {
       state.sender.isNewSender = action.payload;
+    },
+    setErrors(state: TransactionState, action: PayloadAction<KeyValidationErrors[]>) {
+      state.errors = action.payload;
     },
     setSenderSubAccount(state: TransactionState, action: PayloadAction<SubAccount>) {
       state.sender.subAccount = action.payload;
@@ -110,6 +116,7 @@ export const {
   setIsNewSender,
   setIsInspectDetail,
   setScannerActiveOption,
+  setErrors,
   setSenderSubAccount,
   setSenderContact,
   setSenderContactNew,

@@ -1,19 +1,19 @@
-import { SenderOption } from "@/@types/transactions";
+import { TransactionSenderOption, TransactionSenderOptionEnum } from "@/@types/transactions";
 import * as RadioGroup from "@radix-ui/react-radio-group";
 import { clearSenderAction, setSenderOptionAction } from "@redux/transaction/TransactionActions";
 
 interface SenderTypeProps {
-  senderOption: SenderOption;
+  senderOption: TransactionSenderOption;
 }
 
 export default function SenderType(props: SenderTypeProps) {
   const { senderOption } = props;
 
-  const onValueChange = (selected: SenderOption) => {
+  const onValueChange = (selected: TransactionSenderOption) => {
     if (senderOption !== selected) {
       setSenderOptionAction(selected);
 
-      if (selected === SenderOption.allowance) {
+      if (selected === TransactionSenderOptionEnum.Values.allowance) {
         clearSenderAction();
         return;
       }
@@ -28,9 +28,11 @@ export default function SenderType(props: SenderTypeProps) {
         <div className="flex flex-row items-center p-1">
           <RadioGroup.Item
             className={`w-5 h-5 rounded-full border-2  outline-none p-0 ${
-              senderOption === SenderOption.own ? "border-RadioCheckColor" : "border-RadioNoCheckColorLight"
+              senderOption === TransactionSenderOptionEnum.Values.own
+                ? "border-RadioCheckColor"
+                : "border-RadioNoCheckColorLight"
             }`}
-            value={SenderOption.own}
+            value={TransactionSenderOptionEnum.Values.own}
             id="r-light"
           >
             <RadioGroup.Indicator className="flex items-center justify-center w-full h-full relative after:content-[''] after:block after:w-3 after:h-3 after:rounded-full after:bg-RadioCheckColor" />
@@ -40,9 +42,11 @@ export default function SenderType(props: SenderTypeProps) {
         <div className="flex flex-row items-center p-1">
           <RadioGroup.Item
             className={`w-5 h-5 rounded-full border-2  outline-none p-0 ${
-              senderOption === SenderOption.allowance ? "border-RadioCheckColor" : "border-RadioNoCheckColorLight"
+              senderOption === TransactionSenderOptionEnum.Values.allowance
+                ? "border-RadioCheckColor"
+                : "border-RadioNoCheckColorLight"
             }`}
-            value={SenderOption.allowance}
+            value={TransactionSenderOptionEnum.Values.allowance}
             id="r-light"
           >
             <RadioGroup.Indicator className="flex items-center justify-center w-full h-full relative after:content-[''] after:block after:w-3 after:h-3 after:rounded-full after:bg-RadioCheckColor" />

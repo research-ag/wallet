@@ -1,11 +1,11 @@
 import SenderType from "./SenderType";
 import SenderSubAccount from "./SenderSubAccount";
-import { SenderOption } from "@/@types/transactions";
 import SenderAllowanceContact from "./SenderAllowanceContact";
 import { useAppSelector } from "@redux/Store";
+import { TransactionSenderOptionEnum } from "@/@types/transactions";
 
 export default function SenderItem() {
-  const {sender} = useAppSelector((state) => state.transaction);
+  const { sender } = useAppSelector((state) => state.transaction);
 
   return (
     <div className="w-full mt-4 rounded-md bg-ToBoxColor">
@@ -13,8 +13,8 @@ export default function SenderItem() {
         <SenderType senderOption={sender.senderOption} />
       </div>
       <div className="p-4">
-        {sender.senderOption === SenderOption.own && <SenderSubAccount />}
-        {sender.senderOption === SenderOption.allowance && <SenderAllowanceContact />}
+        {sender.senderOption === TransactionSenderOptionEnum.Values.own && <SenderSubAccount />}
+        {sender.senderOption === TransactionSenderOptionEnum.Values.allowance && <SenderAllowanceContact />}
       </div>
     </div>
   );

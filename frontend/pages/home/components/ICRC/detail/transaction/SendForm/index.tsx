@@ -58,7 +58,11 @@ export default function SendForm() {
           <Button className="w-1/6 mr-2 font-bold bg-secondary-color-2" onClick={onCancel}>
             Cancel
           </Button>
-          <Button className="w-1/6 font-bold bg-primary-color" disabled={!(isReceiver && isSender)} onClick={onNext}>
+          <Button
+            className="w-1/6 font-bold bg-primary-color"
+            // disabled={!(isReceiver && isSender)}
+            onClick={onNext}
+          >
             Next
           </Button>
         </div>
@@ -67,9 +71,10 @@ export default function SendForm() {
   );
 
   function onNext() {
-    if (isReceiver && isSender) {
-      setIsInspectDetailAction(true);
-    }
+    console.log("NEXT");
+    // if (isReceiver && isSender) {
+    //   setIsInspectDetailAction(true);
+    // }
   }
   function onCancel() {
     // TODO: initialize state and close drawer
