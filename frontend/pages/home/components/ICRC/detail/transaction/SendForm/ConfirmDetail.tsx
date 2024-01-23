@@ -1,4 +1,4 @@
-import { ChangeEvent, useMemo, useTransition } from "react";
+import { ChangeEvent, useMemo } from "react";
 import { useAppSelector } from "@redux/Store";
 import SubAccountContactBook from "./SubAccountContactBook";
 import NewSender from "./NewSender";
@@ -10,31 +10,28 @@ import { CustomInput } from "@components/Input";
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
 import { Button } from "@components/button";
-import { setIsInspectDetailAction } from "@redux/transaction/TransactionActions";
+import { clearReceiverAction, setAmountAction, setIsInspectDetailAction } from "@redux/transaction/TransactionActions";
 
 export default function ConfirmDetail() {
   return (
     <div className="w-full px-[2rem] grid grid-cols-1 gap-y-2">
-      {/* FROM */}
       <SenderDetail />
-      {/* TO */}
       <ReceiverDetail />
-      {/* AMOUNT */}
       <TransactionAmount />
-
       <div className="flex justify-end mt-6">
         <Button className="w-1/6 mr-2 font-bold bg-secondary-color-2" onClick={onNext}>
           Back
         </Button>
         <Button className="w-1/6 font-bold bg-primary-color" onClick={onNext}>
-          Next
+          Done
         </Button>
       </div>
     </div>
   );
 
   function onNext() {
-    setIsInspectDetailAction(false);
+    // setIsInspectDetailAction(false);
+    // TODO: execute transaction
   }
 }
 
@@ -42,7 +39,7 @@ function SenderDetail() {
   const { sender } = useAppSelector((state) => state.transaction);
 
   const isSubAccountOrContactBook = useMemo(() => {
-    return Boolean(sender?.subAccount?.sub_account_id || sender?.allowanceContactSubAccount?.subAccountId);
+    return true;
   }, [sender]);
 
   return (
@@ -54,32 +51,51 @@ function SenderDetail() {
 }
 
 function ReceiverDetail() {
-  // TODO: if own sub account show account name and account id
-  // TODO: if contact book, show contact name and sub account name, and ICRC account down.
+  const { receiver } = useAppSelector((state) => state.transaction);
+
+  const title = `${
+    receiver?.ownSubAccount?.name ||
+    receiver?.thirdNewContact?.subAccountId ||
+    `${receiver?.thirdContactSubAccount?.contactName} [${receiver?.thirdContactSubAccount?.subAccountId}]`
+  }`;
+
+  const subTitle = `${
+    receiver?.ownSubAccount?.address ||
+    receiver?.thirdContactSubAccount?.contactPrincipal ||
+    receiver?.thirdNewContact?.principal
+  }`;
+
   return (
     <>
       <p className="font-bold opacity-50 text-md text-start">To</p>
       <div className="relative flex px-3 py-2 border rounded-md border-slate-color-success bg-secondary-color-2">
-        <CloseIcon className="absolute top-0 right-0 mt-1 mr-1 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor" />
+        <CloseIcon
+          className="absolute top-0 right-0 mt-1 mr-1 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
+          onClick={onRemoveReceiver}
+        />
         <div className="mr-2">
           <div className="flex items-center justify-center w-5 h-5 rounded-full bg-slate-color-success">
             <CheckIcon className="w-2.5 h-2.5" />
           </div>
         </div>
         <div className="text-start">
-          <p className="text-md">0x6</p>
-          <p className="opacity-50 text-md">
-            {middleTruncation("3etep-celzb-5t4iw-swa7s-3yek6-g45iq-cuopt-6t3lp-phfdf-xh7va-gqe-7atwiha.1", 20, 20)}
-          </p>
+          <p className="text-md">{title}</p>
+          <p className="opacity-50 text-md">{middleTruncation(subTitle, 20, 20)}</p>
         </div>
       </div>
     </>
   );
+
+  function onRemoveReceiver() {
+    clearReceiverAction();
+    setIsInspectDetailAction(false);
+  }
 }
 
 function TransactionAmount() {
-  const { sender } = useAppSelector((state) => state.transaction);
+  const { amount, sender } = useAppSelector((state) => state.transaction);
   const { t } = useTranslation();
+
   return (
     <>
       <p className="font-bold opacity-50 text-md text-start">Amount</p>
@@ -88,7 +104,7 @@ function TransactionAmount() {
           <CustomInput
             intent={"primary"}
             placeholder={`0 ${sender?.asset?.tokenSymbol} `}
-            value={"2000.33"}
+            value={amount}
             border={"none"}
             onChange={onChangeAmount}
           />
@@ -110,8 +126,14 @@ function TransactionAmount() {
 
   function onChangeAmount(e: ChangeEvent<HTMLInputElement>) {
     console.log("validate amount", e.target.value.trim());
+    // TODO: amount less that balance + fee
+    // TODO: validate amount has right decimal
+    // TODO: validate amount it's not string
+    setAmountAction(e.target.value.trim());
   }
+
   function onMaxAmount() {
+    // TODO: set as amount the balance - transaction fee
     console.log("Search the max amout and set it");
   }
 }
