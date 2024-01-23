@@ -1,20 +1,23 @@
 import { SenderOption } from "@/@types/transactions";
 import * as RadioGroup from "@radix-ui/react-radio-group";
-import { Dispatch, SetStateAction } from "react";
+import { clearSenderAction, setSenderOptionAction } from "@redux/transaction/TransactionActions";
 
 interface SenderTypeProps {
   senderOption: SenderOption;
-  setSenderOption: Dispatch<SetStateAction<SenderOption>>;
 }
 
 export default function SenderType(props: SenderTypeProps) {
-  const { senderOption, setSenderOption } = props;
+  const { senderOption } = props;
 
   const onValueChange = (selected: SenderOption) => {
     if (senderOption !== selected) {
-      setSenderOption(selected);
-      // TODO; clear all senders
-    };
+      setSenderOptionAction(selected);
+
+      if (selected === SenderOption.allowance) {
+        clearSenderAction();
+        return;
+      }
+    }
   };
 
   return (

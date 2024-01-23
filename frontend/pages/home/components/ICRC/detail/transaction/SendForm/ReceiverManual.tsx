@@ -25,7 +25,6 @@ export default function ReceiverManual() {
   }
 
   function onSubAccountChange(event: any) {
-    // TODO: validate sub account
     const subAccountIndex = event.target.value.trim();
     if (isHexadecimalValid(subAccountIndex)) {
       const contact: NewContact = {

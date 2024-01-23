@@ -8,15 +8,23 @@ import {
   setReceiverNewContact,
   setReceiverContact,
   setScannerActiveOption,
-  setReceiverICRCScannerContact,
-  setSenderICRCScannerContact,
+  clearSender,
+  clearReceiver,
+  setSenderOption,
+  setIsNewSender,
 } from "./TransactionReducer";
 
 import { Asset, SubAccount } from "@redux/models/AccountModels";
-import { ContactSubAccount, NewContact, ScannerOption } from "@/@types/transactions";
+import { ContactSubAccount, NewContact, ScannerOption, SenderOption } from "@/@types/transactions";
 
 export function setSenderAssetAction(asset: Asset) {
   store.dispatch(setSenderAsset(asset));
+}
+export function setSenderOptionAction(option: SenderOption) {
+  store.dispatch(setSenderOption(option));
+}
+export function setIsNewSenderAction(isNewSender: boolean) {
+  store.dispatch(setIsNewSender(isNewSender));
 }
 export function setSenderSubAccountAction(subAccount: SubAccount) {
   store.dispatch(setSenderSubAccount(subAccount));
@@ -39,9 +47,9 @@ export function setReceiverContactAction(contact: ContactSubAccount) {
 export function setScannerActiveOptionAction(scannerActiveOption: ScannerOption) {
   store.dispatch(setScannerActiveOption(scannerActiveOption));
 }
-export function setReceiverICRCScannerContactAction(icrcAccount: string) {
-  store.dispatch(setReceiverICRCScannerContact(icrcAccount));
+export function clearSenderAction() {
+  store.dispatch(clearSender());
 }
-export function setSenderICRCScannerContactAction(icrcAccount: string) {
-  store.dispatch(setSenderICRCScannerContact(icrcAccount));
+export function clearReceiverAction() {
+  store.dispatch(clearReceiver());
 }

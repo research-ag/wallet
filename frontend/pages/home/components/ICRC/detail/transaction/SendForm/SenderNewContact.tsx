@@ -7,6 +7,7 @@ import { setSenderContactNewAction } from "@redux/transaction/TransactionActions
 
 export default function SenderNewContact() {
   const { sender } = useAppSelector((state) => state.transaction);
+
   function onPrincipalChange(event: any) {
     const principalValue = event.target.value.trim();
 
@@ -23,24 +24,34 @@ export default function SenderNewContact() {
   }
 
   function onSubAccountChange(event: any) {
-    const subAccountIndex = event.target.value.trim();
+    const subAccountIndex = event.target.value.trim() as string;
 
     if (isHexadecimalValid(subAccountIndex)) {
       const newAllowanceContact: NewContact = {
         ...sender.newAllowanceContact,
-        subAccountId: subAccountIndex,
+        subAccountId: subAccountIndex.startsWith("0x") ? subAccountIndex : `0x${subAccountIndex}`,
       };
       setSenderContactNewAction(newAllowanceContact);
-      // QUESTION: format with 0x if not wast set?
+      return;
     }
     // TODO: add principal no valid to error management system
   }
 
   return (
     <div className="flex flex-col gap-2">
-      <CustomInput className="rounded-md" placeholder="Principal" onChange={onPrincipalChange} />
+      <CustomInput
+        className="rounded-md"
+        value={sender?.newAllowanceContact?.principal}
+        placeholder="Principal"
+        onChange={onPrincipalChange}
+      />
       <div className="w-20">
-        <CustomInput className="rounded-md" placeholder="Sub" onChange={onSubAccountChange} />
+        <CustomInput
+          className="rounded-md"
+          value={sender?.newAllowanceContact?.subAccountId}
+          placeholder="Sub"
+          onChange={onSubAccountChange}
+        />
       </div>
     </div>
   );

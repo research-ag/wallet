@@ -1,5 +1,12 @@
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 
+export enum ReceiverActions {
+  SET_RECEIVER_OWN_SUB_ACCOUNT = "SET_OWN_SUB_ACCOUNT",
+  SET_RECEIVER_THIRD_NEW_CONTACT = "SET_RECEIVER_THIRD_NEW_CONTACT",
+  SET_RECEIVER_THIRD_CONTACT_SUB_ACCOUNT = "SET_RECEIVER_THIRD_CONTACT_SUB_ACCOUNT",
+  SET_RECEIVER_ICRC_SCANNER_CONTACT = "SET_RECEIVER_ICRC_SCANNER_CONTACT",
+}
+
 // DATA SCHEMAS
 export type SetSenderAsset = (asset: Asset) => void;
 export type SetSenderSubAccount = (subAccount: SubAccount) => void;
@@ -26,31 +33,24 @@ export interface ContactSubAccount {
   subAccountName: string;
 }
 
-export interface ReceiverState {
-  ownSubAccount: SubAccount;
-  thirdNewContact: NewContact;
-  thirdContactSubAccount: ContactSubAccount;
-  scannerContact: string;
-}
-
-export enum ReceiverActions {
-  SET_RECEIVER_OWN_SUB_ACCOUNT = "SET_OWN_SUB_ACCOUNT",
-  SET_RECEIVER_THIRD_NEW_CONTACT = "SET_RECEIVER_THIRD_NEW_CONTACT",
-  SET_RECEIVER_THIRD_CONTACT_SUB_ACCOUNT = "SET_RECEIVER_THIRD_CONTACT_SUB_ACCOUNT",
-  SET_RECEIVER_ICRC_SCANNER_CONTACT = "SET_RECEIVER_ICRC_SCANNER_CONTACT",
-}
-
 export interface NewContact {
   principal: string;
   subAccountId: string;
 }
 
+export interface ReceiverState {
+  ownSubAccount: SubAccount;
+  thirdNewContact: NewContact;
+  thirdContactSubAccount: ContactSubAccount;
+}
+
 export interface SenderState {
   asset: Asset;
+  senderOption: SenderOption;
+  isNewSender: boolean;
   subAccount: SubAccount;
   allowanceContactSubAccount: ContactSubAccount;
   newAllowanceContact: NewContact;
-  scannerContact: string;
 }
 
 // CONSTANTS

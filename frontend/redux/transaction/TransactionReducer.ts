@@ -1,4 +1,11 @@
-import { ContactSubAccount, NewContact, ReceiverState, ScannerOption, SenderState } from "@/@types/transactions";
+import {
+  ContactSubAccount,
+  NewContact,
+  ReceiverState,
+  ScannerOption,
+  SenderOption,
+  SenderState,
+} from "@/@types/transactions";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
@@ -10,7 +17,10 @@ interface TransactionState {
 
 export const initialTransactionState = {
   scannerActiveOption: ScannerOption.none,
-  sender: {},
+  sender: {
+    senderOption: SenderOption.own,
+    isNewSender: false,
+  },
   receiver: {},
 } as TransactionState;
 
@@ -26,50 +36,48 @@ const transactionSlice = createSlice({
     setScannerActiveOption(state: TransactionState, action: PayloadAction<ScannerOption>) {
       state.scannerActiveOption = action.payload;
     },
+    setSenderOption(state: TransactionState, action: PayloadAction<SenderOption>) {
+      state.sender.senderOption = action.payload;
+    },
+    setIsNewSender(state: TransactionState, action: PayloadAction<boolean>) {
+      state.sender.isNewSender = action.payload;
+    },
     setSenderSubAccount(state: TransactionState, action: PayloadAction<SubAccount>) {
       state.sender.subAccount = action.payload;
       state.sender.newAllowanceContact = {} as NewContact;
       state.sender.allowanceContactSubAccount = {} as ContactSubAccount;
-      state.sender.scannerContact = "";
     },
     setSenderContact(state: TransactionState, action: PayloadAction<ContactSubAccount>) {
       state.sender.allowanceContactSubAccount = action.payload;
       state.sender.newAllowanceContact = {} as NewContact;
       state.sender.subAccount = {} as SubAccount;
-      state.sender.scannerContact = "";
     },
     setSenderContactNew(state: TransactionState, action: PayloadAction<NewContact>) {
       state.sender.newAllowanceContact = action.payload;
       state.sender.allowanceContactSubAccount = {} as ContactSubAccount;
       state.sender.subAccount = {} as SubAccount;
-      state.sender.scannerContact = "";
-    },
-    setSenderICRCScannerContact(state: TransactionState, action: PayloadAction<string>) {
-      state.sender.scannerContact = action.payload;
-      state.sender.allowanceContactSubAccount = {} as ContactSubAccount;
-      state.sender.newAllowanceContact = {} as NewContact;
-      state.sender.subAccount = {} as SubAccount;
     },
     setReceiverOwnSubAccount(state: TransactionState, action: PayloadAction<SubAccount>) {
       state.receiver.ownSubAccount = action.payload;
       state.receiver.thirdContactSubAccount = {} as ContactSubAccount;
-      state.receiver.scannerContact = "";
       state.receiver.thirdNewContact = {} as NewContact;
     },
     setReceiverNewContact(state: TransactionState, action: PayloadAction<NewContact>) {
       state.receiver.thirdNewContact = action.payload;
       state.receiver.thirdContactSubAccount = {} as ContactSubAccount;
-      state.receiver.scannerContact = "";
       state.receiver.ownSubAccount = {} as SubAccount;
     },
     setReceiverContact(state: TransactionState, action: PayloadAction<ContactSubAccount>) {
       state.receiver.thirdContactSubAccount = action.payload;
-      state.receiver.scannerContact = "";
       state.receiver.thirdNewContact = {} as NewContact;
       state.receiver.ownSubAccount = {} as SubAccount;
     },
-    setReceiverICRCScannerContact(state: TransactionState, action: PayloadAction<string>) {
-      state.receiver.scannerContact = action.payload;
+    clearSender(state: TransactionState) {
+      state.sender.newAllowanceContact = {} as NewContact;
+      state.sender.allowanceContactSubAccount = {} as ContactSubAccount;
+      state.sender.subAccount = {} as SubAccount;
+    },
+    clearReceiver(state: TransactionState) {
       state.receiver.thirdContactSubAccount = {} as ContactSubAccount;
       state.receiver.thirdNewContact = {} as NewContact;
       state.receiver.ownSubAccount = {} as SubAccount;
@@ -79,6 +87,8 @@ const transactionSlice = createSlice({
 
 export const {
   setSenderAsset,
+  setSenderOption,
+  setIsNewSender,
   setScannerActiveOption,
   setSenderSubAccount,
   setSenderContact,
@@ -86,8 +96,8 @@ export const {
   setReceiverOwnSubAccount,
   setReceiverNewContact,
   setReceiverContact,
-  setReceiverICRCScannerContact,
-  setSenderICRCScannerContact,
+  clearSender,
+  clearReceiver,
 } = transactionSlice.actions;
 
 export default transactionSlice.reducer;

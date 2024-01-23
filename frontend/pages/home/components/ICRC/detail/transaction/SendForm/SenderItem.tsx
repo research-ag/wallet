@@ -1,20 +1,20 @@
 import SenderType from "./SenderType";
 import SenderSubAccount from "./SenderSubAccount";
 import { SenderOption } from "@/@types/transactions";
-import { useState } from "react";
 import SenderAllowanceContact from "./SenderAllowanceContact";
+import { useAppSelector } from "@redux/Store";
 
 export default function SenderItem() {
-  const [senderOption, setSenderOption] = useState<SenderOption>(SenderOption.own);
+  const {sender} = useAppSelector((state) => state.transaction);
 
   return (
     <div className="w-full mt-4 rounded-md bg-ToBoxColor">
       <div className="w-full py-2 border-b border-BorderColor">
-        <SenderType senderOption={senderOption} setSenderOption={setSenderOption} />
+        <SenderType senderOption={sender.senderOption} />
       </div>
       <div className="p-4">
-        {senderOption === SenderOption.own && <SenderSubAccount />}
-        {senderOption === SenderOption.allowance && <SenderAllowanceContact />}
+        {sender.senderOption === SenderOption.own && <SenderSubAccount />}
+        {sender.senderOption === SenderOption.allowance && <SenderAllowanceContact />}
       </div>
     </div>
   );

@@ -1,6 +1,8 @@
 import { ScannerOption } from "@/@types/transactions";
+import { subUint8ArrayToHex } from "@/utils";
+import { decodeIcrcAccount } from "@dfinity/ledger";
 import QRscanner from "@pages/components/QRscanner";
-import { setReceiverICRCScannerContactAction, setScannerActiveOptionAction } from "@redux/transaction/TransactionActions";
+import { setScannerActiveOptionAction } from "@redux/transaction/TransactionActions";
 
 export default function ReceiverQRScanner() {
   return (
@@ -8,14 +10,23 @@ export default function ReceiverQRScanner() {
       setQRview={onGoBack}
       qrView={true}
       onSuccess={(value: string) => {
-        setReceiverICRCScannerContactAction(value);
-          // onGoBack();
-        //   navigator.clipboard.writeText(value);
+        try {
+          const decoded = decodeIcrcAccount(value);
+          const scannedContact = {
+            principal: decoded.owner.toText(),
+            subAccountId: `0x${subUint8ArrayToHex(decoded.subaccount)}`,
+          };
+
+          onGoBack();
+          // TODO: what is used for the clipboard
+          //   navigator.clipboard.writeText(value);
+        } catch (error) {
+          console.error(error);
+        }
       }}
     />
-
-    //   {/* <button onClick={onGoBack}>Back</button> */}
   );
+
   function onGoBack() {
     setScannerActiveOptionAction(ScannerOption.none);
   }

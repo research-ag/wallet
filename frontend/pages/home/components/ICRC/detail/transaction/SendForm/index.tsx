@@ -2,13 +2,13 @@ import SenderAsset from "./SenderAsset";
 import SenderItem from "./SenderItem";
 import { ReactComponent as DownAmountIcon } from "@assets/svg/files/down-blue-arrow.svg";
 import ReceiverItem from "./ReceiverItem";
-import { ScannerOption } from "@/@types/transactions";
 import { useAppSelector } from "@redux/Store";
 import SenderQRScanner from "./SenderQRScanner";
 import ReceiverQRScanner from "./ReceiverQRScanner";
 import { useEffect } from "react";
 import { setSenderAssetAction, setSenderSubAccountAction } from "@redux/transaction/TransactionActions";
 import { isObjectValid } from "@/utils/checkers";
+import { ScannerOption } from "@/@types/transactions";
 
 export default function SendForm() {
   const { sender, receiver, scannerActiveOption } = useAppSelector((state) => state.transaction);
@@ -39,9 +39,8 @@ function SenderInitializer({ children }: { children: JSX.Element }) {
   const { sender } = useAppSelector((state) => state.transaction);
 
   useEffect(() => {
-    const allowInitializeAsset = selectedAsset
-      && selectedAsset?.tokenName !== sender?.asset?.tokenName
-      && !sender?.asset?.tokenName;
+    const allowInitializeAsset =
+      selectedAsset && selectedAsset?.tokenName !== sender?.asset?.tokenName && !sender?.asset?.tokenName;
 
     if (allowInitializeAsset) {
       setSenderAssetAction(selectedAsset);
@@ -50,12 +49,9 @@ function SenderInitializer({ children }: { children: JSX.Element }) {
 
   useEffect(() => {
     const allowInitializeSubAccount =
-      selectedAsset
-      && selectedAsset?.subAccounts?.find((subAccount) => subAccount.sub_account_id === selectedAccount?.sub_account_id)
-      && !isObjectValid(sender.newAllowanceContact)
-      && !isObjectValid(sender.allowanceContactSubAccount)
-      && !sender.scannerContact
-      && !sender?.subAccount;
+      !isObjectValid(sender.newAllowanceContact) &&
+      !isObjectValid(sender.allowanceContactSubAccount) &&
+      !sender?.subAccount;
 
     if (selectedAccount) {
       if (allowInitializeSubAccount) {
