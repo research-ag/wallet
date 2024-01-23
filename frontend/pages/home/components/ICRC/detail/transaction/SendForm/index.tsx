@@ -6,15 +6,11 @@ import { useAppSelector } from "@redux/Store";
 import SenderQRScanner from "./SenderQRScanner";
 import ReceiverQRScanner from "./ReceiverQRScanner";
 import { useEffect, useMemo } from "react";
-import {
-  setIsInspectDetailAction,
-  setSenderAssetAction,
-  setSenderSubAccountAction,
-} from "@redux/transaction/TransactionActions";
+import { setIsInspectDetailAction, setSenderAssetAction, setSenderSubAccountAction } from "@redux/transaction/TransactionActions";
 import { isObjectValid } from "@/utils/checkers";
-import { ScannerOption } from "@/@types/transactions";
 import ConfirmDetail from "./ConfirmDetail";
 import { Button } from "@components/button";
+import { TransactionScannerOptionEnum } from "@/@types/transactions";
 
 export default function SendForm() {
   const { sender, receiver, scannerActiveOption, isInspectTransference } = useAppSelector((state) => state.transaction);
@@ -41,11 +37,10 @@ export default function SendForm() {
   }, [sender, receiver, isInspectTransference]);
 
   if (showInspectDetail) return <ConfirmDetail />;
-  if (scannerActiveOption === ScannerOption.sender) return <SenderQRScanner />;
-  if (scannerActiveOption === ScannerOption.receiver) return <ReceiverQRScanner />;
+  if (scannerActiveOption === TransactionScannerOptionEnum.Values.sender) return <SenderQRScanner />;
+  if (scannerActiveOption === TransactionScannerOptionEnum.Values.receiver) return <ReceiverQRScanner />;
 
   console.log({ sender, receiver });
-  console.log({ isSender, isReceiver });
 
   return (
     <SenderInitializer>
@@ -60,7 +55,7 @@ export default function SendForm() {
           </Button>
           <Button
             className="w-1/6 font-bold bg-primary-color"
-            // disabled={!(isReceiver && isSender)}
+            disabled={!(isReceiver && isSender)}
             onClick={onNext}
           >
             Next
@@ -71,10 +66,9 @@ export default function SendForm() {
   );
 
   function onNext() {
-    console.log("NEXT");
-    // if (isReceiver && isSender) {
-    //   setIsInspectDetailAction(true);
-    // }
+    if (isReceiver && isSender) {
+      setIsInspectDetailAction(true);
+    }
   }
   function onCancel() {
     // TODO: initialize state and close drawer

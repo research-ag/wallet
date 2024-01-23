@@ -3,13 +3,13 @@ import { useTranslation } from "react-i18next";
 import { ReactComponent as QRScanIcon } from "@assets/svg/files/qr.svg";
 import { AllowanceContactBook } from "./AllowanceContactBook";
 import SenderNewContact from "./SenderNewContact";
-import { ScannerOption } from "@/@types/transactions";
 import {
   clearSenderAction,
   setIsNewSenderAction,
   setScannerActiveOptionAction,
 } from "@redux/transaction/TransactionActions";
 import { useAppSelector } from "@redux/Store";
+import { TransactionScannerOptionEnum } from "@/@types/transactions";
 
 export default function SenderAllowanceContact() {
   const { sender } = useAppSelector((state) => state.transaction);
@@ -36,6 +36,6 @@ export default function SenderAllowanceContact() {
   }
 
   function onSenderScannerShow() {
-    setScannerActiveOptionAction(ScannerOption.sender);
+    setScannerActiveOptionAction(TransactionScannerOptionEnum.Values.sender);
   }
 }

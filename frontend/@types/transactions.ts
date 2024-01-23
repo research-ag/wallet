@@ -48,7 +48,7 @@ export type TransactionError = z.infer<typeof TransactionErrorSchema>;
 
 export interface ReceiverState {
   isManual: boolean;
-  receiverOption: ReceiverOption;
+  receiverOption: TransactionReceiverOption;
   ownSubAccount: SubAccount;
   thirdNewContact: NewContact;
   thirdContactSubAccount: ContactSubAccount;
@@ -102,15 +102,6 @@ export type TransactionSenderOption = z.infer<typeof TransactionSenderOptionEnum
 
 export const TransactionReceiverOptionEnum = z.enum(["own", "third"]);
 export type TransactionReceiverOption = z.infer<typeof TransactionReceiverOptionEnum>;
-export enum ReceiverOption {
-  own = "Own",
-  third = "Third",
-}
 
 export const TransactionScannerOptionEnum = z.enum(["sender", "receiver", "none"]);
 export type TransactionScannerOption = z.infer<typeof TransactionScannerOptionEnum>;
-export enum ScannerOption {
-  sender = "sender",
-  receiver = "receiver",
-  none = "none",
-}

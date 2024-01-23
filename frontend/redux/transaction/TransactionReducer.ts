@@ -1,11 +1,13 @@
 import {
   ContactSubAccount,
-  KeyValidationErrors,
   NewContact,
-  ReceiverOption,
   ReceiverState,
-  ScannerOption,
   SenderState,
+  TransactionError,
+  TransactionReceiverOption,
+  TransactionReceiverOptionEnum,
+  TransactionScannerOption,
+  TransactionScannerOptionEnum,
   TransactionSenderOption,
   TransactionSenderOptionEnum,
 } from "@/@types/transactions";
@@ -13,22 +15,22 @@ import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 interface TransactionState {
-  scannerActiveOption: ScannerOption;
+  scannerActiveOption: TransactionScannerOption;
   isInspectTransference: boolean;
-  errors?: KeyValidationErrors[];
+  errors?: TransactionError[];
   sender: SenderState;
   receiver: ReceiverState;
 }
 
 export const initialTransactionState = {
-  scannerActiveOption: ScannerOption.none,
+  scannerActiveOption: TransactionScannerOptionEnum.Values.none,
   isInspectTransference: false,
   sender: {
     senderOption: TransactionSenderOptionEnum.Values.own,
     isNewSender: false,
   },
   receiver: {
-    receiverOption: ReceiverOption.third,
+    receiverOption: TransactionReceiverOptionEnum.Values.third,
     isManual: false,
   },
 } as TransactionState;
@@ -46,7 +48,7 @@ const transactionSlice = createSlice({
       state.receiver.ownSubAccount = {} as SubAccount;
       state.receiver.thirdContactSubAccount = {} as ContactSubAccount;
     },
-    setScannerActiveOption(state: TransactionState, action: PayloadAction<ScannerOption>) {
+    setScannerActiveOption(state: TransactionState, action: PayloadAction<TransactionScannerOption>) {
       state.scannerActiveOption = action.payload;
     },
     setIsInspectDetail(state: TransactionState, action: PayloadAction<boolean>) {
@@ -57,9 +59,6 @@ const transactionSlice = createSlice({
     },
     setIsNewSender(state: TransactionState, action: PayloadAction<boolean>) {
       state.sender.isNewSender = action.payload;
-    },
-    setErrors(state: TransactionState, action: PayloadAction<KeyValidationErrors[]>) {
-      state.errors = action.payload;
     },
     setSenderSubAccount(state: TransactionState, action: PayloadAction<SubAccount>) {
       state.sender.subAccount = action.payload;
@@ -76,7 +75,7 @@ const transactionSlice = createSlice({
       state.sender.allowanceContactSubAccount = {} as ContactSubAccount;
       state.sender.subAccount = {} as SubAccount;
     },
-    setReceiverOption(state: TransactionState, action: PayloadAction<ReceiverOption>) {
+    setReceiverOption(state: TransactionState, action: PayloadAction<TransactionReceiverOption>) {
       state.receiver.receiverOption = action.payload;
     },
     setReceiverIsManual(state: TransactionState, action: PayloadAction<boolean>) {
@@ -116,7 +115,6 @@ export const {
   setIsNewSender,
   setIsInspectDetail,
   setScannerActiveOption,
-  setErrors,
   setSenderSubAccount,
   setSenderContact,
   setSenderContactNew,

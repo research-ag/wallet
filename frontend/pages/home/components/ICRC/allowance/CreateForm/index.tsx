@@ -15,7 +15,6 @@ export default function CreateForm() {
   const { allowance, setAllowanceState, createAllowance, isPending, isPrincipalValid, validationErrors } =
     useCreateAllowance();
 
-    console.log(validationErrors);
   const errorMessage = useMemo(() => {
     let errorMessage = "";
 

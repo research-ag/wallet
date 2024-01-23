@@ -8,7 +8,6 @@ import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 import { ReactComponent as ExchangeIcon } from "@assets/svg/files/arrows-exchange-v.svg";
 import { CustomInput } from "@components/Input";
 import clsx from "clsx";
-import { toFullDecimal, validateAmount } from "@/utils";
 import { useTranslation } from "react-i18next";
 
 export default function ConfirmDetail() {

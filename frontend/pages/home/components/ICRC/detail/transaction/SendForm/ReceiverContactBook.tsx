@@ -11,6 +11,7 @@ export default function ReceiverContactBook() {
   const [ICRCAccountString, setICRCAccountString] = useState<string>("");
   const { t } = useTranslation();
 
+  // TODO: show bordered error if the icrc account has not right format
   return (
     <CustomInput
       prefix={<SearchIcon className="mx-2" />}
@@ -41,10 +42,10 @@ export default function ReceiverContactBook() {
   }
   function onEnterPress(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter") {
-      console.log(ICRCAccountString);
       handlerSetReceiver();
     }
   }
+
   function handlerSetReceiver() {
     // TODO: implement logic that decode and validate icrcAccount string
     const decoded = decodeIcrcAccount(ICRCAccountString);

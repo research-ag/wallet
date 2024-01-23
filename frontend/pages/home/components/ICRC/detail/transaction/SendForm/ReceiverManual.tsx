@@ -21,7 +21,7 @@ export default function ReceiverManual() {
       setReceiverNewContactAction(contact);
     }
 
-    // TODO: add principal no valid to error management system
+    // TODO: set error if principal is not valid bordered
   }
 
   function onSubAccountChange(event: any) {
@@ -32,9 +32,8 @@ export default function ReceiverManual() {
         subAccountId: subAccountIndex?.startsWith("0x") ? subAccountIndex : `0x${subAccountIndex}`,
       };
       setReceiverNewContactAction(contact);
-      // QUESTION: format with 0x if not wast set?
     }
-    // TODO: add principal no valid to error management system
+    // TODO: set error if sub account id is not valid bordered
   }
 
   return (

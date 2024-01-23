@@ -15,16 +15,14 @@ import {
   setReceiverOption,
   setReceiverIsManual,
   setIsInspectDetail,
-  setErrors,
 } from "./TransactionReducer";
 
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import {
   ContactSubAccount,
-  KeyValidationErrors,
   NewContact,
-  ReceiverOption,
-  ScannerOption,
+  TransactionReceiverOption,
+  TransactionScannerOption,
   TransactionSenderOption,
 } from "@/@types/transactions";
 
@@ -49,11 +47,8 @@ export function setSenderContactAction(contact: ContactSubAccount) {
 export function setSenderContactNewAction(newContact: NewContact) {
   store.dispatch(setSenderContactNew(newContact));
 }
-export function setReceiverOptionAction(option: ReceiverOption) {
+export function setReceiverOptionAction(option: TransactionReceiverOption) {
   store.dispatch(setReceiverOption(option));
-}
-export function setErrorsAction(errors: KeyValidationErrors[]) {
-  store.dispatch(setErrors(errors));
 }
 export function setReceiverIsManualAction(isManual: boolean) {
   store.dispatch(setReceiverIsManual(isManual));
@@ -67,7 +62,7 @@ export function setReceiverNewContactAction(newContact: NewContact) {
 export function setReceiverContactAction(contact: ContactSubAccount) {
   store.dispatch(setReceiverContact(contact));
 }
-export function setScannerActiveOptionAction(scannerActiveOption: ScannerOption) {
+export function setScannerActiveOptionAction(scannerActiveOption: TransactionScannerOption) {
   store.dispatch(setScannerActiveOption(scannerActiveOption));
 }
 export function clearSenderAction() {

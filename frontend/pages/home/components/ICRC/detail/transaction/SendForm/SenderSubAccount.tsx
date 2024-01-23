@@ -18,6 +18,8 @@ export default function SenderSubAccount() {
       .map(formatSubAccount);
   }, [sender, searchSubAccountValue]);
 
+  // TODO: if not own sender selected show error bordered
+
   return (
     <Select
       onSelect={onSelect}

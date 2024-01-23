@@ -20,7 +20,7 @@ export default function SenderNewContact() {
       return;
     }
 
-    // TODO: add principal no valid to error management system
+    // TODO: set sender invalid principal error bordered
   }
 
   function onSubAccountChange(event: any) {
@@ -34,7 +34,7 @@ export default function SenderNewContact() {
       setSenderContactNewAction(newAllowanceContact);
       return;
     }
-    // TODO: add principal no valid to error management system
+    // TODO: set sender invalid sub account id error bordered
   }
 
   return (

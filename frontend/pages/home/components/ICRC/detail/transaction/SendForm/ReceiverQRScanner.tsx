@@ -1,4 +1,4 @@
-import { ScannerOption } from "@/@types/transactions";
+import { TransactionScannerOptionEnum } from "@/@types/transactions";
 import { subUint8ArrayToHex } from "@/utils";
 import { decodeIcrcAccount } from "@dfinity/ledger";
 import QRscanner from "@pages/components/QRscanner";
@@ -32,6 +32,6 @@ export default function ReceiverQRScanner() {
   );
 
   function onGoBack() {
-    setScannerActiveOptionAction(ScannerOption.none);
+    setScannerActiveOptionAction(TransactionScannerOptionEnum.Values.none);
   }
 }
