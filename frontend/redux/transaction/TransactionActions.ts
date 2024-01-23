@@ -12,10 +12,11 @@ import {
   clearReceiver,
   setSenderOption,
   setIsNewSender,
+  setReceiverOption,
 } from "./TransactionReducer";
 
 import { Asset, SubAccount } from "@redux/models/AccountModels";
-import { ContactSubAccount, NewContact, ScannerOption, SenderOption } from "@/@types/transactions";
+import { ContactSubAccount, NewContact, ReceiverOption, ScannerOption, SenderOption } from "@/@types/transactions";
 
 export function setSenderAssetAction(asset: Asset) {
   store.dispatch(setSenderAsset(asset));
@@ -34,6 +35,9 @@ export function setSenderContactAction(contact: ContactSubAccount) {
 }
 export function setSenderContactNewAction(newContact: NewContact) {
   store.dispatch(setSenderContactNew(newContact));
+}
+export function setReceiverOptionAction(option: ReceiverOption) {
+  store.dispatch(setReceiverOption(option));
 }
 export function setReceiverOwnSubAccountAction(subAccount: SubAccount) {
   store.dispatch(setReceiverOwnSubAccount(subAccount));

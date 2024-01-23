@@ -55,8 +55,6 @@ export default function ReceiverOwner() {
     // INFO: should a sub account be selected as default?
   }, [sender, currentAsset]);
 
-  console.log(options);
-
   return (
     <Select
       onSelect={onSelect}

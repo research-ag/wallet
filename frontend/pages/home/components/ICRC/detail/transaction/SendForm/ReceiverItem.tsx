@@ -8,10 +8,15 @@ import { useState } from "react";
 import { ReceiverOption } from "@/@types/transactions";
 import ReceiverOwner from "./ReceiverOwner";
 import ReceiverThird from "./ReceiverThird";
+import { useAppSelector } from "@redux/Store";
+import { clearReceiverAction, setReceiverOptionAction } from "@redux/transaction/TransactionActions";
+import { ReactComponent as DownAmountIcon } from "@assets/svg/files/down-blue-arrow.svg";
+import { useTranslation } from "react-i18next";
 
 export default function ReceiverItem() {
-  const [receiverOption, setReceiverOption] = useState<ReceiverOption>(ReceiverOption.third);
+  const { receiver } = useAppSelector((state) => state.transaction);
   const [isManual, setIsManual] = useState<boolean>(false);
+  const { t } = useTranslation();
   // const { selectedAsset, selectedAccount: baseAccount } = GeneralHook();
   // const {
   //   receiver,
@@ -56,33 +61,32 @@ export default function ReceiverItem() {
       </div>
 
       <div className="p-4">
-        {receiverOption === ReceiverOption.own && <ReceiverOwner />}
-        {receiverOption === ReceiverOption.third && (
-          <ReceiverThird isManual={isManual} />
-        )}
+        {receiver.receiverOption === ReceiverOption.own && <ReceiverOwner />}
+        {receiver.receiverOption === ReceiverOption.third && <ReceiverThird isManual={isManual} />}
       </div>
 
       <div className="flex p-4">
-        {receiverOption === ReceiverOption.third && (
-          <button onClick={onTransferToOwn}>
+        {receiver.receiverOption === ReceiverOption.third && (
+          <button onClick={onReceiverOptionChange}>
             <p className="text-md text-RadioCheckColor text-start">Transfer to own account</p>
           </button>
         )}
-        {receiverOption === ReceiverOption.own && (
-          <button onClick={onTransferToThird}>
-            <p className="text-md text-RadioCheckColor text-start">Transfer to third</p>
+        {receiver.receiverOption === ReceiverOption.own && (
+          <button onClick={onReceiverOptionChange}>
+            <p className="flex items-center justify-center text-md text-RadioCheckColor text-start">
+              <DownAmountIcon className="relative mt-4 rotate-90 bottom-2 right-2" />
+              {t("back")}
+            </p>
           </button>
         )}
       </div>
     </div>
   );
 
-  function onTransferToOwn() {
-    setReceiverOption(ReceiverOption.own);
-  }
-
-  function onTransferToThird() {
-    setReceiverOption(ReceiverOption.third);
+  function onReceiverOptionChange() {
+    if (receiver.receiverOption === ReceiverOption.third) setReceiverOptionAction(ReceiverOption.own);
+    if (receiver.receiverOption === ReceiverOption.own) setReceiverOptionAction(ReceiverOption.third);
+    clearReceiverAction();
   }
 
   // return (

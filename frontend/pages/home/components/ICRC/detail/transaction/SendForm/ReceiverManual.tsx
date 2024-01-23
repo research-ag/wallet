@@ -8,8 +8,8 @@ import { useTranslation } from "react-i18next";
 
 export default function ReceiverManual() {
   const { receiver } = useAppSelector((state) => state.transaction);
-
   const { t } = useTranslation();
+
   function onPrincipalChange(event: any) {
     const principalValue = event.target.value.trim();
 
@@ -29,7 +29,7 @@ export default function ReceiverManual() {
     if (isHexadecimalValid(subAccountIndex)) {
       const contact: NewContact = {
         ...receiver.thirdNewContact,
-        subAccountId: subAccountIndex,
+        subAccountId: subAccountIndex.startsWith("0x") ? subAccountIndex : `0x${subAccountIndex}`,
       };
       setReceiverNewContactAction(contact);
       // QUESTION: format with 0x if not wast set?

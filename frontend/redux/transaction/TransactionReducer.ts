@@ -1,6 +1,7 @@
 import {
   ContactSubAccount,
   NewContact,
+  ReceiverOption,
   ReceiverState,
   ScannerOption,
   SenderOption,
@@ -21,7 +22,9 @@ export const initialTransactionState = {
     senderOption: SenderOption.own,
     isNewSender: false,
   },
-  receiver: {},
+  receiver: {
+    receiverOption: ReceiverOption.third,
+  },
 } as TransactionState;
 
 const name = "transaction";
@@ -32,6 +35,10 @@ const transactionSlice = createSlice({
   reducers: {
     setSenderAsset(state: TransactionState, action: PayloadAction<Asset>) {
       state.sender.asset = action.payload;
+      state.sender.subAccount = {} as SubAccount;
+      state.sender.allowanceContactSubAccount = {} as ContactSubAccount;
+      state.receiver.ownSubAccount = {} as SubAccount;
+      state.receiver.thirdContactSubAccount = {} as ContactSubAccount;
     },
     setScannerActiveOption(state: TransactionState, action: PayloadAction<ScannerOption>) {
       state.scannerActiveOption = action.payload;
@@ -61,6 +68,9 @@ const transactionSlice = createSlice({
       state.receiver.ownSubAccount = action.payload;
       state.receiver.thirdContactSubAccount = {} as ContactSubAccount;
       state.receiver.thirdNewContact = {} as NewContact;
+    },
+    setReceiverOption(state: TransactionState, action: PayloadAction<ReceiverOption>) {
+      state.receiver.receiverOption = action.payload;
     },
     setReceiverNewContact(state: TransactionState, action: PayloadAction<NewContact>) {
       state.receiver.thirdNewContact = action.payload;
@@ -93,6 +103,7 @@ export const {
   setSenderSubAccount,
   setSenderContact,
   setSenderContactNew,
+  setReceiverOption,
   setReceiverOwnSubAccount,
   setReceiverNewContact,
   setReceiverContact,

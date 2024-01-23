@@ -48,7 +48,11 @@ export default function SenderNewContact() {
       <div className="w-20">
         <CustomInput
           className="rounded-md"
-          value={sender?.newAllowanceContact?.subAccountId}
+          value={
+            sender?.newAllowanceContact?.subAccountId.startsWith("0x")
+              ? sender?.newAllowanceContact?.subAccountId.slice(2)
+              : sender?.newAllowanceContact?.subAccountId
+          }
           placeholder="Sub"
           onChange={onSubAccountChange}
         />
