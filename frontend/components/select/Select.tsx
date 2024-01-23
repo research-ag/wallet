@@ -42,7 +42,7 @@ export default function Select(props: TSelectProps) {
                 </div>
               </>
             )}
-            {!selectedValue && <p className={textStyles()}>Select a sub account</p>}
+            {!selectedValue && <p className={textStyles()}>Select an option</p>}
           </div>
           <DropIcon className={isOpen ? "-rotate-90" : ""} />
         </div>
@@ -96,5 +96,5 @@ export default function Select(props: TSelectProps) {
 }
 
 function textStyles(isSubLabel = false) {
-  return clsx("text-PrimaryTextColorLight dark:text-PrimaryTextColor", isSubLabel && "opacity-50");
+  return clsx("text-start text-PrimaryTextColorLight dark:text-PrimaryTextColor", isSubLabel && "opacity-50");
 }

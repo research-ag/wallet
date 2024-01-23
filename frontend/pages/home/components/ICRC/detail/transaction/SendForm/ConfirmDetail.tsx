@@ -9,6 +9,8 @@ import { ReactComponent as ExchangeIcon } from "@assets/svg/files/arrows-exchang
 import { CustomInput } from "@components/Input";
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
+import { Button } from "@components/button";
+import { setIsInspectDetailAction } from "@redux/transaction/TransactionActions";
 
 export default function ConfirmDetail() {
   return (
@@ -19,8 +21,21 @@ export default function ConfirmDetail() {
       <ReceiverDetail />
       {/* AMOUNT */}
       <TransactionAmount />
+
+      <div className="flex justify-end mt-6">
+        <Button className="w-1/6 mr-2 font-bold bg-secondary-color-2" onClick={onNext}>
+          Back
+        </Button>
+        <Button className="w-1/6 font-bold bg-primary-color" onClick={onNext}>
+          Next
+        </Button>
+      </div>
     </div>
   );
+
+  function onNext() {
+    setIsInspectDetailAction(false);
+  }
 }
 
 function SenderDetail() {

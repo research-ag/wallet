@@ -6,7 +6,11 @@ import { useAppSelector } from "@redux/Store";
 import SenderQRScanner from "./SenderQRScanner";
 import ReceiverQRScanner from "./ReceiverQRScanner";
 import { useEffect, useMemo } from "react";
-import { setIsInspectDetailAction, setSenderAssetAction, setSenderSubAccountAction } from "@redux/transaction/TransactionActions";
+import {
+  setIsInspectDetailAction,
+  setSenderAssetAction,
+  setSenderSubAccountAction,
+} from "@redux/transaction/TransactionActions";
 import { isObjectValid } from "@/utils/checkers";
 import ConfirmDetail from "./ConfirmDetail";
 import { Button } from "@components/button";
@@ -53,11 +57,7 @@ export default function SendForm() {
           <Button className="w-1/6 mr-2 font-bold bg-secondary-color-2" onClick={onCancel}>
             Cancel
           </Button>
-          <Button
-            className="w-1/6 font-bold bg-primary-color"
-            disabled={!(isReceiver && isSender)}
-            onClick={onNext}
-          >
+          <Button className="w-1/6 font-bold bg-primary-color" disabled={!(isReceiver && isSender)} onClick={onNext}>
             Next
           </Button>
         </div>
