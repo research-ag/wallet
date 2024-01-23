@@ -33,11 +33,16 @@ export default function Select(props: TSelectProps) {
       <DropdownMenu.Trigger asChild className={selectTriggerCVA({ disabled, border })}>
         <div className="flex items-center justify-center">
           <div className="flex items-center mr-2">
-            {selectedValue?.icon}
-            <div className="ml-2">
-              <p className={textStyles()}>{selectedValue?.label}</p>
-              <p className={textStyles(true)}>{selectedValue?.subLabel}</p>
-            </div>
+            {selectedValue && (
+              <>
+                {selectedValue?.icon}
+                <div className="ml-2">
+                  <p className={textStyles()}>{selectedValue?.label}</p>
+                  <p className={textStyles(true)}>{selectedValue?.subLabel}</p>
+                </div>
+              </>
+            )}
+            {!selectedValue && <p className={textStyles()}>Select a sub account</p>}
           </div>
           <DropIcon className={isOpen ? "-rotate-90" : ""} />
         </div>

@@ -48,11 +48,11 @@ export interface ReceiverState {
 
 export interface SenderState {
   asset: Asset;
-  senderOption: SenderOption;
   isNewSender: boolean;
-  subAccount: SubAccount;
+  senderOption: SenderOption;
   allowanceContactSubAccount: ContactSubAccount;
   newAllowanceContact: NewContact;
+  subAccount: SubAccount;
 }
 
 // CONSTANTS

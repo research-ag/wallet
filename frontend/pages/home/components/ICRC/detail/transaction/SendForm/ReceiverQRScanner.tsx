@@ -2,7 +2,11 @@ import { ScannerOption } from "@/@types/transactions";
 import { subUint8ArrayToHex } from "@/utils";
 import { decodeIcrcAccount } from "@dfinity/ledger";
 import QRscanner from "@pages/components/QRscanner";
-import { setScannerActiveOptionAction } from "@redux/transaction/TransactionActions";
+import {
+  setReceiverIsManualAction,
+  setReceiverNewContactAction,
+  setScannerActiveOptionAction,
+} from "@redux/transaction/TransactionActions";
 
 export default function ReceiverQRScanner() {
   return (
@@ -18,8 +22,8 @@ export default function ReceiverQRScanner() {
           };
 
           onGoBack();
-          // TODO: what is used for the clipboard
-          //   navigator.clipboard.writeText(value);
+          setReceiverNewContactAction(scannedContact);
+          setReceiverIsManualAction(true);
         } catch (error) {
           console.error(error);
         }

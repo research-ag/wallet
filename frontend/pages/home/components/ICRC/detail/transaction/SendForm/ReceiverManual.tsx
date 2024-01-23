@@ -29,7 +29,7 @@ export default function ReceiverManual() {
     if (isHexadecimalValid(subAccountIndex)) {
       const contact: NewContact = {
         ...receiver.thirdNewContact,
-        subAccountId: subAccountIndex.startsWith("0x") ? subAccountIndex : `0x${subAccountIndex}`,
+        subAccountId: subAccountIndex?.startsWith("0x") ? subAccountIndex : `0x${subAccountIndex}`,
       };
       setReceiverNewContactAction(contact);
       // QUESTION: format with 0x if not wast set?
@@ -49,7 +49,11 @@ export default function ReceiverManual() {
       <div className="w-20">
         <CustomInput
           className="rounded-md"
-          value={receiver?.thirdNewContact?.subAccountId}
+          value={
+            receiver?.thirdNewContact?.subAccountId?.startsWith("0x")
+              ? receiver?.thirdNewContact?.subAccountId.slice(2)
+              : receiver?.thirdNewContact?.subAccountId
+          }
           intent="secondary"
           placeholder={t("sub-acc")}
           onChange={onSubAccountChange}

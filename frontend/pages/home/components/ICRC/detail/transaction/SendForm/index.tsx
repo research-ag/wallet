@@ -5,20 +5,47 @@ import ReceiverItem from "./ReceiverItem";
 import { useAppSelector } from "@redux/Store";
 import SenderQRScanner from "./SenderQRScanner";
 import ReceiverQRScanner from "./ReceiverQRScanner";
-import { useEffect } from "react";
-import { setSenderAssetAction, setSenderSubAccountAction } from "@redux/transaction/TransactionActions";
+import { useEffect, useMemo } from "react";
+import {
+  setIsInspectDetailAction,
+  setSenderAssetAction,
+  setSenderSubAccountAction,
+} from "@redux/transaction/TransactionActions";
 import { isObjectValid } from "@/utils/checkers";
 import { ScannerOption } from "@/@types/transactions";
+import ConfirmDetail from "./ConfirmDetail";
+import { Button } from "@components/button";
 
 export default function SendForm() {
-  const { sender, receiver, scannerActiveOption } = useAppSelector((state) => state.transaction);
+  const { sender, receiver, scannerActiveOption, isInspectTransference } = useAppSelector((state) => state.transaction);
+
+  const isSender = useMemo(() => {
+    return Boolean(
+      sender?.allowanceContactSubAccount?.assetTokenSymbol ||
+        sender?.newAllowanceContact?.principal ||
+        sender?.subAccount?.sub_account_id,
+    );
+  }, [sender]);
+
+  const isReceiver = useMemo(() => {
+    return Boolean(
+      receiver?.ownSubAccount?.sub_account_id ||
+        receiver?.thirdNewContact?.principal ||
+        receiver?.thirdContactSubAccount?.assetTokenSymbol,
+    );
+  }, [receiver]);
+
+  const showInspectDetail = useMemo(() => {
+    if (!isInspectTransference) return false;
+    return isSender && isReceiver;
+  }, [sender, receiver, isInspectTransference]);
+
+  if (showInspectDetail) return <ConfirmDetail />;
   if (scannerActiveOption === ScannerOption.sender) return <SenderQRScanner />;
   if (scannerActiveOption === ScannerOption.receiver) return <ReceiverQRScanner />;
 
-  console.log({
-    sender,
-    receiver,
-  });
+  console.log({ sender, receiver });
+  console.log({ isSender, isReceiver });
 
   return (
     <SenderInitializer>
@@ -27,12 +54,27 @@ export default function SendForm() {
         <SenderItem />
         <DownAmountIcon className="w-full mt-4" />
         <ReceiverItem />
+        <div className="flex justify-end mt-6">
+          <Button className="w-1/6 mr-2 font-bold bg-secondary-color-2" onClick={onCancel}>
+            Cancel
+          </Button>
+          <Button className="w-1/6 font-bold bg-primary-color" disabled={!(isReceiver && isSender)} onClick={onNext}>
+            Next
+          </Button>
+        </div>
       </div>
     </SenderInitializer>
   );
-}
 
-// TODO: wrapper that render three component (sender qr scanner, receiver qr scanner and the form)
+  function onNext() {
+    if (isReceiver && isSender) {
+      setIsInspectDetailAction(true);
+    }
+  }
+  function onCancel() {
+    // TODO: initialize state and close drawer
+  }
+}
 
 function SenderInitializer({ children }: { children: JSX.Element }) {
   const { selectedAsset, selectedAccount } = useAppSelector((state) => state.asset);

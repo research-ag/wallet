@@ -29,7 +29,7 @@ export default function SenderNewContact() {
     if (isHexadecimalValid(subAccountIndex)) {
       const newAllowanceContact: NewContact = {
         ...sender.newAllowanceContact,
-        subAccountId: subAccountIndex.startsWith("0x") ? subAccountIndex : `0x${subAccountIndex}`,
+        subAccountId: subAccountIndex?.startsWith("0x") ? subAccountIndex : `0x${subAccountIndex}`,
       };
       setSenderContactNewAction(newAllowanceContact);
       return;
@@ -49,7 +49,7 @@ export default function SenderNewContact() {
         <CustomInput
           className="rounded-md"
           value={
-            sender?.newAllowanceContact?.subAccountId.startsWith("0x")
+            sender?.newAllowanceContact?.subAccountId?.startsWith("0x")
               ? sender?.newAllowanceContact?.subAccountId.slice(2)
               : sender?.newAllowanceContact?.subAccountId
           }

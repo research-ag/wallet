@@ -12,12 +12,14 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 interface TransactionState {
   scannerActiveOption: ScannerOption;
+  isInspectTransference: boolean;
   sender: SenderState;
   receiver: ReceiverState;
 }
 
 export const initialTransactionState = {
   scannerActiveOption: ScannerOption.none,
+  isInspectTransference: false,
   sender: {
     senderOption: SenderOption.own,
     isNewSender: false,
@@ -43,6 +45,9 @@ const transactionSlice = createSlice({
     },
     setScannerActiveOption(state: TransactionState, action: PayloadAction<ScannerOption>) {
       state.scannerActiveOption = action.payload;
+    },
+    setIsInspectDetail(state: TransactionState, action: PayloadAction<boolean>) {
+      state.isInspectTransference = action.payload;
     },
     setSenderOption(state: TransactionState, action: PayloadAction<SenderOption>) {
       state.sender.senderOption = action.payload;
@@ -103,6 +108,7 @@ export const {
   setSenderAsset,
   setSenderOption,
   setIsNewSender,
+  setIsInspectDetail,
   setScannerActiveOption,
   setSenderSubAccount,
   setSenderContact,

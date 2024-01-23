@@ -14,6 +14,7 @@ import {
   setIsNewSender,
   setReceiverOption,
   setReceiverIsManual,
+  setIsInspectDetail,
 } from "./TransactionReducer";
 
 import { Asset, SubAccount } from "@redux/models/AccountModels";
@@ -27,6 +28,9 @@ export function setSenderOptionAction(option: SenderOption) {
 }
 export function setIsNewSenderAction(isNewSender: boolean) {
   store.dispatch(setIsNewSender(isNewSender));
+}
+export function setIsInspectDetailAction(isInspectDetail: boolean) {
+  store.dispatch(setIsInspectDetail(isInspectDetail));
 }
 export function setSenderSubAccountAction(subAccount: SubAccount) {
   store.dispatch(setSenderSubAccount(subAccount));

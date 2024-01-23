@@ -22,7 +22,7 @@ export function formatSubAccountIds(subAccounts: SubAccountContact[]) {
     let formattedSubAccountId = subAccount.subaccount_index.trim();
     let isSubAccountValid = true;
 
-    if (formattedSubAccountId.startsWith("0x")) {
+    if (formattedSubAccountId?.startsWith("0x")) {
       formattedSubAccountId = formattedSubAccountId.substring(2);
     }
     formattedSubAccountId = removeLeadingZeros(formattedSubAccountId);
@@ -105,7 +105,7 @@ export function validateSubaccounts(newSubAccounts: SubAccountContact[]) {
 
 export function isHexadecimalValid(hexadecimal: string) {
   const trimmedHex = hexadecimal.trim();
-  const normalizedHex = trimmedHex.startsWith("0x") ? trimmedHex.slice(2) : trimmedHex;
+  const normalizedHex = trimmedHex?.startsWith("0x") ? trimmedHex.slice(2) : trimmedHex;
   return normalizedHex.length < 65 && /^[a-fA-F0-9]+$/.test(normalizedHex);
 }
 
