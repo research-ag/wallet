@@ -41,7 +41,7 @@ export default function ReceiverManual() {
     <div className="flex flex-col gap-2">
       <CustomInput
         className="rounded-md"
-        value={receiver.thirdNewContact.principal}
+        value={receiver?.thirdNewContact?.principal}
         intent="secondary"
         placeholder="Principal"
         onChange={onPrincipalChange}
@@ -49,7 +49,7 @@ export default function ReceiverManual() {
       <div className="w-20">
         <CustomInput
           className="rounded-md"
-          value={receiver.thirdNewContact.subAccountId}
+          value={receiver?.thirdNewContact?.subAccountId}
           intent="secondary"
           placeholder={t("sub-acc")}
           onChange={onSubAccountChange}
