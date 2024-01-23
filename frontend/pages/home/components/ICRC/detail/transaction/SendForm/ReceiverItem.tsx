@@ -4,7 +4,6 @@
 // import SendOutAccount from "../../../drawer/SendOutAccount";
 // import SendOwnAccount from "../../../drawer/SendOwnAccount";
 import ReceiverType from "./ReceiverType";
-import { useState } from "react";
 import { ReceiverOption } from "@/@types/transactions";
 import ReceiverOwner from "./ReceiverOwner";
 import ReceiverThird from "./ReceiverThird";
@@ -15,7 +14,6 @@ import { useTranslation } from "react-i18next";
 
 export default function ReceiverItem() {
   const { receiver } = useAppSelector((state) => state.transaction);
-  const [isManual, setIsManual] = useState<boolean>(false);
   const { t } = useTranslation();
   // const { selectedAsset, selectedAccount: baseAccount } = GeneralHook();
   // const {
@@ -57,12 +55,12 @@ export default function ReceiverItem() {
   return (
     <div className="w-full mt-4 rounded-md bg-ToBoxColor">
       <div className="w-full py-2 border-b border-BorderColor">
-        <ReceiverType isManual={isManual} setIsManual={setIsManual} />
+        <ReceiverType />
       </div>
 
       <div className="p-4">
         {receiver.receiverOption === ReceiverOption.own && <ReceiverOwner />}
-        {receiver.receiverOption === ReceiverOption.third && <ReceiverThird isManual={isManual} />}
+        {receiver.receiverOption === ReceiverOption.third && <ReceiverThird />}
       </div>
 
       <div className="flex p-4">

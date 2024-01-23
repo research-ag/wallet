@@ -24,6 +24,7 @@ export const initialTransactionState = {
   },
   receiver: {
     receiverOption: ReceiverOption.third,
+    isManual: false,
   },
 } as TransactionState;
 
@@ -64,13 +65,16 @@ const transactionSlice = createSlice({
       state.sender.allowanceContactSubAccount = {} as ContactSubAccount;
       state.sender.subAccount = {} as SubAccount;
     },
+    setReceiverOption(state: TransactionState, action: PayloadAction<ReceiverOption>) {
+      state.receiver.receiverOption = action.payload;
+    },
+    setReceiverIsManual(state: TransactionState, action: PayloadAction<boolean>) {
+      state.receiver.isManual = action.payload;
+    },
     setReceiverOwnSubAccount(state: TransactionState, action: PayloadAction<SubAccount>) {
       state.receiver.ownSubAccount = action.payload;
       state.receiver.thirdContactSubAccount = {} as ContactSubAccount;
       state.receiver.thirdNewContact = {} as NewContact;
-    },
-    setReceiverOption(state: TransactionState, action: PayloadAction<ReceiverOption>) {
-      state.receiver.receiverOption = action.payload;
     },
     setReceiverNewContact(state: TransactionState, action: PayloadAction<NewContact>) {
       state.receiver.thirdNewContact = action.payload;
@@ -103,6 +107,7 @@ export const {
   setSenderSubAccount,
   setSenderContact,
   setSenderContactNew,
+  setReceiverIsManual,
   setReceiverOption,
   setReceiverOwnSubAccount,
   setReceiverNewContact,

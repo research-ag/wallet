@@ -13,6 +13,7 @@ import {
   setSenderOption,
   setIsNewSender,
   setReceiverOption,
+  setReceiverIsManual,
 } from "./TransactionReducer";
 
 import { Asset, SubAccount } from "@redux/models/AccountModels";
@@ -38,6 +39,9 @@ export function setSenderContactNewAction(newContact: NewContact) {
 }
 export function setReceiverOptionAction(option: ReceiverOption) {
   store.dispatch(setReceiverOption(option));
+}
+export function setReceiverIsManualAction(isManual: boolean) {
+  store.dispatch(setReceiverIsManual(isManual));
 }
 export function setReceiverOwnSubAccountAction(subAccount: SubAccount) {
   store.dispatch(setReceiverOwnSubAccount(subAccount));

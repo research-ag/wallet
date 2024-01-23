@@ -39,10 +39,17 @@ export default function ReceiverManual() {
 
   return (
     <div className="flex flex-col gap-2">
-      <CustomInput className="rounded-md" intent="secondary" placeholder="Principal" onChange={onPrincipalChange} />
+      <CustomInput
+        className="rounded-md"
+        value={receiver.thirdNewContact.principal}
+        intent="secondary"
+        placeholder="Principal"
+        onChange={onPrincipalChange}
+      />
       <div className="w-20">
         <CustomInput
           className="rounded-md"
+          value={receiver.thirdNewContact.subAccountId}
           intent="secondary"
           placeholder={t("sub-acc")}
           onChange={onSubAccountChange}

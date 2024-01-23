@@ -1,65 +1,59 @@
 import { CustomInput } from "@components/Input";
 import { ReactComponent as SearchIcon } from "@assets/svg/files/icon-search.svg";
-import { ReactComponent as QRScanIcon } from "@assets/svg/files/qr.svg";
-import { ReactComponent as SendUserIcon } from "@assets/svg/files/send-user-icon.svg";
-import { useAppSelector } from "@redux/Store";
-import { useMemo } from "react";
-import { ContactSubAccount, ScannerOption } from "@/@types/transactions";
-import { setScannerActiveOptionAction } from "@redux/transaction/TransactionActions";
+import { ChangeEvent, useState } from "react";
+import { setReceiverIsManualAction, setReceiverNewContactAction } from "@redux/transaction/TransactionActions";
+import { useTranslation } from "react-i18next";
+import { decodeIcrcAccount } from "@dfinity/ledger";
+import { subUint8ArrayToHex } from "@/utils";
+import ContactSuffix from "./ContactSuffix";
 
 export default function ReceiverContactBook() {
-  return <CustomInput prefix={<SearchIcon className="mx-2" />} sufix={<ContactSuffix />} />;
-}
-
-function ContactSuffix() {
-  const { sender } = useAppSelector((state) => state.transaction);
-  const { contacts } = useAppSelector((state) => state.contacts);
-
-  const filteredContacts = useMemo(() => {
-    if (!contacts || !contacts.length) return [];
-    const allowanceContacts: ContactSubAccount[] = [];
-
-    for (let contactIndex = 0; contactIndex < contacts.length; contactIndex++) {
-      const currentContact = contacts[contactIndex];
-
-      const currentContactAsset = currentContact?.assets?.find(
-        (asset) => asset?.tokenSymbol === sender?.asset?.tokenSymbol,
-      );
-
-      currentContactAsset?.subaccounts?.forEach((subAccount) => {
-        const receiverContact = {
-          contactName: currentContact.name,
-          contactPrincipal: currentContact.principal,
-          contactAccountIdentifier: currentContact.accountIdentier,
-          assetLogo: currentContactAsset?.logo,
-          assetSymbol: currentContactAsset?.symbol,
-          assetTokenSymbol: currentContactAsset?.tokenSymbol,
-          assetAddress: currentContactAsset?.address,
-          assetDecimal: currentContactAsset?.decimal,
-          assetShortDecimal: currentContactAsset?.shortDecimal,
-          assetName: currentContactAsset?.symbol,
-          subAccountIndex: subAccount?.subaccount_index,
-          subAccountId: subAccount?.sub_account_id,
-          subAccountAllowance: subAccount?.allowance,
-          subAccountName: subAccount?.name,
-        };
-
-        allowanceContacts.push(receiverContact);
-      });
-    }
-
-    return allowanceContacts;
-  }, [sender, contacts]);
-
-  // function onSelectContact() {}
+  const [ICRCAccountString, setICRCAccountString] = useState<string>("");
+  const { t } = useTranslation();
 
   return (
-    <div className="flex flex-row items-center justify-center gap-2 mx-2">
-      <SendUserIcon className="cursor-pointer" />
-      <QRScanIcon onClick={onSenderScannerShow} className="cursor-pointer" />
-    </div>
+    <CustomInput
+      prefix={<SearchIcon className="mx-2" />}
+      sufix={<ContactSuffix />}
+      intent="secondary"
+      value={ICRCAccountString}
+      // border={errAddress ? "error" : undefined}
+      placeholder={t("icrc.account")}
+      onChange={onInputChange}
+      onKeyUp={onEnterPress}
+    />
   );
-  function onSenderScannerShow() {
-    setScannerActiveOptionAction(ScannerOption.receiver);
+
+  function onInputChange(e: ChangeEvent<HTMLInputElement>) {
+    // TODO: validate like the following
+    // setNewAccount(e.target.value);
+    // if (newAccountErr !== "") setNewAccountErr("");
+    // if (e.target.value.trim() !== "")
+    //   try {
+    //     decodeIcrcAccount(e.target.value);
+    //     setErrAddress(false);
+    //   } catch {
+    //     setErrAddress(true);
+    //   }
+    // else setErrAddress(false);
+
+    setICRCAccountString(e.target.value.trim());
+  }
+  function onEnterPress(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Enter") {
+      console.log(ICRCAccountString);
+      handlerSetReceiver();
+    }
+  }
+  function handlerSetReceiver() {
+    // TODO: implement logic that decode and validate icrcAccount string
+    const decoded = decodeIcrcAccount(ICRCAccountString);
+
+    const icrcAccount = {
+      principal: decoded.owner.toText(),
+      subAccountId: `0x${subUint8ArrayToHex(decoded.subaccount)}`,
+    };
+    setReceiverNewContactAction(icrcAccount);
+    setReceiverIsManualAction(true);
   }
 }

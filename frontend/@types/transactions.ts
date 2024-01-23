@@ -39,6 +39,7 @@ export interface NewContact {
 }
 
 export interface ReceiverState {
+  isManual: boolean;
   receiverOption: ReceiverOption;
   ownSubAccount: SubAccount;
   thirdNewContact: NewContact;
