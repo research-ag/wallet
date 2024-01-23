@@ -2,14 +2,14 @@ import { getAccountIdentifier, hexToNumber } from "@/utils";
 import { AssetContact, Contact } from "@redux/models/ContactsModels";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import bigInt from "big-integer";
+import { db } from "@/database/db";
+import store from "@redux/Store";
 
 interface ContactsState {
-  storageCode: string;
   contacts: Contact[];
 }
 
 const initialState: ContactsState = {
-  storageCode: "",
   contacts: [],
 };
 
@@ -17,40 +17,26 @@ const contactsSlice = createSlice({
   name: "contacts",
   initialState,
   reducers: {
-    setStorageCode(state, action: PayloadAction<string>) {
-      state.storageCode = action.payload;
-    },
-    setContacts(state, action: PayloadAction<Contact[]>) {
+    setReduxContacts(state, action: PayloadAction<Contact[]>) {
       state.contacts = action.payload;
-
-      setLocalContacts(action.payload, state.storageCode);
     },
-    addContact(state, action: PayloadAction<Contact>) {
-      const auxContact = { ...action.payload, accountIdentier: getAccountIdentifier(action.payload.principal, 0) };
-      const auxContacts = [...state.contacts, auxContact];
-      state.contacts = auxContacts;
-      setLocalContacts(auxContacts, state.storageCode);
+    addContact(_, action: PayloadAction<Contact>) {
+      db()
+        .addContact({ ...action.payload, accountIdentier: getAccountIdentifier(action.payload.principal, 0) })
+        .then();
     },
-    deleteContatc(state, action: PayloadAction<string>) {
-      const auxContacts = state.contacts.filter((cnts) => cnts.principal !== action.payload);
-      state.contacts = auxContacts;
-      setLocalContacts(auxContacts, state.storageCode);
+    deleteContatc(_, action: PayloadAction<string>) {
+      db().deleteContact(action.payload).then();
     },
     editContact: {
       reducer(
-        state,
+        _,
         action: PayloadAction<{
           editedContact: Contact;
           pastPrincipal: string;
         }>,
       ) {
-        const auxContacts = state.contacts.map((cnts) => {
-          if (cnts.principal === action.payload.pastPrincipal) {
-            return action.payload.editedContact;
-          } else return cnts;
-        });
-        state.contacts = auxContacts;
-        setLocalContacts(auxContacts, state.storageCode);
+        db().updateContact(action.payload.pastPrincipal, action.payload.editedContact).then();
       },
       prepare(editedContact: Contact, pastPrincipal: string) {
         return {
@@ -60,20 +46,22 @@ const contactsSlice = createSlice({
     },
     addAssetToContact: {
       reducer(
-        state,
+        _,
         action: PayloadAction<{
           asset: AssetContact[];
           pastPrincipal: string;
         }>,
       ) {
-        const auxContacts = state.contacts.map((cnts) => {
-          if (cnts.principal === action.payload.pastPrincipal) {
-            return { ...cnts, assets: [...cnts.assets, ...action.payload.asset] };
-          } else return cnts;
-        });
-
-        state.contacts = auxContacts;
-        setLocalContacts(auxContacts, state.storageCode);
+        db()
+          .getContact(action.payload.pastPrincipal)
+          .then(async (cnt) => {
+            if (cnt) {
+              await db().updateContact(action.payload.pastPrincipal, {
+                ...cnt,
+                assets: [...cnt.assets, ...action.payload.asset],
+              });
+            }
+          });
       },
       prepare(asset: AssetContact[], pastPrincipal: string) {
         return {
@@ -83,25 +71,31 @@ const contactsSlice = createSlice({
     },
     editAssetName: {
       reducer(
-        state,
+        _,
         action: PayloadAction<{
           tokenSymbol: string;
           symbol: string;
         }>,
       ) {
-        const auxContacts = state.contacts.map((cnts) => {
-          return {
-            ...cnts,
-            assets: cnts.assets.map((asst) => {
-              if (asst.tokenSymbol === action.payload.tokenSymbol) {
-                return { ...asst, symbol: action.payload.symbol };
-              } else return asst;
-            }),
-          };
-        });
-
-        state.contacts = auxContacts;
-        setLocalContacts(auxContacts, state.storageCode);
+        setTimeout(async () => {
+          const affectedContacts: Contact[] = [];
+          for (const cnt of await db().getContacts()) {
+            let affected = false;
+            const newDoc = {
+              ...cnt,
+              assets: cnt.assets.map((asst) => {
+                if (asst.tokenSymbol === action.payload.tokenSymbol) {
+                  affected = true;
+                  return { ...asst, symbol: action.payload.symbol };
+                } else return asst;
+              }),
+            };
+            if (affected) {
+              affectedContacts.push(newDoc);
+            }
+          }
+          await Promise.all(affectedContacts.map((c) => db().updateContact(c.principal, c)));
+        }, 0);
       },
       prepare(tokenSymbol: string, symbol: string) {
         return {
@@ -111,7 +105,7 @@ const contactsSlice = createSlice({
     },
     addContactSubacc: {
       reducer(
-        state,
+        _,
         action: PayloadAction<{
           principal: string;
           tokenSymbol: string;
@@ -121,39 +115,38 @@ const contactsSlice = createSlice({
           allowance?: { allowance: string; expires_at: string } | undefined;
         }>,
       ) {
-        const auxContacts = state.contacts.map((contact: Contact) => {
-          if (contact.principal !== action.payload.principal) return contact;
-          else {
-            return {
-              ...contact,
-              assets: contact.assets.map((asset) => {
-                if (asset.tokenSymbol !== action.payload.tokenSymbol) {
-                  return asset;
-                } else {
-                  return {
-                    ...asset,
-                    subaccounts: [
-                      ...asset.subaccounts,
-                      {
-                        name: action.payload.newName,
-                        subaccount_index: action.payload.newIndex,
-                        sub_account_id: action.payload.subAccountId,
-                        allowance: action.payload.allowance,
-                      },
-                    ].sort(
-                      (a, b) =>
-                        hexToNumber(`0x${a.subaccount_index}`)?.compare(
-                          hexToNumber(`0x${b.subaccount_index}`) || bigInt(0),
-                        ) || 0,
-                    ),
-                  };
-                }
-              }),
-            };
-          }
-        });
-        state.contacts = auxContacts;
-        setLocalContacts(auxContacts, state.storageCode);
+        db()
+          .getContact(action.payload.principal)
+          .then(async (contact) => {
+            if (contact) {
+              await db().updateContact(action.payload.principal, {
+                ...contact,
+                assets: contact.assets.map((asset) => {
+                  if (asset.tokenSymbol !== action.payload.tokenSymbol) {
+                    return asset;
+                  } else {
+                    return {
+                      ...asset,
+                      subaccounts: [
+                        ...asset.subaccounts,
+                        {
+                          name: action.payload.newName,
+                          subaccount_index: action.payload.newIndex,
+                          sub_account_id: action.payload.subAccountId,
+                          allowance: action.payload.allowance,
+                        },
+                      ].sort(
+                        (a, b) =>
+                          hexToNumber(`0x${a.subaccount_index}`)?.compare(
+                            hexToNumber(`0x${b.subaccount_index}`) || bigInt(0),
+                          ) || 0,
+                      ),
+                    };
+                  }
+                }),
+              });
+            }
+          });
       },
       prepare(
         principal: string,
@@ -170,7 +163,7 @@ const contactsSlice = createSlice({
     },
     editContactSubacc: {
       reducer(
-        state,
+        _,
         action: PayloadAction<{
           principal: string;
           tokenSymbol: string;
@@ -180,43 +173,42 @@ const contactsSlice = createSlice({
           allowance: { allowance: string; expires_at: string } | undefined;
         }>,
       ) {
-        const auxContacts = state.contacts.map((contact) => {
-          if (contact.principal !== action.payload.principal) return contact;
-          else {
-            return {
-              ...contact,
-              assets: contact.assets.map((asset) => {
-                if (asset.tokenSymbol !== action.payload.tokenSymbol) {
-                  return asset;
-                } else {
-                  return {
-                    ...asset,
-                    subaccounts: asset.subaccounts
-                      .map((subAccount) => {
-                        if (subAccount.subaccount_index !== action.payload.subIndex) return subAccount;
-                        else {
-                          return {
-                            name: action.payload.newName,
-                            subaccount_index: action.payload.newIndex,
-                            sub_account_id: `0x${action.payload.newIndex}`,
-                            allowance: action.payload.allowance,
-                          };
-                        }
-                      })
-                      .sort(
-                        (a, b) =>
-                          hexToNumber(`0x${a.subaccount_index}`)?.compare(
-                            hexToNumber(`0x${b.subaccount_index}`) || bigInt(0),
-                          ) || 0,
-                      ),
-                  };
-                }
-              }),
-            };
-          }
-        });
-        state.contacts = auxContacts;
-        setLocalContacts(auxContacts, state.storageCode);
+        db()
+          .getContact(action.payload.principal)
+          .then(async (contact) => {
+            if (contact) {
+              await db().updateContact(action.payload.principal, {
+                ...contact,
+                assets: contact.assets.map((asset) => {
+                  if (asset.tokenSymbol !== action.payload.tokenSymbol) {
+                    return asset;
+                  } else {
+                    return {
+                      ...asset,
+                      subaccounts: asset.subaccounts
+                        .map((subAccount) => {
+                          if (subAccount.subaccount_index !== action.payload.subIndex) return subAccount;
+                          else {
+                            return {
+                              name: action.payload.newName,
+                              subaccount_index: action.payload.newIndex,
+                              sub_account_id: `0x${action.payload.newIndex}`,
+                              allowance: action.payload.allowance,
+                            };
+                          }
+                        })
+                        .sort(
+                          (a, b) =>
+                            hexToNumber(`0x${a.subaccount_index}`)?.compare(
+                              hexToNumber(`0x${b.subaccount_index}`) || bigInt(0),
+                            ) || 0,
+                        ),
+                    };
+                  }
+                }),
+              });
+            }
+          });
       },
       prepare(
         principal: string,
@@ -233,15 +225,12 @@ const contactsSlice = createSlice({
     },
     removeContact: {
       reducer(
-        state,
+        _,
         action: PayloadAction<{
           principal: string;
         }>,
       ) {
-        const auxContacts = state.contacts.filter((cnts) => cnts.principal !== action.payload.principal);
-
-        state.contacts = auxContacts;
-        setLocalContacts(auxContacts, state.storageCode);
+        db().deleteContact(action.payload.principal).then();
       },
       prepare(principal: string) {
         return {
@@ -251,21 +240,22 @@ const contactsSlice = createSlice({
     },
     removeContactAsset: {
       reducer(
-        state,
+        _,
         action: PayloadAction<{
           principal: string;
           tokenSymbol: string;
         }>,
       ) {
-        const auxContacts = state.contacts.map((cnts) => {
-          if (cnts.principal !== action.payload.principal) return cnts;
-          else {
-            return { ...cnts, assets: cnts.assets.filter((asst) => asst.tokenSymbol !== action.payload.tokenSymbol) };
-          }
-        });
-
-        state.contacts = auxContacts;
-        setLocalContacts(auxContacts, state.storageCode);
+        db()
+          .getContact(action.payload.principal)
+          .then(async (cnt) => {
+            if (cnt) {
+              await db().updateContact(action.payload.principal, {
+                ...cnt,
+                assets: cnt.assets.filter((asst) => asst.tokenSymbol !== action.payload.tokenSymbol),
+              });
+            }
+          });
       },
       prepare(principal: string, tokenSymbol: string) {
         return {
@@ -275,37 +265,34 @@ const contactsSlice = createSlice({
     },
     removeContactSubacc: {
       reducer(
-        state,
+        _,
         action: PayloadAction<{
           principal: string;
           tokenSymbol: string;
           subIndex: string;
         }>,
       ) {
-        const auxContacts = state.contacts.map((contact) => {
-          if (contact.principal !== action.payload.principal) return contact;
-          else {
-            return {
-              ...contact,
-              assets: contact.assets.map((asset) => {
-                const subaccounts = asset.subaccounts.filter(
-                  (subAccount) => subAccount.subaccount_index !== action.payload.subIndex,
-                );
-
-                if (asset.tokenSymbol !== action.payload.tokenSymbol) {
-                  return asset;
-                }
-
-                return {
-                  ...asset,
-                  subaccounts,
-                };
-              }),
-            };
-          }
-        });
-        state.contacts = auxContacts;
-        setLocalContacts(auxContacts, state.storageCode);
+        db()
+          .getContact(action.payload.principal)
+          .then(async (contact) => {
+            if (contact) {
+              await db().updateContact(action.payload.principal, {
+                ...contact,
+                assets: contact.assets.map((asset) => {
+                  if (asset.tokenSymbol !== action.payload.tokenSymbol) {
+                    return asset;
+                  } else {
+                    return {
+                      ...asset,
+                      subaccounts: asset.subaccounts.filter(
+                        (subAccount) => subAccount.subaccount_index !== action.payload.subIndex,
+                      ),
+                    };
+                  }
+                }),
+              });
+            }
+          });
       },
       prepare(principal: string, tokenSymbol: string, subIndex: string) {
         return {
@@ -315,24 +302,17 @@ const contactsSlice = createSlice({
     },
     clearDataContacts(state) {
       state.contacts = [];
-      state.storageCode = "";
     },
   },
 });
 
-const setLocalContacts = (contacts: Contact[], code: string) => {
-  localStorage.setItem(
-    code,
-    JSON.stringify({
-      contacts: contacts,
-    }),
-  );
-};
+db()
+  .subscribeToAllContacts()
+  .subscribe((x) => store.dispatch(contactsSlice.actions.setReduxContacts(x)));
 
 export const {
+  setReduxContacts,
   clearDataContacts,
-  setStorageCode,
-  setContacts,
   addContact,
   deleteContatc,
   editContact,

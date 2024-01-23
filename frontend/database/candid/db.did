@@ -1,0 +1,82 @@
+/**
+* Main database functionality estructure.
+* Methods:
+*   - dump: Returns all stored records. Each record consist of
+*           Principal ID, and a set of Token and Contact collections
+*   - pullContacts: Returns all Contact records from database
+*   - pullTokens: Returns all Token records from database
+*   - pushContacts: Send a list of Contact records to be stored in databse
+*   - pushTokens: Send a list of Token records to be stored in database
+*/
+type WalletDatabase = service {
+  dump : () -> (
+    vec record {
+      principal;
+      record {
+        vec opt TokenDocument;
+        vec opt ContactDocument;
+      };
+    }
+  ) query;
+  pullContacts : (nat32, opt text, nat) -> (vec ContactDocument) query;
+  pullTokens : (nat32, opt text, nat) -> (vec TokenDocument) query;
+  pushContacts : (vec ContactDocument) -> (vec ContactDocument);
+  pushTokens : (vec TokenDocument) -> (vec TokenDocument);
+};
+
+/**
+* Template of a Token record
+*/
+type TokenDocument = record {
+  id_number : nat32;
+  address : text;
+  symbol : text;
+  name : text;
+  tokenName : text;
+  tokenSymbol : text;
+  decimal : text;
+  shortDecimal : text;
+  subAccounts : vec record {
+    numb : text;
+    name : text;
+    amount : text;
+    currency_amount : text;
+  };
+  fee : text;
+  index : opt text;
+  logo : opt text;
+  supportedStandards : [text];
+  deleted : bool;
+  updatedAt : nat32;
+};
+
+/**
+* Template of a Contact record
+*/
+type ContactDocument = record {
+  name : text;
+  "principal" : text;
+  assets : vec record {
+    symbol : text;
+    tokenSymbol : text;
+    logo : opt text;
+    subaccounts : vec record {
+      name : text;
+      subaccount_index : text;
+      sub_account_id : text;
+      allowance : opt record {
+        allowance : text;
+        expires_at : text;
+      };
+    };
+    address : text;
+    decimal : text;
+    shortDecimal : text;
+    supportedStandards : [text];
+  };
+  accountIdentier : opt text;
+  deleted : bool;
+  updatedAt : nat32;
+};
+
+service : () -> WalletDatabase;

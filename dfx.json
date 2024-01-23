@@ -6,11 +6,20 @@
       },
       "source": ["dist/"],
       "type": "assets"
+    },
+    "db": {
+      "main": "db-canister/main.mo",
+      "type": "motoko",
+      "optimize": "cycles",
+      "declarations": {
+        "output": "frontend/database/candid"
+      }
     }
   },
   "defaults": {
     "build": {
-      "packtool": ""
+      "args": "",
+      "packtool": "mops sources"
     }
   },
   "networks": {

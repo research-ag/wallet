@@ -10,12 +10,13 @@ import { setAuth } from "@redux/auth/AuthReducer";
 import { GlobalDebug } from "./RemoveLogs";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { queryClient, persister } from "./config/query";
+import { db } from "@/database/db";
 
 const App: React.FC = () => {
   const { i18n } = useTranslation();
 
   useEffect(() => {
-    const language = localStorage.getItem("language");
+    const language = db().getLanguage();
     if (language !== undefined && language !== null && language !== "" && language !== "null") {
       i18n.changeLanguage(language);
     }

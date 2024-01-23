@@ -1,4 +1,4 @@
-import { IconButton } from "@components/button";
+import IconButton from "@components/button/IconButton";
 import { ReactComponent as PlusIcon } from "@assets/svg/files/plus-icon.svg";
 import { t } from "i18next";
 import useAllowanceDrawer from "@pages/home/hooks/useAllowanceDrawer";

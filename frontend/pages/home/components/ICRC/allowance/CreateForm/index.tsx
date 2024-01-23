@@ -5,7 +5,7 @@ import SubAccountFormItem from "./SubAccountFormItem";
 import SpenderFormItem from "./SpenderFormItem";
 import AmountFormItem from "./AmountFormItem";
 import ExpirationFormItem from "./ExpirationFormItem";
-import { Button } from "@components/button";
+import Button from "@components/button/Button";
 import { AllowanceValidationErrorsEnum } from "@/@types/allowance";
 import { useTranslation } from "react-i18next";
 
@@ -53,7 +53,7 @@ export default function CreateForm() {
         {getErrorMessage() && <p className="text-TextErrorColor text-md">{getErrorMessage()}</p>}
 
         <Button
-          onClick={(e) => {
+          onClick={(e: any) => {
             e.preventDefault();
             createAllowance();
           }}

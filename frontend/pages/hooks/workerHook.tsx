@@ -6,22 +6,23 @@ import { allowanceCacheRefresh } from "@pages/home/helpers/allowanceCache";
 // import { AssetList, Metadata } from "@candid/metadata/service.did";
 import store, { useAppDispatch, useAppSelector } from "@redux/Store";
 import { getAllTransactionsICP, getAllTransactionsICRC1, updateAllBalances } from "@redux/assets/AssetActions";
-import { setLoading, setTokens, setTxWorker } from "@redux/assets/AssetReducer";
+import { setLoading, setTxWorker } from "@redux/assets/AssetReducer";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { Token } from "@redux/models/TokenModels";
 import timer_script from "@workers/timerWorker";
 import { useEffect } from "react";
+import { db } from "@/database/db";
 
 export const WorkerHook = () => {
   const dispatch = useAppDispatch();
   const { tokens, assets, txWorker } = useAppSelector((state) => state.asset);
-  const { authClient, userAgent } = useAppSelector((state) => state.auth);
+  const { userAgent } = useAppSelector((state) => state.auth);
 
   const getTransactionsWorker = async () => {
     assets.map((elementA: Asset) => {
       if (elementA.tokenSymbol === AssetSymbolEnum.Enum.ICP || elementA.tokenSymbol === AssetSymbolEnum.Enum.OGY) {
         elementA.subAccounts.map(async (elementS: SubAccount) => {
-          let transactionsICP = await getAllTransactionsICP(
+          const transactionsICP = await getAllTransactionsICP(
             elementS.sub_account_id,
             false,
             elementA.tokenSymbol === AssetSymbolEnum.Enum.OGY,
@@ -40,7 +41,7 @@ export const WorkerHook = () => {
         const selectedToken = tokens.find((tk: Token) => tk.symbol === elementA?.symbol);
         if (selectedToken) {
           elementA.subAccounts.map(async (elementS: SubAccount) => {
-            let transactionsICRC1 = await getAllTransactionsICRC1(
+            const transactionsICRC1 = await getAllTransactionsICRC1(
               selectedToken?.index || "",
               hexToUint8Array(elementS?.sub_account_id || "0x0"),
               false,
@@ -65,14 +66,11 @@ export const WorkerHook = () => {
 
   const getAssetsWorker = async () => {
     dispatch(setLoading(true));
-    const userData = localStorage.getItem(authClient);
-    if (userData) {
-      const userDataJson = JSON.parse(userData);
-      store.dispatch(setTokens(userDataJson.tokens));
-      await updateAllBalances(true, userAgent, userDataJson.tokens, false, false);
+    const dbTokens = await db().getTokens();
+    if (dbTokens) {
+      await updateAllBalances(true, userAgent, dbTokens);
     } else {
-      const { tokens } = await updateAllBalances(true, userAgent, defaultTokens, true, false);
-      store.dispatch(setTokens(tokens));
+      await updateAllBalances(true, userAgent, defaultTokens, true);
     }
     const myPrincipal = await userAgent.getPrincipal();
     await contactCacheRefresh(myPrincipal.toText());
@@ -81,7 +79,7 @@ export const WorkerHook = () => {
   };
 
   // TRANSACTION WEB WORKER
-  let timerWorker = new Worker(timer_script, { type: "module", credentials: "include" });
+  const timerWorker = new Worker(timer_script, { type: "module", credentials: "include" });
 
   timerWorker.onmessage = (event) => {
     if (event.data && event.data.debug) {
@@ -102,7 +100,7 @@ export const WorkerHook = () => {
   };
 
   useEffect(() => {
-    let postRequest = {
+    const postRequest = {
       message: true,
     };
 
