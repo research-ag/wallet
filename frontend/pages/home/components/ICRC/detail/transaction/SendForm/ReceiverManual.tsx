@@ -9,7 +9,8 @@ import { useTranslation } from "react-i18next";
 export default function ReceiverManual() {
   const { receiver } = useAppSelector((state) => state.transaction);
   const { t } = useTranslation();
-
+  
+  //   TODO: if the sender if allowance the receiver can not be the same sub and principal
   function onPrincipalChange(event: any) {
     const principalValue = event.target.value.trim();
 

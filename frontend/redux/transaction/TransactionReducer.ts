@@ -11,12 +11,14 @@ import {
   TransactionSenderOption,
   TransactionSenderOptionEnum,
 } from "@/@types/transactions";
+import { SendingStatusEnum, SendingStatus } from "@/const";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 interface TransactionState {
   scannerActiveOption: TransactionScannerOption;
   isInspectTransference: boolean;
+  sendingStatus: SendingStatus;
   sender: SenderState;
   receiver: ReceiverState;
   errors?: TransactionError[];
@@ -26,6 +28,7 @@ interface TransactionState {
 export const initialTransactionState = {
   scannerActiveOption: TransactionScannerOptionEnum.Values.none,
   isInspectTransference: false,
+  sendingStatus: SendingStatusEnum.Values.none,
   sender: {
     senderOption: TransactionSenderOptionEnum.Values.own,
     isNewSender: false,

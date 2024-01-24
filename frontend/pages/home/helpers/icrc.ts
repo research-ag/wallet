@@ -9,17 +9,11 @@ import utc from "dayjs/plugin/utc";
 dayjs.extend(utc);
 
 export async function transferAmount(
-  // Who will receiver the transaction
   receiverPrincipal: string,
-  // Asset canister address where the transaction will be sent
   assetAddress: string,
-  // Amount of the asset that will be sent
   transferAmount: string,
-  // How many decimal support this asset amount
   decimal: string,
-  // Sub Account id hex where is transaction is coming from
   fromSubAccount: string,
-  // Sub Account id hex where the transaction if going to
   toSubAccount: string,
 ) {
   try {
@@ -35,10 +29,10 @@ export async function transferAmount(
     await canister.transfer({
       to: {
         owner: Principal.fromText(receiverPrincipal),
-        subaccount: [hexToUint8Array("0")],
+        subaccount: [hexToUint8Array(toSubAccount)],
       },
       amount,
-      from_subaccount: hexToUint8Array("0"),
+      from_subaccount: hexToUint8Array(fromSubAccount),
     });
   } catch (error) {
     console.error(error);

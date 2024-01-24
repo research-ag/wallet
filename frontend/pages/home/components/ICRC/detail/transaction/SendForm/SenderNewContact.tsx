@@ -8,6 +8,32 @@ import { setSenderContactNewAction } from "@redux/transaction/TransactionActions
 export default function SenderNewContact() {
   const { sender } = useAppSelector((state) => state.transaction);
 
+  // FIXME: un controlled input
+  // TODO: validate that the principal and subacc has an active allowance
+
+  return (
+    <div className="flex flex-col gap-2">
+      <CustomInput
+        className="rounded-md"
+        value={sender?.newAllowanceContact?.principal}
+        placeholder="Principal"
+        onChange={onPrincipalChange}
+      />
+      <div className="w-20">
+        <CustomInput
+          className="rounded-md"
+          value={
+            sender?.newAllowanceContact?.subAccountId?.startsWith("0x")
+              ? sender?.newAllowanceContact?.subAccountId.slice(2)
+              : sender?.newAllowanceContact?.subAccountId
+          }
+          placeholder="Sub"
+          onChange={onSubAccountChange}
+        />
+      </div>
+    </div>
+  );
+
   function onPrincipalChange(event: any) {
     const principalValue = event.target.value.trim();
 
@@ -36,27 +62,4 @@ export default function SenderNewContact() {
     }
     // TODO: set sender invalid sub account id error bordered
   }
-
-  return (
-    <div className="flex flex-col gap-2">
-      <CustomInput
-        className="rounded-md"
-        value={sender?.newAllowanceContact?.principal}
-        placeholder="Principal"
-        onChange={onPrincipalChange}
-      />
-      <div className="w-20">
-        <CustomInput
-          className="rounded-md"
-          value={
-            sender?.newAllowanceContact?.subAccountId?.startsWith("0x")
-              ? sender?.newAllowanceContact?.subAccountId.slice(2)
-              : sender?.newAllowanceContact?.subAccountId
-          }
-          placeholder="Sub"
-          onChange={onSubAccountChange}
-        />
-      </div>
-    </div>
-  );
 }

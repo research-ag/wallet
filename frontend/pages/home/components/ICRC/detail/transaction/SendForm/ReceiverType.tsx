@@ -7,9 +7,9 @@ export default function ReceiverType() {
   const { receiver } = useAppSelector((state) => state.transaction);
   function onCheckedChange(checked: boolean) {
     setReceiverIsManualAction(checked);
-    console.log("checked chagned");
     clearReceiverAction();
   }
+  // TODO: add translations
   return (
     <div className="flex items-center justify-between w-full px-4">
       <p className="font-bold opacity-50 text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md">To</p>

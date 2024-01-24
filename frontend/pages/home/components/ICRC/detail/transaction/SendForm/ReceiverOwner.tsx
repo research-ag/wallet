@@ -14,20 +14,6 @@ export default function ReceiverOwner() {
     return assets.find((asset) => asset?.tokenSymbol === sender?.asset?.tokenSymbol);
   }, [assets, sender]);
 
-  function onSelect(option: SelectOption) {
-    const subAccount = currentAsset?.subAccounts.find((subAccount) => subAccount?.sub_account_id === option.value);
-    if (!subAccount) return;
-    setReceiverOwnSubAccountAction(subAccount);
-  }
-
-  function onSearchChange(searchValue: string) {
-    setSearchSubAccountValue(searchValue);
-  }
-
-  function onOpenChange() {
-    setSearchSubAccountValue(null);
-  }
-
   const options = useMemo(() => {
     const subAccounts = currentAsset?.subAccounts;
     const filterValue = searchSubAccountValue?.toLowerCase().trim() || "";
@@ -67,4 +53,18 @@ export default function ReceiverOwner() {
       onOpenChange={onOpenChange}
     />
   );
+
+  function onSelect(option: SelectOption) {
+    const subAccount = currentAsset?.subAccounts.find((subAccount) => subAccount?.sub_account_id === option.value);
+    if (!subAccount) return;
+    setReceiverOwnSubAccountAction(subAccount);
+  }
+
+  function onSearchChange(searchValue: string) {
+    setSearchSubAccountValue(searchValue);
+  }
+
+  function onOpenChange() {
+    setSearchSubAccountValue(null);
+  }
 }

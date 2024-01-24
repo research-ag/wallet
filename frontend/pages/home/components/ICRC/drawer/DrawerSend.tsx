@@ -5,7 +5,12 @@
 // import DialogSendConfirmation from "./DialogSendConfirmation";
 // import SendOwnAccount from "./SendOwnAccount";
 // import SendOutAccount from "./SendOutAccount";
+import { useState } from "react";
 import SendForm from "../detail/transaction/SendForm";
+import DialogSendConfirmation from "../detail/transaction/DialogSendConfirmation";
+import { SendingStatusEnum } from "@/const";
+import SenderInitializer from "../detail/transaction/SendForm/SenderInitializer";
+import SendFormConditionalRender from "../detail/transaction/SendForm/SendFormConditionalRender";
 
 interface DrawerSendProps {
   setDrawerOpen(value: boolean): void;
@@ -13,8 +18,23 @@ interface DrawerSendProps {
 }
 
 function DrawerSend(props: DrawerSendProps) {
+  const [modal, showConfirmationModal] = useState(false);
   if (!props.drawerOpen) return <></>;
-  return <SendForm />;
+  return (
+    <>
+      <SenderInitializer>
+        <SendFormConditionalRender showConfirmationModal={showConfirmationModal}>
+          <SendForm />
+        </SendFormConditionalRender>
+      </SenderInitializer>
+      <DialogSendConfirmation
+        modal={modal}
+        setDrawerOpen={props.setDrawerOpen}
+        showConfirmationModal={showConfirmationModal}
+        sendingStatus={SendingStatusEnum.Values.done}
+      />
+    </>
+  );
 }
 
 export default DrawerSend;
@@ -35,7 +55,7 @@ export default DrawerSend;
 //     newAccountErr,
 //     setNewAccountErr,
 //     modal,
-//     showModal,
+//     showConfirmationModal,
 //     qrView,
 //     setQRview,
 //     setOpenContactList,
@@ -106,7 +126,7 @@ export default DrawerSend;
 //           contactToSend={contactToSend}
 //           assetDropOpen={assetDropOpen}
 //           setAssetDropOpen={setAssetDropOpen}
-//           showModal={showModal}
+//           showConfirmationModal={showConfirmationModal}
 //           amount={amount}
 //           setDrawerOpen={setDrawerOpen}
 //           setSendingStatus={setSendingStatus}
@@ -119,7 +139,7 @@ export default DrawerSend;
 //       {modal && (
 //         <DialogSendConfirmation
 //           setDrawerOpen={setDrawerOpen}
-//           showModal={showModal}
+//           showConfirmationModal={showConfirmationModal}
 //           modal={modal}
 //           receiver={receiver}
 //           sendingStatus={sendingStatus}

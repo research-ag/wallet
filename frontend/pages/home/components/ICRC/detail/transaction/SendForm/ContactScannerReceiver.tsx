@@ -7,7 +7,7 @@ import { decodeIcrcAccount } from "@dfinity/ledger";
 import { subUint8ArrayToHex } from "@/utils";
 import ContactSuffix from "./ContactSuffix";
 
-export default function ReceiverContactBook() {
+export default function ContactScannerReceiver() {
   const [ICRCAccountString, setICRCAccountString] = useState<string>("");
   const { t } = useTranslation();
 

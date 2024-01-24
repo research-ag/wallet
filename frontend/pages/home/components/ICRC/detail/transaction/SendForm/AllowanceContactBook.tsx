@@ -144,6 +144,7 @@ export function AllowanceContactBook() {
   );
 
   function onSelect(contact: ContactSubAccount) {
+    // TODO: validate that the there is an active allowance
     setSenderContactAction(contact);
   }
 

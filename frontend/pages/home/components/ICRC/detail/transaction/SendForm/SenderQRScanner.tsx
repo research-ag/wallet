@@ -23,6 +23,7 @@ export default function SenderQRScanner() {
           };
           setSenderContactNewAction(scannedContact);
           onGoBack();
+          // TODO: validate the incoming has an allowance if not show error
           // TODO: what is used for the clipboard
           //   navigator.clipboard.writeText(value);
         } catch (error) {
