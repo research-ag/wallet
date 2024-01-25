@@ -33,9 +33,7 @@ export const ContactSubAccountSchema = z.object({
 export type ContactSubAccount = z.infer<typeof ContactSubAccountSchema>;
 
 export const NewContactSchema = z.object({
-  // TODO: validate principal
   principal: z.string(),
-  // TODO: validate subaccount id
   subAccountId: z.string(),
 });
 export type NewContact = z.infer<typeof NewContactSchema>;
@@ -70,19 +68,6 @@ export interface KeyValidationErrors {
 export const TransactionErrorFieldsEnum = z.enum(["sender", "receiver", "amount"]);
 export type TransactionErrorFields = z.infer<typeof TransactionErrorFieldsEnum>;
 
-export enum ValidationErrors {
-  INVALID_SENDER = "invalid.sender",
-  INVALID_RECEIVER = "invalid.receiver",
-  INVALID_SENDER_PRINCIPAL = "invalid.sender.principal",
-  INVALID_SENDER_SUB_ACCOUNT = "invalid.sender.subaccount",
-  INVALID_RECEIVER_PRINCIPAL = "invalid.receiver.principal",
-  INVALID_RECEIVER_SUB_ACCOUNT = "invalid-receiver.subaccount",
-  OWN_SENDER_NOT_ALLOWED = "own.sender.not.allowed",
-  SENDER_INVALID_ALLOWANCE = "sender.allowance.invalid",
-  BALANCE_NOT_ENOUGH = "not.enough.balance",
-  INVALID_AMOUNT = "invalid.amount",
-}
-
 export const ValidationErrorsEnum = z.enum([
   "invalid.sender",
   "invalid.receiver",
@@ -94,8 +79,11 @@ export const ValidationErrorsEnum = z.enum([
   "sender.allowance.invalid",
   "not.enough.balance",
   "invalid.amount",
+  "invalid.same.receiver.sender"
 ]);
 export type ValidationErrorsType = z.infer<typeof ValidationErrorsEnum>;
+
+// SENDER ERROR
 
 export const TransactionSenderOptionEnum = z.enum(["own", "allowance"]);
 export type TransactionSenderOption = z.infer<typeof TransactionSenderOptionEnum>;

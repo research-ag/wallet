@@ -57,8 +57,8 @@ export default function ContactBookReceiver() {
       .map(formatContact);
   }, [filteredContacts, searchSubAccountValue]);
 
-  // TODO: show error on no selected allowance
-//   TODO: if the sender if allowance the receiver can not be the same sub and principal
+  //   TODO: if the sender if allowance the receiver can not be the same sub and principal
+
   return (
     <Select
       onSelect={onSelect}

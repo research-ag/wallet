@@ -1,4 +1,4 @@
-import { validationMessage } from "@/helpers/schemas/allowance";
+
 import useCreateAllowance from "@pages/home/hooks/useCreateAllowance";
 import { useAppSelector } from "@redux/Store";
 import { useMemo } from "react";
@@ -8,6 +8,7 @@ import SpenderFormItem from "./SpenderFormItem";
 import AmountFormItem from "./AmountFormItem";
 import ExpirationFormItem from "./ExpirationFormItem";
 import { Button } from "@components/button";
+import { validationMessage } from "@pages/home/validators/allowance";
 
 export default function CreateForm() {
   const { contacts } = useAppSelector((state) => state.contacts);

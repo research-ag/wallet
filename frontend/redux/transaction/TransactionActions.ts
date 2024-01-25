@@ -16,6 +16,10 @@ import {
   setReceiverIsManual,
   setIsInspectDetail,
   setAmount,
+  setError,
+  removeError,
+  resetSendState,
+  setSendingStatus,
 } from "./TransactionReducer";
 
 import { Asset, SubAccount } from "@redux/models/AccountModels";
@@ -25,7 +29,9 @@ import {
   TransactionReceiverOption,
   TransactionScannerOption,
   TransactionSenderOption,
+  ValidationErrorsType,
 } from "@/@types/transactions";
+import { SendingStatus } from "@/const";
 
 export function setSenderAssetAction(asset: Asset) {
   store.dispatch(setSenderAsset(asset));
@@ -41,6 +47,15 @@ export function setIsInspectDetailAction(isInspectDetail: boolean) {
 }
 export function setAmountAction(amount: string) {
   store.dispatch(setAmount(amount));
+}
+export function setErrorAction(error: ValidationErrorsType) {
+  store.dispatch(setError(error));
+}
+export function removeErrorAction(error: ValidationErrorsType) {
+  store.dispatch(removeError(error));
+}
+export function setSendingStatusAction(status: SendingStatus) {
+  store.dispatch(setSendingStatus(status));
 }
 export function setSenderSubAccountAction(subAccount: SubAccount) {
   store.dispatch(setSenderSubAccount(subAccount));
@@ -74,4 +89,7 @@ export function clearSenderAction() {
 }
 export function clearReceiverAction() {
   store.dispatch(clearReceiver());
+}
+export function resetSendStateAction() {
+  store.dispatch(resetSendState());
 }

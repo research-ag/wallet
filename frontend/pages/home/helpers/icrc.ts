@@ -1,6 +1,6 @@
 import { TAllowance } from "@/@types/allowance";
 import { hexToUint8Array, toFullDecimal, toHoleBigInt } from "@/utils";
-import { ApproveParams, IcrcLedgerCanister } from "@dfinity/ledger";
+import { ApproveParams, IcrcLedgerCanister, TransferFromParams } from "@dfinity/ledger";
 import { Principal } from "@dfinity/principal";
 import store from "@redux/Store";
 import { AssetContact, SubAccountContact } from "@redux/models/ContactsModels";
@@ -8,15 +8,53 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 dayjs.extend(utc);
 
-export async function transferAmount(
-  receiverPrincipal: string,
-  assetAddress: string,
-  transferAmount: string,
-  decimal: string,
-  fromSubAccount: string,
-  toSubAccount: string,
-) {
+interface TransferAmountParams {
+  receiverPrincipal: string;
+  assetAddress: string;
+  transferAmount: string;
+  decimal: string;
+  fromSubAccount: string;
+  toSubAccount: string;
+}
+
+export async function transferAmount(params: TransferAmountParams) {
   try {
+    console.log(params);
+    // const { receiverPrincipal, transferAmount, assetAddress, decimal, fromSubAccount, toSubAccount } = params;
+
+    // const agent = store.getState().auth.userAgent;
+    // const canisterId = Principal.fromText(assetAddress);
+    // const canister = IcrcLedgerCanister.create({
+    //   agent,
+    //   canisterId,
+    // });
+
+    // const amount = toHoleBigInt(transferAmount, Number(decimal));
+
+    // await canister.transfer({
+    //   to: {
+    //     owner: Principal.fromText(receiverPrincipal),
+    //     subaccount: [hexToUint8Array(toSubAccount)],
+    //   },
+    //   amount,
+    //   from_subaccount: hexToUint8Array(fromSubAccount),
+    // });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+interface TransferFromAllowanceParams extends TransferAmountParams {
+  senderPrincipal: string;
+}
+
+export async function transferFromAllowance(params: TransferFromAllowanceParams) {
+  try {
+    const { receiverPrincipal, senderPrincipal, assetAddress, transferAmount, decimal, fromSubAccount, toSubAccount } =
+      params;
+
+    console.log(params);
+
     const agent = store.getState().auth.userAgent;
     const canisterId = Principal.fromText(assetAddress);
     const canister = IcrcLedgerCanister.create({
@@ -25,17 +63,29 @@ export async function transferAmount(
     });
 
     const amount = toHoleBigInt(transferAmount, Number(decimal));
-
-    await canister.transfer({
+    // FIXME: the sender is using the 0x0 account and not the spender_subaccount
+    const transferParams: TransferFromParams = {
+      // Where the allowance is created
+      from: {
+        owner: Principal.fromText(senderPrincipal),
+        subaccount: [],
+      },
+      // Any persona that can receive the money
       to: {
         owner: Principal.fromText(receiverPrincipal),
         subaccount: [hexToUint8Array(toSubAccount)],
       },
+      spender_subaccount: hexToUint8Array(fromSubAccount),
       amount,
-      from_subaccount: hexToUint8Array(fromSubAccount),
-    });
+    };
+
+    console.log(transferParams);
+
+    const response = await canister.transferFrom(transferParams);
+    console.log("allowance response", response);
+    return response;
   } catch (error) {
-    console.error(error);
+    console.log(error);
   }
 }
 

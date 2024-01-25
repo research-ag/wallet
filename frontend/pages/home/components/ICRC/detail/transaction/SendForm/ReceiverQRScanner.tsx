@@ -15,8 +15,6 @@ export default function ReceiverQRScanner() {
       qrView={true}
       onSuccess={(value: string) => {
         try {
-          //   TODO: if the sender if allowance the receiver can not be the same sub and principal
-
           const decoded = decodeIcrcAccount(value);
           const scannedContact = {
             principal: decoded.owner.toText(),

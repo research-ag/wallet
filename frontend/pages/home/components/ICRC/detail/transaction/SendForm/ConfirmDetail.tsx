@@ -2,57 +2,122 @@ import { Button } from "@components/button";
 import SenderDetail from "./SenderDetail";
 import ReceiverDetail from "./ReceiverDetail";
 import TransactionAmount from "./TransactionAmount";
-import store, { useAppSelector } from "@redux/Store";
-import { transferAmount } from "@pages/home/helpers/icrc";
+import { useAppSelector } from "@redux/Store";
 import { Dispatch, SetStateAction } from "react";
 import useSend from "@pages/home/hooks/useSend";
-import { setIsInspectDetailAction } from "@redux/transaction/TransactionActions";
+import {
+  removeErrorAction,
+  setErrorAction,
+  setIsInspectDetailAction,
+  setSendingStatusAction,
+} from "@redux/transaction/TransactionActions";
+import { useTranslation } from "react-i18next";
+import { ValidationErrorsEnum } from "@/@types/transactions";
+import { SendingStatusEnum } from "@/const";
+import { AssetHook } from "@pages/home/hooks/assetHook";
+import { transferAmount, transferFromAllowance } from "@pages/home/helpers/icrc";
 
 interface ConfirmDetailProps {
   showConfirmationModal: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailProps) {
-  const { sender } = useAppSelector((state) => state.transaction);
-  const { receiverPrincipal, receiverSubAccount, senderSubAccount, amount, enableSend } = useSend();
+  const { reloadBallance } = AssetHook();
+  const { t } = useTranslation();
+  const { sender, errors } = useAppSelector((state) => state.transaction);
+  const {
+    receiverPrincipal,
+    receiverSubAccount,
+    senderSubAccount,
+    amount,
+    enableSend,
+    transactionFee,
+    getSenderBalance,
+    isSenderAllowance,
+    senderPrincipal,
+  } = useSend();
 
   return (
-    <div className="w-full px-[2rem] grid grid-cols-1 gap-y-2">
+    <div className="grid w-full grid-cols-1 gap-y-2">
       <SenderDetail />
       <ReceiverDetail />
       <TransactionAmount />
-      <div className="flex justify-end mt-6">
+      <div className="flex items-center justify-end mt-6">
+        <p className="mr-4 text-md text-slate-color-error">{t(getError())}</p>
         <Button className="w-1/6 mr-2 font-bold bg-secondary-color-2" onClick={OnBack}>
-          Back
+          {t("back")}
         </Button>
-        <Button className="w-1/6 font-bold bg-primary-color" onClick={onDone}>
-          Done
+        <Button className="w-1/6 font-bold bg-primary-color" onClick={onDone} disabled={!enableSend}>
+          {t("next")}
         </Button>
       </div>
     </div>
   );
 
   async function onDone() {
-    // TODO: execute transaction and validate information
-    const assetAddress = sender.asset.address;
-    const decimal = sender.asset.decimal;
+    try {
+      const assetAddress = sender.asset.address;
+      const decimal = sender.asset.decimal;
 
-    if (enableSend) {
-      console.log({
-        assetAddress,
-        decimal,
-        senderSubAccount,
-        receiverPrincipal,
-        receiverSubAccount,
-        amount,
-      });
-      // await transferAmount(receiverPrincipal, assetAddress, amount, decimal, fromSubAccount, toSubAccount);
-      // TODO: once the transaction is completed show update modal info
-      // showConfirmationModal(true);
+      if (enableSend) {
+        const balance = await getSenderBalance();
+        const maxAmount = Number(balance) - Number(transactionFee);
+
+        if (!(Number(balance) >= maxAmount)) {
+          setErrorAction(ValidationErrorsEnum.Values["not.enough.balance"]);
+          return;
+        }
+        removeErrorAction(ValidationErrorsEnum.Values["not.enough.balance"]);
+
+        if (assetAddress && decimal && senderSubAccount && receiverPrincipal && receiverSubAccount && amount) {
+          // setSendingStatusAction(SendingStatusEnum.Values.sending);
+          // showConfirmationModal(true);
+
+          console.log("request is starting");
+
+          if (isSenderAllowance()) {
+            const allowanceResponse = await transferFromAllowance({
+              receiverPrincipal,
+              senderPrincipal,
+              assetAddress,
+              transferAmount: amount,
+              decimal,
+              fromSubAccount: senderSubAccount,
+              toSubAccount: receiverSubAccount,
+            });
+            console.log("Allowance transfer", allowanceResponse);
+          } else {
+            const response = await transferAmount({
+              receiverPrincipal,
+              assetAddress,
+              transferAmount: amount,
+              decimal,
+              fromSubAccount: senderSubAccount,
+              toSubAccount: receiverSubAccount,
+            });
+            console.log("No allowance transfer", response);
+          }
+
+          // setSendingStatusAction(SendingStatusEnum.Values.done);
+        }
+      }
+    } catch (error) {
+      // setSendingStatusAction(SendingStatusEnum.Values.error);
+    } finally {
+      // reloadBallance();
     }
   }
 
   function OnBack() {
     setIsInspectDetailAction(false);
+  }
+
+  function getError() {
+    switch (true) {
+      case errors?.includes(ValidationErrorsEnum.Values["not.enough.balance"]):
+        return ValidationErrorsEnum.Values["not.enough.balance"];
+      default:
+        return "";
+    }
   }
 }

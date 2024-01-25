@@ -49,38 +49,40 @@ export default function ContactSuffix() {
 
   return (
     <div className="relative flex flex-row items-center justify-center gap-2 mx-2">
-      <DropdownMenu.Root>
-        <DropdownMenu.Trigger asChild>
-          <button className="p-0 m-0">
-            <SendUserIcon className="cursor-pointer" />
-          </button>
-        </DropdownMenu.Trigger>
+      {filteredContacts.length > 0 && (
+        <DropdownMenu.Root>
+          <DropdownMenu.Trigger asChild>
+            <button className="p-0 m-0">
+              <SendUserIcon className="cursor-pointer" />
+            </button>
+          </DropdownMenu.Trigger>
 
-        <DropdownMenu.Portal>
-          <DropdownMenu.Content className="absolute w-[20rem] bg-level-1-color border border-primary-color  z-[1000] -right-16  scroll-y-light rounded-lg  shadow-sm ">
-            {filteredContacts.map((contact, index) => {
-              const { contactName, subAccountName } = contact;
-              return (
-                <DropdownMenu.Item
-                  className="flex items-center justify-start px-2 py-2 bg-opacity-50 cursor-pointer hover:bg-RadioCheckColor"
-                  key={`${contact.contactPrincipal}-${index}`}
-                  onSelect={() => onSelectContact(contact)}
-                >
-                  <div className="flex items-center justify-between mr-2">
-                    <AvatarEmpty title={contactName} size="large" />
-                    <div className="ml-2">
-                      <p className="text-left">
-                        {contactName} {`[${subAccountName}]`}
-                      </p>
-                      <p>{contact.subAccountId}</p>
+          <DropdownMenu.Portal>
+            <DropdownMenu.Content className="absolute w-[20rem] bg-level-1-color border border-primary-color  z-[1000] -right-16  scroll-y-light rounded-lg  shadow-sm ">
+              {filteredContacts.map((contact, index) => {
+                const { contactName, subAccountName } = contact;
+                return (
+                  <DropdownMenu.Item
+                    className="flex items-center justify-start px-2 py-2 bg-opacity-50 cursor-pointer hover:bg-RadioCheckColor"
+                    key={`${contact.contactPrincipal}-${index}`}
+                    onSelect={() => onSelectContact(contact)}
+                  >
+                    <div className="flex items-center justify-between mr-2">
+                      <AvatarEmpty title={contactName} size="large" />
+                      <div className="ml-2">
+                        <p className="text-left">
+                          {contactName} {`[${subAccountName}]`}
+                        </p>
+                        <p>{contact.subAccountId}</p>
+                      </div>
                     </div>
-                  </div>
-                </DropdownMenu.Item>
-              );
-            })}
-          </DropdownMenu.Content>
-        </DropdownMenu.Portal>
-      </DropdownMenu.Root>
+                  </DropdownMenu.Item>
+                );
+              })}
+            </DropdownMenu.Content>
+          </DropdownMenu.Portal>
+        </DropdownMenu.Root>
+      )}
       <QRScanIcon onClick={onSenderScannerShow} className="cursor-pointer" />
     </div>
   );

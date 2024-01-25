@@ -23,7 +23,6 @@ export default function SenderAsset() {
       .map(formatAsset);
   }, [searchAsset, assets]);
 
-  // TODO: if not selected asset show bordered error
   return (
     <Select
       onSelect={onAssetChange}

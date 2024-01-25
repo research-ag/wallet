@@ -34,7 +34,5 @@ export default function SenderInitializer(props: SenderInitializerProps) {
     }
   }, [selectedAccount]);
 
-  // TODO: if there is not register contact with allowance set new contact book as default
-
   return children;
 }

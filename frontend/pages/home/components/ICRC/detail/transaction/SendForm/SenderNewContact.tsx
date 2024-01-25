@@ -1,25 +1,26 @@
-import { NewContact } from "@/@types/transactions";
+import { NewContact, ValidationErrorsEnum } from "@/@types/transactions";
 import { isHexadecimalValid } from "@/utils/checkers";
 import { validatePrincipal } from "@/utils/identity";
 import { CustomInput } from "@components/Input";
 import { useAppSelector } from "@redux/Store";
-import { setSenderContactNewAction } from "@redux/transaction/TransactionActions";
+import { removeErrorAction, setErrorAction, setSenderContactNewAction } from "@redux/transaction/TransactionActions";
+import { useTranslation } from "react-i18next";
 
 export default function SenderNewContact() {
-  const { sender } = useAppSelector((state) => state.transaction);
+  const { t } = useTranslation();
+  const { sender, errors } = useAppSelector((state) => state.transaction);
 
-  // FIXME: un controlled input
-  // TODO: validate that the principal and subacc has an active allowance
-
+  // TODO: sender can not be the account owner
   return (
     <div className="flex flex-col gap-2">
       <CustomInput
         className="rounded-md"
         value={sender?.newAllowanceContact?.principal}
-        placeholder="Principal"
+        placeholder={t("principal")}
         onChange={onPrincipalChange}
+        border={hasPrincipalError() ? "error" : "primary"}
       />
-      <div className="w-20">
+      <div className="w-[8rem]">
         <CustomInput
           className="rounded-md"
           value={
@@ -27,8 +28,9 @@ export default function SenderNewContact() {
               ? sender?.newAllowanceContact?.subAccountId.slice(2)
               : sender?.newAllowanceContact?.subAccountId
           }
-          placeholder="Sub"
+          placeholder={t("sub-acc")}
           onChange={onSubAccountChange}
+          border={hasSubAccountError() ? "error" : "primary"}
         />
       </div>
     </div>
@@ -37,29 +39,40 @@ export default function SenderNewContact() {
   function onPrincipalChange(event: any) {
     const principalValue = event.target.value.trim();
 
-    if (validatePrincipal(principalValue)) {
-      const newAllowanceContact: NewContact = {
-        ...sender.newAllowanceContact,
-        principal: principalValue,
-      };
-      setSenderContactNewAction(newAllowanceContact);
-      return;
+    if (!validatePrincipal(principalValue)) {
+      setErrorAction(ValidationErrorsEnum.Values["invalid.sender.principal"]);
+    } else {
+      removeErrorAction(ValidationErrorsEnum.Values["invalid.sender.principal"]);
     }
-
-    // TODO: set sender invalid principal error bordered
+    const newAllowanceContact: NewContact = {
+      ...sender.newAllowanceContact,
+      principal: principalValue,
+    };
+    setSenderContactNewAction(newAllowanceContact);
   }
 
   function onSubAccountChange(event: any) {
     const subAccountIndex = event.target.value.trim() as string;
 
-    if (isHexadecimalValid(subAccountIndex)) {
-      const newAllowanceContact: NewContact = {
-        ...sender.newAllowanceContact,
-        subAccountId: subAccountIndex?.startsWith("0x") ? subAccountIndex : `0x${subAccountIndex}`,
-      };
-      setSenderContactNewAction(newAllowanceContact);
-      return;
+    if (!isHexadecimalValid(subAccountIndex)) {
+      setErrorAction(ValidationErrorsEnum.Values["invalid.sender.subaccount"]);
+    } else {
+      removeErrorAction(ValidationErrorsEnum.Values["invalid.sender.subaccount"]);
     }
-    // TODO: set sender invalid sub account id error bordered
+
+    const newAllowanceContact: NewContact = {
+      ...sender.newAllowanceContact,
+      subAccountId: subAccountIndex?.startsWith("0x") ? subAccountIndex : `0x${subAccountIndex}`,
+    };
+
+    setSenderContactNewAction(newAllowanceContact);
+  }
+
+  function hasPrincipalError() {
+    return errors?.includes(ValidationErrorsEnum.Values["invalid.sender.principal"]);
+  }
+
+  function hasSubAccountError() {
+    return errors?.includes(ValidationErrorsEnum.Values["invalid.sender.subaccount"]);
   }
 }

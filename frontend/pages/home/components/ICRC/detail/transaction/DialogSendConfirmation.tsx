@@ -9,6 +9,7 @@ import { SendingStatus, SendingStatusEnum } from "@/const";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "@redux/Store";
 import useSend from "@pages/home/hooks/useSend";
+import { resetSendStateAction } from "@redux/transaction/TransactionActions";
 
 interface DialogSendConfirmationProps {
   setDrawerOpen(value: boolean): void;
@@ -72,6 +73,7 @@ const DialogSendConfirmation = ({
   function onClose() {
     setDrawerOpen(false);
     showConfirmationModal(false);
+    resetSendStateAction();
   }
 
   function getStatusMessage(status: string) {

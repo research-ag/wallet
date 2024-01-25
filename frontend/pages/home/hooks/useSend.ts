@@ -1,6 +1,7 @@
 import { toFullDecimal } from "@/utils";
 import { useAppSelector } from "@redux/Store";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
+import { checkAllowanceExist } from "../helpers/icrc";
 
 export default function useSend() {
   const { userPrincipal } = useAppSelector((state) => state.auth);
@@ -20,10 +21,6 @@ export default function useSend() {
     return "";
   }
 
-  function getAmount() {
-    return amount ? toFullDecimal(amount, Number(sender?.asset?.decimal) || 0) : "";
-  }
-
   function getSenderPrincipal() {
     if (sender?.newAllowanceContact?.principal) return sender?.newAllowanceContact?.principal;
     if (sender?.allowanceContactSubAccount?.contactPrincipal)
@@ -39,20 +36,68 @@ export default function useSend() {
     return "";
   }
 
+  async function getSenderBalance() {
+    try {
+      if (sender?.subAccount?.sub_account_id) {
+        return toFullDecimal(sender?.subAccount?.amount || "0", Number(sender?.asset?.decimal));
+      }
+
+      const principal = getSenderPrincipal();
+      const subAccount = getSenderSubAccount();
+      const assetAddress = sender?.asset?.address;
+      const decimal = sender?.asset?.decimal;
+
+      if (!principal || !subAccount || !assetAddress || !decimal) return;
+
+      const response = await checkAllowanceExist(principal, assetAddress, subAccount, Number(decimal));
+
+      return response?.allowance || "0";
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const getTransactionFee = useCallback(() => {
+    return toFullDecimal(sender?.asset?.subAccounts[0]?.transaction_fee || "0", Number(sender?.asset?.decimal));
+  }, []);
+
   const isSender = useMemo(
     () => Boolean(getSenderPrincipal() && getSenderSubAccount() && sender?.asset?.tokenSymbol),
     [sender],
   );
   const isReceiver = useMemo(() => Boolean(getReceiverPrincipal() && getReceiverSubAccount()), [receiver]);
 
+  function isSenderAllowance() {
+    return Boolean(
+      sender?.newAllowanceContact?.principal ||
+        sender?.allowanceContactSubAccount?.contactPrincipal ||
+        !sender?.subAccount?.sub_account_id,
+    );
+  }
+
+  function isSenderSameAsReceiver() {
+    const senderPrincipal = getSenderPrincipal();
+    const senderSubAccount = getSenderSubAccount();
+    const receiverPrincipal = getReceiverPrincipal();
+    const receiverSubAccount = getReceiverSubAccount();
+    return senderPrincipal === receiverPrincipal && senderSubAccount === receiverSubAccount;
+  }
+
+  function isSenderAllowanceOwn() {
+    const senderPrincipal = getSenderPrincipal();
+    const ownerPrincipal = userPrincipal.toText();
+    const isAllowance = isSenderAllowance();
+    return senderPrincipal === ownerPrincipal && isAllowance;
+  }
+
   const enableSend = useMemo(
     () =>
       Boolean(
         sender?.asset?.address &&
           sender?.asset?.decimal &&
+          amount &&
           getSenderSubAccount() &&
           getSenderPrincipal() &&
-          getAmount() &&
           getReceiverPrincipal() &&
           getReceiverSubAccount(),
       ),
@@ -64,7 +109,12 @@ export default function useSend() {
     receiverSubAccount: getReceiverSubAccount(),
     senderPrincipal: getSenderPrincipal(),
     senderSubAccount: getSenderSubAccount(),
-    amount: getAmount(),
+    transactionFee: getTransactionFee(),
+    getSenderBalance,
+    isSenderAllowance,
+    isSenderSameAsReceiver,
+    isSenderAllowanceOwn,
+    amount,
     enableSend,
     isSender,
     isReceiver,

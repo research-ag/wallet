@@ -25,8 +25,7 @@ export default function ReceiverItem() {
       <div className="flex p-4">
         {receiver.receiverOption === TransactionReceiverOptionEnum.Values.third && (
           <button onClick={onReceiverOptionChange}>
-            {/* TODO: add translations */}
-            <p className="text-md text-RadioCheckColor text-start">Transfer to own account</p>
+            <p className="text-md text-RadioCheckColor text-start">{t("transfer.between.accounts")}</p>
           </button>
         )}
         {receiver.receiverOption === TransactionReceiverOptionEnum.Values.own && (

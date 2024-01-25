@@ -1,28 +1,19 @@
 import { TransactionSenderOption, TransactionSenderOptionEnum } from "@/@types/transactions";
 import * as RadioGroup from "@radix-ui/react-radio-group";
 import { clearSenderAction, setSenderOptionAction } from "@redux/transaction/TransactionActions";
+import { useTranslation } from "react-i18next";
 
 interface SenderTypeProps {
   senderOption: TransactionSenderOption;
 }
 
 export default function SenderType(props: SenderTypeProps) {
+  const { t } = useTranslation();
   const { senderOption } = props;
-
-  const onValueChange = (selected: TransactionSenderOption) => {
-    if (senderOption !== selected) {
-      setSenderOptionAction(selected);
-
-      if (selected === TransactionSenderOptionEnum.Values.allowance) {
-        clearSenderAction();
-        return;
-      }
-    }
-  };
 
   return (
     <div className="flex items-center justify-between w-full px-4">
-      <p className="opacity-50 text-PrimaryTextColorLight dark:text-PrimaryTextColor">from</p>
+      <p className="opacity-50 text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("from")}</p>
 
       <RadioGroup.Root value={senderOption} onValueChange={onValueChange} className="flex">
         <div className="flex flex-row items-center p-1">
@@ -37,7 +28,7 @@ export default function SenderType(props: SenderTypeProps) {
           >
             <RadioGroup.Indicator className="flex items-center justify-center w-full h-full relative after:content-[''] after:block after:w-3 after:h-3 after:rounded-full after:bg-RadioCheckColor" />
           </RadioGroup.Item>
-          <p className="ml-4 opacity-50 text-PrimaryTextColorLight dark:text-PrimaryTextColor">Own</p>
+          <p className="ml-4 opacity-50 text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("own")}</p>
         </div>
         <div className="flex flex-row items-center p-1">
           <RadioGroup.Item
@@ -51,9 +42,20 @@ export default function SenderType(props: SenderTypeProps) {
           >
             <RadioGroup.Indicator className="flex items-center justify-center w-full h-full relative after:content-[''] after:block after:w-3 after:h-3 after:rounded-full after:bg-RadioCheckColor" />
           </RadioGroup.Item>
-          <p className="ml-4 opacity-50 text-PrimaryTextColorLight dark:text-PrimaryTextColor">Allowance</p>
+          <p className="ml-4 opacity-50 text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("allowance")}</p>
         </div>
       </RadioGroup.Root>
     </div>
   );
+
+  function onValueChange(selected: TransactionSenderOption) {
+    if (senderOption !== selected) {
+      setSenderOptionAction(selected);
+
+      if (selected === TransactionSenderOptionEnum.Values.allowance) {
+        clearSenderAction();
+        return;
+      }
+    }
+  }
 }

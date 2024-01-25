@@ -3,7 +3,6 @@ import { useMutation } from "@tanstack/react-query";
 
 import { TErrorValidation } from "@/@types/common";
 import { TAllowance } from "@/@types/allowance";
-import { allowanceValidationSchema, validationMessage } from "@/helpers/schemas/allowance";
 import { ICRCApprove, generateApproveAllowance } from "@/pages/home/helpers/icrc";
 import { validatePrincipal } from "@/utils/identity";
 import useAllowanceDrawer from "./useAllowanceDrawer";
@@ -14,6 +13,7 @@ import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 import { initialAllowanceState, setAllowances } from "@redux/allowance/AllowanceReducer";
 import { postAllowance } from "../services/allowance";
+import { allowanceValidationSchema, validationMessage } from "../validators/allowance";
 
 export default function useCreateAllowance() {
   const dispatch = useAppDispatch();

@@ -3,13 +3,13 @@ import {
   NewContact,
   ReceiverState,
   SenderState,
-  TransactionError,
   TransactionReceiverOption,
   TransactionReceiverOptionEnum,
   TransactionScannerOption,
   TransactionScannerOptionEnum,
   TransactionSenderOption,
   TransactionSenderOptionEnum,
+  ValidationErrorsType,
 } from "@/@types/transactions";
 import { SendingStatusEnum, SendingStatus } from "@/const";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
@@ -21,7 +21,7 @@ interface TransactionState {
   sendingStatus: SendingStatus;
   sender: SenderState;
   receiver: ReceiverState;
-  errors?: TransactionError[];
+  errors?: ValidationErrorsType[];
   amount?: string;
 }
 
@@ -67,6 +67,17 @@ const transactionSlice = createSlice({
     setAmount(state: TransactionState, action: PayloadAction<string>) {
       state.amount = action.payload;
     },
+    setError(state: TransactionState, action: PayloadAction<ValidationErrorsType>) {
+      if (!state.errors?.includes(action.payload)) {
+        state.errors = [...(state.errors ?? []), action.payload];
+      }
+    },
+    setSendingStatus(state: TransactionState, action: PayloadAction<SendingStatus>) {
+      state.sendingStatus = action.payload;
+    },
+    removeError(state: TransactionState, action: PayloadAction<ValidationErrorsType>) {
+      state.errors = state.errors?.filter((error) => error !== action.payload);
+    },
     setSenderSubAccount(state: TransactionState, action: PayloadAction<SubAccount>) {
       state.sender.subAccount = action.payload;
       state.sender.newAllowanceContact = {} as NewContact;
@@ -105,13 +116,24 @@ const transactionSlice = createSlice({
     },
     clearSender(state: TransactionState) {
       state.sender.newAllowanceContact = {} as NewContact;
+      state.errors = [];
       state.sender.allowanceContactSubAccount = {} as ContactSubAccount;
       state.sender.subAccount = {} as SubAccount;
     },
     clearReceiver(state: TransactionState) {
       state.receiver.thirdContactSubAccount = {} as ContactSubAccount;
+      state.errors = [];
       state.receiver.thirdNewContact = {} as NewContact;
       state.receiver.ownSubAccount = {} as SubAccount;
+    },
+    resetSendState(state: TransactionState) {
+      state.amount = initialTransactionState?.amount;
+      state.errors = initialTransactionState?.errors;
+      state.sender = initialTransactionState?.sender;
+      state.receiver = initialTransactionState?.receiver;
+      state.sendingStatus = initialTransactionState?.sendingStatus;
+      state.scannerActiveOption = initialTransactionState?.scannerActiveOption;
+      state.isInspectTransference = initialTransactionState?.isInspectTransference;
     },
   },
 });
@@ -123,6 +145,9 @@ export const {
   setIsInspectDetail,
   setScannerActiveOption,
   setAmount,
+  setError,
+  setSendingStatus,
+  removeError,
   setSenderSubAccount,
   setSenderContact,
   setSenderContactNew,
@@ -133,6 +158,7 @@ export const {
   setReceiverContact,
   clearSender,
   clearReceiver,
+  resetSendState,
 } = transactionSlice.actions;
 
 export default transactionSlice.reducer;

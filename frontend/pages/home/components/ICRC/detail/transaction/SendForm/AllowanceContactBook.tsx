@@ -69,7 +69,6 @@ export function AllowanceContactBook() {
         asChild
         className="flex items-center justify-between p-2 px-4 mt-2 border rounded-md cursor-pointer bg-ThemeColorSelectorLight dark:bg-SecondaryColor h-14"
       >
-        {/* TODO: if not selected show sender error bored and if the allowance is not valid on selected moment */}
         <div className="flex items-center justify-center">
           <div className="mr-2">
             {sender?.allowanceContactSubAccount?.assetName && (
@@ -144,7 +143,6 @@ export function AllowanceContactBook() {
   );
 
   function onSelect(contact: ContactSubAccount) {
-    // TODO: validate that the there is an active allowance
     setSenderContactAction(contact);
   }
 
