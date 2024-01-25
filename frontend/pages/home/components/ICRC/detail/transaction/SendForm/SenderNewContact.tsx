@@ -10,7 +10,6 @@ export default function SenderNewContact() {
   const { t } = useTranslation();
   const { sender, errors } = useAppSelector((state) => state.transaction);
 
-  // TODO: sender can not be the account owner
   return (
     <div className="flex flex-col gap-2">
       <CustomInput

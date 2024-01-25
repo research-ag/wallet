@@ -9,7 +9,6 @@ export default function ReceiverManual() {
   const { receiver, errors } = useAppSelector((state) => state.transaction);
   const { t } = useTranslation();
 
-  // TODO: the receiver can not has the same data of the sender
   function onPrincipalChange(event: any) {
     const principalValue = event.target.value.trim();
 

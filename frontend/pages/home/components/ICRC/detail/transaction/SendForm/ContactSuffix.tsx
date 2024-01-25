@@ -6,8 +6,10 @@ import { setReceiverContactAction, setScannerActiveOptionAction } from "@redux/t
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { useMemo } from "react";
 import { AvatarEmpty } from "@components/avatar";
+import useSend from "@pages/home/hooks/useSend";
 
 export default function ContactSuffix() {
+  const { senderPrincipal, senderSubAccount, isSenderAllowance } = useSend();
   const { sender } = useAppSelector((state) => state.transaction);
   const { contacts } = useAppSelector((state) => state.contacts);
 
@@ -40,7 +42,17 @@ export default function ContactSuffix() {
           subAccountName: subAccount?.name,
         };
 
-        allowanceContacts.push(receiverContact);
+        if (isSenderAllowance()) {
+          const sameSenderAndReceiver =
+            senderPrincipal === currentContact.principal && senderSubAccount === subAccount?.sub_account_id;
+
+          if (!sameSenderAndReceiver) {
+            allowanceContacts.push(receiverContact);
+          }
+
+        } else {
+          allowanceContacts.push(receiverContact);
+        }
       });
     }
 

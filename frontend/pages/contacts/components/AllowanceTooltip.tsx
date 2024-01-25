@@ -1,6 +1,7 @@
 import { formatDateTime } from "@/utils/formatTime";
 import { ReactComponent as MoneyHandIcon } from "@assets/svg/files/money-hand.svg";
 import { ToolTip } from "@components/tooltip";
+import { useTranslation } from "react-i18next";
 
 interface AllowanceTooltipProps {
   amount: number | string;
@@ -9,6 +10,7 @@ interface AllowanceTooltipProps {
 }
 
 export default function AllowanceTooltip(props: AllowanceTooltipProps) {
+  const { t } = useTranslation();
   const { amount, expiration, tokenSymbol } = props;
 
   return (
@@ -21,7 +23,7 @@ export default function AllowanceTooltip(props: AllowanceTooltipProps) {
           </h2>
           <h2 className="text-lg opacity-50 dark:text-PrimaryTextColor text-PrimaryTextColorLight">Expiration</h2>
           <h2 className="text-lg dark:text-PrimaryTextColor text-PrimaryTextColorLight">
-            {formatDateTime(expiration)}
+            {expiration ? formatDateTime(expiration) : t("no.expiration")}
           </h2>
         </div>
       </ToolTip>

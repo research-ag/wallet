@@ -149,6 +149,7 @@ export async function checkAllowanceExist(
         subaccount: [],
       },
     });
+
     return {
       allowance: Number(result.allowance) <= 0 ? "" : toFullDecimal(result.allowance, decimal),
       expires_at:
