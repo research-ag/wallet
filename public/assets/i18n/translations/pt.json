@@ -20,6 +20,7 @@
   "fee": "Taxa",
   "all": "Tudo",
   "yes": "Sim",
+  "select.option": "Seleccione uma opção",
   "invalid.sender": "Remetente inválido",
   "invalid.receiver": "Destinatário inválido",
   "invalid.sender.principal": "Principal do remetente inválido",

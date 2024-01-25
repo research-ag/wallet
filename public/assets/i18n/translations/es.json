@@ -20,6 +20,7 @@
   "fee": "Tarifa",
   "all": "Todos",
   "yes": "Si",
+  "select.option": "Seleccione una opción",
   "invalid.sender": "Remitente no válido",
   "invalid.receiver": "Destinatario no válido",
   "invalid.sender.principal": "Principal del remitente no válido",

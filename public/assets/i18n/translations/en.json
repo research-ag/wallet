@@ -20,6 +20,7 @@
   "fee": "Fee",
   "all": "All",
   "yes": "Yes",
+  "select.option": "Select an option",
   "invalid.sender": "Invalid sender",
   "invalid.receiver": "Invalid receiver",
   "invalid.sender.principal": "Invalid sender's principal",

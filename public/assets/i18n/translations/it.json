@@ -20,6 +20,7 @@
   "fee": "Tassa",
   "all": "Tutto",
   "yes": "Si",
+  "select.option": "Seleziona un'opzione",
   "invalid.sender": "Mittente non valido",
   "invalid.receiver": "Destinatario non valido",
   "invalid.sender.principal": "Principale del mittente non valido",

@@ -7,6 +7,7 @@ import SearchIcon from "@assets/svg/files/icon-search.svg";
 import { SelectOption } from "@/@types/components";
 import { selectContentCVA, selectTriggerCVA } from "./styles.cva";
 import clsx from "clsx";
+import { useTranslation } from "react-i18next";
 
 interface TSelectProps extends VariantProps<typeof selectTriggerCVA>, VariantProps<typeof selectContentCVA> {
   options: SelectOption[];
@@ -18,6 +19,7 @@ interface TSelectProps extends VariantProps<typeof selectTriggerCVA>, VariantPro
 }
 
 export default function Select(props: TSelectProps) {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const { disabled, options, initialValue, currentValue, onSelect, onSearch, onOpenChange, border } = props;
   const searchTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
@@ -42,8 +44,7 @@ export default function Select(props: TSelectProps) {
                 </div>
               </>
             )}
-            {/* TODO: add translations */}
-            {!selectedValue && <p className={textStyles()}>Select an option</p>}
+            {!selectedValue && <p className={textStyles()}>{t("select.option")}</p>}
           </div>
           <DropIcon className={`fill-gray-color-4 ${isOpen ? "-rotate-90" : ""}`} />
         </div>
