@@ -42,9 +42,10 @@ export default function Select(props: TSelectProps) {
                 </div>
               </>
             )}
+            {/* TODO: add translations */}
             {!selectedValue && <p className={textStyles()}>Select an option</p>}
           </div>
-          <DropIcon className={isOpen ? "-rotate-90" : ""} />
+          <DropIcon className={`fill-gray-color-4 ${isOpen ? "-rotate-90" : ""}`} />
         </div>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content className={selectContentCVA({ disabled })}>

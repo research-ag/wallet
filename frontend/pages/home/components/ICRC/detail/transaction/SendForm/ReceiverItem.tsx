@@ -12,8 +12,8 @@ export default function ReceiverItem() {
   const { t } = useTranslation();
 
   return (
-    <div className="w-full mt-4 rounded-md bg-ToBoxColor">
-      <div className="w-full py-2 border-b border-BorderColor">
+    <div className="w-full mt-4 rounded-md bg-secondary-color-1-light dark:bg-level-1-color">
+      <div className="w-full py-2 border-b border-opacity-25 border-gray-color-2">
         <ReceiverType />
       </div>
 
@@ -25,12 +25,15 @@ export default function ReceiverItem() {
       <div className="flex p-4">
         {receiver.receiverOption === TransactionReceiverOptionEnum.Values.third && (
           <button onClick={onReceiverOptionChange}>
-            <p className="text-md text-RadioCheckColor text-start">{t("transfer.between.accounts")}</p>
+            <p className="flex text-md text-primary-color text-start">
+              {t("transfer.between.accounts")}
+              <DownAmountIcon className="relative mt-2 -rotate-90 bottom-2 left-2" />
+            </p>
           </button>
         )}
         {receiver.receiverOption === TransactionReceiverOptionEnum.Values.own && (
           <button onClick={onReceiverOptionChange}>
-            <p className="flex items-center justify-center text-md text-RadioCheckColor text-start">
+            <p className="flex items-center justify-center text-md text-primary-color text-start">
               <DownAmountIcon className="relative mt-4 rotate-90 bottom-2 right-2" />
               {t("back")}
             </p>

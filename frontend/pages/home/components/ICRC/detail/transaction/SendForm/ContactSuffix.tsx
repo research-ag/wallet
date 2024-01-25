@@ -49,7 +49,6 @@ export default function ContactSuffix() {
           if (!sameSenderAndReceiver) {
             allowanceContacts.push(receiverContact);
           }
-
         } else {
           allowanceContacts.push(receiverContact);
         }
@@ -70,22 +69,22 @@ export default function ContactSuffix() {
           </DropdownMenu.Trigger>
 
           <DropdownMenu.Portal>
-            <DropdownMenu.Content className="absolute w-[20rem] bg-level-1-color border border-primary-color  z-[1000] -right-16  scroll-y-light rounded-lg  shadow-sm ">
+            <DropdownMenu.Content className="absolute w-[20rem] bg-secondary-color-1-light dark:bg-level-1-color border border-primary-color  z-[1000] -right-16  scroll-y-light rounded-lg  shadow-sm ">
               {filteredContacts.map((contact, index) => {
                 const { contactName, subAccountName } = contact;
                 return (
                   <DropdownMenu.Item
-                    className="flex items-center justify-start px-2 py-2 bg-opacity-50 cursor-pointer hover:bg-RadioCheckColor"
+                    className="flex items-center justify-start px-2 py-2 bg-opacity-50 cursor-pointer hover:bg-primary-color"
                     key={`${contact.contactPrincipal}-${index}`}
                     onSelect={() => onSelectContact(contact)}
                   >
                     <div className="flex items-center justify-between mr-2">
                       <AvatarEmpty title={contactName} size="large" />
                       <div className="ml-2">
-                        <p className="text-left">
+                        <p className="text-left text-md text-black-color dark:text-white">
                           {contactName} {`[${subAccountName}]`}
                         </p>
-                        <p>{contact.subAccountId}</p>
+                        <p className="text-left opacity-50 text-md text-black-color dark:text-white">{contact.subAccountId}</p>
                       </div>
                     </div>
                   </DropdownMenu.Item>

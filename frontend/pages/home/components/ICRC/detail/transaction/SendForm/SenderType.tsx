@@ -1,6 +1,7 @@
 import { TransactionSenderOption, TransactionSenderOptionEnum } from "@/@types/transactions";
 import * as RadioGroup from "@radix-ui/react-radio-group";
 import { clearSenderAction, setSenderOptionAction } from "@redux/transaction/TransactionActions";
+import clsx from "clsx";
 import { useTranslation } from "react-i18next";
 
 interface SenderTypeProps {
@@ -13,36 +14,35 @@ export default function SenderType(props: SenderTypeProps) {
 
   return (
     <div className="flex items-center justify-between w-full px-4">
-      <p className="opacity-50 text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("from")}</p>
-
+      <p className="font-bold opacity-50 text-black-color dark:text-white">{t("from")}</p>
       <RadioGroup.Root value={senderOption} onValueChange={onValueChange} className="flex">
         <div className="flex flex-row items-center p-1">
           <RadioGroup.Item
             className={`w-5 h-5 rounded-full border-2  outline-none p-0 ${
-              senderOption === TransactionSenderOptionEnum.Values.own
-                ? "border-RadioCheckColor"
-                : "border-RadioNoCheckColorLight"
+              senderOption === TransactionSenderOptionEnum.Values.own ? "border-primary-color" : "border-gray-color-2"
             }`}
             value={TransactionSenderOptionEnum.Values.own}
             id="r-light"
           >
-            <RadioGroup.Indicator className="flex items-center justify-center w-full h-full relative after:content-[''] after:block after:w-3 after:h-3 after:rounded-full after:bg-RadioCheckColor" />
+            <RadioGroup.Indicator className="flex items-center justify-center w-full h-full relative after:content-[''] after:block after:w-3 after:h-3 after:rounded-full after:bg-primary-color" />
           </RadioGroup.Item>
-          <p className="ml-4 opacity-50 text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("own")}</p>
+          <p className={getRadioTextStyles(senderOption === TransactionSenderOptionEnum.Values.own)}>{t("own")}</p>
         </div>
         <div className="flex flex-row items-center p-1">
           <RadioGroup.Item
             className={`w-5 h-5 rounded-full border-2  outline-none p-0 ${
               senderOption === TransactionSenderOptionEnum.Values.allowance
-                ? "border-RadioCheckColor"
+                ? "border-primary-color"
                 : "border-RadioNoCheckColorLight"
             }`}
             value={TransactionSenderOptionEnum.Values.allowance}
             id="r-light"
           >
-            <RadioGroup.Indicator className="flex items-center justify-center w-full h-full relative after:content-[''] after:block after:w-3 after:h-3 after:rounded-full after:bg-RadioCheckColor" />
+            <RadioGroup.Indicator className="flex items-center justify-center w-full h-full relative after:content-[''] after:block after:w-3 after:h-3 after:rounded-full after:bg-primary-color" />
           </RadioGroup.Item>
-          <p className="ml-4 opacity-50 text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("allowance")}</p>
+          <p className={getRadioTextStyles(senderOption === TransactionSenderOptionEnum.Values.allowance)}>
+            {t("allowance")}
+          </p>
         </div>
       </RadioGroup.Root>
     </div>
@@ -58,4 +58,11 @@ export default function SenderType(props: SenderTypeProps) {
       }
     }
   }
+}
+
+function getRadioTextStyles(isActive: boolean) {
+  return clsx(
+    "ml-4 text-lg opacity-50  ml-4 opacity-50",
+    isActive ? "text-primary-color font-bold" : "text-black-color dark:text-white",
+  );
 }

@@ -12,11 +12,11 @@ export default function ReceiverType() {
     clearReceiverAction();
   }
   return (
-    <div className="flex items-center justify-between w-full px-4">
+    <div className="flex items-center justify-between w-full px-4 py-1">
       <p className="font-bold opacity-50 text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md">To</p>
       {receiver.receiverOption !== TransactionReceiverOptionEnum.Values.own && (
         <div className="flex items-center justify-center">
-          <p className="mr-2 text-md">{t("manual")}</p>
+          <p className="mr-2 text-black-color text-md dark:text-white">{t("manual")}</p>
           <Switch checked={receiver.isManual} onChange={onCheckedChange} />
         </div>
       )}
