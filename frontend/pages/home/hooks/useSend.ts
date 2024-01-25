@@ -10,7 +10,7 @@ export default function useSend() {
   function getReceiverPrincipal() {
     if (receiver?.thirdContactSubAccount?.contactPrincipal) return receiver?.thirdContactSubAccount?.contactPrincipal;
     if (receiver?.thirdNewContact?.principal) return receiver?.thirdNewContact?.principal;
-    if (receiver?.ownSubAccount?.sub_account_id) return receiver?.ownSubAccount?.sub_account_id;
+    if (receiver?.ownSubAccount?.sub_account_id) return userPrincipal.toText();
     return "";
   }
 

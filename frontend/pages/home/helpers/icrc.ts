@@ -19,26 +19,27 @@ interface TransferAmountParams {
 
 export async function transferAmount(params: TransferAmountParams) {
   try {
+    const { receiverPrincipal, transferAmount, assetAddress, decimal, fromSubAccount, toSubAccount } = params;
     console.log(params);
-    // const { receiverPrincipal, transferAmount, assetAddress, decimal, fromSubAccount, toSubAccount } = params;
 
-    // const agent = store.getState().auth.userAgent;
-    // const canisterId = Principal.fromText(assetAddress);
-    // const canister = IcrcLedgerCanister.create({
-    //   agent,
-    //   canisterId,
-    // });
+    const agent = store.getState().auth.userAgent;
+    const canisterId = Principal.fromText(assetAddress);
 
-    // const amount = toHoleBigInt(transferAmount, Number(decimal));
+    const canister = IcrcLedgerCanister.create({
+      agent,
+      canisterId,
+    });
 
-    // await canister.transfer({
-    //   to: {
-    //     owner: Principal.fromText(receiverPrincipal),
-    //     subaccount: [hexToUint8Array(toSubAccount)],
-    //   },
-    //   amount,
-    //   from_subaccount: hexToUint8Array(fromSubAccount),
-    // });
+    const amount = toHoleBigInt(transferAmount, Number(decimal));
+
+    await canister.transfer({
+      to: {
+        owner: Principal.fromText(receiverPrincipal),
+        subaccount: [hexToUint8Array(toSubAccount)],
+      },
+      amount,
+      from_subaccount: hexToUint8Array(fromSubAccount),
+    });
   } catch (error) {
     console.error(error);
   }
