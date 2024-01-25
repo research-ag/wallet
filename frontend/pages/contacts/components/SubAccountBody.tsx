@@ -115,7 +115,7 @@ export default function SubAccountBody(props: SubAccountBodyProps) {
                       {sa.name.length > 105 ? `${sa.name.slice(0, 105)}...` : sa.name}
                     </p>
                     {sa.allowance?.allowance && (
-                      <AllowanceTooltip amount={sa.allowance.allowance} expiration={sa.allowance.expires_at} />
+                      <AllowanceTooltip amount={sa.allowance.allowance} expiration={sa.allowance.expires_at} tokenSymbol={asst.tokenSymbol} />
                     )}
                   </div>
                 )}

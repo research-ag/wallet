@@ -51,6 +51,7 @@ export default function SubAccountFormItem(props: SubAccountFormItemProps) {
         newContactSubNameErr={newContactSubNameErr}
         newContactSubIdErr={newContactSubIdErr}
         asciiHex={asciiHex}
+        selAstContact={selAstContact}
         newSubAccounts={newSubAccounts}
         setNewContactSubIdErr={setNewContactSubIdErr}
         setNewContactSubNameErr={setNewContactSubNameErr}

@@ -10,6 +10,7 @@ interface AddSubAccountOnCreateProps {
   newContactSubIdErr: number[];
   asciiHex: string[];
   newSubAccounts: SubAccountContact[];
+  selAstContact: string;
   setNewContactSubIdErr: any;
   setNewContactSubNameErr: any;
   setNewContactErr: any;
@@ -28,6 +29,7 @@ export default function AddSubAccountOnCreate(props: AddSubAccountOnCreateProps)
     setNewContactErr,
     newSubAccounts,
     setNewSubaccounts,
+    selAstContact,
   } = props;
 
   return (
@@ -40,7 +42,7 @@ export default function AddSubAccountOnCreate(props: AddSubAccountOnCreateProps)
             return (
               <div key={k} className="relative flex items-center justify-between w-full">
                 {newSA?.allowance ? (
-                  <AllowanceTooltip amount={newSA.allowance?.allowance} expiration={newSA.allowance.expires_at} />
+                  <AllowanceTooltip amount={newSA.allowance?.allowance} expiration={newSA.allowance.expires_at} tokenSymbol={selAstContact} />
                 ) : (
                   <div className="w-8 h-4"></div>
                 )}

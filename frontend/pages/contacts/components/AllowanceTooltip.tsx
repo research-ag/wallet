@@ -1,10 +1,11 @@
 import { formatDateTime } from "@/utils/formatTime";
 import { ReactComponent as MoneyHandIcon } from "@assets/svg/files/money-hand.svg";
 import { ToolTip } from "@components/tooltip";
+
 interface AllowanceTooltipProps {
   amount: number | string;
   expiration: string;
-  tokenSymbol?: string;
+  tokenSymbol: string;
 }
 
 export default function AllowanceTooltip(props: AllowanceTooltipProps) {
