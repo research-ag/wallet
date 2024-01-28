@@ -84,7 +84,9 @@ export default function ContactSuffix() {
                         <p className="text-left text-md text-black-color dark:text-white">
                           {contactName} {`[${subAccountName}]`}
                         </p>
-                        <p className="text-left opacity-50 text-md text-black-color dark:text-white">{contact.subAccountId}</p>
+                        <p className="text-left opacity-50 text-md text-black-color dark:text-white">
+                          {contact.subAccountId}
+                        </p>
                       </div>
                     </div>
                   </DropdownMenu.Item>

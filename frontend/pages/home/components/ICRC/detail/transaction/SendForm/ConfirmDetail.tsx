@@ -9,6 +9,7 @@ import {
   removeErrorAction,
   setErrorAction,
   setIsInspectDetailAction,
+  setIsLoadingAction,
   setSendingStatusAction,
 } from "@redux/transaction/TransactionActions";
 import { useTranslation } from "react-i18next";
@@ -16,6 +17,7 @@ import { ValidationErrorsEnum } from "@/@types/transactions";
 import { SendingStatusEnum } from "@/const";
 import { AssetHook } from "@pages/home/hooks/assetHook";
 import { transferAmount, transferFromAllowance } from "@pages/home/helpers/icrc";
+import LoadingLoader from "@components/Loader";
 
 interface ConfirmDetailProps {
   showConfirmationModal: Dispatch<SetStateAction<boolean>>;
@@ -24,7 +26,7 @@ interface ConfirmDetailProps {
 export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailProps) {
   const { reloadBallance } = AssetHook();
   const { t } = useTranslation();
-  const { sender, errors } = useAppSelector((state) => state.transaction);
+  const { sender, errors, isLoading } = useAppSelector((state) => state.transaction);
   const {
     receiverPrincipal,
     receiverSubAccount,
@@ -38,12 +40,13 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
   } = useSend();
 
   return (
-    <div className="grid w-full grid-cols-1 gap-y-2">
+    <div className={`grid w-full grid-cols-1 gap-y-2 ${isLoading ? "opacity-50 pointer-events-none" : ""}`}>
       <SenderDetail />
       <ReceiverDetail />
       <TransactionAmount />
       <div className="flex items-center justify-end mt-6">
         <p className="mr-4 text-md text-slate-color-error">{t(getError())}</p>
+        {isLoading && <LoadingLoader className="mr-4" />}
         <Button className="w-1/6 mr-2 font-bold bg-secondary-color-2" onClick={OnBack}>
           {t("back")}
         </Button>
@@ -56,6 +59,7 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
 
   async function onDone() {
     try {
+      setIsLoadingAction(true);
       const assetAddress = sender.asset.address;
       const decimal = sender.asset.decimal;
 
@@ -70,13 +74,13 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
         removeErrorAction(ValidationErrorsEnum.Values["not.enough.balance"]);
 
         if (assetAddress && decimal && senderSubAccount && receiverPrincipal && receiverSubAccount && amount) {
-          // setSendingStatusAction(SendingStatusEnum.Values.sending);
+          setSendingStatusAction(SendingStatusEnum.Values.sending);
           // showConfirmationModal(true);
 
-          console.log("request is starting");
+          console.log("transactionFee", transactionFee);
 
           if (isSenderAllowance()) {
-            const allowanceResponse = await transferFromAllowance({
+            await transferFromAllowance({
               receiverPrincipal,
               senderPrincipal,
               assetAddress,
@@ -84,10 +88,11 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
               decimal,
               fromSubAccount: senderSubAccount,
               toSubAccount: receiverSubAccount,
+              transactionFee,
             });
-            console.log("Allowance transfer", allowanceResponse);
+            // console.log("Sending allowance");
           } else {
-            const response = await transferAmount({
+            await transferAmount({
               receiverPrincipal,
               assetAddress,
               transferAmount: amount,
@@ -95,16 +100,16 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
               fromSubAccount: senderSubAccount,
               toSubAccount: receiverSubAccount,
             });
-            console.log("No allowance transfer", response);
+            // console.log("Sending no allowance");
           }
-
           // setSendingStatusAction(SendingStatusEnum.Values.done);
         }
       }
     } catch (error) {
-      // setSendingStatusAction(SendingStatusEnum.Values.error);
+      setSendingStatusAction(SendingStatusEnum.Values.error);
     } finally {
-      // reloadBallance();
+      reloadBallance();
+      setIsLoadingAction(false);
     }
   }
 

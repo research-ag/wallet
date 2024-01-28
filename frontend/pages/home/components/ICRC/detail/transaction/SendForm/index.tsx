@@ -6,6 +6,7 @@ import {
   resetSendStateAction,
   setErrorAction,
   setIsInspectDetailAction,
+  setIsLoadingAction,
 } from "@redux/transaction/TransactionActions";
 import { Button } from "@components/button";
 import useSend from "@pages/home/hooks/useSend";
@@ -13,6 +14,7 @@ import SenderAsset from "./SenderAsset";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "@redux/Store";
 import { ValidationErrorsEnum } from "@/@types/transactions";
+import LoadingLoader from "@components/Loader";
 
 interface SendFormProps {
   setDrawerOpen(value: boolean): void;
@@ -20,18 +22,19 @@ interface SendFormProps {
 
 export default function SendForm({ setDrawerOpen }: SendFormProps) {
   const { t } = useTranslation();
-  const { errors } = useAppSelector((state) => state.transaction);
+  const { isLoading, errors } = useAppSelector((state) => state.transaction);
   const { isSender, isReceiver, getSenderBalance, transactionFee, isSenderSameAsReceiver, isSenderAllowanceOwn } =
     useSend();
 
   return (
-    <div className="w-full">
+    <div className={`w-full ${isLoading ? "opacity-50 pointer-events-none" : ""} `}>
       <SenderAsset />
       <SenderItem />
       <DownAmountIcon className="w-full mt-4" />
       <ReceiverItem />
       <div className="flex items-center justify-end mt-6">
         <p className="mr-4 text-slate-color-error">{t(getError())}</p>
+        {isLoading && <LoadingLoader className="mr-4" />}
         <Button className="w-1/6 mr-2 font-bold bg-secondary-color-2" onClick={onCancel}>
           {t("cancel")}
         </Button>
@@ -44,6 +47,7 @@ export default function SendForm({ setDrawerOpen }: SendFormProps) {
 
   async function onNext() {
     try {
+      setIsLoadingAction(true);
       const balance = await getSenderBalance();
       const isBalanceEnough = Number(balance || 0) - Number(transactionFee) > 0;
 
@@ -80,6 +84,8 @@ export default function SendForm({ setDrawerOpen }: SendFormProps) {
       setIsInspectDetailAction(true);
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsLoadingAction(false);
     }
   }
 

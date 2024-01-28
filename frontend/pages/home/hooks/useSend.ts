@@ -49,7 +49,12 @@ export default function useSend() {
 
       if (!principal || !subAccount || !assetAddress || !decimal) return;
 
-      const response = await checkAllowanceExist(principal, assetAddress, subAccount, Number(decimal));
+      const response = await checkAllowanceExist({
+        spenderSubaccount: subAccount,
+        accountPrincipal: principal,
+        assetAddress,
+        assetDecimal: decimal,
+      });
 
       return response?.allowance || "0";
     } catch (error) {
@@ -57,9 +62,13 @@ export default function useSend() {
     }
   }
 
-  const getTransactionFee = useCallback(() => {
-    return toFullDecimal(sender?.asset?.subAccounts[0]?.transaction_fee || "0", Number(sender?.asset?.decimal));
-  }, []);
+  const getTransactionFee = () => {
+    if (!sender?.asset?.subAccounts[0]?.transaction_fee) {
+      throw new Error("Transaction fee is undefined in sender's asset subaccount");
+    }
+
+    return toFullDecimal(sender.asset.subAccounts[0].transaction_fee, Number(sender.asset.decimal));
+  };
 
   const isSender = useMemo(
     () => Boolean(getSenderPrincipal() && getSenderSubAccount() && sender?.asset?.tokenSymbol),

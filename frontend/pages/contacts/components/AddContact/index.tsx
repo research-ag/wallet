@@ -15,8 +15,9 @@ import { CustomButton } from "@components/Button";
 import { hasSubAccountAllowances, hasSubAccountAssetAllowances } from "@/pages/home/helpers/icrc";
 import { addContact } from "@redux/contacts/ContactsReducer";
 import { AssetContact } from "@redux/models/ContactsModels";
-import { formatSubAccountIds, validateSubaccounts } from "@/utils/checkers";
+import { formatSubAccountIds, isHexadecimalValid, isSubAccountIdValid, validateSubaccounts } from "@/utils/checkers";
 import clsx from "clsx";
+import { validatePrincipal } from "@/utils/identity";
 interface AddContactProps {
   setAddOpen(value: boolean): void;
 }
@@ -88,7 +89,7 @@ export default function AddContact({ setAddOpen }: AddContactProps) {
 
       <div className="flex flex-row items-center justify-end w-full gap-3">
         <p className="text-TextErrorColor">{newContactErr ? t(newContactErr) : ""}</p>
-        {isAllowancesChecking && <LoadingLoader />}
+        {(isAllowancesChecking || isCreating) && <LoadingLoader />}
         <CustomButton
           className="bg-BorderSuccessColor min-w-[5rem] flex justify-between items-center"
           onClick={onAllowanceNewContactCheck}
@@ -96,7 +97,7 @@ export default function AddContact({ setAddOpen }: AddContactProps) {
         >
           <MoneyHandIcon className="fill-PrimaryColorLight" /> {t("test")}
         </CustomButton>
-        <CustomButton className="min-w-[5rem]" onClick={onAddContact} disabled={isCreating}>
+        <CustomButton className="min-w-[5rem]" onClick={onAddContact} disabled={isCreating || isAllowancesChecking}>
           <p>{t("add.contact")}</p>
         </CustomButton>
       </div>
@@ -106,7 +107,23 @@ export default function AddContact({ setAddOpen }: AddContactProps) {
   async function onAllowanceNewContactCheck() {
     try {
       setIsAllowancesChecking(true);
-      if (newContact.assets.length === 0 || !newContact.principal) return;
+      let isValidPrincipal = false;
+
+      for (let index = 0; index < newSubAccounts.length; index++) {
+        const subAccount = newSubAccounts[index];
+        const valid = isHexadecimalValid(subAccount.sub_account_id);
+
+        if (!valid) {
+          setNewContactSubIdErr([0]);
+          return;
+        }
+      }
+
+      isValidPrincipal = validatePrincipal(newContact.principal);
+      if (!isValidPrincipal) {
+        setNewContactPrinErr(true);
+        return;
+      }
 
       const { address, decimal } = assets.filter((asset) => asset.tokenSymbol === selAstContact)[0];
 

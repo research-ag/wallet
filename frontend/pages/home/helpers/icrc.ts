@@ -1,6 +1,6 @@
 import { TAllowance } from "@/@types/allowance";
 import { hexToUint8Array, toFullDecimal, toHoleBigInt } from "@/utils";
-import { ApproveParams, IcrcLedgerCanister, TransferFromParams } from "@dfinity/ledger";
+import { ApproveParams, IcrcLedgerCanister, IcrcTransferError, TransferFromParams } from "@dfinity/ledger";
 import { Principal } from "@dfinity/principal";
 import store from "@redux/Store";
 import { AssetContact, SubAccountContact } from "@redux/models/ContactsModels";
@@ -20,11 +20,9 @@ interface TransferAmountParams {
 export async function transferAmount(params: TransferAmountParams) {
   try {
     const { receiverPrincipal, transferAmount, assetAddress, decimal, fromSubAccount, toSubAccount } = params;
-    console.log(params);
 
     const agent = store.getState().auth.userAgent;
     const canisterId = Principal.fromText(assetAddress);
-
     const canister = IcrcLedgerCanister.create({
       agent,
       canisterId,
@@ -47,14 +45,21 @@ export async function transferAmount(params: TransferAmountParams) {
 
 interface TransferFromAllowanceParams extends TransferAmountParams {
   senderPrincipal: string;
+  transactionFee: string;
 }
 
 export async function transferFromAllowance(params: TransferFromAllowanceParams) {
   try {
-    const { receiverPrincipal, senderPrincipal, assetAddress, transferAmount, decimal, fromSubAccount, toSubAccount } =
-      params;
-
-    console.log(params);
+    const {
+      receiverPrincipal,
+      senderPrincipal,
+      assetAddress,
+      transferAmount,
+      decimal,
+      fromSubAccount,
+      toSubAccount,
+      transactionFee,
+    } = params;
 
     const agent = store.getState().auth.userAgent;
     const canisterId = Principal.fromText(assetAddress);
@@ -63,28 +68,24 @@ export async function transferFromAllowance(params: TransferFromAllowanceParams)
       canisterId,
     });
 
-    const amount = toHoleBigInt(transferAmount, Number(decimal));
-    // FIXME: the sender is using the 0x0 account and not the spender_subaccount
+    console.log(params);
+
     const transferParams: TransferFromParams = {
-      // Where the allowance is created
       from: {
         owner: Principal.fromText(senderPrincipal),
-        subaccount: [],
+        subaccount: [new Uint8Array(hexToUint8Array(fromSubAccount))],
       },
-      // Any persona that can receive the money
       to: {
         owner: Principal.fromText(receiverPrincipal),
-        subaccount: [hexToUint8Array(toSubAccount)],
+        subaccount: [new Uint8Array(hexToUint8Array(toSubAccount))],
       },
-      spender_subaccount: hexToUint8Array(fromSubAccount),
-      amount,
+      spender_subaccount: new Uint8Array(hexToUint8Array(fromSubAccount)),
+      amount: toHoleBigInt(transferAmount, Number(decimal)),
+      fee: toHoleBigInt(transactionFee, Number(decimal)),
     };
-
-    console.log(transferParams);
 
     const response = await canister.transferFrom(transferParams);
     console.log("allowance response", response);
-    return response;
   } catch (error) {
     console.log(error);
   }
@@ -126,32 +127,40 @@ export async function ICRCApprove(params: ApproveParams, assetAddress: string): 
   }
 }
 
-export async function checkAllowanceExist(
-  principal: string,
-  assetAddress: string,
-  allowanceSubAccountId: string,
-  decimal: number,
-) {
+interface CheckAllowanceParams {
+  spenderPrincipal?: string;
+  spenderSubaccount: string;
+  accountPrincipal?: string;
+  assetAddress: string;
+  assetDecimal: string;
+}
+
+export async function checkAllowanceExist(params: CheckAllowanceParams) {
   try {
-    const spenderPrincipal = store.getState().auth.userPrincipal;
+    const { spenderPrincipal, spenderSubaccount, accountPrincipal, assetAddress, assetDecimal } = params;
+
+    const userPrincipal = store.getState().auth.userPrincipal;
     const myAgent = store.getState().auth.userAgent;
     const canisterId = Principal.fromText(assetAddress);
     const canister = IcrcLedgerCanister.create({ agent: myAgent, canisterId });
-    const subAccountUint8Array = new Uint8Array(hexToUint8Array(allowanceSubAccountId));
+    const subAccountUint8Array = new Uint8Array(hexToUint8Array(spenderSubaccount));
 
     const result = await canister.allowance({
       spender: {
-        owner: spenderPrincipal,
+        // Who is allowance to transfer
+        owner: spenderPrincipal ? Principal.fromText(spenderPrincipal) : userPrincipal,
+        // Over the account is allowed to transfer
         subaccount: [subAccountUint8Array],
       },
       account: {
-        owner: Principal.fromText(principal),
+        // Who guarantee the allowance to spender.owner
+        owner: accountPrincipal ? Principal.fromText(accountPrincipal) : userPrincipal,
         subaccount: [],
       },
     });
 
     return {
-      allowance: Number(result.allowance) <= 0 ? "" : toFullDecimal(result.allowance, decimal),
+      allowance: Number(result.allowance) <= 0 ? "" : toFullDecimal(result.allowance, Number(assetDecimal)),
       expires_at:
         result.expires_at.length <= 0 ? "" : dayjs(Number(result?.expires_at) / 1000000).format("YYYY-MM-DD HH:mm:ss"),
     };
@@ -161,7 +170,7 @@ export async function checkAllowanceExist(
 }
 
 export async function hasSubAccountAllowances(
-  spenderPrincipal: string,
+  accountPrincipal: string,
   subAccounts: SubAccountContact[],
   assetAddress: string,
   assetDecimal: string,
@@ -169,8 +178,14 @@ export async function hasSubAccountAllowances(
   const newSubAccounts = [];
 
   for (let subAccountIndex = 0; subAccountIndex < subAccounts.length; subAccountIndex++) {
-    const subAccountId = subAccounts[subAccountIndex]?.sub_account_id;
-    const response = await checkAllowanceExist(spenderPrincipal, assetAddress, subAccountId, Number(assetDecimal));
+    const spenderSubaccount = subAccounts[subAccountIndex]?.sub_account_id;
+
+    const response = await checkAllowanceExist({
+      spenderSubaccount,
+      accountPrincipal,
+      assetAddress,
+      assetDecimal,
+    });
 
     if (response?.allowance) {
       newSubAccounts.push({
@@ -185,7 +200,7 @@ export async function hasSubAccountAllowances(
 }
 
 export async function hasSubAccountAssetAllowances(
-  spenderPrincipal: string,
+  accountPrincipal: string,
   assets: AssetContact[],
 ): Promise<AssetContact[] | []> {
   const newAssets: AssetContact[] = [];
@@ -199,10 +214,16 @@ export async function hasSubAccountAssetAllowances(
     };
 
     for (let subAccountIndex = 0; subAccountIndex < subAccounts?.length; subAccountIndex++) {
-      const subAccountId = subAccounts[subAccountIndex]?.sub_account_id;
+      const spenderSubaccount = subAccounts[subAccountIndex]?.sub_account_id;
       const assetAddress = assets[assetIndex].address;
       const assetDecimal = assets[assetIndex].decimal;
-      const response = await checkAllowanceExist(spenderPrincipal, assetAddress, subAccountId, Number(assetDecimal));
+
+      const response = await checkAllowanceExist({
+        accountPrincipal,
+        assetAddress,
+        spenderSubaccount,
+        assetDecimal,
+      });
 
       if (response?.allowance) {
         currentAsset.subaccounts.push({

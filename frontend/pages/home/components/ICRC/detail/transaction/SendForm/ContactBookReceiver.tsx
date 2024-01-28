@@ -25,29 +25,32 @@ export default function ContactBookReceiver() {
       );
 
       currentContactAsset?.subaccounts?.forEach((subAccount) => {
+        const receiverContact = {
+          contactName: currentContact.name,
+          contactPrincipal: currentContact.principal,
+          contactAccountIdentifier: currentContact.accountIdentier,
+          assetLogo: currentContactAsset?.logo,
+          assetSymbol: currentContactAsset?.symbol,
+          assetTokenSymbol: currentContactAsset?.tokenSymbol,
+          assetAddress: currentContactAsset?.address,
+          assetDecimal: currentContactAsset?.decimal,
+          assetShortDecimal: currentContactAsset?.shortDecimal,
+          assetName: currentContactAsset?.symbol,
+          subAccountIndex: subAccount?.subaccount_index,
+          subAccountId: subAccount?.sub_account_id,
+          subAccountAllowance: subAccount?.allowance,
+          subAccountName: subAccount?.name,
+        };
+
         if (isSenderAllowance()) {
           const sameSenderAndReceiver =
             senderPrincipal === currentContact.principal && senderSubAccount === subAccount?.sub_account_id;
 
           if (!sameSenderAndReceiver) {
-            const receiverContact = {
-              contactName: currentContact.name,
-              contactPrincipal: currentContact.principal,
-              contactAccountIdentifier: currentContact.accountIdentier,
-              assetLogo: currentContactAsset?.logo,
-              assetSymbol: currentContactAsset?.symbol,
-              assetTokenSymbol: currentContactAsset?.tokenSymbol,
-              assetAddress: currentContactAsset?.address,
-              assetDecimal: currentContactAsset?.decimal,
-              assetShortDecimal: currentContactAsset?.shortDecimal,
-              assetName: currentContactAsset?.symbol,
-              subAccountIndex: subAccount?.subaccount_index,
-              subAccountId: subAccount?.sub_account_id,
-              subAccountAllowance: subAccount?.allowance,
-              subAccountName: subAccount?.name,
-            };
             allowanceContacts.push(receiverContact);
           }
+        } else {
+          allowanceContacts.push(receiverContact);
         }
       });
     }
@@ -59,7 +62,8 @@ export default function ContactBookReceiver() {
     return filteredContacts
       .filter((contact) => {
         return (
-          contact.contactName.includes(searchSubAccountValue) || contact.subAccountName.includes(searchSubAccountValue)
+          contact.contactName.toLocaleLowerCase().includes(searchSubAccountValue) ||
+          contact.subAccountName.toLocaleLowerCase().includes(searchSubAccountValue)
         );
       })
       .map(formatContact);

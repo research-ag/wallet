@@ -44,9 +44,6 @@ interface SendOwnAccountProps {
   setNewAccount(value: string): void;
   setContactToSend(value: any): void;
 }
-
-// INFO: show the details when sending to a own sub account
-
 const SendOwnAccount = ({
   selectedAccount,
   setSelectedAccount,

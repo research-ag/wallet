@@ -17,6 +17,7 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 interface TransactionState {
   scannerActiveOption: TransactionScannerOption;
+  isLoading: boolean;
   isInspectTransference: boolean;
   sendingStatus: SendingStatus;
   sender: SenderState;
@@ -29,6 +30,7 @@ export const initialTransactionState = {
   scannerActiveOption: TransactionScannerOptionEnum.Values.none,
   isInspectTransference: false,
   sendingStatus: SendingStatusEnum.Values.none,
+  isLoading: false,
   sender: {
     senderOption: TransactionSenderOptionEnum.Values.own,
     isNewSender: false,
@@ -71,6 +73,9 @@ const transactionSlice = createSlice({
       if (!state.errors?.includes(action.payload)) {
         state.errors = [...(state.errors ?? []), action.payload];
       }
+    },
+    setIsLoading(state: TransactionState, action: PayloadAction<boolean>) {
+      state.isLoading = action.payload;
     },
     setSendingStatus(state: TransactionState, action: PayloadAction<SendingStatus>) {
       state.sendingStatus = action.payload;
@@ -145,6 +150,7 @@ export const {
   setIsInspectDetail,
   setScannerActiveOption,
   setAmount,
+  setIsLoading,
   setError,
   setSendingStatus,
   removeError,

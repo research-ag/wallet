@@ -20,6 +20,7 @@ import {
   removeError,
   resetSendState,
   setSendingStatus,
+  setIsLoading,
 } from "./TransactionReducer";
 
 import { Asset, SubAccount } from "@redux/models/AccountModels";
@@ -92,4 +93,7 @@ export function clearReceiverAction() {
 }
 export function resetSendStateAction() {
   store.dispatch(resetSendState());
+}
+export function setIsLoadingAction(isLoading: boolean) {
+  store.dispatch(setIsLoading(isLoading));
 }

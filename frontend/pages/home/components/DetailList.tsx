@@ -66,7 +66,6 @@ const DetailList = () => {
 
   function getDrawers() {
     return selectedTransaction ? (
-      // INFO: show transactions details on click a transaction
       <DrawerTransaction setDrawerOpen={setDrawerOpen} />
     ) : (
       <div className="flex flex-col items-center justify-start w-full h-full gap-5 px-6 pt-8 bg-PrimaryColorLight dark:bg-PrimaryColor">
@@ -77,10 +76,8 @@ const DetailList = () => {
           setDrawerOpen={setDrawerOpen}
         >
           {drawerOption === DrawerOptionEnum.Enum.SEND && (
-            // INFO: show the field to send
             <DrawerSend drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />
           )}
-          {/* INFO: show the field to receive */}
           {drawerOption === DrawerOptionEnum.Enum.RECEIVE && <DrawerReceive />}
         </DrawerAction>
       </div>

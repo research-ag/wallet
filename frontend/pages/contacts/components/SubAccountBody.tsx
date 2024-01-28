@@ -25,6 +25,8 @@ import { checkAllowanceExist } from "@/pages/home/helpers/icrc";
 import { DeleteContactTypeEnum } from "@/const";
 import useContactTable from "../hooks/useContactTable";
 import { GeneralHook } from "@pages/home/hooks/generalHook";
+import LoadingLoader from "@components/Loader";
+import store from "@redux/Store";
 
 interface SubAccountBodyProps {
   asst: AssetContact;
@@ -115,7 +117,11 @@ export default function SubAccountBody(props: SubAccountBodyProps) {
                       {sa.name.length > 105 ? `${sa.name.slice(0, 105)}...` : sa.name}
                     </p>
                     {sa.allowance?.allowance && (
-                      <AllowanceTooltip amount={sa.allowance.allowance} expiration={sa.allowance.expires_at} tokenSymbol={asst.tokenSymbol} />
+                      <AllowanceTooltip
+                        amount={sa.allowance.allowance}
+                        expiration={sa.allowance.expires_at}
+                        tokenSymbol={asst.tokenSymbol}
+                      />
                     )}
                   </div>
                 )}
@@ -164,14 +170,18 @@ export default function SubAccountBody(props: SubAccountBodyProps) {
               }`}
             >
               <div className="flex flex-row items-start justify-center w-full gap-4">
-                {sa.subaccount_index === selSubaccIdx ? (
+                {sa.subaccount_index === selSubaccIdx && !isPending && (
                   <CheckIcon
                     onClick={() => {
                       checkSubAccount(true, cntc, asst, sa);
                     }}
                     className="w-4 h-4 opacity-50 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
                   />
-                ) : (
+                )}
+
+                {sa.subaccount_index === selSubaccIdx && isPending && <LoadingLoader />}
+
+                {!(sa.subaccount_index === selSubaccIdx && !isPending) && (
                   <PencilIcon
                     onClick={() => {
                       onEditSubAccount(sa);
@@ -179,14 +189,17 @@ export default function SubAccountBody(props: SubAccountBodyProps) {
                     className="w-4 h-4 opacity-50 cursor-pointer fill-PrimaryTextColorLight dark:fill-PrimaryTextColor"
                   />
                 )}
-                {sa.subaccount_index === selSubaccIdx ? (
+
+                {sa.subaccount_index === selSubaccIdx && !isPending && (
                   <CloseIcon
                     onClick={() => {
                       setSelSubaccIdx("");
                     }}
                     className="w-5 h-5 opacity-50 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
                   />
-                ) : (
+                )}
+
+                {!(sa.subaccount_index === selSubaccIdx) && (
                   <TrashIcon
                     onClick={() => {
                       onDeleteSubAccount(sa);
@@ -209,7 +222,7 @@ export default function SubAccountBody(props: SubAccountBodyProps) {
         );
       })}
       {addSub && (
-        <tr>
+        <tr className={`${isPending ? "opacity-50 pointer-events-none" : ""}`}>
           <td></td>
           <td className="h-full">
             <div className="relative flex flex-col items-center justify-center w-full h-full">
@@ -256,12 +269,16 @@ export default function SubAccountBody(props: SubAccountBodyProps) {
           </td>
           <td className={"py-2 border-b border-BorderColorTwoLight dark:border-BorderColorTwo bg-SelectRowColor/10"}>
             <div className="flex flex-row items-start justify-center w-full gap-4">
-              <CheckIcon
-                onClick={() => {
-                  checkSubAccount(false, cntc, asst || ({} as AssetContact));
-                }}
-                className="w-4 h-4 opacity-50 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
-              />
+              {isPending ? (
+                <LoadingLoader />
+              ) : (
+                <CheckIcon
+                  onClick={() => {
+                    checkSubAccount(false, cntc, asst || ({} as AssetContact));
+                  }}
+                  className="w-4 h-4 opacity-50 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
+                />
+              )}
               <CloseIcon
                 onClick={onCloseClic}
                 className="w-5 h-5 opacity-50 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
@@ -303,12 +320,18 @@ export default function SubAccountBody(props: SubAccountBodyProps) {
       subaccount_index: subacc === "" || eqHexValid,
     });
 
-    const allowance = await checkAllowanceExist(
-      cntc.principal,
-      asst.address,
-      subaccEdited.sub_account_id,
-      Number(asst.decimal),
-    );
+    if (!checkedIdxValid || subaccEdited.name.trim() === "" || (eqHex && !edit)) {
+      setIsPending(false);
+      return;
+    }
+
+    const allowance = await checkAllowanceExist({
+      spenderPrincipal: store.getState().auth.userPrincipal.toText(),
+      spenderSubaccount: subaccEdited.sub_account_id,
+      accountPrincipal: cntc.principal,
+      assetAddress: asst.address,
+      assetDecimal: asst.decimal,
+    });
 
     if (edit) {
       if (subacc !== "" && subaccEdited.name.trim() !== "" && (eqHex || checkedIdxValid)) {

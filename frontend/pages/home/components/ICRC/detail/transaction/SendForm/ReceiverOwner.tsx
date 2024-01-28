@@ -37,8 +37,6 @@ export default function ReceiverOwner() {
     }
 
     return subAccounts.map(formatSubAccount);
-
-    // INFO: should a sub account be selected as default?
   }, [sender, currentAsset]);
 
   return (
@@ -47,8 +45,6 @@ export default function ReceiverOwner() {
       options={options}
       initialValue={receiver?.ownSubAccount?.sub_account_id}
       currentValue={receiver?.ownSubAccount?.sub_account_id || ""}
-      //   disabled={isLoading}
-      //   border={error ? "error" : undefined}
       onSearch={onSearchChange}
       onOpenChange={onOpenChange}
     />
