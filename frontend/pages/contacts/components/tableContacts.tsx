@@ -101,7 +101,9 @@ const TableContacts = ({
       </thead>
       <tbody>
         {getContactsToShow().map((cntc, k) => {
-          const hasContactAllowance = cntc?.assets.some((a) => a?.hasAllowance);
+          const hasContactAllowance = cntc?.assets.some((asset) =>
+          asset.subaccounts.some((subaccount) => subaccount?.allowance?.allowance),
+          );
 
           return (
             <Fragment key={k}>

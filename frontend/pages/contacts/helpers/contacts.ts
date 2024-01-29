@@ -1,7 +1,7 @@
 import { Contact } from "@redux/models/ContactsModels";
 import store from "@redux/Store";
 import { setContacts } from "@redux/contacts/ContactsReducer";
-import { hasSubAccountAssetAllowances } from "@/pages/home/helpers/icrc";
+import { hasAssetAllowances } from "@/pages/home/helpers/icrc";
 
 export default async function contactCacheRefresh(authIdentity: string) {
   try {
@@ -14,7 +14,10 @@ export default async function contactCacheRefresh(authIdentity: string) {
     const updatedContacts = [];
     if (contacts) {
       for (const contact of contacts) {
-        const updatedAsset = await hasSubAccountAssetAllowances(contact.principal, contact.assets);
+        const updatedAsset = await hasAssetAllowances({
+          accountPrincipal: contact.principal,
+          assets: contact.assets,
+        });
         updatedContacts.push({ ...contact, assets: updatedAsset });
       }
     }

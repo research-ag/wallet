@@ -42,7 +42,11 @@ export default function AddSubAccountOnCreate(props: AddSubAccountOnCreateProps)
             return (
               <div key={k} className="relative flex items-center justify-between w-full">
                 {newSA?.allowance ? (
-                  <AllowanceTooltip amount={newSA.allowance?.allowance} expiration={newSA.allowance.expires_at} tokenSymbol={selAstContact} />
+                  <AllowanceTooltip
+                    amount={newSA.allowance?.allowance}
+                    expiration={newSA.allowance.expires_at}
+                    tokenSymbol={selAstContact}
+                  />
                 ) : (
                   <div className="w-8 h-4"></div>
                 )}
@@ -107,7 +111,7 @@ export default function AddSubAccountOnCreate(props: AddSubAccountOnCreateProps)
     if (checkHexString(value)) {
       const auxSubs = [...newSubAccounts];
       auxSubs[k].subaccount_index = value.trim();
-      auxSubs[k].sub_account_id = `0x${value.trim()}`;
+      auxSubs[k].sub_account_id = value.includes("0x") ? value.trim() : `0x${value.trim()}`;
       setNewSubaccounts(auxSubs);
       setNewContactSubIdErr([...newContactSubIdErr].filter((num) => num !== k));
       setNewContactErr("");

@@ -1,6 +1,6 @@
 import { toFullDecimal } from "@/utils";
 import { useAppSelector } from "@redux/Store";
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 import { checkAllowanceExist } from "../helpers/icrc";
 
 export default function useSend() {
@@ -64,7 +64,7 @@ export default function useSend() {
 
   const getTransactionFee = () => {
     if (!sender?.asset?.subAccounts[0]?.transaction_fee) {
-      throw new Error("Transaction fee is undefined in sender's asset subaccount");
+      return toFullDecimal("0", Number(0));
     }
 
     return toFullDecimal(sender.asset.subAccounts[0].transaction_fee, Number(sender.asset.decimal));

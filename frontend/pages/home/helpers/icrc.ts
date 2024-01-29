@@ -1,21 +1,18 @@
 import { TAllowance } from "@/@types/allowance";
+import {
+  HasAssetAllowanceParams,
+  HasSubAccountsParams,
+  TransferAmountParams,
+  TransferFromAllowanceParams,
+} from "@/@types/icrc";
 import { hexToUint8Array, toFullDecimal, toHoleBigInt } from "@/utils";
-import { ApproveParams, IcrcLedgerCanister, IcrcTransferError, TransferFromParams } from "@dfinity/ledger";
+import { ApproveParams, IcrcLedgerCanister, TransferFromParams } from "@dfinity/ledger";
 import { Principal } from "@dfinity/principal";
 import store from "@redux/Store";
-import { AssetContact, SubAccountContact } from "@redux/models/ContactsModels";
+import { AssetContact } from "@redux/models/ContactsModels";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 dayjs.extend(utc);
-
-interface TransferAmountParams {
-  receiverPrincipal: string;
-  assetAddress: string;
-  transferAmount: string;
-  decimal: string;
-  fromSubAccount: string;
-  toSubAccount: string;
-}
 
 export async function transferAmount(params: TransferAmountParams) {
   try {
@@ -43,11 +40,6 @@ export async function transferAmount(params: TransferAmountParams) {
   }
 }
 
-interface TransferFromAllowanceParams extends TransferAmountParams {
-  senderPrincipal: string;
-  transactionFee: string;
-}
-
 export async function transferFromAllowance(params: TransferFromAllowanceParams) {
   try {
     const {
@@ -56,8 +48,8 @@ export async function transferFromAllowance(params: TransferFromAllowanceParams)
       assetAddress,
       transferAmount,
       decimal,
-      fromSubAccount,
       toSubAccount,
+      fromSubAccount,
       transactionFee,
     } = params;
 
@@ -73,15 +65,15 @@ export async function transferFromAllowance(params: TransferFromAllowanceParams)
     const transferParams: TransferFromParams = {
       from: {
         owner: Principal.fromText(senderPrincipal),
-        subaccount: [new Uint8Array(hexToUint8Array(fromSubAccount))],
+        subaccount: [hexToUint8Array("0x22")],
       },
       to: {
         owner: Principal.fromText(receiverPrincipal),
-        subaccount: [new Uint8Array(hexToUint8Array(toSubAccount))],
+        subaccount: [hexToUint8Array(toSubAccount)],
       },
-      spender_subaccount: new Uint8Array(hexToUint8Array(fromSubAccount)),
+      spender_subaccount: hexToUint8Array("0x22"),
       amount: toHoleBigInt(transferAmount, Number(decimal)),
-      fee: toHoleBigInt(transactionFee, Number(decimal)),
+      // fee: toHoleBigInt(transactionFee, Number(decimal)),
     };
 
     const response = await canister.transferFrom(transferParams);
@@ -89,6 +81,29 @@ export async function transferFromAllowance(params: TransferFromAllowanceParams)
   } catch (error) {
     console.log(error);
   }
+}
+
+interface GetBalanceParams {
+  principal: string;
+  subaccount: string;
+  assetAddress: string;
+  assetDecimal: string;
+}
+
+export async function getBalance(params: GetBalanceParams) {
+  const { principal, subaccount, assetAddress, assetDecimal } = params;
+  const agent = store.getState().auth.userAgent;
+  const canisterId = Principal.fromText(assetAddress);
+  const canister = IcrcLedgerCanister.create({
+    agent,
+    canisterId,
+  });
+
+  const result = await canister.balance({
+    owner: Principal.fromText(principal),
+    subaccount: hexToUint8Array(subaccount),
+  });
+  return toFullDecimal(result, Number(assetDecimal));
 }
 
 export function generateApproveAllowance(allowance: TAllowance): ApproveParams {
@@ -169,12 +184,8 @@ export async function checkAllowanceExist(params: CheckAllowanceParams) {
   }
 }
 
-export async function hasSubAccountAllowances(
-  accountPrincipal: string,
-  subAccounts: SubAccountContact[],
-  assetAddress: string,
-  assetDecimal: string,
-) {
+export async function hasSubAccountAllowances(params: HasSubAccountsParams) {
+  const { accountPrincipal, subAccounts, assetAddress, assetDecimal } = params;
   const newSubAccounts = [];
 
   for (let subAccountIndex = 0; subAccountIndex < subAccounts.length; subAccountIndex++) {
@@ -199,10 +210,8 @@ export async function hasSubAccountAllowances(
   return newSubAccounts;
 }
 
-export async function hasSubAccountAssetAllowances(
-  accountPrincipal: string,
-  assets: AssetContact[],
-): Promise<AssetContact[] | []> {
+export async function hasAssetAllowances(params: HasAssetAllowanceParams): Promise<AssetContact[] | []> {
+  const { accountPrincipal, assets } = params;
   const newAssets: AssetContact[] = [];
 
   for (let assetIndex = 0; assetIndex < assets.length; assetIndex++) {

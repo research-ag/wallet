@@ -12,10 +12,10 @@ import ContactMainDetails from "./ContactMainDetails";
 import ContactAssetDetails from "./ContactAssetDetails";
 import LoadingLoader from "@components/Loader";
 import { CustomButton } from "@components/Button";
-import { hasSubAccountAllowances, hasSubAccountAssetAllowances } from "@/pages/home/helpers/icrc";
+import { hasSubAccountAllowances, hasAssetAllowances } from "@/pages/home/helpers/icrc";
 import { addContact } from "@redux/contacts/ContactsReducer";
 import { AssetContact } from "@redux/models/ContactsModels";
-import { formatSubAccountIds, isHexadecimalValid, isSubAccountIdValid, validateSubaccounts } from "@/utils/checkers";
+import { formatSubAccountIds, isHexadecimalValid, validateSubaccounts } from "@/utils/checkers";
 import clsx from "clsx";
 import { validatePrincipal } from "@/utils/identity";
 interface AddContactProps {
@@ -134,12 +134,13 @@ export default function AddContact({ setAddOpen }: AddContactProps) {
       if (formattedSubAccounts.length === 0 || subAccountNamesErrors.length > 0 || subAccountIdsErrors.length > 0)
         return;
 
-      const fullSubAccounts = await hasSubAccountAllowances(
-        newContact.principal,
-        formattedSubAccounts,
-        address,
-        decimal,
-      );
+      const fullSubAccounts = await hasSubAccountAllowances({
+        accountPrincipal: newContact.principal,
+        subAccounts: formattedSubAccounts,
+        assetAddress: address,
+        assetDecimal: decimal,
+      });
+
       setNewSubaccounts(fullSubAccounts);
     } catch (error) {
       console.error(error);
@@ -175,7 +176,11 @@ export default function AddContact({ setAddOpen }: AddContactProps) {
       } else {
         // INFO: create contact into redux and local storage
         setIsCreating(true);
-        const result = await hasSubAccountAssetAllowances(newContact.principal, newContact.assets);
+        const result = await hasAssetAllowances({
+          accountPrincipal: newContact.principal,
+          assets: newContact.assets,
+        });
+
         const toStoreContact = {
           ...auxContact,
           assets: result,
