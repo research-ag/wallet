@@ -9,7 +9,7 @@ interface ICRCTransactionsTableProps {
 }
 
 const ICRCTransactionsTable = ({ setDrawerOpen }: ICRCTransactionsTableProps) => {
-  const { transactions, selectedAsset } = GeneralHook();
+  const { transactions } = GeneralHook();
   const { selectedTransaction, changeSelectedTransaction } = UseTransaction();
   const { columns, sorting, setSorting } = TableHook();
   const table = useReactTable({
@@ -45,28 +45,27 @@ const ICRCTransactionsTable = ({ setDrawerOpen }: ICRCTransactionsTableProps) =>
           ))}
         </thead>
         <tbody>
-          {transactions[0]?.symbol === selectedAsset?.symbol &&
-            table.getRowModel().rows.map((row, idxTR) => (
-              <tr
-                className={`border-b border-b-BorderColorTwoLight dark:border-b-BorderColorTwo cursor-pointer ${
-                  (selectedTransaction?.hash && selectedTransaction?.hash === row.original.hash) ||
-                  (selectedTransaction?.idx && selectedTransaction?.idx === row.original.idx)
-                    ? "bg-SelectRowColor/10"
-                    : ""
-                }`}
-                key={`tr-transac-${idxTR}`}
-                onClick={() => {
-                  changeSelectedTransaction(row.original);
-                  setDrawerOpen(true);
-                }}
-              >
-                {row.getVisibleCells().map((cell, idxTD) => (
-                  <td key={`tr-transac-${idxTD}`} className={colStyle(idxTD)}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
-              </tr>
-            ))}
+          {table.getRowModel().rows.map((row, idxTR) => (
+            <tr
+              className={`border-b border-b-BorderColorTwoLight dark:border-b-BorderColorTwo cursor-pointer ${
+                (selectedTransaction?.hash && selectedTransaction?.hash === row.original.hash) ||
+                (selectedTransaction?.idx && selectedTransaction?.idx === row.original.idx)
+                  ? "bg-SelectRowColor/10"
+                  : ""
+              }`}
+              key={`tr-transac-${idxTR}`}
+              onClick={() => {
+                changeSelectedTransaction(row.original);
+                setDrawerOpen(true);
+              }}
+            >
+              {row.getVisibleCells().map((cell, idxTD) => (
+                <td key={`tr-transac-${idxTD}`} className={colStyle(idxTD)}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </td>
+              ))}
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>

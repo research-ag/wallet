@@ -61,19 +61,20 @@ export const UseTransaction = () => {
       });
 
       if (founded) dispatch(setTransactions(founded.tx));
+      else dispatch(setTransactions([]));
 
       if (
         selectedAsset?.tokenSymbol === AssetSymbolEnum.Enum.ICP ||
         selectedAsset?.tokenSymbol === AssetSymbolEnum.Enum.OGY
       ) {
         const getICPTx = async () => {
-          await getSelectedSubaccountICPTx(founded ? true : false);
+          await getSelectedSubaccountICPTx(!!founded);
         };
 
         getICPTx();
       } else {
         const getICRCTx = async () => {
-          await getSelectedSubaccountICRCTx(founded ? true : false);
+          await getSelectedSubaccountICRCTx(!!founded);
         };
 
         getICRCTx();

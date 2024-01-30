@@ -13,7 +13,7 @@ import { AssetHook } from "../../../hooks/assetHook";
 import { useAppDispatch } from "@redux/Store";
 import DialogAssetConfirmation from "./DialogAssetConfirmation";
 import AddAssetManual from "./AddAssetManual";
-import { addToken, setAcordeonAssetIdx } from "@redux/assets/AssetReducer";
+import { addToken, setAcordeonAssetIdx, setSelectedAsset } from "@redux/assets/AssetReducer";
 import AddAssetAutomatic from "./AddAssetAutomatic";
 
 interface AddAssetsProps {
@@ -184,6 +184,8 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens, assets
       setAddStatus(AddingAssetsEnum.enum.adding);
       showModal(true);
       dispatch(addToken(tknSave));
+      dispatch(setSelectedAsset(tknSave));
+      dispatch(setAcordeonAssetIdx([tknSave.symbol]));
       reloadBallance(
         [...tokens, tknSave].sort((a, b) => {
           return a.id_number - b.id_number;
