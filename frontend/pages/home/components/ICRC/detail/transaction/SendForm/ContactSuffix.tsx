@@ -59,7 +59,7 @@ export default function ContactSuffix() {
   }, [sender, contacts]);
 
   return (
-    <div className="relative flex flex-row items-center justify-center gap-2 mx-2">
+    <div className="relative flex flex-row items-center justify-center gap-2">
       {filteredContacts.length > 0 && (
         <DropdownMenu.Root>
           <DropdownMenu.Trigger asChild>
@@ -69,7 +69,7 @@ export default function ContactSuffix() {
           </DropdownMenu.Trigger>
 
           <DropdownMenu.Portal>
-            <DropdownMenu.Content className="absolute w-[20rem] bg-secondary-color-1-light dark:bg-level-1-color border border-primary-color  z-[1000] -right-16  scroll-y-light rounded-lg  shadow-sm ">
+            <DropdownMenu.Content className="absolute w-[23rem] bg-secondary-color-1-light dark:bg-level-1-color border border-primary-color  z-[1000] -right-12 mt-4  scroll-y-light rounded-lg  shadow-sm ">
               {filteredContacts.map((contact, index) => {
                 const { contactName, subAccountName } = contact;
                 return (

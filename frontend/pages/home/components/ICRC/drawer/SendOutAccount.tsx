@@ -274,6 +274,7 @@ const SendOutAccount = ({
     if (checkHexString(e.target.value)) setManualSub(e.target.value.trim());
   }
 
+  // INFO: show error on change input icrc identifier
   function onChangeInput(e: ChangeEvent<HTMLInputElement>) {
     setNewAccount(e.target.value);
     if (newAccountErr !== "") setNewAccountErr("");

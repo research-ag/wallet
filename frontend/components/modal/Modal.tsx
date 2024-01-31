@@ -10,6 +10,8 @@ interface ModalProps {
   isLoading?: boolean;
   disabled?: boolean;
   onConfirm: () => void;
+  isOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 const DialogDemo = ({
@@ -20,8 +22,10 @@ const DialogDemo = ({
   contentComponent,
   isLoading,
   disabled,
+  isOpen,
+  onOpenChange,
 }: ModalProps) => (
-  <Dialog.Root>
+  <Dialog.Root onOpenChange={onOpenChange} open={isOpen}>
     <Dialog.Trigger asChild>{triggerComponent}</Dialog.Trigger>
     <Dialog.Portal>
       <Dialog.Overlay className="fixed inset-0 transition-all bg-black/50" />
@@ -36,10 +40,10 @@ const DialogDemo = ({
         <div className="flex justify-end w-full mt-4">
           <Dialog.Close asChild className="">
             <button
-              className={`bg-RadioCheckColor rounded-lg py-2 ${disabled ? "opacity-50 pointer-events-none" : ""}`}
+              className={`bg-RadioCheckColor rounded-lg py-2 flex justify-center items-center ${disabled ? "opacity-50 pointer-events-none" : ""}`}
               onClick={onConfirm}
             >
-              {isLoading && <LoadingLoader />}
+              {isLoading && <LoadingLoader className="mr-2" />}
               Yes
             </button>
           </Dialog.Close>

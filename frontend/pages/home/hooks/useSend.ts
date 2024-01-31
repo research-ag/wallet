@@ -1,7 +1,7 @@
 import { toFullDecimal } from "@/utils";
 import { useAppSelector } from "@redux/Store";
 import { useMemo } from "react";
-import { checkAllowanceExist } from "../helpers/icrc";
+import { getAllowanceDetails } from "../helpers/icrc";
 
 export default function useSend() {
   const { userPrincipal } = useAppSelector((state) => state.auth);
@@ -49,7 +49,7 @@ export default function useSend() {
 
       if (!principal || !subAccount || !assetAddress || !decimal) return;
 
-      const response = await checkAllowanceExist({
+      const response = await getAllowanceDetails({
         spenderSubaccount: subAccount,
         accountPrincipal: principal,
         assetAddress,
@@ -89,6 +89,12 @@ export default function useSend() {
     const senderSubAccount = getSenderSubAccount();
     const receiverPrincipal = getReceiverPrincipal();
     const receiverSubAccount = getReceiverSubAccount();
+    console.log({
+      senderPrincipal,
+      senderSubAccount,
+      receiverPrincipal,
+      receiverSubAccount,
+    });
     return senderPrincipal === receiverPrincipal && senderSubAccount === receiverSubAccount;
   }
 

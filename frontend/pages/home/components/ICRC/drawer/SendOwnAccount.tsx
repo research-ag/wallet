@@ -231,6 +231,7 @@ const SendOwnAccount = ({
       setAmount(amnt.trim());
   }
 
+  // INFO: set the max amount
   function onMaxAmount() {
     maxAmount().valid && setAmount(toFullDecimal(maxAmount().nAmount.toString(), selectedAccount?.decimal || 8));
   }

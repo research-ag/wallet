@@ -123,10 +123,6 @@ const contactsSlice = createSlice({
         const auxContacts = state.contacts.map((contact: Contact) => {
           if (contact.principal !== action.payload.principal) return contact;
           else {
-            const hasAllowance = contact.assets.some((asset) =>
-              asset.subaccounts.some((subAccount) => subAccount.allowance?.allowance),
-            );
-
             return {
               ...contact,
               assets: contact.assets.map((asset) => {
@@ -135,7 +131,6 @@ const contactsSlice = createSlice({
                 } else {
                   return {
                     ...asset,
-                    hasAllowance: Boolean(action.payload.allowance?.allowance || hasAllowance),
                     subaccounts: [
                       ...asset.subaccounts,
                       {
@@ -195,7 +190,6 @@ const contactsSlice = createSlice({
                 } else {
                   return {
                     ...asset,
-                    hasAllowance: Boolean(action.payload.allowance?.allowance),
                     subaccounts: asset.subaccounts
                       .map((subAccount) => {
                         if (subAccount.subaccount_index !== action.payload.subIndex) return subAccount;
@@ -297,15 +291,12 @@ const contactsSlice = createSlice({
                   (subAccount) => subAccount.subaccount_index !== action.payload.subIndex,
                 );
 
-                const hasAllowance = subaccounts.some((subAccount) => subAccount.allowance?.allowance);
-
                 if (asset.tokenSymbol !== action.payload.tokenSymbol) {
                   return asset;
                 }
 
                 return {
                   ...asset,
-                  hasAllowance,
                   subaccounts,
                 };
               }),

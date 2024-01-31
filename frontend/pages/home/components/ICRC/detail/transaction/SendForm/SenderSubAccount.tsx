@@ -4,8 +4,10 @@ import { Select } from "@components/select";
 import { useAppSelector } from "@redux/Store";
 import { setSenderSubAccountAction } from "@redux/transaction/TransactionActions";
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function SenderSubAccount() {
+  const { t } = useTranslation();
   const { sender } = useAppSelector((state) => state.transaction);
   const [searchSubAccountValue, setSearchSubAccountValue] = useState<string | null>(null);
 
@@ -19,14 +21,18 @@ export default function SenderSubAccount() {
   }, [sender, searchSubAccountValue]);
 
   return (
-    <Select
-      onSelect={onSelect}
-      options={options}
-      initialValue={sender?.subAccount?.sub_account_id}
-      currentValue={sender?.subAccount?.sub_account_id || ""}
-      onSearch={onSearchChange}
-      onOpenChange={onOpenChange}
-    />
+    <div className="mx-4">
+      <p className="opacity-50 text-start text-black-color dark:text-white">{t("subAccount")}</p>
+      <Select
+        onSelect={onSelect}
+        options={options}
+        initialValue={sender?.subAccount?.sub_account_id}
+        currentValue={sender?.subAccount?.sub_account_id || ""}
+        onSearch={onSearchChange}
+        onOpenChange={onOpenChange}
+        contentWidth="23rem"
+      />
+    </div>
   );
 
   function onSelect(option: SelectOption) {

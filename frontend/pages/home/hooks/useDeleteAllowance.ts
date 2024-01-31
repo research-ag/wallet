@@ -1,5 +1,5 @@
 import { TAllowance } from "@/@types/allowance";
-import { ICRCApprove, generateApproveAllowance } from "@/pages/home/helpers/icrc";
+import { submitAllowanceApproval, createApproveAllowanceParams } from "@/pages/home/helpers/icrc";
 import { useMutation } from "@tanstack/react-query";
 import { throttle } from "lodash";
 import { useCallback } from "react";
@@ -26,8 +26,8 @@ export default function useDeleteAllowance() {
         const expirationDate = dayjs(allowance.expiration);
 
         if (currentDate.isBefore(expirationDate) || allowance.noExpire) {
-          const params = generateApproveAllowance({ ...allowance, amount: "0", expiration: undefined });
-          await ICRCApprove(params, allowance.asset.address);
+          const params = createApproveAllowanceParams({ ...allowance, amount: "0", expiration: undefined });
+          await submitAllowanceApproval(params, allowance.asset.address);
         }
       }
 

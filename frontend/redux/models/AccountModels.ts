@@ -111,7 +111,6 @@ const AssetToAdd = z.object({
   tokenSymbol: z.string(),
   logo: z.string().optional(),
   address: z.string(),
-  hasAllowance: z.boolean(),
   decimal: z.string(),
   shortDecimal: z.string(),
 });

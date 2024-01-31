@@ -13,6 +13,7 @@ interface TSelectProps extends VariantProps<typeof selectTriggerCVA>, VariantPro
   options: SelectOption[];
   currentValue: string | number;
   initialValue?: string | number;
+  contentWidth?: string;
   onSelect: (option: SelectOption) => void;
   onSearch?: (searchValue: string) => void;
   onOpenChange?: (open: boolean) => void;
@@ -21,7 +22,17 @@ interface TSelectProps extends VariantProps<typeof selectTriggerCVA>, VariantPro
 export default function Select(props: TSelectProps) {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
-  const { disabled, options, initialValue, currentValue, onSelect, onSearch, onOpenChange, border } = props;
+  const {
+    disabled,
+    options,
+    initialValue,
+    currentValue,
+    onSelect,
+    onSearch,
+    onOpenChange,
+    border,
+    contentWidth = "24rem",
+  } = props;
   const searchTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
 
   const selectedValue = useMemo(() => {
@@ -62,11 +73,7 @@ export default function Select(props: TSelectProps) {
         )}
         <DropdownMenu.Group>
           {options.map((option, index) => (
-            <DropdownMenu.Item
-              onSelect={() => handleSelectOption(option)}
-              key={index}
-              className="flex items-center justify-start px-2 py-2 bg-opacity-50 cursor-pointer hover:bg-RadioCheckColor"
-            >
+            <DropdownMenu.Item onSelect={() => handleSelectOption(option)} key={index} className={getItemStyles(contentWidth)}>
               {option?.icon}
               <div className="ml-2">
                 <p className={textStyles()}>{option.label}</p>
@@ -99,4 +106,13 @@ export default function Select(props: TSelectProps) {
 
 function textStyles(isSubLabel = false) {
   return clsx("text-start text-PrimaryTextColorLight dark:text-PrimaryTextColor", isSubLabel && "opacity-50");
+}
+
+function getItemStyles(width: string) {
+  return clsx(
+    "flex items-center min-h-[3.5rem]",
+    "justify-start px-2 py-2 bg-opacity-50",
+    "cursor-pointer hover:bg-RadioCheckColor",
+    `w-[${width}]`,
+  );
 }

@@ -95,10 +95,10 @@ export const TableHook = () => {
             }${
               info.getValue()?.type === TransactionTypeEnum.Enum.SEND
                 ? toFullDecimal(
-                    BigInt(info.getValue()?.amount) + BigInt(selectedAccount?.transaction_fee || "0"),
+                    BigInt(info.getValue()?.amount || "0") + BigInt(selectedAccount?.transaction_fee || "0"),
                     selectedAccount?.decimal || 8,
                   )
-                : toFullDecimal(BigInt(info.getValue()?.amount), selectedAccount?.decimal || 8)
+                : toFullDecimal(BigInt(info.getValue()?.amount || "0"), selectedAccount?.decimal || 8)
             } ${getAssetSymbol(info.getValue()?.symbol || "", assets)}`}</p>
           </div>
         );

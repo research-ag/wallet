@@ -4,8 +4,10 @@ import { useAppSelector } from "@redux/Store";
 import formatSubAccount from "@/utils/formatSubAccount";
 import { SelectOption } from "@/@types/components";
 import { setReceiverOwnSubAccountAction } from "@redux/transaction/TransactionActions";
+import { useTranslation } from "react-i18next";
 
 export default function ReceiverOwner() {
+  const { t } = useTranslation();
   const { sender, receiver } = useAppSelector((state) => state.transaction);
   const [searchSubAccountValue, setSearchSubAccountValue] = useState<string | null>(null);
   const { assets } = useAppSelector((state) => state.asset);
@@ -40,14 +42,20 @@ export default function ReceiverOwner() {
   }, [sender, currentAsset]);
 
   return (
-    <Select
-      onSelect={onSelect}
-      options={options}
-      initialValue={receiver?.ownSubAccount?.sub_account_id}
-      currentValue={receiver?.ownSubAccount?.sub_account_id || ""}
-      onSearch={onSearchChange}
-      onOpenChange={onOpenChange}
-    />
+    <div className="mx-4 mt-4">
+      <div>
+        <p className="opacity-50 text-start text-black-color dark:text-white">{t("subAccount")}</p>
+        <Select
+          onSelect={onSelect}
+          options={options}
+          initialValue={receiver?.ownSubAccount?.sub_account_id}
+          currentValue={receiver?.ownSubAccount?.sub_account_id || ""}
+          onSearch={onSearchChange}
+          onOpenChange={onOpenChange}
+          contentWidth="23rem"
+        />
+      </div>
+    </div>
   );
 
   function onSelect(option: SelectOption) {

@@ -21,7 +21,7 @@ import {
 } from "@redux/models/ContactsModels";
 import { isSubAccountIdValid } from "@/utils/checkers";
 import bigInt from "big-integer";
-import { checkAllowanceExist } from "@/pages/home/helpers/icrc";
+import { getAllowanceDetails } from "@/pages/home/helpers/icrc";
 import { DeleteContactTypeEnum } from "@/const";
 import useContactTable from "../hooks/useContactTable";
 import { GeneralHook } from "@pages/home/hooks/generalHook";
@@ -325,7 +325,7 @@ export default function SubAccountBody(props: SubAccountBodyProps) {
       return;
     }
 
-    const allowance = await checkAllowanceExist({
+    const allowance = await getAllowanceDetails({
       spenderPrincipal: store.getState().auth.userPrincipal.toText(),
       spenderSubaccount: subaccEdited.sub_account_id,
       accountPrincipal: cntc.principal,

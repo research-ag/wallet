@@ -1,4 +1,4 @@
-import BitcoinIcon from "@assets/svg/files/bitcoin-icon.svg";
+import { getIconSrc } from "@/utils/icons";
 import useSend from "@pages/home/hooks/useSend";
 import { useAppSelector } from "@redux/Store";
 import { useEffect, useState } from "react";
@@ -18,7 +18,7 @@ export default function NewSender() {
         {sender?.asset?.address} {senderSubAccount}
       </p>
       <div className="flex items-center justify-start">
-        <img src={BitcoinIcon} className="mr-2" alt="" />
+        <img src={getIconSrc(sender?.asset?.logo, sender?.asset?.tokenSymbol)} className="w-4 h-4 mr-2" alt="" />
         <p className="opacity-50 text-md">
           {balance} {sender?.asset?.tokenSymbol}
         </p>

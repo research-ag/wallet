@@ -70,14 +70,17 @@ export default function ContactBookReceiver() {
   }, [filteredContacts, searchSubAccountValue]);
 
   return (
-    <Select
-      onSelect={onSelect}
-      options={formattedContacts}
-      initialValue={receiver?.thirdContactSubAccount?.subAccountId}
-      currentValue={receiver?.thirdContactSubAccount?.subAccountId}
-      onSearch={onSearchChange}
-      onOpenChange={onOpenChange}
-    />
+    <div className="mx-4">
+      <Select
+        onSelect={onSelect}
+        options={formattedContacts}
+        initialValue={receiver?.thirdContactSubAccount?.subAccountId}
+        currentValue={receiver?.thirdContactSubAccount?.subAccountId}
+        onSearch={onSearchChange}
+        onOpenChange={onOpenChange}
+        contentWidth="23rem"
+      />
+    </div>
   );
 
   function formatContact(contact: ContactSubAccount) {

@@ -5,27 +5,22 @@ import UpAmountIcon from "@assets/svg/files/up-amount-icon.svg";
 import Modal from "@components/Modal";
 import { CustomCopy } from "@components/CopyTooltip";
 import { shortAddress } from "@/utils";
-import { SendingStatus, SendingStatusEnum } from "@/const";
+import { SendingStatusEnum } from "@/const";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "@redux/Store";
 import useSend from "@pages/home/hooks/useSend";
 import { resetSendStateAction } from "@redux/transaction/TransactionActions";
+import { ValidationErrorsEnum } from "@/@types/transactions";
 
 interface DialogSendConfirmationProps {
   setDrawerOpen(value: boolean): void;
   showConfirmationModal(value: boolean): void;
   modal: boolean;
-  sendingStatus: SendingStatus;
 }
 
-const DialogSendConfirmation = ({
-  setDrawerOpen,
-  showConfirmationModal,
-  modal,
-  sendingStatus,
-}: DialogSendConfirmationProps) => {
+const DialogSendConfirmation = ({ setDrawerOpen, showConfirmationModal, modal }: DialogSendConfirmationProps) => {
   const { receiverPrincipal, receiverSubAccount, amount } = useSend();
-  const { sender } = useAppSelector((state) => state.transaction);
+  const { sender, sendingStatus, errors } = useAppSelector((state) => state.transaction);
   const { t } = useTranslation();
 
   return (
@@ -45,6 +40,7 @@ const DialogSendConfirmation = ({
             <img src={UpAmountIcon} alt="send-icon" />
           </div>
           <p className="mt-3 text-lg font-semibold">{getStatusMessage(sendingStatus)}</p>
+          <p className="mt-3 text-md text-slate-color-error">{getError()}</p>
         </div>
         <div className="flex flex-row items-start justify-start w-full gap-4 py-4 pl-8 font-light opacity-50 text-md">
           <div className="flex flex-col items-start justify-start gap-2">
@@ -62,7 +58,7 @@ const DialogSendConfirmation = ({
               <CustomCopy size={"small"} copyText={receiverSubAccount} />
             </div>
             <p>
-              {amount} ${sender?.asset?.symbol || ""}
+              {amount} {sender?.asset?.symbol || ""}
             </p>
           </div>
         </div>
@@ -84,6 +80,15 @@ const DialogSendConfirmation = ({
         return t("sending.successful");
       case SendingStatusEnum.enum.error:
         return t("sending.failed");
+      default:
+        return "";
+    }
+  }
+
+  function getError() {
+    switch (true) {
+      case errors?.includes(ValidationErrorsEnum.Values["error.allowance.subaccount.not.enough"]):
+        return t(ValidationErrorsEnum.Values["error.allowance.subaccount.not.enough"]);
       default:
         return "";
     }

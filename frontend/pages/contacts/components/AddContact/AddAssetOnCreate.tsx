@@ -113,7 +113,6 @@ export default function AddAssetOnCreate(props: AddAssetOnCreateProps) {
               address: ata.address,
               decimal: ata.decimal,
               shortDecimal: ata.shortDecimal,
-              hasAllowance: ata.hasAllowance,
             };
           }),
         ],

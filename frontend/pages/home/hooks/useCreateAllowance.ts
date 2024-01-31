@@ -3,7 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 
 import { TErrorValidation } from "@/@types/common";
 import { TAllowance } from "@/@types/allowance";
-import { ICRCApprove, generateApproveAllowance } from "@/pages/home/helpers/icrc";
+import { submitAllowanceApproval, createApproveAllowanceParams } from "@/pages/home/helpers/icrc";
 import { validatePrincipal } from "@/utils/identity";
 import useAllowanceDrawer from "./useAllowanceDrawer";
 
@@ -47,15 +47,16 @@ export default function useCreateAllowance() {
       const allowanceExists = allowances.find(
         (allowance) =>
           allowance.subAccount.sub_account_id === fullAllowance.subAccount.sub_account_id &&
-          allowance.spender.principal === fullAllowance.spender.principal,
+          allowance.spender.principal === fullAllowance.spender.principal
+          && allowance.asset.tokenSymbol === fullAllowance.asset.tokenSymbol,
       );
 
       if (allowanceExists) return Promise.reject(validationMessage.duplicatedAllowance);
 
       const valid = allowanceValidationSchema.safeParse(fullAllowance);
       if (!valid.success) return Promise.reject(valid.error);
-      const params = generateApproveAllowance(fullAllowance);
-      await ICRCApprove(params, allowance.asset.address);
+      const params = createApproveAllowanceParams(fullAllowance);
+      await submitAllowanceApproval(params, allowance.asset.address);
       const savedAllowances = await postAllowance(fullAllowance);
       dispatch(setAllowances(savedAllowances));
     } catch (error) {

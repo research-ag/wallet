@@ -13,12 +13,14 @@ import { middleTruncation } from "@/utils/strings";
 import { useAppDispatch } from "@redux/Store";
 import { setSelectedAllowance } from "@redux/allowance/AllowanceReducer";
 import useAllowanceDrawer from "@pages/home/hooks/useAllowanceDrawer";
+import { useState } from "react";
 
 interface ActionCardProps {
   allowance: TAllowance;
 }
 
 export default function ActionCard(props: ActionCardProps) {
+  const [isOpen, setOpen] = useState(false);
   const { onOpenUpdateAllowanceDrawer } = useAllowanceDrawer();
   const dispatch = useAppDispatch();
   const { allowance } = props;
@@ -56,6 +58,8 @@ export default function ActionCard(props: ActionCardProps) {
           icon={<AlertIcon className="w-6 h-6" />}
           isLoading={isPending}
           disabled={isPending}
+          isOpen={isOpen}
+          onOpenChange={() => setOpen(true)}
         />
       </DropdownMenu.Content>
     </DropdownMenu.Root>
@@ -84,6 +88,7 @@ export default function ActionCard(props: ActionCardProps) {
   async function handleDelete() {
     if (!allowance.id) return;
     deleteAllowance(allowance);
+    setOpen(false);
   }
 }
 

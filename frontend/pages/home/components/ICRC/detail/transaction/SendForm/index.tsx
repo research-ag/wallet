@@ -22,9 +22,8 @@ interface SendFormProps {
 
 export default function SendForm({ setDrawerOpen }: SendFormProps) {
   const { t } = useTranslation();
-  const { isLoading, errors } = useAppSelector((state) => state.transaction);
-  const { isSender, isReceiver, getSenderBalance, transactionFee, isSenderSameAsReceiver, isSenderAllowanceOwn } =
-    useSend();
+  const { isLoading, errors, sender } = useAppSelector((state) => state.transaction);
+  const { isSender, isReceiver, isSenderSameAsReceiver, isSenderAllowanceOwn } = useSend();
 
   return (
     <div className={`w-full ${isLoading ? "opacity-50 pointer-events-none" : ""} `}>
@@ -33,12 +32,12 @@ export default function SendForm({ setDrawerOpen }: SendFormProps) {
       <DownAmountIcon className="w-full mt-4" />
       <ReceiverItem />
       <div className="flex items-center justify-end mt-6">
-        <p className="mr-4 text-slate-color-error">{t(getError())}</p>
+        <p className="mr-4 text-sm text-slate-color-error">{t(getError())}</p>
         {isLoading && <LoadingLoader className="mr-4" />}
         <Button className="w-1/6 mr-2 font-bold bg-secondary-color-2" onClick={onCancel}>
           {t("cancel")}
         </Button>
-        <Button className="w-1/6 font-bold bg-primary-color" disabled={!(isReceiver && isSender)} onClick={onNext}>
+        <Button className="w-1/6 font-bold bg-primary-color" onClick={onNext}>
           {t("next")}
         </Button>
       </div>
@@ -48,39 +47,34 @@ export default function SendForm({ setDrawerOpen }: SendFormProps) {
   async function onNext() {
     try {
       setIsLoadingAction(true);
-      const balance = await getSenderBalance();
-      const isBalanceEnough = Number(balance || 0) - Number(transactionFee) > 0;
-
-      if (isSenderSameAsReceiver()) {
-        setErrorAction(ValidationErrorsEnum.Values["invalid.same.receiver.sender"]);
+      if (!sender?.asset?.tokenSymbol) {
+        setErrorAction(ValidationErrorsEnum.Values["error.asset.empty"]);
         return;
       }
-
-      if (!isReceiver) {
-        setErrorAction(ValidationErrorsEnum.Values["invalid.receiver"]);
-        return;
-      }
+      removeErrorAction(ValidationErrorsEnum.Values["error.asset.empty"]);
 
       if (!isSender) {
-        setErrorAction(ValidationErrorsEnum.Values["invalid.sender"]);
+        setErrorAction(ValidationErrorsEnum.Values["error.sender.empty"]);
         return;
       }
+      removeErrorAction(ValidationErrorsEnum.Values["error.sender.empty"]);
 
+      if (!isReceiver) {
+        setErrorAction(ValidationErrorsEnum.Values["error.receiver.empty"]);
+        return;
+      }
+      removeErrorAction(ValidationErrorsEnum.Values["error.receiver.empty"]);
+
+      if (isSenderSameAsReceiver()) {
+        setErrorAction(ValidationErrorsEnum.Values["error.same.sender.receiver"]);
+        return;
+      }
+      removeErrorAction(ValidationErrorsEnum.Values["error.same.sender.receiver"]);
       if (isSenderAllowanceOwn()) {
-        setErrorAction(ValidationErrorsEnum.Values["own.sender.not.allowed"]);
+        setErrorAction(ValidationErrorsEnum.Values["error.own.sender.not.allowed"]);
         return;
       }
-
-      if (!isBalanceEnough) {
-        setErrorAction(ValidationErrorsEnum.Values["not.enough.balance"]);
-        return;
-      }
-
-      removeErrorAction(ValidationErrorsEnum.Values["not.enough.balance"]);
-      removeErrorAction(ValidationErrorsEnum.Values["invalid.receiver"]);
-      removeErrorAction(ValidationErrorsEnum.Values["invalid.sender"]);
-      removeErrorAction(ValidationErrorsEnum.Values["invalid.same.receiver.sender"]);
-      removeErrorAction(ValidationErrorsEnum.Values["own.sender.not.allowed"]);
+      removeErrorAction(ValidationErrorsEnum.Values["error.own.sender.not.allowed"]);
       setIsInspectDetailAction(true);
     } catch (error) {
       console.error(error);
@@ -96,16 +90,16 @@ export default function SendForm({ setDrawerOpen }: SendFormProps) {
 
   function getError() {
     switch (true) {
-      case errors?.includes(ValidationErrorsEnum.Values["invalid.same.receiver.sender"]):
-        return ValidationErrorsEnum.Values["invalid.same.receiver.sender"];
-      case errors?.includes(ValidationErrorsEnum.Values["invalid.receiver"]):
-        return ValidationErrorsEnum.Values["invalid.receiver"];
-      case errors?.includes(ValidationErrorsEnum.Values["invalid.sender"]):
-        return ValidationErrorsEnum.Values["invalid.sender"];
-      case errors?.includes(ValidationErrorsEnum.Values["own.sender.not.allowed"]):
-        return ValidationErrorsEnum.Values["own.sender.not.allowed"];
-      case errors?.includes(ValidationErrorsEnum.Values["not.enough.balance"]):
-        return ValidationErrorsEnum.Values["not.enough.balance"];
+      case errors?.includes(ValidationErrorsEnum.Values["error.asset.empty"]):
+        return ValidationErrorsEnum.Values["error.asset.empty"];
+      case errors?.includes(ValidationErrorsEnum.Values["error.sender.empty"]):
+        return ValidationErrorsEnum.Values["error.sender.empty"];
+      case errors?.includes(ValidationErrorsEnum.Values["error.receiver.empty"]):
+        return ValidationErrorsEnum.Values["error.receiver.empty"];
+      case errors?.includes(ValidationErrorsEnum.Values["error.own.sender.not.allowed"]):
+        return ValidationErrorsEnum.Values["error.own.sender.not.allowed"];
+      case errors?.includes(ValidationErrorsEnum.Values["error.same.sender.receiver"]):
+        return ValidationErrorsEnum.Values["error.same.sender.receiver"];
       default:
         return "";
     }

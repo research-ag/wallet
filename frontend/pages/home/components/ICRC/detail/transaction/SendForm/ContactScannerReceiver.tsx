@@ -1,71 +1,83 @@
 import { CustomInput } from "@components/Input";
 import { ReactComponent as SearchIcon } from "@assets/svg/files/icon-search.svg";
-import { ChangeEvent, useState } from "react";
-import {
-  removeErrorAction,
-  setErrorAction,
-  setReceiverIsManualAction,
-  setReceiverNewContactAction,
-} from "@redux/transaction/TransactionActions";
+import { ChangeEvent, useEffect, useState } from "react";
+import { removeErrorAction, setErrorAction, setReceiverNewContactAction } from "@redux/transaction/TransactionActions";
 import { useTranslation } from "react-i18next";
-import { decodeIcrcAccount } from "@dfinity/ledger";
-import { subUint8ArrayToHex } from "@/utils";
+import { decodeIcrcAccount, encodeIcrcAccount } from "@dfinity/ledger";
+import { hexToUint8Array, subUint8ArrayToHex } from "@/utils";
 import ContactSuffix from "./ContactSuffix";
 import { ValidationErrorsEnum } from "@/@types/transactions";
 import { useAppSelector } from "@redux/Store";
+import { isHexadecimalValid } from "@/utils/checkers";
+import { validatePrincipal } from "@/utils/identity";
+import { Principal } from "@dfinity/principal";
 
 export default function ContactScannerReceiver() {
-  const { errors } = useAppSelector((state) => state.transaction);
-  const [ICRCAccountString, setICRCAccountString] = useState<string>("");
+  const [inputValue, setInputValue] = useState("");
+  const { errors, receiver } = useAppSelector((state) => state.transaction);
   const { t } = useTranslation();
 
+  useEffect(() => {
+    if (receiver?.thirdNewContact?.subAccountId) {
+      initializeICRCIdentifier();
+    }
+  }, []);
+
   return (
-    <CustomInput
-      prefix={<SearchIcon className="mx-2" />}
-      sufix={<ContactSuffix />}
-      intent="secondary"
-      value={ICRCAccountString}
-      border={hasError() ? "error" : "primary"}
-      placeholder={t("icrc.account")}
-      onChange={onInputChange}
-      onKeyUp={onEnterPress}
-    />
+    <div className="mx-4 mt-4">
+      <CustomInput
+        prefix={<SearchIcon className="mx-2" />}
+        sufix={<ContactSuffix />}
+        intent="secondary"
+        value={inputValue}
+        border={hasError() ? "error" : "primary"}
+        placeholder={t("icrc.account")}
+        onChange={onInputChange}
+      />
+    </div>
   );
+
+  function initializeICRCIdentifier() {
+    const principal = receiver?.thirdNewContact?.principal;
+    const subAccountId = receiver?.thirdNewContact?.subAccountId;
+    if (isHexadecimalValid(subAccountId) && validatePrincipal(principal)) {
+      const encodedICRCIdentifier = getICRCIdentifier(principal, subAccountId);
+      setInputValue(encodedICRCIdentifier);
+    }
+  }
 
   function onInputChange(e: ChangeEvent<HTMLInputElement>) {
     try {
-      const fullICRC = e.target.value.trim();
-      decodeIcrcAccount(fullICRC);
-      setICRCAccountString(fullICRC);
-      removeErrorAction(ValidationErrorsEnum.Values["invalid.sender"]);
-    } catch (error) {
-      setErrorAction(ValidationErrorsEnum.Values["invalid.sender"]);
-      console.error(error);
-    }
-  }
+      const fullICRC = e.target.value?.trim();
+      setInputValue(fullICRC);
+      const decoded = decodeIcrcAccount(fullICRC);
 
-  function onEnterPress(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === "Enter") {
-      handlerSetReceiver();
-    }
-  }
-
-  function handlerSetReceiver() {
-    try {
-      const decoded = decodeIcrcAccount(ICRCAccountString);
       const icrcAccount = {
         principal: decoded.owner.toText(),
         subAccountId: `0x${subUint8ArrayToHex(decoded.subaccount)}`,
       };
+
       setReceiverNewContactAction(icrcAccount);
-      setReceiverIsManualAction(true);
-      removeErrorAction(ValidationErrorsEnum.Values["invalid.sender"]);
+      removeErrorAction(ValidationErrorsEnum.Values["invalid.receiver.identifier"]);
     } catch (error) {
-      setErrorAction(ValidationErrorsEnum.Values["invalid.sender"]);
-      console.error(error);
+      console.log(error);
+      setErrorAction(ValidationErrorsEnum.Values["invalid.receiver.identifier"]);
     }
   }
+
   function hasError() {
-    return errors?.includes(ValidationErrorsEnum.Values["invalid.sender"]);
+    return errors?.includes(ValidationErrorsEnum.Values["invalid.receiver.identifier"]);
+  }
+
+  function getICRCIdentifier(principal: string, subAccountId: string) {
+    try {
+      return encodeIcrcAccount({
+        owner: Principal.fromText(principal),
+        subaccount: hexToUint8Array(subAccountId),
+      });
+    } catch (error) {
+      setErrorAction(ValidationErrorsEnum.Values["invalid.receiver.identifier"]);
+      return "";
+    }
   }
 }

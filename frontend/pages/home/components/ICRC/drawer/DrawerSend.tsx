@@ -1,7 +1,6 @@
 import { useState } from "react";
 import SendForm from "../detail/transaction/SendForm";
 import DialogSendConfirmation from "../detail/transaction/DialogSendConfirmation";
-import { SendingStatusEnum } from "@/const";
 import SenderInitializer from "../detail/transaction/SendForm/SenderInitializer";
 import SendFormConditionalRender from "../detail/transaction/SendForm/SendFormConditionalRender";
 
@@ -26,7 +25,6 @@ function DrawerSend({ drawerOpen, setDrawerOpen }: DrawerSendProps) {
         modal={modal}
         setDrawerOpen={setDrawerOpen}
         showConfirmationModal={showConfirmationModal}
-        sendingStatus={SendingStatusEnum.Values.done}
       />
     </>
   );

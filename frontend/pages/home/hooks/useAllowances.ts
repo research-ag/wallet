@@ -50,7 +50,7 @@ export default function useAllowances() {
     }
 
     return [];
-  }, [rawAllowances, sorting, column]);
+  }, [rawAllowances, sorting, column, selectedAsset?.tokenSymbol]);
 
   return {
     allowances,

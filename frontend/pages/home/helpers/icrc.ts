@@ -1,8 +1,10 @@
 import { TAllowance } from "@/@types/allowance";
 import {
+  CheckAllowanceParams,
+  GetBalanceParams,
   HasAssetAllowanceParams,
   HasSubAccountsParams,
-  TransferAmountParams,
+  TransferTokensParams,
   TransferFromAllowanceParams,
 } from "@/@types/icrc";
 import { hexToUint8Array, toFullDecimal, toHoleBigInt } from "@/utils";
@@ -14,16 +16,41 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 dayjs.extend(utc);
 
-export async function transferAmount(params: TransferAmountParams) {
+function getCanister(assetAddress: string) {
+  const agent = store.getState().auth.userAgent;
+  const canisterId = Principal.fromText(assetAddress);
+  const canister = IcrcLedgerCanister.create({
+    agent,
+    canisterId,
+  });
+  return canister;
+}
+
+function calculateExpirationAsBigInt(
+  expirationString: string | undefined,
+  isNoExpiration: boolean,
+): bigint | undefined {
+  if (isNoExpiration) {
+    return undefined;
+  }
+
+  if (!expirationString) {
+    return undefined;
+  }
+
+  try {
+    const expirationTimestamp = dayjs.utc(expirationString).valueOf() * 1000000;
+    return BigInt(expirationTimestamp);
+  } catch (error) {
+    console.error(error);
+    return undefined;
+  }
+}
+
+export async function transferTokens(params: TransferTokensParams) {
   try {
     const { receiverPrincipal, transferAmount, assetAddress, decimal, fromSubAccount, toSubAccount } = params;
-
-    const agent = store.getState().auth.userAgent;
-    const canisterId = Principal.fromText(assetAddress);
-    const canister = IcrcLedgerCanister.create({
-      agent,
-      canisterId,
-    });
+    const canister = getCanister(assetAddress);
 
     const amount = toHoleBigInt(transferAmount, Number(decimal));
 
@@ -37,76 +64,48 @@ export async function transferAmount(params: TransferAmountParams) {
     });
   } catch (error) {
     console.error(error);
+    throw error;
   }
 }
 
-export async function transferFromAllowance(params: TransferFromAllowanceParams) {
+export async function transferTokensFromAllowance(params: TransferFromAllowanceParams) {
   try {
-    const {
-      receiverPrincipal,
-      senderPrincipal,
-      assetAddress,
-      transferAmount,
-      decimal,
-      toSubAccount,
-      fromSubAccount,
-      transactionFee,
-    } = params;
+    const { receiverPrincipal, senderPrincipal, assetAddress, transferAmount, decimal, toSubAccount, fromSubAccount } =
+      params;
 
-    const agent = store.getState().auth.userAgent;
-    const canisterId = Principal.fromText(assetAddress);
-    const canister = IcrcLedgerCanister.create({
-      agent,
-      canisterId,
-    });
-
-    console.log(params);
+    const canister = getCanister(assetAddress);
 
     const transferParams: TransferFromParams = {
       from: {
         owner: Principal.fromText(senderPrincipal),
-        subaccount: [hexToUint8Array("0x22")],
+        subaccount: [hexToUint8Array(fromSubAccount)],
       },
       to: {
         owner: Principal.fromText(receiverPrincipal),
         subaccount: [hexToUint8Array(toSubAccount)],
       },
-      spender_subaccount: hexToUint8Array("0x22"),
       amount: toHoleBigInt(transferAmount, Number(decimal)),
-      // fee: toHoleBigInt(transactionFee, Number(decimal)),
     };
 
-    const response = await canister.transferFrom(transferParams);
-    console.log("allowance response", response);
+    await canister.transferFrom(transferParams);
   } catch (error) {
     console.log(error);
+    throw error;
   }
 }
 
-interface GetBalanceParams {
-  principal: string;
-  subaccount: string;
-  assetAddress: string;
-  assetDecimal: string;
-}
-
-export async function getBalance(params: GetBalanceParams) {
-  const { principal, subaccount, assetAddress, assetDecimal } = params;
-  const agent = store.getState().auth.userAgent;
-  const canisterId = Principal.fromText(assetAddress);
-  const canister = IcrcLedgerCanister.create({
-    agent,
-    canisterId,
-  });
+export async function getSubAccountBalance(params: GetBalanceParams) {
+  const { principal, subAccount, assetAddress, assetDecimal } = params;
+  const canister = getCanister(assetAddress);
 
   const result = await canister.balance({
     owner: Principal.fromText(principal),
-    subaccount: hexToUint8Array(subaccount),
+    subaccount: hexToUint8Array(subAccount),
   });
   return toFullDecimal(result, Number(assetDecimal));
 }
 
-export function generateApproveAllowance(allowance: TAllowance): ApproveParams {
+export function createApproveAllowanceParams(allowance: TAllowance): ApproveParams {
   const spenderPrincipal = allowance.spender.principal;
   const allowanceSubAccountId = allowance.subAccount.sub_account_id;
   const allowanceAssetDecimal = allowance.asset.decimal;
@@ -115,42 +114,33 @@ export function generateApproveAllowance(allowance: TAllowance): ApproveParams {
   const owner = Principal.fromText(spenderPrincipal);
   const subAccountUint8Array = new Uint8Array(hexToUint8Array(allowanceSubAccountId));
   const amount: bigint = toHoleBigInt(allowanceAmount, Number(allowanceAssetDecimal));
-  const expirationTimeStamp =
-    !allowance.noExpire && allowance?.expiration ? dayjs.utc(allowance?.expiration).valueOf() * 1000000 : undefined;
-  const expiration = expirationTimeStamp ? BigInt(expirationTimeStamp) : undefined;
+  const expiration = calculateExpirationAsBigInt(allowance.expiration, allowance?.noExpire);
 
   return {
     spender: {
       owner,
-      subaccount: [subAccountUint8Array],
+      subaccount: [],
     },
+    from_subaccount: subAccountUint8Array,
     amount: amount,
     expires_at: expiration,
   };
 }
 
-export async function ICRCApprove(params: ApproveParams, assetAddress: string): Promise<bigint | undefined> {
+export async function submitAllowanceApproval(
+  params: ApproveParams,
+  assetAddress: string,
+): Promise<bigint | undefined> {
   try {
-    const myAgent = store.getState().auth.userAgent;
-    const canisterId = Principal.fromText(assetAddress);
-    const canister = IcrcLedgerCanister.create({ agent: myAgent, canisterId });
+    const canister = getCanister(assetAddress);
     const result = await canister.approve(params);
     return result;
-  } catch (e) {
-    console.error(e);
-    throw new Error("Error approving");
+  } catch (error) {
+    console.error(error);
   }
 }
 
-interface CheckAllowanceParams {
-  spenderPrincipal?: string;
-  spenderSubaccount: string;
-  accountPrincipal?: string;
-  assetAddress: string;
-  assetDecimal: string;
-}
-
-export async function checkAllowanceExist(params: CheckAllowanceParams) {
+export async function getAllowanceDetails(params: CheckAllowanceParams) {
   try {
     const { spenderPrincipal, spenderSubaccount, accountPrincipal, assetAddress, assetDecimal } = params;
 
@@ -162,95 +152,131 @@ export async function checkAllowanceExist(params: CheckAllowanceParams) {
 
     const result = await canister.allowance({
       spender: {
-        // Who is allowance to transfer
         owner: spenderPrincipal ? Principal.fromText(spenderPrincipal) : userPrincipal,
-        // Over the account is allowed to transfer
-        subaccount: [subAccountUint8Array],
+        subaccount: [],
       },
       account: {
-        // Who guarantee the allowance to spender.owner
         owner: accountPrincipal ? Principal.fromText(accountPrincipal) : userPrincipal,
-        subaccount: [],
+        subaccount: [subAccountUint8Array],
       },
     });
 
+    const allowance = Number(result.allowance) <= 0 ? "" : toFullDecimal(result.allowance, Number(assetDecimal));
+
+    const expires_at =
+      result.expires_at.length <= 0 ? "" : dayjs(Number(result?.expires_at) / 1000000).format("YYYY-MM-DD HH:mm:ss");
+
     return {
-      allowance: Number(result.allowance) <= 0 ? "" : toFullDecimal(result.allowance, Number(assetDecimal)),
-      expires_at:
-        result.expires_at.length <= 0 ? "" : dayjs(Number(result?.expires_at) / 1000000).format("YYYY-MM-DD HH:mm:ss"),
+      allowance,
+      expires_at,
     };
   } catch (e) {
     console.error(e);
   }
 }
 
-export async function hasSubAccountAllowances(params: HasSubAccountsParams) {
+// TODO: test if on delete allowance reload balance (login and refresh button) works
+// TODO: test if on allowance change the reload balance (login and refresh button) works
+
+// export async function retrieveSubAccountsWithAllowance(params: HasSubAccountsParams) {
+//   const { accountPrincipal, subAccounts, assetAddress, assetDecimal } = params;
+//   const newSubAccounts = [];
+
+//   for (let subAccountIndex = 0; subAccountIndex < subAccounts.length; subAccountIndex++) {
+//     const spenderSubaccount = subAccounts[subAccountIndex]?.sub_account_id;
+
+//     const response = await getAllowanceDetails({
+//       spenderSubaccount,
+//       accountPrincipal,
+//       assetAddress,
+//       assetDecimal,
+//     });
+
+//     newSubAccounts.push({
+//       ...subAccounts[subAccountIndex],
+//       allowance: response?.allowance?.length === 0 ? undefined : response,
+//     });
+//   }
+//   return newSubAccounts;
+// }
+
+// export async function retrieveAssetsWithAllowance(params: HasAssetAllowanceParams): Promise<AssetContact[] | []> {
+//   const { accountPrincipal, assets } = params;
+//   const newAssets: AssetContact[] = [];
+
+//   for (let assetIndex = 0; assetIndex < assets.length; assetIndex++) {
+//     const subAccounts = assets[assetIndex].subaccounts;
+
+//     const currentAsset: AssetContact = {
+//       ...assets[assetIndex],
+//       subaccounts: [],
+//     };
+
+//     for (let subAccountIndex = 0; subAccountIndex < subAccounts?.length; subAccountIndex++) {
+//       const spenderSubaccount = subAccounts[subAccountIndex]?.sub_account_id;
+//       const assetAddress = assets[assetIndex].address;
+//       const assetDecimal = assets[assetIndex].decimal;
+
+//       const response = await getAllowanceDetails({
+//         accountPrincipal,
+//         assetAddress,
+//         spenderSubaccount,
+//         assetDecimal,
+//       });
+
+//       const updated = {
+//         ...subAccounts[subAccountIndex],
+//         allowance: response?.allowance?.length === 0 ? undefined : response,
+//       };
+//       currentAsset.subaccounts.push(updated);
+//     }
+
+//     newAssets.push(currentAsset);
+//   }
+//   return newAssets;
+// }
+
+export async function retrieveSubAccountsWithAllowance(params: HasSubAccountsParams) {
   const { accountPrincipal, subAccounts, assetAddress, assetDecimal } = params;
-  const newSubAccounts = [];
 
-  for (let subAccountIndex = 0; subAccountIndex < subAccounts.length; subAccountIndex++) {
-    const spenderSubaccount = subAccounts[subAccountIndex]?.sub_account_id;
-
-    const response = await checkAllowanceExist({
-      spenderSubaccount,
-      accountPrincipal,
-      assetAddress,
-      assetDecimal,
-    });
-
-    if (response?.allowance) {
-      newSubAccounts.push({
-        ...subAccounts[subAccountIndex],
-        allowance: response,
-      });
-    } else {
-      newSubAccounts.push(subAccounts[subAccountIndex]);
-    }
-  }
-  return newSubAccounts;
-}
-
-export async function hasAssetAllowances(params: HasAssetAllowanceParams): Promise<AssetContact[] | []> {
-  const { accountPrincipal, assets } = params;
-  const newAssets: AssetContact[] = [];
-
-  for (let assetIndex = 0; assetIndex < assets.length; assetIndex++) {
-    const subAccounts = assets[assetIndex].subaccounts;
-
-    const currentAsset: AssetContact = {
-      ...assets[assetIndex],
-      subaccounts: [],
-    };
-
-    for (let subAccountIndex = 0; subAccountIndex < subAccounts?.length; subAccountIndex++) {
-      const spenderSubaccount = subAccounts[subAccountIndex]?.sub_account_id;
-      const assetAddress = assets[assetIndex].address;
-      const assetDecimal = assets[assetIndex].decimal;
-
-      const response = await checkAllowanceExist({
+  const subAccountsWithAllowance = await Promise.all(
+    subAccounts.map(async (subAccount) => {
+      const spenderSubaccount = subAccount?.sub_account_id;
+      const response = await getAllowanceDetails({
+        spenderSubaccount,
         accountPrincipal,
         assetAddress,
-        spenderSubaccount,
         assetDecimal,
       });
 
-      if (response?.allowance) {
-        currentAsset.subaccounts.push({
-          ...subAccounts[subAccountIndex],
-          allowance: response,
-        });
-      } else {
-        currentAsset.subaccounts.push(subAccounts[subAccountIndex]);
-      }
-    }
+      return {
+        ...subAccount,
+        allowance: response?.allowance?.length === 0 ? undefined : response,
+      };
+    }),
+  );
 
-    const assetHasAllowance = currentAsset.subaccounts.some((subaccount) => subaccount?.allowance);
+  return subAccountsWithAllowance;
+}
 
-    if (assetHasAllowance) {
-      currentAsset.hasAllowance = true;
-    }
+export async function retrieveAssetsWithAllowance(params: HasAssetAllowanceParams): Promise<AssetContact[] | []> {
+  const { accountPrincipal, assets } = params;
 
-    newAssets.push(currentAsset);
-  }
-  return newAssets;
+  const assetsWithAllowance = await Promise.all(
+    assets.map(async (asset) => {
+      const subAccountsWithAllowance = await retrieveSubAccountsWithAllowance({
+        accountPrincipal,
+        subAccounts: asset.subaccounts,
+        assetAddress: asset.address,
+        assetDecimal: asset.decimal,
+      });
+
+      return {
+        ...asset,
+        subaccounts: subAccountsWithAllowance,
+      };
+    }),
+  );
+
+  return assetsWithAllowance;
 }

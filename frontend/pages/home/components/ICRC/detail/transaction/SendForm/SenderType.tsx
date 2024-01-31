@@ -18,9 +18,7 @@ export default function SenderType(props: SenderTypeProps) {
       <RadioGroup.Root value={senderOption} onValueChange={onValueChange} className="flex">
         <div className="flex flex-row items-center p-1">
           <RadioGroup.Item
-            className={`w-5 h-5 rounded-full border-2  outline-none p-0 ${
-              senderOption === TransactionSenderOptionEnum.Values.own ? "border-primary-color" : "border-gray-color-2"
-            }`}
+            className={getRadioGroupStyles(senderOption === TransactionSenderOptionEnum.Values.own)}
             value={TransactionSenderOptionEnum.Values.own}
             id="r-light"
           >
@@ -30,11 +28,7 @@ export default function SenderType(props: SenderTypeProps) {
         </div>
         <div className="flex flex-row items-center p-1">
           <RadioGroup.Item
-            className={`w-5 h-5 rounded-full border-2  outline-none p-0 ${
-              senderOption === TransactionSenderOptionEnum.Values.allowance
-                ? "border-primary-color"
-                : "border-RadioNoCheckColorLight"
-            }`}
+            className={getRadioGroupStyles(senderOption === TransactionSenderOptionEnum.Values.allowance)}
             value={TransactionSenderOptionEnum.Values.allowance}
             id="r-light"
           >
@@ -58,6 +52,13 @@ export default function SenderType(props: SenderTypeProps) {
       }
     }
   }
+}
+
+function getRadioGroupStyles(isActive: boolean) {
+  return clsx(
+    "w-5 h-5 rounded-full border-2  outline-none p-0",
+    isActive ? "border-primary-color" : "border-RadioNoCheckColorLight",
+  );
 }
 
 function getRadioTextStyles(isActive: boolean) {

@@ -17,12 +17,12 @@ export default function ReceiverItem() {
         <ReceiverType />
       </div>
 
-      <div className="p-4">
+      <div>
         {receiver.receiverOption === TransactionReceiverOptionEnum.Values.third && <ReceiverThird />}
         {receiver.receiverOption === TransactionReceiverOptionEnum.Values.own && <ReceiverOwner />}
       </div>
 
-      <div className="flex p-4">
+      <div className="flex justify-start">
         {receiver.receiverOption === TransactionReceiverOptionEnum.Values.third && (
           <button onClick={onReceiverOptionChange}>
             <p className="flex text-md text-primary-color text-start">

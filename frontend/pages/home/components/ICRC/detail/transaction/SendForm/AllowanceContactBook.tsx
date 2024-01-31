@@ -64,82 +64,84 @@ export function AllowanceContactBook() {
   }, [contacts, sender, searchSubAccountValue]);
 
   return (
-    <DropdownMenu.Root modal={isOpen} onOpenChange={onOpenChange}>
-      <DropdownMenu.Trigger
-        asChild
-        className="flex items-center justify-between p-2 px-4 mt-2 border rounded-md cursor-pointer bg-ThemeColorSelectorLight dark:bg-SecondaryColor h-14"
-      >
-        <div className="flex items-center justify-center">
-          <div className="mr-2">
-            {sender?.allowanceContactSubAccount?.assetName && (
-              <div className="flex items-center justify-between ">
-                <AvatarEmpty title="H" size="large" />
-                <div className="ml-2">
-                  <p className="text-left">
-                    {sender?.allowanceContactSubAccount?.contactName}{" "}
-                    {`[${sender?.allowanceContactSubAccount?.subAccountName}]`}
-                  </p>
-                  <span className="flex">
-                    <img
-                      className="w-5 h-5 mr-2"
-                      src={getIconSrc(
-                        sender?.allowanceContactSubAccount?.assetLogo,
-                        sender?.allowanceContactSubAccount?.assetSymbol,
-                      )}
-                      alt={sender?.allowanceContactSubAccount?.assetSymbol}
-                    />
-                    <p className="">
-                      {sender?.allowanceContactSubAccount?.subAccountAllowance?.allowance}{" "}
-                      {sender?.allowanceContactSubAccount?.assetSymbol}
-                    </p>
-                  </span>
-                </div>
-              </div>
-            )}
-            {!sender?.allowanceContactSubAccount?.assetName && <p>Select An Option</p>}
-          </div>
-          <DropIcon className={isOpen ? "-rotate-90" : ""} />
-        </div>
-      </DropdownMenu.Trigger>
-      <DropdownMenu.Content className="w-[24rem] z-50 mt-2 bg-ThemeColorSelectorLight dark:bg-ThemeColorBack rounded-md border border-RadioCheckColor">
-        <DropdownMenu.Group className="p-2">
-          <CustomInput
-            prefix={<img src={SearchIcon} className="mx-2" alt="search-icon" />}
-            onChange={onSearchChange}
-            placeholder="Search"
-            className="dark:bg-SideColor bg-PrimaryColorLight"
-          />
-        </DropdownMenu.Group>
-        <DropdownMenu.Group>
-          {options.map((contact) => {
-            const { contactName, assetLogo, assetSymbol, subAccountAllowance, subAccountName } = contact;
-
-            return (
-              <DropdownMenu.Item
-                onSelect={() => onSelect(contact)}
-                key={contact.contactPrincipal}
-                className="flex items-center justify-start px-2 py-2 bg-opacity-50 cursor-pointer hover:bg-RadioCheckColor"
-              >
-                <div className="flex items-center justify-between mr-2">
-                  <AvatarEmpty title={contactName} size="large" />
+    <div className="mx-4">
+      <DropdownMenu.Root modal={isOpen} onOpenChange={onOpenChange}>
+        <DropdownMenu.Trigger
+          asChild
+          className="flex items-center justify-between p-2 px-4 mt-2 border rounded-md cursor-pointer bg-ThemeColorSelectorLight dark:bg-SecondaryColor h-14"
+        >
+          <div className="flex items-center justify-center">
+            <div className="mr-2">
+              {sender?.allowanceContactSubAccount?.assetName && (
+                <div className="flex items-center justify-between ">
+                  <AvatarEmpty title="H" size="large" />
                   <div className="ml-2">
                     <p className="text-left">
-                      {contactName} {`[${subAccountName}]`}
+                      {sender?.allowanceContactSubAccount?.contactName}{" "}
+                      {`[${sender?.allowanceContactSubAccount?.subAccountName}]`}
                     </p>
                     <span className="flex">
-                      <img className="w-5 h-5 mr-2" src={getIconSrc(assetLogo, assetSymbol)} alt={assetSymbol} />
+                      <img
+                        className="w-5 h-5 mr-2"
+                        src={getIconSrc(
+                          sender?.allowanceContactSubAccount?.assetLogo,
+                          sender?.allowanceContactSubAccount?.assetSymbol,
+                        )}
+                        alt={sender?.allowanceContactSubAccount?.assetSymbol}
+                      />
                       <p className="">
-                        {subAccountAllowance?.allowance} {assetSymbol}
+                        {sender?.allowanceContactSubAccount?.subAccountAllowance?.allowance}{" "}
+                        {sender?.allowanceContactSubAccount?.assetSymbol}
                       </p>
                     </span>
                   </div>
                 </div>
-              </DropdownMenu.Item>
-            );
-          })}
-        </DropdownMenu.Group>
-      </DropdownMenu.Content>
-    </DropdownMenu.Root>
+              )}
+              {!sender?.allowanceContactSubAccount?.assetName && <p>Select An Option</p>}
+            </div>
+            <DropIcon className={`fill-gray-color-4 ${isOpen ? "-rotate-90" : ""}`} />
+          </div>
+        </DropdownMenu.Trigger>
+        <DropdownMenu.Content className="w-[23rem] z-50 mt-2 bg-ThemeColorSelectorLight dark:bg-ThemeColorBack rounded-md border border-RadioCheckColor">
+          <DropdownMenu.Group className="p-2">
+            <CustomInput
+              prefix={<img src={SearchIcon} className="mx-2" alt="search-icon" />}
+              onChange={onSearchChange}
+              placeholder="Search"
+              className="dark:bg-SideColor bg-PrimaryColorLight"
+            />
+          </DropdownMenu.Group>
+          <DropdownMenu.Group>
+            {options.map((contact) => {
+              const { contactName, assetLogo, assetSymbol, subAccountAllowance, subAccountName } = contact;
+
+              return (
+                <DropdownMenu.Item
+                  onSelect={() => onSelect(contact)}
+                  key={contact.contactPrincipal}
+                  className="flex items-center justify-start px-2 py-2 bg-opacity-50 cursor-pointer hover:bg-RadioCheckColor"
+                >
+                  <div className="flex items-center justify-between mr-2">
+                    <AvatarEmpty title={contactName} size="large" />
+                    <div className="ml-2">
+                      <p className="text-left">
+                        {contactName} {`[${subAccountName}]`}
+                      </p>
+                      <span className="flex">
+                        <img className="w-5 h-5 mr-2" src={getIconSrc(assetLogo, assetSymbol)} alt={assetSymbol} />
+                        <p className="">
+                          {subAccountAllowance?.allowance} {assetSymbol}
+                        </p>
+                      </span>
+                    </div>
+                  </div>
+                </DropdownMenu.Item>
+              );
+            })}
+          </DropdownMenu.Group>
+        </DropdownMenu.Content>
+      </DropdownMenu.Root>
+    </div>
   );
 
   function onSelect(contact: ContactSubAccount) {

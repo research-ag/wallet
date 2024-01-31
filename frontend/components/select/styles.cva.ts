@@ -34,7 +34,7 @@ export const selectTriggerCVA = cva(
 
 export const selectContentCVA = cva(
   [
-    "w-[24rem] z-50 mt-2",
+    "w-fit z-50 mt-2",
     "bg-ThemeColorSelectorLight dark:bg-ThemeColorBack",
     "rounded-md border border-RadioCheckColor",
   ],

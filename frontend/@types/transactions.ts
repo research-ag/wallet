@@ -69,17 +69,21 @@ export const TransactionErrorFieldsEnum = z.enum(["sender", "receiver", "amount"
 export type TransactionErrorFields = z.infer<typeof TransactionErrorFieldsEnum>;
 
 export const ValidationErrorsEnum = z.enum([
-  "invalid.sender",
-  "invalid.receiver",
-  "invalid.sender.principal",
-  "invalid.sender.subaccount",
-  "invalid.receiver.principal",
-  "invalid.receiver.subaccount",
-  "own.sender.not.allowed",
-  "sender.allowance.invalid",
-  "not.enough.balance",
-  "invalid.amount",
-  "invalid.same.receiver.sender"
+  "error.asset.empty",
+  "error.sender.empty",
+  "error.receiver.empty",
+  "error.sender.not.active.allowance",
+  "error.own.sender.not.allowed",
+  "error.same.sender.receiver",
+  "error.invalid.sender.principal",
+  "error.invalid.sender.subaccount",
+  "error.invalid.receiver.principal",
+  "error.invalid.receiver.subaccount",
+  "invalid.receiver.identifier",
+
+  "error.invalid.amount",
+  "error.not.enough.balance",
+  "error.allowance.subaccount.not.enough"
 ]);
 export type ValidationErrorsType = z.infer<typeof ValidationErrorsEnum>;
 

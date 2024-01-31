@@ -1,14 +1,16 @@
 import { ValidationErrorsEnum } from "@/@types/transactions";
-import { validateAmount } from "@/utils";
+import { roundToDecimalN, validateAmount } from "@/utils";
 import { ReactComponent as ExchangeIcon } from "@assets/svg/files/arrows-exchange-v.svg";
+import LoadingLoader from "@components/Loader";
 import useSend from "@pages/home/hooks/useSend";
 import { useAppSelector } from "@redux/Store";
 import { removeErrorAction, setAmountAction, setErrorAction } from "@redux/transaction/TransactionActions";
 import clsx from "clsx";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 export default function TransactionAmount() {
+  const [isMaxAmountLoading, setMaxAmountLoading] = useState(false);
   const { sender, errors, amount } = useAppSelector((state) => state.transaction);
   const { transactionFee, getSenderBalance } = useSend();
   const { t } = useTranslation();
@@ -17,7 +19,9 @@ export default function TransactionAmount() {
     <>
       <p className="font-bold bg-transparent opacity-50 text-md text-start">{t("amount")}</p>
       <div
-        className={clsx(getAmountInputStyles(errors?.includes(ValidationErrorsEnum.Values["invalid.amount"]) || false))}
+        className={clsx(
+          getAmountInputStyles(errors?.includes(ValidationErrorsEnum.Values["error.invalid.amount"]) || false),
+        )}
       >
         <input
           type="text"
@@ -26,12 +30,15 @@ export default function TransactionAmount() {
           onChange={onChangeAmount}
           value={amount || ""}
         />
-        <button
-          className="flex items-center justify-center p-1 rounded cursor-pointer bg-RadioCheckColor"
-          onClick={onMaxAmount}
-        >
-          <p className="text-sm text-PrimaryTextColor">{t("max")}</p>
-        </button>
+        {isMaxAmountLoading && <LoadingLoader className="mr-2" />}
+        {!isMaxAmountLoading && (
+          <button
+            className="flex items-center justify-center p-1 rounded cursor-pointer bg-RadioCheckColor"
+            onClick={onMaxAmount}
+          >
+            <p className="text-sm text-PrimaryTextColor">{t("max")}</p>
+          </button>
+        )}
         <ExchangeIcon />
       </div>
       <div className="flex flex-row items-center justify-end gap-2 text-md whitespace-nowrap">
@@ -49,7 +56,7 @@ export default function TransactionAmount() {
       const isValid = Number(amount) >= 0 || amount !== "";
 
       if (!isValid) {
-        setErrorAction(ValidationErrorsEnum.Values["invalid.amount"]);
+        setErrorAction(ValidationErrorsEnum.Values["error.invalid.amount"]);
         return;
       }
       setAmountAction(amount);
@@ -57,7 +64,7 @@ export default function TransactionAmount() {
       const isValidAmount = validateAmount(amount, Number(sender.asset.decimal));
 
       if (!isValidAmount) {
-        setErrorAction(ValidationErrorsEnum.Values["invalid.amount"]);
+        setErrorAction(ValidationErrorsEnum.Values["error.invalid.amount"]);
         return;
       }
 
@@ -66,13 +73,12 @@ export default function TransactionAmount() {
       const isMaxValid = Number(amount) <= maxAmount;
 
       if (!isMaxValid) {
-        setErrorAction(ValidationErrorsEnum.Values["invalid.amount"]);
+        setErrorAction(ValidationErrorsEnum.Values["error.not.enough.balance"]);
         return;
       }
 
-      if (isValid && isValidAmount && isMaxValid) {
-        removeErrorAction(ValidationErrorsEnum.Values["invalid.amount"]);
-      }
+      removeErrorAction(ValidationErrorsEnum.Values["error.invalid.amount"]);
+      removeErrorAction(ValidationErrorsEnum.Values["error.not.enough.balance"]);
     } catch (error) {
       console.log(error);
     }
@@ -80,18 +86,23 @@ export default function TransactionAmount() {
 
   async function onMaxAmount() {
     try {
+      setMaxAmountLoading(true);
       const balance = await getSenderBalance();
-      if (Number(balance) == 0) {
-        setAmountAction("0");
+
+      if (Number(balance) <= Number(transactionFee)) {
+        setErrorAction(ValidationErrorsEnum.Values["error.not.enough.balance"]);
         return;
       }
+      removeErrorAction(ValidationErrorsEnum.Values["error.not.enough.balance"]);
+
       const maxAmount = Number(balance) - Number(transactionFee);
-      setAmountAction(String(maxAmount));
+      setAmountAction(String(roundToDecimalN(maxAmount, Number(sender?.asset?.decimal))));
     } catch (error) {
       console.log(error);
+    } finally {
+      setMaxAmountLoading(false);
+      removeErrorAction(ValidationErrorsEnum.Values["error.invalid.amount"]);
     }
-    removeErrorAction(ValidationErrorsEnum.Values["invalid.amount"]);
-    return;
   }
 }
 

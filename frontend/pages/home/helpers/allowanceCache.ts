@@ -1,7 +1,7 @@
 import { TAllowance } from "@/@types/allowance";
 import store from "@redux/Store";
 import { setAllowances } from "@redux/allowance/AllowanceReducer";
-import { checkAllowanceExist } from "./icrc";
+import { getAllowanceDetails } from "@/pages/home/helpers/icrc";
 
 export async function allowanceCacheRefresh(principal: string) {
   const allowancePrefix = `allowances-${principal}`;
@@ -17,7 +17,7 @@ export async function allowanceCacheRefresh(principal: string) {
         const assetAddress = allowance.asset.address;
         const assetDecimal = allowance.asset.decimal;
 
-        const response = await checkAllowanceExist({
+        const response = await getAllowanceDetails({
           spenderPrincipal,
           spenderSubaccount,
           assetAddress,
@@ -26,14 +26,13 @@ export async function allowanceCacheRefresh(principal: string) {
 
         updatedAllowances.push({
           ...allowance,
-          amount: response?.allowance || allowance.amount,
-          expiration: response?.expires_at || allowance.expiration,
+          amount: response?.allowance ? response?.allowance : "0",
+          expiration: response?.expires_at ? response?.expires_at : "",
         });
       } catch (error) {
         console.log(error);
       }
     }
   }
-
   store.dispatch(setAllowances(updatedAllowances));
 }

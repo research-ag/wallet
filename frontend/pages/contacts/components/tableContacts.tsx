@@ -102,7 +102,7 @@ const TableContacts = ({
       <tbody>
         {getContactsToShow().map((cntc, k) => {
           const hasContactAllowance = cntc?.assets.some((asset) =>
-          asset.subaccounts.some((subaccount) => subaccount?.allowance?.allowance),
+            asset.subaccounts.some((subaccount) => subaccount?.allowance?.allowance),
           );
 
           return (
@@ -134,7 +134,6 @@ const TableContacts = ({
                           <p className="text-PrimaryTextColor">{getInitialFromName(cntc.name, 2)}</p>
                         </div>
                         <p className="text-left opacity-70 break-words max-w-[14rem]">{cntc.name}</p>
-                        {cntc?.assets[0]?.hasAllowance}
                         {hasContactAllowance && (
                           <MoneyHandIcon className="relative w-5 h-5 cursor-pointer fill-RadioCheckColor" />
                         )}
@@ -321,7 +320,6 @@ const TableContacts = ({
         address: dt.address,
         decimal: dt.decimal,
         shortDecimal: dt.shortDecimal,
-        hasAllowance: dt?.hasAllowance,
       };
     });
     addAsset(auxAsst, cntc.principal);

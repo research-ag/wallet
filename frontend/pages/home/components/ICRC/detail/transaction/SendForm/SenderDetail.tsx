@@ -9,7 +9,7 @@ export default function SenderDetail() {
   const { sender } = useAppSelector((state) => state.transaction);
 
   const isSubAccountOrContactBook = useMemo(() => {
-    return true;
+    return !sender?.newAllowanceContact?.subAccountId;
   }, [sender]);
 
   return (

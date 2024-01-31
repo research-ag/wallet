@@ -1,6 +1,6 @@
 import { TAllowance } from "@/@types/allowance";
 import { TErrorValidation } from "@/@types/common";
-import { ICRCApprove, generateApproveAllowance } from "@/pages/home/helpers/icrc";
+import { submitAllowanceApproval, createApproveAllowanceParams } from "@/pages/home/helpers/icrc";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { useMutation } from "@tanstack/react-query";
 import { throttle } from "lodash";
@@ -29,8 +29,8 @@ export function useUpdateAllowance() {
     try {
       const valid = allowanceValidationSchema.safeParse(allowance);
       if (!valid.success) return Promise.reject(valid.error);
-      const params = generateApproveAllowance(allowance);
-      await ICRCApprove(params, allowance.asset.address);
+      const params = createApproveAllowanceParams(allowance);
+      await submitAllowanceApproval(params, allowance.asset.address);
       const updatedAllowances = await updateAllowanceRequest(allowance);
       dispatch(setAllowances(updatedAllowances));
     } catch (error) {

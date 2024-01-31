@@ -12,10 +12,10 @@ import ContactMainDetails from "./ContactMainDetails";
 import ContactAssetDetails from "./ContactAssetDetails";
 import LoadingLoader from "@components/Loader";
 import { CustomButton } from "@components/Button";
-import { hasSubAccountAllowances, hasAssetAllowances } from "@/pages/home/helpers/icrc";
+import { retrieveSubAccountsWithAllowance, retrieveAssetsWithAllowance } from "@/pages/home/helpers/icrc";
 import { addContact } from "@redux/contacts/ContactsReducer";
 import { AssetContact } from "@redux/models/ContactsModels";
-import { formatSubAccountIds, isHexadecimalValid, validateSubaccounts } from "@/utils/checkers";
+import { isHexadecimalValid, validateSubaccounts } from "@/utils/checkers";
 import clsx from "clsx";
 import { validatePrincipal } from "@/utils/identity";
 interface AddContactProps {
@@ -107,36 +107,39 @@ export default function AddContact({ setAddOpen }: AddContactProps) {
   async function onAllowanceNewContactCheck() {
     try {
       setIsAllowancesChecking(true);
-      let isValidPrincipal = false;
 
-      for (let index = 0; index < newSubAccounts.length; index++) {
-        const subAccount = newSubAccounts[index];
-        const valid = isHexadecimalValid(subAccount.sub_account_id);
-
-        if (!valid) {
-          setNewContactSubIdErr([0]);
-          return;
-        }
-      }
-
-      isValidPrincipal = validatePrincipal(newContact.principal);
-      if (!isValidPrincipal) {
+      if (!validatePrincipal(newContact.principal)) {
         setNewContactPrinErr(true);
         return;
       }
+      setNewContactPrinErr(false);
+
+      for (let index = 0; index < newSubAccounts.length; index++) {
+        const subAccount = newSubAccounts[index];
+
+        const isSubAccountDuplicated = newSubAccounts.filter(
+          (currentSubAccount) => subAccount.sub_account_id === currentSubAccount.sub_account_id,
+        ).length > 1;
+// 
+        if (subAccount.name.trim().length === 0) {
+          setNewContactSubNameErr([index]);
+          return;
+        }
+
+        if (!isHexadecimalValid(subAccount.sub_account_id) || isSubAccountDuplicated) {
+          setNewContactSubIdErr([index]);
+          return;
+        }
+      }
+      setNewContactSubNameErr([]);
+      setNewContactSubIdErr([]);
 
       const { address, decimal } = assets.filter((asset) => asset.tokenSymbol === selAstContact)[0];
-
       if (!address || !decimal) return;
 
-      const { formattedSubAccounts, subAccountNamesErrors, subAccountIdsErrors } = formatSubAccountIds(newSubAccounts);
-
-      if (formattedSubAccounts.length === 0 || subAccountNamesErrors.length > 0 || subAccountIdsErrors.length > 0)
-        return;
-
-      const fullSubAccounts = await hasSubAccountAllowances({
+      const fullSubAccounts = await retrieveSubAccountsWithAllowance({
         accountPrincipal: newContact.principal,
-        subAccounts: formattedSubAccounts,
+        subAccounts: newSubAccounts,
         assetAddress: address,
         assetDecimal: decimal,
       });
@@ -176,7 +179,7 @@ export default function AddContact({ setAddOpen }: AddContactProps) {
       } else {
         // INFO: create contact into redux and local storage
         setIsCreating(true);
-        const result = await hasAssetAllowances({
+        const result = await retrieveAssetsWithAllowance({
           accountPrincipal: newContact.principal,
           assets: newContact.assets,
         });

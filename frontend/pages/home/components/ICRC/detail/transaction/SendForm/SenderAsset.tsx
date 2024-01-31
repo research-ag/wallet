@@ -4,8 +4,10 @@ import { Select } from "@components/select";
 import { useAppSelector } from "@redux/Store";
 import { setSenderAssetAction } from "@redux/transaction/TransactionActions";
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function SenderAsset() {
+  const { t } = useTranslation();
   const { assets } = useAppSelector((state) => state.asset);
   const { sender } = useAppSelector((state) => state.transaction);
   const [searchAsset, setSearchAsset] = useState<string | null>(null);
@@ -24,15 +26,19 @@ export default function SenderAsset() {
   }, [searchAsset, assets]);
 
   return (
-    <Select
-      onSelect={onAssetChange}
-      options={options}
-      initialValue={sender?.asset?.tokenName}
-      currentValue={sender?.asset?.tokenName}
-      disabled={false}
-      onSearch={onSearchChange}
-      onOpenChange={onOpenChange}
-    />
+    <div>
+      <p className="opacity-50 text-start text-black-color dark:text-white">{t("asset")}</p>
+      <Select
+        onSelect={onAssetChange}
+        options={options}
+        initialValue={sender?.asset?.tokenName}
+        currentValue={sender?.asset?.tokenName}
+        disabled={false}
+        onSearch={onSearchChange}
+        onOpenChange={onOpenChange}
+        contentWidth="25rem"
+      />
+    </div>
   );
 
   function onAssetChange(option: SelectOption) {

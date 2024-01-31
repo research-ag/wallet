@@ -2,11 +2,7 @@ import { TransactionScannerOptionEnum } from "@/@types/transactions";
 import { subUint8ArrayToHex } from "@/utils";
 import { decodeIcrcAccount } from "@dfinity/ledger";
 import QRscanner from "@pages/components/QRscanner";
-import {
-  setReceiverIsManualAction,
-  setReceiverNewContactAction,
-  setScannerActiveOptionAction,
-} from "@redux/transaction/TransactionActions";
+import { setReceiverNewContactAction, setScannerActiveOptionAction } from "@redux/transaction/TransactionActions";
 
 export default function ReceiverQRScanner() {
   return (
@@ -23,7 +19,6 @@ export default function ReceiverQRScanner() {
 
           onGoBack();
           setReceiverNewContactAction(scannedContact);
-          setReceiverIsManualAction(true);
         } catch (error) {
           console.error(error);
         }

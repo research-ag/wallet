@@ -16,7 +16,7 @@ import { useTranslation } from "react-i18next";
 import { ValidationErrorsEnum } from "@/@types/transactions";
 import { SendingStatusEnum } from "@/const";
 import { AssetHook } from "@pages/home/hooks/assetHook";
-import { transferAmount, transferFromAllowance } from "@pages/home/helpers/icrc";
+import { getSubAccountBalance, transferTokens, transferTokensFromAllowance } from "@pages/home/helpers/icrc";
 import LoadingLoader from "@components/Loader";
 
 interface ConfirmDetailProps {
@@ -50,37 +50,56 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
         <Button className="w-1/6 mr-2 font-bold bg-secondary-color-2" onClick={OnBack}>
           {t("back")}
         </Button>
-        <Button className="w-1/6 font-bold bg-primary-color" onClick={onDone} disabled={!enableSend}>
+        <Button className="w-1/6 font-bold bg-primary-color" onClick={handleTransaction}>
           {t("next")}
         </Button>
       </div>
     </div>
   );
 
-  async function onDone() {
+  async function validateBalance() {
+    const balance = await getSenderBalance();
+    const maxAmount = Number(balance) - Number(transactionFee);
+
+    if (!(Number(balance) >= maxAmount)) {
+      setErrorAction(ValidationErrorsEnum.Values["error.not.enough.balance"]);
+      return;
+    }
+    removeErrorAction(ValidationErrorsEnum.Values["error.not.enough.balance"]);
+  }
+
+  async function validateSubAccountBalance() {
+    const subAccountBalance = await getSubAccountBalance({
+      assetAddress: sender?.asset?.address,
+      assetDecimal: sender?.asset?.decimal,
+      principal: senderPrincipal,
+      subAccount: senderSubAccount,
+    });
+
+    if (Number(subAccountBalance) < Number(amount)) {
+      setErrorAction(ValidationErrorsEnum.Values["error.allowance.subaccount.not.enough"]);
+      throw new Error("error.allowance.subaccount.not.enough");
+    }
+    removeErrorAction(ValidationErrorsEnum.Values["error.allowance.subaccount.not.enough"]);
+  }
+
+  async function handleTransaction() {
     try {
       setIsLoadingAction(true);
       const assetAddress = sender.asset.address;
       const decimal = sender.asset.decimal;
 
-      if (enableSend) {
-        const balance = await getSenderBalance();
-        const maxAmount = Number(balance) - Number(transactionFee);
-
-        if (!(Number(balance) >= maxAmount)) {
-          setErrorAction(ValidationErrorsEnum.Values["not.enough.balance"]);
-          return;
-        }
-        removeErrorAction(ValidationErrorsEnum.Values["not.enough.balance"]);
+      if (enableSend && !errors?.length) {
+        await validateBalance();
 
         if (assetAddress && decimal && senderSubAccount && receiverPrincipal && receiverSubAccount && amount) {
           setSendingStatusAction(SendingStatusEnum.Values.sending);
-          // showConfirmationModal(true);
+          showConfirmationModal(true);
 
-          console.log("transactionFee", transactionFee);
+          await validateSubAccountBalance();
 
           if (isSenderAllowance()) {
-            await transferFromAllowance({
+            await transferTokensFromAllowance({
               receiverPrincipal,
               senderPrincipal,
               assetAddress,
@@ -90,9 +109,8 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
               toSubAccount: receiverSubAccount,
               transactionFee,
             });
-            // console.log("Sending allowance");
           } else {
-            await transferAmount({
+            await transferTokens({
               receiverPrincipal,
               assetAddress,
               transferAmount: amount,
@@ -100,10 +118,9 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
               fromSubAccount: senderSubAccount,
               toSubAccount: receiverSubAccount,
             });
-            // console.log("Sending no allowance");
           }
-          // setSendingStatusAction(SendingStatusEnum.Values.done);
         }
+        setSendingStatusAction(SendingStatusEnum.Values.done);
       }
     } catch (error) {
       setSendingStatusAction(SendingStatusEnum.Values.error);
@@ -119,8 +136,8 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
 
   function getError() {
     switch (true) {
-      case errors?.includes(ValidationErrorsEnum.Values["not.enough.balance"]):
-        return ValidationErrorsEnum.Values["not.enough.balance"];
+      case errors?.includes(ValidationErrorsEnum.Values["error.not.enough.balance"]):
+        return ValidationErrorsEnum.Values["error.not.enough.balance"];
       default:
         return "";
     }

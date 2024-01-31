@@ -12,7 +12,7 @@ export default function SenderItem() {
       <div className="w-full py-2 border-b border-opacity-25 border-gray-color-2">
         <SenderType senderOption={sender.senderOption} />
       </div>
-      <div className="p-4">
+      <div className="py-4">
         {sender.senderOption === TransactionSenderOptionEnum.Values.own && <SenderSubAccount />}
         {sender.senderOption === TransactionSenderOptionEnum.Values.allowance && <SenderAllowanceContact />}
       </div>
