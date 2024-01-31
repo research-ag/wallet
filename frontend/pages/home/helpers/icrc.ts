@@ -175,67 +175,6 @@ export async function getAllowanceDetails(params: CheckAllowanceParams) {
   }
 }
 
-// TODO: test if on delete allowance reload balance (login and refresh button) works
-// TODO: test if on allowance change the reload balance (login and refresh button) works
-
-// export async function retrieveSubAccountsWithAllowance(params: HasSubAccountsParams) {
-//   const { accountPrincipal, subAccounts, assetAddress, assetDecimal } = params;
-//   const newSubAccounts = [];
-
-//   for (let subAccountIndex = 0; subAccountIndex < subAccounts.length; subAccountIndex++) {
-//     const spenderSubaccount = subAccounts[subAccountIndex]?.sub_account_id;
-
-//     const response = await getAllowanceDetails({
-//       spenderSubaccount,
-//       accountPrincipal,
-//       assetAddress,
-//       assetDecimal,
-//     });
-
-//     newSubAccounts.push({
-//       ...subAccounts[subAccountIndex],
-//       allowance: response?.allowance?.length === 0 ? undefined : response,
-//     });
-//   }
-//   return newSubAccounts;
-// }
-
-// export async function retrieveAssetsWithAllowance(params: HasAssetAllowanceParams): Promise<AssetContact[] | []> {
-//   const { accountPrincipal, assets } = params;
-//   const newAssets: AssetContact[] = [];
-
-//   for (let assetIndex = 0; assetIndex < assets.length; assetIndex++) {
-//     const subAccounts = assets[assetIndex].subaccounts;
-
-//     const currentAsset: AssetContact = {
-//       ...assets[assetIndex],
-//       subaccounts: [],
-//     };
-
-//     for (let subAccountIndex = 0; subAccountIndex < subAccounts?.length; subAccountIndex++) {
-//       const spenderSubaccount = subAccounts[subAccountIndex]?.sub_account_id;
-//       const assetAddress = assets[assetIndex].address;
-//       const assetDecimal = assets[assetIndex].decimal;
-
-//       const response = await getAllowanceDetails({
-//         accountPrincipal,
-//         assetAddress,
-//         spenderSubaccount,
-//         assetDecimal,
-//       });
-
-//       const updated = {
-//         ...subAccounts[subAccountIndex],
-//         allowance: response?.allowance?.length === 0 ? undefined : response,
-//       };
-//       currentAsset.subaccounts.push(updated);
-//     }
-
-//     newAssets.push(currentAsset);
-//   }
-//   return newAssets;
-// }
-
 export async function retrieveSubAccountsWithAllowance(params: HasSubAccountsParams) {
   const { accountPrincipal, subAccounts, assetAddress, assetDecimal } = params;
 
