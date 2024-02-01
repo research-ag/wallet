@@ -26,14 +26,6 @@ function getCanister(assetAddress: string) {
   return canister;
 }
 
-async function supportedStandards() {
-  try {
-    // TODO: run the icrc1_supported_standards
-  } catch (error) {
-    console.log(error);
-  }
-}
-
 function calculateExpirationAsBigInt(
   expirationString: string | undefined,
   isNoExpiration: boolean,
