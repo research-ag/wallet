@@ -1,5 +1,5 @@
 import { ValidationErrorsEnum } from "@/@types/transactions";
-import { roundToDecimalN, validateAmount } from "@/utils";
+import { toFullDecimal, toHoleBigInt, validateAmount } from "@/utils";
 import { ReactComponent as ExchangeIcon } from "@assets/svg/files/arrows-exchange-v.svg";
 import LoadingLoader from "@components/Loader";
 import useSend from "@pages/home/hooks/useSend";
@@ -69,10 +69,12 @@ export default function TransactionAmount() {
       }
 
       const balance = await getSenderBalance();
-      const maxAmount = Number(balance) - Number(transactionFee);
-      const isMaxValid = Number(amount) <= maxAmount;
+      const bigintBalance = toHoleBigInt(balance || "0", Number(sender?.asset?.decimal));
+      const bigintFee = toHoleBigInt(transactionFee || "0", Number(sender?.asset?.decimal));
+      const bigintAmount = toHoleBigInt(amount || "0", Number(sender?.asset?.decimal));
+      const bigintMaxAmount = bigintBalance - bigintFee;
 
-      if (!isMaxValid) {
+      if (bigintAmount > bigintMaxAmount) {
         setErrorAction(ValidationErrorsEnum.Values["error.not.enough.balance"]);
         return;
       }
@@ -88,15 +90,17 @@ export default function TransactionAmount() {
     try {
       setMaxAmountLoading(true);
       const balance = await getSenderBalance();
+      const bigintBalance = toHoleBigInt(balance || "0", Number(sender?.asset?.decimal));
+      const bigintFee = toHoleBigInt(transactionFee || "0", Number(sender?.asset?.decimal));
+      const bigintMaxAmount = bigintBalance - bigintFee;
 
-      if (Number(balance) <= Number(transactionFee)) {
+      if (bigintBalance <= bigintFee) {
         setErrorAction(ValidationErrorsEnum.Values["error.not.enough.balance"]);
         return;
       }
       removeErrorAction(ValidationErrorsEnum.Values["error.not.enough.balance"]);
-
-      const maxAmount = Number(balance) - Number(transactionFee);
-      setAmountAction(String(roundToDecimalN(maxAmount, Number(sender?.asset?.decimal))));
+      const maxAmount = toFullDecimal(bigintMaxAmount, Number(sender?.asset?.decimal));
+      setAmountAction(maxAmount);
     } catch (error) {
       console.log(error);
     } finally {

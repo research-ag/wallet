@@ -165,10 +165,7 @@ export async function getAllowanceDetails(params: CheckAllowanceParams) {
     const expires_at =
       result.expires_at.length <= 0 ? "" : dayjs(Number(result?.expires_at) / 1000000).format("YYYY-MM-DD HH:mm:ss");
 
-    return {
-      allowance,
-      expires_at,
-    };
+    return { allowance, expires_at };
   } catch (e) {
     console.error(e);
   }

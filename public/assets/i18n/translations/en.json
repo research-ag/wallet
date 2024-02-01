@@ -164,7 +164,6 @@
   "error.invalid.receiver.principal": "Invalid To principal",
   "error.invalid.receiver.subaccount": "Invalid To subaccount",
   "invalid.receiver.identifier": "Invalid ICRC Indentifier",
-
   "error.invalid.amount": "Amount is not valid",
   "error.not.enough.balance": "Not enough balance",
   "error.allowance.subaccount.not.enough": "Allowance subaccount balance not enough"
