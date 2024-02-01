@@ -105,7 +105,7 @@ export default function Select(props: TSelectProps) {
 }
 
 function textStyles(isSubLabel = false) {
-  return clsx("text-start text-PrimaryTextColorLight dark:text-PrimaryTextColor", isSubLabel && "opacity-50");
+  return clsx("text-start text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor", isSubLabel && "opacity-50");
 }
 
 function getItemStyles(width: string) {

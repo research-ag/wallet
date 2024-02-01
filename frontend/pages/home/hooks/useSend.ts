@@ -38,16 +38,10 @@ export default function useSend() {
 
   async function getSenderBalance() {
     try {
-      if (sender?.subAccount?.sub_account_id) {
-        return toFullDecimal(sender?.subAccount?.amount || "0", Number(sender?.asset?.decimal));
-      }
-
       const principal = getSenderPrincipal();
       const subAccount = getSenderSubAccount();
       const assetAddress = sender?.asset?.address;
       const decimal = sender?.asset?.decimal;
-
-      if (!principal || !subAccount || !assetAddress || !decimal) return;
 
       const response = await getAllowanceDetails({
         spenderSubaccount: subAccount,
@@ -55,6 +49,10 @@ export default function useSend() {
         assetAddress,
         assetDecimal: decimal,
       });
+
+      if (sender?.subAccount?.sub_account_id) {
+        return toFullDecimal(sender?.subAccount?.amount || "0", Number(sender?.asset?.decimal));
+      }
 
       return response?.allowance || "0";
     } catch (error) {

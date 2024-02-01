@@ -44,7 +44,7 @@ export default function ReceiverOwner() {
   return (
     <div className="mx-4 mt-4">
       <div>
-        <p className="opacity-50 text-start text-black-color dark:text-white">{t("subAccount")}</p>
+        <p className="opacity-50 text-start text-md text-black-color dark:text-white">{t("subAccount")}</p>
         <Select
           onSelect={onSelect}
           options={options}

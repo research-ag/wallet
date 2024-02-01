@@ -22,7 +22,7 @@ export default function SenderSubAccount() {
 
   return (
     <div className="mx-4">
-      <p className="opacity-50 text-start text-black-color dark:text-white">{t("subAccount")}</p>
+      <p className="opacity-50 text-start text-md text-black-color dark:text-white">{t("subAccount")}</p>
       <Select
         onSelect={onSelect}
         options={options}

@@ -8,8 +8,10 @@ import { getIconSrc } from "@/utils/icons";
 import { CustomInput } from "@components/Input";
 import { ContactSubAccount } from "@/@types/transactions";
 import { setSenderContactAction } from "@redux/transaction/TransactionActions";
+import { useTranslation } from "react-i18next";
 
 export function AllowanceContactBook() {
+  const {t} = useTranslation();
   const { sender } = useAppSelector((state) => state.transaction);
   const { contacts } = useAppSelector((state) => state.contacts);
   const [isOpen, setIsOpen] = useState(false);
@@ -76,7 +78,7 @@ export function AllowanceContactBook() {
                 <div className="flex items-center justify-between ">
                   <AvatarEmpty title="H" size="large" />
                   <div className="ml-2">
-                    <p className="text-left">
+                    <p className="text-left text-md">
                       {sender?.allowanceContactSubAccount?.contactName}{" "}
                       {`[${sender?.allowanceContactSubAccount?.subAccountName}]`}
                     </p>
@@ -89,7 +91,7 @@ export function AllowanceContactBook() {
                         )}
                         alt={sender?.allowanceContactSubAccount?.assetSymbol}
                       />
-                      <p className="">
+                      <p className="text-md">
                         {sender?.allowanceContactSubAccount?.subAccountAllowance?.allowance}{" "}
                         {sender?.allowanceContactSubAccount?.assetSymbol}
                       </p>
@@ -97,7 +99,7 @@ export function AllowanceContactBook() {
                   </div>
                 </div>
               )}
-              {!sender?.allowanceContactSubAccount?.assetName && <p>Select An Option</p>}
+              {!sender?.allowanceContactSubAccount?.assetName && <p className="text-md">{t("select.option")}</p>}
             </div>
             <DropIcon className={`fill-gray-color-4 ${isOpen ? "-rotate-90" : ""}`} />
           </div>
