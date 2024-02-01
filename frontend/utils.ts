@@ -92,6 +92,7 @@ export const roundToDecimalN = (numb: number | string, decimal: number | string)
 
 export const toFullDecimal = (numb: bigint | string, decimal: number, maxDecimals?: number) => {
   if (BigInt(numb) === BigInt(0)) return "0";
+  
   let numbStr = numb.toString();
   if (decimal === numbStr.length) {
     if (maxDecimals === 0) return "0";

@@ -18,6 +18,7 @@ import { SendingStatusEnum } from "@/const";
 import { AssetHook } from "@pages/home/hooks/assetHook";
 import { getSubAccountBalance, transferTokens, transferTokensFromAllowance } from "@pages/home/helpers/icrc";
 import LoadingLoader from "@components/Loader";
+import { toHoleBigInt } from "@/utils";
 
 interface ConfirmDetailProps {
   showConfirmationModal: Dispatch<SetStateAction<boolean>>;
@@ -59,9 +60,13 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
 
   async function validateBalance() {
     const balance = await getSenderBalance();
-    const maxAmount = Number(balance) - Number(transactionFee);
+    const bigintBalance = toHoleBigInt(balance || "0", Number(sender?.asset?.decimal));
+    const bigintFee = toHoleBigInt(transactionFee || "0", Number(sender?.asset?.decimal));
+    const bigintAmount = toHoleBigInt(amount || "0", Number(sender?.asset?.decimal));
 
-    if (!(Number(balance) >= maxAmount)) {
+    const bigintMaxAmount = bigintBalance - bigintFee;
+
+    if (bigintAmount > bigintMaxAmount) {
       setErrorAction(ValidationErrorsEnum.Values["error.not.enough.balance"]);
       return;
     }
@@ -76,7 +81,12 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
       subAccount: senderSubAccount,
     });
 
-    if (Number(subAccountBalance) < Number(amount)) {
+    const bigintBalance = toHoleBigInt(subAccountBalance || "0", Number(sender?.asset?.decimal));
+    const bigintFee = toHoleBigInt(transactionFee || "0", Number(sender?.asset?.decimal));
+    const maxSubAccountBalance = bigintBalance - bigintFee;
+    const bigintAmount = toHoleBigInt(amount || "0", Number(sender?.asset?.decimal));
+
+    if (bigintAmount > maxSubAccountBalance) {
       setErrorAction(ValidationErrorsEnum.Values["error.allowance.subaccount.not.enough"]);
       throw new Error("error.allowance.subaccount.not.enough");
     }

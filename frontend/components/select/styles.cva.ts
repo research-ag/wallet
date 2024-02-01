@@ -37,6 +37,7 @@ export const selectContentCVA = cva(
     "w-fit z-50 mt-2",
     "bg-ThemeColorSelectorLight dark:bg-ThemeColorBack",
     "rounded-md border border-RadioCheckColor",
+    "max-h-[30rem] scroll-y-light",
   ],
   {
     variants: {

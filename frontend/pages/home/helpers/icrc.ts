@@ -51,7 +51,6 @@ export async function transferTokens(params: TransferTokensParams) {
   try {
     const { receiverPrincipal, transferAmount, assetAddress, decimal, fromSubAccount, toSubAccount } = params;
     const canister = getCanister(assetAddress);
-
     const amount = toHoleBigInt(transferAmount, Number(decimal));
 
     await canister.transfer({

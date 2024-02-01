@@ -59,7 +59,7 @@ export default function ActionCard(props: ActionCardProps) {
           isLoading={isPending}
           disabled={isPending}
           isOpen={isOpen}
-          onOpenChange={() => setOpen(true)}
+          onOpenChange={(open) => setOpen(open)}
         />
       </DropdownMenu.Content>
     </DropdownMenu.Root>
