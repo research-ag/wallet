@@ -325,6 +325,7 @@ export default function SubAccountBody(props: SubAccountBodyProps) {
       return;
     }
 
+    // TODO: if standard not supported does not call
     const allowance = await getAllowanceDetails({
       spenderPrincipal: store.getState().auth.userPrincipal.toText(),
       spenderSubaccount: subaccEdited.sub_account_id,

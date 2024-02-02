@@ -14,6 +14,7 @@ export const initialAllowanceState: TAllowance = {
     tokenName: "",
     tokenSymbol: "",
     shortDecimal: "",
+    supportedStandards: [],
   },
   subAccount: {
     name: "",

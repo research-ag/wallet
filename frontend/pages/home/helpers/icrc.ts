@@ -26,14 +26,6 @@ function getCanister(assetAddress: string) {
   return canister;
 }
 
-async function supportedStandards() {
-  try {
-    // TODO: run the icrc1_supported_standards
-  } catch (error) {
-    console.log(error);
-  }
-}
-
 function calculateExpirationAsBigInt(
   expirationString: string | undefined,
   isNoExpiration: boolean,
@@ -113,6 +105,7 @@ export async function getSubAccountBalance(params: GetBalanceParams) {
 }
 
 export function createApproveAllowanceParams(allowance: TAllowance): ApproveParams {
+  // TODO: validate that support ICRC2
   const spenderPrincipal = allowance.spender.principal;
   const allowanceSubAccountId = allowance.subAccount.sub_account_id;
   const allowanceAssetDecimal = allowance.asset.decimal;
@@ -204,6 +197,7 @@ export async function retrieveSubAccountsWithAllowance(params: HasSubAccountsPar
 
 export async function retrieveAssetsWithAllowance(params: HasAssetAllowanceParams): Promise<AssetContact[] | []> {
   const { accountPrincipal, assets } = params;
+  // TODO: This point includes validate on save contact and on retrieve
 
   const assetsWithAllowance = await Promise.all(
     assets.map(async (asset) => {

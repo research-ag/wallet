@@ -47,3 +47,6 @@ const CheckAllowanceParamsSchema = z.object({
   assetDecimal: z.string(),
 });
 export type CheckAllowanceParams = z.infer<typeof CheckAllowanceParamsSchema>;
+
+export const SupportedStandardEnum = z.enum(["ICRC-1", "ICRC-2"]);
+export type SupportedStandard = z.infer<typeof SupportedStandardEnum>;

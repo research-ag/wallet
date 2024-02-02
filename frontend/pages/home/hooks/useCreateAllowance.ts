@@ -14,6 +14,7 @@ import { z } from "zod";
 import { initialAllowanceState, setAllowances } from "@redux/allowance/AllowanceReducer";
 import { postAllowance } from "../services/allowance";
 import { allowanceValidationSchema, validationMessage } from "../validators/allowance";
+import { SupportedStandardEnum } from "@/@types/icrc";
 
 export default function useCreateAllowance() {
   const dispatch = useAppDispatch();
@@ -24,10 +25,14 @@ export default function useCreateAllowance() {
   const [validationErrors, setErrors] = useState<TErrorValidation[]>([]);
   const [isPrincipalValid, setIsPrincipalValid] = useState(true);
 
+  // TODO: test adding a no supported asset
   const initial = useMemo(() => {
+    const supported = selectedAsset?.supportedStandards?.includes(SupportedStandardEnum.Values["ICRC-2"]);
+    if (!supported) return initialAllowanceState;
+
     return {
       ...initialAllowanceState,
-      asset: selectedAsset,
+      asset: supported ? selectedAsset : undefined,
       subAccount: selectedAccount,
     };
   }, [selectedAsset]) as TAllowance;
@@ -47,8 +52,8 @@ export default function useCreateAllowance() {
       const allowanceExists = allowances.find(
         (allowance) =>
           allowance.subAccount.sub_account_id === fullAllowance.subAccount.sub_account_id &&
-          allowance.spender.principal === fullAllowance.spender.principal
-          && allowance.asset.tokenSymbol === fullAllowance.asset.tokenSymbol,
+          allowance.spender.principal === fullAllowance.spender.principal &&
+          allowance.asset.tokenSymbol === fullAllowance.asset.tokenSymbol,
       );
 
       if (allowanceExists) return Promise.reject(validationMessage.duplicatedAllowance);

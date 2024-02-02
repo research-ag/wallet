@@ -6,7 +6,7 @@ import { useCreateContact } from "@pages/contacts/hooks/useCreateContact";
 import usePrincipalValidator from "@pages/contacts/hooks/usePrincipalValidator";
 import { GeneralHook } from "@pages/home/hooks/generalHook";
 import { useAppDispatch } from "@redux/Store";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import ContactMainDetails from "./ContactMainDetails";
 import ContactAssetDetails from "./ContactAssetDetails";
@@ -18,6 +18,8 @@ import { AssetContact } from "@redux/models/ContactsModels";
 import { isHexadecimalValid, validateSubaccounts } from "@/utils/checkers";
 import clsx from "clsx";
 import { validatePrincipal } from "@/utils/identity";
+import { SupportedStandardEnum } from "@/@types/icrc";
+
 interface AddContactProps {
   setAddOpen(value: boolean): void;
 }
@@ -49,6 +51,11 @@ export default function AddContact({ setAddOpen }: AddContactProps) {
     newContactSubIdErr,
     setNewContactSubIdErr,
   } = useCreateContact();
+
+  const isAssetICRC2Supported = useMemo(() => {
+    const fullAsset = assets.find((asset) => asset.tokenSymbol === selAstContact);
+    return fullAsset?.supportedStandards?.includes(SupportedStandardEnum.Values["ICRC-2"]);
+  }, [assets, selAstContact]);
 
   return (
     <div className="relative flex flex-col items-start justify-start w-full gap-4 text-md">
@@ -86,17 +93,19 @@ export default function AddContact({ setAddOpen }: AddContactProps) {
         asciiHex={asciiHex}
         setSelAstContact={setSelAstContact}
       />
-
+      {/* TODO: test adding an no supported asset */}
       <div className="flex flex-row items-center justify-end w-full gap-3">
         <p className="text-TextErrorColor">{newContactErr ? t(newContactErr) : ""}</p>
         {(isAllowancesChecking || isCreating) && <LoadingLoader />}
-        <CustomButton
-          className="bg-BorderSuccessColor min-w-[5rem] flex justify-between items-center"
-          onClick={onAllowanceNewContactCheck}
-          disabled={isAllowancesChecking || isCreating}
-        >
-          <MoneyHandIcon className="fill-PrimaryColorLight" /> {t("test")}
-        </CustomButton>
+        {isAssetICRC2Supported && (
+          <CustomButton
+            className="bg-BorderSuccessColor min-w-[5rem] flex justify-between items-center"
+            onClick={onAllowanceNewContactCheck}
+            disabled={isAllowancesChecking || isCreating}
+          >
+            <MoneyHandIcon className="fill-PrimaryColorLight" /> {t("test")}
+          </CustomButton>
+        )}
         <CustomButton className="min-w-[5rem]" onClick={onAddContact} disabled={isCreating || isAllowancesChecking}>
           <p>{t("add.contact")}</p>
         </CustomButton>
@@ -105,6 +114,7 @@ export default function AddContact({ setAddOpen }: AddContactProps) {
   );
 
   async function onAllowanceNewContactCheck() {
+    // TODO: if current asset not support, jump this case
     try {
       setIsAllowancesChecking(true);
 
@@ -117,10 +127,10 @@ export default function AddContact({ setAddOpen }: AddContactProps) {
       for (let index = 0; index < newSubAccounts.length; index++) {
         const subAccount = newSubAccounts[index];
 
-        const isSubAccountDuplicated = newSubAccounts.filter(
-          (currentSubAccount) => subAccount.sub_account_id === currentSubAccount.sub_account_id,
-        ).length > 1;
-// 
+        const isSubAccountDuplicated =
+          newSubAccounts.filter((currentSubAccount) => subAccount.sub_account_id === currentSubAccount.sub_account_id)
+            .length > 1;
+        //
         if (subAccount.name.trim().length === 0) {
           setNewContactSubNameErr([index]);
           return;

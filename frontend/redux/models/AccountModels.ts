@@ -1,3 +1,4 @@
+import { SupportedStandardEnum } from "@/@types/icrc";
 import { OperationStatusEnum, OperationTypeEnum, TransactionTypeEnum } from "@/const";
 import { z } from "zod";
 
@@ -14,15 +15,13 @@ const SubAccount = z.object({
 });
 
 export type SubAccount = z.infer<typeof SubAccount>;
-
 const ICPSubAccount = z.object({
   legacy: z.string(),
   sub_account_id: z.string(),
 });
 
 export type ICPSubAccount = z.infer<typeof ICPSubAccount>;
-
-const Asset = z.object({
+export const AssetSchema = z.object({
   logo: z.string().optional(),
   name: z.string(),
   symbol: z.string(),
@@ -34,9 +33,10 @@ const Asset = z.object({
   index: z.string().optional(),
   tokenName: z.string(),
   tokenSymbol: z.string(),
+  supportedStandards: z.array(SupportedStandardEnum),
 });
 
-export type Asset = z.infer<typeof Asset>;
+export type Asset = z.infer<typeof AssetSchema>;
 
 const Transaction = z.object({
   idx: z.string().optional(),
