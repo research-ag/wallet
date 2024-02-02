@@ -1,23 +1,25 @@
-// svgs
-import ChevronRightIcon from "@assets/svg/files/chevron-right-icon.svg";
-import ChevronRightDarkIcon from "@assets/svg/files/chevron-right-dark-icon.svg";
-import InfoIcon from "@assets/svg/files/info-icon.svg";
-import { ReactComponent as TrashIcon } from "@assets/svg/files/trash-icon.svg";
-//
-import { SubAccount, Asset } from "@redux/models/AccountModels";
-import AccountElement from "./AccountElement";
-import { Fragment, useState } from "react";
 import * as Accordion from "@radix-ui/react-accordion";
-import { GeneralHook } from "../hooks/generalHook";
-import { ThemeHook } from "@hooks/themeHook";
+
+//
+import { Asset, SubAccount } from "@redux/models/AccountModels";
+import { Fragment, useState } from "react";
 import { IconTypeEnum, ThemesEnum } from "@/const";
 import { getFirstNChars, getUSDfromToken, hexToNumber, toFullDecimal } from "@/utils";
-import { AssetHook } from "../hooks/assetHook";
-import { Token } from "@redux/models/TokenModels";
-import bigInt from "big-integer";
+
+import AccountElement from "./AccountElement";
 import { AccountHook } from "@pages/hooks/accountHook";
-import DialogAddAsset from "./DialogAddAsset";
+import { AssetHook } from "../hooks/assetHook";
+import ChevronRightDarkIcon from "@assets/svg/files/chevron-right-dark-icon.svg?react";
+// svgs
+import ChevronRightIcon from "@assets/svg/files/chevron-right-icon.svg?react";
 import DeleteAssetModal from "./DeleteAssetModal";
+import DialogAddAsset from "./DialogAddAsset";
+import { GeneralHook } from "../hooks/generalHook";
+import InfoIcon from "@assets/svg/files/info-icon.svg?react";
+import { ThemeHook } from "@hooks/themeHook";
+import { Token } from "@redux/models/TokenModels";
+import TrashIcon from "@assets/svg/files/trash-icon.svg?react";
+import bigInt from "big-integer";
 
 interface AssetElementProps {
   asset: Asset;

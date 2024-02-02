@@ -1,10 +1,3 @@
-// svgs
-import PlusIcon from "@assets/svg/files/plus-icon.svg";
-import { ReactComponent as PencilIcon } from "@assets/svg/files/pencil.svg";
-import { ReactComponent as TrashIcon } from "@assets/svg/files/trash-icon.svg";
-import { ReactComponent as ChevIcon } from "@assets/svg/files/chev-icon.svg";
-//
-import { useTranslation } from "react-i18next";
 import {
   AssetContact,
   Contact,
@@ -13,9 +6,17 @@ import {
   SubAccountContactErr,
 } from "@redux/models/ContactsModels";
 import { DeleteContactTypeEnum, IconTypeEnum } from "@/const";
-import { GeneralHook } from "@pages/home/hooks/generalHook";
+
+import ChevIcon from "@assets/svg/files/chev-icon.svg?react";
 import { Fragment } from "react";
+import { GeneralHook } from "@pages/home/hooks/generalHook";
+import PencilIcon from "@assets/svg/files/pencil.svg?react";
+// svgs
+import PlusIcon from "@assets/svg/files/plus-icon.svg?react";
 import TableSubAccounts from "./tableSubAccounts";
+import TrashIcon from "@assets/svg/files/trash-icon.svg?react";
+//
+import { useTranslation } from "react-i18next";
 
 interface TableAssetsProps {
   cntc: Contact;

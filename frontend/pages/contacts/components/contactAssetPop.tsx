@@ -1,12 +1,14 @@
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+
+import { Asset, AssetToAdd } from "@redux/models/AccountModels";
+import { Fragment, useEffect, useState } from "react";
 // svgsetassetsToAdd
 import { IconType, IconTypeEnum } from "@/const";
-import PlusIcon from "@assets/svg/files/plus-icon.svg";
+
 //
 import { CustomButton } from "@components/Button";
 import { CustomCheck } from "@components/CheckBox";
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { Asset, AssetToAdd } from "@redux/models/AccountModels";
-import { Fragment, useEffect, useState } from "react";
+import PlusIcon from "@assets/svg/files/plus-icon.svg?react";
 import { useTranslation } from "react-i18next";
 interface ContactAssetPopProps {
   onAdd(data: AssetToAdd[]): void;

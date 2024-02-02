@@ -1,10 +1,10 @@
-// svgs
-import { ReactComponent as FlagSpain } from "../../assets/svg/files/españa.svg";
-import { ReactComponent as FlagUSA } from "../../assets/svg/files/usa.svg";
-import { ReactComponent as FlagItaly } from "../../assets/svg/files/italia.svg";
-import { ReactComponent as BrazilFlag } from "../../assets/svg/files/brazil.svg";
 //
 import { useEffect, useState } from "react";
+
+import BrazilFlag from "../../assets/svg/files/brazil.svg?react";
+import FlagItaly from "../../assets/svg/files/italia.svg?react";
+import FlagSpain from "../../assets/svg/files/españa.svg?react";
+import FlagUSA from "../../assets/svg/files/usa.svg?react";
 import i18n from "../../i18n";
 
 export const LanguageHook = () => {

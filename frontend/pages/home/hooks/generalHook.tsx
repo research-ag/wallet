@@ -1,8 +1,6 @@
-// svg
-import GenericTokenIcon from "@/assets/svg/files/generic-token.svg";
 //
 import { Asset, SubAccount, Transaction } from "@redux/models/AccountModels";
-import { useAppDispatch, useAppSelector } from "@redux/Store";
+import { IconType, IconTypeEnum, symbolIconDict } from "@/const";
 import {
   setAccounts,
   setAssets,
@@ -11,7 +9,10 @@ import {
   setSelectedTransaction,
   setTransactions,
 } from "@redux/assets/AssetReducer";
-import { IconType, IconTypeEnum, symbolIconDict } from "@/const";
+import { useAppDispatch, useAppSelector } from "@redux/Store";
+
+// svg
+import GenericTokenIcon from "@/assets/svg/files/generic-token.svg?react";
 
 export const GeneralHook = () => {
   const dispatch = useAppDispatch();

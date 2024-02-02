@@ -1,14 +1,15 @@
-// svgs
-import { ReactComponent as HplDark } from "@assets/svg/files/logo_ICRC-1-dark.svg";
-import { ReactComponent as HplLight } from "@assets/svg/files/logo_ICRC-1.svg";
-import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
+import * as RadioGroup from "@radix-ui/react-radio-group";
+
+import CloseIcon from "@assets/svg/files/close.svg?react";
 //
 import { Fragment } from "react";
-import { useTranslation } from "react-i18next";
-import { clsx } from "clsx";
-import * as RadioGroup from "@radix-ui/react-radio-group";
+// svgs
+import HplDark from "@assets/svg/files/logo_ICRC-1-dark.svg?react";
+import HplLight from "@assets/svg/files/logo_ICRC-1.svg?react";
 import { ThemeHook } from "@pages/hooks/themeHook";
 import { ThemesEnum } from "@/const";
+import { clsx } from "clsx";
+import { useTranslation } from "react-i18next";
 
 interface ThemeModalProps {
   setOpen(value: boolean): void;

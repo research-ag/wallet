@@ -1,13 +1,13 @@
-// svgs
-import { ReactComponent as WarningIcon } from "@assets/svg/files/warning.svg";
-import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
+import { AccountHook } from "@pages/hooks/accountHook";
+import { AssetHook } from "@pages/home/hooks/assetHook";
+import CloseIcon from "@assets/svg/files/close.svg?react";
+import { CustomButton } from "@components/Button";
 //
 import Modal from "@components/Modal";
-import { AccountHook } from "@pages/hooks/accountHook";
-import { useTranslation } from "react-i18next";
 import { Token } from "@redux/models/TokenModels";
-import { CustomButton } from "@components/Button";
-import { AssetHook } from "@pages/home/hooks/assetHook";
+// svgs
+import WarningIcon from "@assets/svg/files/warning.svg?react";
+import { useTranslation } from "react-i18next";
 
 interface DeleteAssetModalPropr {
   open: boolean;

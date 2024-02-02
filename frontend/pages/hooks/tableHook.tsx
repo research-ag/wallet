@@ -1,16 +1,17 @@
-import { ReactComponent as SortIcon } from "@assets/svg/files/sort.svg";
-import UpAmountIcon from "@assets/svg/files/up-amount-icon.svg";
-import DownAmountIcon from "@assets/svg/files/down-amount-icon.svg";
-import { SortingState, createColumnHelper } from "@tanstack/react-table";
-import { Transaction } from "@redux/models/AccountModels";
-import moment from "moment";
-import { getAddress, getAssetSymbol, toFullDecimal } from "@/utils";
-import { useTranslation } from "react-i18next";
-import { SpecialTxTypeEnum, TransactionTypeEnum } from "@/const";
 import { Fragment, useState } from "react";
-import { useAppSelector } from "@redux/Store";
-import CodeElement from "@components/TableCodeElement";
+import { SortingState, createColumnHelper } from "@tanstack/react-table";
+import { SpecialTxTypeEnum, TransactionTypeEnum } from "@/const";
+import { getAddress, getAssetSymbol, toFullDecimal } from "@/utils";
+
 import { AssetHook } from "@pages/home/hooks/assetHook";
+import CodeElement from "@components/TableCodeElement";
+import DownAmountIcon from "@assets/svg/files/down-amount-icon.svg?react";
+import SortIcon from "@assets/svg/files/sort.svg?react";
+import { Transaction } from "@redux/models/AccountModels";
+import UpAmountIcon from "@assets/svg/files/up-amount-icon.svg?react";
+import moment from "moment";
+import { useAppSelector } from "@redux/Store";
+import { useTranslation } from "react-i18next";
 
 export const TableHook = () => {
   const { t } = useTranslation();

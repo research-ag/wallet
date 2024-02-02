@@ -1,12 +1,12 @@
-// svgs
-import { ReactComponent as WarningIcon } from "@assets/svg/files/warning.svg";
-import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
+import CloseIcon from "@assets/svg/files/close.svg?react";
+import { CustomButton } from "@components/Button";
+import { DeleteContactTypeEnum } from "@/const";
 //
 import Modal from "@components/Modal";
-import { CustomButton } from "@components/Button";
-import { useTranslation } from "react-i18next";
-import { DeleteContactTypeEnum } from "@/const";
+// svgs
+import WarningIcon from "@assets/svg/files/warning.svg?react";
 import { useContacts } from "../hooks/contactsHook";
+import { useTranslation } from "react-i18next";
 
 interface RemoveModalProps {
   deleteModal: boolean;

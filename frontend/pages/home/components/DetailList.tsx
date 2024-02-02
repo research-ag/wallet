@@ -1,22 +1,23 @@
+import { DrawerOption, DrawerOptionEnum, IconTypeEnum } from "@/const";
+import { flexRender, getCoreRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
+
 // svgs
-import ArrowBottomLeftIcon from "@assets/svg/files/arrow-bottom-left-icon.svg";
-import ArrowTopRightIcon from "@assets/svg/files/arrow-top-right-icon.svg";
+import ArrowBottomLeftIcon from "@assets/svg/files/arrow-bottom-left-icon.svg?react";
+import ArrowTopRightIcon from "@assets/svg/files/arrow-top-right-icon.svg?react";
+import DrawerAction from "./DrawerAction";
+import { DrawerHook } from "../hooks/drawerHook";
+import DrawerReceive from "./DrawerReceive";
+import DrawerSend from "./DrawerSend";
+import DrawerTransaction from "./Transaction";
+import DrawerWrap from "./DrawerWrap";
 //
 import { Fragment } from "react";
-import DrawerSend from "./DrawerSend";
-import DrawerWrap from "./DrawerWrap";
-import DrawerReceive from "./DrawerReceive";
-import DrawerAction from "./DrawerAction";
-import { getCoreRowModel, useReactTable, flexRender, getSortedRowModel } from "@tanstack/react-table";
-import { t } from "i18next";
-import DrawerTransaction from "./Transaction";
 import { GeneralHook } from "../hooks/generalHook";
-import { DrawerHook } from "../hooks/drawerHook";
 import { TableHook } from "@pages/hooks/tableHook";
 import { UseTransaction } from "../hooks/useTransaction";
-import { DrawerOption, DrawerOptionEnum, IconTypeEnum } from "@/const";
-import { toFullDecimal } from "@/utils";
 import { clsx } from "clsx";
+import { t } from "i18next";
+import { toFullDecimal } from "@/utils";
 
 const DetailList = () => {
   const { transactions, getAssetIcon, selectedAsset, selectedAccount } = GeneralHook();

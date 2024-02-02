@@ -1,21 +1,22 @@
+import { AssetContact, Contact, SubAccountContact } from "@redux/models/ContactsModels";
+import { checkHexString, removeLeadingZeros } from "@/utils";
+
+import { AssetToAdd } from "@redux/models/AccountModels";
 // svg
-import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
-import { ReactComponent as TrashIcon } from "@assets/svg/files/trash-empty.svg";
+import CloseIcon from "@assets/svg/files/close.svg?react";
+import ContactAssetElement from "./contactAssetElement";
+import ContactAssetPop from "./contactAssetPop";
+import { CustomButton } from "@components/Button";
+import { CustomInput } from "@components/Input";
 //
 import { Fragment } from "react";
-import { useTranslation } from "react-i18next";
-import { CustomInput } from "@components/Input";
-import { useContacts } from "../hooks/contactsHook";
-import { CustomButton } from "@components/Button";
-import ContactAssetPop from "./contactAssetPop";
 import { GeneralHook } from "@pages/home/hooks/generalHook";
-import { AssetContact, Contact, SubAccountContact } from "@redux/models/ContactsModels";
-import { useAppDispatch } from "@redux/Store";
-import { addContact } from "@redux/contacts/ContactsReducer";
-import { checkHexString, removeLeadingZeros } from "@/utils";
-import ContactAssetElement from "./contactAssetElement";
-import { AssetToAdd } from "@redux/models/AccountModels";
 import { Principal } from "@dfinity/principal";
+import TrashIcon from "@assets/svg/files/trash-empty.svg?react";
+import { addContact } from "@redux/contacts/ContactsReducer";
+import { useAppDispatch } from "@redux/Store";
+import { useContacts } from "../hooks/contactsHook";
+import { useTranslation } from "react-i18next";
 
 interface AddContactProps {
   setAddOpen(value: boolean): void;

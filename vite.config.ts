@@ -1,10 +1,10 @@
 import { defineConfig } from "vite";
-import path from "path";
 import dfxJson from "./dfx.json";
 import fs from "fs";
+import path from "path";
 import react from "@vitejs/plugin-react";
+import svgr from "vite-plugin-svgr";
 import viteTsconfigPaths from "vite-tsconfig-paths";
-import svgrPlugin from "vite-plugin-svgr";
 
 const isDev = process.env["DFX_NETWORK"] !== "ic";
 
@@ -66,7 +66,7 @@ export default defineConfig({
         ignore: ["\x00commonjsHelpers.js"], // Weird babel-macro bug fix
       },
     }),
-    svgrPlugin(),
+    svgr(),
     viteTsconfigPaths(),
   ],
   resolve: {

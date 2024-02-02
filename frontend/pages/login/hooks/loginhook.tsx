@@ -1,12 +1,13 @@
+import { AuthNetworkNameEnum, AuthNetworkTypeEnum } from "@/const";
+
+import { AuthNetwork } from "@redux/models/TokenModels";
 // svgs
-import XxxxIcon from "../../../assets/svg/files/xxxx-logo.svg";
+import XxxxIcon from "../../../assets/svg/files/xxxx-logo.svg?react";
 import icUrl from "../../../assets/img/icp-logo.png";
-import nfidUrl from "../../../assets/img/nfid-logo.png";
 import metamaskUrl from "../../../assets/img/metamask-logo.png";
+import nfidUrl from "../../../assets/img/nfid-logo.png";
 //
 import { useState } from "react";
-import { AuthNetworkNameEnum, AuthNetworkTypeEnum } from "@/const";
-import { AuthNetwork } from "@redux/models/TokenModels";
 
 export const LoginHook = () => {
   const loginOpts: AuthNetwork[] = [

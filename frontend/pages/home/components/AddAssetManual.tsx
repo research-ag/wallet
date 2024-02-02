@@ -1,24 +1,25 @@
-// svgs
-import { ReactComponent as InfoIcon } from "@assets/svg/files/info-icon.svg";
+import { AccountDefaultEnum, IconTypeEnum } from "@/const";
+import { ChangeEvent, useState } from "react";
+import { IcrcIndexCanister, IcrcLedgerCanister } from "@dfinity/ledger";
+
+import { AccountHook } from "@pages/hooks/accountHook";
+import { Asset } from "@redux/models/AccountModels";
+import { CustomButton } from "@components/Button";
+import { CustomCopy } from "@components/CopyTooltip";
+import { CustomInput } from "@components/Input";
 //
 import { GeneralHook } from "../hooks/generalHook";
-import { IcrcIndexCanister, IcrcLedgerCanister } from "@dfinity/ledger";
-import { getMetadataInfo } from "@/utils";
-import { CustomInput } from "@components/Input";
-import { CustomCopy } from "@components/CopyTooltip";
+import { IdentityHook } from "@pages/hooks/identityHook";
+// svgs
+import InfoIcon from "@assets/svg/files/info-icon.svg?react";
+import LoadingLoader from "@components/Loader";
+import { Principal } from "@dfinity/principal";
+import { Token } from "@redux/models/TokenModels";
 import { editAssetName } from "@redux/contacts/ContactsReducer";
 import { editToken } from "@redux/assets/AssetReducer";
-import { CustomButton } from "@components/Button";
-import { useTranslation } from "react-i18next";
+import { getMetadataInfo } from "@/utils";
 import { useAppDispatch } from "@redux/Store";
-import { Token } from "@redux/models/TokenModels";
-import { AccountDefaultEnum, IconTypeEnum } from "@/const";
-import { Asset } from "@redux/models/AccountModels";
-import { IdentityHook } from "@pages/hooks/identityHook";
-import { ChangeEvent, useState } from "react";
-import { Principal } from "@dfinity/principal";
-import LoadingLoader from "@components/Loader";
-import { AccountHook } from "@pages/hooks/accountHook";
+import { useTranslation } from "react-i18next";
 
 interface AddAssetManualProps {
   manual: boolean;

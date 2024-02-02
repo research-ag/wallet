@@ -1,15 +1,17 @@
-// svgs
-import { ReactComponent as WarningIcon } from "@assets/svg/files/warning.svg";
+import "./style.scss";
+
+import { useAppDispatch, useAppSelector } from "@redux/Store";
+
+import AssetsList from "./components/AssetsList";
+import { CustomButton } from "@components/Button";
+import DetailList from "./components/DetailList";
 //
 import { Fragment } from "react";
-import AssetsList from "./components/AssetsList";
-import "./style.scss";
-import DetailList from "./components/DetailList";
 import Modal from "@components/Modal";
-import { useTranslation } from "react-i18next";
-import { useAppDispatch, useAppSelector } from "@redux/Store";
-import { CustomButton } from "@components/Button";
+// svgs
+import WarningIcon from "@assets/svg/files/warning.svg?react";
 import { setDisclaimer } from "@redux/auth/AuthReducer";
+import { useTranslation } from "react-i18next";
 
 const Home = () => {
   const { t } = useTranslation();

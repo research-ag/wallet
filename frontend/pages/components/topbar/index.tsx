@@ -1,32 +1,34 @@
-// svgs
-import { ReactComponent as ChevronIcon } from "@/assets/svg/files/chevron-right.svg";
-import { ReactComponent as UsaFlagIcon } from "@/assets/svg/files/usa.svg";
-import { ReactComponent as SpainFlagIcon } from "@/assets/svg/files/españa.svg";
-import { ReactComponent as ItalyFlagIcon } from "@/assets/svg/files/italia.svg";
-import { ReactComponent as BrazilFlagIcon } from "@/assets/svg/files/brazil.svg";
-import { ReactComponent as ICRC1Logo } from "@/assets/svg/files/logo_ICRC-1.svg";
-import { ReactComponent as ICRC1LogoDark } from "@/assets/svg/files/logo_ICRC-1-dark.svg";
-import { ReactComponent as SunIcon } from "@/assets/svg/files/sun-icon.svg";
-import { ReactComponent as WalletIcon } from "@/assets/svg/files/wallet-icon.svg";
-import { ReactComponent as RefreshIcon } from "@/assets/svg/files/refresh-ccw.svg";
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import * as brazilSvg from "@/assets/svg/files/brazil.svg?react";
+
 //
 import { Fragment, useState } from "react";
-import { useTranslation } from "react-i18next";
-import i18n from "@/i18n";
-import { ThemeHook } from "@hooks/themeHook";
-import { LanguageHook } from "@hooks/languageHook";
-import { clsx } from "clsx";
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+
 import { AccountHook } from "@hooks/accountHook";
-import { shortAddress } from "@/utils";
-import { logout } from "@redux/CheckAuth";
+import { AssetHook } from "@pages/home/hooks/assetHook";
+// svgs
+import ChevronIcon from "@/assets/svg/files/chevron-right.svg?react";
+import { CustomCopy } from "@components/CopyTooltip";
+import ICRC1Logo from "@/assets/svg/files/logo_ICRC-1.svg?react";
+import ICRC1LogoDark from "@/assets/svg/files/logo_ICRC-1-dark.svg?react";
+import ItalyFlagIcon from "@/assets/svg/files/italia.svg?react";
+import { LanguageHook } from "@hooks/languageHook";
 import Modal from "@components/Modal";
+import RefreshIcon from "@/assets/svg/files/refresh-ccw.svg?react";
+import SpainFlagIcon from "@/assets/svg/files/españa.svg?react";
+import SunIcon from "@/assets/svg/files/sun-icon.svg?react";
+import { ThemeHook } from "@hooks/themeHook";
 import ThemeModal from "./themeModal";
 import { ThemesEnum } from "@/const";
-import { useAppDispatch } from "@redux/Store";
+import UsaFlagIcon from "@/assets/svg/files/usa.svg?react";
+import WalletIcon from "@/assets/svg/files/wallet-icon.svg?react";
+import { clsx } from "clsx";
+import i18n from "@/i18n";
+import { logout } from "@redux/CheckAuth";
 import { setLoading } from "@redux/assets/AssetReducer";
-import { CustomCopy } from "@components/CopyTooltip";
-import { AssetHook } from "@pages/home/hooks/assetHook";
+import { shortAddress } from "@/utils";
+import { useAppDispatch } from "@redux/Store";
+import { useTranslation } from "react-i18next";
 
 const TopBarComponent = () => {
   const { t } = useTranslation();
@@ -43,19 +45,19 @@ const TopBarComponent = () => {
     { abrev: "en", name: "english", flag: <UsaFlagIcon className={flag} /> },
     { abrev: "es", name: "spanish", flag: <SpainFlagIcon className={flag} /> },
     { abrev: "it", name: "italian", flag: <ItalyFlagIcon className={flag} /> },
-    { abrev: "pt", name: "portuguese", flag: <BrazilFlagIcon className={flag} /> },
+    { abrev: "pt", name: "portuguese", flag: <brazilSvg.ReactComponent className={flag} /> },
   ];
 
   return (
     <Fragment>
       <div className="flex flex-row justify-between min-h-[4.5rem] w-full bg-PrimaryColorLight dark:bg-PrimaryColor text-PrimaryTextColorLight dark:text-PrimaryTextColor border-b border-BorderColorFourthLight dark:border-BorderColorFourth">
-        <div className="flex flex-row justify-start items-center pl-9 gap-24 text-md">
+        <div className="flex flex-row items-center justify-start gap-24 pl-9 text-md">
           {theme === ThemesEnum.enum.dark ? (
             <ICRC1LogoDark className="max-w-[7rem] h-auto" />
           ) : (
             <ICRC1Logo className="max-w-[7rem] h-auto" />
           )}
-          <div className="flex flex-row justify-start items-center gap-3">
+          <div className="flex flex-row items-center justify-start gap-3">
             <p className="opacity-50">{shortAddress(authClient, 12, 10)}</p>
             <CustomCopy size={"small"} copyText={authClient} />
             <RefreshIcon
@@ -66,8 +68,8 @@ const TopBarComponent = () => {
             />
           </div>
         </div>
-        <div className="flex flex-row justify-start items-center pr-9 gap-9">
-          <div className="flex flex-row justify-start items-center gap-2 text-md">
+        <div className="flex flex-row items-center justify-start pr-9 gap-9">
+          <div className="flex flex-row items-center justify-start gap-2 text-md">
             <WalletIcon className="fill-SvgColor dark:fill-SvgColor max-w-[1.5rem] h-auto"></WalletIcon>
             <p className="opacity-70">Total Balance:</p>
             <p className="font-medium">{`$${getTotalAmountInCurrency().toFixed(2)}`}</p>

@@ -1,26 +1,27 @@
+//
+import { Asset, SubAccount } from "@redux/models/AccountModels";
+import { ChangeEvent, Fragment, useState } from "react";
+import { Token, TokenSubAccount } from "@redux/models/TokenModels";
+import { addSubAccount, removeSubAcc, setSubAccountName } from "@redux/assets/AssetReducer";
+
+import { AccountHook } from "@pages/hooks/accountHook";
+import CloseIcon from "@assets/svg/files/close.svg?react";
+import { CustomButton } from "@components/Button";
+import { CustomCopy } from "@components/CopyTooltip";
+import { CustomInput } from "@components/Input";
+import { GeneralHook } from "../hooks/generalHook";
+import Modal from "@components/Modal";
 /* eslint-disable jsx-a11y/no-autofocus */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 // svgs
-import PlusIcon from "@assets/svg/files/plus-icon.svg";
-import { ReactComponent as WarningIcon } from "@assets/svg/files/warning.svg";
-import { ReactComponent as TrashIcon } from "@assets/svg/files/trash-icon.svg";
-import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
-//
-import { Asset, SubAccount } from "@redux/models/AccountModels";
-import { clsx } from "clsx";
-import { ChangeEvent, Fragment, useState } from "react";
-import { GeneralHook } from "../hooks/generalHook";
-import { toFullDecimal } from "@/utils";
-import { CustomInput } from "@components/Input";
-import { useTranslation } from "react-i18next";
-import { useAppDispatch } from "@redux/Store";
-import { AccountHook } from "@pages/hooks/accountHook";
-import { Token, TokenSubAccount } from "@redux/models/TokenModels";
-import { CustomCopy } from "@components/CopyTooltip";
-import { addSubAccount, removeSubAcc, setSubAccountName } from "@redux/assets/AssetReducer";
-import Modal from "@components/Modal";
-import { CustomButton } from "@components/Button";
+import PlusIcon from "@assets/svg/files/plus-icon.svg?react";
+import TrashIcon from "@assets/svg/files/trash-icon.svg?react";
+import WarningIcon from "@assets/svg/files/warning.svg?react";
 import bigInt from "big-integer";
+import { clsx } from "clsx";
+import { toFullDecimal } from "@/utils";
+import { useAppDispatch } from "@redux/Store";
+import { useTranslation } from "react-i18next";
 
 interface AccountElementProps {
   asset: Asset;

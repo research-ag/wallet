@@ -1,22 +1,24 @@
-// svgs
-import SearchIcon from "@assets/svg/files/icon-search.svg";
-import ChevronRightIcon from "@assets/svg/files/chevron-right-icon.svg";
-import ChevronRightDarkIcon from "@assets/svg/files/chevron-right-dark-icon.svg";
-import PlusIcon from "@assets/svg/files/plus-icon.svg";
-import { Fragment } from "react";
-import { useTranslation } from "react-i18next";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { useContacts } from "../hooks/contactsHook";
-import { CustomInput } from "@components/Input";
-import { GeneralHook } from "@pages/home/hooks/generalHook";
-import { ThemeHook } from "@pages/hooks/themeHook";
+
 import { IconTypeEnum, ThemesEnum } from "@/const";
-import { CustomCheck } from "@components/CheckBox";
-import { CustomButton } from "@components/Button";
-import Modal from "@components/Modal";
+
 import AddContact from "./addContact";
-import clsx from "clsx";
 import { Asset } from "@redux/models/AccountModels";
+import ChevronRightDarkIcon from "@assets/svg/files/chevron-right-dark-icon.svg?react";
+import ChevronRightIcon from "@assets/svg/files/chevron-right-icon.svg?react";
+import { CustomButton } from "@components/Button";
+import { CustomCheck } from "@components/CheckBox";
+import { CustomInput } from "@components/Input";
+import { Fragment } from "react";
+import { GeneralHook } from "@pages/home/hooks/generalHook";
+import Modal from "@components/Modal";
+import PlusIcon from "@assets/svg/files/plus-icon.svg?react";
+// svgs
+import SearchIcon from "@assets/svg/files/icon-search.svg?react";
+import { ThemeHook } from "@pages/hooks/themeHook";
+import clsx from "clsx";
+import { useContacts } from "../hooks/contactsHook";
+import { useTranslation } from "react-i18next";
 
 interface ContactFiltersProps {
   searchKey: string;

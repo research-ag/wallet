@@ -1,19 +1,21 @@
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-// svgs
-import SearchIcon from "@assets/svg/files/icon-search.svg";
-import QRIcon from "@assets/svg/files/qr.svg";
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+
+import { Asset, SubAccount } from "@redux/models/AccountModels";
+import { Contact, SubAccountContact } from "@redux/models/ContactsModels";
+import { IcrcAccount, decodeIcrcAccount, encodeIcrcAccount } from "@dfinity/ledger";
+import { checkHexString, getFirstNFrom, getICRC1Acc, hexToUint8Array, shortAddress, subUint8ArrayToHex } from "@/utils";
+
+import { ChangeEvent } from "react";
 //
 import { CustomButton } from "@components/Button";
 import { CustomInput } from "@components/Input";
-import { IcrcAccount, decodeIcrcAccount, encodeIcrcAccount } from "@dfinity/ledger";
 import { Principal } from "@dfinity/principal";
-import { getICRC1Acc, shortAddress, subUint8ArrayToHex, getFirstNFrom, hexToUint8Array, checkHexString } from "@/utils";
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import SendUserIcon from "@assets/svg/files/send-user-icon.svg";
-import { Contact, SubAccountContact } from "@redux/models/ContactsModels";
-import { Asset, SubAccount } from "@redux/models/AccountModels";
+import QRIcon from "@assets/svg/files/qr.svg?react";
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+// svgs
+import SearchIcon from "@assets/svg/files/icon-search.svg?react";
+import SendUserIcon from "@assets/svg/files/send-user-icon.svg?react";
 import { useTranslation } from "react-i18next";
-import { ChangeEvent } from "react";
 
 interface SendOutAccountProps {
   setOpenContactList(value: boolean): void;

@@ -1,13 +1,14 @@
+import { Asset, SubAccount } from "@redux/models/AccountModels";
+import { SendingStatus, SendingStatusEnum } from "@/const";
+import { shortAddress, subUint8ArrayToHex, toFullDecimal } from "@/utils";
+
 // svgs
-import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
-import UpAmountIcon from "@assets/svg/files/up-amount-icon.svg";
+import CloseIcon from "@assets/svg/files/close.svg?react";
+import { CustomCopy } from "@components/CopyTooltip";
 //
 import Modal from "@components/Modal";
-import { CustomCopy } from "@components/CopyTooltip";
-import { shortAddress, subUint8ArrayToHex, toFullDecimal } from "@/utils";
-import { SendingStatus, SendingStatusEnum } from "@/const";
+import UpAmountIcon from "@assets/svg/files/up-amount-icon.svg?react";
 import { useTranslation } from "react-i18next";
-import { Asset, SubAccount } from "@redux/models/AccountModels";
 
 interface DialogSendConfirmationProps {
   setDrawerOpen(value: boolean): void;

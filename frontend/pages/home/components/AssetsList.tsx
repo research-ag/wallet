@@ -1,17 +1,19 @@
-// svgs
-import PlusIcon from "@assets/svg/files/plus-icon.svg";
+import * as Accordion from "@radix-ui/react-accordion";
+
+import { Fragment, useState } from "react";
+
+import AddAsset from "./AddAsset";
+import { Asset } from "@redux/models/AccountModels";
 //
 import AssetElement from "./AssetElement";
-import { Asset } from "@redux/models/AccountModels";
-import { Fragment, useState } from "react";
-import * as Accordion from "@radix-ui/react-accordion";
-import AddAsset from "./AddAsset";
-import { DrawerHook } from "../hooks/drawerHook";
-import { useTranslation } from "react-i18next";
-import Menu from "@pages/components/Menu";
-import { WorkerHook } from "@pages/hooks/workerHook";
 import { AssetHook } from "../hooks/assetHook";
+import { DrawerHook } from "../hooks/drawerHook";
+import Menu from "@pages/components/Menu";
+// svgs
+import PlusIcon from "@assets/svg/files/plus-icon.svg?react";
 import { UseAsset } from "../hooks/useAsset";
+import { WorkerHook } from "@pages/hooks/workerHook";
+import { useTranslation } from "react-i18next";
 
 const AssetsList = () => {
   const { t } = useTranslation();

@@ -1,10 +1,12 @@
-// svg
-import { ReactComponent as CopyIcon } from "@assets/svg/files/copy-icon.svg";
-import { ReactComponent as CopyGrayIcon } from "@/assets/svg/files/copy-gray-icon.svg";
+import * as Popover from "@radix-ui/react-popover";
+
+import { ButtonHTMLAttributes, FC, useState } from "react";
 //
 import { VariantProps, cva } from "cva";
-import { ButtonHTMLAttributes, FC, useState } from "react";
-import * as Popover from "@radix-ui/react-popover";
+
+import CopyGrayIcon from "@/assets/svg/files/copy-gray-icon.svg?react";
+// svg
+import CopyIcon from "@assets/svg/files/copy-icon.svg?react";
 import { useTranslation } from "react-i18next";
 
 const customCopy = cva("customCopy", {

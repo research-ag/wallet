@@ -1,11 +1,3 @@
-// svgs
-import { ReactComponent as PencilIcon } from "@assets/svg/files/pencil.svg";
-import { ReactComponent as TrashIcon } from "@assets/svg/files/trash-icon.svg";
-import { ReactComponent as ChevIcon } from "@assets/svg/files/chev-icon.svg";
-import { ReactComponent as CheckIcon } from "@assets/svg/files/edit-check.svg";
-import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
-//
-import { useTranslation } from "react-i18next";
 import {
   AssetContact,
   Contact,
@@ -13,19 +5,28 @@ import {
   SubAccountContact,
   SubAccountContactErr,
 } from "@redux/models/ContactsModels";
-import { AccountIdentifier } from "@dfinity/nns";
-import ContactAssetPop from "./contactAssetPop";
-import { getInitialFromName, shortAddress } from "@/utils";
-import TableAssets from "./tableAssets";
 import { ChangeEvent, Fragment } from "react";
+import { getInitialFromName, shortAddress } from "@/utils";
+
+import { AccountIdentifier } from "@dfinity/nns";
+import { AssetToAdd } from "@redux/models/AccountModels";
+import CheckIcon from "@assets/svg/files/edit-check.svg?react";
+import ChevIcon from "@assets/svg/files/chev-icon.svg?react";
+import CloseIcon from "@assets/svg/files/close.svg?react";
+import ContactAssetPop from "./contactAssetPop";
 import { CustomCopy } from "@components/CopyTooltip";
 import { CustomInput } from "@components/Input";
-import { clsx } from "clsx";
 import { DeleteContactTypeEnum } from "@/const";
-import { Principal } from "@dfinity/principal";
 import { GeneralHook } from "@pages/home/hooks/generalHook";
+// svgs
+import PencilIcon from "@assets/svg/files/pencil.svg?react";
+import { Principal } from "@dfinity/principal";
+import TableAssets from "./tableAssets";
+import TrashIcon from "@assets/svg/files/trash-icon.svg?react";
+import { clsx } from "clsx";
 import { useContacts } from "../hooks/contactsHook";
-import { AssetToAdd } from "@redux/models/AccountModels";
+//
+import { useTranslation } from "react-i18next";
 
 interface TableContactsProps {
   changeName(value: string): void;

@@ -1,14 +1,16 @@
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+
 // svgs
 import { AccountDefaultEnum, IconTypeEnum, TokenNetwork, TokenNetworkEnum } from "@/const";
-import ChevIcon from "@assets/svg/files/chev-icon.svg";
+
+import { Asset } from "@redux/models/AccountModels";
+import ChevIcon from "@assets/svg/files/chev-icon.svg?react";
 //
 import { CustomButton } from "@components/Button";
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { clsx } from "clsx";
-import { useTranslation } from "react-i18next";
 import { GeneralHook } from "../hooks/generalHook";
 import { Token } from "@redux/models/TokenModels";
-import { Asset } from "@redux/models/AccountModels";
+import { clsx } from "clsx";
+import { useTranslation } from "react-i18next";
 
 interface AddAssetAutomaticProps {
   setNetworkTOpen(value: boolean): void;

@@ -1,30 +1,32 @@
-// svgs
-import SuccesIcon from "@assets/svg/files/success.svg";
-import ChevIcon from "@assets/svg/files/chev-icon.svg";
-import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
-import { ReactComponent as ExchangeIcon } from "@assets/svg/files/arrows-exchange-v.svg";
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+
+import { Asset, SubAccount } from "@redux/models/AccountModels";
 //
 import { IconTypeEnum, SendingStatus, SendingStatusEnum } from "@/const";
 import { IcrcAccount, IcrcLedgerCanister } from "@dfinity/ledger";
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { IdentityHook } from "@hooks/identityHook";
-import { clsx } from "clsx";
-import { GeneralHook } from "../hooks/generalHook";
-import { Asset, SubAccount } from "@redux/models/AccountModels";
-import { useTranslation } from "react-i18next";
 import {
   hexToUint8Array,
+  roundToDecimalN,
   shortAddress,
   subUint8ArrayToHex,
-  roundToDecimalN,
   toFullDecimal,
-  validateAmount,
   toHoleBigInt,
+  validateAmount,
 } from "@/utils";
-import { CustomInput } from "@components/Input";
-import { CustomButton } from "@components/Button";
+
 import { AssetHook } from "../hooks/assetHook";
 import { ChangeEvent } from "react";
+import ChevIcon from "@assets/svg/files/chev-icon.svg?react";
+import CloseIcon from "@assets/svg/files/close.svg?react";
+import { CustomButton } from "@components/Button";
+import { CustomInput } from "@components/Input";
+import ExchangeIcon from "@assets/svg/files/arrows-exchange-v.svg?react";
+import { GeneralHook } from "../hooks/generalHook";
+import { IdentityHook } from "@hooks/identityHook";
+// svgs
+import SuccesIcon from "@assets/svg/files/success.svg?react";
+import { clsx } from "clsx";
+import { useTranslation } from "react-i18next";
 
 interface SendOwnAccountProps {
   selectedAccount: SubAccount | undefined;
