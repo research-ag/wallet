@@ -31,7 +31,6 @@ export const updateAllBalances = async (
   tokens: Token[],
   basicSearch?: boolean,
   fromLogin?: boolean,
-  fixedPrincipal?: Principal,
 ) => {
   let tokenMarkets: TokenMarketInfo[] = [];
   try {
@@ -63,7 +62,7 @@ export const updateAllBalances = async (
   }
   store.dispatch(setTokenMarket(tokenMarkets));
 
-  const myPrincipal = fixedPrincipal || (await myAgent.getPrincipal());
+  const myPrincipal = store.getState().auth.userPrincipal;
   const tokensAseets = await Promise.all(
     tokens.map(async (tkn, idNum) => {
       try {

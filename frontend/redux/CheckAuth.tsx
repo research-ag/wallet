@@ -96,11 +96,11 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean,
     store.dispatch(setTokens(userDataJson.tokens));
     setAssetFromLocalData(userDataJson.tokens, myPrincipal.toText());
     dispatchAuths(identityPrincipalStr.toLocaleLowerCase(), myAgent, myPrincipal, !!fixedPrincipal);
-    await updateAllBalances(true, myAgent, userDataJson.tokens, false, true, fixedPrincipal);
+    await updateAllBalances(true, myAgent, userDataJson.tokens, false, true);
   } else {
-    const { tokens } = await updateAllBalances(true, myAgent, defaultTokens, true, true, fixedPrincipal);
-    store.dispatch(setTokens(tokens));
     dispatchAuths(identityPrincipalStr.toLocaleLowerCase(), myAgent, myPrincipal, !!fixedPrincipal);
+    const { tokens } = await updateAllBalances(true, myAgent, defaultTokens, true, true);
+    store.dispatch(setTokens(tokens));
   }
 
   // CONTACTS
