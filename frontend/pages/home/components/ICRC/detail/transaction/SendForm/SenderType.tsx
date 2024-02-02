@@ -1,7 +1,10 @@
+import { SupportedStandardEnum } from "@/@types/icrc";
 import { TransactionSenderOption, TransactionSenderOptionEnum } from "@/@types/transactions";
 import * as RadioGroup from "@radix-ui/react-radio-group";
+import { useAppSelector } from "@redux/Store";
 import { clearSenderAction, setSenderOptionAction } from "@redux/transaction/TransactionActions";
 import clsx from "clsx";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 interface SenderTypeProps {
@@ -11,7 +14,13 @@ interface SenderTypeProps {
 export default function SenderType(props: SenderTypeProps) {
   const { t } = useTranslation();
   const { senderOption } = props;
+  const { sender } = useAppSelector((state) => state.transaction);
 
+  const isAssetICRC2Supported = useMemo(() => {
+    return sender?.asset?.supportedStandards?.includes(SupportedStandardEnum.Values["ICRC-2"]);
+  }, [sender]);
+
+  // TODO: test adding a no supported asset
   return (
     <div className="flex items-center justify-between w-full px-4">
       <p className="font-bold opacity-50 text-black-color dark:text-white">{t("from")}</p>
@@ -26,18 +35,20 @@ export default function SenderType(props: SenderTypeProps) {
           </RadioGroup.Item>
           <p className={getRadioTextStyles(senderOption === TransactionSenderOptionEnum.Values.own)}>{t("own")}</p>
         </div>
-        <div className="flex flex-row items-center p-1">
-          <RadioGroup.Item
-            className={getRadioGroupStyles(senderOption === TransactionSenderOptionEnum.Values.allowance)}
-            value={TransactionSenderOptionEnum.Values.allowance}
-            id="r-light"
-          >
-            <RadioGroup.Indicator className="flex items-center justify-center w-full h-full relative after:content-[''] after:block after:w-3 after:h-3 after:rounded-full after:bg-primary-color" />
-          </RadioGroup.Item>
-          <p className={getRadioTextStyles(senderOption === TransactionSenderOptionEnum.Values.allowance)}>
-            {t("allowance")}
-          </p>
-        </div>
+        {isAssetICRC2Supported && (
+          <div className="flex flex-row items-center p-1">
+            <RadioGroup.Item
+              className={getRadioGroupStyles(senderOption === TransactionSenderOptionEnum.Values.allowance)}
+              value={TransactionSenderOptionEnum.Values.allowance}
+              id="r-light"
+            >
+              <RadioGroup.Indicator className="flex items-center justify-center w-full h-full relative after:content-[''] after:block after:w-3 after:h-3 after:rounded-full after:bg-primary-color" />
+            </RadioGroup.Item>
+            <p className={getRadioTextStyles(senderOption === TransactionSenderOptionEnum.Values.allowance)}>
+              {t("allowance")}
+            </p>
+          </div>
+        )}
       </RadioGroup.Root>
     </div>
   );

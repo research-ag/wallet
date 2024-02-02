@@ -1,6 +1,7 @@
 import { TAllowance, AllowanceErrorFieldsEnum } from "@/@types/allowance";
 import { TErrorValidation } from "@/@types/common";
 import { SelectOption } from "@/@types/components";
+import { SupportedStandardEnum } from "@/@types/icrc";
 import formatAsset from "@/utils/formatAsset";
 import { Select } from "@components/select";
 import { initialAllowanceState } from "@redux/allowance/AllowanceReducer";
@@ -29,10 +30,13 @@ export default function AssetFormItem(props: AssetFormItemProps) {
     if (!search) return assets.map(formatAsset);
     const searchLower = search.toLowerCase();
 
+    // TODO: test adding a no supported asset
     return assets
       .filter((asset) => {
         return (
-          asset.tokenName.toLowerCase().includes(searchLower) || asset.tokenSymbol.toLowerCase().includes(searchLower)
+          asset.tokenName.toLowerCase().includes(searchLower) ||
+          (asset.tokenSymbol.toLowerCase().includes(searchLower) &&
+            asset.supportedStandards.includes(SupportedStandardEnum.Values["ICRC-2"]))
         );
       })
       .map(formatAsset);
