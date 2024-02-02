@@ -1,13 +1,17 @@
 import { AllowancesTableColumns, AllowancesTableColumnsEnum } from "@/@types/allowance";
-import { ServerStateKeysEnum, SortOrder, SortOrderEnum } from "@/@types/common";
-import { listAllowances } from "@/services/allowance";
-import { minutesToMilliseconds } from "@/utils/time";
+import { SortOrder, SortOrderEnum } from "@/@types/common";
 import { useAppSelector } from "@redux/Store";
-import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { reloadAllowancesCache } from "../helpers/allowanceCache";
+import {
+  filterByAmount,
+  filterByAsset,
+  filterBySpender,
+  sortByExpiration,
+  sortBySubAccount,
+} from "@/pages/home/helpers/allowanceSorters";
 
 export default function useAllowances() {
+  const { allowances: rawAllowances } = useAppSelector((state) => state.allowance);
   const [sorting, setSorting] = useState<SortOrder>(SortOrderEnum.Values.ASC);
   const [column, setColumn] = useState<AllowancesTableColumns>(AllowancesTableColumnsEnum.Values.subAccount);
 
@@ -22,35 +26,36 @@ export default function useAllowances() {
       setColumn(orderColumn);
       setSorting(SortOrderEnum.Values.ASC);
     }
-
-    await reloadAllowancesCache();
   };
 
-  const executeQuery = async () => {
-    return await listAllowances(selectedAsset?.tokenSymbol, column, sorting);
-  };
+  const allowances = useMemo(() => {
+    const filtered = selectedAsset?.tokenSymbol
+      ? filterByAsset(selectedAsset?.tokenSymbol, rawAllowances)
+      : rawAllowances;
 
-  const query = useQuery({
-    queryKey: [ServerStateKeysEnum.Values.allowances, selectedAsset?.tokenSymbol, column, sorting],
-    queryFn: executeQuery,
-    staleTime: minutesToMilliseconds(10),
-    enabled: Boolean(selectedAsset?.tokenSymbol && sorting && column),
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
-    refetchOnReconnect: false,
-  });
+    if (column === AllowancesTableColumnsEnum.Values.subAccount) {
+      return sortBySubAccount(sorting, filtered || []);
+    }
 
-  const { data, isLoading, isError, error, isFetching, refetch } = query;
-  const allowances = useMemo(() => data || [], [data]);
+    if (column === AllowancesTableColumnsEnum.Values.spender) {
+      return filterBySpender(sorting, filtered || []);
+    }
+
+    if (column === AllowancesTableColumnsEnum.Values.expiration) {
+      return sortByExpiration(sorting, filtered || []);
+    }
+
+    if (column === AllowancesTableColumnsEnum.Values.amount) {
+      return filterByAmount(sorting, filtered || []);
+    }
+
+    return [];
+  }, [rawAllowances, sorting, column, selectedAsset?.tokenSymbol]);
 
   return {
     allowances,
-    isLoading: isLoading || isFetching,
-    isError,
-    error,
     sorting,
     column,
-    refetch,
     setSorting,
     handleSortChange: onSort,
   };

@@ -116,22 +116,29 @@ const contactsSlice = createSlice({
           tokenSymbol: string;
           newName: string;
           newIndex: string;
+          subAccountId: string;
+          allowance?: { allowance: string; expires_at: string } | undefined;
         }>,
       ) {
-        const auxContacts = state.contacts.map((cnts) => {
-          if (cnts.principal !== action.payload.principal) return cnts;
+        const auxContacts = state.contacts.map((contact: Contact) => {
+          if (contact.principal !== action.payload.principal) return contact;
           else {
             return {
-              ...cnts,
-              assets: cnts.assets.map((asst) => {
-                if (asst.tokenSymbol !== action.payload.tokenSymbol) {
-                  return asst;
+              ...contact,
+              assets: contact.assets.map((asset) => {
+                if (asset.tokenSymbol !== action.payload.tokenSymbol) {
+                  return asset;
                 } else {
                   return {
-                    ...asst,
+                    ...asset,
                     subaccounts: [
-                      ...asst.subaccounts,
-                      { name: action.payload.newName, subaccount_index: action.payload.newIndex },
+                      ...asset.subaccounts,
+                      {
+                        name: action.payload.newName,
+                        subaccount_index: action.payload.newIndex,
+                        sub_account_id: action.payload.subAccountId,
+                        allowance: action.payload.allowance,
+                      },
                     ].sort(
                       (a, b) =>
                         hexToNumber(`0x${a.subaccount_index}`)?.compare(
@@ -147,9 +154,16 @@ const contactsSlice = createSlice({
         state.contacts = auxContacts;
         setLocalContacts(auxContacts, state.storageCode);
       },
-      prepare(principal: string, tokenSymbol: string, newName: string, newIndex: string) {
+      prepare(
+        principal: string,
+        tokenSymbol: string,
+        newName: string,
+        newIndex: string,
+        subAccountId: string,
+        allowance?: { allowance: string; expires_at: string } | undefined,
+      ) {
         return {
-          payload: { principal, tokenSymbol, newName, newIndex },
+          payload: { principal, tokenSymbol, newName, newIndex, subAccountId, allowance },
         };
       },
     },
@@ -162,26 +176,29 @@ const contactsSlice = createSlice({
           subIndex: string;
           newName: string;
           newIndex: string;
+          allowance: { allowance: string; expires_at: string } | undefined;
         }>,
       ) {
-        const auxContacts = state.contacts.map((cnts) => {
-          if (cnts.principal !== action.payload.principal) return cnts;
+        const auxContacts = state.contacts.map((contact) => {
+          if (contact.principal !== action.payload.principal) return contact;
           else {
             return {
-              ...cnts,
-              assets: cnts.assets.map((asst) => {
-                if (asst.tokenSymbol !== action.payload.tokenSymbol) {
-                  return asst;
+              ...contact,
+              assets: contact.assets.map((asset) => {
+                if (asset.tokenSymbol !== action.payload.tokenSymbol) {
+                  return asset;
                 } else {
                   return {
-                    ...asst,
-                    subaccounts: asst.subaccounts
-                      .map((sa) => {
-                        if (sa.subaccount_index !== action.payload.subIndex) return sa;
+                    ...asset,
+                    subaccounts: asset.subaccounts
+                      .map((subAccount) => {
+                        if (subAccount.subaccount_index !== action.payload.subIndex) return subAccount;
                         else {
                           return {
                             name: action.payload.newName,
                             subaccount_index: action.payload.newIndex,
+                            sub_account_id: `0x${action.payload.newIndex}`,
+                            allowance: action.payload.allowance,
                           };
                         }
                       })
@@ -200,9 +217,16 @@ const contactsSlice = createSlice({
         state.contacts = auxContacts;
         setLocalContacts(auxContacts, state.storageCode);
       },
-      prepare(principal: string, tokenSymbol: string, subIndex: string, newName: string, newIndex: string) {
+      prepare(
+        principal: string,
+        tokenSymbol: string,
+        subIndex: string,
+        newName: string,
+        newIndex: string,
+        allowance: { allowance: string; expires_at: string } | undefined,
+      ) {
         return {
-          payload: { principal, tokenSymbol, subIndex, newName, newIndex },
+          payload: { principal, tokenSymbol, subIndex, newName, newIndex, allowance },
         };
       },
     },
@@ -257,20 +281,24 @@ const contactsSlice = createSlice({
           subIndex: string;
         }>,
       ) {
-        const auxContacts = state.contacts.map((cnts) => {
-          if (cnts.principal !== action.payload.principal) return cnts;
+        const auxContacts = state.contacts.map((contact) => {
+          if (contact.principal !== action.payload.principal) return contact;
           else {
             return {
-              ...cnts,
-              assets: cnts.assets.map((asst) => {
-                if (asst.tokenSymbol !== action.payload.tokenSymbol) {
-                  return asst;
-                } else {
-                  return {
-                    ...asst,
-                    subaccounts: asst.subaccounts.filter((sa) => sa.subaccount_index !== action.payload.subIndex),
-                  };
+              ...contact,
+              assets: contact.assets.map((asset) => {
+                const subaccounts = asset.subaccounts.filter(
+                  (subAccount) => subAccount.subaccount_index !== action.payload.subIndex,
+                );
+
+                if (asset.tokenSymbol !== action.payload.tokenSymbol) {
+                  return asset;
                 }
+
+                return {
+                  ...asset,
+                  subaccounts,
+                };
               }),
             };
           }

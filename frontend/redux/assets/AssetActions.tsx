@@ -1,7 +1,9 @@
-import { HttpAgent } from "@dfinity/agent";
+import { Actor, HttpAgent } from "@dfinity/agent";
 import store from "@redux/Store";
 import { Token, TokenMarketInfo, TokenSubAccount } from "@redux/models/TokenModels";
 import { IcrcAccount, IcrcIndexCanister, IcrcLedgerCanister } from "@dfinity/ledger";
+import { _SERVICE as LedgerActor } from "@candid/icrcLedger/icrcLedgerService";
+import { idlFactory as LedgerFactory } from "@candid/icrcLedger/icrcLedgerCandid.did";
 import {
   formatIcpTransaccion,
   getSubAccountArray,
@@ -24,6 +26,7 @@ import { Asset, ICPSubAccount, SubAccount } from "@redux/models/AccountModels";
 import { Principal } from "@dfinity/principal";
 import { AccountDefaultEnum } from "@/const";
 import bigInt from "big-integer";
+import { SupportedStandard } from "@/@types/icrc";
 
 export const updateAllBalances = async (
   loading: boolean,
@@ -65,6 +68,11 @@ export const updateAllBalances = async (
   const myPrincipal = store.getState().auth.userPrincipal;
   const tokensAseets = await Promise.all(
     tokens.map(async (tkn, idNum) => {
+      const ledgerActor = Actor.createActor<LedgerActor>(LedgerFactory, {
+        agent: myAgent,
+        canisterId: tkn.address as any,
+      });
+      const standards = await ledgerActor.icrc1_supported_standards();
       try {
         const { balance, metadata, transactionFee } = IcrcLedgerCanister.create({
           agent: myAgent,
@@ -209,7 +217,9 @@ export const updateAllBalances = async (
           subAccounts: (basicSearch ? userSubAcc : saTokens).sort((a, b) => {
             return hexToNumber(a.numb)?.compare(hexToNumber(b.numb) || bigInt()) || 0;
           }),
+          supportedStandards: standards.map((standard) => standard.name as SupportedStandard),
         };
+
         const newAsset: Asset = {
           symbol: tkn.symbol,
           name: tkn.name,
@@ -224,6 +234,7 @@ export const updateAllBalances = async (
           tokenName: name,
           tokenSymbol: symbol,
           logo: logo,
+          supportedStandards: standards.map((standard) => standard.name as SupportedStandard),
         };
         return { newToken, newAsset };
       } catch (e) {
@@ -249,11 +260,13 @@ export const updateAllBalances = async (
           sort_index: 99999 + idNum,
           tokenName: tkn.name,
           tokenSymbol: tkn.symbol,
+          supportedStandards: standards.map((standard) => standard.name as SupportedStandard),
         };
         return { newToken: tkn, newAsset };
       }
     }),
   );
+
   const newAssetsUpload = tokensAseets.map((tA) => {
     return tA.newAsset;
   });
@@ -341,6 +354,7 @@ export const setAssetFromLocalData = (tokens: Token[], myPrincipal: string) => {
       tokenName: tkn.tokenName,
       tokenSymbol: tkn.tokenSymbol,
       logo: tkn.logo,
+      supportedStandards: tkn.supportedStandards,
     });
   });
 

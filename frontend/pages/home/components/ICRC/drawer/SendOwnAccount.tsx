@@ -44,7 +44,6 @@ interface SendOwnAccountProps {
   setNewAccount(value: string): void;
   setContactToSend(value: any): void;
 }
-
 const SendOwnAccount = ({
   selectedAccount,
   setSelectedAccount,
@@ -70,7 +69,7 @@ const SendOwnAccount = ({
   const { userAgent } = IdentityHook();
 
   return (
-    <div className="flex flex-col justify-start items-center w-full h-full text-lg text-PrimaryTextColorLight dark:text-PrimaryTextColor">
+    <div className="flex flex-col items-center justify-start w-full h-full text-lg text-PrimaryTextColorLight dark:text-PrimaryTextColor">
       <p className="w-full text-left opacity-60">{t("from")}</p>
       <DropdownMenu.Root
         onOpenChange={(e: boolean) => {
@@ -125,7 +124,7 @@ const SendOwnAccount = ({
                     }}
                   >
                     {getAssetIcon(IconTypeEnum.Enum.ASSET, selectedAsset?.tokenSymbol, selectedAsset?.logo)}
-                    <div className="flex flex-col justify-center items-start ml-3">
+                    <div className="flex flex-col items-start justify-center ml-3">
                       <p className="text-left break-words w-full max-w-[20rem]">
                         {sa.name === "-" ? `SubAc N°: ${sa.sub_account_id}` : sa.name}
                       </p>
@@ -140,18 +139,18 @@ const SendOwnAccount = ({
           </DropdownMenu.Content>
         </DropdownMenu.Portal>
       </DropdownMenu.Root>
-      <div className="flex justify-center items-center w-full"></div>
+      <div className="flex items-center justify-center w-full"></div>
       <p className="w-full text-left opacity-60">{t("to")}</p>
       <div className={clsx(sendBox, "border-BorderSuccessColor")}>
         <img src={SuccesIcon} alt="success-icon" />
         <div className={clsx(accountInfo)}>
-          <p className="text-left break-words w-full pr-1">
+          <p className="w-full pr-1 text-left break-words">
             {contactToSend
               ? `${contactToSend.name} - ${contactToSend.subName}`
               : receiver.name === "-"
               ? selectedAsset?.symbol || ""
               : receiver.name}
-            <span className="opacity-70 ml-2 text-sm">
+            <span className="ml-2 text-sm opacity-70">
               {`[${
                 contactToSend ? `0x${contactToSend.subId}` : `0x${subUint8ArrayToHex(receiver.icrcAccount.subaccount)}`
               }]`}
@@ -176,16 +175,16 @@ const SendOwnAccount = ({
           />
         </div>
         <button
-          className="flex justify-center items-center p-1 bg-RadioCheckColor rounded cursor-pointer"
+          className="flex items-center justify-center p-1 rounded cursor-pointer bg-RadioCheckColor"
           onClick={onMaxAmount}
         >
           <p className="text-sm text-PrimaryTextColor">{t("max")}</p>
         </button>
         <ExchangeIcon />
       </div>
-      <div className="flex flex-row justify-between items-center w-full">
+      <div className="flex flex-row items-center justify-between w-full">
         {!maxAmount().valid ? (
-          <p className="w-full text-left text-LockColor text-md  mr-3">{t("no.enought.balance")}</p>
+          <p className="w-full mr-3 text-left text-LockColor text-md">{t("no.enought.balance")}</p>
         ) : Number(amount) > maxAmount().nAmount && maxAmount().valid ? (
           <p className="w-full text-left text-LockColor text-md whitespace-nowrap">{`${t(
             "max.amount.to.send",
@@ -195,7 +194,7 @@ const SendOwnAccount = ({
         ) : (
           <p></p>
         )}
-        <div className="flex flex-row justify-end items-center gap-2 text-md whitespace-nowrap">
+        <div className="flex flex-row items-center justify-end gap-2 text-md whitespace-nowrap">
           <p className="opacity-60">{t("fee")}</p>
           <p>{`${toFullDecimal(selectedAccount?.transaction_fee || "", selectedAccount?.decimal || 8)} ${
             selectedAsset?.symbol || ""
@@ -203,7 +202,7 @@ const SendOwnAccount = ({
         </div>
       </div>
 
-      <div className="w-full flex flex-row justify-end items-center mt-12">
+      <div className="flex flex-row items-center justify-end w-full mt-12">
         <CustomButton intent="deny" className="mr-3 min-w-[5rem]" onClick={onCancel}>
           <p>{t("cancel")}</p>
         </CustomButton>
@@ -232,6 +231,7 @@ const SendOwnAccount = ({
       setAmount(amnt.trim());
   }
 
+  // INFO: set the max amount
   function onMaxAmount() {
     maxAmount().valid && setAmount(toFullDecimal(maxAmount().nAmount.toString(), selectedAccount?.decimal || 8));
   }

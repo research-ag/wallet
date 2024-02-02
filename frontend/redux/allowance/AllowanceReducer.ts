@@ -14,6 +14,7 @@ export const initialAllowanceState: TAllowance = {
     tokenName: "",
     tokenSymbol: "",
     shortDecimal: "",
+    supportedStandards: [],
   },
   subAccount: {
     name: "",
@@ -39,6 +40,7 @@ interface AllowanceState {
   isUpdateAllowance: boolean;
   isCreateAllowance: boolean;
   selectedAllowance: TAllowance;
+  allowances: TAllowance[];
 }
 
 const reducerName = "allowance";
@@ -47,6 +49,7 @@ const initialState: AllowanceState = {
   isUpdateAllowance: false,
   isCreateAllowance: false,
   selectedAllowance: initialAllowanceState,
+  allowances: [],
 };
 
 const allowanceSlice = createSlice({
@@ -62,8 +65,11 @@ const allowanceSlice = createSlice({
     setSelectedAllowance(state: AllowanceState, action: PayloadAction<TAllowance>) {
       state.selectedAllowance = action.payload;
     },
+    setAllowances(state: AllowanceState, action: PayloadAction<TAllowance[]>) {
+      state.allowances = action.payload;
+    },
   },
 });
 
-export const { setIsUpdateAllowance, setIsCreateAllowance, setSelectedAllowance } = allowanceSlice.actions;
+export const { setIsUpdateAllowance, setIsCreateAllowance, setSelectedAllowance, setAllowances } = allowanceSlice.actions;
 export default allowanceSlice.reducer;

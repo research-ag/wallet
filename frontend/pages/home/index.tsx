@@ -23,13 +23,13 @@ const Home = () => {
         <DetailList></DetailList>
       </div>
       <Modal open={disclaimer} width="w-[30rem]">
-        <div className="flex flex-col w-full justify-start items-start gap-4">
-          <div className="flex fle-row justify-start items-center gap-4">
+        <div className="flex flex-col items-start justify-start w-full gap-4">
+          <div className="flex items-center justify-start gap-4 fle-row">
             <WarningIcon className="w-6 h-6" />
             <p className="font-semibold">{t("disclaimer.title")}</p>
           </div>
-          <p className=" text-justify">{t("disclaimer.msg")}</p>
-          <div className="flex flex-row justify-end items-start w-full ">
+          <p className="text-justify ">{t("disclaimer.msg")}</p>
+          <div className="flex flex-row items-start justify-end w-full ">
             <CustomButton
               className="min-w-[5rem]"
               onClick={() => {

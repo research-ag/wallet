@@ -14,10 +14,10 @@ import { Contact, SubAccountContact } from "@redux/models/ContactsModels";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { useTranslation } from "react-i18next";
 import { ChangeEvent } from "react";
+import { useAppSelector } from "@redux/Store";
 
 interface SendOutAccountProps {
   setOpenContactList(value: boolean): void;
-  contacts: Contact[];
   selectedAccount: SubAccount | undefined;
   selectedAsset: Asset | undefined;
   setShowAccounts(value: boolean): void;
@@ -55,7 +55,6 @@ interface ContactToSend {
 
 const SendOutAccount = ({
   setOpenContactList,
-  contacts,
   selectedAccount,
   selectedAsset,
   setShowAccounts,
@@ -76,12 +75,13 @@ const SendOutAccount = ({
   manualSub,
   setManualSub,
 }: SendOutAccountProps) => {
+  const { contacts } = useAppSelector((state) => state.contacts);
   const { t } = useTranslation();
 
   return (
-    <div className="flex flex-col justify-start items-start w-full">
-      <div className="flex flex-row justify-start items-center gap-2 mb-2">
-        <p className="opacity-70 text-md text-PrimaryTextColorLight  dark:text-PrimaryTextColor">{"Manual"}</p>
+    <div className="flex flex-col items-start justify-start w-full">
+      <div className="flex flex-row items-center justify-start gap-2 mb-2">
+        <p className="opacity-70 text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">{"Manual"}</p>
         <div
           className={`flex flex-row w-9 h-4 rounded-full relative cursor-pointer items-center ${
             manual ? "bg-[#26A17B]" : "bg-[#7E7D91]"
@@ -94,7 +94,7 @@ const SendOutAccount = ({
         </div>
       </div>
       {manual ? (
-        <div className="flex flex-col justify-start items-start w-full gap-2">
+        <div className="flex flex-col items-start justify-start w-full gap-2">
           <CustomInput
             intent={"secondary"}
             placeholder={"Principal"}
@@ -112,14 +112,14 @@ const SendOutAccount = ({
             onChange={onChangeIdx}
             sizeInput="small"
             border={"secondary"}
-            sufix={<p className="text-sm text-PrimaryTextColorLight  dark:text-PrimaryTextColor opacity-50">(Hex)</p>}
+            sufix={<p className="text-sm opacity-50 text-PrimaryTextColorLight dark:text-PrimaryTextColor">(Hex)</p>}
           />
         </div>
       ) : (
         <CustomInput
           prefix={<img src={SearchIcon} className="mx-2" alt="search-icon" />}
           sufix={
-            <div className="flex flex-row justify-center items-center mx-2 gap-2">
+            <div className="flex flex-row items-center justify-center gap-2 mx-2">
               {contactsToShow() > 0 && (
                 <DropdownMenu.Root>
                   <DropdownMenu.Trigger asChild>
@@ -150,7 +150,7 @@ const SendOutAccount = ({
                             <div className="flex justify-center items-center !w-8 !h-8 !min-w-[2rem] rounded-md bg-ReceiverColor">
                               <p className="font-semibold">{getFirstNFrom(s.sName, 1)}</p>
                             </div>
-                            <div className="flex flex-col justify-start items-start w-full">
+                            <div className="flex flex-col items-start justify-start w-full">
                               <p className="text-left w-full max-w-[18rem] break-words">{`${s.cName} [${s.sName}]`}</p>
                               <p className="text-SvgColor">{`${shortAddress(
                                 getICRCAccount(s.princ, `0x${s.subaccount_index}`),
@@ -162,7 +162,7 @@ const SendOutAccount = ({
                         );
                       })}
                       <DropdownMenu.Arrow
-                        className=" fill-AccpetButtonColor rounded-lg dark:fill-AccpetButtonColor"
+                        className="rounded-lg fill-AccpetButtonColor dark:fill-AccpetButtonColor"
                         width={10}
                         hanging={10}
                       />
@@ -190,8 +190,8 @@ const SendOutAccount = ({
           onKeyUp={onKeyUp}
         />
       )}
-      <p className="text-md text-LockColor text-left">{newAccountErr}</p>
-      <div className="w-full flex flex-row justify-between items-center mt-2 mb-4">
+      <p className="text-left text-md text-LockColor">{newAccountErr}</p>
+      <div className="flex flex-row items-center justify-between w-full mt-2 mb-4">
         <CustomButton
           intent={"noBG"}
           className="!font-light !p-0 mt-3"
@@ -217,7 +217,7 @@ const SendOutAccount = ({
             if (selectedAccount?.sub_account_id !== sa.sub_account_id)
               return (
                 <button
-                  className="flex flex-row justify-start items-center w-full border-0 border-b border-BorderColorTwoLight dark:border-BorderColorTwo"
+                  className="flex flex-row items-center justify-start w-full border-0 border-b border-BorderColorTwoLight dark:border-BorderColorTwo"
                   key={k}
                   onClick={() => {
                     onSetReceiver(sa);
@@ -229,10 +229,10 @@ const SendOutAccount = ({
                   >
                     {k}
                   </div>
-                  <div className="flex flex-col justify-start items-start text-PrimaryTextColorLight  dark:text-PrimaryTextColor">
+                  <div className="flex flex-col items-start justify-start text-PrimaryTextColorLight dark:text-PrimaryTextColor">
                     <p className="text-left break-words max-w-[20rem]">
                       {sa.name === "-" ? `${selectedAsset?.symbol || ""}` : sa.name}
-                      <span className="ml-2 opacity-70 text-sm">{`[${sa.sub_account_id || "0"}]`}</span>
+                      <span className="ml-2 text-sm opacity-70">{`[${sa.sub_account_id || "0"}]`}</span>
                     </p>
                     <p className="opacity-30">{shortAddress(sa.address, 12, 10)}</p>
                   </div>
@@ -269,10 +269,12 @@ const SendOutAccount = ({
       princ: e.target.value,
     });
   }
+
   function onChangeIdx(e: ChangeEvent<HTMLInputElement>) {
     if (checkHexString(e.target.value)) setManualSub(e.target.value.trim());
   }
 
+  // INFO: show error on change input icrc identifier
   function onChangeInput(e: ChangeEvent<HTMLInputElement>) {
     setNewAccount(e.target.value);
     if (newAccountErr !== "") setNewAccountErr("");

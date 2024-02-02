@@ -38,12 +38,12 @@ const DialogAssetConfirmation = ({
       padding="py-3 px-1"
       border="border border-BorderColorTwoLight dark:border-BorderColorTwo"
     >
-      <div className="reative flex flex-col justify-start items-center w-full">
+      <div className="flex flex-col items-center justify-start w-full reative">
         <CloseIcon
-          className="absolute top-5 right-5 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
+          className="absolute cursor-pointer top-5 right-5 stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
           onClick={onClose}
         />
-        <div className="flex flex-col justify-start items-center w-full py-2">
+        <div className="flex flex-col items-center justify-start w-full py-2">
           {getAssetIcon(IconTypeEnum.Enum.ASSET, newToken?.symbol, newToken.logo)}
           <p
             className={`text-lg font-semibold mt-3 ${
@@ -52,7 +52,7 @@ const DialogAssetConfirmation = ({
           >
             {getMessage(addStatus).top}
           </p>
-          <p className="text-lg font-semibold mt-3">{getMessage(addStatus).botton}</p>
+          <p className="mt-3 text-lg font-semibold">{getMessage(addStatus).botton}</p>
         </div>
       </div>
     </Modal>
@@ -74,6 +74,7 @@ const DialogAssetConfirmation = ({
       subAccounts: [{ numb: "0x0", name: "Default", amount: "0", currency_amount: "0" }],
       index: "",
       id_number: 999,
+      supportedStandards: [],
     });
     setManual(false);
   }

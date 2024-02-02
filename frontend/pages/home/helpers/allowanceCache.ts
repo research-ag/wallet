@@ -1,27 +1,38 @@
-import { ServerStateKeysEnum } from "@/@types/common";
-import { queryClient } from "@/config/query";
+import { TAllowance } from "@/@types/allowance";
+import store from "@redux/Store";
+import { setAllowances } from "@redux/allowance/AllowanceReducer";
+import { getAllowanceDetails } from "@/pages/home/helpers/icrc";
 
-export async function invalidateAllowancesCache(): Promise<void> {
-  try {
-    await queryClient.invalidateQueries({
-      queryKey: [ServerStateKeysEnum.Values.allowances],
-    });
-  } catch (e) {
-    console.log(e);
+export async function allowanceCacheRefresh(principal: string) {
+  const allowancePrefix = `allowances-${principal}`;
+  const allowanceData = localStorage.getItem(allowancePrefix);
+  const allowances = JSON.parse(allowanceData || "[]") as TAllowance[];
+  const updatedAllowances: TAllowance[] = [];
+
+  if (allowances?.length) {
+    for (const allowance of allowances) {
+      try {
+        const spenderPrincipal = allowance.spender.principal;
+        const spenderSubaccount = allowance.subAccount.sub_account_id;
+        const assetAddress = allowance.asset.address;
+        const assetDecimal = allowance.asset.decimal;
+
+        const response = await getAllowanceDetails({
+          spenderPrincipal,
+          spenderSubaccount,
+          assetAddress,
+          assetDecimal,
+        });
+
+        updatedAllowances.push({
+          ...allowance,
+          amount: response?.allowance ? response?.allowance : "0",
+          expiration: response?.expires_at ? response?.expires_at : "",
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }
   }
-}
-
-export async function reloadAllowancesCache(): Promise<void> {
-  try {
-    await queryClient.refetchQueries({
-      queryKey: [ServerStateKeysEnum.Values.allowances],
-    });
-  } catch (e) {
-    console.log(e);
-  }
-}
-
-export async function allowanceFullReload(): Promise<void> {
-  await invalidateAllowancesCache();
-  await reloadAllowancesCache();
+  store.dispatch(setAllowances(updatedAllowances));
 }

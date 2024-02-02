@@ -1,8 +1,7 @@
 import { AllowanceErrorFieldsEnum, TAllowance } from "@/@types/allowance";
 import { TErrorValidation } from "@/@types/common";
 import { SelectOption } from "@/@types/components";
-import { middleTruncation } from "@/utils/strings";
-import { AvatarEmpty } from "@components/avatar";
+import formatContact from "@/utils/formatContact";
 import { Input } from "@components/input";
 import { Select } from "@components/select";
 import { Switch } from "@components/switch";
@@ -76,15 +75,6 @@ export default function SpenderFormItem(props: ISpenderFormItemProps) {
       )}
     </div>
   );
-
-  function formatContact(contact: Contact) {
-    return {
-      value: contact.principal,
-      label: contact.name,
-      subLabel: middleTruncation(contact.principal, 3, 3),
-      icon: <AvatarEmpty title={contact.name} size="medium" className="mr-4" />,
-    };
-  }
 
   function onContactBookChange(checked: boolean) {
     setIsNew(checked);

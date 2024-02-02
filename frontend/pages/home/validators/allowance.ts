@@ -10,6 +10,7 @@ export const validationMessage = {
   expiredDate: "Select a Expiration Date after the present",
   lowBalance: "Sub account balance is not enough",
   invalidAmount: "Amount has not a valid format",
+  duplicatedAllowance: "Duplicated allowance",
 };
 
 export const allowanceValidationSchema = z

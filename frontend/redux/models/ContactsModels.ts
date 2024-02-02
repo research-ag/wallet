@@ -1,13 +1,18 @@
 import { z } from "zod";
 
-// Models
-
-const SubAccountContact = z.object({
+export const SubAccountContactSchema = z.object({
   name: z.string(),
   subaccount_index: z.string(),
+  sub_account_id: z.string(),
+  allowance: z
+    .object({
+      allowance: z.string(),
+      expires_at: z.string(),
+    })
+    .optional(),
 });
 
-export type SubAccountContact = z.infer<typeof SubAccountContact>;
+export type SubAccountContact = z.infer<typeof SubAccountContactSchema>;
 
 const SubAccountContactErr = z.object({
   name: z.boolean(),
@@ -29,19 +34,22 @@ const NewContactSubAccount = z.object({
 
 export type NewContactSubAccount = z.infer<typeof NewContactSubAccount>;
 
-const AssetContact = z.object({
+export const AssetContactSchema = z.object({
   symbol: z.string(),
   tokenSymbol: z.string(),
   logo: z.string().optional(),
-  subaccounts: z.array(SubAccountContact),
+  subaccounts: z.array(SubAccountContactSchema),
+  address: z.string(),
+  decimal: z.string(),
+  shortDecimal: z.string(),
+  supportedStandards: z.array(z.enum(["ICRC-1", "ICRC-2"])),
 });
-
-export type AssetContact = z.infer<typeof AssetContact>;
+export type AssetContact = z.infer<typeof AssetContactSchema>;
 
 const Contact = z.object({
   name: z.string(),
   principal: z.string(),
-  assets: z.array(AssetContact),
+  assets: z.array(AssetContactSchema),
   accountIdentier: z.string().optional(),
 });
 

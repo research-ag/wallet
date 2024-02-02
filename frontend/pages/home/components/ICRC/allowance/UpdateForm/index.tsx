@@ -1,4 +1,3 @@
-import { validationMessage } from "@/helpers/schemas/allowance";
 import { useUpdateAllowance } from "@pages/home/hooks/useAllowanceUpdate";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
@@ -6,6 +5,7 @@ import FixedFieldsFormItem from "./FixedFieldsFormItem";
 import ExpirationFormItem from "./ExpirationFormItem";
 import { Button } from "@components/button";
 import AmountFormItem from "./AmountFormItem";
+import { validationMessage } from "@pages/home/validators/allowance";
 
 export default function UpdateForm() {
   const { t } = useTranslation();

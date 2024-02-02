@@ -20,8 +20,8 @@ const DrawerReceive = () => {
             value={copyValue()}
           />
         </div>
-        <div className="flex flex-row justify-center items-center p-2 border border-BorderColorLight dark:border-BorderColor bg-SecondaryColorLight dark:bg-SecondaryColor rounded">
-          <p className="text-PrimaryTextColorLight dark:text-PrimaryTextColor mr-2 break-all">{copyValue()}</p>
+        <div className="flex flex-row items-center justify-center p-2 border rounded border-BorderColorLight dark:border-BorderColor bg-SecondaryColorLight dark:bg-SecondaryColor">
+          <p className="mr-2 break-all text-PrimaryTextColorLight dark:text-PrimaryTextColor">{copyValue()}</p>
           <CustomCopy
             background="default"
             copyStroke="fill-PrimaryTextColor"

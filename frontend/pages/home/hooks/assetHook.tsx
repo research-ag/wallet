@@ -1,4 +1,5 @@
 import { defaultTokens } from "@/defaultTokens";
+import contactCacheRefresh from "@pages/contacts/helpers/contacts";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { updateAllBalances } from "@redux/assets/AssetActions";
 import {
@@ -11,12 +12,14 @@ import {
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { Token } from "@redux/models/TokenModels";
 import { useEffect, useState } from "react";
+import { allowanceCacheRefresh } from "../helpers/allowanceCache";
 
 export const AssetHook = () => {
   const dispatch = useAppDispatch();
   const { tokens, assets, assetLoading, selectedAsset, selectedAccount, acordeonIdx, tokensMarket } = useAppSelector(
     (state) => state.asset,
   );
+
   const { userAgent } = useAppSelector((state) => state.auth);
   const deleteAsset = (symb: string) => {
     dispatch(removeToken(symb));
@@ -30,9 +33,12 @@ export const AssetHook = () => {
   const [newSub, setNewSub] = useState<SubAccount | undefined>();
   const [hexChecked, setHexChecked] = useState<boolean>(false);
 
-  const reloadBallance = (tkns?: Token[]) => {
+  const reloadBallance = async (tkns?: Token[]) => {
     dispatch(setLoading(true));
     updateAllBalances(true, userAgent, tkns ? tkns : tokens.length > 0 ? tokens : defaultTokens);
+    const principal = (await userAgent.getPrincipal()).toText();
+    allowanceCacheRefresh(principal);
+    await contactCacheRefresh(principal);
   };
 
   const getTotalAmountInCurrency = () => {

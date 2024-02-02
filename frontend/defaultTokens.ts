@@ -1,4 +1,7 @@
 import { Token } from "@redux/models/TokenModels";
+import { SupportedStandardEnum } from "./@types/icrc";
+
+const supportedStandards = [SupportedStandardEnum.Values["ICRC-1"], SupportedStandardEnum.Values["ICRC-2"]];
 
 //
 export const ICRC1systemAssets: Array<Token> = [
@@ -13,6 +16,7 @@ export const ICRC1systemAssets: Array<Token> = [
     shortDecimal: "8",
     fee: "10000",
     subAccounts: [{ numb: "0", name: "Default", amount: "0", currency_amount: "0" }],
+    supportedStandards,
   },
   {
     id_number: 10001,
@@ -26,6 +30,7 @@ export const ICRC1systemAssets: Array<Token> = [
     fee: "10",
     subAccounts: [{ numb: "0", name: "Default", amount: "0", currency_amount: "0" }],
     index: "n5wcd-faaaa-aaaar-qaaea-cai",
+    supportedStandards,
   },
   {
     id_number: 10002,
@@ -39,6 +44,7 @@ export const ICRC1systemAssets: Array<Token> = [
     fee: "2000000000000",
     subAccounts: [{ numb: "0", name: "Default", amount: "0", currency_amount: "0" }],
     index: "s3zol-vqaaa-aaaar-qacpa-cai",
+    supportedStandards,
   },
   {
     id_number: 10003,
@@ -52,6 +58,7 @@ export const ICRC1systemAssets: Array<Token> = [
     fee: "100000",
     subAccounts: [{ numb: "0", name: "Default", amount: "0", currency_amount: "0" }],
     index: "2awyi-oyaaa-aaaaq-aaanq-cai",
+    supportedStandards,
   },
   {
     id_number: 10004,
@@ -65,6 +72,7 @@ export const ICRC1systemAssets: Array<Token> = [
     fee: "10000",
     subAccounts: [{ numb: "0", name: "Default", amount: "0", currency_amount: "0" }],
     index: "7vojr-tyaaa-aaaaq-aaatq-cai",
+    supportedStandards,
   },
   {
     id_number: 10005,
@@ -78,6 +86,7 @@ export const ICRC1systemAssets: Array<Token> = [
     fee: "1000",
     subAccounts: [{ numb: "0", name: "Default", amount: "0", currency_amount: "0" }],
     index: "zlaol-iaaaa-aaaaq-aaaha-cai",
+    supportedStandards,
   },
   {
     id_number: 10007,
@@ -91,6 +100,7 @@ export const ICRC1systemAssets: Array<Token> = [
     fee: "10000",
     subAccounts: [{ numb: "0", name: "Default", amount: "0", currency_amount: "0" }],
     index: "oo6x4-xiaaa-aaaap-abrza-cai",
+    supportedStandards,
   },
   {
     id_number: 10008,
@@ -104,6 +114,7 @@ export const ICRC1systemAssets: Array<Token> = [
     fee: "200000",
     subAccounts: [{ numb: "0", name: "Default", amount: "0", currency_amount: "0" }],
     index: "",
+    supportedStandards,
   },
   {
     id_number: 10009,
@@ -117,6 +128,7 @@ export const ICRC1systemAssets: Array<Token> = [
     fee: "100000",
     subAccounts: [{ numb: "0", name: "Default", amount: "0", currency_amount: "0" }],
     index: "6dfr2-giaaa-aaaaq-aaawq-cai",
+    supportedStandards,
   },
   {
     id_number: 10010,
@@ -130,6 +142,7 @@ export const ICRC1systemAssets: Array<Token> = [
     fee: "100000",
     subAccounts: [{ numb: "0", name: "Default", amount: "0", currency_amount: "0" }],
     index: "efv5g-kqaaa-aaaaq-aacaa-cai",
+    supportedStandards,
   },
 ];
 
@@ -153,6 +166,7 @@ export const defaultTokens: Token[] = [
         currency_amount: "0",
       },
     ],
+    supportedStandards,
   },
   {
     id_number: 1,
@@ -173,6 +187,7 @@ export const defaultTokens: Token[] = [
         currency_amount: "0",
       },
     ],
+    supportedStandards,
   },
   {
     id_number: 2,
@@ -193,5 +208,6 @@ export const defaultTokens: Token[] = [
         currency_amount: "0",
       },
     ],
+    supportedStandards,
   },
 ];

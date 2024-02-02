@@ -1,10 +1,10 @@
 import { Fragment } from "react";
-import { useContacts } from "../hooks/contactsHook";
 import { useTranslation } from "react-i18next";
 import { checkHexString } from "@/utils";
 import { DeleteContactTypeEnum } from "@/const";
 import RemoveModal from "./removeModal";
 import TableContacts from "./tableContacts";
+import useContactTable from "../hooks/useContactTable";
 
 interface ContactListProps {
   searchKey: string;
@@ -24,7 +24,7 @@ const ContactList = ({ searchKey, assetFilter }: ContactListProps) => {
     setDeleteObject,
     subaccEditedErr,
     setSubaccEditedErr,
-  } = useContacts();
+  } = useContactTable();
 
   return (
     <Fragment>
@@ -55,7 +55,7 @@ const ContactList = ({ searchKey, assetFilter }: ContactListProps) => {
   function changeSubIdx(e: string) {
     if (checkHexString(e)) {
       setSubaccEdited((prev) => {
-        return { ...prev, subaccount_index: e.trim() };
+        return { ...prev, subaccount_index: e.trim(), sub_account_id: `0x${e.trim()}` };
       });
       setSubaccEditedErr((prev) => {
         return {
@@ -67,7 +67,8 @@ const ContactList = ({ searchKey, assetFilter }: ContactListProps) => {
   }
   function changeName(e: string) {
     setSubaccEdited((prev) => {
-      return { ...prev, name: e };
+      const newSubAccount = { ...prev, name: e };
+      return newSubAccount;
     });
     setSubaccEditedErr((prev) => {
       return {

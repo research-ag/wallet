@@ -16,10 +16,11 @@ import { clearDataAsset, setTokens } from "./assets/AssetReducer";
 import { AuthNetwork } from "./models/TokenModels";
 import { AuthNetworkTypeEnum } from "@/const";
 import { Ed25519KeyIdentity } from "@dfinity/identity";
-import { clearDataContacts, setContacts, setStorageCode } from "./contacts/ContactsReducer";
+import { clearDataContacts, setStorageCode } from "./contacts/ContactsReducer";
 import { Principal } from "@dfinity/principal";
 import { defaultTokens } from "@/defaultTokens";
-import { allowanceFullReload } from "@pages/home/helpers/allowanceCache";
+import { allowanceCacheRefresh } from "@pages/home/helpers/allowanceCache";
+import contactCacheRefresh from "@pages/contacts/helpers/contacts";
 
 const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${
   import.meta.env.VITE_APP_LOGO
@@ -103,15 +104,8 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean,
     store.dispatch(setTokens(tokens));
   }
 
-  // CONTACTS
-  const contactsData = localStorage.getItem("contacts-" + identityPrincipalStr);
-  if (contactsData) {
-    const contactsDataJson = JSON.parse(contactsData);
-    store.dispatch(setContacts(contactsDataJson.contacts));
-  }
-
-  // ALLOWANCES
-  await allowanceFullReload();
+  allowanceCacheRefresh(myPrincipal.toText());
+  await contactCacheRefresh(myPrincipal.toText());
 };
 
 export const dispatchAuths = (

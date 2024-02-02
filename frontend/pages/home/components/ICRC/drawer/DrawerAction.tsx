@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { CustomButton } from "@components/Button";
 import { clsx } from "clsx";
 import { DrawerOption, DrawerOptionEnum } from "@/const";
+import { resetSendStateAction } from "@redux/transaction/TransactionActions";
 
 interface Option {
   name: string;
@@ -32,8 +33,8 @@ const DrawerAction = ({ drawerOption, setDrawerOption, setDrawerOpen, children }
 
   return (
     <Fragment>
-      <div className="flex flex'row justify-between items-center w-full">
-        <div className="flex flex-row w-full justify-start items-center gap-4">
+      <div className="flex items-center justify-between w-full row">
+        <div className="flex flex-row items-center justify-start w-full gap-4">
           {drawerOptions.map((dOpt, k) => {
             return (
               <CustomButton
@@ -54,6 +55,7 @@ const DrawerAction = ({ drawerOption, setDrawerOption, setDrawerOpen, children }
           className="cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
           onClick={() => {
             setDrawerOpen(false);
+            resetSendStateAction();
           }}
         />
       </div>

@@ -1,8 +1,8 @@
 import { TAllowance, AllowanceErrorFieldsEnum } from "@/@types/allowance";
 import { TErrorValidation } from "@/@types/common";
 import { SelectOption } from "@/@types/components";
-import { IconTypeEnum } from "@/const";
-import { getAssetIcon } from "@/utils/icons";
+import { SupportedStandardEnum } from "@/@types/icrc";
+import formatAsset from "@/utils/formatAsset";
 import { Select } from "@components/select";
 import { initialAllowanceState } from "@redux/allowance/AllowanceReducer";
 import { Asset } from "@redux/models/AccountModels";
@@ -26,22 +26,19 @@ export default function AssetFormItem(props: AssetFormItemProps) {
 
   const error = errors?.filter((error) => error.field === AllowanceErrorFieldsEnum.Values.asset)[0];
 
-  function formatAsset(asset: Asset) {
-    return {
-      value: asset?.tokenName,
-      label: `${asset?.tokenName} / ${asset?.tokenSymbol}`,
-      icon: getAssetIcon(IconTypeEnum.Enum.ASSET, asset?.tokenSymbol, asset?.logo),
-    };
-  }
-
   const options = useMemo(() => {
-    if (!search) return assets.map(formatAsset);
+    const filteredAssets = assets.filter((currentAsset) =>
+      currentAsset.supportedStandards.includes(SupportedStandardEnum.Values["ICRC-2"]),
+    );
+
+    if (!search) return filteredAssets.map(formatAsset);
     const searchLower = search.toLowerCase();
 
-    return assets
-      .filter((asset) => {
+    return filteredAssets
+      .filter((currentAsset) => {
         return (
-          asset.tokenName.toLowerCase().includes(searchLower) || asset.tokenSymbol.toLowerCase().includes(searchLower)
+          currentAsset.tokenName.toLowerCase().includes(searchLower) ||
+          currentAsset.tokenSymbol.toLowerCase().includes(searchLower)
         );
       })
       .map(formatAsset);
@@ -49,7 +46,7 @@ export default function AssetFormItem(props: AssetFormItemProps) {
 
   const onAssetChange = (option: SelectOption) => {
     setSearch(null);
-    const fullAsset = assets.find((asset) => asset.tokenName === option.value);
+    const fullAsset = assets.find((currentAsset) => currentAsset.tokenName === option.value);
     setAllowanceState({ asset: fullAsset, subAccount: initialAllowanceState.subAccount });
   };
 

@@ -7,33 +7,31 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { TAllowance } from "@/@types/allowance";
 import { Modal } from "@components/modal";
 import clsx from "clsx";
-import { ThemesEnum } from "@/const";
 import { useTranslation } from "react-i18next";
 import useDeleteAllowance from "@pages/home/hooks/useDeleteAllowance";
-import { ThemeHook } from "@pages/hooks/themeHook";
 import { middleTruncation } from "@/utils/strings";
 import { useAppDispatch } from "@redux/Store";
 import { setSelectedAllowance } from "@redux/allowance/AllowanceReducer";
 import useAllowanceDrawer from "@pages/home/hooks/useAllowanceDrawer";
-import { allowanceFullReload } from "@pages/home/helpers/allowanceCache";
+import { useState } from "react";
 
 interface ActionCardProps {
   allowance: TAllowance;
 }
 
 export default function ActionCard(props: ActionCardProps) {
+  const [isOpen, setOpen] = useState(false);
   const { onOpenUpdateAllowanceDrawer } = useAllowanceDrawer();
   const dispatch = useAppDispatch();
   const { allowance } = props;
   const { t } = useTranslation();
   const { deleteAllowance, isPending } = useDeleteAllowance();
-  const { theme } = ThemeHook();
 
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
-        <span className="grid w-full py-3 cursor-pointer place-content-center">
-          <DotsIcon className="w-6 h-6 cursor-pointer stroke-PrimaryTextColorLight dark:fill-PrimaryColorLight fill-PrimaryTextColorLight" />
+        <span className="grid w-full cursor-pointer place-content-center">
+          <DotsIcon className="w-6 h-6 cursor-pointer stroke-gray-color-3 dark:fill-PrimaryColorLight fill-gray-color-3" />
         </span>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content
@@ -41,17 +39,17 @@ export default function ActionCard(props: ActionCardProps) {
         sideOffset={5}
       >
         <DropdownMenu.Item
-          className="flex items-center justify-start p-2 cursor-pointer dark:bg-PopSelectColor rounded-t-md"
+          className="flex items-center justify-start p-2 cursor-pointer dark:bg-secondary-color-6 rounded-t-md"
           onClick={onUpdateHandler}
         >
-          <PencilIcon className="mr-4" fill={theme === ThemesEnum.Enum.light ? "#000000" : "#ffffff"} />
+          <PencilIcon className="mr-4 fill-gray-color-3 dark:fill-gray-color-7" />
           <p className={getCellStyles()}>{t("edit")}</p>
         </DropdownMenu.Item>
         <Modal
           triggerComponent={
-            <div className="flex items-center justify-start p-2 cursor-pointer bg-ThirdColorLight dark:bg-SecondaryColor rounded-b-md">
-              <TrashDarkIcon className="mr-4" fill="#B0736F" />
-              <p className="font-bold text-LockColor ">{t("delete")}</p>
+            <div className="flex items-center justify-start p-2 cursor-pointer bg-ThirdColorLight dark:bg-secondary-color-2 rounded-b-md">
+              <TrashDarkIcon className="mr-4 fill-slate-color-error" />
+              <p className="font-bold text-slate-color-error ">{t("delete")}</p>
             </div>
           }
           contentComponent={<ContentComponent />}
@@ -60,6 +58,8 @@ export default function ActionCard(props: ActionCardProps) {
           icon={<AlertIcon className="w-6 h-6" />}
           isLoading={isPending}
           disabled={isPending}
+          isOpen={isOpen}
+          onOpenChange={(open) => setOpen(open)}
         />
       </DropdownMenu.Content>
     </DropdownMenu.Root>
@@ -88,12 +88,12 @@ export default function ActionCard(props: ActionCardProps) {
   async function handleDelete() {
     if (!allowance.id) return;
     deleteAllowance(allowance);
-    await allowanceFullReload();
+    setOpen(false);
   }
 }
 
 function getCellStyles(isOpacity = false) {
-  return clsx("text-PrimaryTextColorLight dark:text-PrimaryTextColor", isOpacity ? "opacity-50" : "");
+  return clsx("text-gray-color-3 dark:text-gray-color-7", isOpacity ? "opacity-50" : "");
 }
 
-const textStyles = clsx("text-PrimaryTextColorLight dark:text-PrimaryTextColor");
+const textStyles = clsx("text-gray-color-3 dark:text-gray-color-7");

@@ -1,4 +1,4 @@
-import { validationMessage } from "@/helpers/schemas/allowance";
+
 import useCreateAllowance from "@pages/home/hooks/useCreateAllowance";
 import { useAppSelector } from "@redux/Store";
 import { useMemo } from "react";
@@ -8,6 +8,7 @@ import SpenderFormItem from "./SpenderFormItem";
 import AmountFormItem from "./AmountFormItem";
 import ExpirationFormItem from "./ExpirationFormItem";
 import { Button } from "@components/button";
+import { validationMessage } from "@pages/home/validators/allowance";
 
 export default function CreateForm() {
   const { contacts } = useAppSelector((state) => state.contacts);
@@ -18,10 +19,12 @@ export default function CreateForm() {
   const errorMessage = useMemo(() => {
     let errorMessage = "";
 
+    
     if (validationErrors[0]?.message === validationMessage.lowBalance) errorMessage = validationErrors[0]?.message;
-
     if (validationErrors[0]?.message === validationMessage.invalidAmount) errorMessage = validationErrors[0].message;
     if (validationErrors[0]?.message === validationMessage.expiredDate) errorMessage = validationErrors[0].message;
+    if (validationErrors[0]?.message === validationMessage.duplicatedAllowance)
+      errorMessage = validationErrors[0].message;
 
     return errorMessage;
   }, [validationErrors]);

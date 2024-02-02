@@ -1,6 +1,6 @@
 // svgsetassetsToAdd
 import { IconType, IconTypeEnum } from "@/const";
-import PlusIcon from "@assets/svg/files/plus-icon.svg";
+import { ReactComponent as PlusIcon } from "@assets/svg/files/plus-icon.svg";
 //
 import { CustomButton } from "@components/Button";
 import { CustomCheck } from "@components/CheckBox";
@@ -45,12 +45,13 @@ const ContactAssetPop = ({
       <div className={`${compClass}`}>
         <DropdownMenu.Root open={openDrop && assets.length > 0} onOpenChange={setOpenDrop}>
           <DropdownMenu.Trigger className="!p-0">
-            <CustomButton
-              className={`${assets.length === 0 ? "bg-GrayColor cursor-default" : ""} ${btnClass}`}
-              size={"icon"}
+            <div
+              className={`h-[2rem] rounded-r-sm w-7 grid place-items-center ${
+                assets.length === 0 ? "bg-GrayColor cursor-default" : ""
+              } ${btnClass}`}
             >
-              <img src={PlusIcon} alt="plus-icon" />
-            </CustomButton>
+              <PlusIcon />
+            </div>
           </DropdownMenu.Trigger>
           <DropdownMenu.Portal>
             <DropdownMenu.Content
@@ -85,7 +86,7 @@ const ContactAssetPop = ({
                           handleSelectAsset(asset);
                         }}
                       >
-                        <div className="flex flex-start justify-start items-center gap-2">
+                        <div className="flex items-center justify-start gap-2 flex-start">
                           {getAssetIcon(IconTypeEnum.Enum.FILTER, asset.tokenSymbol, asset.logo)}
                           <p>{asset.symbol}</p>
                         </div>
@@ -99,7 +100,7 @@ const ContactAssetPop = ({
                   })}
                 </div>
 
-                <div className="flex justify-center items-center p-2 pt-4 w-full rounded-b-lg">
+                <div className="flex items-center justify-center w-full p-2 pt-4 rounded-b-lg">
                   <CustomButton onClick={handleAddAssetButton} size={"small"} className="w-full">
                     <p>{t("add.asset")}</p>
                   </CustomButton>
@@ -123,7 +124,15 @@ const ContactAssetPop = ({
     } else {
       setToAdd(
         assets.map((ast) => {
-          return { symbol: ast.symbol, tokenSymbol: ast.tokenSymbol, logo: ast.logo };
+          return {
+            symbol: ast.symbol,
+            tokenSymbol: ast.tokenSymbol,
+            logo: ast.logo,
+            address: ast.address,
+            decimal: ast.decimal,
+            shortDecimal: ast.shortDecimal,
+            supportedStandards: ast.supportedStandards,
+          };
         }),
         assets.map((ast) => {
           return ast.tokenSymbol;
@@ -140,7 +149,18 @@ const ContactAssetPop = ({
       );
     } else {
       setToAdd(
-        [...assetsToAdd, { symbol: asset.symbol, tokenSymbol: asset.tokenSymbol, logo: asset.logo }],
+        [
+          ...assetsToAdd,
+          {
+            symbol: asset.symbol,
+            tokenSymbol: asset.tokenSymbol,
+            logo: asset.logo,
+            address: asset.address,
+            decimal: asset.decimal,
+            shortDecimal: asset.shortDecimal,
+            supportedStandards: asset.supportedStandards,
+          },
+        ],
         [...symbolToAdd, asset.tokenSymbol],
       );
     }

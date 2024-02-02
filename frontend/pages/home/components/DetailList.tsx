@@ -45,6 +45,7 @@ const DetailList = () => {
           )}
         </ICRCSubInfo>
       </div>
+
       <div
         id="right-drower"
         className={`h-full fixed z-[999] top-0 w-[28rem] overflow-x-hidden transition-{right} duration-500 ${
@@ -62,6 +63,7 @@ const DetailList = () => {
       setDrawerOpen(true);
     }, 150);
   }
+
   function getDrawers() {
     return selectedTransaction ? (
       <DrawerTransaction setDrawerOpen={setDrawerOpen} />

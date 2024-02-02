@@ -1,16 +1,15 @@
 import { TAllowance } from "@/@types/allowance";
-import { ICRCApprove, generateApproveAllowance } from "@/helpers/icrc";
-import { removeAllowance } from "@/services/allowance";
+import { submitAllowanceApproval, createApproveAllowanceParams } from "@/pages/home/helpers/icrc";
 import { useMutation } from "@tanstack/react-query";
 import { throttle } from "lodash";
 import { useCallback } from "react";
-import { allowanceFullReload } from "../helpers/allowanceCache";
 import dayjs from "dayjs";
+import { useAppDispatch } from "@redux/Store";
+import { setAllowances } from "@redux/allowance/AllowanceReducer";
+import { removeAllowance } from "../services/allowance";
 
 export default function useDeleteAllowance() {
-  const onSuccess = async () => {
-    await allowanceFullReload();
-  };
+  const dispatch = useAppDispatch();
 
   const onError = (error: any) => {
     console.log("Error", error);
@@ -27,12 +26,13 @@ export default function useDeleteAllowance() {
         const expirationDate = dayjs(allowance.expiration);
 
         if (currentDate.isBefore(expirationDate) || allowance.noExpire) {
-          const params = generateApproveAllowance({ ...allowance, amount: "0", expiration: undefined });
-          await ICRCApprove(params, allowance.asset.address);
+          const params = createApproveAllowanceParams({ ...allowance, amount: "0", expiration: undefined });
+          await submitAllowanceApproval(params, allowance.asset.address);
         }
       }
 
-      await removeAllowance(allowance.id);
+      const latestAllowances = await removeAllowance(allowance.id);
+      dispatch(setAllowances(latestAllowances));
       return { success: true };
     } catch (error) {
       console.error(error);
@@ -40,7 +40,7 @@ export default function useDeleteAllowance() {
     }
   }, []);
 
-  const { mutate, isPending, isError, error, isSuccess } = useMutation({ mutationFn, onSuccess, onError });
+  const { mutate, isPending, isError, error, isSuccess } = useMutation({ mutationFn, onError });
 
   return { deleteAllowance: throttle(mutate, 1000), isPending, isError, error, isSuccess };
 }
