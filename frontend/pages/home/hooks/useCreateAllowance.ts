@@ -25,7 +25,6 @@ export default function useCreateAllowance() {
   const [validationErrors, setErrors] = useState<TErrorValidation[]>([]);
   const [isPrincipalValid, setIsPrincipalValid] = useState(true);
 
-  // TODO: test adding a no supported asset
   const initial = useMemo(() => {
     const supported = selectedAsset?.supportedStandards?.includes(SupportedStandardEnum.Values["ICRC-2"]);
     if (!supported) return initialAllowanceState;

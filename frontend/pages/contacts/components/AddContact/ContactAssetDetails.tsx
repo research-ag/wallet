@@ -88,6 +88,7 @@ export default function ContactAssetDetails(props: ContactAssetDetailsProps) {
             address: ata.address,
             decimal: ata.decimal,
             shortDecimal: ata.shortDecimal,
+            supportedStandards: ata.supportedStandards,
           };
         }),
       };

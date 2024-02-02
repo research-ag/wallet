@@ -27,16 +27,18 @@ export default function AssetFormItem(props: AssetFormItemProps) {
   const error = errors?.filter((error) => error.field === AllowanceErrorFieldsEnum.Values.asset)[0];
 
   const options = useMemo(() => {
-    if (!search) return assets.map(formatAsset);
+    const filteredAssets = assets.filter((currentAsset) =>
+      currentAsset.supportedStandards.includes(SupportedStandardEnum.Values["ICRC-2"]),
+    );
+
+    if (!search) return filteredAssets.map(formatAsset);
     const searchLower = search.toLowerCase();
 
-    // TODO: test adding a no supported asset
-    return assets
-      .filter((asset) => {
+    return filteredAssets
+      .filter((currentAsset) => {
         return (
-          asset.tokenName.toLowerCase().includes(searchLower) ||
-          (asset.tokenSymbol.toLowerCase().includes(searchLower) &&
-            asset.supportedStandards.includes(SupportedStandardEnum.Values["ICRC-2"]))
+          currentAsset.tokenName.toLowerCase().includes(searchLower) ||
+          currentAsset.tokenSymbol.toLowerCase().includes(searchLower)
         );
       })
       .map(formatAsset);
@@ -44,7 +46,7 @@ export default function AssetFormItem(props: AssetFormItemProps) {
 
   const onAssetChange = (option: SelectOption) => {
     setSearch(null);
-    const fullAsset = assets.find((asset) => asset.tokenName === option.value);
+    const fullAsset = assets.find((currentAsset) => currentAsset.tokenName === option.value);
     setAllowanceState({ asset: fullAsset, subAccount: initialAllowanceState.subAccount });
   };
 

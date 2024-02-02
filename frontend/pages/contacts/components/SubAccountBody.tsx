@@ -27,6 +27,7 @@ import useContactTable from "../hooks/useContactTable";
 import { GeneralHook } from "@pages/home/hooks/generalHook";
 import LoadingLoader from "@components/Loader";
 import store from "@redux/Store";
+import { SupportedStandardEnum } from "@/@types/icrc";
 
 interface SubAccountBodyProps {
   asst: AssetContact;
@@ -325,14 +326,16 @@ export default function SubAccountBody(props: SubAccountBodyProps) {
       return;
     }
 
-    // TODO: if standard not supported does not call
-    const allowance = await getAllowanceDetails({
-      spenderPrincipal: store.getState().auth.userPrincipal.toText(),
-      spenderSubaccount: subaccEdited.sub_account_id,
-      accountPrincipal: cntc.principal,
-      assetAddress: asst.address,
-      assetDecimal: asst.decimal,
-    });
+    let allowance = undefined;
+    if (asst.supportedStandards.includes(SupportedStandardEnum.Values["ICRC-2"])) {
+      allowance = await getAllowanceDetails({
+        spenderPrincipal: store.getState().auth.userPrincipal.toText(),
+        spenderSubaccount: subaccEdited.sub_account_id,
+        accountPrincipal: cntc.principal,
+        assetAddress: asst.address,
+        assetDecimal: asst.decimal,
+      });
+    }
 
     if (edit) {
       if (subacc !== "" && subaccEdited.name.trim() !== "" && (eqHex || checkedIdxValid)) {

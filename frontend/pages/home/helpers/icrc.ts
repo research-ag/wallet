@@ -6,6 +6,7 @@ import {
   HasSubAccountsParams,
   TransferTokensParams,
   TransferFromAllowanceParams,
+  SupportedStandardEnum,
 } from "@/@types/icrc";
 import { hexToUint8Array, toFullDecimal, toHoleBigInt } from "@/utils";
 import { ApproveParams, IcrcLedgerCanister, TransferFromParams } from "@dfinity/ledger";
@@ -105,7 +106,10 @@ export async function getSubAccountBalance(params: GetBalanceParams) {
 }
 
 export function createApproveAllowanceParams(allowance: TAllowance): ApproveParams {
-  // TODO: validate that support ICRC2
+  if (!allowance?.asset?.supportedStandards?.includes(SupportedStandardEnum.Values["ICRC-2"])) {
+    throw new Error("ICRC-2 not supported");
+  }
+
   const spenderPrincipal = allowance.spender.principal;
   const allowanceSubAccountId = allowance.subAccount.sub_account_id;
   const allowanceAssetDecimal = allowance.asset.decimal;
@@ -197,10 +201,17 @@ export async function retrieveSubAccountsWithAllowance(params: HasSubAccountsPar
 
 export async function retrieveAssetsWithAllowance(params: HasAssetAllowanceParams): Promise<AssetContact[] | []> {
   const { accountPrincipal, assets } = params;
-  // TODO: This point includes validate on save contact and on retrieve
+
+  const supportedAssets = assets?.filter((asset) =>
+    asset.supportedStandards?.includes(SupportedStandardEnum.Values["ICRC-2"]),
+  );
+
+  const noSupportedAssets = assets?.filter(
+    (asset) => !asset.supportedStandards?.includes(SupportedStandardEnum.Values["ICRC-2"]),
+  );
 
   const assetsWithAllowance = await Promise.all(
-    assets.map(async (asset) => {
+    supportedAssets.map(async (asset) => {
       const subAccountsWithAllowance = await retrieveSubAccountsWithAllowance({
         accountPrincipal,
         subAccounts: asset.subaccounts,
@@ -215,5 +226,5 @@ export async function retrieveAssetsWithAllowance(params: HasAssetAllowanceParam
     }),
   );
 
-  return assetsWithAllowance;
+  return [...assetsWithAllowance, ...noSupportedAssets];
 }

@@ -1,5 +1,5 @@
-import { AssetContactSchema, SubAccountContactSchema } from "@redux/models/ContactsModels";
 import { z } from "zod";
+import { AssetContactSchema, SubAccountContactSchema } from "@redux/models/ContactsModels";
 
 const TransferTokensParamsSchema = z.object({
   receiverPrincipal: z.string(),

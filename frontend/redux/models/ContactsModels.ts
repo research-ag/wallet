@@ -42,8 +42,8 @@ export const AssetContactSchema = z.object({
   address: z.string(),
   decimal: z.string(),
   shortDecimal: z.string(),
+  supportedStandards: z.array(z.enum(["ICRC-1", "ICRC-2"])),
 });
-
 export type AssetContact = z.infer<typeof AssetContactSchema>;
 
 const Contact = z.object({

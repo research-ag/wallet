@@ -114,7 +114,6 @@ export default function AddContact({ setAddOpen }: AddContactProps) {
   );
 
   async function onAllowanceNewContactCheck() {
-    // TODO: if current asset not support, jump this case
     try {
       setIsAllowancesChecking(true);
 

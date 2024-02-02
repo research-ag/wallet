@@ -303,6 +303,7 @@ export default function TableContactRows(props: TableContactRowsProps) {
         address: dt.address,
         decimal: dt.decimal,
         shortDecimal: dt.shortDecimal,
+        supportedStandards: dt.supportedStandards,
       };
     });
     addAsset(auxAsst, cntc.principal);

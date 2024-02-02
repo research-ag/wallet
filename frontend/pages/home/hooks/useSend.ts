@@ -87,12 +87,6 @@ export default function useSend() {
     const senderSubAccount = getSenderSubAccount();
     const receiverPrincipal = getReceiverPrincipal();
     const receiverSubAccount = getReceiverSubAccount();
-    console.log({
-      senderPrincipal,
-      senderSubAccount,
-      receiverPrincipal,
-      receiverSubAccount,
-    });
     return senderPrincipal === receiverPrincipal && senderSubAccount === receiverSubAccount;
   }
 

@@ -131,6 +131,7 @@ const ContactAssetPop = ({
             address: ast.address,
             decimal: ast.decimal,
             shortDecimal: ast.shortDecimal,
+            supportedStandards: ast.supportedStandards,
           };
         }),
         assets.map((ast) => {
@@ -157,6 +158,7 @@ const ContactAssetPop = ({
             address: asset.address,
             decimal: asset.decimal,
             shortDecimal: asset.shortDecimal,
+            supportedStandards: asset.supportedStandards,
           },
         ],
         [...symbolToAdd, asset.tokenSymbol],

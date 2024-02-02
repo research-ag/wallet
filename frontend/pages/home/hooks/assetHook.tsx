@@ -19,6 +19,7 @@ export const AssetHook = () => {
   const { tokens, assets, assetLoading, selectedAsset, selectedAccount, acordeonIdx, tokensMarket } = useAppSelector(
     (state) => state.asset,
   );
+
   const { userAgent } = useAppSelector((state) => state.auth);
   const deleteAsset = (symb: string) => {
     dispatch(removeToken(symb));

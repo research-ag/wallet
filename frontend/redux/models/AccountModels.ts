@@ -113,5 +113,6 @@ const AssetToAdd = z.object({
   address: z.string(),
   decimal: z.string(),
   shortDecimal: z.string(),
+  supportedStandards: z.array(SupportedStandardEnum),
 });
 export type AssetToAdd = z.infer<typeof AssetToAdd>;
