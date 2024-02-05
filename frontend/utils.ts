@@ -92,7 +92,7 @@ export const roundToDecimalN = (numb: number | string, decimal: number | string)
 
 export const toFullDecimal = (numb: bigint | string, decimal: number, maxDecimals?: number) => {
   if (BigInt(numb) === BigInt(0)) return "0";
-  
+
   let numbStr = numb.toString();
   if (decimal === numbStr.length) {
     if (maxDecimals === 0) return "0";
@@ -481,8 +481,8 @@ export const getMetadataInfo = (myMetadata: IcrcTokenMetadataResponse) => {
       logo = auxName.Text;
     }
     if (dt[0] === "icrc1:fee") {
-      const auxName = dt[1] as { Text: string };
-      fee = auxName.Text;
+      const auxName = dt[1] as any;
+      fee = String(auxName.Nat);
     }
   });
 

@@ -65,7 +65,7 @@ export const TableHook = () => {
       id: "timestamp",
       cell: (info) => (
         <div className="flex flex-col items-center justify-center w-full my-2">
-          <p>{moment(info.getValue()).format("M/DD/YYYY h:mm:ss a")}</p>
+          <p>{moment(info.getValue()).format("M/DD/YYYY")}</p>
         </div>
       ),
       header: () => (
