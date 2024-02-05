@@ -151,7 +151,6 @@ const AddAssetManual = ({
           disabled={!asset && !tested}
         />
       </div>
-      {/* TODO: complete token fee */}
       <div className="flex flex-col items-start w-full mb-3">
         <p className="opacity-60">{t("fee")}</p>
         <CustomInput
@@ -163,7 +162,6 @@ const AddAssetManual = ({
           disabled
         />
       </div>
-
       <div className={`flex flex-row justify-start items-center ${asset ? "w-[85%]" : "w-full"} gap-2`}>
         <div className="flex flex-col items-start w-full mb-3">
           <p className="opacity-60">{t("token.decimal")}</p>
