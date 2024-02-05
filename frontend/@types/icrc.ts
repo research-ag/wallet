@@ -48,5 +48,11 @@ const CheckAllowanceParamsSchema = z.object({
 });
 export type CheckAllowanceParams = z.infer<typeof CheckAllowanceParamsSchema>;
 
+const TransactionFeeParamsParamsSchema = z.object({
+  assetAddress: z.string(),
+  assetDecimal: z.string(),
+});
+export type TransactionFeeParams = z.infer<typeof TransactionFeeParamsParamsSchema>;
+
 export const SupportedStandardEnum = z.enum(["ICRC-1", "ICRC-2"]);
 export type SupportedStandard = z.infer<typeof SupportedStandardEnum>;

@@ -7,6 +7,7 @@ import {
   TransferTokensParams,
   TransferFromAllowanceParams,
   SupportedStandardEnum,
+  TransactionFeeParams,
 } from "@/@types/icrc";
 import { hexToUint8Array, toFullDecimal, toHoleBigInt } from "@/utils";
 import { ApproveParams, IcrcLedgerCanister, TransferFromParams } from "@dfinity/ledger";
@@ -25,6 +26,18 @@ function getCanister(assetAddress: string) {
     canisterId,
   });
   return canister;
+}
+
+export async function getTransactionFee(params: TransactionFeeParams) {
+  try {
+    const { assetAddress, assetDecimal } = params;
+
+    const canister = getCanister(assetAddress);
+    const result = await canister.transactionFee({});
+    return toFullDecimal(result, Number(assetDecimal));
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 function calculateExpirationAsBigInt(
