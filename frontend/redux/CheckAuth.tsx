@@ -21,6 +21,7 @@ import { Principal } from "@dfinity/principal";
 import { defaultTokens } from "@/defaultTokens";
 import { allowanceCacheRefresh } from "@pages/home/helpers/allowanceCache";
 import contactCacheRefresh from "@pages/contacts/helpers/contacts";
+import { setAllowances } from "./allowance/AllowanceReducer";
 
 const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${
   import.meta.env.VITE_APP_LOGO
@@ -129,6 +130,7 @@ export const logout = async () => {
   store.dispatch(clearDataContacts());
   store.dispatch(clearDataAsset());
   store.dispatch(clearDataAuth());
+  store.dispatch(setAllowances([]));
   store.dispatch(setUnauthenticated());
   store.dispatch(setUserAgent(undefined));
   store.dispatch(setUserPrincipal(undefined));
