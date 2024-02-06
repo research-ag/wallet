@@ -93,7 +93,7 @@ export default function AddContact({ setAddOpen }: AddContactProps) {
         asciiHex={asciiHex}
         setSelAstContact={setSelAstContact}
       />
-      {/* TODO: test adding an no supported asset */}
+
       <div className="flex flex-row items-center justify-end w-full gap-3">
         <p className="text-TextErrorColor">{newContactErr ? t(newContactErr) : ""}</p>
         {(isAllowancesChecking || isCreating) && (
