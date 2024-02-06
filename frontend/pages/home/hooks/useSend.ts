@@ -56,7 +56,7 @@ export default function useSend() {
 
       return response?.allowance || "0";
     } catch (error) {
-      console.log(error);
+      console.log("getSenderBalance", error);
     }
   }
 
