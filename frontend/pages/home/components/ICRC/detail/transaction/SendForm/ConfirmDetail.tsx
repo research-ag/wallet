@@ -59,13 +59,16 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
   );
 
   async function validateBalance() {
+    console.log("validateBalance-init");
     const balance = await getSenderBalance();
+    console.log("validateBalance", balance);
     const bigintBalance = toHoleBigInt(balance || "0", Number(sender?.asset?.decimal));
     const bigintFee = toHoleBigInt(transactionFee || "0", Number(sender?.asset?.decimal));
     const bigintAmount = toHoleBigInt(amount || "0", Number(sender?.asset?.decimal));
 
     const bigintMaxAmount = bigintBalance - bigintFee;
 
+    console.log(bigintAmount, ">", bigintMaxAmount, bigintAmount > bigintMaxAmount);
     if (bigintAmount > bigintMaxAmount) {
       setErrorAction(ValidationErrorsEnum.Values["error.not.enough.balance"]);
       return false;
@@ -75,6 +78,7 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
   }
 
   async function validateSubAccountBalance() {
+    console.log("validateSubAccountBalance");
     const subAccountBalance = await getSubAccountBalance({
       assetAddress: sender?.asset?.address,
       assetDecimal: sender?.asset?.decimal,
@@ -87,6 +91,7 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
     const maxSubAccountBalance = bigintBalance - bigintFee;
     const bigintAmount = toHoleBigInt(amount || "0", Number(sender?.asset?.decimal));
 
+    console.log(bigintAmount, ">", maxSubAccountBalance, bigintAmount > maxSubAccountBalance);
     if (bigintAmount > maxSubAccountBalance) {
       setErrorAction(ValidationErrorsEnum.Values["error.allowance.subaccount.not.enough"]);
       throw new Error("error.allowance.subaccount.not.enough");
@@ -96,6 +101,7 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
 
   async function handleTransaction() {
     try {
+      console.log("handleTransaction");
       setIsLoadingAction(true);
       const assetAddress = sender.asset.address;
       const decimal = sender.asset.decimal;
