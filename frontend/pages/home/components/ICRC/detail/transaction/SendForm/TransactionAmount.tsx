@@ -41,9 +41,9 @@ export default function TransactionAmount() {
         )}
         <ExchangeIcon />
       </div>
-      <div className="flex flex-row items-center justify-end gap-2 text-md whitespace-nowrap">
+      <div className="flex flex-row items-center justify-end gap-2 text-md whitespace-nowrap text-black-color dark:text-secondary-color-1-light">
         <p className="opacity-60">{t("fee")}</p>
-        <p>
+        <p className="">
           {transactionFee} {sender?.asset?.tokenSymbol}
         </p>
       </div>
