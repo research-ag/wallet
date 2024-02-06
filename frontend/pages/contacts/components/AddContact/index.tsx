@@ -93,10 +93,12 @@ export default function AddContact({ setAddOpen }: AddContactProps) {
         asciiHex={asciiHex}
         setSelAstContact={setSelAstContact}
       />
-      {/* TODO: test adding an no supported asset */}
+
       <div className="flex flex-row items-center justify-end w-full gap-3">
         <p className="text-TextErrorColor">{newContactErr ? t(newContactErr) : ""}</p>
-        {(isAllowancesChecking || isCreating) && <LoadingLoader />}
+        {(isAllowancesChecking || isCreating) && (
+          <LoadingLoader color="dark:border-secondary-color-1-light border-black-color" />
+        )}
         {isAssetICRC2Supported && (
           <CustomButton
             className="bg-BorderSuccessColor min-w-[5rem] flex justify-between items-center"

@@ -18,8 +18,8 @@ export const allowanceSchema = z.object({
   subAccount,
   amount: z.string(),
   spender: z.object({
-    name: z.string(),
     principal: z.string(),
+    name: z.string().optional(),
     accountIdentifier: z.string().optional(),
   }),
   expiration: z.string().optional(),

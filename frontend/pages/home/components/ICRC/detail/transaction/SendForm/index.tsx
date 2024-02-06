@@ -70,6 +70,7 @@ export default function SendForm({ setDrawerOpen }: SendFormProps) {
         return;
       }
       removeErrorAction(ValidationErrorsEnum.Values["error.same.sender.receiver"]);
+
       if (isSenderAllowanceOwn()) {
         setErrorAction(ValidationErrorsEnum.Values["error.own.sender.not.allowed"]);
         return;

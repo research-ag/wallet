@@ -124,9 +124,9 @@ export const toHoleBigInt = (numb: string, decimal: number) => {
     for (let index = 0; index < decimal; index++) {
       addZeros = "0" + addZeros;
     }
-    return BigInt(parts[0] + addZeros);
+    return BigInt(parts[0].replace(/,/g, "") + addZeros);
   } else {
-    const hole = parts[0];
+    const hole = parts[0].replace(/,/g, "");
     const dec = parts[1];
     let addZeros = "";
     for (let index = 0; index < decimal - dec.length; index++) {

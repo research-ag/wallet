@@ -17,7 +17,10 @@ export default function ToolTip(props: ToolTipProps) {
             </div>
           </Tooltip.Trigger>
           <Tooltip.Portal>
-            <Tooltip.Content className="border-2 rounded-md border-RadioCheckColor" sideOffset={5}>
+            <Tooltip.Content
+              className="border-2 rounded-md border-RadioCheckColor bg-secondary-color-1-light dark:bg-level-1-color"
+              sideOffset={5}
+            >
               <div className="p-4 ThemeColorBackLight dark:bg-TooltipBackground">{children}</div>
               <Tooltip.Arrow className="fill-RadioCheckColor" />
             </Tooltip.Content>

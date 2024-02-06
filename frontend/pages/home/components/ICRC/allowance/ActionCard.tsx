@@ -10,22 +10,28 @@ import clsx from "clsx";
 import { useTranslation } from "react-i18next";
 import useDeleteAllowance from "@pages/home/hooks/useDeleteAllowance";
 import { middleTruncation } from "@/utils/strings";
-import { useAppDispatch } from "@redux/Store";
+import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { setSelectedAllowance } from "@redux/allowance/AllowanceReducer";
 import useAllowanceDrawer from "@pages/home/hooks/useAllowanceDrawer";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 interface ActionCardProps {
   allowance: TAllowance;
 }
 
 export default function ActionCard(props: ActionCardProps) {
+  const { contacts } = useAppSelector((state) => state.contacts);
   const [isOpen, setOpen] = useState(false);
   const { onOpenUpdateAllowanceDrawer } = useAllowanceDrawer();
   const dispatch = useAppDispatch();
   const { allowance } = props;
   const { t } = useTranslation();
   const { deleteAllowance, isPending } = useDeleteAllowance();
+
+  const spenderName = useMemo(() => {
+    const contact = contacts.find((contact) => contact.principal === allowance?.spender?.principal);
+    return contact?.name ? contact.name : undefined;
+  }, [allowance, contacts]);
 
   return (
     <DropdownMenu.Root>
@@ -70,10 +76,7 @@ export default function ActionCard(props: ActionCardProps) {
       <div className="mt-4">
         <p className={textStyles}>
           {t("allowance.sure.remove")}{" "}
-          <span className="font-bold">
-            {allowance.spender.name || middleTruncation(allowance.spender.principal, 4, 4)}
-          </span>
-          ?
+          <span className="font-bold">{spenderName || middleTruncation(allowance.spender.principal, 4, 4)}</span>?
         </p>
         <p className={textStyles}>{t("allowance.permanently.deleted")}</p>
       </div>

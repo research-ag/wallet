@@ -1,6 +1,6 @@
 // svgsetassetsToAdd
 import { IconType, IconTypeEnum } from "@/const";
-import { ReactComponent as PlusIcon } from "@assets/svg/files/plus-icon.svg";
+import { ReactComponent as PlusIcon } from "@assets/svg/files/plus.svg";
 //
 import { CustomButton } from "@components/Button";
 import { CustomCheck } from "@components/CheckBox";
@@ -50,7 +50,7 @@ const ContactAssetPop = ({
                 assets.length === 0 ? "bg-GrayColor cursor-default" : ""
               } ${btnClass}`}
             >
-              <PlusIcon />
+              <PlusIcon className="w-4 h-4 fill-secondary-color-1 dark:fill-white" />
             </div>
           </DropdownMenu.Trigger>
           <DropdownMenu.Portal>
