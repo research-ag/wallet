@@ -18,11 +18,11 @@ export default function SubAccountContactBook() {
   }, []);
 
   return (
-    <div className="flex justify-start w-full p-2 border rounded-md border-gray-color-2 bg-secondary-color-2">
+    <div className="flex justify-start w-full p-2 border rounded-md border-gray-color-2 dark:bg-secondary-color-2 bg-secondary-color-1-light ">
       <div className="flex items-center justify-center">
         <AvatarEmpty title={subAccountName} className="mr-2" size="large" />
       </div>
-      <div className="text-start">
+      <div className="text-start text-black-color dark:text-secondary-color-1-light">
         <p>{subAccountName}</p>
         <div className="flex">
           <img src={getIconSrc(sender?.asset?.logo, sender?.asset?.tokenSymbol)} className="w-4 h-4 mr-2" alt="" />

@@ -22,7 +22,7 @@ export default function ReceiverDetail() {
   return (
     <>
       <p className="font-bold opacity-50 text-md text-start">To</p>
-      <div className="relative flex px-3 py-2 border rounded-md border-slate-color-success bg-secondary-color-2">
+      <div className="relative flex px-3 py-2 border rounded-md text-black-color dark:text-secondary-color-1-light border-slate-color-success dark:bg-secondary-color-2 bg-secondary-color-1-light">
         <CloseIcon
           className="absolute top-0 right-0 mt-1 mr-1 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
           onClick={onRemoveReceiver}
