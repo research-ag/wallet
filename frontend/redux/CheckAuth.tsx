@@ -78,7 +78,7 @@ export const handlePrincipalAuthenticated = async (principalAddress: string) => 
 };
 
 export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean, fixedPrincipal?: Principal) => {
-  if (localStorage.getItem("network_type") === null && !fromSeed) {
+  if (localStorage.getItem("network_type") === null && !fromSeed && !fixedPrincipal) {
     logout();
     return;
   }
