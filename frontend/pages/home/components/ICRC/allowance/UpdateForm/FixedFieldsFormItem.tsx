@@ -22,7 +22,7 @@ export default function FixedFieldsFormItem({ allowance }: FixedFieldsProps) {
   }, [allowance, contacts]);
 
   return (
-    <div className="w-full p-4 rounded-md bg-PrimaryColorLight dark:bg-ThemeColorBack">
+    <div className="w-full p-4 rounded-md bg-secondary-color-1-light dark:bg-ThemeColorBack">
       <p className="text-lg font-bold text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("subAccount")}</p>
       <div className="flex items-center mt-4">
         <div className="flex flex-col items-start justify-center mr-4">
@@ -38,7 +38,7 @@ export default function FixedFieldsFormItem({ allowance }: FixedFieldsProps) {
 
       <div className="w-full mt-4 mb-4 border-b border-BorderColorThree" />
 
-      <p className="text-lg font-bold">{t("spender")}</p>
+      <p className="text-lg font-bold text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("spender")}</p>
 
       <div className="flex justify-between mt-4">
         <p className={textStyles}>{t("principal")}</p>

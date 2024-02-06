@@ -19,9 +19,13 @@ export default function SenderAllowanceContact() {
     <div>
       <label htmlFor="Spender" className="flex items-center justify-between mx-6 mb-2">
         <div className="flex items-center justify-between my-1 rounded-md bg-PrimaryColorLight dark:bg-ThemeColorBack">
-          <p className="mr-1 opacity-50 text-md text-start text-black-color dark:text-white">{t("contact.book")}</p>
+          <p className="mr-1 opacity-50 text-md text-start text-PrimaryTextColorLight dark:text-PrimaryTextColor">
+            {t("contact.book")}
+          </p>
           <Switch checked={sender.isNewSender} onChange={onContactBookChange} disabled={false} />
-          <p className="ml-1 opacity-50 text-start text-md text-black-color dark:text-white">{t("new")}</p>
+          <p className="ml-1 opacity-50 text-start text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
+            {t("new")}
+          </p>
         </div>
         {sender.isNewSender && <QRScanIcon onClick={onSenderScannerShow} className="cursor-pointer" />}
       </label>

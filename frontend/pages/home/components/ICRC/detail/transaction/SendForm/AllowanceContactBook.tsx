@@ -78,7 +78,7 @@ export function AllowanceContactBook() {
                 <div className="flex items-center justify-between ">
                   <AvatarEmpty title="H" size="large" />
                   <div className="ml-2">
-                    <p className="text-left text-md">
+                    <p className="text-left text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
                       {sender?.allowanceContactSubAccount?.contactName}{" "}
                       {`[${sender?.allowanceContactSubAccount?.subAccountName}]`}
                     </p>
@@ -91,7 +91,7 @@ export function AllowanceContactBook() {
                         )}
                         alt={sender?.allowanceContactSubAccount?.assetSymbol}
                       />
-                      <p className="text-md">
+                      <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
                         {sender?.allowanceContactSubAccount?.subAccountAllowance?.allowance}{" "}
                         {sender?.allowanceContactSubAccount?.assetSymbol}
                       </p>
@@ -99,7 +99,7 @@ export function AllowanceContactBook() {
                   </div>
                 </div>
               )}
-              {!sender?.allowanceContactSubAccount?.assetName && <p className="text-md">{t("select.option")}</p>}
+              {!sender?.allowanceContactSubAccount?.assetName && <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("select.option")}</p>}
             </div>
             <DropIcon className={`fill-gray-color-4 ${isOpen ? "-rotate-90" : ""}`} />
           </div>
@@ -126,12 +126,12 @@ export function AllowanceContactBook() {
                   <div className="flex items-center justify-between mr-2">
                     <AvatarEmpty title={contactName} size="large" />
                     <div className="ml-2">
-                      <p className="text-left">
+                      <p className="text-left text-PrimaryTextColorLight dark:text-PrimaryTextColor">
                         {contactName} {`[${subAccountName}]`}
                       </p>
                       <span className="flex">
                         <img className="w-5 h-5 mr-2" src={getIconSrc(assetLogo, assetSymbol)} alt={assetSymbol} />
-                        <p className="">
+                        <p className=" text-PrimaryTextColorLight dark:text-PrimaryTextColor">
                           {subAccountAllowance?.allowance} {assetSymbol}
                         </p>
                       </span>
