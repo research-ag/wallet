@@ -47,7 +47,7 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
       <TransactionAmount />
       <div className="flex items-center justify-end mt-6">
         <p className="mr-4 text-md text-slate-color-error">{t(getError())}</p>
-        {isLoading && <LoadingLoader className="mr-4" />}
+        {isLoading && <LoadingLoader color="dark:border-secondary-color-1-light border-black-color mr-2" />}
         <Button className="w-1/6 mr-2 font-bold bg-secondary-color-2" onClick={OnBack}>
           {t("back")}
         </Button>
@@ -99,14 +99,13 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
       setIsLoadingAction(true);
       const assetAddress = sender.asset.address;
       const decimal = sender.asset.decimal;
-      
+
       const isValid = await validateBalance();
       if (!isValid) {
         setIsLoadingAction(false);
         return;
       }
 
-      
       if (enableSend && !errors?.length) {
         if (assetAddress && decimal && senderSubAccount && receiverPrincipal && receiverSubAccount && amount) {
           setSendingStatusAction(SendingStatusEnum.Values.sending);
