@@ -35,7 +35,7 @@ export function TableRow({ children, className }: CommonProps) {
 }
 
 export function TableHeaderCell({ children, className }: CommonProps) {
-  return <th className={`${className} py-2 text-lg text-left`}>{children}</th>;
+  return <th className={`${className} py-2 text-md text-left`}>{children}</th>;
 }
 
 export function TableBodyCell({ children, className, disabled }: CommonProps) {
