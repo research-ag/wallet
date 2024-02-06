@@ -62,25 +62,12 @@ export default function TransactionAmount() {
       setAmountAction(amount);
 
       const isValidAmount = validateAmount(amount, Number(sender.asset.decimal));
-
       if (!isValidAmount) {
         setErrorAction(ValidationErrorsEnum.Values["error.invalid.amount"]);
         return;
       }
 
-      const balance = await getSenderBalance();
-      const bigintBalance = toHoleBigInt(balance || "0", Number(sender?.asset?.decimal));
-      const bigintFee = toHoleBigInt(transactionFee || "0", Number(sender?.asset?.decimal));
-      const bigintAmount = toHoleBigInt(amount || "0", Number(sender?.asset?.decimal));
-      const bigintMaxAmount = bigintBalance - bigintFee;
-
-      if (bigintAmount > bigintMaxAmount) {
-        setErrorAction(ValidationErrorsEnum.Values["error.not.enough.balance"]);
-        return;
-      }
-
       removeErrorAction(ValidationErrorsEnum.Values["error.invalid.amount"]);
-      removeErrorAction(ValidationErrorsEnum.Values["error.not.enough.balance"]);
     } catch (error) {
       console.log(error);
     }

@@ -99,14 +99,15 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
       setIsLoadingAction(true);
       const assetAddress = sender.asset.address;
       const decimal = sender.asset.decimal;
+      
+      const isValid = await validateBalance();
+      if (!isValid) {
+        setIsLoadingAction(false);
+        return;
+      }
 
+      
       if (enableSend && !errors?.length) {
-        const isValid = await validateBalance();
-        if (!isValid) {
-          setIsLoadingAction(false);
-          return;
-        }
-
         if (assetAddress && decimal && senderSubAccount && receiverPrincipal && receiverSubAccount && amount) {
           setSendingStatusAction(SendingStatusEnum.Values.sending);
           showConfirmationModal(true);
