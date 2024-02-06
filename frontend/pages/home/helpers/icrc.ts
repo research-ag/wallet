@@ -83,8 +83,6 @@ export async function transferTokens(params: TransferTokensParams) {
 
 export async function transferTokensFromAllowance(params: TransferFromAllowanceParams) {
   try {
-    console.log("transferTokensFromAllowance");
-
     const { receiverPrincipal, senderPrincipal, assetAddress, transferAmount, decimal, toSubAccount, fromSubAccount } =
       params;
 
