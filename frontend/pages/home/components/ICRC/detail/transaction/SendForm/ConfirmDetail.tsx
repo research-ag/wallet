@@ -68,9 +68,10 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
 
     if (bigintAmount > bigintMaxAmount) {
       setErrorAction(ValidationErrorsEnum.Values["error.not.enough.balance"]);
-      return;
+      return false;
     }
     removeErrorAction(ValidationErrorsEnum.Values["error.not.enough.balance"]);
+    return true;
   }
 
   async function validateSubAccountBalance() {
@@ -100,7 +101,11 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
       const decimal = sender.asset.decimal;
 
       if (enableSend && !errors?.length) {
-        await validateBalance();
+        const isValid = await validateBalance();
+        if (!isValid) {
+          setIsLoadingAction(false);
+          return;
+        }
 
         if (assetAddress && decimal && senderSubAccount && receiverPrincipal && receiverSubAccount && amount) {
           setSendingStatusAction(SendingStatusEnum.Values.sending);
