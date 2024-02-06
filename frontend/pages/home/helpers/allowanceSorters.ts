@@ -19,6 +19,7 @@ export function sortBySubAccount(order: SortOrder, filteredData: TAllowance[]): 
 export function filterBySpender(order: SortOrder, filteredData: TAllowance[]): TAllowance[] {
   const noSpenderNamed = filteredData.filter((allowance) => !allowance.spender?.name);
   const spenderNamed = filteredData.filter((allowance) => allowance.spender?.name);
+
   const mergedAllowances = [...noSpenderNamed, ...spenderNamed];
   const orderedAllowances = mergedAllowances.sort((a, b) => {
     const aSpenderPrincipal = a.spender?.principal || "";

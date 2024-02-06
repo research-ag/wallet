@@ -3,7 +3,9 @@ import { IconTypeEnum } from "@/const";
 import { getAssetIcon } from "@/utils/icons";
 import { middleTruncation } from "@/utils/strings";
 import { Chip } from "@components/chip";
+import { useAppSelector } from "@redux/Store";
 import clsx from "clsx";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 interface FixedFieldsProps {
@@ -12,6 +14,13 @@ interface FixedFieldsProps {
 
 export default function FixedFieldsFormItem({ allowance }: FixedFieldsProps) {
   const { t } = useTranslation();
+  const { contacts } = useAppSelector((state) => state.contacts);
+
+  const spenderName = useMemo(() => {
+    const contact = contacts.find((contact) => contact.principal === allowance?.spender?.principal);
+    return contact?.name ? contact.name : "-";
+  }, [allowance, contacts]);
+
   return (
     <div className="w-full p-4 rounded-md bg-PrimaryColorLight dark:bg-ThemeColorBack">
       <p className="text-lg font-bold text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("subAccount")}</p>
@@ -38,7 +47,7 @@ export default function FixedFieldsFormItem({ allowance }: FixedFieldsProps) {
 
       <div className="flex justify-between mt-4">
         <p className={textStyles}>{t("name")}</p>
-        <p className={textStyles}>{allowance?.spender?.name ? allowance?.spender?.name : "-"}</p>
+        <p className={textStyles}>{spenderName}</p>
       </div>
     </div>
   );

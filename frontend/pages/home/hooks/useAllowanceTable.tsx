@@ -7,10 +7,13 @@ import clsx from "clsx";
 import { isDateExpired } from "@/utils/time";
 import { useTranslation } from "react-i18next";
 import ActionCard from "../components/ICRC/allowance/ActionCard";
+import { useMemo } from "react";
+import { useAppSelector } from "@redux/Store";
 
 export default function useAllowanceTable() {
   const { t } = useTranslation();
   const columnHelper = createColumnHelper<TAllowance>();
+  const { contacts } = useAppSelector((state) => state.contacts);
 
   const columns = [
     columnHelper.accessor(AllowancesTableColumnsEnum.Values.subAccount, {
@@ -33,11 +36,16 @@ export default function useAllowanceTable() {
     }),
     columnHelper.accessor(AllowancesTableColumnsEnum.Values.spender, {
       cell: (info) => {
-        const name = info.getValue()?.name;
         const principal = info.getValue()?.principal;
+
+        const spenderName = useMemo(() => {
+          const contact = contacts.find((contact) => contact.principal === principal);
+          return contact?.name ? contact.name : undefined;
+        }, [contacts]);
+
         return (
           <div>
-            {name && <p className={getCellStyles()}>{name}</p>}
+            {spenderName && <p className={getCellStyles()}>{spenderName}</p>}
             {principal && <p className={getCellStyles(Boolean(name))}>{middleTruncation(principal, 3, 3)}</p>}
           </div>
         );
