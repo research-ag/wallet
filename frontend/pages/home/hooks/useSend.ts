@@ -2,6 +2,7 @@ import { toFullDecimal } from "@/utils";
 import { useAppSelector } from "@redux/Store";
 import { useMemo } from "react";
 import { getAllowanceDetails } from "../helpers/icrc";
+import { TransactionSenderOptionEnum } from "@/@types/transactions";
 
 export default function useSend() {
   const { userPrincipal } = useAppSelector((state) => state.auth);
@@ -38,6 +39,10 @@ export default function useSend() {
 
   async function getSenderBalance() {
     try {
+      if (sender?.senderOption === TransactionSenderOptionEnum.Values.own) {
+        return toFullDecimal(sender?.subAccount?.amount || "0", Number(sender?.asset?.decimal));
+      }
+
       const principal = getSenderPrincipal();
       const subAccount = getSenderSubAccount();
       const assetAddress = sender?.asset?.address;
@@ -50,13 +55,9 @@ export default function useSend() {
         assetDecimal: decimal,
       });
 
-      if (sender?.subAccount?.sub_account_id) {
-        return toFullDecimal(sender?.subAccount?.amount || "0", Number(sender?.asset?.decimal));
-      }
-
       return response?.allowance || "0";
     } catch (error) {
-      console.log("getSenderBalance", error);
+      console.log(error);
     }
   }
 
@@ -75,11 +76,7 @@ export default function useSend() {
   const isReceiver = useMemo(() => Boolean(getReceiverPrincipal() && getReceiverSubAccount()), [receiver]);
 
   function isSenderAllowance() {
-    return Boolean(
-      sender?.newAllowanceContact?.principal ||
-        sender?.allowanceContactSubAccount?.contactPrincipal ||
-        !sender?.subAccount?.sub_account_id,
-    );
+    return sender?.senderOption === TransactionSenderOptionEnum.Values.allowance;
   }
 
   function isSenderSameAsReceiver() {
