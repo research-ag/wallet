@@ -165,6 +165,8 @@
   "error.invalid.receiver.subaccount": "Subconta do destinatário inválida",
   "invalid.receiver.identifier": "Identificador ICRC inválido",
   "error.invalid.amount": "O valor não é válido",
+  "error.invalid.sender": "Mittente non valido",
+  "error.invalid.receiver": "Destinatario non valido",
   "error.not.enough.balance": "Saldo insuficiente",
   "error.allowance.subaccount.not.enough": "Saldo da subconta da autorização insuficiente"
 }

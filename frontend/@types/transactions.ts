@@ -80,7 +80,8 @@ export const ValidationErrorsEnum = z.enum([
   "error.invalid.receiver.principal",
   "error.invalid.receiver.subaccount",
   "invalid.receiver.identifier",
-
+  "error.invalid.sender",
+  "error.invalid.receiver",
   "error.invalid.amount",
   "error.not.enough.balance",
   "error.allowance.subaccount.not.enough"

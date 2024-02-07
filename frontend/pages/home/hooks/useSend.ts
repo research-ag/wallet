@@ -3,6 +3,8 @@ import { useAppSelector } from "@redux/Store";
 import { useMemo } from "react";
 import { getAllowanceDetails } from "../helpers/icrc";
 import { TransactionSenderOptionEnum } from "@/@types/transactions";
+import { validatePrincipal } from "@/utils/identity";
+import { isHexadecimalValid } from "@/utils/checkers";
 
 export default function useSend() {
   const { userPrincipal } = useAppSelector((state) => state.auth);
@@ -35,6 +37,26 @@ export default function useSend() {
     if (sender?.allowanceContactSubAccount?.subAccountId) return sender?.allowanceContactSubAccount?.subAccountId;
     if (sender?.subAccount?.sub_account_id) return sender?.subAccount?.sub_account_id;
     return "";
+  }
+
+  function getSenderValid(): boolean {
+    const principal = getSenderPrincipal();
+    if (!validatePrincipal(principal)) return false;
+
+    const subaccount = getSenderSubAccount();
+    if (!isHexadecimalValid(subaccount)) return false;
+
+    return true;
+  }
+
+  function getReceiverValid(): boolean {
+    const principal = getReceiverPrincipal();
+    if (!validatePrincipal(principal)) return false;
+
+    const subaccount = getSenderPrincipal();
+    if (!isHexadecimalValid(subaccount)) return false;
+
+    return true;
   }
 
   async function getSenderBalance() {
@@ -114,6 +136,8 @@ export default function useSend() {
     senderPrincipal: getSenderPrincipal(),
     senderSubAccount: getSenderSubAccount(),
     transactionFee: getTransactionFee(),
+    isSenderValid: getSenderValid(),
+    isReceiverValid: getReceiverValid(),
     getSenderBalance,
     isSenderAllowance,
     isSenderSameAsReceiver,

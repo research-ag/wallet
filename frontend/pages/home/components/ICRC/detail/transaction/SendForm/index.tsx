@@ -23,7 +23,8 @@ interface SendFormProps {
 export default function SendForm({ setDrawerOpen }: SendFormProps) {
   const { t } = useTranslation();
   const { isLoading, errors, sender } = useAppSelector((state) => state.transaction);
-  const { isSender, isReceiver, isSenderSameAsReceiver, isSenderAllowanceOwn } = useSend();
+  const { isSender, isReceiver, isSenderSameAsReceiver, isSenderAllowanceOwn, isSenderValid, isReceiverValid } =
+    useSend();
 
   return (
     <div className={`w-full ${isLoading ? "opacity-50 pointer-events-none" : ""} `}>
@@ -47,35 +48,28 @@ export default function SendForm({ setDrawerOpen }: SendFormProps) {
   async function onNext() {
     try {
       setIsLoadingAction(true);
-      if (!sender?.asset?.tokenSymbol) {
-        setErrorAction(ValidationErrorsEnum.Values["error.asset.empty"]);
-        return;
-      }
+
+      if (!sender?.asset?.tokenSymbol) return setErrorAction(ValidationErrorsEnum.Values["error.asset.empty"]);
       removeErrorAction(ValidationErrorsEnum.Values["error.asset.empty"]);
 
-      if (!isSender) {
-        setErrorAction(ValidationErrorsEnum.Values["error.sender.empty"]);
-        return;
-      }
+      if (!isSenderValid) return setErrorAction(ValidationErrorsEnum.Values["error.invalid.sender"]);
+      removeErrorAction(ValidationErrorsEnum.Values["error.invalid.sender"]);
+
+      if (!isReceiverValid) return setErrorAction(ValidationErrorsEnum.Values["error.invalid.receiver"]);
+      removeErrorAction(ValidationErrorsEnum.Values["error.invalid.receiver"]);
+
+      if (!isSender) return setErrorAction(ValidationErrorsEnum.Values["error.sender.empty"]);
       removeErrorAction(ValidationErrorsEnum.Values["error.sender.empty"]);
 
-      if (!isReceiver) {
-        setErrorAction(ValidationErrorsEnum.Values["error.receiver.empty"]);
-        return;
-      }
+      if (!isReceiver) setErrorAction(ValidationErrorsEnum.Values["error.receiver.empty"]);
       removeErrorAction(ValidationErrorsEnum.Values["error.receiver.empty"]);
 
-      if (isSenderSameAsReceiver()) {
-        setErrorAction(ValidationErrorsEnum.Values["error.same.sender.receiver"]);
-        return;
-      }
+      if (isSenderSameAsReceiver()) setErrorAction(ValidationErrorsEnum.Values["error.same.sender.receiver"]);
       removeErrorAction(ValidationErrorsEnum.Values["error.same.sender.receiver"]);
 
-      if (isSenderAllowanceOwn()) {
-        setErrorAction(ValidationErrorsEnum.Values["error.own.sender.not.allowed"]);
-        return;
-      }
+      if (isSenderAllowanceOwn()) setErrorAction(ValidationErrorsEnum.Values["error.own.sender.not.allowed"]);
       removeErrorAction(ValidationErrorsEnum.Values["error.own.sender.not.allowed"]);
+
       setIsInspectDetailAction(true);
     } catch (error) {
       console.error(error);

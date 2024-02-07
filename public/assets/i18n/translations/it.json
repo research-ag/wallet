@@ -164,6 +164,8 @@
   "error.invalid.receiver.principal": "Destinatario principale non valido",
   "error.invalid.receiver.subaccount": "Subaccount del destinatario non valido",
   "invalid.receiver.identifier": "Identificatore ICRC non valido",
+  "error.invalid.sender": "Remetente inválido",
+  "error.invalid.receiver": "Destinatário inválido",
   "error.invalid.amount": "L'importo non è valido",
   "error.not.enough.balance": "Saldo insufficiente",
   "error.allowance.subaccount.not.enough": "Saldo della subaccount dell'autorizzazione insufficiente"
