@@ -42,7 +42,7 @@ export default function useSend() {
   function getSenderValid(): boolean {
     const principal = getSenderPrincipal();
     if (!validatePrincipal(principal)) return false;
-
+    
     const subaccount = getSenderSubAccount();
     if (!isHexadecimalValid(subaccount)) return false;
 
@@ -53,7 +53,7 @@ export default function useSend() {
     const principal = getReceiverPrincipal();
     if (!validatePrincipal(principal)) return false;
 
-    const subaccount = getSenderPrincipal();
+    const subaccount = getReceiverSubAccount();
     if (!isHexadecimalValid(subaccount)) return false;
 
     return true;
