@@ -16,7 +16,7 @@ import clsx from "clsx";
 import { Asset } from "@redux/models/AccountModels";
 import { IUseContactFilters } from "../hooks/useContactFilters";
 import { IconButton } from "@components/button";
-import AddContact from "./ICRC1/AddContact";
+import AddContact from "./ICRC/AddContact";
 
 const ContactFilters = ({
   searchKey,
