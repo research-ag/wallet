@@ -87,6 +87,10 @@ export default function SendForm({ setDrawerOpen }: SendFormProps) {
     switch (true) {
       case errors?.includes(ValidationErrorsEnum.Values["error.asset.empty"]):
         return ValidationErrorsEnum.Values["error.asset.empty"];
+      case errors?.includes(ValidationErrorsEnum.Values["error.invalid.sender"]):
+        return ValidationErrorsEnum.Values["error.invalid.sender"];
+      case errors?.includes(ValidationErrorsEnum.Values["error.invalid.receiver"]):
+        return ValidationErrorsEnum.Values["error.invalid.receiver"];
       case errors?.includes(ValidationErrorsEnum.Values["error.sender.empty"]):
         return ValidationErrorsEnum.Values["error.sender.empty"];
       case errors?.includes(ValidationErrorsEnum.Values["error.receiver.empty"]):
