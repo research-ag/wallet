@@ -277,7 +277,11 @@ export const getAccountIdentifier = (pricipal: string, sub: number) => {
   }).toHex();
 };
 
-export const formatIcpTransaccion = (accountId: string, rosettaTransaction: RosettaTransaction): Transaction => {
+export const formatIcpTransaccion = (
+  accountId: string,
+  rosettaTransaction: RosettaTransaction,
+  blockHash: string,
+): Transaction => {
   const {
     operations,
     metadata: { timestamp, block_height },
@@ -320,7 +324,7 @@ export const formatIcpTransaccion = (accountId: string, rosettaTransaction: Rose
 
   return {
     ...transaction,
-    hash,
+    hash: hash + "-" + blockHash,
     timestamp: Math.floor(timestamp / MILI_PER_SECOND),
   } as Transaction;
 };
