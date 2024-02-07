@@ -397,8 +397,8 @@ export const getAllTransactionsICP = async (subaccount_index: string, loading: b
     ).catch();
     if (!response.ok) throw Error(`${response.statusText}`);
     const { transactions } = await response.json();
-    const transactionsInfo = transactions.map(({ transaction }: any) =>
-      formatIcpTransaccion(accountIdentifier.toHex(), transaction),
+    const transactionsInfo = transactions.map(({ transaction, block_identifier }: any) =>
+      formatIcpTransaccion(accountIdentifier.toHex(), transaction, block_identifier.hash),
     );
 
     if (loading) {
