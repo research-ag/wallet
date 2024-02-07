@@ -15,8 +15,8 @@ import Modal from "@components/Modal";
 import clsx from "clsx";
 import { Asset } from "@redux/models/AccountModels";
 import { IUseContactFilters } from "../hooks/useContactFilters";
-import AddContact from "./AddContact";
 import { IconButton } from "@components/button";
+import AddContact from "./ICRC1/AddContact";
 
 const ContactFilters = ({
   searchKey,

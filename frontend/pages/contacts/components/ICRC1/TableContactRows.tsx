@@ -16,9 +16,9 @@ import { AccountIdentifier } from "@dfinity/nns";
 import { clsx } from "clsx";
 import { Principal } from "@dfinity/principal";
 import { AssetToAdd } from "@redux/models/AccountModels";
-import usePrincipalValidator from "../hooks/usePrincipalValidator";
+import usePrincipalValidator from "../../hooks/usePrincipalValidator";
 import { GeneralHook } from "@pages/home/hooks/generalHook";
-import useContactTable from "../hooks/useContactTable";
+import useContactTable from "../../hooks/useContactTable";
 import { DeleteContactTypeEnum } from "@/const";
 import {
   AssetContact,

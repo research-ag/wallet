@@ -23,7 +23,7 @@ import { isSubAccountIdValid } from "@/utils/checkers";
 import bigInt from "big-integer";
 import { getAllowanceDetails } from "@/pages/home/helpers/icrc";
 import { DeleteContactTypeEnum } from "@/const";
-import useContactTable from "../hooks/useContactTable";
+import useContactTable from "../../hooks/useContactTable";
 import { GeneralHook } from "@pages/home/hooks/generalHook";
 import LoadingLoader from "@components/Loader";
 import store from "@redux/Store";

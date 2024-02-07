@@ -1,9 +1,9 @@
 import { CustomInput } from "@components/Input";
 import { checkHexString } from "@/utils";
-import AllowanceTooltip from "../AllowanceTooltip";
 import { ReactComponent as TrashIcon } from "@assets/svg/files/trash-empty.svg";
 import { SubAccountContact } from "@redux/models/ContactsModels";
 import { useTranslation } from "react-i18next";
+import AllowanceTooltip from "../AllowanceTooltip";
 
 interface AddSubAccountOnCreateProps {
   newContactSubNameErr: number[];
