@@ -157,7 +157,7 @@ const AddAssetManual = ({
           sizeInput={"medium"}
           intent={"secondary"}
           placeholder="0"
-          compOutClass=""
+          compOutClass="opacity-60"
           value={toFullDecimal(newToken.fee || "0", Number(newToken.decimal || "0"))}
           disabled
         />
@@ -179,7 +179,7 @@ const AddAssetManual = ({
         </div>
         {asset && (
           <div className="flex flex-col items-start w-full mb-3">
-            <p>{t("short.form.limit")}</p>
+            <p className="opacity-60 text-md">{t("short.form.limit")}</p>
             <CustomInput
               sizeInput={"medium"}
               intent={"secondary"}
