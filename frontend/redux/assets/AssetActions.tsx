@@ -13,13 +13,7 @@ import {
   hexToUint8Array,
   hexToNumber,
 } from "@/utils";
-import {
-  setAssets,
-  setTransactions,
-  setTokenMarket,
-  setICPSubaccounts,
-  setAcordeonAssetIdx,
-  } from "./AssetReducer";
+import { setAssets, setTransactions, setTokenMarket, setICPSubaccounts, setAcordeonAssetIdx } from "./AssetReducer";
 import { AccountIdentifier, SubAccount as SubAccountNNS } from "@dfinity/nns";
 import { Asset, ICPSubAccount, SubAccount } from "@redux/models/AccountModels";
 import { Principal } from "@dfinity/principal";
@@ -35,6 +29,7 @@ export const updateAllBalances = async (
   fromLogin?: boolean,
 ) => {
   let tokenMarkets: TokenMarketInfo[] = [];
+
   try {
     const auxTokenMarkets: TokenMarketInfo[] = await fetch(import.meta.env.VITE_APP_TOKEN_MARKET).then((x) => x.json());
     tokenMarkets = auxTokenMarkets.filter((x) => !x.unreleased);
