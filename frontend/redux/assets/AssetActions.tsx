@@ -72,7 +72,14 @@ export const updateAllBalances = async (
         agent: myAgent,
         canisterId: tkn.address as any,
       });
-      const standards = await ledgerActor.icrc1_supported_standards();
+
+      let standards = tkn.supportedStandards;
+
+      if (fromLogin) {
+        const result = await ledgerActor.icrc1_supported_standards();
+        standards = result.map((standard) => standard.name as SupportedStandard);
+      }
+
       try {
         const { balance, metadata, transactionFee } = IcrcLedgerCanister.create({
           agent: myAgent,
@@ -217,7 +224,7 @@ export const updateAllBalances = async (
           subAccounts: (basicSearch ? userSubAcc : saTokens).sort((a, b) => {
             return hexToNumber(a.numb)?.compare(hexToNumber(b.numb) || bigInt()) || 0;
           }),
-          supportedStandards: standards.map((standard) => standard.name as SupportedStandard),
+          supportedStandards: standards,
         };
 
         const newAsset: Asset = {
@@ -234,7 +241,7 @@ export const updateAllBalances = async (
           tokenName: name,
           tokenSymbol: symbol,
           logo: logo,
-          supportedStandards: standards.map((standard) => standard.name as SupportedStandard),
+          supportedStandards: standards,
         };
         return { newToken, newAsset };
       } catch (e) {
@@ -260,7 +267,7 @@ export const updateAllBalances = async (
           sort_index: 99999 + idNum,
           tokenName: tkn.name,
           tokenSymbol: tkn.symbol,
-          supportedStandards: standards.map((standard) => standard.name as SupportedStandard),
+          supportedStandards: standards,
         };
         return { newToken: tkn, newAsset };
       }
