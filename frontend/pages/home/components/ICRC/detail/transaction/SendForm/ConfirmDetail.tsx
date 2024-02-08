@@ -18,7 +18,7 @@ import { SendingStatusEnum } from "@/const";
 import { AssetHook } from "@pages/home/hooks/assetHook";
 import { getSubAccountBalance, transferTokens, transferTokensFromAllowance } from "@pages/home/helpers/icrc";
 import LoadingLoader from "@components/Loader";
-import { toHoleBigInt } from "@/utils";
+import { toFullDecimal, toHoleBigInt } from "@/utils";
 
 interface ConfirmDetailProps {
   showConfirmationModal: Dispatch<SetStateAction<boolean>>;
@@ -75,13 +75,14 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
   }
 
   async function validateSubAccountBalance() {
-    const subAccountBalance = await getSubAccountBalance({
+    const balance = await getSubAccountBalance({
       assetAddress: sender?.asset?.address,
       assetDecimal: sender?.asset?.decimal,
       principal: senderPrincipal,
       subAccount: senderSubAccount,
     });
 
+    const subAccountBalance = toFullDecimal(balance || "0", Number(sender?.asset?.decimal));
     const bigintBalance = toHoleBigInt(subAccountBalance || "0", Number(sender?.asset?.decimal));
     const bigintFee = toHoleBigInt(transactionFee || "0", Number(sender?.asset?.decimal));
     const maxSubAccountBalance = bigintBalance - bigintFee;

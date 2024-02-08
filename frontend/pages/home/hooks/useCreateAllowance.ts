@@ -3,7 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 
 import { TErrorValidation } from "@/@types/common";
 import { TAllowance } from "@/@types/allowance";
-import { submitAllowanceApproval, createApproveAllowanceParams } from "@/pages/home/helpers/icrc";
+import { submitAllowanceApproval, createApproveAllowanceParams, getSubAccountBalance } from "@/pages/home/helpers/icrc";
 import { validatePrincipal } from "@/utils/identity";
 import useAllowanceDrawer from "./useAllowanceDrawer";
 
@@ -15,6 +15,8 @@ import { initialAllowanceState, setAllowances } from "@redux/allowance/Allowance
 import { postAllowance } from "../services/allowance";
 import { allowanceValidationSchema, validationMessage } from "../validators/allowance";
 import { SupportedStandardEnum } from "@/@types/icrc";
+import { toFullDecimal } from "@/utils";
+import { updateSubAccountBalance } from "@redux/assets/AssetReducer";
 
 export default function useCreateAllowance() {
   const dispatch = useAppDispatch();
@@ -47,22 +49,20 @@ export default function useCreateAllowance() {
 
   const mutationFn = useCallback(async () => {
     try {
-      const fullAllowance = { ...allowance, id: uuidv4() };
-      const allowanceExists = allowances.find(
-        (allowance) =>
-          allowance.subAccount.sub_account_id === fullAllowance.subAccount.sub_account_id &&
-          allowance.spender.principal === fullAllowance.spender.principal &&
-          allowance.asset.tokenSymbol === fullAllowance.asset.tokenSymbol,
-      );
-
-      if (allowanceExists) return Promise.reject(validationMessage.duplicatedAllowance);
-
-      const valid = allowanceValidationSchema.safeParse(fullAllowance);
-      if (!valid.success) return Promise.reject(valid.error);
-      const params = createApproveAllowanceParams(fullAllowance);
-      await submitAllowanceApproval(params, allowance.asset.address);
-      const savedAllowances = await postAllowance(fullAllowance);
-      dispatch(setAllowances(savedAllowances));
+      // const fullAllowance = { ...allowance, id: uuidv4() };
+      // const allowanceExists = allowances.find(
+      //   (allowance) =>
+      //     allowance.subAccount.sub_account_id === fullAllowance.subAccount.sub_account_id &&
+      //     allowance.spender.principal === fullAllowance.spender.principal &&
+      //     allowance.asset.tokenSymbol === fullAllowance.asset.tokenSymbol,
+      // );
+      // if (allowanceExists) return Promise.reject(validationMessage.duplicatedAllowance);
+      // const valid = allowanceValidationSchema.safeParse(fullAllowance);
+      // if (!valid.success) return Promise.reject(valid.error);
+      // const params = createApproveAllowanceParams(fullAllowance);
+      // await submitAllowanceApproval(params, allowance.asset.address);
+      // const savedAllowances = await postAllowance(fullAllowance);
+      // dispatch(setAllowances(savedAllowances));
     } catch (error) {
       console.log(error);
       return { success: false, error };
@@ -70,7 +70,21 @@ export default function useCreateAllowance() {
   }, [allowance]);
 
   const onSuccess = async () => {
-    onCloseCreateAllowanceDrawer();
+    // TODO: refresh sub account balance
+    const refreshParams = {
+      subAccount: allowance.subAccount.sub_account_id,
+      assetAddress: allowance.asset.address,
+    };
+    const amount = await getSubAccountBalance(refreshParams);
+    const balance = amount ? amount.toString() : "0";
+
+    dispatch(updateSubAccountBalance(
+      allowance.asset.tokenSymbol,
+      allowance.subAccount.sub_account_id,
+      balance
+    ));
+
+    // onCloseCreateAllowanceDrawer();
   };
 
   const onError = (error: any) => {

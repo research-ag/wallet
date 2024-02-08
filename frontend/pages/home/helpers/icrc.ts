@@ -109,15 +109,15 @@ export async function transferTokensFromAllowance(params: TransferFromAllowanceP
 
 export async function getSubAccountBalance(params: GetBalanceParams) {
   try {
-    const { principal, subAccount, assetAddress, assetDecimal } = params;
+    const { principal, subAccount, assetAddress } = params;
     const canister = getCanister(assetAddress);
     const sessionPrincipal = store.getState().auth.userPrincipal;
 
-    const result = await canister.balance({
+    const balance = await canister.balance({
       owner: principal ? Principal.fromText(principal) : sessionPrincipal,
       subaccount: hexToUint8Array(subAccount),
     });
-    return toFullDecimal(result, Number(assetDecimal));
+    return balance;
   } catch (error) {
     console.error(error);
   }

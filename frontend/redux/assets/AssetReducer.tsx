@@ -112,6 +112,47 @@ const assetSlice = createSlice({
         };
       },
     },
+    updateSubAccountBalance: {
+      reducer(
+        state: AssetState,
+        { payload }: PayloadAction<{ tokenSymbol: string; subAccountId: string; amount: string }>,
+      ) {
+        const { tokenSymbol, subAccountId, amount } = payload;
+        const tokenIndex = state.tokens.findIndex((token) => token.tokenSymbol === tokenSymbol);
+        const assetIndex = state.assets.findIndex((asset) => asset.tokenSymbol === tokenSymbol);
+        
+        // TODO: update the amount and also update the currency_amount using the getUSDfromToken function
+
+        if (tokenIndex !== -1 && state.tokens[tokenIndex]) {
+          const tokenResult = state.tokens[tokenIndex].subAccounts.map((subAccount) => {
+            if (subAccount.numb === subAccountId) {
+              return {
+                ...subAccount,
+                amount,
+              };
+            }
+            return subAccount;
+          });
+          console.log("tokenResult", tokenResult);
+        }
+
+        if (assetIndex !== -1 && state.assets[assetIndex]) {
+          const assetResult = state.assets[assetIndex].subAccounts.map((subAccount) => {
+            if (subAccount.sub_account_id === subAccountId) {
+              return {
+                ...subAccount,
+                amount,
+              };
+            }
+            return subAccount;
+          });
+          console.log("assetResult", assetResult);
+        }
+      },
+      prepare(tokenSymbol: string, subAccountId: string, amount: string) {
+        return { payload: { tokenSymbol, subAccountId, amount } };
+      },
+    },
     setSubAccountName: {
       reducer(
         state,
@@ -277,6 +318,7 @@ export const {
   addTxWorker,
   setTxLoad,
   setAcordeonAssetIdx,
+  updateSubAccountBalance,
 } = assetSlice.actions;
 
 export default assetSlice.reducer;

@@ -75,7 +75,6 @@ export default function CreateForm() {
             // TODO: todo validate if loading is true, no create allowance
             if (assetLoading) {
               console.log("system is loading");
-              return;
             }
             createAllowance();
           }}
