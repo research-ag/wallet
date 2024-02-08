@@ -1,6 +1,6 @@
 import { defaultTokens } from "@/defaultTokens";
 import contactCacheRefresh from "@pages/contacts/helpers/contacts";
-import { useAppDispatch, useAppSelector } from "@redux/Store";
+import store, { useAppDispatch, useAppSelector } from "@redux/Store";
 import { updateAllBalances } from "@redux/assets/AssetActions";
 import {
   removeToken,
@@ -36,8 +36,8 @@ export const AssetHook = () => {
   const reloadBallance = async (tkns?: Token[]) => {
     dispatch(setLoading(true));
     updateAllBalances(true, userAgent, tkns ? tkns : tokens.length > 0 ? tokens : defaultTokens);
-    const principal = (await userAgent.getPrincipal()).toText();
-    allowanceCacheRefresh(principal);
+    const principal = store.getState().auth.userPrincipal.toText();
+    await allowanceCacheRefresh(principal);
     await contactCacheRefresh(principal);
   };
 
