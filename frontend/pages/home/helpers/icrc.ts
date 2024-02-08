@@ -108,14 +108,19 @@ export async function transferTokensFromAllowance(params: TransferFromAllowanceP
 }
 
 export async function getSubAccountBalance(params: GetBalanceParams) {
-  const { principal, subAccount, assetAddress, assetDecimal } = params;
-  const canister = getCanister(assetAddress);
+  try {
+    const { principal, subAccount, assetAddress, assetDecimal } = params;
+    const canister = getCanister(assetAddress);
+    const sessionPrincipal = store.getState().auth.userPrincipal;
 
-  const result = await canister.balance({
-    owner: Principal.fromText(principal),
-    subaccount: hexToUint8Array(subAccount),
-  });
-  return toFullDecimal(result, Number(assetDecimal));
+    const result = await canister.balance({
+      owner: principal ? Principal.fromText(principal) : sessionPrincipal,
+      subaccount: hexToUint8Array(subAccount),
+    });
+    return toFullDecimal(result, Number(assetDecimal));
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 export function createApproveAllowanceParams(allowance: TAllowance): ApproveParams {
