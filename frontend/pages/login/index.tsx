@@ -47,18 +47,18 @@ const Login = () => {
 
           <LoginLogoIcon className="w-full max-w-[25rem]" />
         </div>
-        <div className="relative flex flex-col justify-center items-center w-full h-full">
-          <div className="flex flex-col justify-center items-center w-full h-full">
+        <div className="relative flex flex-col items-center justify-center w-full h-full">
+          <div className="flex flex-col items-center justify-center w-full h-full">
             <h2 className="text-[2rem] font-bold text-PrimaryTextColorLight dark:text-PrimaryTextColor">
               {t("login.title")}
             </h2>
             <div className="flex flex-col justify-start items-start w-[70%] mt-8">
-              <p className="font-light text-PrimaryTextColorLight dark:text-PrimaryTextColor text-left">
+              <p className="font-light text-left text-PrimaryTextColorLight dark:text-PrimaryTextColor">
                 {t("login.choose.msg")}
               </p>
               {loginOpts.map((opt, k) => {
                 return (
-                  <div className="flex flex-col justify-start items-start w-full" key={k}>
+                  <div className="flex flex-col items-start justify-start w-full" key={k}>
                     <div
                       className="flex flex-row justify-between items-center w-full mt-4 p-3 rounded-[5%] cursor-pointer bg-SecondaryColorLight dark:bg-SecondaryColor"
                       onClick={async () => {
@@ -79,7 +79,7 @@ const Login = () => {
                         onChange={onSeedChange}
                         autoFocus
                         sufix={
-                          <div className="flex flex-row justify-start items-center gap-2">
+                          <div className="flex flex-row items-center justify-start gap-2">
                             <CheckIcon
                               onClick={() => {
                                 handleSeedAuthenticated(seed);
@@ -128,16 +128,16 @@ const Login = () => {
               })}
             </div>
           </div>
-          <div className="flex flex-col justify-center items-center text-center pt-14 pb-14">
-            <p className="font-light text-lg text-PrimaryTextColorLight dark:text-PrimaryTextColor">
+          <div className="flex flex-col items-center justify-center text-center pt-14 pb-14">
+            <p className="text-lg font-light text-PrimaryTextColorLight dark:text-PrimaryTextColor">
               {t("login.bottom.msg")}
             </p>
-            <p className="font-light text-lg text-PrimaryTextColorLight dark:text-PrimaryTextColor">
-              <span className="font-bold text-lg">{t("login.bottom.msg.terms")}</span> {t("and")}{" "}
+            <p className="text-lg font-light text-PrimaryTextColorLight dark:text-PrimaryTextColor">
+              <span className="text-lg font-bold">{t("login.bottom.msg.terms")}</span> {t("and")}{" "}
               <span>{t("login.bottom.msg.policy")}</span>
             </p>
           </div>
-          <div className="absolute right-8 top-6 bg-none flex flex-row justify-center items-center">
+          <div className="absolute flex flex-row items-center justify-center right-8 top-6 bg-none">
             <FlagSelector open={open} handleOpenChange={handleOpenChange}></FlagSelector>
             <div
               className={`p-1 cursor-pointer ${open ? "" : "rotate-90"}`}
@@ -145,7 +145,7 @@ const Login = () => {
                 handleOpenChange(!open);
               }}
             >
-              <ChevIcon className=" w-8 h-8" />
+              <ChevIcon className="w-8 h-8 " />
             </div>
           </div>
         </div>

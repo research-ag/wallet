@@ -15,7 +15,6 @@ const Home = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { disclaimer } = useAppSelector((state) => state.auth);
-
   return (
     <Fragment>
       <div className="flex flex-row w-full h-full">
