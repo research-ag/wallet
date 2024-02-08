@@ -35,7 +35,7 @@ const GetBalanceParamsSchema = z.object({
   principal: z.string().optional(),
   subAccount: z.string(),
   assetAddress: z.string(),
-  assetDecimal: z.string(),
+  assetDecimal: z.string().optional(),
 });
 export type GetBalanceParams = z.infer<typeof GetBalanceParamsSchema>;
 

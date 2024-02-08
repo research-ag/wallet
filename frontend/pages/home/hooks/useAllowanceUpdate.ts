@@ -39,6 +39,7 @@ export function useUpdateAllowance() {
   }, [allowance]);
 
   const onSuccess = async () => {
+    // TODO: refresh sub account balance
     onCloseUpdateAllowanceDrawer();
   };
 
