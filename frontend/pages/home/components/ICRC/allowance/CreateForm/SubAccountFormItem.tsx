@@ -5,6 +5,7 @@ import { Chip } from "@components/chip";
 import { Select } from "@components/select";
 import { Asset } from "@redux/models/AccountModels";
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface ISubAccountFormItemProps {
   allowance: TAllowance;
@@ -15,6 +16,7 @@ interface ISubAccountFormItemProps {
 }
 
 export default function SubAccountFormItem(props: ISubAccountFormItemProps) {
+  const { t } = useTranslation();
   const { allowance, selectedAsset, setAllowanceState, isLoading, errors } = props;
   const [searchValue, setSearchValue] = useState<string | null>(null);
   const onOpenChange = () => setSearchValue(null);
@@ -44,8 +46,8 @@ export default function SubAccountFormItem(props: ISubAccountFormItemProps) {
 
   return (
     <div className="mt-4">
-      <label htmlFor="Subaccount" className="text-lg">
-        Subaccount
+      <label htmlFor="Subaccount" className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
+        {t("subAccount")}
       </label>
 
       <Select

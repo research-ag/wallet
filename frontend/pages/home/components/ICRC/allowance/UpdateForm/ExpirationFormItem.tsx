@@ -27,7 +27,7 @@ export default function ExpirationFormItem(props: IExpirationFormItemProps) {
 
   return (
     <div className="mt-4">
-      <label htmlFor="Expiration" className="text-lg">
+      <label htmlFor="Expiration" className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
         {t("expiration")}
       </label>
       <div className="flex items-center justify-between w-full mt-2">

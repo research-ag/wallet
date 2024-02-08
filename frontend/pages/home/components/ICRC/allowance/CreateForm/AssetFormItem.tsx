@@ -58,7 +58,7 @@ export default function AssetFormItem(props: AssetFormItemProps) {
 
   return (
     <div className="mt-4">
-      <label htmlFor="asset" className="text-lg">
+      <label htmlFor="asset" className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
         {t("asset")}
       </label>
       <Select
