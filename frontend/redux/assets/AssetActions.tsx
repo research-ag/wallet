@@ -19,8 +19,7 @@ import {
   setTokenMarket,
   setICPSubaccounts,
   setAcordeonAssetIdx,
-  setLoading,
-} from "./AssetReducer";
+  } from "./AssetReducer";
 import { AccountIdentifier, SubAccount as SubAccountNNS } from "@dfinity/nns";
 import { Asset, ICPSubAccount, SubAccount } from "@redux/models/AccountModels";
 import { Principal } from "@dfinity/principal";
@@ -320,7 +319,6 @@ export const updateAllBalances = async (
     store.dispatch(setICPSubaccounts(sub));
   }
 
-  store.dispatch(setLoading(false));
   return {
     newAssetsUpload,
     tokens: newTokensUpload.sort((a, b) => {

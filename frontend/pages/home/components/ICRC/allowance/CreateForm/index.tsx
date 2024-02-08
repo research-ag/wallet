@@ -1,4 +1,3 @@
-
 import useCreateAllowance from "@pages/home/hooks/useCreateAllowance";
 import { useAppSelector } from "@redux/Store";
 import { useMemo } from "react";
@@ -12,6 +11,7 @@ import { validationMessage } from "@pages/home/validators/allowance";
 
 export default function CreateForm() {
   const { contacts } = useAppSelector((state) => state.contacts);
+  const { assetLoading } = useAppSelector((state) => state.asset);
   const { assets, selectedAsset } = useAppSelector((state) => state.asset);
   const { allowance, setAllowanceState, createAllowance, isPending, isPrincipalValid, validationErrors } =
     useCreateAllowance();
@@ -19,7 +19,6 @@ export default function CreateForm() {
   const errorMessage = useMemo(() => {
     let errorMessage = "";
 
-    
     if (validationErrors[0]?.message === validationMessage.lowBalance) errorMessage = validationErrors[0]?.message;
     if (validationErrors[0]?.message === validationMessage.invalidAmount) errorMessage = validationErrors[0].message;
     if (validationErrors[0]?.message === validationMessage.expiredDate) errorMessage = validationErrors[0].message;
@@ -73,6 +72,11 @@ export default function CreateForm() {
         <Button
           onClick={(e) => {
             e.preventDefault();
+            // TODO: todo validate if loading is true, no create allowance
+            if (assetLoading) {
+              console.log("system is loading");
+              return;
+            }
             createAllowance();
           }}
           className="w-1/4"

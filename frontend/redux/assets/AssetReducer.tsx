@@ -193,10 +193,9 @@ const assetSlice = createSlice({
       },
     },
     setAssets(state, action) {
-      (state.assets = action.payload.sort((a: any, b: any) => {
+      state.assets = action.payload.sort((a: any, b: any) => {
         return a.sort_index - b.sort_index;
-      })),
-        (state.assetLoading = false);
+      });
     },
     setAccounts(state, action) {
       state.accounts = action.payload;

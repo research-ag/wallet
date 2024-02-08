@@ -5,8 +5,6 @@ import ContactsReducer from "./contacts/ContactsReducer";
 import AllowanceReducer from "./allowance/AllowanceReducer";
 import TransactionReducer from "./transaction/TransactionReducer";
 
-
-
 const appReducer = combineReducers({
   auth: authReducer,
   asset: AssetReducer,
