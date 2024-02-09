@@ -5,22 +5,22 @@ import UpAmountIcon from "@assets/svg/files/up-amount-icon.svg";
 import Modal from "@components/Modal";
 import { CustomCopy } from "@components/CopyTooltip";
 import { shortAddress } from "@/utils";
-import { SendingStatusEnum } from "@/const";
+import { ProtocolType, SendingStatusEnum } from "@/const";
 import { useTranslation } from "react-i18next";
-import { useAppSelector } from "@redux/Store";
 import useSend from "@pages/home/hooks/useSend";
 import { resetSendStateAction } from "@redux/transaction/TransactionActions";
 import { TransactionValidationErrorsEnum } from "@/@types/transactions";
+import { getElapsedSecond } from "@/utils/formatTime";
 
 interface DialogSendConfirmationProps {
   setDrawerOpen(value: boolean): void;
   showConfirmationModal(value: boolean): void;
   modal: boolean;
+  network: ProtocolType;
 }
 
 const DialogSendConfirmation = ({ setDrawerOpen, showConfirmationModal, modal }: DialogSendConfirmationProps) => {
-  const { receiverPrincipal, receiverSubAccount, amount } = useSend();
-  const { sender, sendingStatus, errors } = useAppSelector((state) => state.transaction);
+  const { receiverPrincipal, receiverSubAccount, amount, sender, sendingStatus, errors, initTime, endTime } = useSend();
   const { t } = useTranslation();
 
   return (
@@ -40,8 +40,16 @@ const DialogSendConfirmation = ({ setDrawerOpen, showConfirmationModal, modal }:
             <img src={UpAmountIcon} alt="send-icon" />
           </div>
           <p className="mt-3 text-lg font-semibold">{getStatusMessage(sendingStatus)}</p>
-          <p className="mt-3 text-md text-slate-color-error">{getError()}</p>
+          {getError() !== "" && <p className="mt-1 text-md text-slate-color-error">{getError()}</p>}
+          <div className="flex flex-row items-start justify-center w-full gap-4 mt-1 text-sm font-light opacity-80">
+            <p>
+              {sendingStatus === SendingStatusEnum.enum.done || sendingStatus === SendingStatusEnum.enum.error
+                ? `Processing took ${getElapsedSecond(initTime, endTime)} seconds`
+                : ""}
+            </p>
+          </div>
         </div>
+
         <div className="flex flex-row items-start justify-start w-full gap-4 py-4 pl-8 font-light opacity-50 text-md">
           <div className="flex flex-col items-start justify-start gap-2">
             <p>{`${t("principal")}:`}</p>
