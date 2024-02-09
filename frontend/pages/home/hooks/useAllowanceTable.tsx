@@ -101,7 +101,7 @@ export default function useAllowanceTable() {
     columnHelper.display({
       id: AllowancesTableColumnsEnum.Values.action,
       cell: (info) => <ActionCard allowance={info.row.original} />,
-      header: () => t("action"),
+      header: () => <p className={titleHeaderStyles}>{t("action")}</p>,
       enableSorting: false,
       enableHiding: false,
       enableResizing: false,
