@@ -307,6 +307,7 @@ export default function SubAccountBody(props: SubAccountBodyProps) {
     let eqHexValid = false;
     let eqHex = false;
 
+    // FIXME: if the subaccount already exist in the asset return false. Not allow to rename the subaccount
     if (edit) {
       eqHex = (hexToNumber(`0x${subacc}`) || bigInt()).eq(hexToNumber(`0x${sa?.subaccount_index}`) || bigInt());
       if (!eqHex) {
