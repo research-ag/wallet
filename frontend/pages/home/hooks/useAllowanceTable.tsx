@@ -21,7 +21,7 @@ export default function useAllowanceTable() {
         const name = info?.getValue()?.name;
         const subAccountId = info?.getValue()?.sub_account_id;
         return (
-          <div>
+          <div className="flex flex-col items-start justify-center cursor-pointer">
             {name && <p className={getCellStyles()}>{name}</p>}
             {subAccountId && <p className={getCellStyles(Boolean(name))}>{subAccountId}</p>}
           </div>
@@ -29,8 +29,7 @@ export default function useAllowanceTable() {
       },
       header: ({ header }) => (
         <div className="flex items-center justify-center cursor-pointer">
-          <p>{toTitleCase(header.id)}</p>{" "}
-          <SortIcon className="w-3 h-3 ml-2 fill-PrimaryTextColorLight dark:fill-PrimaryTextColor" />
+          <p className={titleHeaderStyles}>{toTitleCase(header.id)}</p> <SortIcon className={sortIconStyles} />
         </div>
       ),
     }),
@@ -44,7 +43,7 @@ export default function useAllowanceTable() {
         }, [contacts]);
 
         return (
-          <div>
+          <div className="flex flex-col items-start justify-center cursor-pointer">
             {spenderName && <p className={getCellStyles()}>{spenderName}</p>}
             {principal && <p className={getCellStyles(Boolean(name))}>{middleTruncation(principal, 3, 3)}</p>}
           </div>
@@ -52,8 +51,7 @@ export default function useAllowanceTable() {
       },
       header: ({ header }) => (
         <div className="flex items-center justify-center cursor-pointer">
-          <p>{toTitleCase(header.id)}</p>{" "}
-          <SortIcon className="w-3 h-3 ml-2 fill-PrimaryTextColorLight dark:fill-PrimaryTextColor" />
+          <p className={titleHeaderStyles}>{toTitleCase(header.id)}</p> <SortIcon className={sortIconStyles} />
         </div>
       ),
     }),
@@ -77,8 +75,7 @@ export default function useAllowanceTable() {
       },
       header: ({ header }) => (
         <div className="flex items-center justify-center cursor-pointer">
-          <p>{toTitleCase(header.id)}</p>{" "}
-          <SortIcon className="w-3 h-3 ml-2 fill-PrimaryTextColorLight dark:fill-PrimaryTextColor" />
+          <p className={titleHeaderStyles}>{toTitleCase(header.id)}</p> <SortIcon className={sortIconStyles} />
         </div>
       ),
     }),
@@ -97,8 +94,7 @@ export default function useAllowanceTable() {
       },
       header: ({ header }) => (
         <div className="flex items-center justify-center cursor-pointer">
-          <p>{toTitleCase(header.id)}</p>{" "}
-          <SortIcon className="w-3 h-3 ml-2 fill-PrimaryTextColorLight dark:fill-PrimaryTextColor" />
+          <p className={titleHeaderStyles}>{toTitleCase(header.id)}</p> <SortIcon className={sortIconStyles} />
         </div>
       ),
     }),
@@ -117,5 +113,13 @@ export default function useAllowanceTable() {
 }
 
 function getCellStyles(isOpacity = false) {
-  return clsx("text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md", isOpacity ? "opacity-50" : "");
+  return clsx(
+    "text-md",
+    isOpacity
+      ? "text-PrimaryTextColorLight/50 dark:text-PrimaryTextColor/50"
+      : "text-PrimaryTextColorLight dark:text-PrimaryTextColor",
+  );
 }
+
+const sortIconStyles = "w-3 h-3 ml-2 fill-PrimaryTextColorLight/50 dark:fill-PrimaryTextColor/50";
+const titleHeaderStyles = "text-md font-normal";
