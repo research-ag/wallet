@@ -11,10 +11,12 @@ import { validationMessage } from "@pages/home/validators/allowance";
 
 export default function CreateForm() {
   const { contacts } = useAppSelector((state) => state.contacts);
-  const { assetLoading } = useAppSelector((state) => state.asset);
-  const { assets, selectedAsset } = useAppSelector((state) => state.asset);
-  const { allowance, setAllowanceState, createAllowance, isPending, isPrincipalValid, validationErrors } =
+  const { assetLoading, assets, selectedAsset } = useAppSelector((state) => state.asset);
+  const { errors } = useAppSelector((state) => state.allowance);
+  const { allowance, setAllowanceState, createAllowance, isPending, validationErrors } =
     useCreateAllowance();
+
+  console.log("errors: ", errors);
 
   const errorMessage = useMemo(() => {
     let errorMessage = "";
@@ -52,7 +54,6 @@ export default function CreateForm() {
         contacts={contacts}
         setAllowanceState={setAllowanceState}
         isLoading={isPending}
-        isPrincipalValid={isPrincipalValid}
         errors={validationErrors}
       />
 

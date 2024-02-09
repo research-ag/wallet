@@ -26,10 +26,11 @@ export function validateCreateAllowance(allowance: TAllowance) {
     return store.dispatch(setAllowanceError(AllowanceValidationErrorsEnum.Values["error.invalid.asset"]));
   store.dispatch(removeAllowanceError(AllowanceValidationErrorsEnum.Values["error.invalid.asset"]));
 
-  if (isHexadecimalValid(allowance.subAccount.sub_account_id))
+  if (!isHexadecimalValid(allowance.subAccount.sub_account_id))
     return store.dispatch(setAllowanceError(AllowanceValidationErrorsEnum.Values["error.invalid.subaccount"]));
   store.dispatch(removeAllowanceError(AllowanceValidationErrorsEnum.Values["error.invalid.subaccount"]));
 
+  console.log(allowance.spender.principal);
   if (!validatePrincipal(allowance.spender.principal))
     return store.dispatch(setAllowanceError(AllowanceValidationErrorsEnum.Values["error.invalid.sender.principal"]));
   store.dispatch(removeAllowanceError(AllowanceValidationErrorsEnum.Values["error.invalid.sender.principal"]));
@@ -37,6 +38,10 @@ export function validateCreateAllowance(allowance: TAllowance) {
   if (allowance.spender.principal === store.getState().auth.userPrincipal.toText())
     return store.dispatch(setAllowanceError(AllowanceValidationErrorsEnum.Values["error.self.allowance"]));
   store.dispatch(removeAllowanceError(AllowanceValidationErrorsEnum.Values["error.self.allowance"]));
+
+  if (!allowance.amount)
+    return store.dispatch(setAllowanceError(AllowanceValidationErrorsEnum.Values["error.invalid.amount"]));
+  store.dispatch(removeAllowanceError(AllowanceValidationErrorsEnum.Values["error.invalid.amount"]));
 
   const bigintFee = toHoleBigInt(allowance.subAccount.transaction_fee, Number(allowance.asset.decimal));
   const bigintAmount = toHoleBigInt(allowance.amount, Number(allowance.asset.decimal));

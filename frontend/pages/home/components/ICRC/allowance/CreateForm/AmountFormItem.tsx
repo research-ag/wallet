@@ -1,8 +1,9 @@
-import { TAllowance, AllowanceErrorFieldsEnum } from "@/@types/allowance";
+import { TAllowance, AllowanceValidationErrorsEnum } from "@/@types/allowance";
 import { TErrorValidation } from "@/@types/common";
 import { IconTypeEnum } from "@/const";
 import { getAssetIcon } from "@/utils/icons";
 import { CurrencyInput } from "@components/input";
+import { useAppSelector } from "@redux/Store";
 import { Asset } from "@redux/models/AccountModels";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
@@ -17,8 +18,8 @@ interface IAmountFormItemProps {
 
 export default function AmountFormItem(props: IAmountFormItemProps) {
   const { t } = useTranslation();
-  const { allowance, setAllowanceState, isLoading, errors } = props;
-  const error = errors?.filter((error) => error.field === AllowanceErrorFieldsEnum.Values.amount)[0];
+  const { errors } = useAppSelector((state) => state.allowance);
+  const { allowance, setAllowanceState, isLoading } = props;
   const { asset } = allowance;
 
   const { icon, symbol } = useMemo(() => {
@@ -46,8 +47,16 @@ export default function AmountFormItem(props: IAmountFormItemProps) {
         icon={icon}
         className="mt-2"
         isLoading={isLoading}
-        border={error ? "error" : undefined}
+        border={getError() ? "error" : undefined}
       />
     </div>
   );
+
+  function getError(): boolean {
+    return (
+      errors?.includes(AllowanceValidationErrorsEnum.Values["error.invalid.amount"]) ||
+      errors?.includes(AllowanceValidationErrorsEnum.Values["error.not.enough.balance"]) ||
+      false
+    );
+  }
 }
