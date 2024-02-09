@@ -1,6 +1,6 @@
 import { TAllowance } from "@/@types/allowance";
 import { TErrorValidation } from "@/@types/common";
-import { submitAllowanceApproval, createApproveAllowanceParams } from "@/pages/home/helpers/icrc";
+import { submitAllowanceApproval, createApproveAllowanceParams, getSubAccountBalance } from "@/pages/home/helpers/icrc";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { useMutation } from "@tanstack/react-query";
 import { throttle } from "lodash";
@@ -9,7 +9,8 @@ import { z } from "zod";
 import useAllowanceDrawer from "./useAllowanceDrawer";
 import { setAllowances } from "@redux/allowance/AllowanceReducer";
 import { updateAllowanceRequest } from "../services/allowance";
-import { allowanceValidationSchema } from "../validators/allowance";
+import { validateUpdateAllowance } from "../validators/allowance";
+import { updateSubAccountBalance } from "@redux/assets/AssetReducer";
 
 export function useUpdateAllowance() {
   const dispatch = useAppDispatch();
@@ -27,19 +28,27 @@ export function useUpdateAllowance() {
 
   const mutationFn = useCallback(async () => {
     try {
-      const valid = allowanceValidationSchema.safeParse(allowance);
-      if (!valid.success) return Promise.reject(valid.error);
-      const params = createApproveAllowanceParams(allowance);
-      await submitAllowanceApproval(params, allowance.asset.address);
-      const updatedAllowances = await updateAllowanceRequest(allowance);
-      dispatch(setAllowances(updatedAllowances));
+      validateUpdateAllowance(allowance);
+      // const params = createApproveAllowanceParams(allowance);
+      // await submitAllowanceApproval(params, allowance.asset.address);
+      // const updatedAllowances = await updateAllowanceRequest(allowance);
+
+      // dispatch(setAllowances(updatedAllowances));
     } catch (error) {
       console.log(error);
     }
   }, [allowance]);
 
   const onSuccess = async () => {
-    // TODO: refresh sub account balance
+    const refreshParams = {
+      subAccount: allowance.subAccount.sub_account_id,
+      assetAddress: allowance.asset.address,
+    };
+    const amount = await getSubAccountBalance(refreshParams);
+    const balance = amount ? amount.toString() : "0";
+
+    dispatch(updateSubAccountBalance(allowance.asset.tokenSymbol, allowance.subAccount.sub_account_id, balance));
+
     onCloseUpdateAllowanceDrawer();
   };
 

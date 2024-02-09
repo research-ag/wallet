@@ -9,8 +9,8 @@ import { ProtocolType, SendingStatusEnum } from "@/const";
 import { useTranslation } from "react-i18next";
 import useSend from "@pages/home/hooks/useSend";
 import { resetSendStateAction } from "@redux/transaction/TransactionActions";
-import { ValidationErrorsEnum } from "@/@types/transactions";
 import { getElapsedSecond } from "@/utils/formatTime";
+import { TransactionValidationErrorsEnum } from "@/@types/transactions";
 
 interface DialogSendConfirmationProps {
   setDrawerOpen(value: boolean): void;
@@ -41,7 +41,7 @@ const DialogSendConfirmation = ({ setDrawerOpen, showConfirmationModal, modal }:
           </div>
           <p className="mt-3 text-lg font-semibold">{getStatusMessage(sendingStatus)}</p>
           {getError() !== "" && <p className="mt-1 text-md text-slate-color-error">{getError()}</p>}
-          <div className="flex flex-row items-start justify-center w-full gap-4 font-light opacity-80 text-sm mt-1">
+          <div className="flex flex-row items-start justify-center w-full gap-4 mt-1 text-sm font-light opacity-80">
             <p>
               {sendingStatus === SendingStatusEnum.enum.done || sendingStatus === SendingStatusEnum.enum.error
                 ? `Processing took ${getElapsedSecond(initTime, endTime)} seconds`
@@ -95,8 +95,8 @@ const DialogSendConfirmation = ({ setDrawerOpen, showConfirmationModal, modal }:
 
   function getError() {
     switch (true) {
-      case errors?.includes(ValidationErrorsEnum.Values["error.allowance.subaccount.not.enough"]):
-        return t(ValidationErrorsEnum.Values["error.allowance.subaccount.not.enough"]);
+      case errors?.includes(TransactionValidationErrorsEnum.Values["error.allowance.subaccount.not.enough"]):
+        return t(TransactionValidationErrorsEnum.Values["error.allowance.subaccount.not.enough"]);
       default:
         return "";
     }

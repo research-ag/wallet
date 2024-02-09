@@ -33,3 +33,19 @@ export type AllowancesTableColumns = z.infer<typeof AllowancesTableColumnsEnum>;
 
 export const AllowanceErrorFieldsEnum = z.enum(["spender", "asset", "amount", "expiration", "subAccount"]);
 export type AllowanceErrorFields = z.infer<typeof AllowanceErrorFieldsEnum>;
+
+export const AllowanceValidationErrorsEnum = z.enum([
+  "error.invalid.asset",
+  "error.invalid.sender.principal",
+  "error.invalid.expiration",
+  "error.expiration.required",
+  "error.expiration.not.allowed",
+  "error.after.present.expiration",
+  "error.not.enough.balance",
+  "error.invalid.amount",
+  "error.allowance.duplicated",
+  "error.system.loading",
+  "error.invalid.subaccount",
+  "error.self.allowance",
+]);
+export type AllowanceValidationErrors = z.infer<typeof AllowanceValidationErrorsEnum>;

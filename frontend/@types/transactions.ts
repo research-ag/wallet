@@ -68,7 +68,7 @@ export interface KeyValidationErrors {
 export const TransactionErrorFieldsEnum = z.enum(["sender", "receiver", "amount"]);
 export type TransactionErrorFields = z.infer<typeof TransactionErrorFieldsEnum>;
 
-export const ValidationErrorsEnum = z.enum([
+export const TransactionValidationErrorsEnum = z.enum([
   "error.asset.empty",
   "error.sender.empty",
   "error.receiver.empty",
@@ -84,9 +84,9 @@ export const ValidationErrorsEnum = z.enum([
   "error.invalid.receiver",
   "error.invalid.amount",
   "error.not.enough.balance",
-  "error.allowance.subaccount.not.enough"
+  "error.allowance.subaccount.not.enough",
 ]);
-export type ValidationErrorsType = z.infer<typeof ValidationErrorsEnum>;
+export type TransactionValidationErrorsType = z.infer<typeof TransactionValidationErrorsEnum>;
 
 // SENDER ERROR
 

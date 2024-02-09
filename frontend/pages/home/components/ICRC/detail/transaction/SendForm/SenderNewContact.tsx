@@ -1,4 +1,4 @@
-import { NewContact, ValidationErrorsEnum } from "@/@types/transactions";
+import { NewContact, TransactionValidationErrorsEnum } from "@/@types/transactions";
 import { isHexadecimalValid } from "@/utils/checkers";
 import { validatePrincipal } from "@/utils/identity";
 import { CustomInput } from "@components/Input";
@@ -47,9 +47,9 @@ export default function SenderNewContact() {
     const principalValue = event.target.value.trim();
 
     if (!validatePrincipal(principalValue)) {
-      setErrorAction(ValidationErrorsEnum.Values["error.invalid.sender.principal"]);
+      setErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.sender.principal"]);
     } else {
-      removeErrorAction(ValidationErrorsEnum.Values["error.invalid.sender.principal"]);
+      removeErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.sender.principal"]);
     }
 
     const newAllowanceContact: NewContact = {
@@ -64,10 +64,10 @@ export default function SenderNewContact() {
     setInputValue(subAccountIndex);
 
     if (!isHexadecimalValid(subAccountIndex)) {
-      setErrorAction(ValidationErrorsEnum.Values["error.invalid.sender.subaccount"]);
+      setErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.sender.subaccount"]);
       return;
     } else {
-      removeErrorAction(ValidationErrorsEnum.Values["error.invalid.sender.subaccount"]);
+      removeErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.sender.subaccount"]);
     }
 
     const newAllowanceContact: NewContact = {
@@ -79,10 +79,10 @@ export default function SenderNewContact() {
   }
 
   function hasPrincipalError() {
-    return errors?.includes(ValidationErrorsEnum.Values["error.invalid.sender.principal"]);
+    return errors?.includes(TransactionValidationErrorsEnum.Values["error.invalid.sender.principal"]);
   }
 
   function hasSubAccountError() {
-    return errors?.includes(ValidationErrorsEnum.Values["error.invalid.sender.subaccount"]);
+    return errors?.includes(TransactionValidationErrorsEnum.Values["error.invalid.sender.subaccount"]);
   }
 }
