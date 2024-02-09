@@ -1,7 +1,6 @@
-import { AllowanceValidationErrorsEnum, TAllowance } from "@/@types/allowance";
+import { TAllowance } from "@/@types/allowance";
 import { CalendarPicker } from "@components/CalendarPicker";
 import { CheckBox } from "@components/checkbox";
-import { useAppSelector } from "@redux/Store";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -13,7 +12,6 @@ interface IExpirationFormItemProps {
 }
 
 export default function ExpirationFormItem(props: IExpirationFormItemProps) {
-  const { errors } = useAppSelector((state) => state.allowance);
   const { t } = useTranslation();
   const [noExpire, setNotExpire] = useState(true);
   const { setAllowanceState, isLoading, allowance } = props;
@@ -59,14 +57,4 @@ export default function ExpirationFormItem(props: IExpirationFormItemProps) {
       </div>
     </div>
   );
-
-  function getError(): boolean {
-    return (
-      errors?.includes(AllowanceValidationErrorsEnum.Values["error.invalid.expiration"]) ||
-      errors?.includes(AllowanceValidationErrorsEnum.Values["error.expiration.required"]) ||
-      errors?.includes(AllowanceValidationErrorsEnum.Values["error.expiration.not.allowed"]) ||
-      errors?.includes(AllowanceValidationErrorsEnum.Values["error.after.present.expiration"]) ||
-      false
-    );
-  }
 }

@@ -172,5 +172,15 @@
   "error.invalid.receiver": "Destinatário inválido",
   "error.invalid.amount": "L'importo non è valido",
   "error.not.enough.balance": "Saldo insufficiente",
-  "error.allowance.subaccount.not.enough": "Saldo della subaccount dell'autorizzazione insufficiente"
+  "error.allowance.subaccount.not.enough": "Saldo della subaccount dell'autorizzazione insufficiente",
+
+  "error.invalid.asset": "Elemento non valido",
+  "error.invalid.expiration": "Scadenza non valida",
+  "error.expiration.required": "Scadenza obbligatoria",
+  "error.expiration.not.allowed": "Scadenza non consentita",
+  "error.before.present.expiration": "La scadenza non può essere anteriore alla data attuale",
+  "error.allowance.duplicated": "Assegnazione già esistente",
+  "warn.system.loading": "Il sistema si sta caricando, attendere alcuni secondi",
+  "error.invalid.subaccount": "Subaccount non valido",
+  "error.self.allowance": "Il proprietario dell'account non può essere assegnato come spender"
 }

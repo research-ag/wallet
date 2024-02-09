@@ -1,34 +1,20 @@
 import useCreateAllowance from "@pages/home/hooks/useCreateAllowance";
 import { useAppSelector } from "@redux/Store";
-import { useMemo } from "react";
 import AssetFormItem from "./AssetFormItem";
 import SubAccountFormItem from "./SubAccountFormItem";
 import SpenderFormItem from "./SpenderFormItem";
 import AmountFormItem from "./AmountFormItem";
 import ExpirationFormItem from "./ExpirationFormItem";
 import { Button } from "@components/button";
-import { validationMessage } from "@pages/home/validators/allowance";
+import { AllowanceValidationErrorsEnum } from "@/@types/allowance";
+import { useTranslation } from "react-i18next";
 
 export default function CreateForm() {
+  const { t } = useTranslation();
   const { contacts } = useAppSelector((state) => state.contacts);
-  const { assetLoading, assets, selectedAsset } = useAppSelector((state) => state.asset);
+  const { assets, selectedAsset } = useAppSelector((state) => state.asset);
   const { errors } = useAppSelector((state) => state.allowance);
-  const { allowance, setAllowanceState, createAllowance, isPending, validationErrors } =
-    useCreateAllowance();
-
-  console.log("errors: ", errors);
-
-  const errorMessage = useMemo(() => {
-    let errorMessage = "";
-
-    if (validationErrors[0]?.message === validationMessage.lowBalance) errorMessage = validationErrors[0]?.message;
-    if (validationErrors[0]?.message === validationMessage.invalidAmount) errorMessage = validationErrors[0].message;
-    if (validationErrors[0]?.message === validationMessage.expiredDate) errorMessage = validationErrors[0].message;
-    if (validationErrors[0]?.message === validationMessage.duplicatedAllowance)
-      errorMessage = validationErrors[0].message;
-
-    return errorMessage;
-  }, [validationErrors]);
+  const { allowance, setAllowanceState, createAllowance, isPending } = useCreateAllowance();
 
   return (
     <form className="flex flex-col text-left">
@@ -38,7 +24,6 @@ export default function CreateForm() {
         selectedAsset={selectedAsset}
         setAllowanceState={setAllowanceState}
         isLoading={isPending}
-        errors={validationErrors}
       />
 
       <SubAccountFormItem
@@ -46,7 +31,6 @@ export default function CreateForm() {
         selectedAsset={selectedAsset}
         setAllowanceState={setAllowanceState}
         isLoading={isPending}
-        errors={validationErrors}
       />
 
       <SpenderFormItem
@@ -54,7 +38,6 @@ export default function CreateForm() {
         contacts={contacts}
         setAllowanceState={setAllowanceState}
         isLoading={isPending}
-        errors={validationErrors}
       />
 
       <AmountFormItem
@@ -62,30 +45,37 @@ export default function CreateForm() {
         selectedAsset={selectedAsset}
         setAllowanceState={setAllowanceState}
         isLoading={isPending}
-        errors={validationErrors}
       />
 
       <ExpirationFormItem allowance={allowance} setAllowanceState={setAllowanceState} isLoading={isPending} />
 
-      <div className={`flex items-center mt-4 ${errorMessage.length > 0 ? "justify-between" : "justify-end"}`}>
-        {errorMessage.length > 0 && <p className="text-TextErrorColor text-md">{errorMessage}</p>}
+      <div className={`flex items-center mt-4 ${getErrorMessage() ? "justify-between" : "justify-end"}`}>
+        {getErrorMessage() && <p className="text-TextErrorColor text-md">{getErrorMessage()}</p>}
 
         <Button
           onClick={(e) => {
             e.preventDefault();
-            // TODO: todo validate if loading is true, no create allowance
-            if (assetLoading) {
-              console.log("system is loading");
-            }
             createAllowance();
           }}
           className="w-1/4"
           disabled={isPending}
           isLoading={isPending}
         >
-          Save
+          {t("save")}
         </Button>
       </div>
     </form>
   );
+
+  function getErrorMessage() {
+    const filteredErrors = errors.filter(
+      (error) =>
+        error === AllowanceValidationErrorsEnum.Values["error.not.enough.balance"] ||
+        error === AllowanceValidationErrorsEnum.Values["error.before.present.expiration"] ||
+        error === AllowanceValidationErrorsEnum.Values["error.allowance.duplicated"] ||
+        error === AllowanceValidationErrorsEnum.Values["error.self.allowance"],
+    );
+    if (filteredErrors.length > 0) return filteredErrors[0];
+    return undefined;
+  }
 }

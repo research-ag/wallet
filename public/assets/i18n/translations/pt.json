@@ -172,5 +172,15 @@
   "error.invalid.sender": "Mittente non valido",
   "error.invalid.receiver": "Destinatario non valido",
   "error.not.enough.balance": "Saldo insuficiente",
-  "error.allowance.subaccount.not.enough": "Saldo da subconta da autorização insuficiente"
+  "error.allowance.subaccount.not.enough": "Saldo da subconta da autorização insuficiente",
+
+  "error.invalid.asset": "Recurso inválido",
+  "error.invalid.expiration": "Expiração inválida",
+  "error.expiration.required": "Expiração é obrigatória",
+  "error.expiration.not.allowed": "Expiração não permitida",
+  "error.before.present.expiration": "Expiração não pode ser anterior à data atual",
+  "error.allowance.duplicated": "Permissão já existente",
+  "warn.system.loading": "O sistema está carregando, aguarde alguns segundos",
+  "error.invalid.subaccount": "Subconta inválida",
+  "error.self.allowance": "O proprietário da conta não pode ser definido como gastador"
 }

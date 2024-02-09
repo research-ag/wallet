@@ -1,29 +1,30 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 
-import { TErrorValidation } from "@/@types/common";
-import { TAllowance } from "@/@types/allowance";
+import { AllowanceValidationErrorsEnum, TAllowance } from "@/@types/allowance";
 import { submitAllowanceApproval, createApproveAllowanceParams, getSubAccountBalance } from "@/pages/home/helpers/icrc";
-import { validatePrincipal } from "@/utils/identity";
 import useAllowanceDrawer from "./useAllowanceDrawer";
 
 import { throttle } from "lodash";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { v4 as uuidv4 } from "uuid";
-import { z } from "zod";
-import { initialAllowanceState, setAllowances, setFullAllowanceErrors } from "@redux/allowance/AllowanceReducer";
+import {
+  initialAllowanceState,
+  removeAllowanceError,
+  setAllowanceError,
+  setAllowances,
+  setFullAllowanceErrors,
+} from "@redux/allowance/AllowanceReducer";
 import { postAllowance } from "../services/allowance";
-import { allowanceValidationSchema, validateCreateAllowance, validationMessage } from "../validators/allowance";
+import { validateCreateAllowance } from "../validators/allowance";
 import { SupportedStandardEnum } from "@/@types/icrc";
 import { updateSubAccountBalance } from "@redux/assets/AssetReducer";
 
 export default function useCreateAllowance() {
   const dispatch = useAppDispatch();
   const { onCloseCreateAllowanceDrawer } = useAllowanceDrawer();
-  const { allowances } = useAppSelector((state) => state.allowance);
 
   const { selectedAsset, selectedAccount } = useAppSelector(({ asset }) => asset);
-  const [validationErrors, setErrors] = useState<TErrorValidation[]>([]);
 
   const initial = useMemo(() => {
     const supported = selectedAsset?.supportedStandards?.includes(SupportedStandardEnum.Values["ICRC-2"]);
@@ -46,47 +47,58 @@ export default function useCreateAllowance() {
   };
 
   const mutationFn = useCallback(async () => {
-    try {
-      const fullAllowance = { ...allowance, id: uuidv4() };
-      dispatch(setFullAllowanceErrors([]));
-      validateCreateAllowance(fullAllowance);
-      // const params = createApproveAllowanceParams(fullAllowance);
-      // await submitAllowanceApproval(params, allowance.asset.address);
-      // const savedAllowances = await postAllowance(fullAllowance);
-      // dispatch(setAllowances(savedAllowances));
-    } catch (error) {
-      console.log(error);
-      return { success: false, error };
-    }
+    const fullAllowance = { ...allowance, id: uuidv4() };
+    dispatch(setFullAllowanceErrors([]));
+    validateCreateAllowance(fullAllowance);
+    const params = createApproveAllowanceParams(fullAllowance);
+    await submitAllowanceApproval(params, allowance.asset.address);
+    const savedAllowances = await postAllowance(fullAllowance);
+    dispatch(setAllowances(savedAllowances));
   }, [allowance]);
 
   const onSuccess = async () => {
-    // const refreshParams = {
-    //   subAccount: allowance.subAccount.sub_account_id,
-    //   assetAddress: allowance.asset.address,
-    // };
-    // const amount = await getSubAccountBalance(refreshParams);
-    // const balance = amount ? amount.toString() : "0";
-    // dispatch(updateSubAccountBalance(allowance.asset.tokenSymbol, allowance.subAccount.sub_account_id, balance));
-    // onCloseCreateAllowanceDrawer();
+    const refreshParams = {
+      subAccount: allowance.subAccount.sub_account_id,
+      assetAddress: allowance.asset.address,
+    };
+    const amount = await getSubAccountBalance(refreshParams);
+    const balance = amount ? amount.toString() : "0";
+    dispatch(updateSubAccountBalance(allowance.asset.tokenSymbol, allowance.subAccount.sub_account_id, balance));
+    onCloseCreateAllowanceDrawer();
   };
 
-  const onError = (error: any) => {
-    if (error instanceof z.ZodError) {
-      const validationErrors = error.issues.map((issue) => ({
-        message: issue.message,
-        field: String(issue.path[0]),
-        code: issue.code,
-      }));
+  const onError = (error: string) => {
+    if (error === AllowanceValidationErrorsEnum.Values["error.invalid.asset"])
+      return dispatch(setAllowanceError(AllowanceValidationErrorsEnum.Values["error.invalid.asset"]));
+    dispatch(removeAllowanceError(AllowanceValidationErrorsEnum.Values["error.invalid.asset"]));
 
-      setErrors(validationErrors);
-      return;
-    }
+    if (error === AllowanceValidationErrorsEnum.Values["error.invalid.subaccount"])
+      return dispatch(setAllowanceError(AllowanceValidationErrorsEnum.Values["error.invalid.subaccount"]));
+    dispatch(removeAllowanceError(AllowanceValidationErrorsEnum.Values["error.invalid.subaccount"]));
 
-    if (error === validationMessage.duplicatedAllowance) {
-      setErrors([{ message: error, field: "", code: "duplicated" }]);
-      return;
-    }
+    if (error === AllowanceValidationErrorsEnum.Values["error.invalid.sender.principal"])
+      return dispatch(setAllowanceError(AllowanceValidationErrorsEnum.Values["error.invalid.sender.principal"]));
+    dispatch(removeAllowanceError(AllowanceValidationErrorsEnum.Values["error.invalid.sender.principal"]));
+
+    if (error === AllowanceValidationErrorsEnum.Values["error.self.allowance"])
+      return dispatch(setAllowanceError(AllowanceValidationErrorsEnum.Values["error.self.allowance"]));
+    dispatch(removeAllowanceError(AllowanceValidationErrorsEnum.Values["error.self.allowance"]));
+
+    if (error === AllowanceValidationErrorsEnum.Values["error.allowance.duplicated"])
+      return dispatch(setAllowanceError(AllowanceValidationErrorsEnum.Values["error.allowance.duplicated"]));
+    dispatch(removeAllowanceError(AllowanceValidationErrorsEnum.Values["error.allowance.duplicated"]));
+
+    if (error === AllowanceValidationErrorsEnum.Values["error.invalid.amount"])
+      return dispatch(setAllowanceError(AllowanceValidationErrorsEnum.Values["error.invalid.amount"]));
+    dispatch(removeAllowanceError(AllowanceValidationErrorsEnum.Values["error.invalid.amount"]));
+
+    if (error === AllowanceValidationErrorsEnum.Values["error.not.enough.balance"])
+      return dispatch(setAllowanceError(AllowanceValidationErrorsEnum.Values["error.not.enough.balance"]));
+    dispatch(removeAllowanceError(AllowanceValidationErrorsEnum.Values["error.not.enough.balance"]));
+
+    if (error === AllowanceValidationErrorsEnum.Values["error.before.present.expiration"])
+      return dispatch(setAllowanceError(AllowanceValidationErrorsEnum.Values["error.before.present.expiration"]));
+    dispatch(removeAllowanceError(AllowanceValidationErrorsEnum.Values["error.before.present.expiration"]));
   };
 
   const { mutate, isPending, isError, error, isSuccess } = useMutation({ onSuccess, onError, mutationFn });
@@ -96,7 +108,6 @@ export default function useCreateAllowance() {
     isPending,
     isError,
     error,
-    validationErrors,
     isSuccess,
     createAllowance: throttle(mutate, 1000),
     setAllowanceState,

@@ -40,11 +40,11 @@ export const AllowanceValidationErrorsEnum = z.enum([
   "error.invalid.expiration",
   "error.expiration.required",
   "error.expiration.not.allowed",
-  "error.after.present.expiration",
+  "error.before.present.expiration",
   "error.not.enough.balance",
   "error.invalid.amount",
   "error.allowance.duplicated",
-  "error.system.loading",
+  "warn.system.loading",
   "error.invalid.subaccount",
   "error.self.allowance",
 ]);

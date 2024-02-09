@@ -1,5 +1,4 @@
 import { TAllowance, AllowanceValidationErrorsEnum } from "@/@types/allowance";
-import { TErrorValidation } from "@/@types/common";
 import { IconTypeEnum } from "@/const";
 import { getAssetIcon } from "@/utils/icons";
 import { CurrencyInput } from "@components/input";
@@ -13,7 +12,6 @@ interface IAmountFormItemProps {
   selectedAsset?: Asset | undefined;
   setAllowanceState: (allowanceData: Partial<TAllowance>) => void;
   isLoading?: boolean;
-  errors?: TErrorValidation[];
 }
 
 export default function AmountFormItem(props: IAmountFormItemProps) {
@@ -53,10 +51,6 @@ export default function AmountFormItem(props: IAmountFormItemProps) {
   );
 
   function getError(): boolean {
-    return (
-      errors?.includes(AllowanceValidationErrorsEnum.Values["error.invalid.amount"]) ||
-      errors?.includes(AllowanceValidationErrorsEnum.Values["error.not.enough.balance"]) ||
-      false
-    );
+    return errors?.includes(AllowanceValidationErrorsEnum.Values["error.invalid.amount"]) || false;
   }
 }

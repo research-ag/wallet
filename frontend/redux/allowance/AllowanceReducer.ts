@@ -41,7 +41,7 @@ interface AllowanceState {
   isCreateAllowance: boolean;
   selectedAllowance: TAllowance;
   allowances: TAllowance[];
-  errors?: string[];
+  errors: string[];
 }
 
 const reducerName = "allowance";
@@ -51,6 +51,7 @@ const initialState: AllowanceState = {
   isCreateAllowance: false,
   selectedAllowance: initialAllowanceState,
   allowances: [],
+  errors: [],
 };
 
 const allowanceSlice = createSlice({
