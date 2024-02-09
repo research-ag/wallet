@@ -1,10 +1,12 @@
-import { AllowanceErrorFieldsEnum, TAllowance } from "@/@types/allowance";
+import { AllowanceValidationErrorsEnum, TAllowance } from "@/@types/allowance";
 import { TErrorValidation } from "@/@types/common";
 import { SelectOption } from "@/@types/components";
 import formatContact from "@/utils/formatContact";
+import { validatePrincipal } from "@/utils/identity";
 import { Input } from "@components/input";
 import { Select } from "@components/select";
 import { Switch } from "@components/switch";
+import { useAppSelector } from "@redux/Store";
 import { initialAllowanceState } from "@redux/allowance/AllowanceReducer";
 import { Contact } from "@redux/models/ContactsModels";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -15,12 +17,13 @@ interface ISpenderFormItemProps {
   setAllowanceState: (allowanceData: Partial<TAllowance>) => void;
   isLoading?: boolean;
   allowance: TAllowance;
-  isPrincipalValid: boolean;
   errors?: TErrorValidation[];
 }
 
 export default function SpenderFormItem(props: ISpenderFormItemProps) {
   const { t } = useTranslation();
+  const [isPrincipalValid, setIsPrincipalValid] = useState(true);
+  const { errors } = useAppSelector((state) => state.allowance);
   const [search, setSearch] = useState<string | null>(null);
   const [isNew, setIsNew] = useState(false);
   const inputTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
@@ -28,8 +31,7 @@ export default function SpenderFormItem(props: ISpenderFormItemProps) {
   const onSearchChange = (searchValue: string) => setSearch(searchValue);
   const onOpenChange = () => setSearch(null);
 
-  const { contacts, setAllowanceState, isLoading, allowance, isPrincipalValid, errors } = props;
-  const error = errors?.filter((error) => error.field === AllowanceErrorFieldsEnum.Values.spender)[0];
+  const { contacts, setAllowanceState, isLoading, allowance } = props;
 
   const options = useMemo(() => {
     if (!search) contacts?.map(formatContact);
@@ -47,7 +49,7 @@ export default function SpenderFormItem(props: ISpenderFormItemProps) {
   return (
     <div className="mt-4">
       <label htmlFor="Spender" className="flex justify-between mb-2">
-        <p  className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("spender")}</p>
+        <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("spender")}</p>
         <div className="flex items-center justify-between w-3/6 px-2 py-1 rounded-md bg-PrimaryColorLight dark:bg-ThemeColorBack">
           <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("contact.book")}</p>
           <Switch checked={isNew} onChange={onContactBookChange} disabled={isLoading} />
@@ -60,7 +62,7 @@ export default function SpenderFormItem(props: ISpenderFormItemProps) {
           options={options}
           disabled={isLoading}
           currentValue={allowance?.spender?.principal || ""}
-          border={error || !isPrincipalValid ? "error" : undefined}
+          border={getError() ? "error" : undefined}
           onSearch={onSearchChange}
           onOpenChange={onOpenChange}
         />
@@ -70,7 +72,7 @@ export default function SpenderFormItem(props: ISpenderFormItemProps) {
           placeholder="Principal"
           onChange={onInputChange}
           disabled={isLoading}
-          border={error || !isPrincipalValid ? "error" : undefined}
+          border={getError() || !isPrincipalValid ? "error" : undefined}
         />
       )}
     </div>
@@ -83,6 +85,13 @@ export default function SpenderFormItem(props: ISpenderFormItemProps) {
 
   function onInputChange(event: React.ChangeEvent<HTMLInputElement>) {
     const newSearchValue = event.target.value;
+
+    if (!validatePrincipal(newSearchValue)) {
+      setIsPrincipalValid(false);
+    } else {
+      setIsPrincipalValid(true);
+    }
+
     clearTimeout(inputTimeoutRef.current);
 
     inputTimeoutRef.current = setTimeout(() => {
@@ -95,5 +104,9 @@ export default function SpenderFormItem(props: ISpenderFormItemProps) {
     setSearch(null);
     const fullSpender = contacts.find((contact) => contact.principal === option.value);
     setAllowanceState({ spender: fullSpender });
+  }
+
+  function getError(): boolean {
+    return errors?.includes(AllowanceValidationErrorsEnum.Values["error.invalid.sender.principal"]) || false;
   }
 }

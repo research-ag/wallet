@@ -11,7 +11,7 @@ import { throttle } from "lodash";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
-import { initialAllowanceState, setAllowances } from "@redux/allowance/AllowanceReducer";
+import { initialAllowanceState, setAllowances, setFullAllowanceErrors } from "@redux/allowance/AllowanceReducer";
 import { postAllowance } from "../services/allowance";
 import { allowanceValidationSchema, validateCreateAllowance, validationMessage } from "../validators/allowance";
 import { SupportedStandardEnum } from "@/@types/icrc";
@@ -24,7 +24,6 @@ export default function useCreateAllowance() {
 
   const { selectedAsset, selectedAccount } = useAppSelector(({ asset }) => asset);
   const [validationErrors, setErrors] = useState<TErrorValidation[]>([]);
-  const [isPrincipalValid, setIsPrincipalValid] = useState(true);
 
   const initial = useMemo(() => {
     const supported = selectedAsset?.supportedStandards?.includes(SupportedStandardEnum.Values["ICRC-2"]);
@@ -49,6 +48,7 @@ export default function useCreateAllowance() {
   const mutationFn = useCallback(async () => {
     try {
       const fullAllowance = { ...allowance, id: uuidv4() };
+      dispatch(setFullAllowanceErrors([]));
       validateCreateAllowance(fullAllowance);
       // const params = createApproveAllowanceParams(fullAllowance);
       // await submitAllowanceApproval(params, allowance.asset.address);
@@ -61,16 +61,14 @@ export default function useCreateAllowance() {
   }, [allowance]);
 
   const onSuccess = async () => {
-    const refreshParams = {
-      subAccount: allowance.subAccount.sub_account_id,
-      assetAddress: allowance.asset.address,
-    };
-    const amount = await getSubAccountBalance(refreshParams);
-    const balance = amount ? amount.toString() : "0";
-
-    dispatch(updateSubAccountBalance(allowance.asset.tokenSymbol, allowance.subAccount.sub_account_id, balance));
-
-    onCloseCreateAllowanceDrawer();
+    // const refreshParams = {
+    //   subAccount: allowance.subAccount.sub_account_id,
+    //   assetAddress: allowance.asset.address,
+    // };
+    // const amount = await getSubAccountBalance(refreshParams);
+    // const balance = amount ? amount.toString() : "0";
+    // dispatch(updateSubAccountBalance(allowance.asset.tokenSymbol, allowance.subAccount.sub_account_id, balance));
+    // onCloseCreateAllowanceDrawer();
   };
 
   const onError = (error: any) => {
@@ -93,13 +91,6 @@ export default function useCreateAllowance() {
 
   const { mutate, isPending, isError, error, isSuccess } = useMutation({ onSuccess, onError, mutationFn });
 
-  useEffect(() => {
-    if (allowance?.spender?.principal) {
-      const isValid = validatePrincipal(allowance?.spender?.principal);
-      setIsPrincipalValid(isValid);
-    }
-  }, [allowance?.spender?.principal]);
-
   return {
     allowance,
     isPending,
@@ -107,7 +98,6 @@ export default function useCreateAllowance() {
     error,
     validationErrors,
     isSuccess,
-    isPrincipalValid,
     createAllowance: throttle(mutate, 1000),
     setAllowanceState,
   };

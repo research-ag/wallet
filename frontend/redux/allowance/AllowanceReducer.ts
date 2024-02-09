@@ -70,10 +70,14 @@ const allowanceSlice = createSlice({
       state.allowances = action.payload;
     },
     setAllowanceError(state: AllowanceState, action: PayloadAction<string>) {
-      state.errors = [...(state.errors ?? []), action.payload];
+      const currentErrors = [...(state.errors ?? [])];
+      state.errors = currentErrors.includes(action.payload) ? currentErrors : [...currentErrors, action.payload];
     },
     removeAllowanceError(state: AllowanceState, action: PayloadAction<string>) {
       state.errors = state.errors?.filter((error) => error !== action.payload);
+    },
+    setFullAllowanceErrors(state: AllowanceState, action: PayloadAction<string[]>) {
+      state.errors = action.payload;
     },
   },
 });
@@ -85,5 +89,6 @@ export const {
   setAllowances,
   setAllowanceError,
   removeAllowanceError,
+  setFullAllowanceErrors,
 } = allowanceSlice.actions;
 export default allowanceSlice.reducer;
