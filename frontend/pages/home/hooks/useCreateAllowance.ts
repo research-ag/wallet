@@ -13,9 +13,8 @@ import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 import { initialAllowanceState, setAllowances } from "@redux/allowance/AllowanceReducer";
 import { postAllowance } from "../services/allowance";
-import { allowanceValidationSchema, validationMessage } from "../validators/allowance";
+import { allowanceValidationSchema, validateCreateAllowance, validationMessage } from "../validators/allowance";
 import { SupportedStandardEnum } from "@/@types/icrc";
-import { toFullDecimal } from "@/utils";
 import { updateSubAccountBalance } from "@redux/assets/AssetReducer";
 
 export default function useCreateAllowance() {
@@ -49,16 +48,8 @@ export default function useCreateAllowance() {
 
   const mutationFn = useCallback(async () => {
     try {
-      // const fullAllowance = { ...allowance, id: uuidv4() };
-      // const allowanceExists = allowances.find(
-      //   (allowance) =>
-      //     allowance.subAccount.sub_account_id === fullAllowance.subAccount.sub_account_id &&
-      //     allowance.spender.principal === fullAllowance.spender.principal &&
-      //     allowance.asset.tokenSymbol === fullAllowance.asset.tokenSymbol,
-      // );
-      // if (allowanceExists) return Promise.reject(validationMessage.duplicatedAllowance);
-      // const valid = allowanceValidationSchema.safeParse(fullAllowance);
-      // if (!valid.success) return Promise.reject(valid.error);
+      const fullAllowance = { ...allowance, id: uuidv4() };
+      validateCreateAllowance(fullAllowance);
       // const params = createApproveAllowanceParams(fullAllowance);
       // await submitAllowanceApproval(params, allowance.asset.address);
       // const savedAllowances = await postAllowance(fullAllowance);
@@ -70,7 +61,6 @@ export default function useCreateAllowance() {
   }, [allowance]);
 
   const onSuccess = async () => {
-    // TODO: refresh sub account balance
     const refreshParams = {
       subAccount: allowance.subAccount.sub_account_id,
       assetAddress: allowance.asset.address,
@@ -78,13 +68,9 @@ export default function useCreateAllowance() {
     const amount = await getSubAccountBalance(refreshParams);
     const balance = amount ? amount.toString() : "0";
 
-    dispatch(updateSubAccountBalance(
-      allowance.asset.tokenSymbol,
-      allowance.subAccount.sub_account_id,
-      balance
-    ));
+    dispatch(updateSubAccountBalance(allowance.asset.tokenSymbol, allowance.subAccount.sub_account_id, balance));
 
-    // onCloseCreateAllowanceDrawer();
+    onCloseCreateAllowanceDrawer();
   };
 
   const onError = (error: any) => {

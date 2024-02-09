@@ -2,7 +2,7 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { Token, TokenMarketInfo } from "@redux/models/TokenModels";
 import { Asset, ICPSubAccount, SubAccount, Transaction, TransactionList } from "@redux/models/AccountModels";
 import bigInt from "big-integer";
-import { hexToNumber } from "@/utils";
+import { getUSDfromToken, hexToNumber } from "@/utils";
 
 interface AssetState {
   ICPSubaccounts: Array<ICPSubAccount>;
@@ -120,33 +120,39 @@ const assetSlice = createSlice({
         const { tokenSymbol, subAccountId, amount } = payload;
         const tokenIndex = state.tokens.findIndex((token) => token.tokenSymbol === tokenSymbol);
         const assetIndex = state.assets.findIndex((asset) => asset.tokenSymbol === tokenSymbol);
-        
-        // TODO: update the amount and also update the currency_amount using the getUSDfromToken function
+
+        const marketPrince = state.tokensMarket.find((tokenMarket) => tokenMarket.symbol === tokenSymbol)?.price || "0";
+        const decimals = state.assets.find((asset) => asset.tokenSymbol === tokenSymbol)?.decimal;
+        const USDAmount = marketPrince ? getUSDfromToken(amount, marketPrince, Number(decimals)) : "0";
 
         if (tokenIndex !== -1 && state.tokens[tokenIndex]) {
-          const tokenResult = state.tokens[tokenIndex].subAccounts.map((subAccount) => {
+          const newTokenSubAccounts = state.tokens[tokenIndex].subAccounts.map((subAccount) => {
             if (subAccount.numb === subAccountId) {
               return {
                 ...subAccount,
                 amount,
+                currency_amount: USDAmount,
               };
             }
             return subAccount;
           });
-          console.log("tokenResult", tokenResult);
+
+          state.tokens[tokenIndex].subAccounts = newTokenSubAccounts;
         }
 
         if (assetIndex !== -1 && state.assets[assetIndex]) {
-          const assetResult = state.assets[assetIndex].subAccounts.map((subAccount) => {
+          const newAssetSubAccounts = state.assets[assetIndex].subAccounts.map((subAccount) => {
             if (subAccount.sub_account_id === subAccountId) {
               return {
                 ...subAccount,
                 amount,
+                currency_amount: USDAmount,
               };
             }
             return subAccount;
           });
-          console.log("assetResult", assetResult);
+
+          state.assets[assetIndex].subAccounts = newAssetSubAccounts;
         }
       },
       prepare(tokenSymbol: string, subAccountId: string, amount: string) {

@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 import { useAppSelector } from "@redux/Store";
 import useSend from "@pages/home/hooks/useSend";
 import { resetSendStateAction } from "@redux/transaction/TransactionActions";
-import { ValidationErrorsEnum } from "@/@types/transactions";
+import { TransactionValidationErrorsEnum } from "@/@types/transactions";
 
 interface DialogSendConfirmationProps {
   setDrawerOpen(value: boolean): void;
@@ -87,8 +87,8 @@ const DialogSendConfirmation = ({ setDrawerOpen, showConfirmationModal, modal }:
 
   function getError() {
     switch (true) {
-      case errors?.includes(ValidationErrorsEnum.Values["error.allowance.subaccount.not.enough"]):
-        return t(ValidationErrorsEnum.Values["error.allowance.subaccount.not.enough"]);
+      case errors?.includes(TransactionValidationErrorsEnum.Values["error.allowance.subaccount.not.enough"]):
+        return t(TransactionValidationErrorsEnum.Values["error.allowance.subaccount.not.enough"]);
       default:
         return "";
     }

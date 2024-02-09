@@ -1,4 +1,4 @@
-import { ValidationErrorsEnum } from "@/@types/transactions";
+import { TransactionValidationErrorsEnum } from "@/@types/transactions";
 import { toFullDecimal, toHoleBigInt, validateAmount } from "@/utils";
 import { ReactComponent as ExchangeIcon } from "@assets/svg/files/arrows-exchange-v.svg";
 import LoadingLoader from "@components/Loader";
@@ -20,7 +20,7 @@ export default function TransactionAmount() {
       <p className="font-bold bg-transparent opacity-50 text-md text-start">{t("amount")}</p>
       <div
         className={clsx(
-          getAmountInputStyles(errors?.includes(ValidationErrorsEnum.Values["error.invalid.amount"]) || false),
+          getAmountInputStyles(errors?.includes(TransactionValidationErrorsEnum.Values["error.invalid.amount"]) || false),
         )}
       >
         <input
@@ -56,18 +56,18 @@ export default function TransactionAmount() {
       const isValid = Number(amount) >= 0 || amount !== "";
 
       if (!isValid) {
-        setErrorAction(ValidationErrorsEnum.Values["error.invalid.amount"]);
+        setErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.amount"]);
         return;
       }
       setAmountAction(amount);
 
       const isValidAmount = validateAmount(amount, Number(sender.asset.decimal));
       if (!isValidAmount) {
-        setErrorAction(ValidationErrorsEnum.Values["error.invalid.amount"]);
+        setErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.amount"]);
         return;
       }
 
-      removeErrorAction(ValidationErrorsEnum.Values["error.invalid.amount"]);
+      removeErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.amount"]);
     } catch (error) {
       console.log(error);
     }
@@ -82,17 +82,17 @@ export default function TransactionAmount() {
       const bigintMaxAmount = bigintBalance - bigintFee;
 
       if (bigintBalance <= bigintFee) {
-        setErrorAction(ValidationErrorsEnum.Values["error.not.enough.balance"]);
+        setErrorAction(TransactionValidationErrorsEnum.Values["error.not.enough.balance"]);
         return;
       }
-      removeErrorAction(ValidationErrorsEnum.Values["error.not.enough.balance"]);
+      removeErrorAction(TransactionValidationErrorsEnum.Values["error.not.enough.balance"]);
       const maxAmount = toFullDecimal(bigintMaxAmount, Number(sender?.asset?.decimal));
       setAmountAction(maxAmount);
     } catch (error) {
       console.log(error);
     } finally {
       setMaxAmountLoading(false);
-      removeErrorAction(ValidationErrorsEnum.Values["error.invalid.amount"]);
+      removeErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.amount"]);
     }
   }
 }

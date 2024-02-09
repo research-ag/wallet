@@ -30,7 +30,7 @@ import {
   TransactionReceiverOption,
   TransactionScannerOption,
   TransactionSenderOption,
-  ValidationErrorsType,
+  TransactionValidationErrorsType,
 } from "@/@types/transactions";
 import { SendingStatus } from "@/const";
 
@@ -49,10 +49,10 @@ export function setIsInspectDetailAction(isInspectDetail: boolean) {
 export function setAmountAction(amount: string) {
   store.dispatch(setAmount(amount));
 }
-export function setErrorAction(error: ValidationErrorsType) {
+export function setErrorAction(error: TransactionValidationErrorsType) {
   store.dispatch(setError(error));
 }
-export function removeErrorAction(error: ValidationErrorsType) {
+export function removeErrorAction(error: TransactionValidationErrorsType) {
   store.dispatch(removeError(error));
 }
 export function setSendingStatusAction(status: SendingStatus) {

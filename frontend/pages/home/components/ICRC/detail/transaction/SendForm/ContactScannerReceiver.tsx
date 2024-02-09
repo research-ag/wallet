@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import { decodeIcrcAccount, encodeIcrcAccount } from "@dfinity/ledger";
 import { hexToUint8Array, subUint8ArrayToHex } from "@/utils";
 import ContactSuffix from "./ContactSuffix";
-import { ValidationErrorsEnum } from "@/@types/transactions";
+import { TransactionValidationErrorsEnum } from "@/@types/transactions";
 import { useAppSelector } from "@redux/Store";
 import { isHexadecimalValid } from "@/utils/checkers";
 import { validatePrincipal } from "@/utils/identity";
@@ -58,15 +58,15 @@ export default function ContactScannerReceiver() {
       };
 
       setReceiverNewContactAction(icrcAccount);
-      removeErrorAction(ValidationErrorsEnum.Values["invalid.receiver.identifier"]);
+      removeErrorAction(TransactionValidationErrorsEnum.Values["invalid.receiver.identifier"]);
     } catch (error) {
       console.log(error);
-      setErrorAction(ValidationErrorsEnum.Values["invalid.receiver.identifier"]);
+      setErrorAction(TransactionValidationErrorsEnum.Values["invalid.receiver.identifier"]);
     }
   }
 
   function hasError() {
-    return errors?.includes(ValidationErrorsEnum.Values["invalid.receiver.identifier"]);
+    return errors?.includes(TransactionValidationErrorsEnum.Values["invalid.receiver.identifier"]);
   }
 
   function getICRCIdentifier(principal: string, subAccountId: string) {
@@ -76,7 +76,7 @@ export default function ContactScannerReceiver() {
         subaccount: hexToUint8Array(subAccountId),
       });
     } catch (error) {
-      setErrorAction(ValidationErrorsEnum.Values["invalid.receiver.identifier"]);
+      setErrorAction(TransactionValidationErrorsEnum.Values["invalid.receiver.identifier"]);
       return "";
     }
   }

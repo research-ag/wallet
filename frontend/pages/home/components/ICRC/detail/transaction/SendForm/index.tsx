@@ -13,7 +13,7 @@ import useSend from "@pages/home/hooks/useSend";
 import SenderAsset from "./SenderAsset";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "@redux/Store";
-import { ValidationErrorsEnum } from "@/@types/transactions";
+import { TransactionValidationErrorsEnum } from "@/@types/transactions";
 import LoadingLoader from "@components/Loader";
 
 interface SendFormProps {
@@ -49,26 +49,26 @@ export default function SendForm({ setDrawerOpen }: SendFormProps) {
     try {
       setIsLoadingAction(true);
 
-      if (!sender?.asset?.tokenSymbol) return setErrorAction(ValidationErrorsEnum.Values["error.asset.empty"]);
-      removeErrorAction(ValidationErrorsEnum.Values["error.asset.empty"]);
+      if (!sender?.asset?.tokenSymbol) return setErrorAction(TransactionValidationErrorsEnum.Values["error.asset.empty"]);
+      removeErrorAction(TransactionValidationErrorsEnum.Values["error.asset.empty"]);
 
-      if (!isSenderValid) return setErrorAction(ValidationErrorsEnum.Values["error.invalid.sender"]);
-      removeErrorAction(ValidationErrorsEnum.Values["error.invalid.sender"]);
+      if (!isSenderValid) return setErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.sender"]);
+      removeErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.sender"]);
 
-      if (!isReceiverValid) return setErrorAction(ValidationErrorsEnum.Values["error.invalid.receiver"]);
-      removeErrorAction(ValidationErrorsEnum.Values["error.invalid.receiver"]);
+      if (!isReceiverValid) return setErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.receiver"]);
+      removeErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.receiver"]);
 
-      if (!isSender) return setErrorAction(ValidationErrorsEnum.Values["error.sender.empty"]);
-      removeErrorAction(ValidationErrorsEnum.Values["error.sender.empty"]);
+      if (!isSender) return setErrorAction(TransactionValidationErrorsEnum.Values["error.sender.empty"]);
+      removeErrorAction(TransactionValidationErrorsEnum.Values["error.sender.empty"]);
 
-      if (!isReceiver) setErrorAction(ValidationErrorsEnum.Values["error.receiver.empty"]);
-      removeErrorAction(ValidationErrorsEnum.Values["error.receiver.empty"]);
+      if (!isReceiver) setErrorAction(TransactionValidationErrorsEnum.Values["error.receiver.empty"]);
+      removeErrorAction(TransactionValidationErrorsEnum.Values["error.receiver.empty"]);
 
-      if (isSenderSameAsReceiver()) setErrorAction(ValidationErrorsEnum.Values["error.same.sender.receiver"]);
-      removeErrorAction(ValidationErrorsEnum.Values["error.same.sender.receiver"]);
+      if (isSenderSameAsReceiver()) setErrorAction(TransactionValidationErrorsEnum.Values["error.same.sender.receiver"]);
+      removeErrorAction(TransactionValidationErrorsEnum.Values["error.same.sender.receiver"]);
 
-      if (isSenderAllowanceOwn()) setErrorAction(ValidationErrorsEnum.Values["error.own.sender.not.allowed"]);
-      removeErrorAction(ValidationErrorsEnum.Values["error.own.sender.not.allowed"]);
+      if (isSenderAllowanceOwn()) setErrorAction(TransactionValidationErrorsEnum.Values["error.own.sender.not.allowed"]);
+      removeErrorAction(TransactionValidationErrorsEnum.Values["error.own.sender.not.allowed"]);
 
       setIsInspectDetailAction(true);
     } catch (error) {
@@ -85,20 +85,20 @@ export default function SendForm({ setDrawerOpen }: SendFormProps) {
 
   function getError() {
     switch (true) {
-      case errors?.includes(ValidationErrorsEnum.Values["error.asset.empty"]):
-        return ValidationErrorsEnum.Values["error.asset.empty"];
-      case errors?.includes(ValidationErrorsEnum.Values["error.invalid.sender"]):
-        return ValidationErrorsEnum.Values["error.invalid.sender"];
-      case errors?.includes(ValidationErrorsEnum.Values["error.invalid.receiver"]):
-        return ValidationErrorsEnum.Values["error.invalid.receiver"];
-      case errors?.includes(ValidationErrorsEnum.Values["error.sender.empty"]):
-        return ValidationErrorsEnum.Values["error.sender.empty"];
-      case errors?.includes(ValidationErrorsEnum.Values["error.receiver.empty"]):
-        return ValidationErrorsEnum.Values["error.receiver.empty"];
-      case errors?.includes(ValidationErrorsEnum.Values["error.own.sender.not.allowed"]):
-        return ValidationErrorsEnum.Values["error.own.sender.not.allowed"];
-      case errors?.includes(ValidationErrorsEnum.Values["error.same.sender.receiver"]):
-        return ValidationErrorsEnum.Values["error.same.sender.receiver"];
+      case errors?.includes(TransactionValidationErrorsEnum.Values["error.asset.empty"]):
+        return TransactionValidationErrorsEnum.Values["error.asset.empty"];
+      case errors?.includes(TransactionValidationErrorsEnum.Values["error.invalid.sender"]):
+        return TransactionValidationErrorsEnum.Values["error.invalid.sender"];
+      case errors?.includes(TransactionValidationErrorsEnum.Values["error.invalid.receiver"]):
+        return TransactionValidationErrorsEnum.Values["error.invalid.receiver"];
+      case errors?.includes(TransactionValidationErrorsEnum.Values["error.sender.empty"]):
+        return TransactionValidationErrorsEnum.Values["error.sender.empty"];
+      case errors?.includes(TransactionValidationErrorsEnum.Values["error.receiver.empty"]):
+        return TransactionValidationErrorsEnum.Values["error.receiver.empty"];
+      case errors?.includes(TransactionValidationErrorsEnum.Values["error.own.sender.not.allowed"]):
+        return TransactionValidationErrorsEnum.Values["error.own.sender.not.allowed"];
+      case errors?.includes(TransactionValidationErrorsEnum.Values["error.same.sender.receiver"]):
+        return TransactionValidationErrorsEnum.Values["error.same.sender.receiver"];
       default:
         return "";
     }

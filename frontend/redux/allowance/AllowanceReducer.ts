@@ -41,6 +41,7 @@ interface AllowanceState {
   isCreateAllowance: boolean;
   selectedAllowance: TAllowance;
   allowances: TAllowance[];
+  errors?: string[];
 }
 
 const reducerName = "allowance";
@@ -68,8 +69,21 @@ const allowanceSlice = createSlice({
     setAllowances(state: AllowanceState, action: PayloadAction<TAllowance[]>) {
       state.allowances = action.payload;
     },
+    setAllowanceError(state: AllowanceState, action: PayloadAction<string>) {
+      state.errors = [...(state.errors ?? []), action.payload];
+    },
+    removeAllowanceError(state: AllowanceState, action: PayloadAction<string>) {
+      state.errors = state.errors?.filter((error) => error !== action.payload);
+    },
   },
 });
 
-export const { setIsUpdateAllowance, setIsCreateAllowance, setSelectedAllowance, setAllowances } = allowanceSlice.actions;
+export const {
+  setIsUpdateAllowance,
+  setIsCreateAllowance,
+  setSelectedAllowance,
+  setAllowances,
+  setAllowanceError,
+  removeAllowanceError,
+} = allowanceSlice.actions;
 export default allowanceSlice.reducer;

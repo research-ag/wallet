@@ -9,7 +9,7 @@ import {
   TransactionScannerOptionEnum,
   TransactionSenderOption,
   TransactionSenderOptionEnum,
-  ValidationErrorsType,
+  TransactionValidationErrorsType,
 } from "@/@types/transactions";
 import { SendingStatusEnum, SendingStatus } from "@/const";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
@@ -22,7 +22,7 @@ interface TransactionState {
   sendingStatus: SendingStatus;
   sender: SenderState;
   receiver: ReceiverState;
-  errors?: ValidationErrorsType[];
+  errors?: TransactionValidationErrorsType[];
   amount?: string;
 }
 
@@ -69,7 +69,7 @@ const transactionSlice = createSlice({
     setAmount(state: TransactionState, action: PayloadAction<string>) {
       state.amount = action.payload;
     },
-    setError(state: TransactionState, action: PayloadAction<ValidationErrorsType>) {
+    setError(state: TransactionState, action: PayloadAction<TransactionValidationErrorsType>) {
       if (!state.errors?.includes(action.payload)) {
         state.errors = [...(state.errors ?? []), action.payload];
       }
@@ -80,7 +80,7 @@ const transactionSlice = createSlice({
     setSendingStatus(state: TransactionState, action: PayloadAction<SendingStatus>) {
       state.sendingStatus = action.payload;
     },
-    removeError(state: TransactionState, action: PayloadAction<ValidationErrorsType>) {
+    removeError(state: TransactionState, action: PayloadAction<TransactionValidationErrorsType>) {
       state.errors = state.errors?.filter((error) => error !== action.payload);
     },
     setSenderSubAccount(state: TransactionState, action: PayloadAction<SubAccount>) {
