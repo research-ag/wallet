@@ -44,7 +44,7 @@ export default function UpdateForm() {
         error === AllowanceValidationErrorsEnum.Values["error.not.enough.balance"] ||
         error === AllowanceValidationErrorsEnum.Values["error.before.present.expiration"],
     );
-    if (filteredErrors.length > 0) return filteredErrors[0];
-    return undefined;
+    if (filteredErrors.length > 0) return t(filteredErrors[0]);
+    return "";
   }
 }
