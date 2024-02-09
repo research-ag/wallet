@@ -64,16 +64,20 @@ export default function Select(props: TSelectProps) {
         {onSearch && (
           <DropdownMenu.Group className="p-2">
             <CustomInput
-              prefix={<img src={SearchIcon} className="mx-2" alt="search-icon" />}
+              prefix={<img src={SearchIcon} className="mx-2 w-[1.2rem] h-[1.2rem]" alt="search-icon" />}
               onChange={handleSearchChange}
               placeholder="Search"
-              className="dark:bg-SideColor bg-PrimaryColorLight"
+              className="dark:bg-SideColor bg-PrimaryColorLight h-[3rem]"
             />
           </DropdownMenu.Group>
         )}
         <DropdownMenu.Group>
           {options.map((option, index) => (
-            <DropdownMenu.Item onSelect={() => handleSelectOption(option)} key={index} className={getItemStyles(contentWidth)}>
+            <DropdownMenu.Item
+              onSelect={() => handleSelectOption(option)}
+              key={index}
+              className={getItemStyles(contentWidth)}
+            >
               {option?.icon}
               <div className="ml-2">
                 <p className={textStyles()}>{option.label}</p>

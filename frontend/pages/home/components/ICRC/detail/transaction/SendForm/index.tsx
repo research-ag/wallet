@@ -35,10 +35,10 @@ export default function SendForm({ setDrawerOpen }: SendFormProps) {
       <div className="flex items-center justify-end mt-6">
         <p className="mr-4 text-sm text-slate-color-error">{t(getError())}</p>
         {isLoading && <LoadingLoader className="mr-4" />}
-        <Button className="w-1/6 mr-2 font-bold bg-secondary-color-2" onClick={onCancel}>
+        <Button className="min-w-[5rem] mr-2 font-bold bg-secondary-color-2 text-md" onClick={onCancel}>
           {t("cancel")}
         </Button>
-        <Button className="w-1/6 font-bold bg-primary-color" onClick={onNext}>
+        <Button className="min-w-[5rem] font-bold bg-primary-color text-md" onClick={onNext}>
           {t("next")}
         </Button>
       </div>
@@ -49,7 +49,8 @@ export default function SendForm({ setDrawerOpen }: SendFormProps) {
     try {
       setIsLoadingAction(true);
 
-      if (!sender?.asset?.tokenSymbol) return setErrorAction(TransactionValidationErrorsEnum.Values["error.asset.empty"]);
+      if (!sender?.asset?.tokenSymbol)
+        return setErrorAction(TransactionValidationErrorsEnum.Values["error.asset.empty"]);
       removeErrorAction(TransactionValidationErrorsEnum.Values["error.asset.empty"]);
 
       if (!isSenderValid) return setErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.sender"]);
@@ -64,10 +65,12 @@ export default function SendForm({ setDrawerOpen }: SendFormProps) {
       if (!isReceiver) setErrorAction(TransactionValidationErrorsEnum.Values["error.receiver.empty"]);
       removeErrorAction(TransactionValidationErrorsEnum.Values["error.receiver.empty"]);
 
-      if (isSenderSameAsReceiver()) setErrorAction(TransactionValidationErrorsEnum.Values["error.same.sender.receiver"]);
+      if (isSenderSameAsReceiver())
+        setErrorAction(TransactionValidationErrorsEnum.Values["error.same.sender.receiver"]);
       removeErrorAction(TransactionValidationErrorsEnum.Values["error.same.sender.receiver"]);
 
-      if (isSenderAllowanceOwn()) setErrorAction(TransactionValidationErrorsEnum.Values["error.own.sender.not.allowed"]);
+      if (isSenderAllowanceOwn())
+        setErrorAction(TransactionValidationErrorsEnum.Values["error.own.sender.not.allowed"]);
       removeErrorAction(TransactionValidationErrorsEnum.Values["error.own.sender.not.allowed"]);
 
       setIsInspectDetailAction(true);

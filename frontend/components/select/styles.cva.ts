@@ -34,10 +34,10 @@ export const selectTriggerCVA = cva(
 
 export const selectContentCVA = cva(
   [
-    "w-fit z-50 mt-2",
+    "w-fit max-h-[20vh] z-50 mt-2",
     "bg-ThemeColorSelectorLight dark:bg-ThemeColorBack",
     "rounded-md border border-RadioCheckColor",
-    "max-h-[30rem] scroll-y-light",
+    "scroll-y-light",
   ],
   {
     variants: {
