@@ -164,11 +164,19 @@
   "error.invalid.receiver.principal": "Invalid To principal",
   "error.invalid.receiver.subaccount": "Invalid To subaccount",
   "invalid.receiver.identifier": "Invalid ICRC Indentifier",
-
   "error.invalid.sender": "From is not valid",
   "error.invalid.receiver": "To is not valid",
-
   "error.invalid.amount": "Amount is not valid",
   "error.not.enough.balance": "Not enough balance",
-  "error.allowance.subaccount.not.enough": "Allowance subaccount balance not enough"
+  "error.allowance.subaccount.not.enough": "Allowance subaccount balance not enough",
+
+  "error.invalid.asset": "Invalid asset",
+  "error.invalid.expiration": "Invalid expiration",
+  "error.expiration.required": "Expiration is required",
+  "error.expiration.not.allowed": "Expiration is not allowed",
+  "error.before.present.expiration": "Expiration before present",
+  "error.allowance.duplicated": "Allowance already exist",
+  "warn.system.loading": "System is loading, wait a few seconds",
+  "error.invalid.subaccount": "Invalid subaccount",
+  "error.self.allowance": "Account owner as spender not allowed"
 }

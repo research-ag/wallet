@@ -1,5 +1,4 @@
 import { TAllowance, AllowanceValidationErrorsEnum } from "@/@types/allowance";
-import { TErrorValidation } from "@/@types/common";
 import { SelectOption } from "@/@types/components";
 import { Chip } from "@components/chip";
 import { Select } from "@components/select";
@@ -12,7 +11,6 @@ interface ISubAccountFormItemProps {
   allowance: TAllowance;
   selectedAsset: Asset | undefined;
   isLoading?: boolean;
-  errors?: TErrorValidation[];
   setAllowanceState: (allowanceData: TAllowance) => void;
 }
 

@@ -1,5 +1,4 @@
 import { AllowanceValidationErrorsEnum, TAllowance } from "@/@types/allowance";
-import { TErrorValidation } from "@/@types/common";
 import { SelectOption } from "@/@types/components";
 import formatContact from "@/utils/formatContact";
 import { validatePrincipal } from "@/utils/identity";
@@ -7,17 +6,17 @@ import { Input } from "@components/input";
 import { Select } from "@components/select";
 import { Switch } from "@components/switch";
 import { useAppSelector } from "@redux/Store";
-import { initialAllowanceState } from "@redux/allowance/AllowanceReducer";
+import { initialAllowanceState, removeAllowanceError } from "@redux/allowance/AllowanceReducer";
 import { Contact } from "@redux/models/ContactsModels";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useDispatch } from "react-redux";
 
 interface ISpenderFormItemProps {
   contacts: Contact[];
   setAllowanceState: (allowanceData: Partial<TAllowance>) => void;
   isLoading?: boolean;
   allowance: TAllowance;
-  errors?: TErrorValidation[];
 }
 
 export default function SpenderFormItem(props: ISpenderFormItemProps) {
@@ -27,6 +26,7 @@ export default function SpenderFormItem(props: ISpenderFormItemProps) {
   const [search, setSearch] = useState<string | null>(null);
   const [isNew, setIsNew] = useState(false);
   const inputTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
+  const dispatch = useDispatch();
 
   const onSearchChange = (searchValue: string) => setSearch(searchValue);
   const onOpenChange = () => setSearch(null);
@@ -90,6 +90,7 @@ export default function SpenderFormItem(props: ISpenderFormItemProps) {
       setIsPrincipalValid(false);
     } else {
       setIsPrincipalValid(true);
+      dispatch(removeAllowanceError(AllowanceValidationErrorsEnum.Values["error.invalid.sender.principal"]));
     }
 
     clearTimeout(inputTimeoutRef.current);
