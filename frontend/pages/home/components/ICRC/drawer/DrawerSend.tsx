@@ -3,6 +3,7 @@ import SendForm from "../detail/transaction/SendForm";
 import DialogSendConfirmation from "../detail/transaction/DialogSendConfirmation";
 import SenderInitializer from "../detail/transaction/SendForm/SenderInitializer";
 import SendFormConditionalRender from "../detail/transaction/SendForm/SendFormConditionalRender";
+import { ProtocolTypeEnum } from "@/const";
 
 interface DrawerSendProps {
   setDrawerOpen(value: boolean): void;
@@ -25,6 +26,7 @@ function DrawerSend({ drawerOpen, setDrawerOpen }: DrawerSendProps) {
         modal={modal}
         setDrawerOpen={setDrawerOpen}
         showConfirmationModal={showConfirmationModal}
+        network={ProtocolTypeEnum.Enum.ICRC1}
       />
     </>
   );

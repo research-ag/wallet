@@ -11,6 +11,8 @@ import {
   setIsInspectDetailAction,
   setIsLoadingAction,
   setSendingStatusAction,
+  setInitTxTime,
+  setEndTxTime,
 } from "@redux/transaction/TransactionActions";
 import { useTranslation } from "react-i18next";
 import { ValidationErrorsEnum } from "@/@types/transactions";
@@ -96,6 +98,7 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
 
   async function handleTransaction() {
     try {
+      setInitTxTime(new Date());
       setIsLoadingAction(true);
       const assetAddress = sender.asset.address;
       const decimal = sender.asset.decimal;
@@ -136,9 +139,11 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
           }
         }
         setSendingStatusAction(SendingStatusEnum.Values.done);
+        setEndTxTime(new Date());
       }
     } catch (error) {
       setSendingStatusAction(SendingStatusEnum.Values.error);
+      setEndTxTime(new Date());
     } finally {
       reloadBallance();
       setIsLoadingAction(false);

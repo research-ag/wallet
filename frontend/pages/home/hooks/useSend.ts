@@ -1,14 +1,18 @@
 import { toFullDecimal } from "@/utils";
-import { useAppSelector } from "@redux/Store";
+import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { useMemo } from "react";
 import { getAllowanceDetails } from "../helpers/icrc";
 import { TransactionSenderOptionEnum } from "@/@types/transactions";
 import { validatePrincipal } from "@/utils/identity";
 import { isHexadecimalValid } from "@/utils/checkers";
+import { setEndTime, setInitTime } from "@redux/transaction/TransactionReducer";
 
 export default function useSend() {
+  const dispatch = useAppDispatch();
   const { userPrincipal } = useAppSelector((state) => state.auth);
-  const { sender, receiver, amount } = useAppSelector((state) => state.transaction);
+  const { sender, receiver, amount, sendingStatus, errors, initTime, endTime } = useAppSelector(
+    (state) => state.transaction,
+  );
 
   function getReceiverPrincipal() {
     if (receiver?.thirdContactSubAccount?.contactPrincipal) return receiver?.thirdContactSubAccount?.contactPrincipal;
@@ -42,7 +46,7 @@ export default function useSend() {
   function getSenderValid(): boolean {
     const principal = getSenderPrincipal();
     if (!validatePrincipal(principal)) return false;
-    
+
     const subaccount = getSenderSubAccount();
     if (!isHexadecimalValid(subaccount)) return false;
 
@@ -142,9 +146,14 @@ export default function useSend() {
     isSenderAllowance,
     isSenderSameAsReceiver,
     isSenderAllowanceOwn,
+    sender,
     amount,
     enableSend,
     isSender,
     isReceiver,
+    sendingStatus,
+    errors,
+    initTime,
+    endTime,
   };
 }

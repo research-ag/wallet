@@ -24,6 +24,8 @@ interface TransactionState {
   receiver: ReceiverState;
   errors?: ValidationErrorsType[];
   amount?: string;
+  initTime: Date;
+  endTime: Date;
 }
 
 export const initialTransactionState = {
@@ -39,6 +41,8 @@ export const initialTransactionState = {
     receiverOption: TransactionReceiverOptionEnum.Values.third,
     isManual: false,
   },
+  initTime: new Date(),
+  endTime: new Date(),
 } as TransactionState;
 
 const name = "transaction";
@@ -131,6 +135,12 @@ const transactionSlice = createSlice({
       state.receiver.thirdNewContact = {} as NewContact;
       state.receiver.ownSubAccount = {} as SubAccount;
     },
+    setInitTime(state: TransactionState, action: PayloadAction<Date>) {
+      state.initTime = action.payload;
+    },
+    setEndTime(state: TransactionState, action: PayloadAction<Date>) {
+      state.endTime = action.payload;
+    },
     resetSendState(state: TransactionState) {
       state.amount = initialTransactionState?.amount;
       state.errors = initialTransactionState?.errors;
@@ -165,6 +175,8 @@ export const {
   clearSender,
   clearReceiver,
   resetSendState,
+  setInitTime,
+  setEndTime,
 } = transactionSlice.actions;
 
 export default transactionSlice.reducer;

@@ -21,6 +21,8 @@ import {
   resetSendState,
   setSendingStatus,
   setIsLoading,
+  setInitTime,
+  setEndTime,
 } from "./TransactionReducer";
 
 import { Asset, SubAccount } from "@redux/models/AccountModels";
@@ -96,4 +98,11 @@ export function resetSendStateAction() {
 }
 export function setIsLoadingAction(isLoading: boolean) {
   store.dispatch(setIsLoading(isLoading));
+}
+
+export function setInitTxTime(init: Date) {
+  store.dispatch(setInitTime(init));
+}
+export function setEndTxTime(init: Date) {
+  store.dispatch(setEndTime(init));
 }

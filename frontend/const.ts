@@ -16,6 +16,10 @@ import { Token } from "@redux/models/TokenModels";
 import { ICRC1systemAssets } from "./defaultTokens";
 
 // Enums
+
+export const ProtocolTypeEnum = z.enum(["ICRC1", "HPL"]);
+export type ProtocolType = z.infer<typeof ProtocolTypeEnum>;
+
 export const TransactionTypeEnum = z.enum(["RECEIVE", "SEND", "NONE"]);
 export type TransactionType = z.infer<typeof TransactionTypeEnum>;
 
