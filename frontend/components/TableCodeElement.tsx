@@ -14,7 +14,7 @@ interface CodeElementProps {
 const CodeElement = ({ tx }: CodeElementProps) => {
   const { t } = useTranslation();
 
-  const accId = clsx("text-SelectRowColor opacity-60");
+  const accId = clsx("text-SelectRowColor text-primary-color/60");
   const { authClient } = AccountHook();
 
   const { selectedAccount, ICPSubaccounts, assets } = useAppSelector((state) => state.asset);

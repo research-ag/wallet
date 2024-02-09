@@ -23,6 +23,69 @@ const ICRCTransactionsTable = ({ setDrawerOpen }: ICRCTransactionsTableProps) =>
     getSortedRowModel: getSortedRowModel(),
   });
 
+  // return (
+  //   <div className="w-full max-h-[calc(100vh-18rem)] scroll-y-light z-[1]">
+  //     <table className="w-full text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md">
+  //       <thead className="sticky top-0 w-full bg-slate-color-warning">Header here</thead>
+  //       <tbody className="bg-slate-color-success">
+  //         {numberArray.map((num, idx) => (
+  //           <tr key={`tr-transac-${idx}`} className="border bg-slate-color-error">
+  //             <td>Row {num}</td>
+  //           </tr>
+  //         ))}
+  //       </tbody>
+  //     </table>
+  //   </div>
+  // );
+
+  return (
+    <div className="w-full max-h-[calc(100vh-18rem)] scroll-y-light z-[1]">
+      <table className="w-full text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md">
+        <thead className="sticky top-0 border-b border-BorderColorTwoLight dark:border-BorderColorTwo bg-SecondaryColorLight dark:bg-SecondaryColor">
+          {table.getHeaderGroups().map((headerGroup, idxTR) => (
+            <tr key={`tr-transac-${idxTR}`}>
+              {headerGroup.headers.map((header, idxTH) => (
+                <th key={`th-transac-${idxTH}`} className={colStyle(idxTH)}>
+                  <div
+                    {...{
+                      className: idxTH === 2 && header.column.getCanSort() ? "cursor-pointer select-none" : "",
+                      onClick: idxTH === 2 ? header.column.getToggleSortingHandler() : undefined,
+                    }}
+                  >
+                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                  </div>
+                </th>
+              ))}
+            </tr>
+          ))}
+        </thead>
+        <tbody>
+          {table.getRowModel().rows.map((row, idxTR) => (
+            <tr
+              className={`border-b border-b-BorderColorTwoLight dark:border-b-BorderColorTwo cursor-pointer ${
+                (selectedTransaction?.hash && selectedTransaction?.hash === row.original.hash) ||
+                (selectedTransaction?.idx && selectedTransaction?.idx === row.original.idx)
+                  ? "bg-SelectRowColor/10"
+                  : ""
+              }`}
+              key={`tr-transac-${idxTR}`}
+              onClick={() => {
+                changeSelectedTransaction(row.original);
+                setDrawerOpen(true);
+              }}
+            >
+              {row.getVisibleCells().map((cell, idxTD) => (
+                <td key={`tr-transac-${idxTD}`} className={colStyle(idxTD)}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+
   return (
     <div className="w-full max-h-[calc(100vh-18rem)] scroll-y-light z-[1]">
       <table className="w-full text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md">
