@@ -19,6 +19,7 @@ import { ChangeEvent, useState } from "react";
 import { Principal } from "@dfinity/principal";
 import LoadingLoader from "@components/Loader";
 import { AccountHook } from "@pages/hooks/accountHook";
+import { getICRCSupportedStandards } from "@pages/home/helpers/icrc";
 
 interface AddAssetManualProps {
   manual: boolean;
@@ -309,6 +310,10 @@ const AddAssetManual = ({
         });
 
         const { symbol, decimals, name, logo, fee } = getMetadataInfo(myMetadata);
+        const supportedStandards = await getICRCSupportedStandards({
+          assetAddress: newToken.address,
+          agent: userAgent,
+        });
 
         setNewToken((prev: any) => {
           return {
@@ -321,6 +326,7 @@ const AddAssetManual = ({
             tokenSymbol: symbol,
             tokenName: name,
             fee: fee,
+            supportedStandards,
           };
         });
         setValidToken(true);
@@ -368,9 +374,12 @@ const AddAssetManual = ({
               newToken.shortDecimal === ""
                 ? Number(newToken.decimal).toFixed(0)
                 : Number(newToken.shortDecimal).toFixed(0),
+            supportedStandards: asset.supportedStandards,
           };
         } else return tkn;
       });
+
+      console.log("auxTokens: ", auxTokens);
       // Save tokens in list to local
       saveInLocalStorage(auxTokens);
       // Edit tokens list and assets list
