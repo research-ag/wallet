@@ -29,6 +29,7 @@ export async function allowanceCacheRefresh(principal: string) {
           amount: response?.allowance ? response?.allowance : "0",
           expiration: response?.expires_at ? response?.expires_at : "",
         });
+
       } catch (error) {
         console.log(error);
       }

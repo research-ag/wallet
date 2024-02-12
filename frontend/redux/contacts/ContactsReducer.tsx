@@ -7,6 +7,7 @@ interface ContactsState {
   storageCode: string;
   contacts: Contact[];
 }
+
 const initialState: ContactsState = {
   storageCode: "",
   contacts: [],
