@@ -379,10 +379,7 @@ const AddAssetManual = ({
         } else return tkn;
       });
 
-      console.log("auxTokens: ", auxTokens);
-      // Save tokens in list to local
       saveInLocalStorage(auxTokens);
-      // Edit tokens list and assets list
       dispatch(editToken(newToken, asset.tokenSymbol));
       setAssetOpen(false);
     } else if (await onTest(false)) addAssetToData();

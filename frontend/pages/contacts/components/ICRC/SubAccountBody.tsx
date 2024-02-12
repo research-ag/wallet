@@ -356,7 +356,7 @@ export default function SubAccountBody(props: SubAccountBodyProps) {
       if (error === SUB_ACCOUNT_NAME_ERROR) {
         return setSubaccEditedErr({ name: true, subaccount_index: false });
       }
-      return setSubaccEditedErr({ name: false, subaccount_index: false });
+      console.error(error);
     } finally {
       setIsPending(false);
     }
