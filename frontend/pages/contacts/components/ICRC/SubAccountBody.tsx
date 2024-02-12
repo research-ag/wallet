@@ -10,7 +10,7 @@ import { CustomCopy } from "@components/CopyTooltip";
 import { CustomInput } from "@components/Input";
 import { encodeIcrcAccount } from "@dfinity/ledger";
 import { Principal } from "@dfinity/principal";
-import { getInitialFromName, hexToNumber, hexToUint8Array, removeLeadingZeros, shortAddress } from "@/utils";
+import { getInitialFromName, hexToUint8Array, removeLeadingZeros, shortAddress } from "@/utils";
 import AllowanceTooltip from "./AllowanceTooltip";
 import {
   AssetContact,
@@ -19,8 +19,7 @@ import {
   SubAccountContact,
   SubAccountContactErr,
 } from "@redux/models/ContactsModels";
-import { isSubAccountIdValid } from "@/utils/checkers";
-import bigInt from "big-integer";
+import { isHexadecimalValid } from "@/utils/checkers";
 import { getAllowanceDetails } from "@/pages/home/helpers/icrc";
 import { DeleteContactTypeEnum } from "@/const";
 import useContactTable from "../../hooks/useContactTable";
@@ -296,75 +295,71 @@ export default function SubAccountBody(props: SubAccountBodyProps) {
     </tbody>
   );
 
-  async function checkSubAccount(edit: boolean, cntc: Contact, asst: AssetContact, sa?: SubAccountContact) {
+  async function checkSubAccount(edit: boolean, contact: Contact, asset: AssetContact, subAccount?: SubAccountContact) {
     setIsPending(true);
-    let subacc = subaccEdited.subaccount_index.trim();
-    if (subacc.slice(0, 2).toLowerCase() === "0x") subacc = subacc.substring(2);
+    const SUB_ACCOUNT_ID_ERROR = "SUB_ACCOUNT_ID_ERROR";
+    const SUB_ACCOUNT_NAME_ERROR = "SUB_ACCOUNT_NAME_ERROR";
 
-    const checkedIdx = removeLeadingZeros(subacc) === "" ? "0" : removeLeadingZeros(subacc);
-    const checkedIdxValid = isSubAccountIdValid(checkedIdx, asst.subaccounts);
+    try {
+      const subAccountName = subaccEdited.name;
+      const grossSubAccountId = subaccEdited.subaccount_index.trim();
+      const subAccountIndex =
+        removeLeadingZeros(grossSubAccountId) === "" ? "0" : removeLeadingZeros(grossSubAccountId);
 
-    let eqHexValid = false;
-    let eqHex = false;
+      if (!subAccountName) throw SUB_ACCOUNT_NAME_ERROR;
+      if (!isHexadecimalValid(subAccountIndex)) throw SUB_ACCOUNT_ID_ERROR;
 
-    // FIXME: if the subaccount already exist in the asset return false. Not allow to rename the subaccount
-    if (edit) {
-      eqHex = (hexToNumber(`0x${subacc}`) || bigInt()).eq(hexToNumber(`0x${sa?.subaccount_index}`) || bigInt());
-      if (!eqHex) {
-        eqHexValid = !checkedIdxValid;
-      }
-    } else {
-      eqHexValid = !checkedIdxValid;
-    }
-
-    setSubaccEditedErr({
-      name: subaccEdited.name.trim() === "",
-      subaccount_index: subacc === "" || eqHexValid,
-    });
-
-    if (!checkedIdxValid || subaccEdited.name.trim() === "" || (eqHex && !edit)) {
-      setIsPending(false);
-      return;
-    }
-
-    let allowance = undefined;
-    if (asst.supportedStandards.includes(SupportedStandardEnum.Values["ICRC-2"])) {
-      allowance = await getAllowanceDetails({
-        spenderPrincipal: store.getState().auth.userPrincipal.toText(),
-        spenderSubaccount: subaccEdited.sub_account_id,
-        accountPrincipal: cntc.principal,
-        assetAddress: asst.address,
-        assetDecimal: asst.decimal,
+      const duplicated = asset.subaccounts.find((sa) => {
+        return sa.subaccount_index === subAccountIndex;
       });
-    }
 
-    if (edit) {
-      if (subacc !== "" && subaccEdited.name.trim() !== "" && (eqHex || checkedIdxValid)) {
+      if (duplicated && duplicated?.subaccount_index !== selSubaccIdx) throw SUB_ACCOUNT_ID_ERROR;
+      setSubaccEditedErr({ name: false, subaccount_index: false });
+
+      let allowance = undefined;
+      if (asset.supportedStandards.includes(SupportedStandardEnum.Values["ICRC-2"])) {
+        allowance = await getAllowanceDetails({
+          spenderPrincipal: store.getState().auth.userPrincipal.toText(),
+          spenderSubaccount: subaccEdited.sub_account_id,
+          accountPrincipal: contact.principal,
+          assetAddress: asset.address,
+          assetDecimal: asset.decimal,
+        });
+      }
+
+      if (edit) {
         editCntctSubacc(
           cntc.principal,
           asst.tokenSymbol,
-          sa?.subaccount_index || "0",
+          subAccount?.subaccount_index || "0",
           subaccEdited.name.trim(),
-          checkedIdx,
+          subAccountIndex,
           allowance,
         );
         setSelSubaccIdx("");
-      }
-    } else {
-      if (subacc !== "" && subaccEdited.name.trim() !== "" && checkedIdxValid) {
+      } else {
         addCntctSubacc(
           cntc.principal,
           asst.tokenSymbol,
           subaccEdited.name.trim(),
-          removeLeadingZeros(subacc) === "" ? "0" : removeLeadingZeros(subacc),
+          subAccountIndex,
           subaccEdited.sub_account_id,
           allowance,
         );
         setSelSubaccIdx("");
         setAddSub(false);
       }
+    } catch (error) {
+      if (error === SUB_ACCOUNT_ID_ERROR) {
+        return setSubaccEditedErr({ name: false, subaccount_index: true });
+      }
+      if (error === SUB_ACCOUNT_NAME_ERROR) {
+        return setSubaccEditedErr({ name: true, subaccount_index: false });
+      }
+      return setSubaccEditedErr({ name: false, subaccount_index: false });
+    } finally {
+      setIsPending(false);
     }
-    setIsPending(false);
   }
 
   function onEditSubAccount(sa: SubAccountContact) {

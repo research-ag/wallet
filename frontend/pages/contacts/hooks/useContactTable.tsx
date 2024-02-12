@@ -43,7 +43,9 @@ export default function useContactTable() {
     newName: string,
     newIndex: string,
     allowance: { allowance: string; expires_at: string } | undefined,
-  ) => dispatch(editContactSubacc(principal, tokenSymbol, subIndex, newName, newIndex, allowance));
+  ) => {
+    dispatch(editContactSubacc(principal, tokenSymbol, subIndex, newName, newIndex, allowance));
+  };
 
   const addCntctSubacc = (
     principal: string,
@@ -52,7 +54,9 @@ export default function useContactTable() {
     newIndex: string,
     subAccountId: string,
     allowance?: { allowance: string; expires_at: string },
-  ) => dispatch(addContactSubacc(principal, tokenSymbol, newName, newIndex, subAccountId, allowance));
+  ) => {
+    dispatch(addContactSubacc(principal, tokenSymbol, newName, newIndex, subAccountId, allowance));
+  };
 
   // contact list
   const [deleteModal, setDeleteModal] = useState(false);
@@ -61,7 +65,6 @@ export default function useContactTable() {
   const [selContactPrin, setSelContactPrin] = useState("");
   const [openAssetsPrin, setOpenAssetsPrin] = useState("");
   const [openSubaccToken, setOpenSubaccToken] = useState("");
-  const [selSubaccIdx, setSelSubaccIdx] = useState("");
 
   const [contactEdited, setContactEdited] = useState<Contact>({
     name: "",
@@ -74,6 +77,9 @@ export default function useContactTable() {
     name: false,
     principal: false,
   });
+  // INFO: controls that sub account that is bing edited
+  const [selSubaccIdx, setSelSubaccIdx] = useState("");
+  // INFO: controls the data that is bing edited
   const [subaccEdited, setSubaccEdited] = useState<SubAccountContact>({
     name: "",
     subaccount_index: "",

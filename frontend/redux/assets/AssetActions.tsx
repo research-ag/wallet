@@ -1,9 +1,7 @@
-import { Actor, HttpAgent } from "@dfinity/agent";
+import { HttpAgent } from "@dfinity/agent";
 import store from "@redux/Store";
 import { Token, TokenMarketInfo, TokenSubAccount } from "@redux/models/TokenModels";
 import { IcrcAccount, IcrcIndexCanister, IcrcLedgerCanister } from "@dfinity/ledger";
-import { _SERVICE as LedgerActor } from "@candid/icrcLedger/icrcLedgerService";
-import { idlFactory as LedgerFactory } from "@candid/icrcLedger/icrcLedgerCandid.did";
 import {
   formatIcpTransaccion,
   getSubAccountArray,
@@ -19,7 +17,7 @@ import { Asset, ICPSubAccount, SubAccount } from "@redux/models/AccountModels";
 import { Principal } from "@dfinity/principal";
 import { AccountDefaultEnum } from "@/const";
 import bigInt from "big-integer";
-import { SupportedStandard } from "@/@types/icrc";
+import { getICRCSupportedStandards } from "@pages/home/helpers/icrc";
 
 export const updateAllBalances = async (
   loading: boolean,
@@ -62,16 +60,10 @@ export const updateAllBalances = async (
   const myPrincipal = store.getState().auth.userPrincipal;
   const tokensAseets = await Promise.all(
     tokens.map(async (tkn, idNum) => {
-      const ledgerActor = Actor.createActor<LedgerActor>(LedgerFactory, {
-        agent: myAgent,
-        canisterId: tkn.address as any,
-      });
-
       let standards = tkn.supportedStandards;
 
       if (fromLogin) {
-        const result = await ledgerActor.icrc1_supported_standards();
-        standards = result.map((standard) => standard.name as SupportedStandard);
+        standards = await getICRCSupportedStandards({ assetAddress: tkn.address, agent: myAgent });
       }
 
       try {
