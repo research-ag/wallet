@@ -14,9 +14,9 @@ export default function AllowanceTooltip(props: AllowanceTooltipProps) {
   const { amount, expiration, tokenSymbol } = props;
 
   return (
-    <div className="grid mr-2 place-items-center ">
+    <div className="grid mr-2 place-items-center">
       <ToolTip trigger={<MoneyHandIcon className="relative w-5 h-5 cursor-pointer fill-RadioCheckColor" />}>
-        <div className="h-24 w-fit">
+        <div className="h-[7rem] w-[9rem]">
           <h2 className="text-lg opacity-50 dark:text-PrimaryTextColor text-PrimaryTextColorLight">{t("amount")}</h2>
           <h2 className="text-lg dark:text-PrimaryTextColor text-PrimaryTextColorLight">
             {amount} {tokenSymbol}
