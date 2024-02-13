@@ -1,5 +1,4 @@
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import * as brazilSvg from "@/assets/svg/files/brazil.svg?react";
 
 //
 import { Fragment, useState } from "react";
@@ -7,6 +6,7 @@ import { Fragment, useState } from "react";
 import { AccountHook } from "@hooks/accountHook";
 import { AssetHook } from "@pages/home/hooks/assetHook";
 // svgs
+import BrazilFlagIcon from "@/assets/svg/files/brazil.svg?react";
 import ChevronIcon from "@/assets/svg/files/chevron-right.svg?react";
 import { CustomCopy } from "@components/CopyTooltip";
 import ICRC1Logo from "@/assets/svg/files/logo_ICRC-1.svg?react";
@@ -28,6 +28,7 @@ import { logout } from "@redux/CheckAuth";
 import { setLoading } from "@redux/assets/AssetReducer";
 import { shortAddress } from "@/utils";
 import { useAppDispatch } from "@redux/Store";
+import { useSiweIdentity } from "../../../siwe";
 import { useTranslation } from "react-i18next";
 
 const TopBarComponent = () => {
@@ -38,6 +39,7 @@ const TopBarComponent = () => {
   const { theme, themeOpen, setThemeOpen } = ThemeHook();
   const { authClient } = AccountHook();
   const { getTotalAmountInCurrency, reloadBallance, assetLoading } = AssetHook();
+  const { clear: clearSiweIdentity } = useSiweIdentity();
 
   const [langOpen, setLangOpen] = useState(false);
 
@@ -45,7 +47,7 @@ const TopBarComponent = () => {
     { abrev: "en", name: "english", flag: <UsaFlagIcon className={flag} /> },
     { abrev: "es", name: "spanish", flag: <SpainFlagIcon className={flag} /> },
     { abrev: "it", name: "italian", flag: <ItalyFlagIcon className={flag} /> },
-    { abrev: "pt", name: "portuguese", flag: <brazilSvg.ReactComponent className={flag} /> },
+    { abrev: "pt", name: "portuguese", flag: <BrazilFlagIcon className={flag} /> },
   ];
 
   return (
@@ -128,6 +130,7 @@ const TopBarComponent = () => {
                 <DropdownMenu.Item
                   className={clsx(gearPopItem, "!justify-between", "rounded-b-lg")}
                   onSelect={() => {
+                    clearSiweIdentity();
                     logout();
                   }}
                 >
