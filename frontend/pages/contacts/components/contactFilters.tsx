@@ -4,17 +4,17 @@ import { IconTypeEnum, ThemesEnum } from "@/const";
 
 import AddContact from "./addContact";
 import { Asset } from "@redux/models/AccountModels";
-import ChevronRightDarkIcon from "@assets/svg/files/chevron-right-dark-icon.svg?react";
-import ChevronRightIcon from "@assets/svg/files/chevron-right-icon.svg?react";
+import ChevronRightDarkIcon from "@assets/svg/files/chevron-right-dark-icon.svg";
+import ChevronRightIcon from "@assets/svg/files/chevron-right-icon.svg";
 import { CustomButton } from "@components/Button";
 import { CustomCheck } from "@components/CheckBox";
 import { CustomInput } from "@components/Input";
 import { Fragment } from "react";
 import { GeneralHook } from "@pages/home/hooks/generalHook";
 import Modal from "@components/Modal";
-import PlusIcon from "@assets/svg/files/plus-icon.svg?react";
+import PlusIcon from "@assets/svg/files/plus-icon.svg";
 // svgs
-import SearchIcon from "@assets/svg/files/icon-search.svg?react";
+import SearchIcon from "@assets/svg/files/icon-search.svg";
 import { ThemeHook } from "@pages/hooks/themeHook";
 import clsx from "clsx";
 import { useContacts } from "../hooks/contactsHook";
@@ -35,7 +35,7 @@ const ContactFilters = ({ searchKey, assetFilter, setSearchKey, setAssetFilter }
 
   return (
     <Fragment>
-      <div className="text-md flex flex-row justify-start items-center gap-3 w-full">
+      <div className="flex flex-row items-center justify-start w-full gap-3 text-md">
         <p className="text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("asset")}</p>
         <DropdownMenu.Root
           onOpenChange={(e: boolean) => {
@@ -44,11 +44,11 @@ const ContactFilters = ({ searchKey, assetFilter, setSearchKey, setAssetFilter }
         >
           <DropdownMenu.Trigger asChild>
             <div className="flex flex-row justify-start items-center border border-BorderColorLight dark:border-BorderColor rounded px-2 py-1 w-[10rem] h-[2.5rem] bg-SecondaryColorLight dark:bg-SecondaryColor">
-              <div className="flex flex-row justify-between items-center w-full">
+              <div className="flex flex-row items-center justify-between w-full">
                 {assetFilter.length === 0 || assetFilter.length === assets.length ? (
                   <p className="text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("all")}</p>
                 ) : assetFilter.length === 1 ? (
-                  <div className="flex flex-start justify-start items-center gap-2">
+                  <div className="flex items-center justify-start gap-2 flex-start">
                     {getAssetIcon(
                       IconTypeEnum.Enum.FILTER,
                       assetFilter[0],
@@ -77,7 +77,7 @@ const ContactFilters = ({ searchKey, assetFilter, setSearchKey, setAssetFilter }
             >
               <button
                 onClick={handleSelectAll}
-                className="flex flex-row justify-between items-center rounded-t-lg px-3 py-2 w-full hover:bg-HoverColorLight hover:dark:bg-HoverColor"
+                className="flex flex-row items-center justify-between w-full px-3 py-2 rounded-t-lg hover:bg-HoverColorLight hover:dark:bg-HoverColor"
               >
                 <p>{t("selected.all")}</p>
                 <CustomCheck
@@ -94,7 +94,7 @@ const ContactFilters = ({ searchKey, assetFilter, setSearchKey, setAssetFilter }
                       handleSelectAsset(asset);
                     }}
                   >
-                    <div className="flex flex-start justify-start items-center gap-2">
+                    <div className="flex items-center justify-start gap-2 flex-start">
                       {getAssetIcon(IconTypeEnum.Enum.FILTER, asset.tokenSymbol, asset.logo)}
                       <p>{asset.symbol}</p>
                     </div>

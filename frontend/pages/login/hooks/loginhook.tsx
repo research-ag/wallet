@@ -2,7 +2,7 @@ import { AuthNetworkNameEnum, AuthNetworkTypeEnum } from "@/const";
 
 import { AuthNetwork } from "@redux/models/TokenModels";
 // svgs
-import XxxxIcon from "../../../assets/svg/files/xxxx-logo.svg?react";
+import XxxxIcon from "../../../assets/svg/files/xxxx-logo.svg";
 import icUrl from "../../../assets/img/icp-logo.png";
 import metamaskUrl from "../../../assets/img/metamask-logo.png";
 import nfidUrl from "../../../assets/img/nfid-logo.png";
@@ -25,7 +25,6 @@ export const LoginHook = () => {
     },
     {
       name: AuthNetworkNameEnum.Values.Metamask,
-      extra: "not.yet.available",
       icon: <img src={metamaskUrl} alt="metamask-logo" />,
       type: AuthNetworkTypeEnum.Values.MM,
       network: "",

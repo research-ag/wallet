@@ -1,18 +1,18 @@
-import BitcoinIcon from "@/assets/svg/files/bitcoin-icon.svg?react";
-import DragginzIcon from "@/assets/svg/files/dragginz.svg?react";
-import EthereumIcon from "@/assets/svg/files/ethereum-icon.svg?react";
-import GLDGovIcon from "@/assets/svg/files/GLDov_icon.svg?react";
-import GoldTokenIcon from "@/assets/svg/files/gldt_icon.svg?react";
-import HotOrNotIcon from "@/assets/svg/files/hot-or-not.svg?react";
+import BitcoinIcon from "@/assets/svg/files/bitcoin-icon.svg";
+import DragginzIcon from "@/assets/svg/files/dragginz.svg";
+import EthereumIcon from "@/assets/svg/files/ethereum-icon.svg";
+import GLDGovIcon from "@/assets/svg/files/GLDov_icon.svg";
+import GoldTokenIcon from "@/assets/svg/files/gldt_icon.svg";
+import HotOrNotIcon from "@/assets/svg/files/hot-or-not.svg";
 import { ICRC1systemAssets } from "./defaultTokens";
 // svg
 import IcIcon from "@/assets/img/icp.png";
-import KinicIcon from "@/assets/svg/files/kinic.svg?react";
-import OpenChatIcon from "@/assets/svg/files/openchat.svg?react";
-import OrigynIcon from "@/assets/svg/files/ogy_icon.svg?react";
+import KinicIcon from "@/assets/svg/files/kinic.svg";
+import OpenChatIcon from "@/assets/svg/files/openchat.svg";
+import OrigynIcon from "@/assets/svg/files/ogy_icon.svg";
 import { Token } from "@redux/models/TokenModels";
-import ckBtcIcon from "@/assets/svg/files/ckbtc.svg?react";
-import ckEthIcon from "@/assets/svg/files/ckETH.svg?react";
+import ckBtcIcon from "@/assets/svg/files/ckbtc.svg";
+import ckEthIcon from "@/assets/svg/files/ckETH.svg";
 import { z } from "zod";
 
 // Enums

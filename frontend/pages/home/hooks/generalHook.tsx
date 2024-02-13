@@ -12,7 +12,7 @@ import {
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 
 // svg
-import GenericTokenIcon from "@/assets/svg/files/generic-token.svg?react";
+import GenericTokenIcon from "@/assets/svg/files/generic-token.svg";
 
 export const GeneralHook = () => {
   const dispatch = useAppDispatch();

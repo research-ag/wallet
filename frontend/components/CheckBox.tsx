@@ -1,4 +1,4 @@
-import CheckIcon from "@assets/svg/files/check.svg?react";
+import CheckIcon from "@assets/svg/files/check.svg";
 import { ButtonHTMLAttributes, FC } from "react";
 import { cva, type VariantProps } from "cva";
 

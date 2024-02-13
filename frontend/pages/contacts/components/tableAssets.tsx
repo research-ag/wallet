@@ -12,7 +12,7 @@ import { Fragment } from "react";
 import { GeneralHook } from "@pages/home/hooks/generalHook";
 import PencilIcon from "@assets/svg/files/pencil.svg?react";
 // svgs
-import PlusIcon from "@assets/svg/files/plus-icon.svg?react";
+import PlusIcon from "@assets/svg/files/plus-icon.svg";
 import TableSubAccounts from "./tableSubAccounts";
 import TrashIcon from "@assets/svg/files/trash-icon.svg?react";
 //
@@ -84,7 +84,7 @@ const TableAssets = ({
             <Fragment key={j}>
               <tr>
                 <td className="h-full">
-                  <div className="relative flex flex-col justify-center items-center w-full h-full">
+                  <div className="relative flex flex-col items-center justify-center w-full h-full">
                     <div className="w-1 h-1 bg-SelectRowColor"></div>
                     {j !== cntc.assets.length - 1 && (
                       <div
@@ -95,20 +95,20 @@ const TableAssets = ({
                   </div>
                 </td>
                 <td className="py-2 border-b border-BorderColorTwoLight dark:border-BorderColorTwo">
-                  <div className="flex flex-row justify-start items-center w-full px-2 gap-4">
+                  <div className="flex flex-row items-center justify-start w-full gap-4 px-2">
                     {getAssetIcon(IconTypeEnum.Enum.ASSET, asst.tokenSymbol, asst.logo)}
                     <p>{asst.symbol}</p>
                   </div>
                 </td>
                 <td className="py-2 border-b border-BorderColorTwoLight dark:border-BorderColorTwo">
-                  <div className="flex flex-row justify-center items-center w-full">
-                    <div className="flex flex-row justify-between items-center w-28 h-8 rounded bg-black/10 dark:bg-white/10">
+                  <div className="flex flex-row items-center justify-center w-full">
+                    <div className="flex flex-row items-center justify-between h-8 rounded w-28 bg-black/10 dark:bg-white/10">
                       <p className="ml-2">{`${asst.subaccounts.length} Subs`}</p>
                       <button
                         onClick={() => {
                           onAddSub(asst);
                         }}
-                        className="flex bg-AddSecondaryButton w-8 h-8 justify-center items-center rounded-r p-0"
+                        className="flex items-center justify-center w-8 h-8 p-0 rounded-r bg-AddSecondaryButton"
                       >
                         <img src={PlusIcon} alt="plus-icon" className="w-5 h-5" />
                       </button>
@@ -116,18 +116,18 @@ const TableAssets = ({
                   </div>
                 </td>
                 <td className="py-2 border-b border-BorderColorTwoLight dark:border-BorderColorTwo">
-                  <div className="flex flex-row justify-center items-start gap-4 w-full">
-                    <PencilIcon className="w-4 h-4 invisible" />
+                  <div className="flex flex-row items-start justify-center w-full gap-4">
+                    <PencilIcon className="invisible w-4 h-4" />
                     <TrashIcon
                       onClick={() => {
                         onDeleteAsset(asst);
                       }}
-                      className="w-4 h-4 fill-PrimaryTextColorLight dark:fill-PrimaryTextColor cursor-pointer"
+                      className="w-4 h-4 cursor-pointer fill-PrimaryTextColorLight dark:fill-PrimaryTextColor"
                     />
                   </div>
                 </td>
                 <td className="py-2 border-b border-BorderColorTwoLight dark:border-BorderColorTwo">
-                  <div className="flex flex-row justify-center items-start gap-2 w-full">
+                  <div className="flex flex-row items-start justify-center w-full gap-2">
                     {asst.subaccounts.length > 0 && (
                       <ChevIcon
                         onClick={() => {
