@@ -18,17 +18,17 @@
           "items": {
             "type": "record",
             "properties": {
-              "numb": { "type": "string" },
-              "name": { "type": "string" },
-              "amount": { "type": "string" },
-              "currency_amount": { "type": "string" }
+              "numb": { "type": "string", "maxLength": 100 },
+              "name": { "type": "string", "maxLength": 100 },
+              "amount": { "type": "string", "maxLength": 100 },
+              "currency_amount": { "type": "string", "maxLength": 100 }
             },
             "required": ["numb", "name", "amount", "currency_amount"]
           }
         },
         "fee": { "type": "string", "maxLength": 100 },
         "index": { "type": "string", "maxLength": 100 },
-        "logo": { "type": "string", "maxLength": 100 },
+        "logo": { "type": "string", "maxLength": 1000 },
         "supportedStandards": { "type": "array", "items": { "type": "string" } }
       },
       "required": [
@@ -41,6 +41,8 @@
         "shortDecimal",
         "subAccounts",
         "fee",
+        "index",
+        "logo",
         "supportedStandards"
       ],
       "indexes": ["name"]
@@ -61,36 +63,37 @@
           "items": {
             "type": "record",
             "properties": {
-              "symbol": { "type": "string" },
-              "tokenSymbol": { "type": "string" },
-              "logo": { "type": "string" },
+              "symbol": { "type": "string", "maxLength": 100 },
+              "tokenSymbol": { "type": "string", "maxLength": 100 },
+              "logo": { "type": "string", "maxLength": 1000 },
               "subaccounts": {
                 "type": "array",
                 "items": {
                   "type": "record",
                   "properties": {
-                    "name": { "type": "string" },
-                    "subaccount_index": { "type": "string" },
-                    "sub_account_id": { "type": "string" },
+                    "name": { "type": "string", "maxLength": 100 },
+                    "subaccount_index": { "type": "string", "maxLength": 100 },
+                    "sub_account_id": { "type": "string", "maxLength": 100 },
                     "allowance": {
                       "type": "record",
                       "properties": {
-                        "allowance": { "type": "string" },
-                        "expires_at": { "type": "string" }
+                        "allowance": { "type": "string", "maxLength": 100 },
+                        "expires_at": { "type": "string", "maxLength": 100 }
                       }
                     }
                   },
                   "required": ["name", "subaccount_index", "sub_account_id"]
                 }
               },
-              "address": { "type": "string" },
-              "decimal": { "type": "string" },
-              "shortDecimal": { "type": "string" },
+              "address": { "type": "string", "maxLength": 100 },
+              "decimal": { "type": "string", "maxLength": 100 },
+              "shortDecimal": { "type": "string", "maxLength": 100 },
               "supportedStandards": { "type": "array", "items": { "type": "string" } }
             },
             "required": [
               "symbol",
               "tokenSymbol",
+              "logo",
               "subaccounts",
               "address",
               "decimal",
@@ -100,7 +103,7 @@
           }
         }
       },
-      "required": ["name", "assets"]
+      "required": ["name", "accountIdentier", "assets"]
     },
     "migrationStrategies": {}
   }

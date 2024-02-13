@@ -43,8 +43,8 @@ type TokenDocument = record {
     currency_amount : text;
   };
   fee : text;
-  index : opt text;
-  logo : opt text;
+  index : text;
+  logo : text;
   supportedStandards : [text];
   deleted : bool;
   updatedAt : nat32;
@@ -59,7 +59,7 @@ type ContactDocument = record {
   assets : vec record {
     symbol : text;
     tokenSymbol : text;
-    logo : opt text;
+    logo : text;
     subaccounts : vec record {
       name : text;
       subaccount_index : text;
@@ -74,7 +74,7 @@ type ContactDocument = record {
     shortDecimal : text;
     supportedStandards : [text];
   };
-  accountIdentier : opt text;
+  accountIdentier : text;
   deleted : bool;
   updatedAt : nat32;
 };

@@ -196,22 +196,22 @@ const DialogAddAsset = ({
               certified: false,
             });
             const token = tokens[Number(idx)];
-            const subAccounts = token.subAccounts
-              .map((sa) => ({
-                ...sa,
-                name: newSub.name,
-                numb: `0x${subClean}`.toLowerCase(),
-                amount: myBalance.toString(),
-                currency_amount: assetMrkt ? getUSDfromToken(myBalance.toString(), assetMrkt, decimal) : "0",
-              }))
-              .sort((a, b) => {
-                return hexToNumber(a.numb)?.compare(hexToNumber(b.numb) || bigInt()) || 0;
-              });
-
-            await db().updateToken(token.address, {
+            const tokenToUpdate = {
               ...token,
-              subAccounts: subAccounts,
-            });
+              subAccounts: [
+                ...token.subAccounts,
+                {
+                  name: newSub.name,
+                  numb: `0x${subClean}`.toLowerCase(),
+                  amount: myBalance.toString(),
+                  currency_amount: assetMrkt ? getUSDfromToken(myBalance.toString(), assetMrkt, decimal) : "0",
+                },
+              ].sort((a, b) => {
+                return hexToNumber(a.numb)?.compare(hexToNumber(b.numb) || bigInt()) || 0;
+              }),
+            };
+
+            await db().updateToken(token.address, tokenToUpdate);
 
             const savedSub = {
               ...newSub,

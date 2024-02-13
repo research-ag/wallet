@@ -11,7 +11,7 @@ import { createActor } from "@/database/candid";
 import { RxReplicationState } from "rxdb/plugins/replication";
 import DBSchemas from "./schemas.json";
 import { BehaviorSubject, combineLatest, distinctUntilChanged, from, map, Observable, Subject, switchMap } from "rxjs";
-import { setupReplication } from "./helpers";
+import { extractValueFromArray, setupReplication } from "./helpers";
 
 addRxPlugin(RxDBUpdatePlugin);
 addRxPlugin(RxDBMigrationPlugin);
@@ -36,7 +36,6 @@ export class RxdbDatabase extends IWalletDatabase {
   private readonly agent = new HttpAgent({ identity: this.identity, host: import.meta.env.VITE_DB_CANISTER_HOST });
   private readonly replicaCanister = createActor(import.meta.env.VITE_DB_CANISTER_ID, { agent: this.agent });
 
-  private _db!: RxDatabase;
   private _tokens!: RxCollection<TokenRxdbDocument> | null;
   private tokensReplicationState?: RxReplicationState<any, any>;
   private tokensPullInterval?: any;
@@ -75,7 +74,7 @@ export class RxdbDatabase extends IWalletDatabase {
         await this.agent.fetchRootKey();
       }
 
-      this._db = await createRxDatabase({
+      const db: RxDatabase = await createRxDatabase({
         name: `local_db_${this.principalId}`,
         storage: getRxStorageDexie(),
         ignoreDuplicate: true,
@@ -83,7 +82,7 @@ export class RxdbDatabase extends IWalletDatabase {
         cleanupPolicy: {},
       });
 
-      const { tokens, contacts } = await this._db.addCollections(DBSchemas);
+      const { tokens, contacts } = await db.addCollections(DBSchemas);
 
       const tokensReplication = await setupReplication<TokenRxdbDocument, string>(
         tokens,
@@ -99,7 +98,7 @@ export class RxdbDatabase extends IWalletDatabase {
       const contactsReplication = await setupReplication<ContactRxdbDocument, string>(
         contacts,
         `contacts-${this.principalId}`,
-        "name",
+        "principal",
         (items) => this._contactsPushHandler(items),
         (minTimestamp, lastId, batchSize) => this._contactsPullHandler(minTimestamp, lastId, batchSize),
       );
@@ -169,6 +168,8 @@ export class RxdbDatabase extends IWalletDatabase {
         await this.tokens
       )?.insert({
         ...token,
+        logo: extractValueFromArray(token.logo),
+        index: extractValueFromArray(token.index),
         deleted: false,
         updatedAt: Date.now(),
       });
@@ -188,6 +189,8 @@ export class RxdbDatabase extends IWalletDatabase {
       const document = await (await this.tokens)?.findOne(address).exec();
       await document?.patch({
         ...newDoc,
+        logo: extractValueFromArray(newDoc.logo),
+        index: extractValueFromArray(newDoc.index),
         deleted: false,
         updatedAt: Date.now(),
       });
@@ -250,6 +253,11 @@ export class RxdbDatabase extends IWalletDatabase {
         await this.contacts
       )?.insert({
         ...contact,
+        accountIdentier: extractValueFromArray(contact.accountIdentier),
+        assets: contact.assets.map((a) => ({
+          ...a,
+          logo: extractValueFromArray(a.logo),
+        })),
         deleted: false,
         updatedAt: Date.now(),
       });
@@ -269,6 +277,11 @@ export class RxdbDatabase extends IWalletDatabase {
       const document = await (await this.contacts)?.findOne(principal).exec();
       document?.patch({
         ...newDoc,
+        accountIdentier: extractValueFromArray(newDoc.accountIdentier),
+        assets: newDoc.assets.map((a) => ({
+          ...a,
+          logo: extractValueFromArray(a.logo),
+        })),
         updatedAt: Date.now(),
       });
     } catch (e) {
@@ -383,21 +396,22 @@ export class RxdbDatabase extends IWalletDatabase {
       this.contactsReplicationState.cancel().then();
       this.contactsReplicationState = undefined;
     }
-    this._db?.remove();
     this._tokens = null!;
     this._contacts = null!;
   }
 
   private async _tokensPushHandler(items: any[]): Promise<TokenRxdbDocument[]> {
+    console.log(items);
     const arg = items.map((x) => ({
       ...x,
       id_number: x.id_number,
       updatedAt: Math.floor(Date.now() / 1000),
-      logo: (x.logo && ((Array.isArray(x.logo) && x.logo) || [x.logo])) || [""],
-      index: (x.index && ((Array.isArray(x.index) && x.index) || [x.index])) || [""],
+      logo: extractValueFromArray(x.logo),
+      index: extractValueFromArray(x.index),
     }));
 
     await this.replicaCanister?.pushTokens(arg);
+
     return arg;
   }
 
@@ -406,26 +420,26 @@ export class RxdbDatabase extends IWalletDatabase {
     lastId: string | null,
     batchSize: number,
   ): Promise<TokenRxdbDocument[]> {
-    const raw = await this.replicaCanister?.pullTokens(minTimestamp, lastId ? [lastId] : [], BigInt(batchSize));
+    const raw = (await this.replicaCanister?.pullTokens(
+      minTimestamp,
+      lastId ? [lastId] : [],
+      BigInt(batchSize),
+    )) as TokenRxdbDocument[];
 
-    return raw.map(
-      (x) =>
-        ({
-          ...x,
-          id_number: Number(x.id_number),
-          logo: x.logo,
-          index: x.index,
-        } as TokenRxdbDocument),
-    );
+    return raw.map((x) => ({
+      ...x,
+      id_number: Number(x.id_number),
+    }));
   }
 
   private async _contactsPushHandler(items: any): Promise<ContactRxdbDocument[]> {
     const arg = items.map((x: any) => ({
       ...x,
       updatedAt: Math.floor(Date.now() / 1000),
+      accountIdentier: extractValueFromArray(x.accountIdentier),
       assets: x.assets.map((a: any) => ({
         ...a,
-        logo: (a.logo && ((Array.isArray(a.logo) && a.logo) || [a.logo])) || [""],
+        logo: extractValueFromArray(a.logo),
         subaccounts: a.subaccounts.map((s: any) => ({
           ...s,
           allowance:
@@ -439,11 +453,10 @@ export class RxdbDatabase extends IWalletDatabase {
               : [],
         })),
       })),
-      accountIdentier: (x.accountIdentier &&
-        ((Array.isArray(x.accountIdentier) && x.accountIdentier) || [x.accountIdentier])) || [""],
     }));
 
     await this.replicaCanister?.pushContacts(arg);
+
     return arg;
   }
 
@@ -452,7 +465,11 @@ export class RxdbDatabase extends IWalletDatabase {
     lastId: string | null,
     batchSize: number,
   ): Promise<ContactRxdbDocument[]> {
-    const raw = await this.replicaCanister?.pullContacts(minTimestamp, lastId ? [lastId] : [], BigInt(batchSize));
+    const raw = (await this.replicaCanister?.pullContacts(
+      minTimestamp,
+      lastId ? [lastId] : [],
+      BigInt(batchSize),
+    )) as ContactRxdbDocument[];
 
     return raw;
   }

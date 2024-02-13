@@ -12,7 +12,7 @@ export interface ContactDocument {
   assets: Array<{
     symbol: string;
     tokenSymbol: string;
-    logo?: string;
+    logo: string;
     subaccounts: Array<{
       name: string;
       subaccount_index: string;
@@ -24,7 +24,7 @@ export interface ContactDocument {
     shortDecimal: string;
     supportedStandards: ["ICRC-1" | "ICRC-2"];
   }>;
-  accountIdentier?: string;
+  accountIdentier: string;
   updatedAt: number;
   deleted: boolean;
 }
@@ -45,8 +45,8 @@ export interface TokenDocument {
     currency_amount: string;
   }>;
   fee: string;
-  index?: string;
-  logo?: string;
+  index: string;
+  logo: string;
   supportedStandards: ["ICRC-1" | "ICRC-2"];
   deleted: boolean;
   updatedAt: number;
@@ -63,13 +63,13 @@ export type _SERVICE = WalletDatabase;
 export const idlFactory = ({ IDL }: { IDL: any }) => {
   const TokenDocument = IDL.Record({
     deleted: IDL.Bool,
-    logo: IDL.Opt(IDL.Text),
+    logo: IDL.Text,
     name: IDL.Text,
     tokenName: IDL.Text,
     tokenSymbol: IDL.Text,
     updatedAt: IDL.Nat32,
     address: IDL.Text,
-    index: IDL.Opt(IDL.Text),
+    index: IDL.Text,
     decimal: IDL.Text,
     shortDecimal: IDL.Text,
     id_number: IDL.Nat32,
@@ -107,7 +107,7 @@ export const idlFactory = ({ IDL }: { IDL: any }) => {
             ),
           }),
         ),
-        logo: IDL.Opt(IDL.Text),
+        logo: IDL.Text,
         tokenSymbol: IDL.Text,
         symbol: IDL.Text,
         address: IDL.Text,
@@ -117,7 +117,7 @@ export const idlFactory = ({ IDL }: { IDL: any }) => {
       }),
     ),
     updatedAt: IDL.Nat32,
-    accountIdentier: IDL.Opt(IDL.Text),
+    accountIdentier: IDL.Text,
   });
 
   const WalletDatabase = IDL.Service({

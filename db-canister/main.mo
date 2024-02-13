@@ -30,8 +30,8 @@ actor class WalletDatabase() {
       currency_amount : Text;
     }];
     fee : Text;
-    index : ?Text;
-    logo : ?Text;
+    index : Text;
+    logo : Text;
     supportedStandards : [Text];
   };
   type ContactDocument_v0 = {
@@ -39,11 +39,11 @@ actor class WalletDatabase() {
     updatedAt : Nat32;
     deleted : Bool;
     principal : Text;
-    accountIdentier : ?Text;
+    accountIdentier : Text;
     assets : [{
       symbol : Text;
       tokenSymbol : Text;
-      logo : ?Text;
+      logo : Text;
       subaccounts : [{
         name : Text;
         subaccount_index : Text;
@@ -103,7 +103,7 @@ actor class WalletDatabase() {
         };
         let db = (
           DB.use<TokenDocument, Text>(tInit, func(x) = x.address, Text.compare, func(x) = x.updatedAt),
-          DB.use<ContactDocument, Text>(cInit, func(x) = x.name, Text.compare, func(x) = x.updatedAt),
+          DB.use<ContactDocument, Text>(cInit, func(x) = x.principal, Text.compare, func(x) = x.updatedAt),
         );
         let (upd, _) = AssocList.replace(databasesCache, owner, Principal.equal, ?db);
         databasesCache := upd;

@@ -51,14 +51,13 @@ export const setupReplication: <T extends { updatedAt: number; deleted: boolean 
         }
       },
       batchSize: 100,
-      modifier: (d: any) => d,
     },
     pull: {
       handler: async (lastCheckpoint: any, batchSize: any): Promise<any> => {
         pulling$.next(true);
 
         try {
-          let documentsFromRemote = await pullFunc(lastCheckpoint?.updatedAt || 0, lastCheckpoint?.id || 0, batchSize);
+          let documentsFromRemote = await pullFunc(lastCheckpoint?.updatedAt || 0, lastCheckpoint?.id || "", batchSize);
 
           if (!documentsFromRemote) documentsFromRemote = [];
           pulling$.next(false);
@@ -80,11 +79,22 @@ export const setupReplication: <T extends { updatedAt: number; deleted: boolean 
         }
       },
       batchSize: 1000,
-      modifier: (d: any) => d,
     },
   });
 
   await replicationState.start();
 
   return [replicationState, setInterval(() => replicationState.reSync(), 15000), pushing$, pulling$];
+};
+
+export const extractValueFromArray = (possibleArray: string[] | string = ""): string => {
+  if (Array.isArray(possibleArray)) {
+    if (possibleArray.length > 0) {
+      return possibleArray[0];
+    }
+
+    return "";
+  }
+
+  return possibleArray;
 };
