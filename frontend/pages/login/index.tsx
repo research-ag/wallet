@@ -1,25 +1,48 @@
 import { AuthNetworkTypeEnum, ThemesEnum } from "@/const";
-import { ChangeEvent, Fragment } from "react";
-import { handleAuthenticated, handleSeedAuthenticated } from "@/redux/CheckAuth";
+import { ChangeEvent, Fragment, useEffect, useState } from "react";
+import { handleAuthenticated, handleLoginApp, handleSeedAuthenticated } from "@/redux/CheckAuth";
+import { useAccount, useNetwork } from "wagmi";
 
+import AddressPill from "./components/AddressPill";
 import { AuthNetwork } from "@redux/models/TokenModels";
 import CheckIcon from "@assets/svg/files/edit-check.svg?react";
 import ChevIcon from "@/assets/svg/files/chev-icon.svg?react";
+import ConnectButton from "./components/ConnectButton";
+import { CustomButton } from "../../components/Button";
 import { CustomInput } from "@components/Input";
 import FlagSelector from "./components/flagSelector";
 // svgs
 import HplWalletIcon from "@/assets/svg/files/logo_ICRC-1-dark.svg?react";
 import HplWalletLightIcon from "@/assets/svg/files/logo_ICRC-1.svg?react";
+import LoginButton from "./components/LoginButton";
 //
 import { LoginHook } from "./hooks/loginhook";
 import LoginLogoIcon from "@/assets/svg/files/login-logo.svg?react";
 import { ThemeHook } from "@hooks/themeHook";
+import { isChainIdSupported } from "../../wagmi.config";
+import { useSiweIdentity } from "../../siwe";
 import { useTranslation } from "react-i18next";
 
 const Login = () => {
   const { t } = useTranslation();
   const { handleOpenChange, loginOpts, open, seedOpen, setSeedOpen, seed, setSeed } = LoginHook();
   const { theme } = ThemeHook();
+  const [mmOpen, setMmOpen] = useState(false);
+  const { isConnected, address } = useAccount();
+  const { chain } = useNetwork();
+  const { prepareLogin, isPrepareLoginIdle, identity } = useSiweIdentity();
+
+  useEffect(() => {
+    if (!isPrepareLoginIdle || !isConnected || !address) return;
+    prepareLogin();
+  }, [isConnected, address, prepareLogin, isPrepareLoginIdle]);
+
+  useEffect(() => {
+    if (!identity) return;
+    handleLoginApp(identity);
+    console.log("identity", identity.getPrincipal().toText());
+  }, [identity]);
+
   return (
     <Fragment>
       <div className="flex flex-row w-full h-full bg-PrimaryColorLight dark:bg-PrimaryColor">
@@ -55,6 +78,34 @@ const Login = () => {
                       </h3>
                       {opt.icon}
                     </div>
+                    {mmOpen && opt.type === AuthNetworkTypeEnum.Values.MM && (
+                      <div className="flex flex-col items-start gap-5 p-5">
+                        <div className="flex items-center justify-start w-full gap-5">
+                          <div className="flex items-center justify-center w-8 h-8 text-lg font-bold rounded-full bg-SecondaryColorLight text-SecondaryColor">
+                            1
+                          </div>
+                          <div>
+                            {!isConnected && <ConnectButton />}
+                            {isConnected && isChainIdSupported(chain?.id) && (
+                              <AddressPill address={address} className="justify-center w-36" />
+                            )}
+                            {isConnected && !isChainIdSupported(chain?.id) && (
+                              <CustomButton disabled className="text-sm opacity-50 bg-GrayColor w-36">
+                                Unsupported Network
+                              </CustomButton>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-start w-full gap-5">
+                          <div className="flex items-center justify-center w-8 h-8 text-lg font-bold rounded-full bg-SecondaryColorLight text-SecondaryColor">
+                            2
+                          </div>
+                          <div>
+                            <LoginButton />
+                          </div>
+                        </div>
+                      </div>
+                    )}
                     {seedOpen && opt.type === AuthNetworkTypeEnum.Enum.NONE && (
                       <CustomInput
                         sizeInput={"medium"}
@@ -114,11 +165,17 @@ const Login = () => {
   );
 
   async function handleLogin(opt: AuthNetwork) {
-    if (opt.type === AuthNetworkTypeEnum.Values.IC || opt.type === AuthNetworkTypeEnum.Values.NFID) {
+    if (opt.type === AuthNetworkTypeEnum.Values.MM) {
+      setSeedOpen(false);
+      localStorage.setItem("network_type", JSON.stringify({ type: opt.type, network: opt.network, name: opt.name }));
+      setMmOpen(true);
+    } else if (opt.type === AuthNetworkTypeEnum.Values.IC || opt.type === AuthNetworkTypeEnum.Values.NFID) {
+      setMmOpen(false);
       setSeedOpen(false);
       localStorage.setItem("network_type", JSON.stringify({ type: opt.type, network: opt.network, name: opt.name }));
       handleAuthenticated(opt);
     } else if (opt.type === AuthNetworkTypeEnum.Enum.NONE) {
+      setMmOpen(false);
       setSeedOpen((prev) => !prev);
       setSeed("");
     }
