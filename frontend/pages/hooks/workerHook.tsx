@@ -1,6 +1,8 @@
 import { AssetSymbolEnum, WorkerTaskEnum } from "@/const";
 import { defaultTokens } from "@/defaultTokens";
 import { hexToUint8Array } from "@/utils";
+import contactCacheRefresh from "@pages/contacts/helpers/contacts";
+import { allowanceCacheRefresh } from "@pages/home/helpers/allowanceCache";
 // import { AssetList, Metadata } from "@candid/metadata/service.did";
 import store, { useAppDispatch, useAppSelector } from "@redux/Store";
 import { getAllTransactionsICP, getAllTransactionsICRC1, updateAllBalances } from "@redux/assets/AssetActions";
@@ -72,6 +74,10 @@ export const WorkerHook = () => {
       const { tokens } = await updateAllBalances(true, userAgent, defaultTokens, true, false);
       store.dispatch(setTokens(tokens));
     }
+    const myPrincipal = await userAgent.getPrincipal();
+    await contactCacheRefresh(myPrincipal.toText());
+    await allowanceCacheRefresh(myPrincipal.toText());
+    dispatch(setLoading(false));
   };
 
   // TRANSACTION WEB WORKER

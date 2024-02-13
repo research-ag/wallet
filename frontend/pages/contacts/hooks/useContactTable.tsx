@@ -26,7 +26,6 @@ export default function useContactTable() {
   const dispatch = useAppDispatch();
   const [isPending, setIsPending] = useState(false);
 
-  // edit contact up contact list
   const updateContact = (editedContact: Contact, pastPrincipal: string) =>
     dispatch(editContact(editedContact, pastPrincipal));
 
@@ -58,7 +57,6 @@ export default function useContactTable() {
     dispatch(addContactSubacc(principal, tokenSymbol, newName, newIndex, subAccountId, allowance));
   };
 
-  // contact list
   const [deleteModal, setDeleteModal] = useState(false);
   const [deleteType, setDeleteType] = useState<DeleteContactTypeEnum>(DeleteContactTypeEnum.Enum.ASSET);
   const [selCntcPrinAddAsst, setSelCntcPrinAddAsst] = useState("");
@@ -77,9 +75,8 @@ export default function useContactTable() {
     name: false,
     principal: false,
   });
-  // INFO: controls that sub account that is bing edited
+
   const [selSubaccIdx, setSelSubaccIdx] = useState("");
-  // INFO: controls the data that is bing edited
   const [subaccEdited, setSubaccEdited] = useState<SubAccountContact>({
     name: "",
     subaccount_index: "",
