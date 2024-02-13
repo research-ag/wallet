@@ -1,7 +1,7 @@
 import clsx from "clsx";
 
 interface TabProps {
-  tabs: { tabName: string; content: JSX.Element }[];
+  tabs: { tabName: string; content: JSX.Element; disabled?: boolean }[];
   activeTab: string;
   onTabChange: (tabName: string) => void;
 }
@@ -9,17 +9,19 @@ interface TabProps {
 export default function Tab({ tabs, activeTab, onTabChange }: TabProps) {
   return (
     <div className="flex">
-      {tabs.map((tab) => {
-        function onChangeTab() {
-          onTabChange(tab.tabName);
-        }
+      {tabs
+        .filter((tab) => !tab?.disabled)
+        .map((tab) => {
+          function onChangeTab() {
+            onTabChange(tab.tabName);
+          }
 
-        return (
-          <button className={getSelectedStyles(tab.tabName === activeTab)} key={tab.tabName} onClick={onChangeTab}>
-            {tab.content}
-          </button>
-        );
-      })}
+          return (
+            <button className={getSelectedStyles(tab.tabName === activeTab)} key={tab.tabName} onClick={onChangeTab}>
+              {tab.content}
+            </button>
+          );
+        })}
     </div>
   );
 }
