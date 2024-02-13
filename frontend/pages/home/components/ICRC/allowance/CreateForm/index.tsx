@@ -52,6 +52,8 @@ export default function CreateForm() {
       <div className={`flex items-center mt-4 ${getErrorMessage() ? "justify-between" : "justify-end"}`}>
         {getErrorMessage() && <p className="text-TextErrorColor text-md">{getErrorMessage()}</p>}
 
+        {/* TODO: add test button that get the allowance once the principal and spender was set */}
+
         <Button
           onClick={(e) => {
             e.preventDefault();
