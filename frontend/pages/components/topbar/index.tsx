@@ -14,6 +14,7 @@ import ICRC1LogoDark from "@/assets/svg/files/logo_ICRC-1-dark.svg?react";
 import ItalyFlagIcon from "@/assets/svg/files/italia.svg?react";
 import { LanguageHook } from "@hooks/languageHook";
 import Modal from "@components/Modal";
+import Pill from "./Pill";
 import RefreshIcon from "@/assets/svg/files/refresh-ccw.svg?react";
 import SpainFlagIcon from "@/assets/svg/files/españa.svg?react";
 import SunIcon from "@/assets/svg/files/sun-icon.svg?react";
@@ -23,10 +24,12 @@ import { ThemesEnum } from "@/const";
 import UsaFlagIcon from "@/assets/svg/files/usa.svg?react";
 import WalletIcon from "@/assets/svg/files/wallet-icon.svg?react";
 import { clsx } from "clsx";
+import ethUrl from "@assets/svg/files/ethereum-icon.svg";
 import i18n from "@/i18n";
+import icUrl from "@/assets/img/icp-logo.png";
 import { logout } from "@redux/CheckAuth";
 import { setLoading } from "@redux/assets/AssetReducer";
-import { shortAddress } from "@/utils";
+import { useAccount } from "wagmi";
 import { useAppDispatch } from "@redux/Store";
 import { useSiweIdentity } from "../../../siwe";
 import { useTranslation } from "react-i18next";
@@ -40,6 +43,9 @@ const TopBarComponent = () => {
   const { authClient } = AccountHook();
   const { getTotalAmountInCurrency, reloadBallance, assetLoading } = AssetHook();
   const { clear: clearSiweIdentity } = useSiweIdentity();
+
+  const { identity } = useSiweIdentity();
+  const { address } = useAccount();
 
   const [langOpen, setLangOpen] = useState(false);
 
@@ -60,7 +66,8 @@ const TopBarComponent = () => {
             <ICRC1Logo className="max-w-[7rem] h-auto" />
           )}
           <div className="flex flex-row items-center justify-start gap-3">
-            <p className="opacity-50">{shortAddress(authClient, 12, 10)}</p>
+            {identity && <Pill text={address as string} start={6} end={4} icon={ethUrl} />}
+            <Pill text={authClient} start={12} end={10} icon={icUrl} />
             <CustomCopy size={"small"} copyText={authClient} />
             <RefreshIcon
               className={`h-4 w-4 cursor-pointer fill-PrimaryTextColorLight dark:fill-PrimaryTextColor ${
