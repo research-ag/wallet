@@ -78,7 +78,7 @@ const Login = () => {
                       </h3>
                       {opt.icon}
                     </div>
-                    {mmOpen && opt.type === AuthNetworkTypeEnum.Values.MM && (
+                    {mmOpen && opt.type === AuthNetworkTypeEnum.Values.ETH && (
                       <div className="flex flex-col items-start gap-5 p-5">
                         <div className="flex items-center justify-start w-full gap-5">
                           <div className="flex items-center justify-center w-8 h-8 text-lg font-bold rounded-full bg-SecondaryColorLight text-SecondaryColor">
@@ -165,7 +165,7 @@ const Login = () => {
   );
 
   async function handleLogin(opt: AuthNetwork) {
-    if (opt.type === AuthNetworkTypeEnum.Values.MM) {
+    if (opt.type === AuthNetworkTypeEnum.Values.ETH) {
       setSeedOpen(false);
       localStorage.setItem("network_type", JSON.stringify({ type: opt.type, network: opt.network, name: opt.name }));
       setMmOpen(true);

@@ -3,8 +3,8 @@ import { AuthNetworkNameEnum, AuthNetworkTypeEnum } from "@/const";
 import { AuthNetwork } from "@redux/models/TokenModels";
 // svgs
 import XxxxIcon from "../../../assets/svg/files/xxxx-logo.svg";
+import ethereumUrl from "../../../assets/svg/files/ethereum-icon.svg";
 import icUrl from "../../../assets/img/icp-logo.png";
-import metamaskUrl from "../../../assets/img/metamask-logo.png";
 import nfidUrl from "../../../assets/img/nfid-logo.png";
 //
 import { useState } from "react";
@@ -24,9 +24,9 @@ export const LoginHook = () => {
       network: import.meta.env.VITE_AGGENT_NFID_HOST,
     },
     {
-      name: AuthNetworkNameEnum.Values.Metamask,
-      icon: <img src={metamaskUrl} alt="metamask-logo" />,
-      type: AuthNetworkTypeEnum.Values.MM,
+      name: AuthNetworkNameEnum.Values.Ethereum,
+      icon: <img src={ethereumUrl} alt="ethereum-logo" />,
+      type: AuthNetworkTypeEnum.Values.ETH,
       network: "",
     },
     {
