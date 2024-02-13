@@ -40,7 +40,6 @@ const Login = () => {
   useEffect(() => {
     if (!identity) return;
     handleLoginApp(identity);
-    console.log("identity", identity.getPrincipal().toText());
   }, [identity]);
 
   return (
