@@ -45,6 +45,7 @@ export default function AmountFormItem(props: IAmountFormItemProps) {
         icon={icon}
         className="mt-2"
         isLoading={isLoading}
+        value={allowance.amount || ""}
         border={getError() ? "error" : undefined}
       />
     </div>

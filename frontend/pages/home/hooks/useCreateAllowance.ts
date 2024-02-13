@@ -22,6 +22,7 @@ import { updateSubAccountBalance } from "@redux/assets/AssetReducer";
 
 export default function useCreateAllowance() {
   const dispatch = useAppDispatch();
+  const [isLoading, setLoading] = useState(false);
   const { onCloseCreateAllowanceDrawer } = useAllowanceDrawer();
 
   const { selectedAsset, selectedAccount } = useAppSelector(({ asset }) => asset);
@@ -104,6 +105,8 @@ export default function useCreateAllowance() {
   const { mutate, isPending, isError, error, isSuccess } = useMutation({ onSuccess, onError, mutationFn });
 
   return {
+    isLoading,
+    setLoading,
     allowance,
     isPending,
     isError,
