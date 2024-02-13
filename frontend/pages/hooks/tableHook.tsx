@@ -1,16 +1,17 @@
-import { ReactComponent as SortIcon } from "@assets/svg/files/sort.svg";
-import UpAmountIcon from "@assets/svg/files/up-amount-icon.svg";
-import DownAmountIcon from "@assets/svg/files/down-amount-icon.svg";
-import { SortingState, createColumnHelper } from "@tanstack/react-table";
-import { Transaction } from "@redux/models/AccountModels";
-import moment from "moment";
-import { getAddress, getAssetSymbol, toFullDecimal } from "@/utils";
-import { useTranslation } from "react-i18next";
-import { SpecialTxTypeEnum, TransactionTypeEnum } from "@/const";
 import { Fragment, useState } from "react";
-import { useAppSelector } from "@redux/Store";
-import CodeElement from "@components/TableCodeElement";
+import { SortingState, createColumnHelper } from "@tanstack/react-table";
+import { SpecialTxTypeEnum, TransactionTypeEnum } from "@/const";
+import { getAddress, getAssetSymbol, toFullDecimal } from "@/utils";
+
 import { AssetHook } from "@pages/home/hooks/assetHook";
+import CodeElement from "@components/TableCodeElement";
+import DownAmountIcon from "@assets/svg/files/down-amount-icon.svg";
+import SortIcon from "@assets/svg/files/sort.svg?react";
+import { Transaction } from "@redux/models/AccountModels";
+import UpAmountIcon from "@assets/svg/files/up-amount-icon.svg";
+import moment from "moment";
+import { useAppSelector } from "@redux/Store";
+import { useTranslation } from "react-i18next";
 
 export const TableHook = () => {
   const { t } = useTranslation();
@@ -28,8 +29,8 @@ export const TableHook = () => {
             (selectedTransaction?.idx && selectedTransaction?.idx === info.getValue().idx)) && (
             <div className="absolute w-2 h-[4.05rem] left-0 bg-SelectRowColor"></div>
           )}
-          <div className="flex w-full justify-center my-2 h-12">
-            <div className="flex justify-center items-center p-2 rounded-md border border-BorderColorTwoLight dark:border-BorderColorTwo">
+          <div className="flex justify-center w-full h-12 my-2">
+            <div className="flex items-center justify-center p-2 border rounded-md border-BorderColorTwoLight dark:border-BorderColorTwo">
               <img
                 src={
                   info.getValue().kind === SpecialTxTypeEnum.Enum.burn
@@ -52,26 +53,26 @@ export const TableHook = () => {
           </div>
         </Fragment>
       ),
-      header: () => <p className="flex w-full justify-center opacity-60 font-normal my-2">{t("type")}</p>,
+      header: () => <p className="flex justify-center w-full my-2 font-normal opacity-60">{t("type")}</p>,
     }),
     columnHelper.accessor((row) => row, {
       id: "idx",
       cell: (info) => {
         return <CodeElement tx={info.getValue()} />;
       },
-      header: () => <p className="flex w-full justify-start opacity-60 font-normal my-2">{t("transactionID")}</p>,
+      header: () => <p className="flex justify-start w-full my-2 font-normal opacity-60">{t("transactionID")}</p>,
     }),
     columnHelper.accessor((row) => row.timestamp, {
       id: "timestamp",
       cell: (info) => (
-        <div className="flex flex-col justify-center items-center my-2 w-full">
+        <div className="flex flex-col items-center justify-center w-full my-2">
           <p>{moment(info.getValue()).format("M/DD/YYYY")}</p>
         </div>
       ),
       header: () => (
-        <div className="flex flex-row opacity-60 justify-center items-center w-full gap-1 cursor-pointer">
-          <p className="flex justify-center font-normal my-2">{t("date")}</p>
-          <SortIcon className=" fill-PrimaryTextColorLight dark:fill-PrimaryTextColor w-3 h-3" />
+        <div className="flex flex-row items-center justify-center w-full gap-1 cursor-pointer opacity-60">
+          <p className="flex justify-center my-2 font-normal">{t("date")}</p>
+          <SortIcon className="w-3 h-3  fill-PrimaryTextColorLight dark:fill-PrimaryTextColor" />
         </div>
       ),
     }),
@@ -89,7 +90,7 @@ export const TableHook = () => {
           );
 
         return (
-          <div className="flex flex-col justify-center items-end my-2 w-full pr-5">
+          <div className="flex flex-col items-end justify-center w-full pr-5 my-2">
             <p className={`text-right whitespace-nowrap ${isTo ? "text-TextSendColor" : "text-TextReceiveColor"}`}>{`${
               isTo ? "-" : ""
             }${
@@ -103,7 +104,7 @@ export const TableHook = () => {
           </div>
         );
       },
-      header: () => <p className="flex w-full justify-end opacity-60 font-normal my-2 pr-5">{t("amount")}</p>,
+      header: () => <p className="flex justify-end w-full pr-5 my-2 font-normal opacity-60">{t("amount")}</p>,
     }),
   ];
 

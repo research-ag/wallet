@@ -1,20 +1,21 @@
-// svgs
-import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
+import { AccountDefaultEnum, AddingAssetsEnum, TokenNetworkEnum } from "@/const";
 //
 import { Fragment, useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import { GeneralHook } from "../hooks/generalHook";
-import { AccountDefaultEnum, AddingAssetsEnum, TokenNetworkEnum } from "@/const";
-import { TokenHook } from "../hooks/tokenHook";
-import { Asset } from "@redux/models/AccountModels";
-import { AccountHook } from "@pages/hooks/accountHook";
-import { Token } from "@redux/models/TokenModels";
-import { AssetHook } from "../hooks/assetHook";
-import { useAppDispatch } from "@redux/Store";
-import DialogAssetConfirmation from "./DialogAssetConfirmation";
-import AddAssetManual from "./AddAssetManual";
 import { addToken, setAcordeonAssetIdx } from "@redux/assets/AssetReducer";
+
+import { AccountHook } from "@pages/hooks/accountHook";
 import AddAssetAutomatic from "./AddAssetAutomatic";
+import AddAssetManual from "./AddAssetManual";
+import { Asset } from "@redux/models/AccountModels";
+import { AssetHook } from "../hooks/assetHook";
+// svgs
+import CloseIcon from "@assets/svg/files/close.svg?react";
+import DialogAssetConfirmation from "./DialogAssetConfirmation";
+import { GeneralHook } from "../hooks/generalHook";
+import { Token } from "@redux/models/TokenModels";
+import { TokenHook } from "../hooks/tokenHook";
+import { useAppDispatch } from "@redux/Store";
+import { useTranslation } from "react-i18next";
 
 interface AddAssetsProps {
   setAssetOpen(value: boolean): void;

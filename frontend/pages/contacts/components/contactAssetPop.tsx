@@ -1,13 +1,16 @@
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+
+import { Asset, AssetToAdd } from "@redux/models/AccountModels";
+import { Fragment, useEffect, useState } from "react";
 // svgsetassetsToAdd
 import { IconType, IconTypeEnum } from "@/const";
-import PlusIcon from "@assets/svg/files/plus-icon.svg";
+
 //
 import { CustomButton } from "@components/Button";
 import { CustomCheck } from "@components/CheckBox";
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { Asset, AssetToAdd } from "@redux/models/AccountModels";
-import { Fragment, useEffect, useState } from "react";
+import PlusIcon from "@assets/svg/files/plus-icon.svg";
 import { useTranslation } from "react-i18next";
+
 interface ContactAssetPopProps {
   onAdd(data: AssetToAdd[]): void;
   assets: Asset[];
@@ -85,7 +88,7 @@ const ContactAssetPop = ({
                           handleSelectAsset(asset);
                         }}
                       >
-                        <div className="flex flex-start justify-start items-center gap-2">
+                        <div className="flex items-center justify-start gap-2 flex-start">
                           {getAssetIcon(IconTypeEnum.Enum.FILTER, asset.tokenSymbol, asset.logo)}
                           <p>{asset.symbol}</p>
                         </div>
@@ -99,7 +102,7 @@ const ContactAssetPop = ({
                   })}
                 </div>
 
-                <div className="flex justify-center items-center p-2 pt-4 w-full rounded-b-lg">
+                <div className="flex items-center justify-center w-full p-2 pt-4 rounded-b-lg">
                   <CustomButton onClick={handleAddAssetButton} size={"small"} className="w-full">
                     <p>{t("add.asset")}</p>
                   </CustomButton>

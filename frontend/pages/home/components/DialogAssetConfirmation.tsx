@@ -1,11 +1,12 @@
+import { AddingAssets, AddingAssetsEnum, IconTypeEnum, TokenNetwork, TokenNetworkEnum } from "@/const";
+
 // svgs
-import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
+import CloseIcon from "@assets/svg/files/close.svg?react";
+import { GeneralHook } from "../hooks/generalHook";
 //
 import Modal from "@components/Modal";
-import { GeneralHook } from "../hooks/generalHook";
-import { AddingAssetsEnum, TokenNetwork, IconTypeEnum, TokenNetworkEnum, AddingAssets } from "@/const";
-import { useTranslation } from "react-i18next";
 import { Token } from "@redux/models/TokenModels";
+import { useTranslation } from "react-i18next";
 
 interface DialogAssetConfirmationProps {
   modal: boolean;

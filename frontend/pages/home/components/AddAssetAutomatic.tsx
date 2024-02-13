@@ -1,14 +1,16 @@
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+
 // svgs
 import { AccountDefaultEnum, IconTypeEnum, TokenNetwork, TokenNetworkEnum } from "@/const";
+
+import { Asset } from "@redux/models/AccountModels";
 import ChevIcon from "@assets/svg/files/chev-icon.svg";
 //
 import { CustomButton } from "@components/Button";
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { clsx } from "clsx";
-import { useTranslation } from "react-i18next";
 import { GeneralHook } from "../hooks/generalHook";
 import { Token } from "@redux/models/TokenModels";
-import { Asset } from "@redux/models/AccountModels";
+import { clsx } from "clsx";
+import { useTranslation } from "react-i18next";
 
 interface AddAssetAutomaticProps {
   setNetworkTOpen(value: boolean): void;
@@ -50,9 +52,9 @@ const AddAssetAutomatic = ({
   const { getAssetIcon } = GeneralHook();
 
   return (
-    <div className="flex flex-col justify-start items-start w-full">
-      <div className="flex flex-row justify-start items-center w-full gap-4">
-        <div className="flex flex-col justify-start items-start w-1/2">
+    <div className="flex flex-col items-start justify-start w-full">
+      <div className="flex flex-row items-center justify-start w-full gap-4">
+        <div className="flex flex-col items-start justify-start w-1/2">
           <p className="w-full text-left opacity-60">{t("network")}</p>
           <DropdownMenu.Root
             onOpenChange={(e: boolean) => {
@@ -98,7 +100,7 @@ const AddAssetAutomatic = ({
                         onSelectNetwork(sa);
                       }}
                     >
-                      <div className="flex flex-col justify-center items-start">
+                      <div className="flex flex-col items-start justify-center">
                         <p>{`${sa}`}</p>
                       </div>
                     </DropdownMenu.Item>
@@ -108,7 +110,7 @@ const AddAssetAutomatic = ({
             </DropdownMenu.Portal>
           </DropdownMenu.Root>
         </div>
-        <div className="flex flex-col justify-start items-start w-full">
+        <div className="flex flex-col items-start justify-start w-full">
           <p className="w-full text-left opacity-60">{t("asset")}</p>
           <DropdownMenu.Root
             onOpenChange={(e: boolean) => {
@@ -127,7 +129,7 @@ const AddAssetAutomatic = ({
                 )}
               >
                 {newToken.symbol != "" ? (
-                  <div className="flex flex-row justify-start items-center">
+                  <div className="flex flex-row items-center justify-start">
                     {getAssetIcon(IconTypeEnum.Enum.ASSET, newToken.symbol, newToken.logo)}
                     <p className="ml-3">{`${newToken.symbol}`}</p>
                   </div>
@@ -161,7 +163,7 @@ const AddAssetAutomatic = ({
                           onSelectToken(newAsset);
                         }}
                       >
-                        <div className="flex flex-row justify-start items-center">
+                        <div className="flex flex-row items-center justify-start">
                           {getAssetIcon(IconTypeEnum.Enum.ASSET, newAsset.symbol, newToken.logo)}
                           <p className="ml-3">{`${newAsset.symbol}`}</p>
                         </div>
@@ -173,8 +175,8 @@ const AddAssetAutomatic = ({
           </DropdownMenu.Root>
         </div>
       </div>
-      {errToken !== "" && <p className="text-LockColor text-right text-sm w-full">{errToken}</p>}
-      <div className="w-full flex flex-row justify-between items-center mt-2 mb-4">
+      {errToken !== "" && <p className="w-full text-sm text-right text-LockColor">{errToken}</p>}
+      <div className="flex flex-row items-center justify-between w-full mt-2 mb-4">
         <CustomButton intent={"noBG"} className="!font-light !p-0 mt-3" onClick={onAddAssetManually}>
           {t("add.asset.manually")}
         </CustomButton>

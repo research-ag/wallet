@@ -1,16 +1,3 @@
-// svgs
-import { ReactComponent as PencilIcon } from "@assets/svg/files/pencil.svg";
-import { ReactComponent as TrashIcon } from "@assets/svg/files/trash-icon.svg";
-import { ReactComponent as ChevIcon } from "@assets/svg/files/chev-icon.svg";
-import { ReactComponent as CheckIcon } from "@assets/svg/files/edit-check.svg";
-import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
-//
-import { useTranslation } from "react-i18next";
-import { encodeIcrcAccount } from "@dfinity/ledger";
-import { getInitialFromName, hexToNumber, hexToUint8Array, removeLeadingZeros, shortAddress } from "@/utils";
-import { Principal } from "@dfinity/principal";
-import { CustomCopy } from "@components/CopyTooltip";
-import { CustomInput } from "@components/Input";
 import {
   AssetContact,
   Contact,
@@ -18,10 +5,24 @@ import {
   SubAccountContact,
   SubAccountContactErr,
 } from "@redux/models/ContactsModels";
+import { getInitialFromName, hexToNumber, hexToUint8Array, removeLeadingZeros, shortAddress } from "@/utils";
+
+import CheckIcon from "@assets/svg/files/edit-check.svg?react";
+import ChevIcon from "@assets/svg/files/chev-icon.svg?react";
+import CloseIcon from "@assets/svg/files/close.svg?react";
+import { CustomCopy } from "@components/CopyTooltip";
+import { CustomInput } from "@components/Input";
 import { DeleteContactTypeEnum } from "@/const";
-import { useContacts } from "../hooks/contactsHook";
 import { GeneralHook } from "@pages/home/hooks/generalHook";
+// svgs
+import PencilIcon from "@assets/svg/files/pencil.svg?react";
+import { Principal } from "@dfinity/principal";
+import TrashIcon from "@assets/svg/files/trash-icon.svg?react";
 import bigInt from "big-integer";
+import { encodeIcrcAccount } from "@dfinity/ledger";
+import { useContacts } from "../hooks/contactsHook";
+//
+import { useTranslation } from "react-i18next";
 
 interface TableSubAccountsProps {
   asst: AssetContact;

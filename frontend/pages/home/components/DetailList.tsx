@@ -1,22 +1,23 @@
+import { DrawerOption, DrawerOptionEnum, IconTypeEnum } from "@/const";
+import { flexRender, getCoreRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
+
 // svgs
 import ArrowBottomLeftIcon from "@assets/svg/files/arrow-bottom-left-icon.svg";
 import ArrowTopRightIcon from "@assets/svg/files/arrow-top-right-icon.svg";
+import DrawerAction from "./DrawerAction";
+import { DrawerHook } from "../hooks/drawerHook";
+import DrawerReceive from "./DrawerReceive";
+import DrawerSend from "./DrawerSend";
+import DrawerTransaction from "./Transaction";
+import DrawerWrap from "./DrawerWrap";
 //
 import { Fragment } from "react";
-import DrawerSend from "./DrawerSend";
-import DrawerWrap from "./DrawerWrap";
-import DrawerReceive from "./DrawerReceive";
-import DrawerAction from "./DrawerAction";
-import { getCoreRowModel, useReactTable, flexRender, getSortedRowModel } from "@tanstack/react-table";
-import { t } from "i18next";
-import DrawerTransaction from "./Transaction";
 import { GeneralHook } from "../hooks/generalHook";
-import { DrawerHook } from "../hooks/drawerHook";
 import { TableHook } from "@pages/hooks/tableHook";
 import { UseTransaction } from "../hooks/useTransaction";
-import { DrawerOption, DrawerOptionEnum, IconTypeEnum } from "@/const";
-import { toFullDecimal } from "@/utils";
 import { clsx } from "clsx";
+import { t } from "i18next";
+import { toFullDecimal } from "@/utils";
 
 const DetailList = () => {
   const { transactions, getAssetIcon, selectedAsset, selectedAccount } = GeneralHook();
@@ -44,9 +45,9 @@ const DetailList = () => {
       >
         <div className="flex flex-row justify-between items-center w-full h-[4.75rem] bg-TransactionHeaderColorLight dark:bg-TransactionHeaderColor rounded-md">
           <div className="flex flex-col justify-center items-start bg-[#33b2ef] w-[17rem] h-full rounded-l-md p-4 text-[#ffff]">
-            <div className="flex flex-row justify-between items-center gap-1 w-full">
+            <div className="flex flex-row items-center justify-between w-full gap-1">
               {getAssetIcon(IconTypeEnum.Enum.HEADER, selectedAsset?.tokenSymbol, selectedAsset?.logo)}
-              <div className="flex flex-col justify-center items-end">
+              <div className="flex flex-col items-end justify-center">
                 <p className="font-semibold text-[1.15rem] text-right">{`${toFullDecimal(
                   selectedAccount?.amount || "0",
                   selectedAccount?.decimal || 8,
@@ -57,7 +58,7 @@ const DetailList = () => {
             </div>
           </div>
           <div className="flex flex-row justify-around items-center h-full w-[calc(100%-17rem)] text-ThirdTextColorLight dark:text-ThirdTextColor">
-            <div className="flex flex-col justify-center items-center w-1/3 gap-1">
+            <div className="flex flex-col items-center justify-center w-1/3 gap-1">
               <div
                 className="flex flex-row justify-center items-center w-7 h-7 bg-[#33b2ef] rounded-md cursor-pointer"
                 onClick={() => {
@@ -68,7 +69,7 @@ const DetailList = () => {
               </div>
               <p className="text-md">{t("send")}</p>
             </div>
-            <div className="flex flex-col justify-center items-center w-1/3 gap-1">
+            <div className="flex flex-col items-center justify-center w-1/3 gap-1">
               <div
                 className="flex flex-row justify-center items-center w-7 h-7 bg-[#33b2ef] rounded-md cursor-pointer"
                 onClick={() => {
@@ -137,7 +138,7 @@ const DetailList = () => {
         {selectedTransaction ? (
           <DrawerTransaction setDrawerOpen={setDrawerOpen} />
         ) : (
-          <div className="flex flex-col justify-start items-center bg-PrimaryColorLight dark:bg-PrimaryColor gap-5 w-full h-full pt-8 px-6">
+          <div className="flex flex-col items-center justify-start w-full h-full gap-5 px-6 pt-8 bg-PrimaryColorLight dark:bg-PrimaryColor">
             <DrawerAction drawerOption={drawerOption} setDrawerOption={setDrawerOption} setDrawerOpen={setDrawerOpen}>
               {drawerOption === DrawerOptionEnum.Enum.SEND && (
                 <DrawerSend drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />

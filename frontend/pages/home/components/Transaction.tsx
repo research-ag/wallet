@@ -1,19 +1,20 @@
+import { AssetSymbolEnum, SpecialTxTypeEnum, TransactionTypeEnum } from "@/const";
+import { getAddress, getAssetSymbol, getICRC1Acc, hexToUint8Array, shortAddress, toFullDecimal } from "@/utils";
+
+import { AccountHook } from "@pages/hooks/accountHook";
+import { AssetHook } from "../hooks/assetHook";
 // svgs
-import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
-import UpAmountIcon from "@assets/svg/files/up-amount-icon.svg";
+import CloseIcon from "@assets/svg/files/close.svg?react";
+import { CustomCopy } from "@components/CopyTooltip";
 import DownAmountIcon from "@assets/svg/files/down-amount-icon.svg";
-import { ReactComponent as DownBlueArrow } from "@assets/svg/files/down-blue-arrow.svg";
+import DownBlueArrow from "@assets/svg/files/down-blue-arrow.svg?react";
 //
 import { Fragment } from "react";
-import { useTranslation } from "react-i18next";
 import { GeneralHook } from "../hooks/generalHook";
-import { getAddress, getAssetSymbol, getICRC1Acc, hexToUint8Array, shortAddress, toFullDecimal } from "@/utils";
-import { AssetSymbolEnum, SpecialTxTypeEnum, TransactionTypeEnum } from "@/const";
-import { Principal } from "@dfinity/principal";
-import { AccountHook } from "@pages/hooks/accountHook";
 import { IcrcAccount } from "@dfinity/ledger";
-import { AssetHook } from "../hooks/assetHook";
-import { CustomCopy } from "@components/CopyTooltip";
+import { Principal } from "@dfinity/principal";
+import UpAmountIcon from "@assets/svg/files/up-amount-icon.svg";
+import { useTranslation } from "react-i18next";
 
 interface DrawerTransactionProps {
   setDrawerOpen(value: boolean): void;
@@ -37,11 +38,11 @@ const DrawerTransaction = ({ setDrawerOpen }: DrawerTransactionProps) => {
 
   return (
     <Fragment>
-      <div className="flex flex-col justify-start items-center bg-PrimaryColorLight dark:bg-SideColor w-full h-full pt-8 text-md text-PrimaryTextColorLight/70 dark:text-PrimaryTextColor/70">
+      <div className="flex flex-col items-center justify-start w-full h-full pt-8 bg-PrimaryColorLight dark:bg-SideColor text-md text-PrimaryTextColorLight/70 dark:text-PrimaryTextColor/70">
         {/* TITLE SECTION */}
-        <div className="flex flex-row justify-between items-center w-full mb-4 px-6">
-          <div className="flex flex-row justify-start items-center gap-7">
-            <p className="font-semibold text-lg text-PrimaryTextColorLight dark:text-PrimaryTextColor">
+        <div className="flex flex-row items-center justify-between w-full px-6 mb-4">
+          <div className="flex flex-row items-center justify-start gap-7">
+            <p className="text-lg font-semibold text-PrimaryTextColorLight dark:text-PrimaryTextColor">
               {selectedTransaction?.kind === SpecialTxTypeEnum.Enum.mint
                 ? "Mint"
                 : selectedTransaction?.kind === SpecialTxTypeEnum.Enum.burn
@@ -74,12 +75,12 @@ const DrawerTransaction = ({ setDrawerOpen }: DrawerTransactionProps) => {
         {/* FROM SECTION */}
         {selectedTransaction?.kind !== SpecialTxTypeEnum.Enum.mint && (
           <div className="flex flex-col justify-center items-center gap-4 w-[calc(100%-3rem)] mx-6 p-4 bg-FromBoxColorLight dark:bg-FromBoxColor">
-            <div className="flex flex-row justify-between items-center w-full">
-              <p className="text-PrimaryTextColorLight dark:text-PrimaryTextColor font-medium">{t("from")}</p>
+            <div className="flex flex-row items-center justify-between w-full">
+              <p className="font-medium text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("from")}</p>
             </div>
-            <div className="flex flex-row justify-between items-center w-full font-normal">
+            <div className="flex flex-row items-center justify-between w-full font-normal">
               <p>{`${t("acc.principal")}`}</p>
-              <div className="flex flex-row justify-start items-center gap-2">
+              <div className="flex flex-row items-center justify-start gap-2">
                 <p>{`${hasSub(false) ? shortAddress(getPrincipal(false), 12, 12) : t("unknown")}`}</p>
                 <CustomCopy
                   size={"small"}
@@ -89,9 +90,9 @@ const DrawerTransaction = ({ setDrawerOpen }: DrawerTransactionProps) => {
                 />
               </div>
             </div>
-            <div className="flex flex-row justify-between items-center w-full font-normal">
+            <div className="flex flex-row items-center justify-between w-full font-normal">
               <p>{`${t("acc.subacc")}`}</p>
-              <div className="flex flex-row justify-start items-center gap-2">
+              <div className="flex flex-row items-center justify-start gap-2">
                 <p>{`${hasSub(false) ? getSub(false) : t("unknown")}`}</p>
                 <CustomCopy
                   size={"small"}
@@ -101,9 +102,9 @@ const DrawerTransaction = ({ setDrawerOpen }: DrawerTransactionProps) => {
                 />
               </div>
             </div>
-            <div className="flex flex-row justify-between items-center w-full font-normal">
+            <div className="flex flex-row items-center justify-between w-full font-normal">
               <p>{`${t("icrc.acc")}`}</p>
-              <div className="flex flex-row justify-start items-center gap-2">
+              <div className="flex flex-row items-center justify-start gap-2">
                 <p>{`${hasSub(false) ? shortAddress(getICRCAccount(false), 12, 12) : t("unknown")}`}</p>
                 <CustomCopy
                   size={"small"}
@@ -114,9 +115,9 @@ const DrawerTransaction = ({ setDrawerOpen }: DrawerTransactionProps) => {
               </div>
             </div>
             {selectedTransaction?.symbol === AssetSymbolEnum.Enum.ICP && (
-              <div className="flex flex-row justify-between items-center w-full font-normal">
+              <div className="flex flex-row items-center justify-between w-full font-normal">
                 <p>{`${t("acc.identifier")}`}</p>
-                <div className="flex flex-row justify-start items-center gap-2">
+                <div className="flex flex-row items-center justify-start gap-2">
                   <p>{`${shortAddress(getIdentifier(false), 12, 12)}`}</p>
                   <CustomCopy
                     size={"small"}
@@ -127,7 +128,7 @@ const DrawerTransaction = ({ setDrawerOpen }: DrawerTransactionProps) => {
                 </div>
               </div>
             )}
-            <div className="flex flex-row justify-between items-center w-full font-normal">
+            <div className="flex flex-row items-center justify-between w-full font-normal">
               <p>{t("transaction.amount")}</p>
               <p className="">{`${toFullDecimal(
                 BigInt(selectedTransaction?.amount || "0") + BigInt(selectedAccount?.transaction_fee || "0"),
@@ -142,12 +143,12 @@ const DrawerTransaction = ({ setDrawerOpen }: DrawerTransactionProps) => {
         {/* TO SECTION */}
         {selectedTransaction?.kind !== SpecialTxTypeEnum.Enum.burn && (
           <div className="flex flex-col justify-center items-center gap-4 w-[calc(100%-3rem)] mx-6 p-4 bg-FromBoxColorLight dark:bg-FromBoxColor rounded-md">
-            <div className="flex flex-row justify-between items-center w-full">
-              <p className="text-PrimaryTextColorLight dark:text-PrimaryTextColor font-medium">{t("to")}</p>
+            <div className="flex flex-row items-center justify-between w-full">
+              <p className="font-medium text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("to")}</p>
             </div>
-            <div className="flex flex-row justify-between items-center w-full font-normal">
+            <div className="flex flex-row items-center justify-between w-full font-normal">
               <p>{`${t("acc.principal")}`}</p>
-              <div className="flex flex-row justify-start items-center gap-2">
+              <div className="flex flex-row items-center justify-start gap-2">
                 <p>{`${hasSub(true) ? shortAddress(getPrincipal(true), 12, 12) : t("unknown")}`}</p>
                 <CustomCopy
                   size={"small"}
@@ -157,9 +158,9 @@ const DrawerTransaction = ({ setDrawerOpen }: DrawerTransactionProps) => {
                 />
               </div>
             </div>
-            <div className="flex flex-row justify-between items-center w-full font-normal">
+            <div className="flex flex-row items-center justify-between w-full font-normal">
               <p>{`${t("acc.subacc")}`}</p>
-              <div className="flex flex-row justify-start items-center gap-2">
+              <div className="flex flex-row items-center justify-start gap-2">
                 <p>{`${hasSub(true) ? getSub(true) : t("unknown")}`}</p>
                 <CustomCopy
                   size={"small"}
@@ -169,9 +170,9 @@ const DrawerTransaction = ({ setDrawerOpen }: DrawerTransactionProps) => {
                 />
               </div>
             </div>
-            <div className="flex flex-row justify-between items-center w-full font-normal">
+            <div className="flex flex-row items-center justify-between w-full font-normal">
               <p>{`${t("icrc.acc")}`}</p>
-              <div className="flex flex-row justify-start items-center gap-2">
+              <div className="flex flex-row items-center justify-start gap-2">
                 <p>{`${hasSub(true) ? shortAddress(getICRCAccount(true), 12, 12) : t("unknown")}`}</p>
                 <CustomCopy
                   size={"small"}
@@ -182,9 +183,9 @@ const DrawerTransaction = ({ setDrawerOpen }: DrawerTransactionProps) => {
               </div>
             </div>
             {selectedTransaction?.symbol === AssetSymbolEnum.Enum.ICP && (
-              <div className="flex flex-row justify-between items-center w-full font-normal">
+              <div className="flex flex-row items-center justify-between w-full font-normal">
                 <p>{`${t("acc.identifier")}`}</p>
-                <div className="flex flex-row justify-start items-center gap-2">
+                <div className="flex flex-row items-center justify-start gap-2">
                   <p>{`${shortAddress(getIdentifier(true), 12, 12)}`}</p>
                   <CustomCopy
                     size={"small"}
@@ -195,7 +196,7 @@ const DrawerTransaction = ({ setDrawerOpen }: DrawerTransactionProps) => {
                 </div>
               </div>
             )}
-            <div className="flex flex-row justify-between items-center w-full font-normal">
+            <div className="flex flex-row items-center justify-between w-full font-normal">
               <p>{t("transaction.amount")}</p>
               <p className="">{`${toFullDecimal(
                 BigInt(selectedTransaction?.amount || "0"),
@@ -206,7 +207,7 @@ const DrawerTransaction = ({ setDrawerOpen }: DrawerTransactionProps) => {
         )}
         {selectedTransaction?.kind !== SpecialTxTypeEnum.Enum.mint && (
           <div className="flex flex-col justify-center items-center gap-4 w-[calc(100%-3rem)] mx-6 mt-5 p-4 bg-FromBoxColorLight dark:bg-FromBoxColor rounded-md">
-            <div className="flex flex-row justify-between items-center w-full font-normal">
+            <div className="flex flex-row items-center justify-between w-full font-normal">
               <p className="font-bold">{t("fee")}</p>
               <p className="font-bold">{`${toFullDecimal(
                 BigInt(selectedAccount?.transaction_fee || "0"),

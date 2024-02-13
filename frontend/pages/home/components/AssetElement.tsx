@@ -1,23 +1,25 @@
-// svgs
-import ChevronRightIcon from "@assets/svg/files/chevron-right-icon.svg";
-import ChevronRightDarkIcon from "@assets/svg/files/chevron-right-dark-icon.svg";
-import InfoIcon from "@assets/svg/files/info-icon.svg";
-import { ReactComponent as TrashIcon } from "@assets/svg/files/trash-icon.svg";
-//
-import { SubAccount, Asset } from "@redux/models/AccountModels";
-import AccountElement from "./AccountElement";
-import { Fragment, useState } from "react";
 import * as Accordion from "@radix-ui/react-accordion";
-import { GeneralHook } from "../hooks/generalHook";
-import { ThemeHook } from "@hooks/themeHook";
+
+//
+import { Asset, SubAccount } from "@redux/models/AccountModels";
+import { Fragment, useState } from "react";
 import { IconTypeEnum, ThemesEnum } from "@/const";
 import { getFirstNChars, getUSDfromToken, hexToNumber, toFullDecimal } from "@/utils";
-import { AssetHook } from "../hooks/assetHook";
-import { Token } from "@redux/models/TokenModels";
-import bigInt from "big-integer";
+
+import AccountElement from "./AccountElement";
 import { AccountHook } from "@pages/hooks/accountHook";
-import DialogAddAsset from "./DialogAddAsset";
+import { AssetHook } from "../hooks/assetHook";
+import ChevronRightDarkIcon from "@assets/svg/files/chevron-right-dark-icon.svg";
+// svgs
+import ChevronRightIcon from "@assets/svg/files/chevron-right-icon.svg";
 import DeleteAssetModal from "./DeleteAssetModal";
+import DialogAddAsset from "./DialogAddAsset";
+import { GeneralHook } from "../hooks/generalHook";
+import InfoIcon from "@assets/svg/files/info-icon.svg";
+import { ThemeHook } from "@hooks/themeHook";
+import { Token } from "@redux/models/TokenModels";
+import TrashIcon from "@assets/svg/files/trash-icon.svg?react";
+import bigInt from "big-integer";
 
 interface AssetElementProps {
   asset: Asset;
@@ -62,13 +64,13 @@ const AssetElement = ({
           {asset?.tokenSymbol === selectedAsset?.tokenSymbol && (
             <div className="absolute left-0 bg-[#33b2ef] h-full w-1"></div>
           )}
-          <Accordion.Trigger className="flex flex-row justify-center items-center w-full">
+          <Accordion.Trigger className="flex flex-row items-center justify-center w-full">
             <div className={"flex flex-row justify-between w-full h-full text-md"}>
-              <div className="flex flex-row justify-start items-center gap-2">
+              <div className="flex flex-row items-center justify-start gap-2">
                 {getAssetIcon(IconTypeEnum.Enum.ASSET, asset?.tokenSymbol, asset.logo)}
-                <div className="flex flex-col justify-start items-start">
+                <div className="flex flex-col items-start justify-start">
                   <p>{`${getFirstNChars(asset?.name ? asset.name : asset.tokenName, 18)}`}</p>
-                  <div className="flex flex-row justify-start items-center">
+                  <div className="flex flex-row items-center justify-start">
                     <p className={`${asset?.tokenSymbol !== selectedAsset?.tokenSymbol ? "opacity-60" : ""}`}>{`${
                       asset.symbol ? asset.symbol : asset.tokenSymbol
                     }`}</p>{" "}
@@ -77,15 +79,15 @@ const AssetElement = ({
                     </div>
                     {asset?.tokenSymbol === selectedAsset?.tokenSymbol ? (
                       <div className="flex flex-row justify-start items-center rounded ml-2 !p-0" onClick={onAddSub}>
-                        <div className="flex justify-center items-center w-full h-5 rounded bg-SvgColorLight/10 dark:bg-SvgColor">
-                          <p className="text-sm mx-1">+ Sub</p>
+                        <div className="flex items-center justify-center w-full h-5 rounded bg-SvgColorLight/10 dark:bg-SvgColor">
+                          <p className="mx-1 text-sm">+ Sub</p>
                         </div>
                       </div>
                     ) : (
                       <div className="ml-2">
                         {asset.subAccounts.length > 1 && (
-                          <div className="flex justify-center items-center w-full h-5 rounded bg-SvgColorLight/10 dark:bg-SvgColor">
-                            <p className="text-sm px-1">{`${asset.subAccounts.length} Subs`}</p>
+                          <div className="flex items-center justify-center w-full h-5 rounded bg-SvgColorLight/10 dark:bg-SvgColor">
+                            <p className="px-1 text-sm">{`${asset.subAccounts.length} Subs`}</p>
                           </div>
                         )}
                       </div>
@@ -93,7 +95,7 @@ const AssetElement = ({
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col justify-center items-end">
+              <div className="flex flex-col items-end justify-center">
                 <p>{`${toFullDecimal(getFullTokenAmount().token, Number(asset.decimal), Number(asset.shortDecimal))} ${
                   asset.symbol
                 }`}</p>
@@ -102,7 +104,7 @@ const AssetElement = ({
                 >{`≈ $${getFullTokenAmount().currency.toFixed(2)}`}</p>
               </div>
             </div>
-            <div className="flex flex-col justify-between items-center h-8 ml-3 ">
+            <div className="flex flex-col items-center justify-between h-8 ml-3 ">
               {asset?.subAccounts && (
                 <img
                   src={theme === ThemesEnum.enum.dark ? ChevronRightIcon : ChevronRightDarkIcon}
@@ -119,7 +121,7 @@ const AssetElement = ({
                   onClick={() => {
                     onDelete();
                   }}
-                  className="w-3 h-3 fill-PrimaryTextColorLight dark:fill-PrimaryTextColor cursor-pointer "
+                  className="w-3 h-3 cursor-pointer fill-PrimaryTextColorLight dark:fill-PrimaryTextColor "
                 />
               )}
             </div>

@@ -1,9 +1,10 @@
-// svgs
-import PlusIcon from "@assets/svg/files/plus-icon.svg";
 //
 import { AssetContact, SubAccountContact } from "@redux/models/ContactsModels";
+
 import { GeneralHook } from "@pages/home/hooks/generalHook";
 import { IconTypeEnum } from "@/const";
+// svgs
+import PlusIcon from "@assets/svg/files/plus-icon.svg";
 
 interface ContactAssetElementProps {
   contAst: AssetContact;
@@ -36,11 +37,11 @@ const ContactAssetElement = ({
           : ""
       }`}
     >
-      <div className="flex flex-row justify-start items-center gap-3">
+      <div className="flex flex-row items-center justify-start gap-3">
         {getAssetIcon(IconTypeEnum.Enum.FILTER, contAst.tokenSymbol, contAst.logo)}
         <p>{contAst.symbol}</p>
       </div>
-      <div className="flex flex-row justify-between items-center w-28 h-8 rounded bg-black/10 dark:bg-white/10">
+      <div className="flex flex-row items-center justify-between h-8 rounded w-28 bg-black/10 dark:bg-white/10">
         <p className="ml-2">{`${
           contAst.tokenSymbol === selAstContact ? newSubAccounts.length : contAst.subaccounts.length
         } ${
@@ -51,7 +52,7 @@ const ContactAssetElement = ({
         {contAst.tokenSymbol === selAstContact && (
           <button
             onClick={onAddSub}
-            className="flex bg-AddSecondaryButton w-8 h-8 justify-center items-center rounded-r p-0"
+            className="flex items-center justify-center w-8 h-8 p-0 rounded-r bg-AddSecondaryButton"
           >
             <img src={PlusIcon} alt="plus-icon" className="w-5 h-5" />
           </button>

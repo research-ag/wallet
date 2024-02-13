@@ -12,6 +12,7 @@ node_modules
 dist
 dist-ssr
 *.local
+Makefile.prod
 
 # Editor directories and files
 .vscode/*

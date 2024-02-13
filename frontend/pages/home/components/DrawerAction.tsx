@@ -1,11 +1,12 @@
+import { DrawerOption, DrawerOptionEnum } from "@/const";
+
 // svgs
-import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
+import CloseIcon from "@assets/svg/files/close.svg?react";
+import { CustomButton } from "@components/Button";
 //
 import { Fragment } from "react";
-import { useTranslation } from "react-i18next";
-import { CustomButton } from "@components/Button";
 import { clsx } from "clsx";
-import { DrawerOption, DrawerOptionEnum } from "@/const";
+import { useTranslation } from "react-i18next";
 
 interface DrawerActionProps {
   drawerOption: DrawerOption;

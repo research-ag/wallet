@@ -1,19 +1,19 @@
+import BitcoinIcon from "@/assets/svg/files/bitcoin-icon.svg";
+import DragginzIcon from "@/assets/svg/files/dragginz.svg";
+import EthereumIcon from "@/assets/svg/files/ethereum-icon.svg";
+import GLDGovIcon from "@/assets/svg/files/GLDov_icon.svg";
+import GoldTokenIcon from "@/assets/svg/files/gldt_icon.svg";
+import HotOrNotIcon from "@/assets/svg/files/hot-or-not.svg";
+import { ICRC1systemAssets } from "./defaultTokens";
 // svg
 import IcIcon from "@/assets/img/icp.png";
-import EthereumIcon from "@/assets/svg/files/ethereum-icon.svg";
-import BitcoinIcon from "@/assets/svg/files/bitcoin-icon.svg";
+import KinicIcon from "@/assets/svg/files/kinic.svg";
+import OpenChatIcon from "@/assets/svg/files/openchat.svg";
+import OrigynIcon from "@/assets/svg/files/ogy_icon.svg";
+import { Token } from "@redux/models/TokenModels";
 import ckBtcIcon from "@/assets/svg/files/ckbtc.svg";
 import ckEthIcon from "@/assets/svg/files/ckETH.svg";
-import OpenChatIcon from "@/assets/svg/files/openchat.svg";
-import KinicIcon from "@/assets/svg/files/kinic.svg";
-import HotOrNotIcon from "@/assets/svg/files/hot-or-not.svg";
-import GoldTokenIcon from "@/assets/svg/files/gldt_icon.svg";
-import OrigynIcon from "@/assets/svg/files/ogy_icon.svg";
-import DragginzIcon from "@/assets/svg/files/dragginz.svg";
-import GLDGovIcon from "@/assets/svg/files/GLDov_icon.svg";
 import { z } from "zod";
-import { Token } from "@redux/models/TokenModels";
-import { ICRC1systemAssets } from "./defaultTokens";
 
 // Enums
 export const TransactionTypeEnum = z.enum(["RECEIVE", "SEND", "NONE"]);
@@ -52,10 +52,10 @@ export type AccountDefault = z.infer<typeof AccountDefaultEnum>;
 export const WorkerTaskEnum = z.enum(["TRANSACTIONS", "ASSETS"]);
 export type WorkerTask = z.infer<typeof WorkerTaskEnum>;
 
-export const AuthNetworkNameEnum = z.enum(["Internet Identity", "NFID", "Metamask", "Seed", "NONE"]);
+export const AuthNetworkNameEnum = z.enum(["Internet Identity", "NFID", "Ethereum", "Seed", "NONE"]);
 export type AuthNetworkName = z.infer<typeof AuthNetworkNameEnum>;
 
-export const AuthNetworkTypeEnum = z.enum(["IC", "NFID", "MM", "NONE"]);
+export const AuthNetworkTypeEnum = z.enum(["IC", "NFID", "ETH", "NONE"]);
 export type AuthNetworkType = z.infer<typeof AuthNetworkTypeEnum>;
 
 export const DeleteContactTypeEnum = z.enum(["CONTACT", "ASSET", "SUB"]);

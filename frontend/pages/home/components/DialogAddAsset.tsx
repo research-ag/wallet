@@ -1,21 +1,22 @@
+import { Asset, SubAccount } from "@redux/models/AccountModels";
+import { ChangeEvent, useState } from "react";
+import { addSubAccount, setAcordeonAssetIdx } from "@redux/assets/AssetReducer";
+import { checkHexString, getUSDfromToken, hexToNumber, hexToUint8Array, removeLeadingZeros } from "@/utils";
+
+import { AssetHook } from "../hooks/assetHook";
 // svgs
-import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
+import CloseIcon from "@assets/svg/files/close.svg?react";
+import { CustomButton } from "@components/Button";
+import { CustomCheck } from "@components/CheckBox";
+import { CustomInput } from "@components/Input";
+import { GeneralHook } from "../hooks/generalHook";
+import { IcrcLedgerCanister } from "@dfinity/ledger";
 //
 import Modal from "@components/Modal";
-import { CustomInput } from "@components/Input";
-import { CustomCheck } from "@components/CheckBox";
-import { CustomButton } from "@components/Button";
-import { useTranslation } from "react-i18next";
-import { checkHexString, getUSDfromToken, hexToNumber, hexToUint8Array, removeLeadingZeros } from "@/utils";
-import { Asset, SubAccount } from "@redux/models/AccountModels";
-import { GeneralHook } from "../hooks/generalHook";
 import { Token } from "@redux/models/TokenModels";
-import { useAppDispatch } from "@redux/Store";
-import { addSubAccount, setAcordeonAssetIdx } from "@redux/assets/AssetReducer";
 import bigInt from "big-integer";
-import { ChangeEvent, useState } from "react";
-import { AssetHook } from "../hooks/assetHook";
-import { IcrcLedgerCanister } from "@dfinity/ledger";
+import { useAppDispatch } from "@redux/Store";
+import { useTranslation } from "react-i18next";
 
 interface DialogAddAssetProps {
   newErr: any;
