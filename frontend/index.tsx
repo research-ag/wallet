@@ -1,32 +1,36 @@
 import "./index.css";
+import "@rainbow-me/rainbowkit/styles.css";
 
 import * as ReactDOM from "react-dom/client";
 
+import { RainbowKitProvider, darkTheme } from "@rainbow-me/rainbowkit";
+import { canisterId, idlFactory } from "./declarations/ic_siwe_provider";
+import { chains, wagmiConfig } from "./wagmi.config";
+
 import App from "./App";
 import React from "react";
+import { SiweIdentityProvider } from "./siwe";
+import { WagmiConfig } from "wagmi";
 import reportWebVitals from "./reportWebVitals";
-
-// import { Suspense } from "react";
-// import { createRoot } from "react-dom/client";
-// import "./index.css";
-// import App from "./App";
-
-// const container = document.getElementById("root");
-// const root = createRoot(container!); // createRoot(container!) if you use TypeScript
-// root.render(
-//   <Suspense fallback={null}>
-//         <WagmiConfig config={wagmiConfig}>
-//       <RainbowKitProvider>
-//     <App />
-//   </WagmiConfig>
-//   </RainbowKitProvider>
-
-//   </Suspense>,
-// );
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <App />
+    <WagmiConfig config={wagmiConfig}>
+      <RainbowKitProvider
+        chains={chains}
+        modalSize="compact"
+        theme={darkTheme({
+          accentColor: "#7b3fe4",
+          accentColorForeground: "white",
+          borderRadius: "large",
+          overlayBlur: "none",
+        })}
+      >
+        <SiweIdentityProvider canisterId={canisterId} idlFactory={idlFactory}>
+          <App />
+        </SiweIdentityProvider>
+      </RainbowKitProvider>
+    </WagmiConfig>
   </React.StrictMode>,
 );
 
