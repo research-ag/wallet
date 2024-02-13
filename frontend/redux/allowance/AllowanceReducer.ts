@@ -28,7 +28,6 @@ export const initialAllowanceState: TAllowance = {
   },
   spender: {
     name: "",
-    accountIdentifier: "",
     principal: "",
   },
   amount: "",

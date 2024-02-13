@@ -20,7 +20,6 @@ export const allowanceSchema = z.object({
   spender: z.object({
     principal: z.string(),
     name: z.string().optional(),
-    accountIdentifier: z.string().optional(),
   }),
   expiration: z.string().optional(),
   noExpire: z.boolean(),
