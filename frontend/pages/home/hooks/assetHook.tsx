@@ -40,7 +40,7 @@ export const AssetHook = () => {
     updateAllBalances(true, userAgent, tkns ? tkns : tokens.length > 0 ? tokens : defaultTokens);
     const principal = store.getState().auth.userPrincipal.toText();
     await allowanceCacheRefresh(principal);
-    await contactCacheRefresh(principal);
+    await contactCacheRefresh();
     dispatch(setLoading(false));
   };
 
