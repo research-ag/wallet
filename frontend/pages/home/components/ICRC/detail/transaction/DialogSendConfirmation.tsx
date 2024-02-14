@@ -9,8 +9,8 @@ import { ProtocolType, SendingStatusEnum } from "@/const";
 import { useTranslation } from "react-i18next";
 import useSend from "@pages/home/hooks/useSend";
 import { resetSendStateAction } from "@redux/transaction/TransactionActions";
-import { getElapsedSecond } from "@/utils/formatTime";
 import { TransactionValidationErrorsEnum } from "@/@types/transactions";
+import { getElapsedSecond } from "@/utils/formatTime";
 
 interface DialogSendConfirmationProps {
   setDrawerOpen(value: boolean): void;
