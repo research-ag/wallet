@@ -30,7 +30,7 @@ export default function AssetFilter(props: AssetFilterProps) {
       }}
     >
       <DropdownMenu.Trigger asChild>
-        <div className="flex flex-row justify-start items-center border border-BorderColorLight dark:border-BorderColor rounded px-2 py-1 w-[10rem] h-[2.5rem] bg-SecondaryColorLight dark:bg-SecondaryColor">
+        <div className={triggerContainerStyles}>
           <div className="flex flex-row items-center justify-between w-full">
             {assetFilter.length === 0 || assetFilter.length === assets.length ? (
               <p className="text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("all")}</p>
@@ -57,11 +57,7 @@ export default function AssetFilter(props: AssetFilterProps) {
         </div>
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>
-        <DropdownMenu.Content
-          className="text-md bg-PrimaryColorLight w-[10rem] rounded-lg dark:bg-SecondaryColor scroll-y-light z-[999] max-h-80 text-PrimaryTextColorLight dark:text-PrimaryTextColor shadow-sm shadow-BorderColorTwoLight dark:shadow-BorderColorTwo border border-BorderColorLight dark:border-BorderColor/20"
-          sideOffset={2}
-          align="end"
-        >
+        <DropdownMenu.Content className={contentContainerStyles} sideOffset={2} align="end">
           <button
             onClick={handleSelectAll}
             className="flex flex-row items-center justify-between w-full px-3 py-2 rounded-t-lg hover:bg-HoverColorLight hover:dark:bg-HoverColor"
@@ -122,3 +118,17 @@ const assetStyle = (k: number, assets: Asset[]) =>
       true,
     ["rounded-b-lg"]: k === assets.length - 1,
   });
+
+const triggerContainerStyles = clsx(
+  "flex flex-row justify-start items-center",
+  "border border-BorderColorLight dark:border-BorderColor",
+  "rounded px-2 py-1 w-[10rem] h-[2.5rem]",
+  "bg-SecondaryColorLight dark:bg-SecondaryColor",
+);
+
+const contentContainerStyles = clsx(
+  "text-md bg-PrimaryColorLight w-[10rem]",
+  "rounded-lg dark:bg-SecondaryColor scroll-y-light z-[999]",
+  "max-h-80 text-PrimaryTextColorLight dark:text-PrimaryTextColor shadow-sm shadow-BorderColorTwoLight",
+  "dark:shadow-BorderColorTwo border border-BorderColorLight dark:border-BorderColor/20",
+);

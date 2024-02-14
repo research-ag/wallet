@@ -240,7 +240,7 @@ const networkBox = clsx(
   "justify-between",
   "items-start",
   "rounded",
-  "border border-BorderSuccessColor",
+  "border border-slate-color-info",
   "px-3",
   "py-1",
 );
