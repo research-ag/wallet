@@ -37,7 +37,7 @@ const initialState: AssetState = {
 };
 
 const assetSlice = createSlice({
-  name: "auth",
+  name: "asset",
   initialState,
   reducers: {
     setICPSubaccounts(state, action: PayloadAction<ICPSubAccount[]>) {
