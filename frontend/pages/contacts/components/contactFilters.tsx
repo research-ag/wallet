@@ -3,10 +3,10 @@ import { ReactComponent as PlusIcon } from "@assets/svg/files/plus-icon.svg";
 import SearchIcon from "@assets/svg/files/icon-search.svg";
 //
 import { useTranslation } from "react-i18next";
-import { IUseContactFilters } from "../../hooks/useContactFilters";
+import { IUseContactFilters } from "../hooks/useContactFilters";
 import { CustomInput } from "@components/Input";
 import { IconButton } from "@components/button";
-import AssetFilter from "./AssetFilter";
+import AssetFilter from "./ICRC/AssetFilter";
 
 export default function ContactFilters(props: IUseContactFilters) {
   const { t } = useTranslation();
