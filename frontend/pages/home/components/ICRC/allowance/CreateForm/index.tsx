@@ -80,6 +80,8 @@ export default function CreateForm() {
       setLoading(true);
       event.preventDefault();
       setFullAllowanceErrorsAction([]);
+      // TODO: if the allowance exist than set into the existing allowances list
+      // TODO: if the user change the amount or expiration, override the allowance on the ledger and update the allowance list
 
       if (!allowance.asset.address || !allowance.asset.decimal)
         return setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.asset"]);
