@@ -12,7 +12,7 @@ import {
 } from "./auth/AuthReducer";
 import { AuthClient } from "@dfinity/auth-client";
 import { setAssetFromLocalData, updateAllBalances } from "./assets/AssetActions";
-import { clearDataAsset, setTokens } from "./assets/AssetReducer";
+import { clearDataAsset, setLoading, setTokens } from "./assets/AssetReducer";
 import { AuthNetwork } from "./models/TokenModels";
 import { AuthNetworkTypeEnum } from "@/const";
 import { Ed25519KeyIdentity } from "@dfinity/identity";
@@ -78,6 +78,7 @@ export const handlePrincipalAuthenticated = async (principalAddress: string) => 
 };
 
 export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean, fixedPrincipal?: Principal) => {
+  store.dispatch(setLoading(true));
   if (localStorage.getItem("network_type") === null && !fromSeed && !fixedPrincipal) {
     logout();
     return;
@@ -105,8 +106,9 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean,
     store.dispatch(setTokens(tokens));
   }
 
-  allowanceCacheRefresh(myPrincipal.toText());
   await contactCacheRefresh(myPrincipal.toText());
+  await allowanceCacheRefresh(myPrincipal.toText());
+  store.dispatch(setLoading(false));
 };
 
 export const dispatchAuths = (

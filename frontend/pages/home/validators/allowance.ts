@@ -1,97 +1,54 @@
+import { AllowanceValidationErrorsEnum, TAllowance } from "@/@types/allowance";
 import { validateAmount } from "@/utils";
+import { isHexadecimalValid } from "@/utils/checkers";
 import { validatePrincipal } from "@/utils/identity";
-import * as z from "zod";
+import store from "@redux/Store";
+import dayjs from "dayjs";
 
-export const validationMessage = {
-  spender: "Invalid principal",
-  expiration: "Invalid expiration date",
-  dateRequired: "Expiration ate is required",
-  dateNowAllowed: "Expiration Date is not allowed",
-  expiredDate: "Select a Expiration Date after the present",
-  lowBalance: "Sub account balance is not enough",
-  invalidAmount: "Amount has not a valid format",
-  duplicatedAllowance: "Duplicated allowance",
-};
+export const LOCAL_STORAGE_PREFIX = `allowances-${store.getState().auth.userPrincipal.toText()}`;
 
-export const allowanceValidationSchema = z
-  .object({
-    id: z.string().uuid(),
-    asset: z
-      .object({
-        decimal: z.string(),
-      })
-      .required(),
-    subAccount: z
-      .object({
-        address: z.string().min(3),
-        name: z.string().min(1),
-        amount: z.string().min(1),
-        sub_account_id: z.string().min(3),
-      })
-      .required(),
-    spender: z
-      .object({
-        principal: z.string().refine(validatePrincipal, {
-          message: validationMessage.spender,
-          path: ["principal"],
-        }),
-      })
-      .required(),
-    amount: z.string().min(1),
-    expiration: z
-      .string()
-      .refine((value) => !value || !isNaN(Date.parse(value)), { message: validationMessage.expiration })
-      .optional(),
-    noExpire: z.boolean(),
-  })
-  .superRefine(({ expiration, noExpire, subAccount, amount, asset }, refinementContext) => {
-    if (!noExpire && !expiration) {
-      refinementContext.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: validationMessage.dateRequired,
-        path: ["expiration"],
-        params: { isCustom: true },
-      });
-      return;
-    }
+export function validateCreateAllowance(allowance: TAllowance) {
+  if (!allowance.asset.address || !allowance.asset.decimal || !allowance.asset.supportedStandards.includes("ICRC-2"))
+    throw AllowanceValidationErrorsEnum.Values["error.invalid.asset"];
 
-    if (noExpire && expiration) {
-      refinementContext.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: validationMessage.dateNowAllowed,
-        path: ["expiration"],
-        params: { isCustom: true },
-      });
-      return;
-    }
+  if (!isHexadecimalValid(allowance.subAccount.sub_account_id))
+    throw AllowanceValidationErrorsEnum.Values["error.invalid.subaccount"];
 
-    if (!noExpire && expiration) {
-      if (new Date() > new Date(expiration)) {
-        refinementContext.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: validationMessage.expiredDate,
-          path: ["expiration"],
-          params: { isCustom: true },
-        });
-      }
-    }
+  if (!allowance?.spender?.principal || !validatePrincipal(allowance.spender.principal))
+    throw AllowanceValidationErrorsEnum.Values["error.invalid.sender.principal"];
 
-    if (subAccount?.amount && Number(subAccount?.amount) <= 0) {
-      refinementContext.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: validationMessage.lowBalance,
-        path: ["amount"],
-        params: { isCustom: true },
-      });
-      return;
-    }
+  if (allowance?.spender?.principal === store.getState().auth.userPrincipal.toText())
+    throw AllowanceValidationErrorsEnum.Values["error.self.allowance"];
 
-    if (!validateAmount(amount, Number(asset.decimal))) {
-      refinementContext.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: validationMessage.invalidAmount,
-        path: ["amount"],
-        params: { isCustom: true },
-      });
-    }
-  });
+  const storageAllowances = localStorage.getItem(LOCAL_STORAGE_PREFIX);
+  const allowances = JSON.parse(storageAllowances || "[]") as TAllowance[];
+  const allowanceExists = allowances.find(
+    (currentAllowance) =>
+      currentAllowance.subAccount.sub_account_id === allowance.subAccount.sub_account_id &&
+      currentAllowance.spender.principal === allowance?.spender?.principal &&
+      currentAllowance.asset.tokenSymbol === allowance.asset.tokenSymbol,
+  );
+  if (allowanceExists) throw AllowanceValidationErrorsEnum.Values["error.allowance.duplicated"];
+
+  if (!allowance.amount || !validateAmount(allowance.amount, Number(allowance.asset.decimal)))
+    throw AllowanceValidationErrorsEnum.Values["error.invalid.amount"];
+
+  const bigintFee = BigInt(allowance.subAccount.transaction_fee);
+  const bigintAmount = BigInt(allowance.subAccount.amount);
+  if (bigintAmount <= bigintFee) throw AllowanceValidationErrorsEnum.Values["error.not.enough.balance"];
+
+  if (allowance?.expiration && dayjs(allowance?.expiration).isBefore(dayjs()))
+    throw AllowanceValidationErrorsEnum.Values["error.before.present.expiration"];
+}
+
+export function validateUpdateAllowance(allowance: TAllowance) {
+  if (!allowance.amount || !validateAmount(allowance.amount, Number(allowance.asset.decimal)))
+    throw AllowanceValidationErrorsEnum.Values["error.invalid.amount"];
+
+  const bigintFee = BigInt(allowance.subAccount.transaction_fee);
+  const bigintAmount = BigInt(allowance.subAccount.amount);
+  if (bigintAmount <= bigintFee) throw AllowanceValidationErrorsEnum.Values["error.not.enough.balance"];
+
+  if (allowance?.expiration && dayjs(allowance?.expiration).isBefore(dayjs()))
+    throw AllowanceValidationErrorsEnum.Values["error.before.present.expiration"];
+}

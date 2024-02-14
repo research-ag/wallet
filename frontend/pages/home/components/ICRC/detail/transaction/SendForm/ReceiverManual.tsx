@@ -1,4 +1,4 @@
-import { NewContact, ValidationErrorsEnum } from "@/@types/transactions";
+import { NewContact, TransactionValidationErrorsEnum } from "@/@types/transactions";
 import { isHexadecimalValid } from "@/utils/checkers";
 import { validatePrincipal } from "@/utils/identity";
 import { CustomInput } from "@components/Input";
@@ -49,9 +49,9 @@ export default function ReceiverManual() {
     const principalValue = event.target.value.trim();
 
     if (!validatePrincipal(principalValue)) {
-      setErrorAction(ValidationErrorsEnum.Values["error.invalid.receiver.principal"]);
+      setErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.receiver.principal"]);
     } else {
-      removeErrorAction(ValidationErrorsEnum.Values["error.invalid.receiver.principal"]);
+      removeErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.receiver.principal"]);
     }
 
     const contact: NewContact = {
@@ -66,10 +66,10 @@ export default function ReceiverManual() {
     setInputValue(subAccountIndex);
 
     if (!isHexadecimalValid(subAccountIndex)) {
-      setErrorAction(ValidationErrorsEnum.Values["error.invalid.receiver.subaccount"]);
+      setErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.receiver.subaccount"]);
       return;
     } else {
-      removeErrorAction(ValidationErrorsEnum.Values["error.invalid.receiver.subaccount"]);
+      removeErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.receiver.subaccount"]);
     }
 
     const contact: NewContact = {
@@ -80,10 +80,10 @@ export default function ReceiverManual() {
   }
 
   function hasPrincipalError() {
-    return errors?.includes(ValidationErrorsEnum.Values["error.invalid.receiver.principal"]);
+    return errors?.includes(TransactionValidationErrorsEnum.Values["error.invalid.receiver.principal"]);
   }
 
   function hasSubAccountError() {
-    return errors?.includes(ValidationErrorsEnum.Values["error.invalid.receiver.subaccount"]);
+    return errors?.includes(TransactionValidationErrorsEnum.Values["error.invalid.receiver.subaccount"]);
   }
 }

@@ -18,6 +18,7 @@ export default async function contactCacheRefresh(authIdentity: string) {
           accountPrincipal: contact.principal,
           assets: contact.assets,
         });
+
         updatedContacts.push({ ...contact, assets: updatedAsset });
       }
     }

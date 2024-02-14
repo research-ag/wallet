@@ -19,6 +19,7 @@ import { ChangeEvent, useState } from "react";
 import { Principal } from "@dfinity/principal";
 import LoadingLoader from "@components/Loader";
 import { AccountHook } from "@pages/hooks/accountHook";
+import { getICRCSupportedStandards } from "@pages/home/helpers/icrc";
 
 interface AddAssetManualProps {
   manual: boolean;
@@ -99,7 +100,7 @@ const AddAssetManual = ({
           border={errToken ? "error" : undefined}
         />
         {errToken !== "" && errToken !== "non" && <p className="text-sm text-left text-LockColor">{errToken}</p>}
-        {validToken && <p className="text-sm text-left text-BorderSuccessColor">{t("token.validation.msg")}</p>}
+        {validToken && <p className="text-sm text-left text-slate-color-info">{t("token.validation.msg")}</p>}
       </div>
       <div className="flex flex-col items-start w-full mb-3">
         <p className="opacity-60">{t("token.index.address")}</p>
@@ -114,7 +115,7 @@ const AddAssetManual = ({
           border={errToken ? "error" : undefined}
         />
         {errIndex !== "" && errIndex !== "non" && <p className="text-sm text-left text-LockColor">{errIndex}</p>}
-        {validIndex && <p className="text-sm text-left text-BorderSuccessColor">{t("index.validation.msg")}</p>}
+        {validIndex && <p className="text-sm text-left text-slate-color-info">{t("index.validation.msg")}</p>}
       </div>
       {!asset && (
         <div className="flex justify-end w-full">
@@ -309,6 +310,10 @@ const AddAssetManual = ({
         });
 
         const { symbol, decimals, name, logo, fee } = getMetadataInfo(myMetadata);
+        const supportedStandards = await getICRCSupportedStandards({
+          assetAddress: newToken.address,
+          agent: userAgent,
+        });
 
         setNewToken((prev: any) => {
           return {
@@ -321,6 +326,7 @@ const AddAssetManual = ({
             tokenSymbol: symbol,
             tokenName: name,
             fee: fee,
+            supportedStandards,
           };
         });
         setValidToken(true);
@@ -368,12 +374,12 @@ const AddAssetManual = ({
               newToken.shortDecimal === ""
                 ? Number(newToken.decimal).toFixed(0)
                 : Number(newToken.shortDecimal).toFixed(0),
+            supportedStandards: asset.supportedStandards,
           };
         } else return tkn;
       });
-      // Save tokens in list to local
+
       saveInLocalStorage(auxTokens);
-      // Edit tokens list and assets list
       dispatch(editToken(newToken, asset.tokenSymbol));
       setAssetOpen(false);
     } else if (await onTest(false)) addAssetToData();

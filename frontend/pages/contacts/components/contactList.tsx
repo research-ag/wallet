@@ -99,7 +99,6 @@ const ContactList = ({ searchKey, assetFilter }: ContactListProps) => {
         msg1 = t("delete.contact.contact.msg", { name: deleteObject.name });
         msg2 = deleteObject.name;
         break;
-        break;
     }
     return { msg1: msg1, msg2: msg2 };
   }

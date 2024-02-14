@@ -101,7 +101,7 @@ export default function AddContact({ setAddOpen }: AddContactProps) {
         )}
         {isAssetICRC2Supported && (
           <CustomButton
-            className="bg-BorderSuccessColor min-w-[5rem] flex justify-between items-center"
+            className="bg-slate-color-success min-w-[5rem] flex justify-between items-center"
             onClick={onAllowanceNewContactCheck}
             disabled={isAllowancesChecking || isCreating}
           >
@@ -131,7 +131,7 @@ export default function AddContact({ setAddOpen }: AddContactProps) {
         const isSubAccountDuplicated =
           newSubAccounts.filter((currentSubAccount) => subAccount.sub_account_id === currentSubAccount.sub_account_id)
             .length > 1;
-        //
+
         if (subAccount.name.trim().length === 0) {
           setNewContactSubNameErr([index]);
           return;

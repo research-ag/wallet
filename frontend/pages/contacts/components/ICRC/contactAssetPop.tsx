@@ -50,7 +50,7 @@ const ContactAssetPop = ({
                 assets.length === 0 ? "bg-GrayColor cursor-default" : ""
               } ${btnClass}`}
             >
-              <PlusIcon className="w-4 h-4 fill-secondary-color-1 dark:fill-white" />
+              <PlusIcon className="w-3 h-3 fill-white" />
             </div>
           </DropdownMenu.Trigger>
           <DropdownMenu.Portal>

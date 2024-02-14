@@ -1,20 +1,23 @@
-import { TAllowance } from "@/@types/allowance";
-import { TErrorValidation } from "@/@types/common";
-import { submitAllowanceApproval, createApproveAllowanceParams } from "@/pages/home/helpers/icrc";
+import { AllowanceValidationErrorsEnum, TAllowance } from "@/@types/allowance";
+import { submitAllowanceApproval, createApproveAllowanceParams, getSubAccountBalance } from "@/pages/home/helpers/icrc";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { useMutation } from "@tanstack/react-query";
 import { throttle } from "lodash";
 import { useCallback, useState } from "react";
-import { z } from "zod";
 import useAllowanceDrawer from "./useAllowanceDrawer";
-import { setAllowances } from "@redux/allowance/AllowanceReducer";
+import {
+  removeAllowanceError,
+  setAllowanceError,
+  setAllowances,
+  setFullAllowanceErrors,
+} from "@redux/allowance/AllowanceReducer";
 import { updateAllowanceRequest } from "../services/allowance";
-import { allowanceValidationSchema } from "../validators/allowance";
+import { validateUpdateAllowance } from "../validators/allowance";
+import { updateSubAccountBalance } from "@redux/assets/AssetReducer";
 
 export function useUpdateAllowance() {
   const dispatch = useAppDispatch();
   const { onCloseUpdateAllowanceDrawer } = useAllowanceDrawer();
-  const [validationErrors, setErrors] = useState<TErrorValidation[]>([]);
   const { selectedAllowance } = useAppSelector((state) => state.allowance);
   const [allowance, setAllowance] = useState<TAllowance>(selectedAllowance);
 
@@ -26,35 +29,38 @@ export function useUpdateAllowance() {
   };
 
   const mutationFn = useCallback(async () => {
-    try {
-      const valid = allowanceValidationSchema.safeParse(allowance);
-      if (!valid.success) return Promise.reject(valid.error);
-      const params = createApproveAllowanceParams(allowance);
-      await submitAllowanceApproval(params, allowance.asset.address);
-      const updatedAllowances = await updateAllowanceRequest(allowance);
-      dispatch(setAllowances(updatedAllowances));
-    } catch (error) {
-      console.log(error);
-    }
+    dispatch(setFullAllowanceErrors([]));
+    validateUpdateAllowance(allowance);
+    const params = createApproveAllowanceParams(allowance);
+    await submitAllowanceApproval(params, allowance.asset.address);
+    const updatedAllowances = await updateAllowanceRequest(allowance);
+    dispatch(setAllowances(updatedAllowances));
   }, [allowance]);
 
   const onSuccess = async () => {
+    const refreshParams = {
+      subAccount: allowance.subAccount.sub_account_id,
+      assetAddress: allowance.asset.address,
+    };
+    const amount = await getSubAccountBalance(refreshParams);
+    const balance = amount ? amount.toString() : "0";
+    dispatch(updateSubAccountBalance(allowance.asset.tokenSymbol, allowance.subAccount.sub_account_id, balance));
     onCloseUpdateAllowanceDrawer();
   };
 
-  const onError = (error: any) => {
-    if (error instanceof z.ZodError) {
-      const validationErrors = error.issues.map((issue) => ({
-        message: issue.message,
-        field: String(issue.path[0]),
-        code: issue.code,
-      }));
+  const onError = (error: string) => {
+    console.log(error);
+    if (error === AllowanceValidationErrorsEnum.Values["error.invalid.amount"])
+      return dispatch(setAllowanceError(AllowanceValidationErrorsEnum.Values["error.invalid.amount"]));
+    dispatch(removeAllowanceError(AllowanceValidationErrorsEnum.Values["error.invalid.amount"]));
 
-      setErrors(validationErrors);
-      return;
-    }
+    if (error === AllowanceValidationErrorsEnum.Values["error.not.enough.balance"])
+      return dispatch(setAllowanceError(AllowanceValidationErrorsEnum.Values["error.not.enough.balance"]));
+    dispatch(removeAllowanceError(AllowanceValidationErrorsEnum.Values["error.not.enough.balance"]));
 
-    console.log("Error", error);
+    if (error === AllowanceValidationErrorsEnum.Values["error.before.present.expiration"])
+      return dispatch(setAllowanceError(AllowanceValidationErrorsEnum.Values["error.before.present.expiration"]));
+    dispatch(removeAllowanceError(AllowanceValidationErrorsEnum.Values["error.before.present.expiration"]));
   };
 
   const { mutate, isPending, isError, error, isSuccess } = useMutation({ mutationFn, onError, onSuccess });
@@ -65,7 +71,6 @@ export function useUpdateAllowance() {
     error,
     isSuccess,
     allowance,
-    validationErrors,
     updateAllowance: throttle(mutate, 1000),
     setAllowanceState,
   };

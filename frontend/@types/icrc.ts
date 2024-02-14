@@ -32,10 +32,10 @@ const HasAssetAllowanceParamSchema = z.object({
 export type HasAssetAllowanceParams = z.infer<typeof HasAssetAllowanceParamSchema>;
 
 const GetBalanceParamsSchema = z.object({
-  principal: z.string(),
+  principal: z.string().optional(),
   subAccount: z.string(),
   assetAddress: z.string(),
-  assetDecimal: z.string(),
+  assetDecimal: z.string().optional(),
 });
 export type GetBalanceParams = z.infer<typeof GetBalanceParamsSchema>;
 

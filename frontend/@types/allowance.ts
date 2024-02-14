@@ -20,7 +20,6 @@ export const allowanceSchema = z.object({
   spender: z.object({
     principal: z.string(),
     name: z.string().optional(),
-    accountIdentifier: z.string().optional(),
   }),
   expiration: z.string().optional(),
   noExpire: z.boolean(),
@@ -33,3 +32,19 @@ export type AllowancesTableColumns = z.infer<typeof AllowancesTableColumnsEnum>;
 
 export const AllowanceErrorFieldsEnum = z.enum(["spender", "asset", "amount", "expiration", "subAccount"]);
 export type AllowanceErrorFields = z.infer<typeof AllowanceErrorFieldsEnum>;
+
+export const AllowanceValidationErrorsEnum = z.enum([
+  "error.invalid.asset",
+  "error.invalid.sender.principal",
+  "error.invalid.expiration",
+  "error.expiration.required",
+  "error.expiration.not.allowed",
+  "error.before.present.expiration",
+  "error.not.enough.balance",
+  "error.invalid.amount",
+  "error.allowance.duplicated",
+  "warn.system.loading",
+  "error.invalid.subaccount",
+  "error.self.allowance",
+]);
+export type AllowanceValidationErrors = z.infer<typeof AllowanceValidationErrorsEnum>;

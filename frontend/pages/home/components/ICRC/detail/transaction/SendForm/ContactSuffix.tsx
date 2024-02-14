@@ -69,7 +69,7 @@ export default function ContactSuffix() {
           </DropdownMenu.Trigger>
 
           <DropdownMenu.Portal>
-            <DropdownMenu.Content className="absolute w-[23rem] bg-secondary-color-1-light dark:bg-level-1-color border border-primary-color  z-[1000] -right-12 mt-4 max-h-[20rem]  scroll-y-light rounded-lg  shadow-sm ">
+            <DropdownMenu.Content className="absolute w-[23rem] max-h-[24vh] bg-secondary-color-1-light dark:bg-level-1-color border border-primary-color  z-[1000] -right-12 mt-4 scroll-y-light rounded-lg  shadow-sm ">
               {filteredContacts.map((contact, index) => {
                 const { contactName, subAccountName } = contact;
                 return (

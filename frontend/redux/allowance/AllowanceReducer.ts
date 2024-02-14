@@ -28,7 +28,6 @@ export const initialAllowanceState: TAllowance = {
   },
   spender: {
     name: "",
-    accountIdentifier: "",
     principal: "",
   },
   amount: "",
@@ -41,6 +40,7 @@ interface AllowanceState {
   isCreateAllowance: boolean;
   selectedAllowance: TAllowance;
   allowances: TAllowance[];
+  errors: string[];
 }
 
 const reducerName = "allowance";
@@ -50,6 +50,7 @@ const initialState: AllowanceState = {
   isCreateAllowance: false,
   selectedAllowance: initialAllowanceState,
   allowances: [],
+  errors: [],
 };
 
 const allowanceSlice = createSlice({
@@ -68,8 +69,26 @@ const allowanceSlice = createSlice({
     setAllowances(state: AllowanceState, action: PayloadAction<TAllowance[]>) {
       state.allowances = action.payload;
     },
+    setAllowanceError(state: AllowanceState, action: PayloadAction<string>) {
+      const currentErrors = [...(state.errors ?? [])];
+      state.errors = currentErrors.includes(action.payload) ? currentErrors : [...currentErrors, action.payload];
+    },
+    removeAllowanceError(state: AllowanceState, action: PayloadAction<string>) {
+      state.errors = state.errors?.filter((error) => error !== action.payload);
+    },
+    setFullAllowanceErrors(state: AllowanceState, action: PayloadAction<string[]>) {
+      state.errors = action.payload;
+    },
   },
 });
 
-export const { setIsUpdateAllowance, setIsCreateAllowance, setSelectedAllowance, setAllowances } = allowanceSlice.actions;
+export const {
+  setIsUpdateAllowance,
+  setIsCreateAllowance,
+  setSelectedAllowance,
+  setAllowances,
+  setAllowanceError,
+  removeAllowanceError,
+  setFullAllowanceErrors,
+} = allowanceSlice.actions;
 export default allowanceSlice.reducer;

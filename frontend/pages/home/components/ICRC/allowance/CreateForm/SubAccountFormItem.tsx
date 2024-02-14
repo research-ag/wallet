@@ -1,21 +1,23 @@
-import { TAllowance, AllowanceErrorFieldsEnum } from "@/@types/allowance";
-import { TErrorValidation } from "@/@types/common";
+import { TAllowance, AllowanceValidationErrorsEnum } from "@/@types/allowance";
 import { SelectOption } from "@/@types/components";
 import { Chip } from "@components/chip";
 import { Select } from "@components/select";
+import { useAppSelector } from "@redux/Store";
 import { Asset } from "@redux/models/AccountModels";
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface ISubAccountFormItemProps {
   allowance: TAllowance;
   selectedAsset: Asset | undefined;
   isLoading?: boolean;
-  errors?: TErrorValidation[];
   setAllowanceState: (allowanceData: TAllowance) => void;
 }
 
 export default function SubAccountFormItem(props: ISubAccountFormItemProps) {
-  const { allowance, selectedAsset, setAllowanceState, isLoading, errors } = props;
+  const { t } = useTranslation();
+  const { errors } = useAppSelector((state) => state.allowance);
+  const { allowance, selectedAsset, setAllowanceState, isLoading } = props;
   const [searchValue, setSearchValue] = useState<string | null>(null);
   const onOpenChange = () => setSearchValue(null);
   const onSearchChange = (searchValue: string) => {
@@ -23,8 +25,6 @@ export default function SubAccountFormItem(props: ISubAccountFormItemProps) {
   };
 
   const { subAccount } = allowance;
-
-  const error = errors?.filter((error) => error.field === AllowanceErrorFieldsEnum.Values.subAccount)[0];
 
   const options = useMemo(() => {
     const accountsToMap = searchValue
@@ -44,8 +44,8 @@ export default function SubAccountFormItem(props: ISubAccountFormItemProps) {
 
   return (
     <div className="mt-4">
-      <label htmlFor="Subaccount" className="text-lg">
-        Subaccount
+      <label htmlFor="Subaccount" className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
+        {t("subAccount")}
       </label>
 
       <Select
@@ -54,7 +54,7 @@ export default function SubAccountFormItem(props: ISubAccountFormItemProps) {
         initialValue={allowance?.subAccount?.sub_account_id}
         currentValue={subAccount?.sub_account_id || ""}
         disabled={isLoading}
-        border={error ? "error" : undefined}
+        border={isError() ? "error" : undefined}
         onSearch={onSearchChange}
         onOpenChange={onOpenChange}
       />
@@ -67,5 +67,9 @@ export default function SubAccountFormItem(props: ISubAccountFormItemProps) {
 
     if (!fullSubAccount || !fullSubAccount.address) return;
     setAllowanceState({ ...allowance, subAccount: fullSubAccount });
+  }
+
+  function isError(): boolean {
+    return errors?.includes(AllowanceValidationErrorsEnum.Values["error.invalid.subaccount"]) || false;
   }
 }

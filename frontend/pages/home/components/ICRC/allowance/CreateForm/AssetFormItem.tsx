@@ -1,9 +1,9 @@
-import { TAllowance, AllowanceErrorFieldsEnum } from "@/@types/allowance";
-import { TErrorValidation } from "@/@types/common";
+import { TAllowance, AllowanceValidationErrorsEnum } from "@/@types/allowance";
 import { SelectOption } from "@/@types/components";
 import { SupportedStandardEnum } from "@/@types/icrc";
 import formatAsset from "@/utils/formatAsset";
 import { Select } from "@components/select";
+import { useAppSelector } from "@redux/Store";
 import { initialAllowanceState } from "@redux/allowance/AllowanceReducer";
 import { Asset } from "@redux/models/AccountModels";
 import { useMemo, useState } from "react";
@@ -15,16 +15,14 @@ interface AssetFormItemProps {
   selectedAsset: Asset | undefined;
   setAllowanceState: (allowanceData: Partial<TAllowance>) => void;
   isLoading?: boolean;
-  errors?: TErrorValidation[];
 }
 
 export default function AssetFormItem(props: AssetFormItemProps) {
   const { t } = useTranslation();
+  const { errors } = useAppSelector((state) => state.allowance);
   const [search, setSearch] = useState<string | null>(null);
-  const { allowance, assets, selectedAsset, setAllowanceState, isLoading, errors } = props;
+  const { allowance, assets, selectedAsset, setAllowanceState, isLoading } = props;
   const { asset } = allowance;
-
-  const error = errors?.filter((error) => error.field === AllowanceErrorFieldsEnum.Values.asset)[0];
 
   const options = useMemo(() => {
     const filteredAssets = assets.filter((currentAsset) =>
@@ -58,7 +56,7 @@ export default function AssetFormItem(props: AssetFormItemProps) {
 
   return (
     <div className="mt-4">
-      <label htmlFor="asset" className="text-lg">
+      <label htmlFor="asset" className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
         {t("asset")}
       </label>
       <Select
@@ -67,10 +65,14 @@ export default function AssetFormItem(props: AssetFormItemProps) {
         initialValue={selectedAsset?.tokenName}
         currentValue={asset?.tokenName}
         disabled={isLoading}
-        border={error ? "error" : undefined}
+        border={isError() ? "error" : undefined}
         onSearch={onSearchChange}
         onOpenChange={onOpenChange}
       />
     </div>
   );
+
+  function isError(): boolean {
+    return errors?.includes(AllowanceValidationErrorsEnum.Values["error.invalid.asset"]) || false;
+  }
 }

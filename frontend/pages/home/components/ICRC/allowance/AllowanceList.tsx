@@ -46,7 +46,7 @@ export default function AllowanceList() {
                       className: indexTR <= 3 && header.column.getCanSort() ? "cursor-pointer select-none" : "",
                       onClick: indexTR <= 3 ? () => handleSorter(column as AllowancesTableColumns) : undefined,
                     }}
-                    className="flex font-normal opacity-50 text-PrimaryTextColorLight dark:text-PrimaryTextColor"
+                    className="flex text-md text-PrimaryTextColorLight/50 dark:text-PrimaryTextColor/50"
                   >
                     {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                   </div>
@@ -64,10 +64,7 @@ export default function AllowanceList() {
       <TableBody className="divide-y dark:divide-slate-200/5">
         {table.getRowModel().rows.map((row, idxTR) => {
           return (
-            <TableRow
-              key={`allowance-${idxTR}`}
-              className="order-b border-b-BorderColorTwoLight dark:border-b-BorderColorTwo"
-            >
+            <TableRow key={`allowance-${idxTR}`}>
               {row.getVisibleCells().map((cell, idxTD) => {
                 let isExpired = false;
                 const allowance = table.getRowModel().rows[idxTR].original;

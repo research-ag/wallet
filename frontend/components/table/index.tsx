@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { ReactNode } from "react";
 
 interface CommonProps {
@@ -19,7 +20,7 @@ export function Table({ children, className }: CommonProps) {
 export function TableHead({ children, className }: CommonProps) {
   return (
     <thead
-      className={`sticky top-0 border-b border-BorderColorTwoLight dark:border-BorderColorTwo bg-SecondaryColorLight dark:bg-SecondaryColor z-[1] ${className}`}
+      className={`sticky top-0 border-b border-BorderColorTwoLight dark:border-BorderColorTwo bg-SecondaryColorLight dark:bg-SecondaryColor ${className}`}
     >
       {children}
     </thead>
@@ -39,5 +40,9 @@ export function TableHeaderCell({ children, className }: CommonProps) {
 }
 
 export function TableBodyCell({ children, className, disabled }: CommonProps) {
-  return <td className={`${className}  ${disabled ? "opacity-20" : ""} py-2 text-left`}>{children}</td>;
+  return <td className={`${className}  ${getTableBodyStyles(disabled)} py-2 text-left`}>{children}</td>;
+}
+
+function getTableBodyStyles(disabled = false) {
+  return clsx(disabled ? "text-PrimaryTextColorLight/50 dark:text-PrimaryTextColor/50" : "", "py-2 text-left");
 }

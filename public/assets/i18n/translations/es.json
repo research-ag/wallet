@@ -172,5 +172,15 @@
   "invalid.receiver.identifier": "Identificador ICRC inválido",
   "error.invalid.amount": "El importe no es válido",
   "error.not.enough.balance": "Saldo insuficiente",
-  "error.allowance.subaccount.not.enough": "Saldo de la subcuenta de la autorización insuficiente"
+  "error.allowance.subaccount.not.enough": "Saldo de la subcuenta de la autorización insuficiente",
+
+  "error.invalid.asset": "Activo no válido",
+  "error.invalid.expiration": "Caducidad no válida",
+  "error.expiration.required": "Se requiere la fecha de caducidad",
+  "error.expiration.not.allowed": "La caducidad no está permitida",
+  "error.before.present.expiration": "La fecha de caducidad no puede ser anterior a la fecha actual",
+  "error.allowance.duplicated": "La asignación ya existe",
+  "warn.system.loading": "El sistema se está cargando, espere unos segundos",
+  "error.invalid.subaccount": "Subcuenta no válida",
+  "error.self.allowance": "No se permite el propietario de la cuenta como gastador"
 }

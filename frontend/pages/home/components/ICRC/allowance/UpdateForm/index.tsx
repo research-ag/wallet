@@ -1,42 +1,27 @@
 import { useUpdateAllowance } from "@pages/home/hooks/useAllowanceUpdate";
-import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import FixedFieldsFormItem from "./FixedFieldsFormItem";
 import ExpirationFormItem from "./ExpirationFormItem";
 import { Button } from "@components/button";
 import AmountFormItem from "./AmountFormItem";
-import { validationMessage } from "@pages/home/validators/allowance";
+import { useAppSelector } from "@redux/Store";
+import { AllowanceValidationErrorsEnum } from "@/@types/allowance";
 
 export default function UpdateForm() {
   const { t } = useTranslation();
-  const { allowance, setAllowanceState, updateAllowance, isPending, validationErrors } = useUpdateAllowance();
-
-  const errorMessage = useMemo(() => {
-    let errorMessage = "";
-
-    if (validationErrors[0]?.message === validationMessage.lowBalance) errorMessage = validationErrors[0]?.message;
-
-    if (validationErrors[0]?.message === validationMessage.invalidAmount) errorMessage = validationErrors[0].message;
-    if (validationErrors[0]?.message === validationMessage.expiredDate) errorMessage = validationErrors[0].message;
-
-    return errorMessage;
-  }, [validationErrors]);
+  const { errors } = useAppSelector((state) => state.allowance);
+  const { allowance, setAllowanceState, updateAllowance, isPending } = useUpdateAllowance();
 
   return (
     <form className="flex flex-col text-left">
       <FixedFieldsFormItem allowance={allowance} />
 
-      <AmountFormItem
-        allowance={allowance}
-        isLoading={isPending}
-        errors={validationErrors}
-        setAllowanceState={setAllowanceState}
-      />
+      <AmountFormItem allowance={allowance} isLoading={isPending} setAllowanceState={setAllowanceState} />
 
       <ExpirationFormItem allowance={allowance} setAllowanceState={setAllowanceState} isLoading={isPending} />
 
-      <div className={`flex items-center mt-4 ${errorMessage.length > 0 ? "justify-between" : "justify-end"}`}>
-        {errorMessage.length > 0 && <p className="text-TextErrorColor text-md">{errorMessage}</p>}
+      <div className={`flex items-center mt-4 ${getErrorMessage() ? "justify-between" : "justify-end"}`}>
+        {getErrorMessage() && <p className="text-TextErrorColor text-md">{getErrorMessage()}</p>}
 
         <Button
           onClick={(e) => {
@@ -52,4 +37,14 @@ export default function UpdateForm() {
       </div>
     </form>
   );
+
+  function getErrorMessage() {
+    const filteredErrors = errors.filter(
+      (error) =>
+        error === AllowanceValidationErrorsEnum.Values["error.not.enough.balance"] ||
+        error === AllowanceValidationErrorsEnum.Values["error.before.present.expiration"],
+    );
+    if (filteredErrors.length > 0) return t(filteredErrors[0]);
+    return "";
+  }
 }

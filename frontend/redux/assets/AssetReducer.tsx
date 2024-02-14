@@ -2,7 +2,7 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { Token, TokenMarketInfo } from "@redux/models/TokenModels";
 import { Asset, ICPSubAccount, SubAccount, Transaction, TransactionList } from "@redux/models/AccountModels";
 import bigInt from "big-integer";
-import { hexToNumber } from "@/utils";
+import { getUSDfromToken, hexToNumber } from "@/utils";
 
 interface AssetState {
   ICPSubaccounts: Array<ICPSubAccount>;
@@ -112,6 +112,53 @@ const assetSlice = createSlice({
         };
       },
     },
+    updateSubAccountBalance: {
+      reducer(
+        state: AssetState,
+        { payload }: PayloadAction<{ tokenSymbol: string; subAccountId: string; amount: string }>,
+      ) {
+        const { tokenSymbol, subAccountId, amount } = payload;
+        const tokenIndex = state.tokens.findIndex((token) => token.tokenSymbol === tokenSymbol);
+        const assetIndex = state.assets.findIndex((asset) => asset.tokenSymbol === tokenSymbol);
+
+        const marketPrince = state.tokensMarket.find((tokenMarket) => tokenMarket.symbol === tokenSymbol)?.price || "0";
+        const decimals = state.assets.find((asset) => asset.tokenSymbol === tokenSymbol)?.decimal;
+        const USDAmount = marketPrince ? getUSDfromToken(amount, marketPrince, Number(decimals)) : "0";
+
+        if (tokenIndex !== -1 && state.tokens[tokenIndex]) {
+          const newTokenSubAccounts = state.tokens[tokenIndex].subAccounts.map((subAccount) => {
+            if (subAccount.numb === subAccountId) {
+              return {
+                ...subAccount,
+                amount,
+                currency_amount: USDAmount,
+              };
+            }
+            return subAccount;
+          });
+
+          state.tokens[tokenIndex].subAccounts = newTokenSubAccounts;
+        }
+
+        if (assetIndex !== -1 && state.assets[assetIndex]) {
+          const newAssetSubAccounts = state.assets[assetIndex].subAccounts.map((subAccount) => {
+            if (subAccount.sub_account_id === subAccountId) {
+              return {
+                ...subAccount,
+                amount,
+                currency_amount: USDAmount,
+              };
+            }
+            return subAccount;
+          });
+
+          state.assets[assetIndex].subAccounts = newAssetSubAccounts;
+        }
+      },
+      prepare(tokenSymbol: string, subAccountId: string, amount: string) {
+        return { payload: { tokenSymbol, subAccountId, amount } };
+      },
+    },
     setSubAccountName: {
       reducer(
         state,
@@ -193,10 +240,9 @@ const assetSlice = createSlice({
       },
     },
     setAssets(state, action) {
-      (state.assets = action.payload.sort((a: any, b: any) => {
+      state.assets = action.payload.sort((a: any, b: any) => {
         return a.sort_index - b.sort_index;
-      })),
-        (state.assetLoading = false);
+      });
     },
     setAccounts(state, action) {
       state.accounts = action.payload;
@@ -278,6 +324,7 @@ export const {
   addTxWorker,
   setTxLoad,
   setAcordeonAssetIdx,
+  updateSubAccountBalance,
 } = assetSlice.actions;
 
 export default assetSlice.reducer;

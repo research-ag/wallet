@@ -17,6 +17,7 @@ const SwitchRoute = () => {
   const { authLoading, superAdmin, authenticated } = useAppSelector((state) => state.auth);
   const { blur } = useAppSelector((state) => state.auth);
   const { changeTheme } = ThemeHook();
+
   useEffect(() => {
     if (
       localStorage.theme === ThemesEnum.enum.dark ||

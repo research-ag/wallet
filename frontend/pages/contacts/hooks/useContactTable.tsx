@@ -26,7 +26,6 @@ export default function useContactTable() {
   const dispatch = useAppDispatch();
   const [isPending, setIsPending] = useState(false);
 
-  // edit contact up contact list
   const updateContact = (editedContact: Contact, pastPrincipal: string) =>
     dispatch(editContact(editedContact, pastPrincipal));
 
@@ -54,14 +53,12 @@ export default function useContactTable() {
     allowance?: { allowance: string; expires_at: string },
   ) => dispatch(addContactSubacc(principal, tokenSymbol, newName, newIndex, subAccountId, allowance));
 
-  // contact list
   const [deleteModal, setDeleteModal] = useState(false);
   const [deleteType, setDeleteType] = useState<DeleteContactTypeEnum>(DeleteContactTypeEnum.Enum.ASSET);
   const [selCntcPrinAddAsst, setSelCntcPrinAddAsst] = useState("");
   const [selContactPrin, setSelContactPrin] = useState("");
   const [openAssetsPrin, setOpenAssetsPrin] = useState("");
   const [openSubaccToken, setOpenSubaccToken] = useState("");
-  const [selSubaccIdx, setSelSubaccIdx] = useState("");
 
   const [contactEdited, setContactEdited] = useState<Contact>({
     name: "",
@@ -74,6 +71,8 @@ export default function useContactTable() {
     name: false,
     principal: false,
   });
+
+  const [selSubaccIdx, setSelSubaccIdx] = useState("");
   const [subaccEdited, setSubaccEdited] = useState<SubAccountContact>({
     name: "",
     subaccount_index: "",

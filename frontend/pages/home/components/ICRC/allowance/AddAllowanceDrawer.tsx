@@ -5,6 +5,7 @@ import CreateForm from "./CreateForm";
 
 export default function AddAllowanceDrawer() {
   const { isCreateAllowance, onCloseCreateAllowanceDrawer } = useAllowanceDrawer();
+
   return (
     <Drawer
       isDrawerOpen={isCreateAllowance}

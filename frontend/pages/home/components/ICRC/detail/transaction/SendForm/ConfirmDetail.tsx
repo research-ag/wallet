@@ -15,12 +15,12 @@ import {
   setEndTxTime,
 } from "@redux/transaction/TransactionActions";
 import { useTranslation } from "react-i18next";
-import { ValidationErrorsEnum } from "@/@types/transactions";
+import { TransactionValidationErrorsEnum } from "@/@types/transactions";
 import { SendingStatusEnum } from "@/const";
 import { AssetHook } from "@pages/home/hooks/assetHook";
 import { getSubAccountBalance, transferTokens, transferTokensFromAllowance } from "@pages/home/helpers/icrc";
 import LoadingLoader from "@components/Loader";
-import { toHoleBigInt } from "@/utils";
+import { toFullDecimal, toHoleBigInt } from "@/utils";
 
 interface ConfirmDetailProps {
   showConfirmationModal: Dispatch<SetStateAction<boolean>>;
@@ -69,31 +69,32 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
     const bigintMaxAmount = bigintBalance - bigintFee;
 
     if (bigintAmount > bigintMaxAmount) {
-      setErrorAction(ValidationErrorsEnum.Values["error.not.enough.balance"]);
+      setErrorAction(TransactionValidationErrorsEnum.Values["error.not.enough.balance"]);
       return false;
     }
-    removeErrorAction(ValidationErrorsEnum.Values["error.not.enough.balance"]);
+    removeErrorAction(TransactionValidationErrorsEnum.Values["error.not.enough.balance"]);
     return true;
   }
 
   async function validateSubAccountBalance() {
-    const subAccountBalance = await getSubAccountBalance({
+    const balance = await getSubAccountBalance({
       assetAddress: sender?.asset?.address,
       assetDecimal: sender?.asset?.decimal,
       principal: senderPrincipal,
       subAccount: senderSubAccount,
     });
 
+    const subAccountBalance = toFullDecimal(balance || "0", Number(sender?.asset?.decimal));
     const bigintBalance = toHoleBigInt(subAccountBalance || "0", Number(sender?.asset?.decimal));
     const bigintFee = toHoleBigInt(transactionFee || "0", Number(sender?.asset?.decimal));
     const maxSubAccountBalance = bigintBalance - bigintFee;
     const bigintAmount = toHoleBigInt(amount || "0", Number(sender?.asset?.decimal));
 
     if (bigintAmount > maxSubAccountBalance) {
-      setErrorAction(ValidationErrorsEnum.Values["error.allowance.subaccount.not.enough"]);
+      setErrorAction(TransactionValidationErrorsEnum.Values["error.allowance.subaccount.not.enough"]);
       throw new Error("error.allowance.subaccount.not.enough");
     }
-    removeErrorAction(ValidationErrorsEnum.Values["error.allowance.subaccount.not.enough"]);
+    removeErrorAction(TransactionValidationErrorsEnum.Values["error.allowance.subaccount.not.enough"]);
   }
 
   async function handleTransaction() {
@@ -156,8 +157,8 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
 
   function getError() {
     switch (true) {
-      case errors?.includes(ValidationErrorsEnum.Values["error.not.enough.balance"]):
-        return ValidationErrorsEnum.Values["error.not.enough.balance"];
+      case errors?.includes(TransactionValidationErrorsEnum.Values["error.not.enough.balance"]):
+        return TransactionValidationErrorsEnum.Values["error.not.enough.balance"];
       default:
         return "";
     }
