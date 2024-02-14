@@ -100,7 +100,7 @@ const AddAssetManual = ({
           border={errToken ? "error" : undefined}
         />
         {errToken !== "" && errToken !== "non" && <p className="text-sm text-left text-LockColor">{errToken}</p>}
-        {validToken && <p className="text-sm text-left text-BorderSuccessColor">{t("token.validation.msg")}</p>}
+        {validToken && <p className="text-sm text-left text-slate-color-info">{t("token.validation.msg")}</p>}
       </div>
       <div className="flex flex-col items-start w-full mb-3">
         <p className="opacity-60">{t("token.index.address")}</p>
@@ -115,7 +115,7 @@ const AddAssetManual = ({
           border={errToken ? "error" : undefined}
         />
         {errIndex !== "" && errIndex !== "non" && <p className="text-sm text-left text-LockColor">{errIndex}</p>}
-        {validIndex && <p className="text-sm text-left text-BorderSuccessColor">{t("index.validation.msg")}</p>}
+        {validIndex && <p className="text-sm text-left text-slate-color-info">{t("index.validation.msg")}</p>}
       </div>
       {!asset && (
         <div className="flex justify-end w-full">

@@ -42,9 +42,7 @@ export default function useContactTable() {
     newName: string,
     newIndex: string,
     allowance: { allowance: string; expires_at: string } | undefined,
-  ) => {
-    dispatch(editContactSubacc(principal, tokenSymbol, subIndex, newName, newIndex, allowance));
-  };
+  ) => dispatch(editContactSubacc(principal, tokenSymbol, subIndex, newName, newIndex, allowance));
 
   const addCntctSubacc = (
     principal: string,
@@ -53,9 +51,7 @@ export default function useContactTable() {
     newIndex: string,
     subAccountId: string,
     allowance?: { allowance: string; expires_at: string },
-  ) => {
-    dispatch(addContactSubacc(principal, tokenSymbol, newName, newIndex, subAccountId, allowance));
-  };
+  ) => dispatch(addContactSubacc(principal, tokenSymbol, newName, newIndex, subAccountId, allowance));
 
   const [deleteModal, setDeleteModal] = useState(false);
   const [deleteType, setDeleteType] = useState<DeleteContactTypeEnum>(DeleteContactTypeEnum.Enum.ASSET);

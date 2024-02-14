@@ -87,7 +87,7 @@ const Login = () => {
                               className={clsx(
                                 "w-4 h-4 opacity-50 cursor-pointer",
                                 seed.length > 0
-                                  ? "stroke-BorderSuccessColor"
+                                  ? "stroke-slate-color-info"
                                   : "stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor",
                               )}
                             />
@@ -113,7 +113,7 @@ const Login = () => {
                             className={clsx(
                               "w-4 h-4 opacity-50 mr-2",
                               principalAddress.length > 0 && !watchOnlyLoginErr
-                                ? "stroke-BorderSuccessColor"
+                                ? "stroke-slate-color-info"
                                 : "stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor",
                             )}
                           />
