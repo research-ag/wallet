@@ -5,6 +5,7 @@ import bigInt from "big-integer";
 import { getUSDfromToken, hexToNumber } from "@/utils";
 import { db } from "@/database/db";
 import store from "@redux/Store";
+import { updateAllBalances } from "./AssetActions";
 
 interface AssetState {
   ICPSubaccounts: Array<ICPSubAccount>;
@@ -312,7 +313,13 @@ const assetSlice = createSlice({
 
 db()
   .subscribeToAllTokens()
-  .subscribe((x) => store.dispatch(assetSlice.actions.setReduxTokens(x)));
+  .subscribe((x) => {
+    store.dispatch(assetSlice.actions.setReduxTokens(x));
+
+    if (x.length > 0) {
+      updateAllBalances(true, store.getState().auth.userAgent, x);
+    }
+  });
 
 export const {
   clearDataAsset,

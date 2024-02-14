@@ -97,17 +97,7 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean,
   const myPrincipal = fixedPrincipal || (await myAgent.getPrincipal());
   const identityPrincipalStr = fixedPrincipal?.toString() || authIdentity.getPrincipal().toString();
 
-  // TOKENS
-  const dbTokens = await db().getTokens();
-
   dispatchAuths(identityPrincipalStr.toLocaleLowerCase(), myAgent, myPrincipal, !!fixedPrincipal);
-
-  if (dbTokens.length > 0) {
-    await updateAllBalances(true, myAgent, dbTokens, false, true);
-  } else {
-    defaultTokens.map((token) => db().addToken(token));
-    await updateAllBalances(true, myAgent, defaultTokens, true, true);
-  }
 
   // ALLOWANCES
   await contactCacheRefresh();

@@ -119,11 +119,12 @@ export class RxdbDatabase extends IWalletDatabase {
    * @param identity Identity object
    * @param principalId Principal ID
    */
-  setIdentity(identity: Identity | null): void {
+  async setIdentity(identity: Identity | null): Promise<void> {
     this._invalidateDb();
     this.identity = identity || new AnonymousIdentity();
     this.agent.replaceIdentity(this.identity);
     this.principalId = this.identity.getPrincipal().toString();
+    await this.init();
     this.identityChanged$.next();
   }
 
@@ -401,7 +402,6 @@ export class RxdbDatabase extends IWalletDatabase {
   }
 
   private async _tokensPushHandler(items: any[]): Promise<TokenRxdbDocument[]> {
-    console.log(items);
     const arg = items.map((x) => ({
       ...x,
       id_number: x.id_number,

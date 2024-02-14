@@ -18,7 +18,6 @@ import { Principal } from "@dfinity/principal";
 import { AccountDefaultEnum } from "@/const";
 import bigInt from "big-integer";
 import { getICRCSupportedStandards } from "@pages/home/helpers/icrc";
-import { db } from "@/database/db";
 
 export const updateAllBalances = async (
   loading: boolean,
@@ -269,7 +268,7 @@ export const updateAllBalances = async (
   });
   if (loading) {
     store.dispatch(setAssets(newAssetsUpload));
-    await Promise.all(newTokensUpload.map((t) => db().updateToken(t.address, t)));
+
     if (fromLogin) {
       newAssetsUpload.length > 0 && store.dispatch(setAcordeonAssetIdx([newAssetsUpload[0].tokenSymbol]));
     }
