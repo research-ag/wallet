@@ -14,7 +14,7 @@ interface IExpirationFormItemProps {
 export default function ExpirationFormItem(props: IExpirationFormItemProps) {
   const { t } = useTranslation();
   const { setAllowanceState, isLoading, allowance } = props;
-  const hasExpiration = useMemo(() => Boolean(allowance?.expiration), []);
+  const hasExpiration = useMemo(() => Boolean(allowance?.expiration), [allowance]);
 
   return (
     <div className="mt-4">
