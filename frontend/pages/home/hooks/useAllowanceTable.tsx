@@ -60,7 +60,7 @@ export default function useAllowanceTable() {
         let isExpired = false;
         const allowance = info.row.original;
 
-        if (!allowance.noExpire && allowance?.expiration) {
+        if (allowance?.expiration) {
           isExpired = isDateExpired(allowance?.expiration);
         }
 
@@ -86,7 +86,7 @@ export default function useAllowanceTable() {
         const userDate = info.getValue() ? formatDateTime(info.getValue() || "") : t("no.expiration");
         const allowance = info.row.original;
 
-        if (!allowance.noExpire && allowance?.expiration) {
+        if (allowance?.expiration) {
           isExpired = isDateExpired(allowance?.expiration);
         }
 

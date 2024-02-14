@@ -5,15 +5,15 @@ import { useMutation } from "@tanstack/react-query";
 import { throttle } from "lodash";
 import { useCallback, useState } from "react";
 import useAllowanceDrawer from "./useAllowanceDrawer";
-import {
-  removeAllowanceError,
-  setAllowanceError,
-  setAllowances,
-  setFullAllowanceErrors,
-} from "@redux/allowance/AllowanceReducer";
 import { updateAllowanceRequest } from "../services/allowance";
 import { validateUpdateAllowance } from "../validators/allowance";
 import { updateSubAccountBalance } from "@redux/assets/AssetReducer";
+import {
+  removeAllowanceErrorAction,
+  setAllowanceErrorAction,
+  setAllowancesAction,
+  setFullAllowanceErrorsAction,
+} from "@redux/allowance/AllowanceActions";
 
 export function useUpdateAllowance() {
   const dispatch = useAppDispatch();
@@ -29,12 +29,12 @@ export function useUpdateAllowance() {
   };
 
   const mutationFn = useCallback(async () => {
-    dispatch(setFullAllowanceErrors([]));
+    setFullAllowanceErrorsAction([]);
     validateUpdateAllowance(allowance);
     const params = createApproveAllowanceParams(allowance);
     await submitAllowanceApproval(params, allowance.asset.address);
     const updatedAllowances = await updateAllowanceRequest(allowance);
-    dispatch(setAllowances(updatedAllowances));
+    setAllowancesAction(updatedAllowances);
   }, [allowance]);
 
   const onSuccess = async () => {
@@ -51,16 +51,16 @@ export function useUpdateAllowance() {
   const onError = (error: string) => {
     console.log(error);
     if (error === AllowanceValidationErrorsEnum.Values["error.invalid.amount"])
-      return dispatch(setAllowanceError(AllowanceValidationErrorsEnum.Values["error.invalid.amount"]));
-    dispatch(removeAllowanceError(AllowanceValidationErrorsEnum.Values["error.invalid.amount"]));
+      return setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.amount"]);
+    removeAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.amount"]);
 
     if (error === AllowanceValidationErrorsEnum.Values["error.not.enough.balance"])
-      return dispatch(setAllowanceError(AllowanceValidationErrorsEnum.Values["error.not.enough.balance"]));
-    dispatch(removeAllowanceError(AllowanceValidationErrorsEnum.Values["error.not.enough.balance"]));
+      return setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.not.enough.balance"]);
+    removeAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.not.enough.balance"]);
 
     if (error === AllowanceValidationErrorsEnum.Values["error.before.present.expiration"])
-      return dispatch(setAllowanceError(AllowanceValidationErrorsEnum.Values["error.before.present.expiration"]));
-    dispatch(removeAllowanceError(AllowanceValidationErrorsEnum.Values["error.before.present.expiration"]));
+      return setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.before.present.expiration"]);
+    removeAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.before.present.expiration"]);
   };
 
   const { mutate, isPending, isError, error, isSuccess } = useMutation({ mutationFn, onError, onSuccess });

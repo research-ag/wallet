@@ -11,6 +11,11 @@ import { CustomButton } from "@components/Button";
 import { getAllowanceDetails } from "@pages/home/helpers/icrc";
 import { validatePrincipal } from "@/utils/identity";
 import { isHexadecimalValid } from "@/utils/checkers";
+import {
+  removeAllowanceErrorAction,
+  setAllowanceErrorAction,
+  setFullAllowanceErrorsAction,
+} from "@redux/allowance/AllowanceActions";
 
 export default function CreateForm() {
   const { t } = useTranslation();
@@ -74,12 +79,19 @@ export default function CreateForm() {
     try {
       setLoading(true);
       event.preventDefault();
-      if (!allowance.asset.address) return;
-      if (!allowance.asset.decimal) return;
-      if (!allowance.subAccount.sub_account_id) return;
-      if (!allowance.spender.principal) return;
-      if (!validatePrincipal(allowance.spender.principal)) return;
-      if (!isHexadecimalValid(allowance.subAccount.sub_account_id)) return;
+      setFullAllowanceErrorsAction([]);
+
+      if (!allowance.asset.address || !allowance.asset.decimal)
+        return setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.asset"]);
+      removeAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.asset"]);
+
+      if (!isHexadecimalValid(allowance?.subAccount?.sub_account_id))
+        return setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.subaccount"]);
+      removeAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.subaccount"]);
+
+      if (!validatePrincipal(allowance?.spender?.principal))
+        return setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.spender.principal"]);
+      removeAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.spender.principal"]);
 
       const response = await getAllowanceDetails({
         assetAddress: allowance.asset.address,
@@ -87,11 +99,10 @@ export default function CreateForm() {
         spenderSubaccount: allowance.subAccount.sub_account_id,
         spenderPrincipal: allowance.spender.principal,
       });
-
       setAllowanceState({
         ...allowance,
-        amount: response?.allowance,
-        expiration: response?.expires_at,
+        amount: response?.allowance || "0",
+        expiration: response?.expires_at || "",
       });
     } catch (error) {
       console.error(error);

@@ -162,6 +162,7 @@
   "error.own.sender.not.allowed": "Account owner as from not allowed",
   "error.same.sender.receiver": "Same From and To are not allowed",
   "error.invalid.sender.principal": "Invalid From principal",
+  "error.invalid.spender.principal": "Invalid spender principal",
   "error.invalid.sender.subaccount": "Invalid From subaccount",
   "error.invalid.receiver.principal": "Invalid To principal",
   "error.invalid.receiver.subaccount": "Invalid To subaccount",

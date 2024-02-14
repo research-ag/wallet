@@ -24,6 +24,7 @@ dayjs.extend(utc);
 import { _SERVICE as LedgerActor } from "@candid/icrcLedger/icrcLedgerService";
 import { idlFactory as LedgerFactory } from "@candid/icrcLedger/icrcLedgerCandid.did";
 
+// TODO: Currently, each function performs error catching, disabling the caller from managing the error.
 function getCanister(assetAddress: string) {
   const agent = store.getState().auth.userAgent;
   const canisterId = Principal.fromText(assetAddress);
@@ -69,9 +70,9 @@ export async function getICRCSupportedStandards(params: ICRCSupportedStandardsPa
 
 function calculateExpirationAsBigInt(
   expirationString: string | undefined,
-  isNoExpiration: boolean,
+  hasExpiration?: boolean,
 ): bigint | undefined {
-  if (isNoExpiration) {
+  if (hasExpiration) {
     return undefined;
   }
 
@@ -163,7 +164,7 @@ export function createApproveAllowanceParams(allowance: TAllowance): ApprovePara
   const owner = Principal.fromText(spenderPrincipal);
   const subAccountUint8Array = new Uint8Array(hexToUint8Array(allowanceSubAccountId));
   const amount: bigint = toHoleBigInt(allowanceAmount, Number(allowanceAssetDecimal));
-  const expiration = calculateExpirationAsBigInt(allowance.expiration, allowance?.noExpire);
+  const expiration = calculateExpirationAsBigInt(allowance.expiration);
 
   return {
     spender: {
@@ -186,6 +187,7 @@ export async function submitAllowanceApproval(
     return result;
   } catch (error) {
     console.error(error);
+    throw error;
   }
 }
 

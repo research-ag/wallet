@@ -22,7 +22,6 @@ export const allowanceSchema = z.object({
     name: z.string().optional(),
   }),
   expiration: z.string().optional(),
-  noExpire: z.boolean(),
 });
 
 export type TAllowance = z.infer<typeof allowanceSchema>;
@@ -35,7 +34,7 @@ export type AllowanceErrorFields = z.infer<typeof AllowanceErrorFieldsEnum>;
 
 export const AllowanceValidationErrorsEnum = z.enum([
   "error.invalid.asset",
-  "error.invalid.sender.principal",
+  "error.invalid.spender.principal",
   "error.invalid.expiration",
   "error.expiration.required",
   "error.expiration.not.allowed",

@@ -10,10 +10,10 @@ import clsx from "clsx";
 import { useTranslation } from "react-i18next";
 import useDeleteAllowance from "@pages/home/hooks/useDeleteAllowance";
 import { middleTruncation } from "@/utils/strings";
-import { useAppDispatch, useAppSelector } from "@redux/Store";
-import { setSelectedAllowance } from "@redux/allowance/AllowanceReducer";
+import { useAppSelector } from "@redux/Store";
 import useAllowanceDrawer from "@pages/home/hooks/useAllowanceDrawer";
 import { useMemo, useState } from "react";
+import { setSelectedAllowanceAction } from "@redux/allowance/AllowanceActions";
 
 interface ActionCardProps {
   allowance: TAllowance;
@@ -23,7 +23,6 @@ export default function ActionCard(props: ActionCardProps) {
   const { contacts } = useAppSelector((state) => state.contacts);
   const [isOpen, setOpen] = useState(false);
   const { onOpenUpdateAllowanceDrawer } = useAllowanceDrawer();
-  const dispatch = useAppDispatch();
   const { allowance } = props;
   const { t } = useTranslation();
   const { deleteAllowance, isPending } = useDeleteAllowance();
@@ -84,7 +83,7 @@ export default function ActionCard(props: ActionCardProps) {
   }
 
   function onUpdateHandler() {
-    dispatch(setSelectedAllowance(allowance));
+    setSelectedAllowanceAction(allowance);
     onOpenUpdateAllowanceDrawer();
   }
 

@@ -15,7 +15,7 @@ export function validateCreateAllowance(allowance: TAllowance) {
     throw AllowanceValidationErrorsEnum.Values["error.invalid.subaccount"];
 
   if (!allowance?.spender?.principal || !validatePrincipal(allowance.spender.principal))
-    throw AllowanceValidationErrorsEnum.Values["error.invalid.sender.principal"];
+    throw AllowanceValidationErrorsEnum.Values["error.invalid.spender.principal"];
 
   if (allowance?.spender?.principal === store.getState().auth.userPrincipal.toText())
     throw AllowanceValidationErrorsEnum.Values["error.self.allowance"];

@@ -29,10 +29,6 @@ export default function AmountFormItem(props: IAmountFormItemProps) {
     };
   }, [allowance, selectedAsset]);
 
-  const onAmountChange = (amount: string) => {
-    setAllowanceState({ amount });
-  };
-
   return (
     <div className="mt-4">
       <label htmlFor="Amount" className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
@@ -52,5 +48,9 @@ export default function AmountFormItem(props: IAmountFormItemProps) {
 
   function getError(): boolean {
     return errors?.includes(AllowanceValidationErrorsEnum.Values["error.invalid.amount"]) || false;
+  }
+
+  function onAmountChange(amount: string) {
+    setAllowanceState({ amount });
   }
 }

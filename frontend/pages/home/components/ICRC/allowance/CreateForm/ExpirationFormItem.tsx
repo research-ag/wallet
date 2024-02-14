@@ -2,7 +2,7 @@ import { TAllowance } from "@/@types/allowance";
 import { CalendarPicker } from "@components/CalendarPicker";
 import { CheckBox } from "@components/checkbox";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 interface IExpirationFormItemProps {
@@ -13,20 +13,8 @@ interface IExpirationFormItemProps {
 
 export default function ExpirationFormItem(props: IExpirationFormItemProps) {
   const { t } = useTranslation();
-  const [noExpire, setNotExpire] = useState(true);
   const { setAllowanceState, isLoading, allowance } = props;
-
-  const onDateChange = (date: dayjs.Dayjs | null) => {
-    if (!date) return;
-    setAllowanceState({ ...allowance, expiration: date.format() });
-  };
-
-  const onExpirationChange = (checked: boolean) => {
-    setNotExpire(checked);
-    const date = dayjs().format();
-    if (!checked) setAllowanceState({ ...allowance, noExpire: checked, expiration: date });
-    if (checked) setAllowanceState({ ...allowance, noExpire: checked, expiration: "" });
-  };
+  const hasExpiration = useMemo(() => Boolean(allowance?.expiration), [allowance]);
 
   return (
     <div className="mt-4">
@@ -37,7 +25,7 @@ export default function ExpirationFormItem(props: IExpirationFormItemProps) {
         <div className="w-4/6">
           <CalendarPicker
             onDateChange={onDateChange}
-            disabled={noExpire || isLoading}
+            disabled={!hasExpiration || isLoading}
             value={dayjs(allowance.expiration)}
             onEnableChange={onExpirationChange}
           />
@@ -45,10 +33,10 @@ export default function ExpirationFormItem(props: IExpirationFormItemProps) {
         <div className="flex items-center justify-center h-full py-">
           <CheckBox
             className="mr-1 border-BorderColorLight dark:border-BorderColor"
-            checked={noExpire}
+            checked={!hasExpiration}
             onClick={(e) => {
               e.preventDefault();
-              onExpirationChange(!noExpire);
+              onExpirationChange();
             }}
             disabled={isLoading}
           />
@@ -57,4 +45,14 @@ export default function ExpirationFormItem(props: IExpirationFormItemProps) {
       </div>
     </div>
   );
+
+  function onDateChange(date: dayjs.Dayjs | null) {
+    if (!date) return;
+    setAllowanceState({ ...allowance, expiration: date.format() });
+  }
+
+  function onExpirationChange() {
+    if (!hasExpiration) setAllowanceState({ ...allowance, expiration: dayjs().format() });
+    if (hasExpiration) setAllowanceState({ ...allowance, expiration: "" });
+  }
 }

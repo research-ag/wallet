@@ -69,7 +69,7 @@ export default function AllowanceList() {
                 let isExpired = false;
                 const allowance = table.getRowModel().rows[idxTR].original;
 
-                if (!allowance.noExpire && allowance?.expiration && idxTD <= 3) {
+                if (allowance?.expiration && idxTD <= 3) {
                   isExpired = isDateExpired(allowance?.expiration);
                 }
 

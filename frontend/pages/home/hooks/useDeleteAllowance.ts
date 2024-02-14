@@ -4,10 +4,11 @@ import { throttle } from "lodash";
 import { useCallback } from "react";
 import dayjs from "dayjs";
 import { useAppDispatch } from "@redux/Store";
-import { initialAllowanceState, setAllowances, setSelectedAllowance } from "@redux/allowance/AllowanceReducer";
+import { initialAllowanceState } from "@redux/allowance/AllowanceReducer";
 import { removeAllowance } from "../services/allowance";
 import { updateSubAccountBalance } from "@redux/assets/AssetReducer";
 import { TAllowance } from "@/@types/allowance";
+import { setAllowancesAction, setSelectedAllowanceAction } from "@redux/allowance/AllowanceActions";
 
 export default function useDeleteAllowance() {
   const dispatch = useAppDispatch();
@@ -22,18 +23,18 @@ export default function useDeleteAllowance() {
         throw new Error("Invalid allowance");
       }
 
-      if (allowance.expiration || allowance.noExpire) {
+      if (allowance.expiration) {
         const currentDate = dayjs();
         const expirationDate = dayjs(allowance.expiration);
 
-        if (currentDate.isBefore(expirationDate) || allowance.noExpire) {
+        if (currentDate.isBefore(expirationDate)) {
           const params = createApproveAllowanceParams({ ...allowance, amount: "0", expiration: undefined });
           await submitAllowanceApproval(params, allowance.asset.address);
         }
       }
 
       const latestAllowances = await removeAllowance(allowance.id);
-      dispatch(setAllowances(latestAllowances));
+      setAllowancesAction(latestAllowances);
       return { success: true };
     } catch (error) {
       console.error(error);
@@ -46,7 +47,7 @@ export default function useDeleteAllowance() {
       const amount = await getSubAccountBalance(refreshParams);
       const balance = amount ? amount.toString() : "0";
       dispatch(updateSubAccountBalance(allowance.asset.tokenSymbol, allowance.subAccount.sub_account_id, balance));
-      dispatch(setSelectedAllowance(initialAllowanceState));
+      setSelectedAllowanceAction(initialAllowanceState);
     }
   }, []);
 

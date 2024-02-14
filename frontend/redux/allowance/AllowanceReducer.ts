@@ -32,7 +32,6 @@ export const initialAllowanceState: TAllowance = {
   },
   amount: "",
   expiration: "",
-  noExpire: true,
 };
 
 interface AllowanceState {

@@ -8,17 +8,17 @@ import useAllowanceDrawer from "./useAllowanceDrawer";
 import { throttle } from "lodash";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { v4 as uuidv4 } from "uuid";
-import {
-  initialAllowanceState,
-  removeAllowanceError,
-  setAllowanceError,
-  setAllowances,
-  setFullAllowanceErrors,
-} from "@redux/allowance/AllowanceReducer";
+import { initialAllowanceState } from "@redux/allowance/AllowanceReducer";
 import { postAllowance } from "../services/allowance";
 import { validateCreateAllowance } from "../validators/allowance";
 import { SupportedStandardEnum } from "@/@types/icrc";
 import { updateSubAccountBalance } from "@redux/assets/AssetReducer";
+import {
+  removeAllowanceErrorAction,
+  setAllowanceErrorAction,
+  setAllowancesAction,
+  setFullAllowanceErrorsAction,
+} from "@redux/allowance/AllowanceActions";
 
 export default function useCreateAllowance() {
   const dispatch = useAppDispatch();
@@ -49,12 +49,12 @@ export default function useCreateAllowance() {
 
   const mutationFn = useCallback(async () => {
     const fullAllowance = { ...allowance, id: uuidv4() };
-    dispatch(setFullAllowanceErrors([]));
+    setFullAllowanceErrorsAction([]);
     validateCreateAllowance(fullAllowance);
     const params = createApproveAllowanceParams(fullAllowance);
     await submitAllowanceApproval(params, allowance.asset.address);
     const savedAllowances = await postAllowance(fullAllowance);
-    dispatch(setAllowances(savedAllowances));
+    setAllowancesAction(savedAllowances);
   }, [allowance]);
 
   const onSuccess = async () => {
@@ -70,36 +70,36 @@ export default function useCreateAllowance() {
 
   const onError = (error: string) => {
     if (error === AllowanceValidationErrorsEnum.Values["error.invalid.asset"])
-      return dispatch(setAllowanceError(AllowanceValidationErrorsEnum.Values["error.invalid.asset"]));
-    dispatch(removeAllowanceError(AllowanceValidationErrorsEnum.Values["error.invalid.asset"]));
+      return setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.asset"]);
+    removeAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.asset"]);
 
     if (error === AllowanceValidationErrorsEnum.Values["error.invalid.subaccount"])
-      return dispatch(setAllowanceError(AllowanceValidationErrorsEnum.Values["error.invalid.subaccount"]));
-    dispatch(removeAllowanceError(AllowanceValidationErrorsEnum.Values["error.invalid.subaccount"]));
+      return setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.subaccount"]);
+    removeAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.subaccount"]);
 
-    if (error === AllowanceValidationErrorsEnum.Values["error.invalid.sender.principal"])
-      return dispatch(setAllowanceError(AllowanceValidationErrorsEnum.Values["error.invalid.sender.principal"]));
-    dispatch(removeAllowanceError(AllowanceValidationErrorsEnum.Values["error.invalid.sender.principal"]));
+    if (error === AllowanceValidationErrorsEnum.Values["error.invalid.spender.principal"])
+      return setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.spender.principal"]);
+    removeAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.spender.principal"]);
 
     if (error === AllowanceValidationErrorsEnum.Values["error.self.allowance"])
-      return dispatch(setAllowanceError(AllowanceValidationErrorsEnum.Values["error.self.allowance"]));
-    dispatch(removeAllowanceError(AllowanceValidationErrorsEnum.Values["error.self.allowance"]));
+      return setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.self.allowance"]);
+    removeAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.self.allowance"]);
 
     if (error === AllowanceValidationErrorsEnum.Values["error.allowance.duplicated"])
-      return dispatch(setAllowanceError(AllowanceValidationErrorsEnum.Values["error.allowance.duplicated"]));
-    dispatch(removeAllowanceError(AllowanceValidationErrorsEnum.Values["error.allowance.duplicated"]));
+      return setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.allowance.duplicated"]);
+    removeAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.allowance.duplicated"]);
 
     if (error === AllowanceValidationErrorsEnum.Values["error.invalid.amount"])
-      return dispatch(setAllowanceError(AllowanceValidationErrorsEnum.Values["error.invalid.amount"]));
-    dispatch(removeAllowanceError(AllowanceValidationErrorsEnum.Values["error.invalid.amount"]));
+      return setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.amount"]);
+    removeAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.amount"]);
 
     if (error === AllowanceValidationErrorsEnum.Values["error.not.enough.balance"])
-      return dispatch(setAllowanceError(AllowanceValidationErrorsEnum.Values["error.not.enough.balance"]));
-    dispatch(removeAllowanceError(AllowanceValidationErrorsEnum.Values["error.not.enough.balance"]));
+      return setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.not.enough.balance"]);
+    removeAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.not.enough.balance"]);
 
     if (error === AllowanceValidationErrorsEnum.Values["error.before.present.expiration"])
-      return dispatch(setAllowanceError(AllowanceValidationErrorsEnum.Values["error.before.present.expiration"]));
-    dispatch(removeAllowanceError(AllowanceValidationErrorsEnum.Values["error.before.present.expiration"]));
+      return setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.before.present.expiration"]);
+    removeAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.before.present.expiration"]);
   };
 
   const { mutate, isPending, isError, error, isSuccess } = useMutation({ onSuccess, onError, mutationFn });

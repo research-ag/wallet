@@ -6,11 +6,11 @@ import { Input } from "@components/input";
 import { Select } from "@components/select";
 import { Switch } from "@components/switch";
 import { useAppSelector } from "@redux/Store";
-import { initialAllowanceState, removeAllowanceError } from "@redux/allowance/AllowanceReducer";
+import { removeAllowanceErrorAction } from "@redux/allowance/AllowanceActions";
+import { initialAllowanceState } from "@redux/allowance/AllowanceReducer";
 import { Contact } from "@redux/models/ContactsModels";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useDispatch } from "react-redux";
 
 interface ISpenderFormItemProps {
   contacts: Contact[];
@@ -26,7 +26,6 @@ export default function SpenderFormItem(props: ISpenderFormItemProps) {
   const [search, setSearch] = useState<string | null>(null);
   const [isNew, setIsNew] = useState(false);
   const inputTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
-  const dispatch = useDispatch();
 
   const onSearchChange = (searchValue: string) => setSearch(searchValue);
   const onOpenChange = () => setSearch(null);
@@ -84,13 +83,14 @@ export default function SpenderFormItem(props: ISpenderFormItemProps) {
   }
 
   function onInputChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const newSearchValue = event.target.value;
+    // TODO: validate principal on spaces
+    const newSearchValue = event.target.value.trim();
 
     if (!validatePrincipal(newSearchValue)) {
       setIsPrincipalValid(false);
     } else {
       setIsPrincipalValid(true);
-      dispatch(removeAllowanceError(AllowanceValidationErrorsEnum.Values["error.invalid.sender.principal"]));
+      removeAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.spender.principal"]);
     }
 
     clearTimeout(inputTimeoutRef.current);
@@ -108,6 +108,6 @@ export default function SpenderFormItem(props: ISpenderFormItemProps) {
   }
 
   function getError(): boolean {
-    return errors?.includes(AllowanceValidationErrorsEnum.Values["error.invalid.sender.principal"]) || false;
+    return errors?.includes(AllowanceValidationErrorsEnum.Values["error.invalid.spender.principal"]) || false;
   }
 }
