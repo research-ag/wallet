@@ -5,6 +5,7 @@ import List "mo:base/List";
 import Principal "mo:base/Principal";
 import Text "mo:base/Text";
 import Nat32 "mo:base/Nat32";
+import Bool "mo:base/Bool";
 import Vector "mo:vector";
 
 import DB "db";
@@ -125,14 +126,14 @@ actor class WalletDatabase() {
   public shared query ({ caller }) func pullTokens(updatedAt : Nat32, lastId : ?Text, limit : Nat) : async [TokenDocument] {
     switch (getDatabase(caller, #returnNull)) {
       case (?(tdb, _)) DB.getLatest(tdb, updatedAt, lastId, limit);
-      case (null)[];
+      case (null) [];
     };
   };
 
   public shared query ({ caller }) func pullContacts(updatedAt : Nat32, lastId : ?Text, limit : Nat) : async [ContactDocument] {
     switch (getDatabase(caller, #returnNull)) {
       case (?(_, cdb)) DB.getLatest(cdb, updatedAt, lastId, limit);
-      case (null)[];
+      case (null) [];
     };
   };
 
@@ -143,6 +144,13 @@ actor class WalletDatabase() {
         func((p, (t, c))) = (p, (Vector.toArray<?TokenDocument>(t.db.vec), Vector.toArray<?ContactDocument>(c.db.vec))),
       )
     );
+  };
+
+  public shared query ({ caller }) func doesStorageExist() : async Bool {
+    switch (AssocList.find(databasesCache, caller, Principal.equal)) {
+      case (?db) true;
+      case (null) false;
+    };
   };
 
 };

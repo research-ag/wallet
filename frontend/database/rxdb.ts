@@ -12,6 +12,7 @@ import { RxReplicationState } from "rxdb/plugins/replication";
 import DBSchemas from "./schemas.json";
 import { BehaviorSubject, combineLatest, distinctUntilChanged, from, map, Observable, Subject, switchMap } from "rxjs";
 import { extractValueFromArray, setupReplication } from "./helpers";
+import { defaultTokens } from "@/defaultTokens";
 
 addRxPlugin(RxDBUpdatePlugin);
 addRxPlugin(RxDBMigrationPlugin);
@@ -64,9 +65,6 @@ export class RxdbDatabase extends IWalletDatabase {
    */
   async init(): Promise<void> {
     try {
-      // Don't allow watch-only mode to use the DB
-      if (this.identity.getPrincipal().isAnonymous()) return;
-
       if (
         import.meta.env.VITE_DB_CANISTER_HOST!.includes("localhost") ||
         import.meta.env.VITE_DB_CANISTER_HOST!.includes("127.0.0.1")
@@ -124,7 +122,13 @@ export class RxdbDatabase extends IWalletDatabase {
     this.identity = identity || new AnonymousIdentity();
     this.agent.replaceIdentity(this.identity);
     this.principalId = this.identity.getPrincipal().toString();
-    await this.init();
+
+    // Don't allow watch-only mode to use the DB
+    if (!this.identity.getPrincipal().isAnonymous()) {
+      await this.init();
+      await this._doesDbExist();
+    }
+
     this.identityChanged$.next();
   }
 
@@ -472,5 +476,25 @@ export class RxdbDatabase extends IWalletDatabase {
     )) as ContactRxdbDocument[];
 
     return raw;
+  }
+
+  private async _doesDbExist() {
+    const exist: boolean = await this.replicaCanister?.doesStorageExist();
+
+    if (!exist) {
+      try {
+        await (
+          await this.tokens
+        )?.bulkInsert(
+          defaultTokens.map((dT) => ({
+            ...dT,
+            deleted: false,
+            updatedAt: Date.now(),
+          })),
+        );
+      } catch (e) {
+        console.error("RxDb AddToken:", e);
+      }
+    }
   }
 }

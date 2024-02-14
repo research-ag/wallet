@@ -314,9 +314,8 @@ const assetSlice = createSlice({
 db()
   .subscribeToAllTokens()
   .subscribe((x) => {
-    store.dispatch(assetSlice.actions.setReduxTokens(x));
-
     if (x.length > 0) {
+      store.dispatch(assetSlice.actions.setReduxTokens(x));
       updateAllBalances(true, store.getState().auth.userAgent, x);
     }
   });

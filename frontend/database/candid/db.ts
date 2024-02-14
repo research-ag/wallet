@@ -57,6 +57,7 @@ export interface WalletDatabase {
   pullTokens: ActorMethod<[number, [] | [string], bigint], Array<TokenDocument>>;
   pushContacts: ActorMethod<[Array<ContactDocument>], Array<ContactDocument>>;
   pushTokens: ActorMethod<[Array<TokenDocument>], Array<TokenDocument>>;
+  doesStorageExist: ActorMethod<[], boolean>;
 }
 export type _SERVICE = WalletDatabase;
 
@@ -134,6 +135,7 @@ export const idlFactory = ({ IDL }: { IDL: any }) => {
     pullTokens: IDL.Func([IDL.Nat32, IDL.Opt(IDL.Text), IDL.Nat], [IDL.Vec(TokenDocument)], ["query"]),
     pushContacts: IDL.Func([IDL.Vec(ContactDocument)], [IDL.Vec(ContactDocument)], []),
     pushTokens: IDL.Func([IDL.Vec(TokenDocument)], [IDL.Vec(TokenDocument)], []),
+    doesStorageExist: IDL.Func([], [IDL.Bool], ["query"]),
   });
   return WalletDatabase;
 };

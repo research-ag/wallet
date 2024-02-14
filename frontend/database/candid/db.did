@@ -22,6 +22,7 @@ type WalletDatabase = service {
   pullTokens : (nat32, opt text, nat) -> (vec TokenDocument) query;
   pushContacts : (vec ContactDocument) -> (vec ContactDocument);
   pushTokens : (vec TokenDocument) -> (vec TokenDocument);
+  doesStorageExist : () -> (bool) query;
 };
 
 /**
