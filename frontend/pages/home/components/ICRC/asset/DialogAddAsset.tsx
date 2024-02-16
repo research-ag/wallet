@@ -196,6 +196,8 @@ const DialogAddAsset = ({
               certified: false,
             });
             const token = tokens[Number(idx)];
+            console.log(idx, "tokens", tokens, tokens[Number(idx)]);
+
             const tokenToUpdate = {
               ...token,
               subAccounts: [
