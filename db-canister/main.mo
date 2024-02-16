@@ -29,6 +29,7 @@ actor class WalletDatabase() {
       name : Text;
       amount : Text;
       currency_amount : Text;
+      allowanceSpenders : ?[Text];
     }];
     fee : Text;
     index : Text;

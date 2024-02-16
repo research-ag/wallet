@@ -1,72 +1,64 @@
-type WalletDatabase = 
- service {
-   doesStorageExist: () -> (bool) query;
-   dump: () ->
-    (vec
-      record {
-        principal;
-        record {
-          vec opt TokenDocument;
-          vec opt ContactDocument;
-        };
-      }) query;
-   pullContacts: (nat32, opt text, nat) -> (vec ContactDocument) query;
-   pullTokens: (nat32, opt text, nat) -> (vec TokenDocument) query;
-   pushContacts: (vec ContactDocument) -> (vec ContactDocument);
-   pushTokens: (vec TokenDocument) -> (vec TokenDocument);
- };
-type TokenDocument = 
- record {
-   address: text;
-   decimal: text;
-   deleted: bool;
-   fee: text;
-   id_number: nat32;
-   index: text;
-   logo: text;
-   name: text;
-   shortDecimal: text;
-   subAccounts:
+type WalletDatabase = service {
+  doesStorageExist : () -> (bool) query;
+  dump : () -> (
     vec record {
-          amount: text;
-          currency_amount: text;
-          name: text;
-          numb: text;
-        };
-   supportedStandards: vec text;
-   symbol: text;
-   tokenName: text;
-   tokenSymbol: text;
-   updatedAt: nat32;
- };
-type ContactDocument = 
- record {
-   accountIdentier: text;
-   assets:
-    vec
-     record {
-       address: text;
-       decimal: text;
-       logo: text;
-       shortDecimal: text;
-       subaccounts:
-        vec
-         record {
-           allowance: opt record {
-                            allowance: text;
-                            expires_at: text;
-                          };
-           name: text;
-           sub_account_id: text;
-           subaccount_index: text;
-         };
-       supportedStandards: vec text;
-       symbol: text;
-       tokenSymbol: text;
-     };
-   deleted: bool;
-   name: text;
-   "principal": text;
-   updatedAt: nat32;
- };
-service : () -> WalletDatabase
+      principal;
+      record {
+        vec opt TokenDocument;
+        vec opt ContactDocument;
+      };
+    }
+  ) query;
+  pullContacts : (nat32, opt text, nat) -> (vec ContactDocument) query;
+  pullTokens : (nat32, opt text, nat) -> (vec TokenDocument) query;
+  pushContacts : (vec ContactDocument) -> (vec ContactDocument);
+  pushTokens : (vec TokenDocument) -> (vec TokenDocument);
+};
+type TokenDocument = record {
+  address : text;
+  decimal : text;
+  deleted : bool;
+  fee : text;
+  id_number : nat32;
+  index : text;
+  logo : text;
+  name : text;
+  shortDecimal : text;
+  subAccounts : vec record {
+    amount : text;
+    currency_amount : text;
+    name : text;
+    numb : text;
+  };
+  supportedStandards : vec text;
+  symbol : text;
+  tokenName : text;
+  tokenSymbol : text;
+  updatedAt : nat32;
+};
+type ContactDocument = record {
+  accountIdentier : text;
+  assets : vec record {
+    address : text;
+    decimal : text;
+    logo : text;
+    shortDecimal : text;
+    subaccounts : vec record {
+      allowance : opt record {
+        allowance : text;
+        expires_at : text;
+      };
+      name : text;
+      sub_account_id : text;
+      subaccount_index : text;
+    };
+    supportedStandards : vec text;
+    symbol : text;
+    tokenSymbol : text;
+  };
+  deleted : bool;
+  name : text;
+  "principal" : text;
+  updatedAt : nat32;
+};
+service : () -> WalletDatabase;

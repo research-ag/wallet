@@ -21,7 +21,11 @@
               "numb": { "type": "string", "maxLength": 100 },
               "name": { "type": "string", "maxLength": 100 },
               "amount": { "type": "string", "maxLength": 100 },
-              "currency_amount": { "type": "string", "maxLength": 100 }
+              "currency_amount": { "type": "string", "maxLength": 100 },
+              "allowanceSpenders": {
+                "type": "array",
+                "items": { "type": "string", "maxLength": 100 }
+              }
             },
             "required": ["numb", "name", "amount", "currency_amount"]
           }
@@ -29,7 +33,10 @@
         "fee": { "type": "string", "maxLength": 100 },
         "index": { "type": "string", "maxLength": 100 },
         "logo": { "type": "string", "maxLength": 1000 },
-        "supportedStandards": { "type": "array", "items": { "type": "string" } }
+        "supportedStandards": {
+          "type": "array",
+          "items": { "type": "string", "maxLength": 100 }
+        }
       },
       "required": [
         "id_number",
@@ -88,7 +95,10 @@
               "address": { "type": "string", "maxLength": 100 },
               "decimal": { "type": "string", "maxLength": 100 },
               "shortDecimal": { "type": "string", "maxLength": 100 },
-              "supportedStandards": { "type": "array", "items": { "type": "string" } }
+              "supportedStandards": {
+                "type": "array",
+                "items": { "type": "string", "maxLength": 100 }
+              }
             },
             "required": [
               "symbol",
