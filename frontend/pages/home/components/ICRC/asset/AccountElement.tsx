@@ -14,13 +14,13 @@ import { toFullDecimal } from "@/utils";
 import { CustomInput } from "@components/Input";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch } from "@redux/Store";
-import { AccountHook } from "@pages/hooks/accountHook";
-import { Token, TokenSubAccount } from "@redux/models/TokenModels";
+import { Token } from "@redux/models/TokenModels";
 import { CustomCopy } from "@components/CopyTooltip";
-import { addSubAccount, removeSubAcc, setSubAccountName } from "@redux/assets/AssetReducer";
+import { addSubAccount, removeSubAcc } from "@redux/assets/AssetReducer";
 import Modal from "@components/Modal";
 import { CustomButton } from "@components/Button";
 import bigInt from "big-integer";
+import { db } from "@/database/db";
 
 interface AccountElementProps {
   asset: Asset;
@@ -57,7 +57,6 @@ const AccountElement = ({
 }: AccountElementProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const { authClient } = AccountHook();
   const { selectedAsset, changeSelectedAsset, selectedAccount, changeSelectedAccount } = GeneralHook();
   const chechEqId = () => {
     return (
@@ -181,47 +180,37 @@ const AccountElement = ({
     setNameError(false);
   }
 
-  function onSave() {
+  async function onSave() {
     if (name.trim() !== "") {
       setEditNameId("");
       if (newSub) {
-        const auxTokens = tokens.map((tkn, k) => {
-          if (k === Number(tokenIndex)) {
-            return {
-              ...tkn,
-              subAccounts: [
-                ...tkn.subAccounts,
-                {
-                  name: name.trim(),
-                  numb: subAccount.sub_account_id,
-                  amount: "0",
-                  currency_amount: "0.00",
-                },
-              ].sort((a, b) => {
-                return bigInt(a.numb).compare(bigInt(b.numb));
-              }),
-            };
-          } else return tkn;
+        const token = tokens[+tokenIndex];
+        const subAccounts = token.subAccounts
+          .map((sa) => ({
+            ...sa,
+            name: name,
+            numb: subAccount.sub_account_id,
+          }))
+          .sort((a, b) => bigInt(a.numb).compare(bigInt(b.numb)));
+
+        await db().updateToken(token.address, {
+          ...token,
+          subAccounts: subAccounts,
         });
-        saveLocalStorage(auxTokens);
+
         dispatch(addSubAccount(tokenIndex, { ...subAccount, name: name.trim() }));
         setNewSub(undefined);
-
         setAddOpen(false);
       } else {
-        const auxTokens = tokens.map((tkn, k) => {
-          if (k === Number(tokenIndex)) {
-            const auxSubs: TokenSubAccount[] = [];
-            tkn.subAccounts.map((sa) => {
-              if (sa.numb === subAccount.sub_account_id) {
-                auxSubs.push({ ...sa, name: name.trim() });
-              } else auxSubs.push(sa);
-            });
-            return { ...tkn, subAccounts: auxSubs };
-          } else return tkn;
+        const token = tokens[+tokenIndex];
+        const subAccounts = token.subAccounts.map((sa) =>
+          sa.numb === subAccount.sub_account_id ? { ...sa, name: name } : sa,
+        );
+
+        await db().updateToken(token.address, {
+          ...token,
+          subAccounts: subAccounts,
         });
-        saveLocalStorage(auxTokens);
-        dispatch(setSubAccountName(tokenIndex, subaccountId, name.trim()));
       }
     } else {
       setNameError(true);
@@ -234,31 +223,19 @@ const AccountElement = ({
     setAddOpen(false);
   }
 
-  function onConfirm() {
-    const auxTokens = tokens.map((tkn, k) => {
-      if (k === Number(tokenIndex)) {
-        const auxSubs: TokenSubAccount[] = [];
-        tkn.subAccounts.map((sa) => {
-          if (sa.numb !== subAccount.sub_account_id) auxSubs.push(sa);
-        });
-        return { ...tkn, subAccounts: auxSubs };
-      } else return tkn;
+  async function onConfirm() {
+    const token = tokens[Number(tokenIndex)];
+    const subAccounts = token.subAccounts
+      .map((sa) => (sa.numb !== subAccount.sub_account_id ? sa : null!))
+      .filter((x) => !!x);
+
+    await db().updateToken(token.address, {
+      ...token,
+      subAccounts: subAccounts,
     });
-    saveLocalStorage(auxTokens);
+
     dispatch(removeSubAcc(tokenIndex, subaccountId));
     setDeleteModal(false);
-  }
-
-  function saveLocalStorage(auxTokens: Token[]) {
-    localStorage.setItem(
-      authClient,
-      JSON.stringify({
-        from: "II",
-        tokens: auxTokens.sort((a, b) => {
-          return a.id_number - b.id_number;
-        }),
-      }),
-    );
   }
 
   function onDoubleClick() {

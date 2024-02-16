@@ -68,7 +68,7 @@ const AssetsList = () => {
               }
               onValueChange={onValueChange}
             >
-              {assets?.map((asset: Asset, idx: number) => {
+              {assets.map((asset: Asset, idx: number) => {
                 const mySearchKey = searchKey.toLowerCase().trim();
                 let includeInSub = false;
                 asset.subAccounts.map((sa) => {

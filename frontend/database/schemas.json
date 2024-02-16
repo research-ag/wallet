@@ -1,0 +1,110 @@
+{
+  "tokens": {
+    "schema": {
+      "type": "object",
+      "version": 0,
+      "primaryKey": "address",
+      "properties": {
+        "id_number": { "type": "number" },
+        "address": { "type": "string", "maxLength": 100 },
+        "symbol": { "type": "string", "maxLength": 100 },
+        "name": { "type": "string", "maxLength": 100 },
+        "tokenName": { "type": "string", "maxLength": 100 },
+        "tokenSymbol": { "type": "string", "maxLength": 100 },
+        "decimal": { "type": "string", "maxLength": 100 },
+        "shortDecimal": { "type": "string", "maxLength": 100 },
+        "subAccounts": {
+          "type": "array",
+          "items": {
+            "type": "record",
+            "properties": {
+              "numb": { "type": "string", "maxLength": 100 },
+              "name": { "type": "string", "maxLength": 100 },
+              "amount": { "type": "string", "maxLength": 100 },
+              "currency_amount": { "type": "string", "maxLength": 100 }
+            },
+            "required": ["numb", "name", "amount", "currency_amount"]
+          }
+        },
+        "fee": { "type": "string", "maxLength": 100 },
+        "index": { "type": "string", "maxLength": 100 },
+        "logo": { "type": "string", "maxLength": 1000 },
+        "supportedStandards": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": [
+        "id_number",
+        "symbol",
+        "name",
+        "tokenName",
+        "tokenSymbol",
+        "decimal",
+        "shortDecimal",
+        "subAccounts",
+        "fee",
+        "index",
+        "logo",
+        "supportedStandards"
+      ],
+      "indexes": ["name"]
+    },
+    "migrationStrategies": {}
+  },
+  "contacts": {
+    "schema": {
+      "type": "object",
+      "version": 0,
+      "primaryKey": "principal",
+      "properties": {
+        "principal": { "type": "string", "maxLength": 100 },
+        "name": { "type": "string", "maxLength": 100 },
+        "accountIdentier": { "type": "string", "maxLength": 100 },
+        "assets": {
+          "type": "array",
+          "items": {
+            "type": "record",
+            "properties": {
+              "symbol": { "type": "string", "maxLength": 100 },
+              "tokenSymbol": { "type": "string", "maxLength": 100 },
+              "logo": { "type": "string", "maxLength": 1000 },
+              "subaccounts": {
+                "type": "array",
+                "items": {
+                  "type": "record",
+                  "properties": {
+                    "name": { "type": "string", "maxLength": 100 },
+                    "subaccount_index": { "type": "string", "maxLength": 100 },
+                    "sub_account_id": { "type": "string", "maxLength": 100 },
+                    "allowance": {
+                      "type": "record",
+                      "properties": {
+                        "allowance": { "type": "string", "maxLength": 100 },
+                        "expires_at": { "type": "string", "maxLength": 100 }
+                      }
+                    }
+                  },
+                  "required": ["name", "subaccount_index", "sub_account_id"]
+                }
+              },
+              "address": { "type": "string", "maxLength": 100 },
+              "decimal": { "type": "string", "maxLength": 100 },
+              "shortDecimal": { "type": "string", "maxLength": 100 },
+              "supportedStandards": { "type": "array", "items": { "type": "string" } }
+            },
+            "required": [
+              "symbol",
+              "tokenSymbol",
+              "logo",
+              "subaccounts",
+              "address",
+              "decimal",
+              "shortDecimal",
+              "supportedStandards"
+            ]
+          }
+        }
+      },
+      "required": ["name", "accountIdentier", "assets"]
+    },
+    "migrationStrategies": {}
+  }
+}

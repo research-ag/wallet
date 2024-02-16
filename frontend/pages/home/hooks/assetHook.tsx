@@ -13,6 +13,7 @@ import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { Token } from "@redux/models/TokenModels";
 import { useEffect, useState } from "react";
 import { allowanceCacheRefresh } from "../helpers/allowanceCache";
+import { db } from "@/database/db";
 
 export const AssetHook = () => {
   const dispatch = useAppDispatch();
@@ -21,8 +22,9 @@ export const AssetHook = () => {
   );
 
   const { userAgent } = useAppSelector((state) => state.auth);
-  const deleteAsset = (symb: string) => {
+  const deleteAsset = (symb: string, address: string) => {
     dispatch(removeToken(symb));
+    db().deleteToken(address).then();
   };
   const [searchKey, setSearchKey] = useState("");
   const setAcordeonIdx = (assetIdx: string[]) => dispatch(setAcordeonAssetIdx(assetIdx));
@@ -38,7 +40,7 @@ export const AssetHook = () => {
     updateAllBalances(true, userAgent, tkns ? tkns : tokens.length > 0 ? tokens : defaultTokens);
     const principal = store.getState().auth.userPrincipal.toText();
     await allowanceCacheRefresh(principal);
-    await contactCacheRefresh(principal);
+    await contactCacheRefresh();
     dispatch(setLoading(false));
   };
 

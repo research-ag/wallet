@@ -20,6 +20,7 @@ import { Principal } from "@dfinity/principal";
 import LoadingLoader from "@components/Loader";
 import { AccountHook } from "@pages/hooks/accountHook";
 import { getICRCSupportedStandards } from "@pages/home/helpers/icrc";
+import { db } from "@/database/db";
 
 interface AddAssetManualProps {
   manual: boolean;
@@ -38,7 +39,6 @@ interface AddAssetManualProps {
   setAssetOpen(value: boolean): void;
   tokens: Token[];
   addAssetToData(): void;
-  saveInLocalStorage(value: Token[]): void;
 }
 
 const AddAssetManual = ({
@@ -56,9 +56,7 @@ const AddAssetManual = ({
   setNewToken,
   asset,
   setAssetOpen,
-  tokens,
   addAssetToData,
-  saveInLocalStorage,
 }: AddAssetManualProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
@@ -365,21 +363,18 @@ const AddAssetManual = ({
       // Change contacts local and reducer
       dispatch(editAssetName(asset.tokenSymbol, newToken.symbol));
       // List all tokens modifying the one we selected
-      const auxTokens = tokens.map((tkn) => {
-        if (tkn.id_number === newToken.id_number) {
-          return {
-            ...newToken,
-            decimal: Number(newToken.decimal).toFixed(0),
-            shortDecimal:
-              newToken.shortDecimal === ""
-                ? Number(newToken.decimal).toFixed(0)
-                : Number(newToken.shortDecimal).toFixed(0),
-            supportedStandards: asset.supportedStandards,
-          };
-        } else return tkn;
-      });
-
-      saveInLocalStorage(auxTokens);
+      const token = await db().getToken(newToken.address);
+      if (token) {
+        await db().updateToken(token.address, {
+          ...newToken,
+          decimal: Number(newToken.decimal).toFixed(0),
+          shortDecimal:
+            newToken.shortDecimal === ""
+              ? Number(newToken.decimal).toFixed(0)
+              : Number(newToken.shortDecimal).toFixed(0),
+        });
+      }
+      // Edit tokens list and assets list
       dispatch(editToken(newToken, asset.tokenSymbol));
       setAssetOpen(false);
     } else if (await onTest(false)) addAssetToData();

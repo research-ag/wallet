@@ -11,17 +11,16 @@ import {
   setUserPrincipal,
 } from "./auth/AuthReducer";
 import { AuthClient } from "@dfinity/auth-client";
-import { setAssetFromLocalData, updateAllBalances } from "./assets/AssetActions";
-import { clearDataAsset, setLoading, setTokens } from "./assets/AssetReducer";
+import { clearDataAsset, setInitLoad, setLoading } from "./assets/AssetReducer";
 import { AuthNetwork } from "./models/TokenModels";
 import { AuthNetworkTypeEnum } from "@/const";
 import { Ed25519KeyIdentity } from "@dfinity/identity";
-import { clearDataContacts, setStorageCode } from "./contacts/ContactsReducer";
+import { clearDataContacts } from "./contacts/ContactsReducer";
 import { Principal } from "@dfinity/principal";
-import { defaultTokens } from "@/defaultTokens";
 import { allowanceCacheRefresh } from "@pages/home/helpers/allowanceCache";
 import contactCacheRefresh from "@pages/contacts/helpers/contacts";
 import { setAllowances } from "./allowance/AllowanceReducer";
+import { db } from "@/database/db";
 
 const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${
   import.meta.env.VITE_APP_LOGO
@@ -79,10 +78,12 @@ export const handlePrincipalAuthenticated = async (principalAddress: string) => 
 
 export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean, fixedPrincipal?: Principal) => {
   store.dispatch(setLoading(true));
-  if (localStorage.getItem("network_type") === null && !fromSeed && !fixedPrincipal) {
+  const opt: AuthNetwork | null = db().getNetworkType();
+  if (opt === null && !fromSeed && !fixedPrincipal) {
     logout();
     return;
   }
+
   store.dispatch(setAuthLoading(true));
   const myAgent = new HttpAgent({
     identity: authIdentity,
@@ -92,33 +93,20 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean,
   const myPrincipal = fixedPrincipal || (await myAgent.getPrincipal());
   const identityPrincipalStr = fixedPrincipal?.toString() || authIdentity.getPrincipal().toString();
 
-  // TOKENS
-  const userData = localStorage.getItem(identityPrincipalStr);
-  if (userData) {
-    const userDataJson = JSON.parse(userData);
-    store.dispatch(setTokens(userDataJson.tokens));
-    setAssetFromLocalData(userDataJson.tokens, myPrincipal.toText());
-    dispatchAuths(identityPrincipalStr.toLocaleLowerCase(), myAgent, myPrincipal, !!fixedPrincipal);
-    await updateAllBalances(true, myAgent, userDataJson.tokens, false, true);
-  } else {
-    dispatchAuths(identityPrincipalStr.toLocaleLowerCase(), myAgent, myPrincipal, !!fixedPrincipal);
-    const { tokens } = await updateAllBalances(true, myAgent, defaultTokens, true, true);
-    store.dispatch(setTokens(tokens));
-  }
+  dispatchAuths(myAgent, myPrincipal);
 
-  await contactCacheRefresh(myPrincipal.toText());
+  await db().setIdentity(authIdentity);
+
+  store.dispatch(setAuthenticated(true, false, !!fixedPrincipal, identityPrincipalStr.toLocaleLowerCase()));
+
+  // ALLOWANCES
+  await contactCacheRefresh();
   await allowanceCacheRefresh(myPrincipal.toText());
   store.dispatch(setLoading(false));
+  store.dispatch(setInitLoad(false));
 };
 
-export const dispatchAuths = (
-  identityPrincipal: string,
-  myAgent: HttpAgent,
-  myPrincipal: Principal,
-  watchOnlyMode: boolean,
-) => {
-  store.dispatch(setAuthenticated(true, false, watchOnlyMode, identityPrincipal));
-  store.dispatch(setStorageCode("contacts-" + identityPrincipal));
+export const dispatchAuths = (myAgent: HttpAgent, myPrincipal: Principal) => {
   store.dispatch(setUserAgent(myAgent));
   store.dispatch(setUserPrincipal(myPrincipal));
 };
@@ -129,6 +117,7 @@ export const logout = async () => {
   store.dispatch({
     type: "USER_LOGGED_OUT",
   });
+  db().setIdentity(null);
   store.dispatch(clearDataContacts());
   store.dispatch(clearDataAsset());
   store.dispatch(clearDataAuth());

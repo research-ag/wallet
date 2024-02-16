@@ -171,11 +171,10 @@ const AssetElement = ({
         setHexChecked={setHexChecked}
         tokens={tokens}
         idx={idx}
-        authClient={authClient}
         selectedAsset={selectedAsset}
         acordeonIdx={acordeonIdx}
       ></DialogAddAsset>
-      <DeleteAssetModal open={openDelete} setOpen={setOpenDelete} name={asset.name} symbol={asset.tokenSymbol} />
+      <DeleteAssetModal open={openDelete} setOpen={setOpenDelete} asset={asset} />
     </Fragment>
   );
 
