@@ -51,6 +51,11 @@ export default function useCreateAllowance() {
     const fullAllowance = { ...allowance, id: uuidv4() };
     setFullAllowanceErrorsAction([]);
     validateCreateAllowance(fullAllowance);
+
+    // TODO: call if function isDuplicatedAllowance to check if exist by (sub account, spender and asset)
+    // // TODO: if so, check if expiration and amount same. if so close the drawer and not update
+    // // TODO: if not, perform a ledger update and update the allowance list
+
     const params = createApproveAllowanceParams(fullAllowance);
     await submitAllowanceApproval(params, allowance.asset.address);
     const savedAllowances = await postAllowance(fullAllowance);

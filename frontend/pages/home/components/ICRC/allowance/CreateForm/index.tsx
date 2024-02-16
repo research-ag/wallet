@@ -1,11 +1,11 @@
 import useCreateAllowance from "@pages/home/hooks/useCreateAllowance";
-import { useAppSelector } from "@redux/Store";
+import store, { useAppSelector } from "@redux/Store";
 import AssetFormItem from "./AssetFormItem";
 import SubAccountFormItem from "./SubAccountFormItem";
 import SpenderFormItem from "./SpenderFormItem";
 import AmountFormItem from "./AmountFormItem";
 import ExpirationFormItem from "./ExpirationFormItem";
-import { AllowanceValidationErrorsEnum } from "@/@types/allowance";
+import { AllowanceValidationErrorsEnum, TAllowance } from "@/@types/allowance";
 import { useTranslation } from "react-i18next";
 import { CustomButton } from "@components/Button";
 import { getAllowanceDetails } from "@pages/home/helpers/icrc";
@@ -14,8 +14,12 @@ import { isHexadecimalValid } from "@/utils/checkers";
 import {
   removeAllowanceErrorAction,
   setAllowanceErrorAction,
+  setAllowancesAction,
   setFullAllowanceErrorsAction,
 } from "@redux/allowance/AllowanceActions";
+import { getDuplicatedAllowance } from "@pages/home/validators/allowance";
+import dayjs from "dayjs";
+import { LOCAL_STORAGE_PREFIX } from "@pages/home/services/allowance";
 
 export default function CreateForm() {
   const { t } = useTranslation();
@@ -23,6 +27,7 @@ export default function CreateForm() {
   const { assets, selectedAsset } = useAppSelector((state) => state.asset);
   const { errors } = useAppSelector((state) => state.allowance);
   const { allowance, setAllowanceState, createAllowance, isPending, isLoading, setLoading } = useCreateAllowance();
+  const { userPrincipal } = useAppSelector((state) => state.auth);
 
   return (
     <form className="flex flex-col text-left">
@@ -68,7 +73,8 @@ export default function CreateForm() {
             {t("test")}
           </CustomButton>
           <CustomButton onClick={onSaveAllowance} disabled={isPending || isLoading}>
-            {t("save")}
+            {/* TODO: include it in the translations */}
+            {t("submit")}
           </CustomButton>
         </div>
       </div>
@@ -80,8 +86,6 @@ export default function CreateForm() {
       setLoading(true);
       event.preventDefault();
       setFullAllowanceErrorsAction([]);
-      // TODO: if the allowance exist than set into the existing allowances list
-      // TODO: if the user change the amount or expiration, override the allowance on the ledger and update the allowance list
 
       if (!allowance.asset.address || !allowance.asset.decimal)
         return setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.asset"]);
@@ -95,17 +99,66 @@ export default function CreateForm() {
         return setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.spender.principal"]);
       removeAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.spender.principal"]);
 
+      if (allowance?.spender?.principal === userPrincipal.toText())
+        return setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.self.allowance"]);
+      removeAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.self.allowance"]);
+
       const response = await getAllowanceDetails({
         assetAddress: allowance.asset.address,
         assetDecimal: allowance.asset.decimal,
         spenderSubaccount: allowance.subAccount.sub_account_id,
         spenderPrincipal: allowance.spender.principal,
       });
-      setAllowanceState({
+
+      const newAllowance = {
         ...allowance,
         amount: response?.allowance || "0",
         expiration: response?.expires_at || "",
-      });
+      };
+
+      console.log("New allowance: ", newAllowance);
+
+      const duplicated = getDuplicatedAllowance(newAllowance);
+      console.log("Duplicated allowance: ", duplicated);
+
+      const storageAllowances = localStorage.getItem(LOCAL_STORAGE_PREFIX);
+      const allowances = JSON.parse(storageAllowances || "[]") as TAllowance[];
+      if (duplicated) {
+        console.log(
+          "Are exp or amount different: ",
+          !dayjs(newAllowance.expiration).isSame(dayjs(duplicated.expiration)) ||
+            newAllowance.amount !== duplicated.amount,
+        );
+
+        if (
+          !dayjs(newAllowance.expiration).isSame(dayjs(duplicated.expiration)) ||
+          newAllowance.amount !== duplicated.amount
+        ) {
+          const filteredAllowances = allowances.filter((allowance) =>
+            Boolean(
+              allowance.subAccount.sub_account_id === newAllowance.subAccount.sub_account_id &&
+                allowance.spender.principal === newAllowance.spender.principal &&
+                allowance.asset.tokenSymbol === newAllowance.asset.tokenSymbol,
+            ),
+          );
+          console.log("Then remove duplicated from allowances", filteredAllowances);
+          const updatedAllowances = [...filteredAllowances, newAllowance];
+          console.log("Updated allowances with newAllowance: ", updatedAllowances);
+          setAllowancesAction(updatedAllowances);
+          localStorage.setItem(LOCAL_STORAGE_PREFIX, JSON.stringify(updatedAllowances));
+        }
+      }
+
+      if (!duplicated && newAllowance.amount !== "0" && dayjs(newAllowance.expiration).isValid()) {
+        const updatedAllowances = [...allowances, newAllowance];
+        setAllowancesAction(updatedAllowances);
+        localStorage.setItem(LOCAL_STORAGE_PREFIX, JSON.stringify(updatedAllowances));
+      }
+      // .............................................................
+      // TODO: if the user change the amount or expiration, override the allowance on the ledger and update the allowance list
+
+      // TODO: on test get the expiration and amount and fill the form
+      setAllowanceState(newAllowance);
     } catch (error) {
       console.error(error);
     } finally {

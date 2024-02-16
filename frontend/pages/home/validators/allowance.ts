@@ -5,7 +5,19 @@ import { validatePrincipal } from "@/utils/identity";
 import store from "@redux/Store";
 import dayjs from "dayjs";
 
+// TODO: centralize the use as a constant
 export const LOCAL_STORAGE_PREFIX = `allowances-${store.getState().auth.userPrincipal.toText()}`;
+
+export function getDuplicatedAllowance(allowance: TAllowance): TAllowance | undefined {
+  const storageAllowances = localStorage.getItem(LOCAL_STORAGE_PREFIX);
+  const allowances = JSON.parse(storageAllowances || "[]") as TAllowance[];
+  return allowances.find(
+    (currentAllowance) =>
+      currentAllowance.subAccount.sub_account_id === allowance.subAccount.sub_account_id &&
+      currentAllowance.spender.principal === allowance?.spender?.principal &&
+      currentAllowance.asset.tokenSymbol === allowance.asset.tokenSymbol,
+  );
+}
 
 export function validateCreateAllowance(allowance: TAllowance) {
   if (!allowance.asset.address || !allowance.asset.decimal || !allowance.asset.supportedStandards.includes("ICRC-2"))
@@ -20,15 +32,9 @@ export function validateCreateAllowance(allowance: TAllowance) {
   if (allowance?.spender?.principal === store.getState().auth.userPrincipal.toText())
     throw AllowanceValidationErrorsEnum.Values["error.self.allowance"];
 
-  const storageAllowances = localStorage.getItem(LOCAL_STORAGE_PREFIX);
-  const allowances = JSON.parse(storageAllowances || "[]") as TAllowance[];
-  const allowanceExists = allowances.find(
-    (currentAllowance) =>
-      currentAllowance.subAccount.sub_account_id === allowance.subAccount.sub_account_id &&
-      currentAllowance.spender.principal === allowance?.spender?.principal &&
-      currentAllowance.asset.tokenSymbol === allowance.asset.tokenSymbol,
-  );
-  if (allowanceExists) throw AllowanceValidationErrorsEnum.Values["error.allowance.duplicated"];
+  // INFO: removed because duplicated allowance will not be needed
+  // const allowanceExists = getDuplicatedAllowance(allowance);
+  // if (allowanceExists) throw AllowanceValidationErrorsEnum.Values["error.allowance.duplicated"];
 
   if (!allowance.amount || !validateAmount(allowance.amount, Number(allowance.asset.decimal)))
     throw AllowanceValidationErrorsEnum.Values["error.invalid.amount"];
