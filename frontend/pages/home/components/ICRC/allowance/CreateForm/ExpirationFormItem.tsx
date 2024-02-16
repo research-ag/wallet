@@ -1,6 +1,6 @@
 import { TAllowance } from "@/@types/allowance";
 import { CalendarPicker } from "@components/CalendarPicker";
-import { CheckBox } from "@components/checkbox";
+import CheckBox from "@components/checkbox/CheckBox";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";

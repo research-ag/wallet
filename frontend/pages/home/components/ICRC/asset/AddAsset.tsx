@@ -7,14 +7,14 @@ import { GeneralHook } from "../../../hooks/generalHook";
 import { AccountDefaultEnum, AddingAssetsEnum, TokenNetworkEnum } from "@/const";
 import { TokenHook } from "../../../hooks/tokenHook";
 import { Asset } from "@redux/models/AccountModels";
-import { AccountHook } from "@pages/hooks/accountHook";
 import { Token } from "@redux/models/TokenModels";
 import { AssetHook } from "../../../hooks/assetHook";
 import { useAppDispatch } from "@redux/Store";
 import DialogAssetConfirmation from "./DialogAssetConfirmation";
 import AddAssetManual from "./AddAssetManual";
-import { addToken, setAcordeonAssetIdx, setSelectedAsset } from "@redux/assets/AssetReducer";
+import { setAcordeonAssetIdx, setSelectedAsset } from "@redux/assets/AssetReducer";
 import AddAssetAutomatic from "./AddAssetAutomatic";
+import { db } from "@/database/db";
 
 interface AddAssetsProps {
   setAssetOpen(value: boolean): void;
@@ -30,7 +30,6 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens, assets
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
-  const { authClient } = AccountHook();
   const { reloadBallance } = AssetHook();
   const { checkAssetAdded } = GeneralHook();
   const {
@@ -93,7 +92,6 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens, assets
             setAssetOpen={setAssetOpen}
             tokens={tokens}
             addAssetToData={addAssetToData}
-            saveInLocalStorage={saveInLocalStorage}
           ></AddAssetManual>
         ) : (
           <AddAssetAutomatic
@@ -152,19 +150,7 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens, assets
     setAssetInfo(undefined);
   }
 
-  function saveInLocalStorage(tokens: Token[]) {
-    localStorage.setItem(
-      authClient,
-      JSON.stringify({
-        from: "II",
-        tokens: tokens.sort((a, b) => {
-          return a.id_number - b.id_number;
-        }),
-      }),
-    );
-  }
-
-  function addAssetToData() {
+  async function addAssetToData() {
     if (checkAssetAdded(newToken.address)) {
       setErrToken(t("adding.asset.already.imported"));
       setValidToken(false);
@@ -181,10 +167,9 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens, assets
         id_number: idx,
         subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default, amount: "0", currency_amount: "0" }],
       };
-      saveInLocalStorage([...tokens, tknSave]);
+      await db().addToken(tknSave);
       setAddStatus(AddingAssetsEnum.enum.adding);
       showModal(true);
-      dispatch(addToken(tknSave));
       dispatch(setSelectedAsset(tknSave));
       dispatch(setAcordeonAssetIdx([tknSave.symbol]));
       reloadBallance(

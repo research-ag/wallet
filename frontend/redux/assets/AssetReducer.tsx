@@ -3,8 +3,12 @@ import { Token, TokenMarketInfo } from "@redux/models/TokenModels";
 import { Asset, ICPSubAccount, SubAccount, Transaction, TransactionList } from "@redux/models/AccountModels";
 import bigInt from "big-integer";
 import { getUSDfromToken, hexToNumber } from "@/utils";
+import { db } from "@/database/db";
+import store from "@redux/Store";
+import { setAssetFromLocalData, updateAllBalances } from "./AssetActions";
 
 interface AssetState {
+  initLoad: boolean;
   ICPSubaccounts: Array<ICPSubAccount>;
   assetLoading: boolean;
   tokens: Token[];
@@ -21,6 +25,7 @@ interface AssetState {
 }
 
 const initialState: AssetState = {
+  initLoad: true,
   ICPSubaccounts: [],
   assetLoading: false,
   tokens: [],
@@ -40,33 +45,42 @@ const assetSlice = createSlice({
   name: "asset",
   initialState,
   reducers: {
+    setInitLoad(state, action: PayloadAction<boolean>) {
+      state.initLoad = action.payload;
+    },
+    setReduxTokens(state, action: PayloadAction<Token[]>) {
+      state.tokens = action.payload;
+    },
     setICPSubaccounts(state, action: PayloadAction<ICPSubAccount[]>) {
       state.ICPSubaccounts = action.payload;
     },
     setLoading(state, action: PayloadAction<boolean>) {
       state.assetLoading = action.payload;
     },
-    setTokens(state, action: PayloadAction<Token[]>) {
-      state.tokens = action.payload;
-    },
-    addToken(state, action: PayloadAction<Token>) {
-      state.tokens.push(action.payload);
-    },
+    // TODO: Revisit this code to see if we can use filter()
     removeToken(state, action: PayloadAction<string>) {
+      const { payload: symbolToRemove } = action;
       let count = 0;
+
+      // Iterate all Tokens and ignore the one that has
+      // the symbol marked to be removed
       const auxTkns: Token[] = [];
       state.tokens.map((tkn) => {
         count++;
-        if (tkn.symbol !== action.payload) {
+        if (tkn.symbol !== symbolToRemove) {
           auxTkns.push({ ...tkn, id_number: count - 1 });
         }
       });
       state.tokens = auxTkns;
+
       count = 0;
+
+      // Iterate all Assets and ignore the one that has
+      // the symbol marked to be removed
       const auxAssets: Asset[] = [];
       state.assets.map((asst) => {
         count++;
-        if (asst.tokenSymbol !== action.payload) {
+        if (asst.tokenSymbol !== symbolToRemove) {
           auxAssets.push({ ...asst, sort_index: count - 1 });
         }
       });
@@ -262,10 +276,10 @@ const assetSlice = createSlice({
     setTxWorker(state, action) {
       const txList = [...state.txWorker];
 
-      let idx = txList.findIndex((tx: TransactionList) => {
+      const idx = txList.findIndex((tx: TransactionList) => {
         return tx.symbol === action.payload.symbol && tx.subaccount === action.payload.subaccount;
       });
-      let auxTx = txList.find((tx: TransactionList) => {
+      const auxTx = txList.find((tx: TransactionList) => {
         return tx.symbol === action.payload.symbol && tx.subaccount === action.payload.subaccount;
       });
 
@@ -287,7 +301,7 @@ const assetSlice = createSlice({
       state.acordeonIdx = action.payload;
     },
     clearDataAsset(state) {
-      state.ICPSubaccounts = [];
+      (state.initLoad = true), (state.ICPSubaccounts = []);
       state.tokens = [];
       state.tokensMarket = [];
       state.accounts = [];
@@ -302,12 +316,21 @@ const assetSlice = createSlice({
   },
 });
 
+db()
+  .subscribeToAllTokens()
+  .subscribe((x) => {
+    if (x.length > 0) {
+      store.dispatch(assetSlice.actions.setReduxTokens(x));
+      if (store.getState().asset.initLoad) setAssetFromLocalData(x, store.getState().auth.authClient);
+      updateAllBalances(true, store.getState().auth.userAgent, x);
+    }
+  });
+
 export const {
+  setInitLoad,
   clearDataAsset,
   setICPSubaccounts,
   setLoading,
-  setTokens,
-  addToken,
   removeToken,
   editToken,
   setTokenMarket,

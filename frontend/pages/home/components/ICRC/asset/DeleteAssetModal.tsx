@@ -12,14 +12,15 @@ import { AssetHook } from "@pages/home/hooks/assetHook";
 interface DeleteAssetModalPropr {
   open: boolean;
   setOpen(value: boolean): void;
-  symbol: string;
-  name: string;
+  asset: any;
 }
 
-const DeleteAssetModal = ({ open, setOpen, symbol, name }: DeleteAssetModalPropr) => {
+const DeleteAssetModal = ({ open, setOpen, asset }: DeleteAssetModalPropr) => {
   const { t } = useTranslation();
   const { authClient } = AccountHook();
   const { tokens, deleteAsset } = AssetHook();
+  const { name, symbol, address } = asset;
+
   return (
     <Modal
       width="w-[18rem]"
@@ -55,7 +56,7 @@ const DeleteAssetModal = ({ open, setOpen, symbol, name }: DeleteAssetModalPropr
   function handleConfirmButton() {
     const auxTokens = tokens.filter((tkn) => tkn.symbol !== symbol);
     saveInLocalStorage(auxTokens);
-    deleteAsset(symbol);
+    deleteAsset(symbol, address);
     setOpen(false);
   }
 

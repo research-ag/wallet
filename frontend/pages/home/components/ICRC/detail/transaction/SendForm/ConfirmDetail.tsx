@@ -1,4 +1,4 @@
-import { Button } from "@components/button";
+import Button from "@components/button/Button";
 import SenderDetail from "./SenderDetail";
 import ReceiverDetail from "./ReceiverDetail";
 import TransactionAmount from "./TransactionAmount";

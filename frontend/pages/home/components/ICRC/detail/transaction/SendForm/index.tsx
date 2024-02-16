@@ -8,7 +8,7 @@ import {
   setIsInspectDetailAction,
   setIsLoadingAction,
 } from "@redux/transaction/TransactionActions";
-import { Button } from "@components/button";
+import Button from "@components/button/Button";
 import useSend from "@pages/home/hooks/useSend";
 import SenderAsset from "./SenderAsset";
 import { useTranslation } from "react-i18next";

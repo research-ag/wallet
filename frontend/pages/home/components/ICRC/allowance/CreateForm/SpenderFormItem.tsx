@@ -2,7 +2,7 @@ import { AllowanceValidationErrorsEnum, TAllowance } from "@/@types/allowance";
 import { SelectOption } from "@/@types/components";
 import formatContact from "@/utils/formatContact";
 import { validatePrincipal } from "@/utils/identity";
-import { Input } from "@components/input";
+import Input from "@components/input/Input";
 import { Select } from "@components/select";
 import { Switch } from "@components/switch";
 import { useAppSelector } from "@redux/Store";
