@@ -93,9 +93,11 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean,
   const myPrincipal = fixedPrincipal || (await myAgent.getPrincipal());
   const identityPrincipalStr = fixedPrincipal?.toString() || authIdentity.getPrincipal().toString();
 
-  dispatchAuths(identityPrincipalStr.toLocaleLowerCase(), myAgent, myPrincipal, !!fixedPrincipal);
+  dispatchAuths(myAgent, myPrincipal);
 
-  db().setIdentity(authIdentity);
+  await db().setIdentity(authIdentity);
+
+  store.dispatch(setAuthenticated(true, false, !!fixedPrincipal, identityPrincipalStr.toLocaleLowerCase()));
 
   // ALLOWANCES
   await contactCacheRefresh();
@@ -104,13 +106,7 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean,
   store.dispatch(setInitLoad(false));
 };
 
-export const dispatchAuths = (
-  identityPrincipal: string,
-  myAgent: HttpAgent,
-  myPrincipal: Principal,
-  watchOnlyMode: boolean,
-) => {
-  store.dispatch(setAuthenticated(true, false, watchOnlyMode, identityPrincipal));
+export const dispatchAuths = (myAgent: HttpAgent, myPrincipal: Principal) => {
   store.dispatch(setUserAgent(myAgent));
   store.dispatch(setUserPrincipal(myPrincipal));
 };
