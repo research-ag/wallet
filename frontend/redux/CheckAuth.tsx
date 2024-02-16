@@ -11,7 +11,7 @@ import {
   setUserPrincipal,
 } from "./auth/AuthReducer";
 import { AuthClient } from "@dfinity/auth-client";
-import { clearDataAsset, setLoading } from "./assets/AssetReducer";
+import { clearDataAsset, setInitLoad, setLoading } from "./assets/AssetReducer";
 import { AuthNetwork } from "./models/TokenModels";
 import { AuthNetworkTypeEnum } from "@/const";
 import { Ed25519KeyIdentity } from "@dfinity/identity";
@@ -84,8 +84,6 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean,
     return;
   }
 
-  db().setIdentity(authIdentity);
-
   store.dispatch(setAuthLoading(true));
   const myAgent = new HttpAgent({
     identity: authIdentity,
@@ -97,10 +95,13 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean,
 
   dispatchAuths(identityPrincipalStr.toLocaleLowerCase(), myAgent, myPrincipal, !!fixedPrincipal);
 
+  db().setIdentity(authIdentity);
+
   // ALLOWANCES
   await contactCacheRefresh();
   await allowanceCacheRefresh(myPrincipal.toText());
   store.dispatch(setLoading(false));
+  store.dispatch(setInitLoad(false));
 };
 
 export const dispatchAuths = (

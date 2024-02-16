@@ -57,9 +57,13 @@ export const updateAllBalances = async (
   }
   store.dispatch(setTokenMarket(tokenMarkets));
 
+  const auxTokens = [...tokens].sort((a, b) => {
+    return a.id_number - b.id_number;
+  });
+
   const myPrincipal = store.getState().auth.userPrincipal;
   const tokensAseets = await Promise.all(
-    tokens.map(async (tkn, idNum) => {
+    auxTokens.map(async (tkn, idNum) => {
       let standards = tkn.supportedStandards;
 
       if (fromLogin) {
@@ -260,12 +264,20 @@ export const updateAllBalances = async (
     }),
   );
 
-  const newAssetsUpload = tokensAseets.map((tA) => {
-    return tA.newAsset;
-  });
-  const newTokensUpload = tokensAseets.map((tA) => {
-    return tA.newToken;
-  });
+  const newAssetsUpload = tokensAseets
+    .map((tA) => {
+      return tA.newAsset;
+    })
+    .sort((a, b) => {
+      return a.sort_index - b.sort_index;
+    });
+  const newTokensUpload = tokensAseets
+    .map((tA) => {
+      return tA.newToken;
+    })
+    .sort((a, b) => {
+      return a.id_number - b.id_number;
+    });
   if (loading) {
     store.dispatch(setAssets(newAssetsUpload));
 
@@ -306,7 +318,6 @@ export const updateAllBalances = async (
 
 export const setAssetFromLocalData = (tokens: Token[], myPrincipal: string) => {
   const assets: Asset[] = [];
-
   tokens.map((tkn) => {
     const subAccList: SubAccount[] = [];
     tkn.subAccounts.map((sa) => {

@@ -5,9 +5,10 @@ import bigInt from "big-integer";
 import { getUSDfromToken, hexToNumber } from "@/utils";
 import { db } from "@/database/db";
 import store from "@redux/Store";
-import { updateAllBalances } from "./AssetActions";
+import { setAssetFromLocalData, updateAllBalances } from "./AssetActions";
 
 interface AssetState {
+  initLoad: boolean;
   ICPSubaccounts: Array<ICPSubAccount>;
   assetLoading: boolean;
   tokens: Token[];
@@ -24,6 +25,7 @@ interface AssetState {
 }
 
 const initialState: AssetState = {
+  initLoad: true,
   ICPSubaccounts: [],
   assetLoading: false,
   tokens: [],
@@ -43,6 +45,9 @@ const assetSlice = createSlice({
   name: "asset",
   initialState,
   reducers: {
+    setInitLoad(state, action: PayloadAction<boolean>) {
+      state.initLoad = action.payload;
+    },
     setReduxTokens(state, action: PayloadAction<Token[]>) {
       state.tokens = action.payload;
     },
@@ -296,7 +301,7 @@ const assetSlice = createSlice({
       state.acordeonIdx = action.payload;
     },
     clearDataAsset(state) {
-      state.ICPSubaccounts = [];
+      (state.initLoad = true), (state.ICPSubaccounts = []);
       state.tokens = [];
       state.tokensMarket = [];
       state.accounts = [];
@@ -316,11 +321,13 @@ db()
   .subscribe((x) => {
     if (x.length > 0) {
       store.dispatch(assetSlice.actions.setReduxTokens(x));
+      if (store.getState().asset.initLoad) setAssetFromLocalData(x, store.getState().auth.authClient);
       updateAllBalances(true, store.getState().auth.userAgent, x);
     }
   });
 
 export const {
+  setInitLoad,
   clearDataAsset,
   setICPSubaccounts,
   setLoading,
