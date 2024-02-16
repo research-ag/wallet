@@ -29,6 +29,7 @@ export function useUpdateAllowance() {
   };
 
   const mutationFn = useCallback(async () => {
+    // TODO: If the amount and expiration changed, perform update. Else avoid
     setFullAllowanceErrorsAction([]);
     validateUpdateAllowance(allowance);
     const params = createApproveAllowanceParams(allowance);

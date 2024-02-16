@@ -88,7 +88,7 @@ export default function ActionCard(props: ActionCardProps) {
   }
 
   async function handleDelete() {
-    if (!allowance.id) return;
+    if (!allowance) return;
     deleteAllowance(allowance);
     setOpen(false);
   }

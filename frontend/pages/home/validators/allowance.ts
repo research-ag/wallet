@@ -20,6 +20,7 @@ export function getDuplicatedAllowance(allowance: TAllowance): TAllowance | unde
 }
 
 export function validateCreateAllowance(allowance: TAllowance) {
+  // TODO: validate that the amount can not be 0
   if (!allowance.asset.address || !allowance.asset.decimal || !allowance.asset.supportedStandards.includes("ICRC-2"))
     throw AllowanceValidationErrorsEnum.Values["error.invalid.asset"];
 

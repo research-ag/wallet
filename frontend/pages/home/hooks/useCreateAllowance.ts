@@ -7,10 +7,9 @@ import useAllowanceDrawer from "./useAllowanceDrawer";
 
 import { throttle } from "lodash";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
-import { v4 as uuidv4 } from "uuid";
 import { initialAllowanceState } from "@redux/allowance/AllowanceReducer";
-import { postAllowance } from "../services/allowance";
-import { validateCreateAllowance } from "../validators/allowance";
+import { postAllowance, updateAllowanceRequest } from "../services/allowance";
+import { getDuplicatedAllowance, validateCreateAllowance } from "../validators/allowance";
 import { SupportedStandardEnum } from "@/@types/icrc";
 import { updateSubAccountBalance } from "@redux/assets/AssetReducer";
 import {
@@ -19,6 +18,7 @@ import {
   setAllowancesAction,
   setFullAllowanceErrorsAction,
 } from "@redux/allowance/AllowanceActions";
+import dayjs from "dayjs";
 
 export default function useCreateAllowance() {
   const dispatch = useAppDispatch();
@@ -47,19 +47,40 @@ export default function useCreateAllowance() {
     });
   };
 
+  // TODO: refactor this function many resp
   const mutationFn = useCallback(async () => {
-    const fullAllowance = { ...allowance, id: uuidv4() };
     setFullAllowanceErrorsAction([]);
-    validateCreateAllowance(fullAllowance);
+    validateCreateAllowance(allowance);
 
-    // TODO: call if function isDuplicatedAllowance to check if exist by (sub account, spender and asset)
-    // // TODO: if so, check if expiration and amount same. if so close the drawer and not update
-    // // TODO: if not, perform a ledger update and update the allowance list
+    const duplicated = getDuplicatedAllowance(allowance);
 
-    const params = createApproveAllowanceParams(fullAllowance);
-    await submitAllowanceApproval(params, allowance.asset.address);
-    const savedAllowances = await postAllowance(fullAllowance);
-    setAllowancesAction(savedAllowances);
+    if (duplicated) {
+      console.log({
+        currentExpiration: duplicated.expiration,
+        newExpiration: allowance.expiration,
+        currentAmount: duplicated.amount,
+        newAmount: allowance.amount,
+        isSameExpiration: dayjs(allowance.expiration).isSame(dayjs(duplicated.expiration)),
+        isSameAmount: allowance.amount === duplicated.amount,
+      });
+
+      if (!dayjs(allowance.expiration).isSame(dayjs(duplicated.expiration)) || allowance.amount !== duplicated.amount) {
+        console.log("duplicated but with amount or date changed");
+        const params = createApproveAllowanceParams(allowance);
+        console.log({ allowance, params });
+        await submitAllowanceApproval(params, allowance.asset.address);
+        const savedAllowances = await updateAllowanceRequest(allowance);
+        console.log("updated allowance: ", savedAllowances);
+        setAllowancesAction(savedAllowances);
+      }
+    } else {
+      console.log("Completely new allowances");
+      const params = createApproveAllowanceParams(allowance);
+      console.log({ allowance, params });
+      await submitAllowanceApproval(params, allowance.asset.address);
+      const savedAllowances = await postAllowance(allowance);
+      setAllowancesAction(savedAllowances);
+    }
   }, [allowance]);
 
   const onSuccess = async () => {

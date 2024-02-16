@@ -1,56 +1,50 @@
 import { TAllowance } from "@/@types/allowance";
-import { getFromLocalStorage, setInLocalStorage } from "../../../utils/localStorage";
+import { setInLocalStorage } from "../../../utils/localStorage";
 import store from "@redux/Store";
 
 export const LOCAL_STORAGE_PREFIX = `allowances-${store.getState().auth.userPrincipal.toText()}`;
 
 export function postAllowance(newAllowance: TAllowance): Promise<TAllowance[]> {
   return new Promise((resolve) => {
-    let allowances = getFromLocalStorage<TAllowance[]>(LOCAL_STORAGE_PREFIX);
-
-    if (!allowances || !Array.isArray(allowances)) {
-      allowances = [newAllowance];
-    }
-
-    if (Array.isArray(allowances)) {
-      const allowanceId = newAllowance.id;
-      allowances = allowances.filter((allowance) => allowance.id !== allowanceId);
-      allowances.push(newAllowance);
-    }
-
-    setInLocalStorage(LOCAL_STORAGE_PREFIX, allowances);
+    const storageAllowances = localStorage.getItem(LOCAL_STORAGE_PREFIX);
+    const allowances = JSON.parse(storageAllowances || "[]") as TAllowance[];
+    setInLocalStorage(LOCAL_STORAGE_PREFIX, [...allowances, newAllowance]);
     resolve(allowances);
   });
 }
 
-export const updateAllowanceRequest = (newAllowance: TAllowance): Promise<TAllowance[]> => {
+export const updateAllowanceRequest = (updatedAllowance: TAllowance): Promise<TAllowance[]> => {
   return new Promise((resolve) => {
-    const allowances = getFromLocalStorage<TAllowance[]>(LOCAL_STORAGE_PREFIX);
+    const storageAllowances = localStorage.getItem(LOCAL_STORAGE_PREFIX);
+    const allowances = JSON.parse(storageAllowances || "[]") as TAllowance[];
 
-    if (Array.isArray(allowances)) {
-      const newAllowances = allowances.map((allowance) => {
-        if (allowance.id === newAllowance.id) {
-          return { ...allowance, ...newAllowance };
-        }
-        return allowance;
-      });
+    const filteredAllowances = allowances.filter((allowance) =>
+      Boolean(
+        allowance.subAccount.sub_account_id !== updatedAllowance.subAccount.sub_account_id ||
+          allowance.spender.principal !== updatedAllowance.spender.principal ||
+          allowance.asset.tokenSymbol !== updatedAllowance.asset.tokenSymbol,
+      ),
+    );
 
-      setInLocalStorage(LOCAL_STORAGE_PREFIX, newAllowances);
-      resolve(newAllowances);
-    }
-
-    resolve(allowances || []);
+    const newAllowances = [...filteredAllowances, updatedAllowance];
+    setInLocalStorage(LOCAL_STORAGE_PREFIX, newAllowances);
+    resolve(newAllowances);
   });
 };
 
-export function removeAllowance(id: string): Promise<TAllowance[]> {
+export function removeAllowance(allowance: TAllowance): Promise<TAllowance[]> {
   return new Promise((resolve) => {
-    const allowances = getFromLocalStorage<TAllowance[]>(LOCAL_STORAGE_PREFIX);
-    if (Array.isArray(allowances)) {
-      const newAllowances = allowances.filter((allowance) => allowance.id !== id);
-      setInLocalStorage(LOCAL_STORAGE_PREFIX, newAllowances);
-      resolve(newAllowances);
-    }
-    resolve(allowances || []);
+    const storageAllowances = localStorage.getItem(LOCAL_STORAGE_PREFIX);
+    const allowances = JSON.parse(storageAllowances || "[]") as TAllowance[];
+    const filteredAllowances = allowances.filter((currentAllowance) => {
+      return Boolean(
+        allowance.subAccount.sub_account_id !== currentAllowance.subAccount.sub_account_id ||
+          allowance.spender.principal !== currentAllowance.spender.principal ||
+          allowance.asset.tokenSymbol !== currentAllowance.asset.tokenSymbol,
+      );
+    });
+    setInLocalStorage(LOCAL_STORAGE_PREFIX, filteredAllowances);
+    resolve(filteredAllowances);
+    resolve([]);
   });
 }

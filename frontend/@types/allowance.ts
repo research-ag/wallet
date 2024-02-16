@@ -13,7 +13,9 @@ const subAccount = z.object({
 });
 
 export const allowanceSchema = z.object({
-  id: z.string().optional(),
+  // TODO: remove id
+  // id: z.string().optional(),
+  // TODO: from assets remove sub accounts
   asset: AssetSchema,
   subAccount,
   amount: z.string(),

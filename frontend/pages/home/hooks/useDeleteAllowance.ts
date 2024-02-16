@@ -19,22 +19,15 @@ export default function useDeleteAllowance() {
 
   const mutationFn = useCallback(async (allowance: TAllowance) => {
     try {
-      if (!allowance?.id) {
-        throw new Error("Invalid allowance");
+      if (dayjs().isBefore(dayjs(allowance.expiration))) {
+        console.log("updating in the ledger");
+        const params = createApproveAllowanceParams({ ...allowance, amount: "0", expiration: undefined });
+        console.log({ allowance, params });
+        await submitAllowanceApproval(params, allowance.asset.address);
       }
 
-      if (allowance.expiration) {
-        const currentDate = dayjs();
-        const expirationDate = dayjs(allowance.expiration);
-
-        if (currentDate.isBefore(expirationDate)) {
-          const params = createApproveAllowanceParams({ ...allowance, amount: "0", expiration: undefined });
-          await submitAllowanceApproval(params, allowance.asset.address);
-        }
-      }
-
-      const latestAllowances = await removeAllowance(allowance.id);
-      setAllowancesAction(latestAllowances);
+      const updatedAllowances = await removeAllowance(allowance);
+      setAllowancesAction(updatedAllowances);
       return { success: true };
     } catch (error) {
       console.error(error);

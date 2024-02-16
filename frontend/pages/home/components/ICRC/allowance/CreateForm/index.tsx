@@ -1,5 +1,5 @@
 import useCreateAllowance from "@pages/home/hooks/useCreateAllowance";
-import store, { useAppSelector } from "@redux/Store";
+import { useAppSelector } from "@redux/Store";
 import AssetFormItem from "./AssetFormItem";
 import SubAccountFormItem from "./SubAccountFormItem";
 import SpenderFormItem from "./SpenderFormItem";
@@ -124,11 +124,8 @@ export default function CreateForm() {
       const storageAllowances = localStorage.getItem(LOCAL_STORAGE_PREFIX);
       const allowances = JSON.parse(storageAllowances || "[]") as TAllowance[];
       if (duplicated) {
-        console.log(
-          "Are exp or amount different: ",
-          !dayjs(newAllowance.expiration).isSame(dayjs(duplicated.expiration)) ||
-            newAllowance.amount !== duplicated.amount,
-        );
+        console.log("Are exp: ", !dayjs(newAllowance.expiration).isSame(dayjs(duplicated.expiration)));
+        console.log("Is amount different: ", newAllowance.amount !== duplicated.amount);
 
         if (
           !dayjs(newAllowance.expiration).isSame(dayjs(duplicated.expiration)) ||
@@ -136,9 +133,9 @@ export default function CreateForm() {
         ) {
           const filteredAllowances = allowances.filter((allowance) =>
             Boolean(
-              allowance.subAccount.sub_account_id === newAllowance.subAccount.sub_account_id &&
-                allowance.spender.principal === newAllowance.spender.principal &&
-                allowance.asset.tokenSymbol === newAllowance.asset.tokenSymbol,
+              allowance.subAccount.sub_account_id !== newAllowance.subAccount.sub_account_id &&
+                allowance.spender.principal !== newAllowance.spender.principal &&
+                allowance.asset.tokenSymbol !== newAllowance.asset.tokenSymbol,
             ),
           );
           console.log("Then remove duplicated from allowances", filteredAllowances);
@@ -150,6 +147,7 @@ export default function CreateForm() {
       }
 
       if (!duplicated && newAllowance.amount !== "0" && dayjs(newAllowance.expiration).isValid()) {
+        console.log("no duplicated but exist allowance");
         const updatedAllowances = [...allowances, newAllowance];
         setAllowancesAction(updatedAllowances);
         localStorage.setItem(LOCAL_STORAGE_PREFIX, JSON.stringify(updatedAllowances));

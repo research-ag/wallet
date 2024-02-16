@@ -165,7 +165,6 @@ export function createApproveAllowanceParams(allowance: TAllowance): ApprovePara
   const subAccountUint8Array = new Uint8Array(hexToUint8Array(allowanceSubAccountId));
   const amount: bigint = toHoleBigInt(allowanceAmount, Number(allowanceAssetDecimal));
   const expiration = calculateExpirationAsBigInt(allowance.expiration);
-
   return {
     spender: {
       owner,
@@ -214,8 +213,7 @@ export async function getAllowanceDetails(params: CheckAllowanceParams) {
 
     const allowance = Number(result.allowance) <= 0 ? "" : toFullDecimal(result.allowance, Number(assetDecimal));
 
-    const expires_at =
-      result.expires_at.length <= 0 ? "" : dayjs(Number(result?.expires_at) / 1000000).format("YYYY-MM-DD HH:mm:ss");
+    const expires_at = result.expires_at.length <= 0 ? "" : dayjs(Number(result?.expires_at) / 1000000).format();
 
     return { allowance, expires_at };
   } catch (e) {
