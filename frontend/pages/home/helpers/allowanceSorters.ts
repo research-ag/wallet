@@ -1,7 +1,6 @@
 import { TAllowance } from "@/@types/allowance";
 import { SortOrder, SortOrderEnum } from "@/@types/common";
 
-// TODO: filter with the removed fields from allowances
 export function filterByAsset(tokenSymbol: string, grossData: TAllowance[]): TAllowance[] {
   const filteredData = grossData.filter((allowance) => allowance.asset.tokenSymbol === tokenSymbol);
   return filteredData;
@@ -18,7 +17,6 @@ export function sortBySubAccount(order: SortOrder, filteredData: TAllowance[]): 
 }
 
 export function filterBySpender(order: SortOrder, filteredData: TAllowance[]): TAllowance[] {
-  // TODO: add filter by spender.name
   const noSpenderNamed = filteredData.filter((allowance) => !allowance.spender);
   const spenderNamed = filteredData.filter((allowance) => allowance.spender);
 

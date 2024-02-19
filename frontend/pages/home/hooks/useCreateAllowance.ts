@@ -8,7 +8,7 @@ import useAllowanceDrawer from "./useAllowanceDrawer";
 import { throttle } from "lodash";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { initialAllowanceState } from "@redux/allowance/AllowanceReducer";
-import { postAllowance, updateAllowanceRequest } from "../services/allowance";
+import { postAllowanceToStorage, putAllowanceToStorage } from "../services/allowance";
 import { getDuplicatedAllowance, validateCreateAllowance } from "../validators/allowance";
 import { SupportedStandardEnum } from "@/@types/icrc";
 import { updateSubAccountBalance } from "@redux/assets/AssetReducer";
@@ -20,27 +20,30 @@ import {
 } from "@redux/allowance/AllowanceActions";
 import dayjs from "dayjs";
 import { Asset } from "@redux/models/AccountModels";
+import { getAllowanceAsset } from "../helpers/allowanceMappers";
 
 export default function useCreateAllowance() {
   const dispatch = useAppDispatch();
   const [isLoading, setLoading] = useState(false);
   const { onCloseCreateAllowanceDrawer } = useAllowanceDrawer();
-
   const { assets, selectedAsset, selectedAccount } = useAppSelector(({ asset }) => asset);
 
   const initial = useMemo(() => {
     const supported = selectedAsset?.supportedStandards?.includes(SupportedStandardEnum.Values["ICRC-2"]);
+
     if (!supported) return initialAllowanceState;
+    if (!selectedAsset) return initialAllowanceState;
+
+    const asset = getAllowanceAsset(selectedAsset);
 
     return {
       ...initialAllowanceState,
-      asset: supported ? selectedAsset : undefined,
-      subAccount: selectedAccount,
+      asset: supported ? asset : initialAllowanceState.asset,
+      subAccountId: selectedAccount?.sub_account_id || "",
     };
-  }, [selectedAsset]) as TAllowance;
+  }, [selectedAsset]);
 
   const [allowance, setAllowance] = useState<TAllowance>(initial);
-
   const setAllowanceState = (allowanceData: Partial<TAllowance>) => {
     setAllowance({
       ...allowance,
@@ -48,13 +51,13 @@ export default function useCreateAllowance() {
     });
   };
 
-  // TODO: refactor this function many resp
   const mutationFn = useCallback(async () => {
     setFullAllowanceErrorsAction([]);
 
     const asset = assets.find((asset) => asset.tokenSymbol === allowance.asset.tokenSymbol) as Asset;
     validateCreateAllowance(allowance, asset);
     const duplicated = getDuplicatedAllowance(allowance);
+    console.log("Allowance duplicated: ", duplicated);
 
     if (duplicated) {
       console.log({
@@ -71,7 +74,7 @@ export default function useCreateAllowance() {
         const params = createApproveAllowanceParams(allowance);
         console.log({ allowance, params });
         await submitAllowanceApproval(params, allowance.asset.address);
-        const savedAllowances = await updateAllowanceRequest(allowance);
+        const savedAllowances = await putAllowanceToStorage(allowance);
         console.log("updated allowance: ", savedAllowances);
         setAllowancesAction(savedAllowances);
       }
@@ -80,7 +83,7 @@ export default function useCreateAllowance() {
       const params = createApproveAllowanceParams(allowance);
       console.log({ allowance, params });
       await submitAllowanceApproval(params, allowance.asset.address);
-      const savedAllowances = await postAllowance(allowance);
+      const savedAllowances = postAllowanceToStorage(allowance);
       setAllowancesAction(savedAllowances);
     }
   }, [allowance]);

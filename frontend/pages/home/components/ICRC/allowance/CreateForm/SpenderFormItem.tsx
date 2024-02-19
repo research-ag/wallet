@@ -83,7 +83,6 @@ export default function SpenderFormItem(props: ISpenderFormItemProps) {
   }
 
   function onInputChange(event: React.ChangeEvent<HTMLInputElement>) {
-    // TODO: validate principal on spaces
     const newSearchValue = event.target.value.trim();
 
     if (!validatePrincipal(newSearchValue)) {
@@ -103,7 +102,7 @@ export default function SpenderFormItem(props: ISpenderFormItemProps) {
   function onSelectedChange(option: SelectOption) {
     setSearch(null);
     const fullSpender = contacts.find((contact) => contact.principal === option.value);
-    setAllowanceState({ spender: fullSpender?.principal });
+    setAllowanceState({ spender: fullSpender?.principal || "" });
   }
 
   function getError(): boolean {

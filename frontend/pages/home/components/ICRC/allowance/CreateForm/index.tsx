@@ -5,7 +5,7 @@ import SubAccountFormItem from "./SubAccountFormItem";
 import SpenderFormItem from "./SpenderFormItem";
 import AmountFormItem from "./AmountFormItem";
 import ExpirationFormItem from "./ExpirationFormItem";
-import { AllowanceValidationErrorsEnum, TAllowance } from "@/@types/allowance";
+import { AllowanceValidationErrorsEnum } from "@/@types/allowance";
 import { useTranslation } from "react-i18next";
 import { CustomButton } from "@components/Button";
 import { getAllowanceDetails } from "@pages/home/helpers/icrc";
@@ -19,7 +19,8 @@ import {
 } from "@redux/allowance/AllowanceActions";
 import { getDuplicatedAllowance } from "@pages/home/validators/allowance";
 import dayjs from "dayjs";
-import { LOCAL_STORAGE_PREFIX } from "@pages/home/services/allowance";
+import { getAllowancesFromStorage, replaceAllowancesToStorage } from "@pages/home/services/allowance";
+import LoadingLoader from "@components/Loader";
 
 export default function CreateForm() {
   const { t } = useTranslation();
@@ -68,6 +69,7 @@ export default function CreateForm() {
 
       <div className={`flex items-center mt-4 ${getErrorMessage() ? "justify-between" : "justify-end"}`}>
         {getErrorMessage() && <p className="mr-4 text-TextErrorColor text-md">{getErrorMessage()}</p>}
+        {(isLoading || isPending) && <LoadingLoader className="mr-2" />}
         <div className="flex">
           <CustomButton intent="success" className="mr-4" onClick={onCheckAllowance} disabled={isPending || isLoading}>
             {t("test")}
@@ -102,12 +104,16 @@ export default function CreateForm() {
         return setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.self.allowance"]);
       removeAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.self.allowance"]);
 
+      console.log("validated: asset-address, asset-decimal, sub-acc, spender");
+
       const response = await getAllowanceDetails({
         assetAddress: allowance.asset.address,
         assetDecimal: allowance.asset.decimal,
         spenderSubaccount: allowance.subAccountId,
         spenderPrincipal: allowance.spender,
       });
+
+      console.log("ledger allowance: ", response);
 
       const newAllowance = {
         ...allowance,
@@ -120,16 +126,15 @@ export default function CreateForm() {
       const duplicated = getDuplicatedAllowance(newAllowance);
       console.log("Duplicated allowance: ", duplicated);
 
-      const storageAllowances = localStorage.getItem(LOCAL_STORAGE_PREFIX);
-      const allowances = JSON.parse(storageAllowances || "[]") as TAllowance[];
+      const allowances = getAllowancesFromStorage();
       if (duplicated) {
-        console.log("Are exp: ", !dayjs(newAllowance.expiration).isSame(dayjs(duplicated.expiration)));
-        console.log("Is amount different: ", newAllowance.amount !== duplicated.amount);
+        const isExpirationSame = newAllowance.expiration === duplicated.expiration;
+        const isAmountSame = newAllowance.amount === duplicated.amount;
+        console.log("Is expiration differ: ", !isExpirationSame);
+        console.log("Is  amount differ: ", !isAmountSame);
 
-        if (
-          !dayjs(newAllowance.expiration).isSame(dayjs(duplicated.expiration)) ||
-          newAllowance.amount !== duplicated.amount
-        ) {
+        // TODO: rest with a different amount
+        if (!isExpirationSame || !isAmountSame) {
           const filteredAllowances = allowances.filter((allowance) =>
             Boolean(
               allowance.subAccountId !== newAllowance.subAccountId &&
@@ -141,20 +146,16 @@ export default function CreateForm() {
           const updatedAllowances = [...filteredAllowances, newAllowance];
           console.log("Updated allowances with newAllowance: ", updatedAllowances);
           setAllowancesAction(updatedAllowances);
-          localStorage.setItem(LOCAL_STORAGE_PREFIX, JSON.stringify(updatedAllowances));
+          replaceAllowancesToStorage(updatedAllowances);
         }
       }
 
-      if (!duplicated && newAllowance.amount !== "0" && dayjs(newAllowance.expiration).isValid()) {
+      if (!duplicated && newAllowance.amount !== "0") {
         console.log("no duplicated but exist allowance");
         const updatedAllowances = [...allowances, newAllowance];
         setAllowancesAction(updatedAllowances);
-        localStorage.setItem(LOCAL_STORAGE_PREFIX, JSON.stringify(updatedAllowances));
+        replaceAllowancesToStorage(updatedAllowances);
       }
-      // .............................................................
-      // TODO: if the user change the amount or expiration, override the allowance on the ledger and update the allowance list
-
-      // TODO: on test get the expiration and amount and fill the form
       setAllowanceState(newAllowance);
     } catch (error) {
       console.error(error);

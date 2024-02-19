@@ -4,8 +4,8 @@ import { setAllowancesAction } from "@redux/allowance/AllowanceActions";
 
 export async function allowanceCacheRefresh(principal: string) {
   const allowancePrefix = `allowances-${principal}`;
-  const allowanceData = localStorage.getItem(allowancePrefix);
-  const allowances = JSON.parse(allowanceData || "[]") as TAllowance[];
+  const stored = localStorage.getItem(allowancePrefix);
+  const allowances = JSON.parse(stored || "[]") as TAllowance[];
   const updatedAllowances: TAllowance[] = [];
 
   if (allowances?.length) {

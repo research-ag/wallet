@@ -19,12 +19,10 @@ import { AssetContact } from "@redux/models/ContactsModels";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 dayjs.extend(utc);
-
 //
 import { _SERVICE as LedgerActor } from "@candid/icrcLedger/icrcLedgerService";
 import { idlFactory as LedgerFactory } from "@candid/icrcLedger/icrcLedgerCandid.did";
 
-// TODO: Currently, each function performs error catching, disabling the caller from managing the error.
 function getCanister(assetAddress: string) {
   const agent = store.getState().auth.userAgent;
   const canisterId = Principal.fromText(assetAddress);
@@ -90,49 +88,39 @@ function calculateExpirationAsBigInt(
 }
 
 export async function transferTokens(params: TransferTokensParams) {
-  try {
-    const { receiverPrincipal, transferAmount, assetAddress, decimal, fromSubAccount, toSubAccount } = params;
-    const canister = getCanister(assetAddress);
-    const amount = toHoleBigInt(transferAmount, Number(decimal));
+  const { receiverPrincipal, transferAmount, assetAddress, decimal, fromSubAccount, toSubAccount } = params;
+  const canister = getCanister(assetAddress);
+  const amount = toHoleBigInt(transferAmount, Number(decimal));
 
-    await canister.transfer({
-      to: {
-        owner: Principal.fromText(receiverPrincipal),
-        subaccount: [hexToUint8Array(toSubAccount)],
-      },
-      amount,
-      from_subaccount: hexToUint8Array(fromSubAccount),
-    });
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
+  await canister.transfer({
+    to: {
+      owner: Principal.fromText(receiverPrincipal),
+      subaccount: [hexToUint8Array(toSubAccount)],
+    },
+    amount,
+    from_subaccount: hexToUint8Array(fromSubAccount),
+  });
 }
 
 export async function transferTokensFromAllowance(params: TransferFromAllowanceParams) {
-  try {
-    const { receiverPrincipal, senderPrincipal, assetAddress, transferAmount, decimal, toSubAccount, fromSubAccount } =
-      params;
+  const { receiverPrincipal, senderPrincipal, assetAddress, transferAmount, decimal, toSubAccount, fromSubAccount } =
+    params;
 
-    const canister = getCanister(assetAddress);
+  const canister = getCanister(assetAddress);
 
-    const transferParams: TransferFromParams = {
-      from: {
-        owner: Principal.fromText(senderPrincipal),
-        subaccount: [hexToUint8Array(fromSubAccount)],
-      },
-      to: {
-        owner: Principal.fromText(receiverPrincipal),
-        subaccount: [hexToUint8Array(toSubAccount)],
-      },
-      amount: toHoleBigInt(transferAmount, Number(decimal)),
-    };
+  const transferParams: TransferFromParams = {
+    from: {
+      owner: Principal.fromText(senderPrincipal),
+      subaccount: [hexToUint8Array(fromSubAccount)],
+    },
+    to: {
+      owner: Principal.fromText(receiverPrincipal),
+      subaccount: [hexToUint8Array(toSubAccount)],
+    },
+    amount: toHoleBigInt(transferAmount, Number(decimal)),
+  };
 
-    await canister.transferFrom(transferParams);
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
+  await canister.transferFrom(transferParams);
 }
 
 export async function getSubAccountBalance(params: GetBalanceParams) {
@@ -148,6 +136,7 @@ export async function getSubAccountBalance(params: GetBalanceParams) {
     return balance;
   } catch (error) {
     console.error(error);
+    return 0;
   }
 }
 
@@ -218,6 +207,7 @@ export async function getAllowanceDetails(params: CheckAllowanceParams) {
     return { allowance, expires_at };
   } catch (e) {
     console.error(e);
+    return { allowance: "", expires_at: "" };
   }
 }
 

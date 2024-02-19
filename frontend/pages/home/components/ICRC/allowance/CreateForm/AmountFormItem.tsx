@@ -1,8 +1,10 @@
 import { TAllowance, AllowanceValidationErrorsEnum } from "@/@types/allowance";
 import { IconTypeEnum } from "@/const";
+import { validateAmount } from "@/utils";
 import { getAssetIcon } from "@/utils/icons";
 import CurrencyInput from "@components/input/CurrencyInput";
 import { useAppSelector } from "@redux/Store";
+import { removeAllowanceErrorAction, setAllowanceErrorAction } from "@redux/allowance/AllowanceActions";
 import { Asset } from "@redux/models/AccountModels";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
@@ -51,7 +53,13 @@ export default function AmountFormItem(props: IAmountFormItemProps) {
   }
 
   function onAmountChange(value: string) {
-    const amount = value;
+    const amount = value.trim();
     setAllowanceState({ amount });
+    const isValid = validateAmount(amount, Number(allowance.asset.decimal));
+    if (!isValid) {
+      setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.amount"]);
+      return;
+    }
+    removeAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.amount"]);
   }
 }

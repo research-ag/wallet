@@ -14,17 +14,21 @@ export default function useAllowanceTable() {
   const { t } = useTranslation();
   const columnHelper = createColumnHelper<TAllowance>();
   const { contacts } = useAppSelector((state) => state.contacts);
+  const { assets } = useAppSelector((state) => state.asset);
 
   const columns = [
     columnHelper.accessor(AllowancesTableColumnsEnum.Values.subAccountId, {
       cell: (info) => {
-        // TODO: get sub account from asset redux to get the name
-        const name = info?.getValue();
         const subAccountId = info?.getValue();
+        const assetToken = info.row.original.asset.tokenSymbol;
+        const asset = assets.find((asset) => asset.tokenSymbol === assetToken);
+        const subAccount = asset?.subAccounts.find((subAccount) => subAccount.sub_account_id === subAccountId);
+        const subAccountName = subAccount?.name;
+
         return (
           <div className="flex flex-col items-start justify-center cursor-pointer">
-            {name && <p className={getCellStyles()}>{name}</p>}
-            {subAccountId && <p className={getCellStyles(Boolean(name))}>{subAccountId}</p>}
+            {subAccountName && <p className={getCellStyles()}>{subAccountName || subAccountName}</p>}
+            {subAccountId && <p className={getCellStyles(Boolean(subAccountId))}>{subAccountId}</p>}
           </div>
         );
       },

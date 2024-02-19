@@ -5,7 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import { throttle } from "lodash";
 import { useCallback, useState } from "react";
 import useAllowanceDrawer from "./useAllowanceDrawer";
-import { updateAllowanceRequest } from "../services/allowance";
+import { putAllowanceToStorage } from "../services/allowance";
 import { validateUpdateAllowance } from "../validators/allowance";
 import { updateSubAccountBalance } from "@redux/assets/AssetReducer";
 import {
@@ -15,11 +15,12 @@ import {
   setFullAllowanceErrorsAction,
 } from "@redux/allowance/AllowanceActions";
 import { Asset } from "@redux/models/AccountModels";
+import dayjs from "dayjs";
 
 export function useUpdateAllowance() {
   const dispatch = useAppDispatch();
   const { onCloseUpdateAllowanceDrawer } = useAllowanceDrawer();
-  const { selectedAllowance } = useAppSelector((state) => state.allowance);
+  const { selectedAllowance, allowances } = useAppSelector((state) => state.allowance);
   const { assets } = useAppSelector((state) => state.asset);
   const [allowance, setAllowance] = useState<TAllowance>(selectedAllowance);
 
@@ -31,14 +32,26 @@ export function useUpdateAllowance() {
   };
 
   const mutationFn = useCallback(async () => {
-    // TODO: If the amount and expiration changed, perform update. Else avoid
     setFullAllowanceErrorsAction([]);
     const asset = assets.find((asset) => asset.tokenSymbol === allowance.asset.tokenSymbol) as Asset;
-    validateUpdateAllowance(allowance, asset);
-    const params = createApproveAllowanceParams(allowance);
-    await submitAllowanceApproval(params, allowance.asset.address);
-    const updatedAllowances = await updateAllowanceRequest(allowance);
-    setAllowancesAction(updatedAllowances);
+    const existingAllowance = allowances.find(
+      (currentAllowance) =>
+        currentAllowance.spender === allowance.spender &&
+        currentAllowance.subAccountId === allowance.subAccountId &&
+        currentAllowance.asset.tokenSymbol === allowance.asset.tokenSymbol,
+    );
+    if (existingAllowance) {
+      if (
+        !dayjs(allowance.expiration).isSame(dayjs(existingAllowance.expiration)) ||
+        allowance.amount !== existingAllowance.amount
+      ) {
+        validateUpdateAllowance(allowance, asset);
+        const params = createApproveAllowanceParams(allowance);
+        await submitAllowanceApproval(params, allowance.asset.address);
+        const updatedAllowances = putAllowanceToStorage(allowance);
+        setAllowancesAction(updatedAllowances);
+      }
+    }
   }, [allowance]);
 
   const onSuccess = async () => {

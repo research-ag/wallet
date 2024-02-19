@@ -5,7 +5,7 @@ import { useCallback } from "react";
 import dayjs from "dayjs";
 import { useAppDispatch } from "@redux/Store";
 import { initialAllowanceState } from "@redux/allowance/AllowanceReducer";
-import { removeAllowance } from "../services/allowance";
+import { deleteAllowanceFromStorage } from "../services/allowance";
 import { updateSubAccountBalance } from "@redux/assets/AssetReducer";
 import { TAllowance } from "@/@types/allowance";
 import { setAllowancesAction, setSelectedAllowanceAction } from "@redux/allowance/AllowanceActions";
@@ -19,14 +19,16 @@ export default function useDeleteAllowance() {
 
   const mutationFn = useCallback(async (allowance: TAllowance) => {
     try {
-      if (dayjs().isBefore(dayjs(allowance.expiration))) {
+      // TODO: if the expiration is undefined no updated in ledger (can be no expiration)
+      // TODO: if the balance is 0, the amount will fail (add wait and show error)
+      if (allowance?.expiration && dayjs().isBefore(dayjs(allowance.expiration))) {
         console.log("updating in the ledger");
         const params = createApproveAllowanceParams({ ...allowance, amount: "0", expiration: undefined });
         console.log({ allowance, params });
         await submitAllowanceApproval(params, allowance.asset.address);
       }
 
-      const updatedAllowances = await removeAllowance(allowance);
+      const updatedAllowances = deleteAllowanceFromStorage(allowance);
       setAllowancesAction(updatedAllowances);
       return { success: true };
     } catch (error) {
