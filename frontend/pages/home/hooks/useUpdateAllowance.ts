@@ -5,17 +5,16 @@ import { useMutation } from "@tanstack/react-query";
 import { throttle } from "lodash";
 import { useCallback, useState } from "react";
 import useAllowanceDrawer from "./useAllowanceDrawer";
-import { putAllowanceToStorage } from "../services/allowance";
 import { validateUpdateAllowance } from "../validators/allowance";
 import { updateSubAccountBalance } from "@redux/assets/AssetReducer";
 import {
   removeAllowanceErrorAction,
   setAllowanceErrorAction,
-  setAllowancesAction,
   setFullAllowanceErrorsAction,
 } from "@redux/allowance/AllowanceActions";
 import { Asset } from "@redux/models/AccountModels";
 import dayjs from "dayjs";
+import { refreshAllowance } from "../helpers/refreshAllowance";
 
 export function useUpdateAllowance() {
   const dispatch = useAppDispatch();
@@ -40,6 +39,7 @@ export function useUpdateAllowance() {
         currentAllowance.subAccountId === allowance.subAccountId &&
         currentAllowance.asset.tokenSymbol === allowance.asset.tokenSymbol,
     );
+
     if (existingAllowance) {
       if (
         !dayjs(allowance.expiration).isSame(dayjs(existingAllowance.expiration)) ||
@@ -48,8 +48,7 @@ export function useUpdateAllowance() {
         validateUpdateAllowance(allowance, asset);
         const params = createApproveAllowanceParams(allowance);
         await submitAllowanceApproval(params, allowance.asset.address);
-        const updatedAllowances = putAllowanceToStorage(allowance);
-        setAllowancesAction(updatedAllowances);
+        await refreshAllowance(allowance);
       }
     }
   }, [allowance]);

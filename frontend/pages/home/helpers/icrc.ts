@@ -148,7 +148,7 @@ export function createApproveAllowanceParams(allowance: TAllowance): ApprovePara
   const spenderPrincipal = allowance.spender;
   const allowanceSubAccountId = allowance.subAccountId;
   const allowanceAssetDecimal = allowance.asset.decimal;
-  const allowanceAmount = allowance.amount;
+  const allowanceAmount = allowance.amount || "0";
 
   const owner = Principal.fromText(spenderPrincipal);
   const subAccountUint8Array = new Uint8Array(hexToUint8Array(allowanceSubAccountId));

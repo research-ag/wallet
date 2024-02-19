@@ -1,5 +1,6 @@
 import { TAllowance } from "@/@types/allowance";
 import store from "@redux/Store";
+import { getToCreateAllowance } from "../helpers/allowanceMappers";
 
 export const LOCAL_STORAGE_PREFIX = `allowances-${store.getState()?.auth?.userPrincipal?.toText()}`;
 
@@ -16,7 +17,7 @@ export function getAllowancesFromStorage(principal?: string): TAllowance[] {
 export function postAllowanceToStorage(newAllowance: TAllowance, principal?: string): TAllowance[] {
   const allowances = getAllowancesFromStorage(principal);
   const newAllowances = [...allowances, newAllowance];
-  localStorage.setItem(getAllowanceKey(principal), JSON.stringify(newAllowances));
+  localStorage.setItem(getAllowanceKey(principal), JSON.stringify(newAllowances.map(getToCreateAllowance)));
   return newAllowances;
 }
 
@@ -32,12 +33,13 @@ export const putAllowanceToStorage = (updatedAllowance: TAllowance, principal?: 
   );
 
   const newAllowances = [...filteredAllowances, updatedAllowance];
-  localStorage.setItem(LOCAL_STORAGE_PREFIX, JSON.stringify(newAllowances));
+  console.log("storage updated: ", newAllowances);
+  localStorage.setItem(LOCAL_STORAGE_PREFIX, JSON.stringify(newAllowances.map(getToCreateAllowance)));
   return newAllowances;
 };
 
 export function replaceAllowancesToStorage(allowances: TAllowance[], principal?: string) {
-  localStorage.setItem(getAllowanceKey(principal), JSON.stringify(allowances));
+  localStorage.setItem(getAllowanceKey(principal), JSON.stringify(allowances.map(getToCreateAllowance)));
   return allowances;
 }
 
@@ -50,6 +52,6 @@ export function deleteAllowanceFromStorage(allowance: TAllowance, principal?: st
         allowance.asset.tokenSymbol !== currentAllowance.asset.tokenSymbol,
     );
   });
-  localStorage.setItem(LOCAL_STORAGE_PREFIX, JSON.stringify(filteredAllowances));
+  localStorage.setItem(LOCAL_STORAGE_PREFIX, JSON.stringify(filteredAllowances.map(getToCreateAllowance)));
   return filteredAllowances;
 }

@@ -8,19 +8,17 @@ import useAllowanceDrawer from "./useAllowanceDrawer";
 import { throttle } from "lodash";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { initialAllowanceState } from "@redux/allowance/AllowanceReducer";
-import { postAllowanceToStorage, putAllowanceToStorage } from "../services/allowance";
 import { getDuplicatedAllowance, validateCreateAllowance } from "../validators/allowance";
 import { SupportedStandardEnum } from "@/@types/icrc";
 import { updateSubAccountBalance } from "@redux/assets/AssetReducer";
 import {
   removeAllowanceErrorAction,
   setAllowanceErrorAction,
-  setAllowancesAction,
   setFullAllowanceErrorsAction,
 } from "@redux/allowance/AllowanceActions";
-import dayjs from "dayjs";
 import { Asset } from "@redux/models/AccountModels";
 import { getAllowanceAsset } from "../helpers/allowanceMappers";
+import { refreshAllowance } from "../helpers/refreshAllowance";
 
 export default function useCreateAllowance() {
   const dispatch = useAppDispatch();
@@ -57,37 +55,20 @@ export default function useCreateAllowance() {
     const asset = assets.find((asset) => asset.tokenSymbol === allowance.asset.tokenSymbol) as Asset;
     validateCreateAllowance(allowance, asset);
     const duplicated = getDuplicatedAllowance(allowance);
-    console.log("Allowance duplicated: ", duplicated);
 
     if (duplicated) {
-      console.log({
-        currentExpiration: duplicated.expiration,
-        newExpiration: allowance.expiration,
-        currentAmount: duplicated.amount,
-        newAmount: allowance.amount,
-        isSameExpiration: dayjs(allowance.expiration).isSame(dayjs(duplicated.expiration)),
-        isSameAmount: allowance.amount === duplicated.amount,
-      });
-
       const isExpirationSame = allowance.expiration === duplicated.expiration;
       const isAmountSame = allowance.amount === duplicated.amount;
 
       if (!isExpirationSame || !isAmountSame) {
-        console.log("duplicated but with amount or date changed");
         const params = createApproveAllowanceParams(allowance);
-        console.log({ allowance, params });
         await submitAllowanceApproval(params, allowance.asset.address);
-        const savedAllowances = putAllowanceToStorage(allowance);
-        console.log("updated allowance: ", savedAllowances);
-        setAllowancesAction(savedAllowances);
+        await refreshAllowance(allowance);
       }
     } else {
-      console.log("Completely new allowances");
       const params = createApproveAllowanceParams(allowance);
-      console.log({ allowance, params });
       await submitAllowanceApproval(params, allowance.asset.address);
-      const savedAllowances = postAllowanceToStorage(allowance);
-      setAllowancesAction(savedAllowances);
+      await refreshAllowance(allowance);
     }
   }, [allowance]);
 

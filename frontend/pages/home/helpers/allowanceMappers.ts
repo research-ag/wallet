@@ -1,3 +1,4 @@
+import { TAllowance } from "@/@types/allowance";
 import { Asset } from "@redux/models/AccountModels";
 
 export function getAllowanceAsset(asset: Asset) {
@@ -12,4 +13,9 @@ export function getAllowanceAsset(asset: Asset) {
     tokenSymbol,
     supportedStandards,
   };
+}
+
+export function getToCreateAllowance(allowance: TAllowance) {
+  const { asset, subAccountId, spender } = allowance;
+  return { asset, subAccountId, spender };
 }

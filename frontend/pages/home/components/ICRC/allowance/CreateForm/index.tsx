@@ -18,7 +18,6 @@ import {
   setFullAllowanceErrorsAction,
 } from "@redux/allowance/AllowanceActions";
 import { getDuplicatedAllowance } from "@pages/home/validators/allowance";
-import dayjs from "dayjs";
 import { getAllowancesFromStorage, replaceAllowancesToStorage } from "@pages/home/services/allowance";
 import LoadingLoader from "@components/Loader";
 

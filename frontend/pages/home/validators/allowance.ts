@@ -5,10 +5,9 @@ import { validatePrincipal } from "@/utils/identity";
 import store from "@redux/Store";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import dayjs from "dayjs";
-import { getAllowancesFromStorage } from "../services/allowance";
 
 export function getDuplicatedAllowance(allowance: TAllowance): TAllowance | undefined {
-  const allowances = getAllowancesFromStorage();
+  const allowances = store.getState().allowance.allowances;
   return allowances.find(
     (currentAllowance) =>
       currentAllowance.subAccountId === allowance.subAccountId &&

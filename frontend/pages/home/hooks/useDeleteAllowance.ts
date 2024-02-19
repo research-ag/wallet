@@ -2,17 +2,11 @@ import { submitAllowanceApproval, createApproveAllowanceParams, getSubAccountBal
 import { useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { initialAllowanceState } from "@redux/allowance/AllowanceReducer";
-import { deleteAllowanceFromStorage } from "../services/allowance";
 import { updateSubAccountBalance } from "@redux/assets/AssetReducer";
-import {
-  removeAllowanceErrorAction,
-  setAllowanceErrorAction,
-  setAllowancesAction,
-  setSelectedAllowanceAction,
-} from "@redux/allowance/AllowanceActions";
+import { setAllowanceErrorAction, setSelectedAllowanceAction } from "@redux/allowance/AllowanceActions";
 import { AllowanceValidationErrorsEnum } from "@/@types/allowance";
-import { SubAccount } from "@dfinity/nns";
 import { Asset } from "@redux/models/AccountModels";
+import { refreshAllowance } from "../helpers/refreshAllowance";
 
 export default function useDeleteAllowance() {
   const dispatch = useAppDispatch();
@@ -39,8 +33,7 @@ export default function useDeleteAllowance() {
 
       const params = createApproveAllowanceParams({ ...selectedAllowance, amount: "0", expiration: undefined });
       await submitAllowanceApproval(params, selectedAllowance.asset.address);
-      const updatedAllowances = deleteAllowanceFromStorage(selectedAllowance);
-      setAllowancesAction(updatedAllowances);
+      await refreshAllowance(selectedAllowance, true);
 
       const refreshParams = {
         subAccount: selectedAllowance.subAccountId,

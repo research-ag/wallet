@@ -72,6 +72,7 @@ export default function Select(props: TSelectProps) {
           </DropdownMenu.Group>
         )}
         <DropdownMenu.Group>
+          {/* TODO: keep a width when it's empty */}
           {options.map((option, index) => (
             <DropdownMenu.Item
               onSelect={() => handleSelectOption(option)}
