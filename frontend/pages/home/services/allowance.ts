@@ -20,8 +20,8 @@ export const updateAllowanceRequest = (updatedAllowance: TAllowance): Promise<TA
 
     const filteredAllowances = allowances.filter((allowance) =>
       Boolean(
-        allowance.subAccount.sub_account_id !== updatedAllowance.subAccount.sub_account_id ||
-          allowance.spender.principal !== updatedAllowance.spender.principal ||
+        allowance.subAccountId !== updatedAllowance.subAccountId ||
+          allowance.spender !== updatedAllowance.spender ||
           allowance.asset.tokenSymbol !== updatedAllowance.asset.tokenSymbol,
       ),
     );
@@ -38,8 +38,8 @@ export function removeAllowance(allowance: TAllowance): Promise<TAllowance[]> {
     const allowances = JSON.parse(storageAllowances || "[]") as TAllowance[];
     const filteredAllowances = allowances.filter((currentAllowance) => {
       return Boolean(
-        allowance.subAccount.sub_account_id !== currentAllowance.subAccount.sub_account_id ||
-          allowance.spender.principal !== currentAllowance.spender.principal ||
+        allowance.subAccountId !== currentAllowance.subAccountId ||
+          allowance.spender !== currentAllowance.spender ||
           allowance.asset.tokenSymbol !== currentAllowance.asset.tokenSymbol,
       );
     });

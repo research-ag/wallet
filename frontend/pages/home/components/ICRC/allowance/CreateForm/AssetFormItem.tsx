@@ -1,7 +1,8 @@
 import { TAllowance, AllowanceValidationErrorsEnum } from "@/@types/allowance";
 import { SelectOption } from "@/@types/components";
 import { SupportedStandardEnum } from "@/@types/icrc";
-import formatAsset from "@/utils/formatAsset";
+import { IconTypeEnum } from "@/const";
+import { getAssetIcon } from "@/utils/icons";
 import { Select } from "@components/select";
 import { useAppSelector } from "@redux/Store";
 import { initialAllowanceState } from "@redux/allowance/AllowanceReducer";
@@ -45,7 +46,7 @@ export default function AssetFormItem(props: AssetFormItemProps) {
   const onAssetChange = (option: SelectOption) => {
     setSearch(null);
     const fullAsset = assets.find((currentAsset) => currentAsset.tokenName === option.value);
-    setAllowanceState({ asset: fullAsset, subAccount: initialAllowanceState.subAccount });
+    setAllowanceState({ asset: fullAsset, subAccountId: initialAllowanceState.subAccountId });
   };
 
   const onSearchChange = (searchValue: string) => {
@@ -62,8 +63,8 @@ export default function AssetFormItem(props: AssetFormItemProps) {
       <Select
         onSelect={onAssetChange}
         options={options}
-        initialValue={selectedAsset?.tokenName}
-        currentValue={asset?.tokenName}
+        initialValue={selectedAsset?.tokenSymbol}
+        currentValue={asset?.tokenSymbol}
         disabled={isLoading}
         border={isError() ? "error" : undefined}
         onSearch={onSearchChange}
@@ -74,5 +75,13 @@ export default function AssetFormItem(props: AssetFormItemProps) {
 
   function isError(): boolean {
     return errors?.includes(AllowanceValidationErrorsEnum.Values["error.invalid.asset"]) || false;
+  }
+
+  function formatAsset(asset: Asset) {
+    return {
+      value: asset?.tokenSymbol,
+      label: `${asset?.tokenName} / ${asset?.tokenSymbol}`,
+      icon: getAssetIcon(IconTypeEnum.Enum.ASSET, asset?.tokenSymbol, asset?.logo),
+    };
   }
 }

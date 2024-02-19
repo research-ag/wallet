@@ -19,13 +19,14 @@ import {
   setFullAllowanceErrorsAction,
 } from "@redux/allowance/AllowanceActions";
 import dayjs from "dayjs";
+import { Asset } from "@redux/models/AccountModels";
 
 export default function useCreateAllowance() {
   const dispatch = useAppDispatch();
   const [isLoading, setLoading] = useState(false);
   const { onCloseCreateAllowanceDrawer } = useAllowanceDrawer();
 
-  const { selectedAsset, selectedAccount } = useAppSelector(({ asset }) => asset);
+  const { assets, selectedAsset, selectedAccount } = useAppSelector(({ asset }) => asset);
 
   const initial = useMemo(() => {
     const supported = selectedAsset?.supportedStandards?.includes(SupportedStandardEnum.Values["ICRC-2"]);
@@ -50,8 +51,9 @@ export default function useCreateAllowance() {
   // TODO: refactor this function many resp
   const mutationFn = useCallback(async () => {
     setFullAllowanceErrorsAction([]);
-    validateCreateAllowance(allowance);
 
+    const asset = assets.find((asset) => asset.tokenSymbol === allowance.asset.tokenSymbol) as Asset;
+    validateCreateAllowance(allowance, asset);
     const duplicated = getDuplicatedAllowance(allowance);
 
     if (duplicated) {
@@ -85,12 +87,12 @@ export default function useCreateAllowance() {
 
   const onSuccess = async () => {
     const refreshParams = {
-      subAccount: allowance.subAccount.sub_account_id,
+      subAccount: allowance.subAccountId,
       assetAddress: allowance.asset.address,
     };
     const amount = await getSubAccountBalance(refreshParams);
     const balance = amount ? amount.toString() : "0";
-    dispatch(updateSubAccountBalance(allowance.asset.tokenSymbol, allowance.subAccount.sub_account_id, balance));
+    dispatch(updateSubAccountBalance(allowance.asset.tokenSymbol, allowance.subAccountId, balance));
     onCloseCreateAllowanceDrawer();
   };
 

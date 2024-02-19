@@ -34,12 +34,12 @@ export default function useDeleteAllowance() {
       return { success: false, error };
     } finally {
       const refreshParams = {
-        subAccount: allowance.subAccount.sub_account_id,
+        subAccount: allowance.subAccountId,
         assetAddress: allowance.asset.address,
       };
       const amount = await getSubAccountBalance(refreshParams);
       const balance = amount ? amount.toString() : "0";
-      dispatch(updateSubAccountBalance(allowance.asset.tokenSymbol, allowance.subAccount.sub_account_id, balance));
+      dispatch(updateSubAccountBalance(allowance.asset.tokenSymbol, allowance.subAccountId, balance));
       setSelectedAllowanceAction(initialAllowanceState);
     }
   }, []);

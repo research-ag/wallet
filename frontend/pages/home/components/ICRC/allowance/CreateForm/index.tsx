@@ -73,7 +73,6 @@ export default function CreateForm() {
             {t("test")}
           </CustomButton>
           <CustomButton onClick={onSaveAllowance} disabled={isPending || isLoading}>
-            {/* TODO: include it in the translations */}
             {t("submit")}
           </CustomButton>
         </div>
@@ -91,23 +90,23 @@ export default function CreateForm() {
         return setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.asset"]);
       removeAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.asset"]);
 
-      if (!isHexadecimalValid(allowance?.subAccount?.sub_account_id))
+      if (!isHexadecimalValid(allowance?.subAccountId))
         return setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.subaccount"]);
       removeAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.subaccount"]);
 
-      if (!validatePrincipal(allowance?.spender?.principal))
+      if (!validatePrincipal(allowance?.spender))
         return setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.spender.principal"]);
       removeAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.spender.principal"]);
 
-      if (allowance?.spender?.principal === userPrincipal.toText())
+      if (allowance?.spender === userPrincipal.toText())
         return setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.self.allowance"]);
       removeAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.self.allowance"]);
 
       const response = await getAllowanceDetails({
         assetAddress: allowance.asset.address,
         assetDecimal: allowance.asset.decimal,
-        spenderSubaccount: allowance.subAccount.sub_account_id,
-        spenderPrincipal: allowance.spender.principal,
+        spenderSubaccount: allowance.subAccountId,
+        spenderPrincipal: allowance.spender,
       });
 
       const newAllowance = {
@@ -133,8 +132,8 @@ export default function CreateForm() {
         ) {
           const filteredAllowances = allowances.filter((allowance) =>
             Boolean(
-              allowance.subAccount.sub_account_id !== newAllowance.subAccount.sub_account_id &&
-                allowance.spender.principal !== newAllowance.spender.principal &&
+              allowance.subAccountId !== newAllowance.subAccountId &&
+                allowance.spender !== newAllowance.spender &&
                 allowance.asset.tokenSymbol !== newAllowance.asset.tokenSymbol,
             ),
           );

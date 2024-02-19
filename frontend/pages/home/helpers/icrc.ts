@@ -156,8 +156,8 @@ export function createApproveAllowanceParams(allowance: TAllowance): ApprovePara
     throw new Error("ICRC-2 not supported");
   }
 
-  const spenderPrincipal = allowance.spender.principal;
-  const allowanceSubAccountId = allowance.subAccount.sub_account_id;
+  const spenderPrincipal = allowance.spender;
+  const allowanceSubAccountId = allowance.subAccountId;
   const allowanceAssetDecimal = allowance.asset.decimal;
   const allowanceAmount = allowance.amount;
 

@@ -11,8 +11,8 @@ export async function allowanceCacheRefresh(principal: string) {
   if (allowances?.length) {
     for (const allowance of allowances) {
       try {
-        const spenderPrincipal = allowance.spender.principal;
-        const spenderSubaccount = allowance.subAccount.sub_account_id;
+        const spenderPrincipal = allowance.spender;
+        const spenderSubaccount = allowance.subAccountId;
         const assetAddress = allowance.asset.address;
         const assetDecimal = allowance.asset.decimal;
 

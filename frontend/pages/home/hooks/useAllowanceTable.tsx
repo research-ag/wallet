@@ -16,10 +16,11 @@ export default function useAllowanceTable() {
   const { contacts } = useAppSelector((state) => state.contacts);
 
   const columns = [
-    columnHelper.accessor(AllowancesTableColumnsEnum.Values.subAccount, {
+    columnHelper.accessor(AllowancesTableColumnsEnum.Values.subAccountId, {
       cell: (info) => {
-        const name = info?.getValue()?.name;
-        const subAccountId = info?.getValue()?.sub_account_id;
+        // TODO: get sub account from asset redux to get the name
+        const name = info?.getValue();
+        const subAccountId = info?.getValue();
         return (
           <div className="flex flex-col items-start justify-center cursor-pointer">
             {name && <p className={getCellStyles()}>{name}</p>}
@@ -35,7 +36,7 @@ export default function useAllowanceTable() {
     }),
     columnHelper.accessor(AllowancesTableColumnsEnum.Values.spender, {
       cell: (info) => {
-        const principal = info.getValue()?.principal;
+        const principal = info.getValue();
 
         const spenderName = useMemo(() => {
           const contact = contacts.find((contact) => contact.principal === principal);

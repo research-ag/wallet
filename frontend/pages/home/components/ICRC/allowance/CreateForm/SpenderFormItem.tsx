@@ -60,7 +60,7 @@ export default function SpenderFormItem(props: ISpenderFormItemProps) {
           onSelect={onSelectedChange}
           options={options}
           disabled={isLoading}
-          currentValue={allowance?.spender?.principal || ""}
+          currentValue={allowance?.spender || ""}
           border={getError() ? "error" : undefined}
           onSearch={onSearchChange}
           onOpenChange={onOpenChange}
@@ -96,15 +96,14 @@ export default function SpenderFormItem(props: ISpenderFormItemProps) {
     clearTimeout(inputTimeoutRef.current);
 
     inputTimeoutRef.current = setTimeout(() => {
-      const spender = { principal: newSearchValue, name: "" };
-      setAllowanceState({ spender });
+      setAllowanceState({ spender: newSearchValue });
     }, 500);
   }
 
   function onSelectedChange(option: SelectOption) {
     setSearch(null);
     const fullSpender = contacts.find((contact) => contact.principal === option.value);
-    setAllowanceState({ spender: fullSpender });
+    setAllowanceState({ spender: fullSpender?.principal });
   }
 
   function getError(): boolean {

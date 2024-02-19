@@ -14,11 +14,13 @@ import {
   setAllowancesAction,
   setFullAllowanceErrorsAction,
 } from "@redux/allowance/AllowanceActions";
+import { Asset } from "@redux/models/AccountModels";
 
 export function useUpdateAllowance() {
   const dispatch = useAppDispatch();
   const { onCloseUpdateAllowanceDrawer } = useAllowanceDrawer();
   const { selectedAllowance } = useAppSelector((state) => state.allowance);
+  const { assets } = useAppSelector((state) => state.asset);
   const [allowance, setAllowance] = useState<TAllowance>(selectedAllowance);
 
   const setAllowanceState = (allowanceData: Partial<TAllowance>) => {
@@ -31,7 +33,8 @@ export function useUpdateAllowance() {
   const mutationFn = useCallback(async () => {
     // TODO: If the amount and expiration changed, perform update. Else avoid
     setFullAllowanceErrorsAction([]);
-    validateUpdateAllowance(allowance);
+    const asset = assets.find((asset) => asset.tokenSymbol === allowance.asset.tokenSymbol) as Asset;
+    validateUpdateAllowance(allowance, asset);
     const params = createApproveAllowanceParams(allowance);
     await submitAllowanceApproval(params, allowance.asset.address);
     const updatedAllowances = await updateAllowanceRequest(allowance);
@@ -40,12 +43,12 @@ export function useUpdateAllowance() {
 
   const onSuccess = async () => {
     const refreshParams = {
-      subAccount: allowance.subAccount.sub_account_id,
+      subAccount: allowance.subAccountId,
       assetAddress: allowance.asset.address,
     };
     const amount = await getSubAccountBalance(refreshParams);
     const balance = amount ? amount.toString() : "0";
-    dispatch(updateSubAccountBalance(allowance.asset.tokenSymbol, allowance.subAccount.sub_account_id, balance));
+    dispatch(updateSubAccountBalance(allowance.asset.tokenSymbol, allowance.subAccountId, balance));
     onCloseUpdateAllowanceDrawer();
   };
 

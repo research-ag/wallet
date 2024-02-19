@@ -28,7 +28,7 @@ export default function ActionCard(props: ActionCardProps) {
   const { deleteAllowance, isPending } = useDeleteAllowance();
 
   const spenderName = useMemo(() => {
-    const contact = contacts.find((contact) => contact.principal === allowance?.spender?.principal);
+    const contact = contacts.find((contact) => contact.principal === allowance?.spender);
     return contact?.name ? contact.name : undefined;
   }, [allowance, contacts]);
 
@@ -75,7 +75,7 @@ export default function ActionCard(props: ActionCardProps) {
       <div className="mt-4">
         <p className={textStyles}>
           {t("allowance.sure.remove")}{" "}
-          <span className="font-bold">{spenderName || middleTruncation(allowance.spender.principal, 4, 4)}</span>?
+          <span className="font-bold">{spenderName || middleTruncation(allowance.spender, 4, 4)}</span>?
         </p>
         <p className={textStyles}>{t("allowance.permanently.deleted")}</p>
       </div>
