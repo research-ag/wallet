@@ -320,7 +320,13 @@ db()
   .subscribeToAllTokens()
   .subscribe((x) => {
     if (x.length > 0) {
-      store.dispatch(assetSlice.actions.setReduxTokens(x));
+      store.dispatch(
+        assetSlice.actions.setReduxTokens(
+          x.sort((a, b) => {
+            return a.id_number - b.id_number;
+          }),
+        ),
+      );
       if (store.getState().asset.initLoad) setAssetFromLocalData(x, store.getState().auth.authClient);
       updateAllBalances(true, store.getState().auth.userAgent, x);
     }
