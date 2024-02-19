@@ -104,8 +104,6 @@ export default function CreateForm() {
         return setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.self.allowance"]);
       removeAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.self.allowance"]);
 
-      console.log("validated: asset-address, asset-decimal, sub-acc, spender");
-
       const response = await getAllowanceDetails({
         assetAddress: allowance.asset.address,
         assetDecimal: allowance.asset.decimal,
@@ -113,24 +111,17 @@ export default function CreateForm() {
         spenderPrincipal: allowance.spender,
       });
 
-      console.log("ledger allowance: ", response);
-
       const newAllowance = {
         ...allowance,
         amount: response?.allowance || "0",
         expiration: response?.expires_at || "",
       };
 
-      console.log("New allowance: ", newAllowance);
-
       const duplicated = getDuplicatedAllowance(newAllowance);
-      console.log("Duplicated allowance: ", duplicated);
 
       if (duplicated) {
         const isExpirationSame = newAllowance.expiration === duplicated.expiration;
         const isAmountSame = newAllowance.amount === duplicated.amount;
-        console.log("Is expiration differ: ", !isExpirationSame);
-        console.log("Is  amount differ: ", !isAmountSame);
 
         if (!isExpirationSame || !isAmountSame) {
           refreshAllowance(newAllowance);
@@ -138,7 +129,6 @@ export default function CreateForm() {
       }
 
       if (!duplicated && newAllowance.amount !== "0") {
-        console.log("no duplicated but exist allowance");
         const updatedAllowances = [...allowances, newAllowance];
         setAllowancesAction(updatedAllowances);
         replaceAllowancesToStorage(updatedAllowances);

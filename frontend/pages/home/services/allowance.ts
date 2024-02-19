@@ -33,7 +33,6 @@ export const putAllowanceToStorage = (updatedAllowance: TAllowance, principal?: 
   );
 
   const newAllowances = [...filteredAllowances, updatedAllowance];
-  console.log("storage updated: ", newAllowances);
   localStorage.setItem(LOCAL_STORAGE_PREFIX, JSON.stringify(newAllowances.map(getToCreateAllowance)));
   return newAllowances;
 };
