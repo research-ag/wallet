@@ -69,12 +69,15 @@ export default function useCreateAllowance() {
         isSameAmount: allowance.amount === duplicated.amount,
       });
 
-      if (!dayjs(allowance.expiration).isSame(dayjs(duplicated.expiration)) || allowance.amount !== duplicated.amount) {
+      const isExpirationSame = allowance.expiration === duplicated.expiration;
+      const isAmountSame = allowance.amount === duplicated.amount;
+
+      if (!isExpirationSame || !isAmountSame) {
         console.log("duplicated but with amount or date changed");
         const params = createApproveAllowanceParams(allowance);
         console.log({ allowance, params });
         await submitAllowanceApproval(params, allowance.asset.address);
-        const savedAllowances = await putAllowanceToStorage(allowance);
+        const savedAllowances = putAllowanceToStorage(allowance);
         console.log("updated allowance: ", savedAllowances);
         setAllowancesAction(savedAllowances);
       }

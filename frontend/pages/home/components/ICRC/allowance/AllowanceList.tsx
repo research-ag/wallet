@@ -6,6 +6,7 @@ import useAllowances from "@pages/home/hooks/useAllowances";
 import { flexRender, getCoreRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 import clsx from "clsx";
 import UpdateAllowanceDrawer from "./UpdateAllowanceDrawer";
+import DeleteAllowanceModal from "./DeleteAllowanceModal";
 
 export default function AllowanceList() {
   const { allowances, handleSortChange } = useAllowances();
@@ -20,6 +21,7 @@ export default function AllowanceList() {
 
   return (
     <>
+      <DeleteAllowanceModal />
       <UpdateAllowanceDrawer />
       <Table>
         <TableHeadGroup />

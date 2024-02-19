@@ -133,7 +133,6 @@ export default function CreateForm() {
         console.log("Is expiration differ: ", !isExpirationSame);
         console.log("Is  amount differ: ", !isAmountSame);
 
-        // TODO: rest with a different amount
         if (!isExpirationSame || !isAmountSame) {
           const filteredAllowances = allowances.filter((allowance) =>
             Boolean(

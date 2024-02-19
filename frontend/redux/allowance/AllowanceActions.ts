@@ -8,6 +8,7 @@ import {
   setAllowanceError,
   removeAllowanceError,
   setFullAllowanceErrors,
+  setIsDeleteAllowance,
 } from "@/redux/allowance/AllowanceReducer";
 
 export const setIsUpdateAllowanceAction = (isUpdate: boolean) => {
@@ -15,6 +16,9 @@ export const setIsUpdateAllowanceAction = (isUpdate: boolean) => {
 };
 export const setIsCreateAllowanceAction = (isCreate: boolean) => {
   store.dispatch(setIsCreateAllowance(isCreate));
+};
+export const setIsDeleteAllowanceAction = (isDelete: boolean) => {
+  store.dispatch(setIsDeleteAllowance(isDelete));
 };
 export const setSelectedAllowanceAction = (allowance: TAllowance) => {
   store.dispatch(setSelectedAllowance(allowance));
