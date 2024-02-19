@@ -18,14 +18,15 @@ import {
   setFullAllowanceErrorsAction,
 } from "@redux/allowance/AllowanceActions";
 import { getDuplicatedAllowance } from "@pages/home/validators/allowance";
-import { getAllowancesFromStorage, replaceAllowancesToStorage } from "@pages/home/services/allowance";
+import { replaceAllowancesToStorage } from "@pages/home/services/allowance";
 import LoadingLoader from "@components/Loader";
+import { refreshAllowance } from "@pages/home/helpers/refreshAllowance";
 
 export default function CreateForm() {
   const { t } = useTranslation();
   const { contacts } = useAppSelector((state) => state.contacts);
   const { assets, selectedAsset } = useAppSelector((state) => state.asset);
-  const { errors } = useAppSelector((state) => state.allowance);
+  const { errors, allowances } = useAppSelector((state) => state.allowance);
   const { allowance, setAllowanceState, createAllowance, isPending, isLoading, setLoading } = useCreateAllowance();
   const { userPrincipal } = useAppSelector((state) => state.auth);
 
@@ -125,7 +126,6 @@ export default function CreateForm() {
       const duplicated = getDuplicatedAllowance(newAllowance);
       console.log("Duplicated allowance: ", duplicated);
 
-      const allowances = getAllowancesFromStorage();
       if (duplicated) {
         const isExpirationSame = newAllowance.expiration === duplicated.expiration;
         const isAmountSame = newAllowance.amount === duplicated.amount;
@@ -133,18 +133,7 @@ export default function CreateForm() {
         console.log("Is  amount differ: ", !isAmountSame);
 
         if (!isExpirationSame || !isAmountSame) {
-          const filteredAllowances = allowances.filter((allowance) =>
-            Boolean(
-              allowance.subAccountId !== newAllowance.subAccountId &&
-                allowance.spender !== newAllowance.spender &&
-                allowance.asset.tokenSymbol !== newAllowance.asset.tokenSymbol,
-            ),
-          );
-          console.log("Then remove duplicated from allowances", filteredAllowances);
-          const updatedAllowances = [...filteredAllowances, newAllowance];
-          console.log("Updated allowances with newAllowance: ", updatedAllowances);
-          setAllowancesAction(updatedAllowances);
-          replaceAllowancesToStorage(updatedAllowances);
+          refreshAllowance(newAllowance);
         }
       }
 

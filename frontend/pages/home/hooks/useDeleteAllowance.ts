@@ -1,12 +1,17 @@
 import { submitAllowanceApproval, createApproveAllowanceParams, getSubAccountBalance } from "@/pages/home/helpers/icrc";
 import { useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
-import { initialAllowanceState } from "@redux/allowance/AllowanceReducer";
 import { updateSubAccountBalance } from "@redux/assets/AssetReducer";
-import { setAllowanceErrorAction, setSelectedAllowanceAction } from "@redux/allowance/AllowanceActions";
+import {
+  setAllowanceErrorAction,
+  setFullAllowanceErrorsAction,
+  setIsDeleteAllowanceAction,
+  setSelectedAllowanceAction,
+} from "@redux/allowance/AllowanceActions";
 import { AllowanceValidationErrorsEnum } from "@/@types/allowance";
 import { Asset } from "@redux/models/AccountModels";
 import { refreshAllowance } from "../helpers/refreshAllowance";
+import { initialAllowanceState } from "@redux/allowance/AllowanceReducer";
 
 export default function useDeleteAllowance() {
   const dispatch = useAppDispatch();
@@ -21,11 +26,10 @@ export default function useDeleteAllowance() {
   async function deleteAllowance() {
     try {
       setIsPending(true);
-      console.log("selectedAllowance: ", selectedAllowance);
       const subAccount = asset.subAccounts.find(
         (subAccount) => subAccount.sub_account_id === selectedAllowance.subAccountId,
       );
-      if (!subAccount) return;
+      if (!subAccount) throw "no sub account to delete";
 
       const bigintFee = BigInt(subAccount.transaction_fee);
       const bigintAmount = BigInt(subAccount.amount);
@@ -43,7 +47,12 @@ export default function useDeleteAllowance() {
       const balance = amount ? amount.toString() : "0";
       dispatch(updateSubAccountBalance(selectedAllowance.asset.tokenSymbol, selectedAllowance.subAccountId, balance));
       setSelectedAllowanceAction(initialAllowanceState);
+
+      setSelectedAllowanceAction(initialAllowanceState);
+      setFullAllowanceErrorsAction([]);
+      setIsDeleteAllowanceAction(false);
     } catch (error) {
+      console.log(error);
       if (error === AllowanceValidationErrorsEnum.Values["error.not.enough.balance"])
         return setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.not.enough.balance"]);
     } finally {

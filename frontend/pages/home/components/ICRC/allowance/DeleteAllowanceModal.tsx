@@ -55,11 +55,6 @@ export default function DeleteAllowanceModal() {
 
   async function handleDelete() {
     await deleteAllowance();
-    if (errors.length === 0) {
-      setSelectedAllowanceAction(initialAllowanceState);
-      setFullAllowanceErrorsAction([]);
-      setIsDeleteAllowanceAction(false);
-    }
   }
 
   function onCancel() {

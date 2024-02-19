@@ -184,12 +184,16 @@ export async function getAllowanceDetails(params: CheckAllowanceParams) {
     const { spenderPrincipal, spenderSubaccount, accountPrincipal, assetAddress, assetDecimal } = params;
 
     const userPrincipal = store.getState().auth.userPrincipal;
-    const myAgent = store.getState().auth.userAgent;
+    const agent = store.getState().auth.userAgent;
     const canisterId = Principal.fromText(assetAddress);
-    const canister = IcrcLedgerCanister.create({ agent: myAgent, canisterId });
     const subAccountUint8Array = new Uint8Array(hexToUint8Array(spenderSubaccount));
 
-    const result = await canister.allowance({
+    const ledgerActor = Actor.createActor<LedgerActor>(LedgerFactory, {
+      agent,
+      canisterId,
+    });
+
+    const result = await ledgerActor.icrc2_allowance({
       spender: {
         owner: spenderPrincipal ? Principal.fromText(spenderPrincipal) : userPrincipal,
         subaccount: [],
