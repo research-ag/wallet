@@ -8,6 +8,7 @@ import { isHexadecimalValid } from "@/utils/checkers";
 
 export default function useSend() {
   const { userPrincipal } = useAppSelector((state) => state.auth);
+  const { assets } = useAppSelector((state) => state.asset);
   const { sender, receiver, amount, sendingStatus, errors, initTime, endTime } = useAppSelector(
     (state) => state.transaction,
   );
@@ -64,7 +65,13 @@ export default function useSend() {
   async function getSenderBalance() {
     try {
       if (sender?.senderOption === TransactionSenderOptionEnum.Values.own) {
-        return toFullDecimal(sender?.subAccount?.amount || "0", Number(sender?.asset?.decimal));
+        const updateAsset = assets.find((asset) => asset.tokenSymbol === sender.asset.tokenSymbol);
+
+        const updateSubAccount = updateAsset?.subAccounts.find(
+          (subAccount) => subAccount.sub_account_id === sender.subAccount.sub_account_id,
+        );
+
+        return toFullDecimal(updateSubAccount?.amount || "0", Number(updateAsset?.decimal));
       }
 
       const principal = getSenderPrincipal();
