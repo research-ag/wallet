@@ -72,7 +72,7 @@ export default function Select(props: TSelectProps) {
           </DropdownMenu.Group>
         )}
         <DropdownMenu.Group>
-          {/* TODO: keep a width when it's empty */}
+          {options.length === 0 && <DropdownMenu.Item className={`${getFlatStyle(contentWidth)}`}></DropdownMenu.Item>}
           {options.map((option, index) => (
             <DropdownMenu.Item
               onSelect={() => handleSelectOption(option)}
@@ -120,4 +120,8 @@ function getItemStyles(width: string) {
     "cursor-pointer hover:bg-RadioCheckColor",
     `w-[${width}]`,
   );
+}
+
+function getFlatStyle(width: string) {
+  return clsx(`w-[${width}]`);
 }

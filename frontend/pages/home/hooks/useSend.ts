@@ -14,12 +14,13 @@ export default function useSend() {
   );
 
   const updateAsset = useMemo(
-    () => assets.find((asset) => asset.tokenSymbol === sender.asset.tokenSymbol),
+    () => assets.find((asset) => asset?.tokenSymbol === sender?.asset?.tokenSymbol),
     [assets, sender],
   );
 
   const updateSubAccount = useMemo(
-    () => updateAsset?.subAccounts.find((subAccount) => subAccount.sub_account_id === sender.subAccount.sub_account_id),
+    () =>
+      updateAsset?.subAccounts.find((subAccount) => subAccount?.sub_account_id === sender?.subAccount?.sub_account_id),
     [updateAsset, sender],
   );
 
