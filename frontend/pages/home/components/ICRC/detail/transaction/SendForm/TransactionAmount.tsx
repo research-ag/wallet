@@ -20,7 +20,9 @@ export default function TransactionAmount() {
       <p className="font-bold bg-transparent opacity-50 text-md text-start">{t("amount")}</p>
       <div
         className={clsx(
-          getAmountInputStyles(errors?.includes(TransactionValidationErrorsEnum.Values["error.invalid.amount"]) || false),
+          getAmountInputStyles(
+            errors?.includes(TransactionValidationErrorsEnum.Values["error.invalid.amount"]) || false,
+          ),
         )}
       >
         <input
@@ -50,27 +52,17 @@ export default function TransactionAmount() {
     </>
   );
 
-  async function onChangeAmount(e: ChangeEvent<HTMLInputElement>) {
-    try {
-      const amount = e.target.value.trim();
-      const isValid = Number(amount) >= 0 || amount !== "";
+  function onChangeAmount(e: ChangeEvent<HTMLInputElement>) {
+    const amount = e.target.value.trim();
+    setAmountAction(amount);
+    const isValidAmount = validateAmount(amount, Number(sender.asset.decimal));
 
-      if (!isValid) {
-        setErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.amount"]);
-        return;
-      }
-      setAmountAction(amount);
-
-      const isValidAmount = validateAmount(amount, Number(sender.asset.decimal));
-      if (!isValidAmount) {
-        setErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.amount"]);
-        return;
-      }
-
-      removeErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.amount"]);
-    } catch (error) {
-      console.log(error);
+    if (!isValidAmount || Number(amount) === 0) {
+      setErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.amount"]);
+      return;
     }
+
+    removeErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.amount"]);
   }
 
   async function onMaxAmount() {
