@@ -19,12 +19,7 @@ export default function Drawer(props: IDrawerProps) {
         {title && onClose && (
           <div className="flex items-center justify-between mb-8">
             <h1 className="text-xl font-bold text-PrimaryTextColorLight dark:text-PrimaryTextColor">{title}</h1>
-            <CloseIcon
-              onClick={() => {
-                if (enableClose) onClose?.();
-              }}
-              className={getCloseIconStyles(enableClose)}
-            />
+            <CloseIcon onClick={() => onClose?.()} className={getCloseIconStyles(enableClose)} />
           </div>
         )}
         {children}
