@@ -52,6 +52,7 @@ interface ICRCSupportedStandardsParams {
 
 export async function getICRCSupportedStandards(params: ICRCSupportedStandardsParams): Promise<SupportedStandard[]> {
   try {
+    console.log("get supported standard run");
     const { assetAddress, agent } = params;
     const canisterId = Principal.fromText(assetAddress);
     const ledgerActor = Actor.createActor<LedgerActor>(LedgerFactory, {
