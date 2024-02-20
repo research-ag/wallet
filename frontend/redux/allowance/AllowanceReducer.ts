@@ -21,6 +21,7 @@ interface AllowanceState {
   isUpdateAllowance: boolean;
   isCreateAllowance: boolean;
   isDeleteAllowance: boolean;
+  isLoading: boolean;
   selectedAllowance: TAllowance;
   allowances: TAllowance[];
   errors: string[];
@@ -32,6 +33,7 @@ const initialState: AllowanceState = {
   isUpdateAllowance: false,
   isCreateAllowance: false,
   isDeleteAllowance: false,
+  isLoading: false,
   selectedAllowance: initialAllowanceState,
   allowances: [],
   errors: [],
@@ -60,6 +62,9 @@ const allowanceSlice = createSlice({
       const currentErrors = [...(state.errors ?? [])];
       state.errors = currentErrors.includes(action.payload) ? currentErrors : [...currentErrors, action.payload];
     },
+    setIsLoading(state: AllowanceState, action: PayloadAction<boolean>) {
+      state.isLoading = action.payload;
+    },
     removeAllowanceError(state: AllowanceState, action: PayloadAction<string>) {
       state.errors = state.errors?.filter((error) => error !== action.payload);
     },
@@ -74,6 +79,7 @@ export const {
   setIsCreateAllowance,
   setIsDeleteAllowance,
   setSelectedAllowance,
+  setIsLoading,
   setAllowances,
   setAllowanceError,
   removeAllowanceError,

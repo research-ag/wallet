@@ -10,6 +10,7 @@ import { initialAllowanceState } from "@redux/allowance/AllowanceReducer";
 interface UseAllowanceDrawer {
   isCreateAllowance: boolean;
   isUpdateAllowance: boolean;
+  isLoading: boolean;
   onCloseCreateAllowanceDrawer: () => void;
   onOpenCreateAllowanceDrawer: () => void;
   onCloseUpdateAllowanceDrawer: () => void;
@@ -17,7 +18,7 @@ interface UseAllowanceDrawer {
 }
 
 export default function useAllowanceDrawer(): UseAllowanceDrawer {
-  const { isCreateAllowance, isUpdateAllowance } = useAppSelector(({ allowance }) => allowance);
+  const { isCreateAllowance, isUpdateAllowance, isLoading } = useAppSelector(({ allowance }) => allowance);
   function onCloseCreateAllowanceDrawer() {
     setIsCreateAllowanceAction(false);
     setFullAllowanceErrorsAction([]);
@@ -41,6 +42,7 @@ export default function useAllowanceDrawer(): UseAllowanceDrawer {
   return {
     isCreateAllowance,
     isUpdateAllowance,
+    isLoading,
     onCloseCreateAllowanceDrawer,
     onOpenCreateAllowanceDrawer,
     onCloseUpdateAllowanceDrawer,

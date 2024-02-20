@@ -15,12 +15,14 @@ import {
   removeAllowanceErrorAction,
   setAllowanceErrorAction,
   setFullAllowanceErrorsAction,
+  setIsLoadingAllowanceAction,
 } from "@redux/allowance/AllowanceActions";
 import { Asset } from "@redux/models/AccountModels";
 import { getAllowanceAsset } from "../helpers/allowanceMappers";
 import { refreshAllowance } from "../helpers/refreshAllowance";
 
 export default function useCreateAllowance() {
+  // TODO: disable close add drawer if is create is pending
   const dispatch = useAppDispatch();
   const [isLoading, setLoading] = useState(false);
   const { onCloseCreateAllowanceDrawer } = useAllowanceDrawer();
@@ -50,6 +52,7 @@ export default function useCreateAllowance() {
   };
 
   const mutationFn = useCallback(async () => {
+    setIsLoadingAllowanceAction(true);
     setFullAllowanceErrorsAction([]);
 
     const asset = assets.find((asset) => asset.tokenSymbol === allowance.asset.tokenSymbol) as Asset;
@@ -73,6 +76,7 @@ export default function useCreateAllowance() {
   }, [allowance]);
 
   const onSuccess = async () => {
+    setIsLoadingAllowanceAction(false);
     const refreshParams = {
       subAccount: allowance.subAccountId,
       assetAddress: allowance.asset.address,
@@ -84,6 +88,7 @@ export default function useCreateAllowance() {
   };
 
   const onError = (error: string) => {
+    setIsLoadingAllowanceAction(false);
     if (error === AllowanceValidationErrorsEnum.Values["error.invalid.asset"])
       return setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.asset"]);
     removeAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.asset"]);

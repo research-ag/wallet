@@ -11,6 +11,7 @@ import {
   removeAllowanceErrorAction,
   setAllowanceErrorAction,
   setFullAllowanceErrorsAction,
+  setIsLoadingAllowanceAction,
 } from "@redux/allowance/AllowanceActions";
 import { Asset } from "@redux/models/AccountModels";
 import dayjs from "dayjs";
@@ -31,6 +32,7 @@ export function useUpdateAllowance() {
   };
 
   const mutationFn = useCallback(async () => {
+    setIsLoadingAllowanceAction(true);
     setFullAllowanceErrorsAction([]);
     const asset = assets.find((asset) => asset.tokenSymbol === allowance.asset.tokenSymbol) as Asset;
     const existingAllowance = allowances.find(
@@ -54,6 +56,7 @@ export function useUpdateAllowance() {
   }, [allowance]);
 
   const onSuccess = async () => {
+    setIsLoadingAllowanceAction(false);
     const refreshParams = {
       subAccount: allowance.subAccountId,
       assetAddress: allowance.asset.address,
@@ -65,7 +68,7 @@ export function useUpdateAllowance() {
   };
 
   const onError = (error: string) => {
-    console.log(error);
+    setIsLoadingAllowanceAction(false);
     if (error === AllowanceValidationErrorsEnum.Values["error.invalid.amount"])
       return setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.amount"]);
     removeAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.amount"]);
