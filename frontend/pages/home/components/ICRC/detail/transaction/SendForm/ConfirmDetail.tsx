@@ -105,6 +105,12 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
       const assetAddress = sender.asset.address;
       const decimal = sender.asset.decimal;
 
+      if (!amount || Number(amount) <= 0) {
+        setErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.amount"]);
+        return;
+      }
+      removeErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.amount"]);
+
       const isValid = await validateBalance();
       if (!isValid) {
         setIsLoadingAction(false);
