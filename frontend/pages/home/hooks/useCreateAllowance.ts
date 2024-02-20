@@ -22,7 +22,6 @@ import { getAllowanceAsset } from "../helpers/allowanceMappers";
 import { refreshAllowance } from "../helpers/refreshAllowance";
 
 export default function useCreateAllowance() {
-  // TODO: disable close add drawer if is create is pending
   const dispatch = useAppDispatch();
   const [isLoading, setLoading] = useState(false);
   const { onCloseCreateAllowanceDrawer } = useAllowanceDrawer();

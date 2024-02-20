@@ -25,7 +25,7 @@ import { refreshAllowance } from "@pages/home/helpers/refreshAllowance";
 export default function CreateForm() {
   const { t } = useTranslation();
   const { contacts } = useAppSelector((state) => state.contacts);
-  const { assets, selectedAsset } = useAppSelector((state) => state.asset);
+  const { assets, selectedAsset, assetLoading } = useAppSelector((state) => state.asset);
   const { errors, allowances } = useAppSelector((state) => state.allowance);
   const { allowance, setAllowanceState, createAllowance, isPending, isLoading, setLoading } = useCreateAllowance();
   const { userPrincipal } = useAppSelector((state) => state.auth);
@@ -74,7 +74,10 @@ export default function CreateForm() {
           <CustomButton intent="success" className="mr-4" onClick={onCheckAllowance} disabled={isPending || isLoading}>
             {t("test")}
           </CustomButton>
-          <CustomButton onClick={onSaveAllowance} disabled={isPending || isLoading}>
+          <CustomButton
+            onClick={onSaveAllowance}
+            disabled={isPending || isLoading || (allowances.length === 0 && assetLoading)}
+          >
             {t("submit")}
           </CustomButton>
         </div>
