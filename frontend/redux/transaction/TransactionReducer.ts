@@ -87,6 +87,9 @@ const transactionSlice = createSlice({
     removeError(state: TransactionState, action: PayloadAction<TransactionValidationErrorsType>) {
       state.errors = state.errors?.filter((error) => error !== action.payload);
     },
+    setFullErrors(state: TransactionState, action: PayloadAction<TransactionValidationErrorsType[]>) {
+      state.errors = action.payload;
+    },
     setSenderSubAccount(state: TransactionState, action: PayloadAction<SubAccount>) {
       state.sender.subAccount = action.payload;
       state.sender.newAllowanceContact = {} as NewContact;
@@ -162,6 +165,7 @@ export const {
   setAmount,
   setIsLoading,
   setError,
+  setFullErrors,
   setSendingStatus,
   removeError,
   setSenderSubAccount,

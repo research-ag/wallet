@@ -23,6 +23,7 @@ import {
   setIsLoading,
   setInitTime,
   setEndTime,
+  setFullErrors,
 } from "./TransactionReducer";
 
 import { Asset, SubAccount } from "@redux/models/AccountModels";
@@ -56,6 +57,9 @@ export function setErrorAction(error: TransactionValidationErrorsType) {
 }
 export function removeErrorAction(error: TransactionValidationErrorsType) {
   store.dispatch(removeError(error));
+}
+export function setFullErrorsAction(errors: TransactionValidationErrorsType[]) {
+  store.dispatch(setFullErrors(errors));
 }
 export function setSendingStatusAction(status: SendingStatus) {
   store.dispatch(setSendingStatus(status));

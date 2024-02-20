@@ -13,6 +13,7 @@ import {
   setSendingStatusAction,
   setInitTxTime,
   setEndTxTime,
+  setFullErrorsAction,
 } from "@redux/transaction/TransactionActions";
 import { useTranslation } from "react-i18next";
 import { TransactionValidationErrorsEnum } from "@/@types/transactions";
@@ -152,6 +153,7 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
   }
 
   function OnBack() {
+    setFullErrorsAction([]);
     setIsInspectDetailAction(false);
   }
 
