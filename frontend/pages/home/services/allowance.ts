@@ -14,43 +14,7 @@ export function getAllowancesFromStorage(principal?: string): TAllowance[] {
   return JSON.parse(storageAllowances || "[]") as TAllowance[];
 }
 
-export function postAllowanceToStorage(newAllowance: TAllowance, principal?: string): TAllowance[] {
-  const allowances = getAllowancesFromStorage(principal);
-  const newAllowances = [...allowances, newAllowance];
-  localStorage.setItem(getAllowanceKey(principal), JSON.stringify(newAllowances.map(getToCreateAllowance)));
-  return newAllowances;
-}
-
-export const putAllowanceToStorage = (updatedAllowance: TAllowance, principal?: string): TAllowance[] => {
-  const allowances = getAllowancesFromStorage(principal);
-
-  const filteredAllowances = allowances.filter((allowance) =>
-    Boolean(
-      allowance.subAccountId !== updatedAllowance.subAccountId ||
-        allowance.spender !== updatedAllowance.spender ||
-        allowance.asset.tokenSymbol !== updatedAllowance.asset.tokenSymbol,
-    ),
-  );
-
-  const newAllowances = [...filteredAllowances, updatedAllowance];
-  localStorage.setItem(LOCAL_STORAGE_PREFIX, JSON.stringify(newAllowances.map(getToCreateAllowance)));
-  return newAllowances;
-};
-
 export function replaceAllowancesToStorage(allowances: TAllowance[], principal?: string) {
   localStorage.setItem(getAllowanceKey(principal), JSON.stringify(allowances.map(getToCreateAllowance)));
   return allowances;
-}
-
-export function deleteAllowanceFromStorage(allowance: TAllowance, principal?: string): TAllowance[] {
-  const allowances = getAllowancesFromStorage(principal);
-  const filteredAllowances = allowances.filter((currentAllowance) => {
-    return Boolean(
-      allowance.subAccountId !== currentAllowance.subAccountId ||
-        allowance.spender !== currentAllowance.spender ||
-        allowance.asset.tokenSymbol !== currentAllowance.asset.tokenSymbol,
-    );
-  });
-  localStorage.setItem(LOCAL_STORAGE_PREFIX, JSON.stringify(filteredAllowances.map(getToCreateAllowance)));
-  return filteredAllowances;
 }
