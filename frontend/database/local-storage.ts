@@ -7,6 +7,10 @@ import { Principal } from "@dfinity/principal";
 import { defaultTokens } from "@/defaultTokens";
 
 export class LocalStorageDatabase extends IWalletDatabase {
+  private principalId = "";
+  private readonly _tokens$: BehaviorSubject<Token[]> = new BehaviorSubject<Token[]>(this._getTokens());
+  private readonly _contacts$: BehaviorSubject<Contact[]> = new BehaviorSubject<Contact[]>(this._getContacts());
+
   // Singleton pattern
   private static _instance: LocalStorageDatabase | undefined;
   public static get instance(): LocalStorageDatabase {

@@ -46,7 +46,7 @@ export const setupReplication: <T extends { updatedAt: number; deleted: boolean 
           return documentsPushed;
         } catch (err) {
           pushing$.next(false);
-          console.error("RxDb Push:", err);
+          console.error("RxDb Push", err);
           throw err;
         }
       },
@@ -74,7 +74,7 @@ export const setupReplication: <T extends { updatedAt: number; deleted: boolean 
           };
         } catch (err) {
           pulling$.next(false);
-          console.error("RxDb Pull:", err);
+          console.error("RxDb Pull", err);
           throw err;
         }
       },

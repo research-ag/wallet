@@ -9,6 +9,8 @@ export async function allowanceCacheRefresh(principal: string) {
   const allowances = JSON.parse(stored || "[]") as TAllowance[];
   const updatedAllowances: TAllowance[] = [];
 
+  const assets = store.getState().asset.assets;
+
   if (allowances?.length) {
     for (const allowance of allowances) {
       try {
@@ -41,6 +43,7 @@ export async function allowanceCacheRefresh(principal: string) {
       }
     }
   }
+
   localStorage.setItem(allowancePrefix, JSON.stringify(updatedAllowances.map(getToCreateAllowance)));
   setAllowancesAction(updatedAllowances);
 }

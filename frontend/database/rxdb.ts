@@ -13,13 +13,16 @@ import DBSchemas from "./schemas.json";
 import { BehaviorSubject, combineLatest, distinctUntilChanged, from, map, Observable, Subject, switchMap } from "rxjs";
 import { extractValueFromArray, setupReplication } from "./helpers";
 import { defaultTokens } from "@/defaultTokens";
+import {
+  TokenDocument as TokenRxdbDocument,
+  TokenSubAccount,
+  ContactDocument as ContactRxdbDocument,
+} from "./candid/db";
+import { SupportedStandardEnum } from "@/@types/icrc";
 
 addRxPlugin(RxDBUpdatePlugin);
 addRxPlugin(RxDBMigrationPlugin);
 addRxPlugin(RxDBDevModePlugin);
-
-type TokenRxdbDocument = Token & { updatedAt: number; deleted: boolean };
-type ContactRxdbDocument = Contact & { updatedAt: number; deleted: boolean };
 
 export class RxdbDatabase extends IWalletDatabase {
   // Singleton pattern
@@ -116,6 +119,7 @@ export class RxdbDatabase extends IWalletDatabase {
    * as current active agent.
    * @param identity Identity object
    * @param principalId Principal ID
+   * @param fixedPrincipal Watch-only login Principal ID
    */
   async setIdentity(identity: Identity | null): Promise<void> {
     this._invalidateDb();
@@ -176,6 +180,10 @@ export class RxdbDatabase extends IWalletDatabase {
         await this.tokens
       )?.insert({
         ...token,
+        subAccounts: token.subAccounts.map((sa) => ({
+          ...sa,
+          allowanceSpenders: [],
+        })),
         logo: extractValueFromArray(token.logo),
         index: extractValueFromArray(token.index),
         deleted: false,
@@ -197,6 +205,10 @@ export class RxdbDatabase extends IWalletDatabase {
       const document = await (await this.tokens)?.findOne(address).exec();
       await document?.patch({
         ...newDoc,
+        subAccounts: newDoc.subAccounts.map((sa) => ({
+          ...sa,
+          allowanceSpenders: [],
+        })),
         logo: extractValueFromArray(newDoc.logo),
         index: extractValueFromArray(newDoc.index),
         deleted: false,
@@ -265,6 +277,9 @@ export class RxdbDatabase extends IWalletDatabase {
         assets: contact.assets.map((a) => ({
           ...a,
           logo: extractValueFromArray(a.logo),
+          subaccounts: a.subaccounts.map((sa) => ({
+            ...sa,
+          })),
         })),
         deleted: false,
         updatedAt: Date.now(),
@@ -365,7 +380,10 @@ export class RxdbDatabase extends IWalletDatabase {
       name: doc.name,
       principal: doc.principal,
       accountIdentier: doc.accountIdentier,
-      assets: doc.assets,
+      assets: doc.assets.map((a) => ({
+        ...a,
+        supportedStandards: a.supportedStandards as typeof SupportedStandardEnum.options,
+      })),
     };
   }
 
@@ -383,7 +401,7 @@ export class RxdbDatabase extends IWalletDatabase {
       tokenName: doc.tokenName,
       tokenSymbol: doc.tokenSymbol,
       shortDecimal: doc.shortDecimal,
-      supportedStandards: doc.supportedStandards,
+      supportedStandards: doc.supportedStandards as typeof SupportedStandardEnum.options,
     };
   }
 
@@ -409,13 +427,20 @@ export class RxdbDatabase extends IWalletDatabase {
   }
 
   private async _tokensPushHandler(items: any[]): Promise<TokenRxdbDocument[]> {
-    const arg = items.map((x) => ({
-      ...x,
-      id_number: x.id_number,
-      updatedAt: Math.floor(Date.now() / 1000),
-      logo: extractValueFromArray(x.logo),
-      index: extractValueFromArray(x.index),
-    }));
+    const arg = items.map(
+      (x) =>
+        ({
+          ...x,
+          id_number: x.id_number,
+          updatedAt: Math.floor(Date.now() / 1000),
+          logo: extractValueFromArray(x.logo),
+          index: extractValueFromArray(x.index),
+          subAccounts: x.subAccounts.map((sa: any) => ({
+            ...sa,
+            allowanceSpenders: sa.allowanceSpenders || [],
+          })),
+        } as TokenRxdbDocument),
+    );
 
     await this.replicaCanister?.pushTokens(arg);
 
@@ -436,6 +461,10 @@ export class RxdbDatabase extends IWalletDatabase {
     return raw.map((x) => ({
       ...x,
       id_number: Number(x.id_number),
+      subAccounts: x.subAccounts.map((sa: TokenSubAccount) => ({
+        ...sa,
+        allowanceSpenders: sa.allowanceSpenders || [],
+      })),
     }));
   }
 
@@ -493,12 +522,18 @@ export class RxdbDatabase extends IWalletDatabase {
         )?.bulkInsert(
           defaultTokens.map((dT) => ({
             ...dT,
+            subAccounts: dT.subAccounts.map((sa) => ({
+              ...sa,
+              allowanceSpenders: sa.allowanceSpenders || [],
+            })),
+            index: dT.index || "",
+            logo: dT.logo || "",
             deleted: false,
             updatedAt: Date.now(),
           })),
         );
       } catch (e) {
-        console.error("RxDb AddToken:", e);
+        console.error("RxDb doesDBExist:", e);
       }
     }
   }

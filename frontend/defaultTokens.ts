@@ -9,6 +9,7 @@ interface SnsMetadata {
 }
 
 const supportedStandards = [SupportedStandardEnum.Values["ICRC-1"], SupportedStandardEnum.Values["ICRC-2"]];
+const defaultSubAccount = { numb: "0", name: "Default", amount: "0", currency_amount: "0", allowanceSpenders: [] };
 
 //
 export const ICRC1systemAssets: Array<Token> = [
@@ -22,7 +23,7 @@ export const ICRC1systemAssets: Array<Token> = [
     decimal: "8",
     shortDecimal: "8",
     fee: "10000",
-    subAccounts: [{ numb: "0", name: "Default", amount: "0", currency_amount: "0" }],
+    subAccounts: [defaultSubAccount],
     supportedStandards,
   },
   {
@@ -35,7 +36,7 @@ export const ICRC1systemAssets: Array<Token> = [
     decimal: "8",
     shortDecimal: "8",
     fee: "10",
-    subAccounts: [{ numb: "0", name: "Default", amount: "0", currency_amount: "0" }],
+    subAccounts: [defaultSubAccount],
     index: "n5wcd-faaaa-aaaar-qaaea-cai",
     supportedStandards,
   },
@@ -49,7 +50,7 @@ export const ICRC1systemAssets: Array<Token> = [
     decimal: "18",
     shortDecimal: "18",
     fee: "2000000000000",
-    subAccounts: [{ numb: "0", name: "Default", amount: "0", currency_amount: "0" }],
+    subAccounts: [defaultSubAccount],
     index: "s3zol-vqaaa-aaaar-qacpa-cai",
     supportedStandards,
   },
@@ -63,7 +64,7 @@ export const ICRC1systemAssets: Array<Token> = [
     decimal: "8",
     shortDecimal: "8",
     fee: "10000",
-    subAccounts: [{ numb: "0", name: "Default", amount: "0", currency_amount: "0" }],
+    subAccounts: [defaultSubAccount],
     index: "oo6x4-xiaaa-aaaap-abrza-cai",
     supportedStandards,
   },
@@ -77,7 +78,7 @@ export const ICRC1systemAssets: Array<Token> = [
     decimal: "8",
     shortDecimal: "8",
     fee: "200000",
-    subAccounts: [{ numb: "0", name: "Default", amount: "0", currency_amount: "0" }],
+    subAccounts: [defaultSubAccount],
     index: "",
     supportedStandards,
   },
@@ -95,14 +96,7 @@ export const defaultTokens: Token[] = [
     decimal: "8",
     shortDecimal: "8",
     fee: "10000",
-    subAccounts: [
-      {
-        name: "Default",
-        numb: "0x0",
-        amount: "0",
-        currency_amount: "0",
-      },
-    ],
+    subAccounts: [defaultSubAccount],
     supportedStandards,
   },
   {
@@ -116,14 +110,7 @@ export const defaultTokens: Token[] = [
     shortDecimal: "8",
     fee: "10",
     index: "n5wcd-faaaa-aaaar-qaaea-cai",
-    subAccounts: [
-      {
-        name: "Default",
-        numb: "0x0",
-        amount: "0",
-        currency_amount: "0",
-      },
-    ],
+    subAccounts: [defaultSubAccount],
     supportedStandards,
   },
   {
@@ -137,14 +124,7 @@ export const defaultTokens: Token[] = [
     shortDecimal: "18",
     fee: "2000000000000",
     index: "s3zol-vqaaa-aaaar-qacpa-cai",
-    subAccounts: [
-      {
-        name: "Default",
-        numb: "0x0",
-        amount: "0",
-        currency_amount: "0",
-      },
-    ],
+    subAccounts: [defaultSubAccount],
     supportedStandards,
   },
 ];
