@@ -9,7 +9,7 @@ import {
   setSelectedAllowanceAction,
 } from "@redux/allowance/AllowanceActions";
 import { AllowanceValidationErrorsEnum } from "@/@types/allowance";
-import { Asset } from "@redux/models/AccountModels";
+import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { refreshAllowance } from "../helpers/refreshAllowance";
 import { initialAllowanceState } from "@redux/allowance/AllowanceReducer";
 
@@ -28,8 +28,7 @@ export default function useDeleteAllowance() {
       setIsPending(true);
       const subAccount = asset.subAccounts.find(
         (subAccount) => subAccount.sub_account_id === selectedAllowance.subAccountId,
-      );
-      if (!subAccount) throw "no sub account to delete";
+      ) as SubAccount;
 
       const bigintFee = BigInt(subAccount.transaction_fee);
       const bigintAmount = BigInt(subAccount.amount);

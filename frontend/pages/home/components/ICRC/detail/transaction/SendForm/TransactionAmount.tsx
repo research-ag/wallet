@@ -56,6 +56,7 @@ export default function TransactionAmount() {
     const amount = e.target.value.trim();
     setAmountAction(amount);
     const isValidAmount = validateAmount(amount, Number(sender.asset.decimal));
+    console.log(isValidAmount);
 
     if (!isValidAmount || Number(amount) === 0) {
       setErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.amount"]);
