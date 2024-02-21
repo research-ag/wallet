@@ -5,17 +5,10 @@ import nfidUrl from "@/assets/img/nfid-logo.png";
 import metamaskUrl from "@/assets/img/metamask-logo.png";
 //
 import { useState } from "react";
-import { AuthNetworkNameEnum, AuthNetworkType, AuthNetworkTypeEnum } from "@/const";
+import { AuthNetworkNameEnum, AuthNetworkTypeEnum } from "@/const";
 import { AuthNetwork } from "@redux/models/TokenModels";
 
 export const LoginHook = () => {
-  const [seedOpen, setSeedOpen] = useState(false);
-  const [seed, setSeed] = useState("");
-  const [watchOnlyOpen, setWatchOnlyOpen] = useState(false);
-  const [principalAddress, setPrincipalAddress] = useState("");
-  const [mnemonicOpen, setMnemonicOpen] = useState(false);
-  const [phrase, setPhrase] = useState("");
-
   const loginOpts: AuthNetwork[] = [
     {
       name: AuthNetworkNameEnum.Values["Internet Identity"],
@@ -49,60 +42,27 @@ export const LoginHook = () => {
       type: AuthNetworkTypeEnum.Values.WO,
       network: "",
     },
-    {
-      name: AuthNetworkNameEnum.Values.Mnemonic,
-      icon: <img className={""} src={XxxxIcon} alt="" />,
-      type: AuthNetworkTypeEnum.Values.MNEMONIC,
-      network: "",
-    },
   ];
-
-  function clearLoginInputs() {
-    setSeed("");
-    setPrincipalAddress("");
-    setPhrase("");
-  }
-
-  function closeLoginInputs() {
-    setSeedOpen(false);
-    setWatchOnlyOpen(false);
-    setMnemonicOpen(false);
-  }
-
-  function resetMethods() {
-    clearLoginInputs();
-    closeLoginInputs();
-  }
-
-  function handleMethodChange(method: AuthNetworkType) {
-    resetMethods();
-
-    if (method === AuthNetworkTypeEnum.Enum.S) {
-      setSeedOpen((prev) => !prev);
-    }
-
-    if (method === AuthNetworkTypeEnum.Enum.WO) {
-      setWatchOnlyOpen((prev) => !prev);
-    }
-
-    if (method === AuthNetworkTypeEnum.Enum.MNEMONIC) {
-      setMnemonicOpen((prev) => !prev);
-    }
-  }
+  const [open, setOpen] = useState(false);
+  const [seedOpen, setSeedOpen] = useState(false);
+  const [seed, setSeed] = useState("");
+  const [watchOnlyOpen, setWatchOnlyOpen] = useState(false);
+  const [principalAddress, setPrincipalAddress] = useState("");
+  const handleOpenChange = (value: boolean) => {
+    setOpen(value);
+  };
 
   return {
+    handleOpenChange,
     loginOpts,
+    open,
     seedOpen,
+    setSeedOpen,
     seed,
     setSeed,
     watchOnlyOpen,
-    mnemonicOpen,
+    setWatchOnlyOpen,
     principalAddress,
     setPrincipalAddress,
-    phrase,
-    setPhrase,
-
-    handleMethodChange,
-    resetMethods,
   };
 };

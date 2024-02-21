@@ -97,6 +97,7 @@
   "login.bottom.msg": "Ao se inscrever, você concorda com o Nosso",
   "login.bottom.msg.terms": "Termos de Serviço",
   "login.bottom.msg.policy": "Política de Privacidade",
+  "login.mnemonic.expected": "Frase esperada entre 12 e 24 palavras",
   "transfer.between.accounts": "Transferir para conta própria",
   "max.amount.to.send": "Máximo para enviar",
   "asset.add.warning.1": "A detecção de token está disponível apenas na rede ICRC1. Importe o token manualmente e certifique-se de que você confia nele. Aprenda sobre",

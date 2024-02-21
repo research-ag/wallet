@@ -5,6 +5,7 @@ import fs from "fs";
 import react from "@vitejs/plugin-react";
 import viteTsconfigPaths from "vite-tsconfig-paths";
 import svgrPlugin from "vite-plugin-svgr";
+import nodePolyfills from "vite-plugin-node-stdlib-browser";
 
 const isDev = process.env["DFX_NETWORK"] !== "ic";
 
@@ -68,6 +69,7 @@ export default defineConfig({
     }),
     svgrPlugin(),
     viteTsconfigPaths(),
+    nodePolyfills(),
   ],
   resolve: {
     alias: {
