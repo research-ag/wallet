@@ -6,7 +6,7 @@ import { clearReceiverAction, setIsInspectDetailAction } from "@redux/transactio
 import { useTranslation } from "react-i18next";
 
 export default function ReceiverDetail() {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const { receiver } = useAppSelector((state) => state.transaction);
 
   const title = `${
@@ -35,7 +35,7 @@ export default function ReceiverDetail() {
           </div>
         </div>
         <div className="text-start">
-          <p className="text-md">{title}</p>
+          <p className="text-md">{title.length > 20 ? middleTruncation(title, 10, 10) : title}</p>
           <p className="opacity-50 text-md">{middleTruncation(subTitle, 20, 20)}</p>
         </div>
       </div>

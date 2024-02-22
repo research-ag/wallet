@@ -11,6 +11,7 @@ import useSend from "@pages/home/hooks/useSend";
 import { resetSendStateAction } from "@redux/transaction/TransactionActions";
 import { TransactionValidationErrorsEnum } from "@/@types/transactions";
 import { getElapsedSecond } from "@/utils/formatTime";
+import { middleTruncation } from "@/utils/strings";
 
 interface DialogSendConfirmationProps {
   setDrawerOpen(value: boolean): void;
@@ -62,7 +63,7 @@ const DialogSendConfirmation = ({ setDrawerOpen, showConfirmationModal, modal }:
               <CustomCopy size={"small"} copyText={receiverPrincipal} />
             </div>
             <div className="flex flex-row items-center justify-start gap-2">
-              <p>{receiverSubAccount}</p>
+              <p>{receiverSubAccount.length > 20 && middleTruncation(receiverSubAccount, 10, 10)}</p>
               <CustomCopy size={"small"} copyText={receiverSubAccount} />
             </div>
             <p>

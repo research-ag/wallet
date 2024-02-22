@@ -6,6 +6,7 @@ import { SelectOption } from "@/@types/components";
 import { setReceiverContactAction } from "@redux/transaction/TransactionActions";
 import { useAppSelector } from "@redux/Store";
 import useSend from "@pages/home/hooks/useSend";
+import { middleTruncation } from "@/utils/strings";
 
 export default function ContactBookReceiver() {
   const [searchSubAccountValue, setSearchSubAccountValue] = useState<string | null>(null);
@@ -87,7 +88,8 @@ export default function ContactBookReceiver() {
     return {
       value: contact.subAccountId,
       label: `${contact.contactName} [${contact.subAccountName}]`,
-      subLabel: contact.subAccountId,
+      subLabel:
+        contact.subAccountId.length > 20 ? middleTruncation(contact.subAccountId, 10, 10) : contact.subAccountId,
       icon: <AvatarEmpty title={contact.contactName} size="medium" className="mr-4" />,
     };
   }

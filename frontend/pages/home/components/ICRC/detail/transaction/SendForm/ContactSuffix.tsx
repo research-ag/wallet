@@ -7,6 +7,7 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { useMemo } from "react";
 import { AvatarEmpty } from "@components/avatar";
 import useSend from "@pages/home/hooks/useSend";
+import { middleTruncation } from "@/utils/strings";
 
 export default function ContactSuffix() {
   const { senderPrincipal, senderSubAccount, isSenderAllowance } = useSend();
@@ -85,7 +86,9 @@ export default function ContactSuffix() {
                           {contactName} {`[${subAccountName}]`}
                         </p>
                         <p className="text-left opacity-50 text-md text-black-color dark:text-white">
-                          {contact.subAccountId}
+                          {contact.subAccountId.length > 20
+                            ? middleTruncation(contact.subAccountId, 10, 10)
+                            : contact.subAccountId}
                         </p>
                       </div>
                     </div>
