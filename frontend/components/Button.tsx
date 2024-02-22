@@ -4,9 +4,9 @@ import { cva, type VariantProps } from "cva";
 const button = cva("button", {
   variants: {
     intent: {
-      accept: ["bg-AccpetButtonColor", "text-white"],
+      accept: ["bg-slate-color-info", "text-white"],
       deny: ["bg-DenyButtonColor", "text-white"],
-      success: ["bg-slate-color-info", "text-white"],
+      success: ["bg-slate-color-success", "text-white"],
       noBG: ["bg-transparent", "text-AccpetButtonColor"],
     },
     size: {

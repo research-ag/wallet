@@ -3,51 +3,62 @@ import { validateAmount } from "@/utils";
 import { isHexadecimalValid } from "@/utils/checkers";
 import { validatePrincipal } from "@/utils/identity";
 import store from "@redux/Store";
+import { Asset, SubAccount } from "@redux/models/AccountModels";
 import dayjs from "dayjs";
 
-export const LOCAL_STORAGE_PREFIX = `allowances-${store.getState().auth.userPrincipal.toText()}`;
+export function getDuplicatedAllowance(allowance: TAllowance): TAllowance | undefined {
+  const allowances = store.getState().allowance.allowances;
+  return allowances.find(
+    (currentAllowance) =>
+      currentAllowance.subAccountId === allowance.subAccountId &&
+      currentAllowance.spender === allowance?.spender &&
+      currentAllowance.asset.tokenSymbol === allowance.asset.tokenSymbol,
+  );
+}
 
-export function validateCreateAllowance(allowance: TAllowance) {
+export function validateCreateAllowance(allowance: TAllowance, asset: Asset) {
   if (!allowance.asset.address || !allowance.asset.decimal || !allowance.asset.supportedStandards.includes("ICRC-2"))
     throw AllowanceValidationErrorsEnum.Values["error.invalid.asset"];
 
-  if (!isHexadecimalValid(allowance.subAccount.sub_account_id))
+  if (!isHexadecimalValid(allowance.subAccountId))
     throw AllowanceValidationErrorsEnum.Values["error.invalid.subaccount"];
 
-  if (!allowance?.spender?.principal || !validatePrincipal(allowance.spender.principal))
-    throw AllowanceValidationErrorsEnum.Values["error.invalid.sender.principal"];
+  if (!allowance?.spender || !validatePrincipal(allowance.spender))
+    throw AllowanceValidationErrorsEnum.Values["error.invalid.spender.principal"];
 
-  if (allowance?.spender?.principal === store.getState().auth.userPrincipal.toText())
+  if (allowance?.spender === store.getState().auth.userPrincipal.toText())
     throw AllowanceValidationErrorsEnum.Values["error.self.allowance"];
 
-  const storageAllowances = localStorage.getItem(LOCAL_STORAGE_PREFIX);
-  const allowances = JSON.parse(storageAllowances || "[]") as TAllowance[];
-  const allowanceExists = allowances.find(
-    (currentAllowance) =>
-      currentAllowance.subAccount.sub_account_id === allowance.subAccount.sub_account_id &&
-      currentAllowance.spender.principal === allowance?.spender?.principal &&
-      currentAllowance.asset.tokenSymbol === allowance.asset.tokenSymbol,
-  );
-  if (allowanceExists) throw AllowanceValidationErrorsEnum.Values["error.allowance.duplicated"];
-
-  if (!allowance.amount || !validateAmount(allowance.amount, Number(allowance.asset.decimal)))
+  if (
+    !allowance.amount ||
+    Number(allowance.amount) === 0 ||
+    !validateAmount(allowance.amount, Number(allowance.asset.decimal))
+  )
     throw AllowanceValidationErrorsEnum.Values["error.invalid.amount"];
 
-  const bigintFee = BigInt(allowance.subAccount.transaction_fee);
-  const bigintAmount = BigInt(allowance.subAccount.amount);
-  if (bigintAmount <= bigintFee) throw AllowanceValidationErrorsEnum.Values["error.not.enough.balance"];
+  const subAccount = asset.subAccounts.find(
+    (subAccount) => subAccount.sub_account_id === allowance.subAccountId,
+  ) as SubAccount;
+
+  const bigintFee = BigInt(subAccount.transaction_fee);
+  const bigintAmount = BigInt(subAccount.amount);
+  if (bigintFee > bigintAmount) throw AllowanceValidationErrorsEnum.Values["error.not.enough.balance"];
 
   if (allowance?.expiration && dayjs(allowance?.expiration).isBefore(dayjs()))
     throw AllowanceValidationErrorsEnum.Values["error.before.present.expiration"];
 }
 
-export function validateUpdateAllowance(allowance: TAllowance) {
+export function validateUpdateAllowance(allowance: TAllowance, asset: Asset) {
   if (!allowance.amount || !validateAmount(allowance.amount, Number(allowance.asset.decimal)))
     throw AllowanceValidationErrorsEnum.Values["error.invalid.amount"];
 
-  const bigintFee = BigInt(allowance.subAccount.transaction_fee);
-  const bigintAmount = BigInt(allowance.subAccount.amount);
-  if (bigintAmount <= bigintFee) throw AllowanceValidationErrorsEnum.Values["error.not.enough.balance"];
+  const subAccount = asset.subAccounts.find(
+    (subAccount) => subAccount.sub_account_id === allowance.subAccountId,
+  ) as SubAccount;
+
+  const bigintFee = BigInt(subAccount?.transaction_fee);
+  const bigintAmount = BigInt(subAccount?.amount);
+  if (bigintFee > bigintAmount) throw AllowanceValidationErrorsEnum.Values["error.not.enough.balance"];
 
   if (allowance?.expiration && dayjs(allowance?.expiration).isBefore(dayjs()))
     throw AllowanceValidationErrorsEnum.Values["error.before.present.expiration"];

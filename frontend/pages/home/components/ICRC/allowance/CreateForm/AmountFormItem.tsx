@@ -1,8 +1,10 @@
 import { TAllowance, AllowanceValidationErrorsEnum } from "@/@types/allowance";
 import { IconTypeEnum } from "@/const";
+import { validateAmount } from "@/utils";
 import { getAssetIcon } from "@/utils/icons";
 import CurrencyInput from "@components/input/CurrencyInput";
 import { useAppSelector } from "@redux/Store";
+import { removeAllowanceErrorAction, setAllowanceErrorAction } from "@redux/allowance/AllowanceActions";
 import { Asset } from "@redux/models/AccountModels";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
@@ -29,11 +31,6 @@ export default function AmountFormItem(props: IAmountFormItemProps) {
     };
   }, [allowance]);
 
-  const onAmountChange = (value: string) => {
-    const amount = value;
-    setAllowanceState({ amount });
-  };
-
   return (
     <div className="mt-4">
       <label htmlFor="Amount" className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
@@ -45,6 +42,7 @@ export default function AmountFormItem(props: IAmountFormItemProps) {
         icon={icon}
         className="mt-2"
         isLoading={isLoading}
+        value={allowance.amount}
         border={getError() ? "error" : undefined}
       />
     </div>
@@ -52,5 +50,16 @@ export default function AmountFormItem(props: IAmountFormItemProps) {
 
   function getError(): boolean {
     return errors?.includes(AllowanceValidationErrorsEnum.Values["error.invalid.amount"]) || false;
+  }
+
+  function onAmountChange(value: string) {
+    const amount = value.trim();
+    setAllowanceState({ amount });
+    const isValid = validateAmount(amount, Number(allowance.asset.decimal));
+    if (!isValid) {
+      setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.amount"]);
+      return;
+    }
+    removeAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.amount"]);
   }
 }

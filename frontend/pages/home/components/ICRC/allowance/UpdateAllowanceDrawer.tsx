@@ -5,13 +5,14 @@ import UpdateForm from "./UpdateForm";
 
 export default function UpdateAllowanceDrawer() {
   const { t } = useTranslation();
-  const { isUpdateAllowance, onCloseUpdateAllowanceDrawer } = useAllowanceDrawer();
+  const { isUpdateAllowance, onCloseUpdateAllowanceDrawer, isLoading } = useAllowanceDrawer();
 
   return (
     <Drawer
       isDrawerOpen={isUpdateAllowance}
       onClose={onCloseUpdateAllowanceDrawer}
       title={t("allowance.edit.allowance")}
+      enableClose={!isLoading}
     >
       {isUpdateAllowance ? <UpdateForm /> : <></>}
     </Drawer>

@@ -8,8 +8,8 @@ export function filterByAsset(tokenSymbol: string, grossData: TAllowance[]): TAl
 
 export function sortBySubAccount(order: SortOrder, filteredData: TAllowance[]): TAllowance[] {
   const orderedAllowances = filteredData.sort((a, b) => {
-    const aSubAccountId = a.subAccount?.sub_account_id || "";
-    const bSubAccountId = b.subAccount?.sub_account_id || "";
+    const aSubAccountId = a.subAccountId || "";
+    const bSubAccountId = b.subAccountId || "";
     const comparisonResult = aSubAccountId.localeCompare(bSubAccountId);
     return order === SortOrderEnum.Values.ASC ? comparisonResult : -comparisonResult;
   });
@@ -17,13 +17,13 @@ export function sortBySubAccount(order: SortOrder, filteredData: TAllowance[]): 
 }
 
 export function filterBySpender(order: SortOrder, filteredData: TAllowance[]): TAllowance[] {
-  const noSpenderNamed = filteredData.filter((allowance) => !allowance.spender?.name);
-  const spenderNamed = filteredData.filter((allowance) => allowance.spender?.name);
+  const noSpenderNamed = filteredData.filter((allowance) => !allowance.spender);
+  const spenderNamed = filteredData.filter((allowance) => allowance.spender);
 
   const mergedAllowances = [...noSpenderNamed, ...spenderNamed];
   const orderedAllowances = mergedAllowances.sort((a, b) => {
-    const aSpenderPrincipal = a.spender?.principal || "";
-    const bSpenderPrincipal = b.spender?.principal || "";
+    const aSpenderPrincipal = a.spender || "";
+    const bSpenderPrincipal = b.spender || "";
     const comparisonResult = aSpenderPrincipal.localeCompare(bSpenderPrincipal);
     return order === SortOrderEnum.Values.ASC ? comparisonResult : -comparisonResult;
   });

@@ -1,4 +1,4 @@
-import { useUpdateAllowance } from "@pages/home/hooks/useAllowanceUpdate";
+import { useUpdateAllowance } from "@pages/home/hooks/useUpdateAllowance";
 import { useTranslation } from "react-i18next";
 import FixedFieldsFormItem from "./FixedFieldsFormItem";
 import ExpirationFormItem from "./ExpirationFormItem";

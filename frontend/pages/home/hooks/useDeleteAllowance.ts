@@ -1,55 +1,63 @@
 import { submitAllowanceApproval, createApproveAllowanceParams, getSubAccountBalance } from "@/pages/home/helpers/icrc";
-import { useMutation } from "@tanstack/react-query";
-import { throttle } from "lodash";
-import { useCallback } from "react";
-import dayjs from "dayjs";
-import { useAppDispatch } from "@redux/Store";
-import { initialAllowanceState, setAllowances, setSelectedAllowance } from "@redux/allowance/AllowanceReducer";
-import { removeAllowance } from "../services/allowance";
+import { useMemo, useState } from "react";
+import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { updateSubAccountBalance } from "@redux/assets/AssetReducer";
-import { TAllowance } from "@/@types/allowance";
+import {
+  setAllowanceErrorAction,
+  setFullAllowanceErrorsAction,
+  setIsDeleteAllowanceAction,
+  setSelectedAllowanceAction,
+} from "@redux/allowance/AllowanceActions";
+import { AllowanceValidationErrorsEnum } from "@/@types/allowance";
+import { Asset, SubAccount } from "@redux/models/AccountModels";
+import { refreshAllowance } from "../helpers/refreshAllowance";
+import { initialAllowanceState } from "@redux/allowance/AllowanceReducer";
 
 export default function useDeleteAllowance() {
   const dispatch = useAppDispatch();
+  const { selectedAllowance } = useAppSelector((state) => state.allowance);
+  const { assets } = useAppSelector((state) => state.asset);
+  const [isPending, setIsPending] = useState(false);
 
-  const onError = (error: any) => {
-    console.log("Error", error);
-  };
+  const asset = useMemo(() => {
+    return assets.find((asset) => asset.tokenSymbol === selectedAllowance?.asset.tokenSymbol);
+  }, [selectedAllowance, assets]) as Asset;
 
-  const mutationFn = useCallback(async (allowance: TAllowance) => {
+  async function deleteAllowance() {
     try {
-      if (!allowance?.id) {
-        throw new Error("Invalid allowance");
-      }
+      setIsPending(true);
+      const subAccount = asset.subAccounts.find(
+        (subAccount) => subAccount.sub_account_id === selectedAllowance.subAccountId,
+      ) as SubAccount;
 
-      if (allowance.expiration || allowance.noExpire) {
-        const currentDate = dayjs();
-        const expirationDate = dayjs(allowance.expiration);
+      const bigintFee = BigInt(subAccount.transaction_fee);
+      const bigintAmount = BigInt(subAccount.amount);
+      if (bigintFee > bigintAmount) throw AllowanceValidationErrorsEnum.Values["error.not.enough.balance"];
 
-        if (currentDate.isBefore(expirationDate) || allowance.noExpire) {
-          const params = createApproveAllowanceParams({ ...allowance, amount: "0", expiration: undefined });
-          await submitAllowanceApproval(params, allowance.asset.address);
-        }
-      }
+      const params = createApproveAllowanceParams({ ...selectedAllowance, amount: "0", expiration: undefined });
+      await submitAllowanceApproval(params, selectedAllowance.asset.address);
+      await refreshAllowance(selectedAllowance, true);
 
-      const latestAllowances = await removeAllowance(allowance.id);
-      dispatch(setAllowances(latestAllowances));
-      return { success: true };
-    } catch (error) {
-      console.error(error);
-      return { success: false, error };
-    } finally {
       const refreshParams = {
-        subAccount: allowance.subAccount.sub_account_id,
-        assetAddress: allowance.asset.address,
+        subAccount: selectedAllowance.subAccountId,
+        assetAddress: selectedAllowance.asset.address,
       };
       const amount = await getSubAccountBalance(refreshParams);
       const balance = amount ? amount.toString() : "0";
-      dispatch(updateSubAccountBalance(allowance.asset.tokenSymbol, allowance.subAccount.sub_account_id, balance));
-      dispatch(setSelectedAllowance(initialAllowanceState));
-    }
-  }, []);
+      dispatch(updateSubAccountBalance(selectedAllowance.asset.tokenSymbol, selectedAllowance.subAccountId, balance));
+      setSelectedAllowanceAction(initialAllowanceState);
 
-  const { mutate, isPending, isError, error, isSuccess } = useMutation({ mutationFn, onError });
-  return { deleteAllowance: throttle(mutate, 1000), isPending, isError, error, isSuccess };
+      setSelectedAllowanceAction(initialAllowanceState);
+      setFullAllowanceErrorsAction([]);
+      setIsDeleteAllowanceAction(false);
+    } catch (error) {
+      console.log(error);
+      if (error === AllowanceValidationErrorsEnum.Values["error.not.enough.balance"])
+        return setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.not.enough.balance"]);
+    } finally {
+      setIsPending(false);
+    }
+  }
+
+  return { deleteAllowance, isPending };
 }

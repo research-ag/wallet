@@ -5,39 +5,23 @@ export const initialAllowanceState: TAllowance = {
   asset: {
     logo: "",
     name: "",
-    symbol: "",
-    subAccounts: [],
     address: "",
     decimal: "",
-    sort_index: 0,
-    index: "",
     tokenName: "",
     tokenSymbol: "",
-    shortDecimal: "",
     supportedStandards: [],
   },
-  subAccount: {
-    name: "",
-    sub_account_id: "",
-    address: "",
-    amount: "",
-    currency_amount: "",
-    transaction_fee: "",
-    decimal: 0,
-    symbol: "",
-  },
-  spender: {
-    name: "",
-    principal: "",
-  },
+  subAccountId: "",
+  spender: "",
   amount: "",
   expiration: "",
-  noExpire: true,
 };
 
 interface AllowanceState {
   isUpdateAllowance: boolean;
   isCreateAllowance: boolean;
+  isDeleteAllowance: boolean;
+  isLoading: boolean;
   selectedAllowance: TAllowance;
   allowances: TAllowance[];
   errors: string[];
@@ -48,6 +32,8 @@ const reducerName = "allowance";
 const initialState: AllowanceState = {
   isUpdateAllowance: false,
   isCreateAllowance: false,
+  isDeleteAllowance: false,
+  isLoading: false,
   selectedAllowance: initialAllowanceState,
   allowances: [],
   errors: [],
@@ -63,6 +49,9 @@ const allowanceSlice = createSlice({
     setIsCreateAllowance(state: AllowanceState, action: PayloadAction<boolean>) {
       state.isCreateAllowance = action.payload;
     },
+    setIsDeleteAllowance(state: AllowanceState, action: PayloadAction<boolean>) {
+      state.isDeleteAllowance = action.payload;
+    },
     setSelectedAllowance(state: AllowanceState, action: PayloadAction<TAllowance>) {
       state.selectedAllowance = action.payload;
     },
@@ -72,6 +61,9 @@ const allowanceSlice = createSlice({
     setAllowanceError(state: AllowanceState, action: PayloadAction<string>) {
       const currentErrors = [...(state.errors ?? [])];
       state.errors = currentErrors.includes(action.payload) ? currentErrors : [...currentErrors, action.payload];
+    },
+    setIsLoading(state: AllowanceState, action: PayloadAction<boolean>) {
+      state.isLoading = action.payload;
     },
     removeAllowanceError(state: AllowanceState, action: PayloadAction<string>) {
       state.errors = state.errors?.filter((error) => error !== action.payload);
@@ -85,7 +77,9 @@ const allowanceSlice = createSlice({
 export const {
   setIsUpdateAllowance,
   setIsCreateAllowance,
+  setIsDeleteAllowance,
   setSelectedAllowance,
+  setIsLoading,
   setAllowances,
   setAllowanceError,
   removeAllowanceError,

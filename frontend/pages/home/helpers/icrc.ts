@@ -19,7 +19,6 @@ import { AssetContact } from "@redux/models/ContactsModels";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 dayjs.extend(utc);
-
 //
 import { _SERVICE as LedgerActor } from "@candid/icrcLedger/icrcLedgerService";
 import { idlFactory as LedgerFactory } from "@candid/icrcLedger/icrcLedgerCandid.did";
@@ -69,9 +68,9 @@ export async function getICRCSupportedStandards(params: ICRCSupportedStandardsPa
 
 function calculateExpirationAsBigInt(
   expirationString: string | undefined,
-  isNoExpiration: boolean,
+  hasExpiration?: boolean,
 ): bigint | undefined {
-  if (isNoExpiration) {
+  if (hasExpiration) {
     return undefined;
   }
 
@@ -89,49 +88,39 @@ function calculateExpirationAsBigInt(
 }
 
 export async function transferTokens(params: TransferTokensParams) {
-  try {
-    const { receiverPrincipal, transferAmount, assetAddress, decimal, fromSubAccount, toSubAccount } = params;
-    const canister = getCanister(assetAddress);
-    const amount = toHoleBigInt(transferAmount, Number(decimal));
+  const { receiverPrincipal, transferAmount, assetAddress, decimal, fromSubAccount, toSubAccount } = params;
+  const canister = getCanister(assetAddress);
+  const amount = toHoleBigInt(transferAmount, Number(decimal));
 
-    await canister.transfer({
-      to: {
-        owner: Principal.fromText(receiverPrincipal),
-        subaccount: [hexToUint8Array(toSubAccount)],
-      },
-      amount,
-      from_subaccount: hexToUint8Array(fromSubAccount),
-    });
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
+  await canister.transfer({
+    to: {
+      owner: Principal.fromText(receiverPrincipal),
+      subaccount: [hexToUint8Array(toSubAccount)],
+    },
+    amount,
+    from_subaccount: hexToUint8Array(fromSubAccount),
+  });
 }
 
 export async function transferTokensFromAllowance(params: TransferFromAllowanceParams) {
-  try {
-    const { receiverPrincipal, senderPrincipal, assetAddress, transferAmount, decimal, toSubAccount, fromSubAccount } =
-      params;
+  const { receiverPrincipal, senderPrincipal, assetAddress, transferAmount, decimal, toSubAccount, fromSubAccount } =
+    params;
 
-    const canister = getCanister(assetAddress);
+  const canister = getCanister(assetAddress);
 
-    const transferParams: TransferFromParams = {
-      from: {
-        owner: Principal.fromText(senderPrincipal),
-        subaccount: [hexToUint8Array(fromSubAccount)],
-      },
-      to: {
-        owner: Principal.fromText(receiverPrincipal),
-        subaccount: [hexToUint8Array(toSubAccount)],
-      },
-      amount: toHoleBigInt(transferAmount, Number(decimal)),
-    };
+  const transferParams: TransferFromParams = {
+    from: {
+      owner: Principal.fromText(senderPrincipal),
+      subaccount: [hexToUint8Array(fromSubAccount)],
+    },
+    to: {
+      owner: Principal.fromText(receiverPrincipal),
+      subaccount: [hexToUint8Array(toSubAccount)],
+    },
+    amount: toHoleBigInt(transferAmount, Number(decimal)),
+  };
 
-    await canister.transferFrom(transferParams);
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
+  await canister.transferFrom(transferParams);
 }
 
 export async function getSubAccountBalance(params: GetBalanceParams) {
@@ -147,6 +136,7 @@ export async function getSubAccountBalance(params: GetBalanceParams) {
     return balance;
   } catch (error) {
     console.error(error);
+    return 0;
   }
 }
 
@@ -155,16 +145,15 @@ export function createApproveAllowanceParams(allowance: TAllowance): ApprovePara
     throw new Error("ICRC-2 not supported");
   }
 
-  const spenderPrincipal = allowance.spender.principal;
-  const allowanceSubAccountId = allowance.subAccount.sub_account_id;
+  const spenderPrincipal = allowance.spender;
+  const allowanceSubAccountId = allowance.subAccountId;
   const allowanceAssetDecimal = allowance.asset.decimal;
-  const allowanceAmount = allowance.amount;
+  const allowanceAmount = allowance.amount || "0";
 
   const owner = Principal.fromText(spenderPrincipal);
   const subAccountUint8Array = new Uint8Array(hexToUint8Array(allowanceSubAccountId));
   const amount: bigint = toHoleBigInt(allowanceAmount, Number(allowanceAssetDecimal));
-  const expiration = calculateExpirationAsBigInt(allowance.expiration, allowance?.noExpire);
-
+  const expiration = calculateExpirationAsBigInt(allowance.expiration);
   return {
     spender: {
       owner,
@@ -186,6 +175,7 @@ export async function submitAllowanceApproval(
     return result;
   } catch (error) {
     console.error(error);
+    throw error;
   }
 }
 
@@ -194,12 +184,16 @@ export async function getAllowanceDetails(params: CheckAllowanceParams) {
     const { spenderPrincipal, spenderSubaccount, accountPrincipal, assetAddress, assetDecimal } = params;
 
     const userPrincipal = store.getState().auth.userPrincipal;
-    const myAgent = store.getState().auth.userAgent;
+    const agent = store.getState().auth.userAgent;
     const canisterId = Principal.fromText(assetAddress);
-    const canister = IcrcLedgerCanister.create({ agent: myAgent, canisterId });
     const subAccountUint8Array = new Uint8Array(hexToUint8Array(spenderSubaccount));
 
-    const result = await canister.allowance({
+    const ledgerActor = Actor.createActor<LedgerActor>(LedgerFactory, {
+      agent,
+      canisterId,
+    });
+
+    const result = await ledgerActor.icrc2_allowance({
       spender: {
         owner: spenderPrincipal ? Principal.fromText(spenderPrincipal) : userPrincipal,
         subaccount: [],
@@ -212,12 +206,12 @@ export async function getAllowanceDetails(params: CheckAllowanceParams) {
 
     const allowance = Number(result.allowance) <= 0 ? "" : toFullDecimal(result.allowance, Number(assetDecimal));
 
-    const expires_at =
-      result.expires_at.length <= 0 ? "" : dayjs(Number(result?.expires_at) / 1000000).format("YYYY-MM-DD HH:mm:ss");
+    const expires_at = result.expires_at.length <= 0 ? "" : dayjs(Number(result?.expires_at) / 1000000).format();
 
     return { allowance, expires_at };
   } catch (e) {
     console.error(e);
+    return { allowance: "", expires_at: "" };
   }
 }
 

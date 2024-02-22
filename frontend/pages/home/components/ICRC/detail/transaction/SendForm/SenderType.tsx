@@ -20,7 +20,6 @@ export default function SenderType(props: SenderTypeProps) {
     return sender?.asset?.supportedStandards?.includes(SupportedStandardEnum.Values["ICRC-2"]);
   }, [sender]);
 
-  // TODO: test adding a no supported asset
   return (
     <div className="flex items-center justify-between w-full px-4">
       <p className="font-bold opacity-50 text-black-color dark:text-white">{t("from")}</p>

@@ -1,15 +1,16 @@
-import { useAppDispatch, useAppSelector } from "@redux/Store";
+import { useAppSelector } from "@redux/Store";
 import {
-  initialAllowanceState,
-  setFullAllowanceErrors,
-  setIsCreateAllowance,
-  setIsUpdateAllowance,
-  setSelectedAllowance,
-} from "@redux/allowance/AllowanceReducer";
+  setFullAllowanceErrorsAction,
+  setIsCreateAllowanceAction,
+  setIsUpdateAllowanceAction,
+  setSelectedAllowanceAction,
+} from "@redux/allowance/AllowanceActions";
+import { initialAllowanceState } from "@redux/allowance/AllowanceReducer";
 
 interface UseAllowanceDrawer {
   isCreateAllowance: boolean;
   isUpdateAllowance: boolean;
+  isLoading: boolean;
   onCloseCreateAllowanceDrawer: () => void;
   onOpenCreateAllowanceDrawer: () => void;
   onCloseUpdateAllowanceDrawer: () => void;
@@ -17,32 +18,31 @@ interface UseAllowanceDrawer {
 }
 
 export default function useAllowanceDrawer(): UseAllowanceDrawer {
-  const { isCreateAllowance, isUpdateAllowance } = useAppSelector(({ allowance }) => allowance);
-  const dispatch = useAppDispatch();
-
+  const { isCreateAllowance, isUpdateAllowance, isLoading } = useAppSelector(({ allowance }) => allowance);
   function onCloseCreateAllowanceDrawer() {
-    dispatch(setIsCreateAllowance(false));
-    dispatch(setFullAllowanceErrors([]));
-    dispatch(setSelectedAllowance(initialAllowanceState));
+    setIsCreateAllowanceAction(false);
+    setFullAllowanceErrorsAction([]);
+    setSelectedAllowanceAction(initialAllowanceState);
   }
 
   function onOpenCreateAllowanceDrawer() {
-    dispatch(setIsCreateAllowance(true));
+    setIsCreateAllowanceAction(true);
   }
 
   function onCloseUpdateAllowanceDrawer() {
-    dispatch(setIsUpdateAllowance(false));
-    dispatch(setFullAllowanceErrors([]));
-    dispatch(setSelectedAllowance(initialAllowanceState));
+    setIsUpdateAllowanceAction(false);
+    setFullAllowanceErrorsAction([]);
+    setSelectedAllowanceAction(initialAllowanceState);
   }
 
   function onOpenUpdateAllowanceDrawer() {
-    dispatch(setIsUpdateAllowance(true));
+    setIsUpdateAllowanceAction(true);
   }
 
   return {
     isCreateAllowance,
     isUpdateAllowance,
+    isLoading,
     onCloseCreateAllowanceDrawer,
     onOpenCreateAllowanceDrawer,
     onCloseUpdateAllowanceDrawer,
