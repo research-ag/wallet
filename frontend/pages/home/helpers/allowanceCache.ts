@@ -1,6 +1,7 @@
 import { TAllowance } from "@/@types/allowance";
 import { getAllowanceDetails } from "@/pages/home/helpers/icrc";
 import { setAllowancesAction } from "@redux/allowance/AllowanceActions";
+import { getToCreateAllowance } from "./allowanceMappers";
 
 export async function allowanceCacheRefresh(principal: string) {
   const allowancePrefix = `allowances-${principal}`;
@@ -33,6 +34,6 @@ export async function allowanceCacheRefresh(principal: string) {
       }
     }
   }
-  localStorage.setItem(allowancePrefix, JSON.stringify(updatedAllowances));
+  localStorage.setItem(allowancePrefix, JSON.stringify(updatedAllowances.map(getToCreateAllowance)));
   setAllowancesAction(updatedAllowances);
 }

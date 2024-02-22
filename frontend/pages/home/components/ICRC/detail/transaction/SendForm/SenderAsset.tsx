@@ -36,7 +36,7 @@ export default function SenderAsset() {
         disabled={false}
         onSearch={onSearchChange}
         onOpenChange={onOpenChange}
-        contentWidth="25rem"
+        contentWidth="23rem"
       />
     </div>
   );
