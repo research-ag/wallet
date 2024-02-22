@@ -11,6 +11,7 @@ const button = cva("button", {
     },
     size: {
       icon: ["p-2", "rounded-md"],
+      xSmall: ["text-sm", "py-0.5", "px-1", "rounded-md"],
       small: ["text-md", "py-1", "px-2", "rounded-md"],
       medium: ["text-lg", "py-2", "px-4", "rounded-lg", "font-semibold"],
       large: ["text-xl", "py-3", "px-5", "rounded-lg", "font-semibold"],

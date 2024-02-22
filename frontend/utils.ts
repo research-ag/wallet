@@ -75,7 +75,9 @@ export const getFirstNChars = (str: string, digits: number) => {
 };
 
 export const shortAddress = (address: string, digitsL: number, digitsR: number, prefix?: string, sufix?: string) => {
-  return `${prefix ? prefix : ""}${address.slice(0, digitsL)} ... ${address.slice(-digitsR)}${sufix ? sufix : ""}`;
+  if (address.length > digitsL + digitsR)
+    return `${prefix ? prefix : ""}${address.slice(0, digitsL)} ... ${address.slice(-digitsR)}${sufix ? sufix : ""}`;
+  else return address;
 };
 
 export const principalToAccountIdentifier = (p: string, s?: number[] | number) => {

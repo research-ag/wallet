@@ -66,7 +66,7 @@ export default function AddSubAccountOnCreate(props: AddSubAccountOnCreateProps)
           })}
         </div>
 
-        <div className="flex flex-col justify-start items-start w-[40%] gap-2">
+        <div className="flex flex-col justify-start items-start w-[80%] gap-2">
           <p className="opacity-60">{t("sub-acc")}</p>
           {newSubAccounts.map((newSA, k) => {
             return (
