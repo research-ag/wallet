@@ -7,7 +7,7 @@ export function toTitleCase(title: string | undefined) {
 }
 
 export function middleTruncation(text: string | undefined, startSize: number, endSize: number) {
-  if (!text) return text;
+  if (!text) return "-";
   const startText = text.substring(0, startSize);
   const endText = text.substring(text.length - endSize, text.length);
   return `${startText}...${endText}`;
