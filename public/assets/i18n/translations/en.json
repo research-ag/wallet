@@ -95,7 +95,7 @@
   "login.bottom.msg": "By signing up, you agree to Our",
   "login.bottom.msg.terms": "Terms of Service",
   "login.bottom.msg.policy": "Privacy Policy",
-  "login.mnemonic.expected": "Expected phrase between 12 and 24 words",
+  "login.mnemonic.expected": "Suggested phrase between 12 and 24 words",
   "transfer.between.accounts": "Transfer to own account",
   "max.amount.to.send": "Max to send",
   "asset.add.warning.1": "Token detection is only available on ICRC1 Network. Please import token manually and make sure you trust it. Learn about",

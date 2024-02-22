@@ -2,7 +2,7 @@ import { ReactComponent as CheckIcon } from "@assets/svg/files/edit-check.svg";
 import { CustomInput } from "@components/Input";
 import { handleMnemonicAuthenticated } from "@redux/CheckAuth";
 import clsx from "clsx";
-import { ChangeEvent, Dispatch, SetStateAction, useMemo } from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 interface MnemonicInputProps {
@@ -12,9 +12,8 @@ interface MnemonicInputProps {
 
 export default function MnemonicInput({ phrase, setPhrase }: MnemonicInputProps) {
   const { t } = useTranslation();
-
+  const [isError, setIsError] = useState(false);
   const isValid = useMemo(() => isPhraseValid(phrase), [phrase]);
-
   return (
     <CustomInput
       sizeInput={"medium"}
@@ -24,9 +23,9 @@ export default function MnemonicInput({ phrase, setPhrase }: MnemonicInputProps)
       onChange={onPhraseChange}
       autoFocus
       sufix={
-        <div className="flex flex-row items-center justify-start gap-2">
-          <CheckIcon onClick={onLoginWithPhase} className={getCheckIconStyles(phrase)} />
-          <p className="text-sm w-fit text-PrimaryTextColorLight dark:text-PrimaryTextColor">
+        <div className="flex flex-row items-center justify-start gap-1">
+          <CheckIcon onClick={onLoginWithPhase} className={getCheckIconStyles(!isError && isValid)} />
+          <p className="text-sm min-w-[4rem] text-PrimaryTextColorLight dark:text-PrimaryTextColor">
             Words {phrase.split(" ").length}
           </p>
         </div>
@@ -38,15 +37,17 @@ export default function MnemonicInput({ phrase, setPhrase }: MnemonicInputProps)
   );
 
   function onLoginWithPhase() {
-    const sanitizedPhrase = getSanitizedPhrase(phrase);
-    const fullPhrase = sanitizedPhrase.join(" ");
-    console.log("isValid: ", isValid);
-    if (isValid) {
-      console.log("Login with phrase: ", fullPhrase);
-      return;
-      // handleMnemonicAuthenticated(fullPhrase);
+    try {
+      setIsError(false);
+      const sanitizedPhrase = getSanitizedPhrase(phrase);
+      const fullPhrase = sanitizedPhrase.join(" ");
+      if (isValid) {
+        handleMnemonicAuthenticated(fullPhrase);
+      }
+    } catch (error) {
+      console.log(error);
+      setIsError(true);
     }
-    console.log("phrase is not valid for login");
   }
 
   function onPhraseChange(e: ChangeEvent<HTMLInputElement>) {
@@ -67,9 +68,9 @@ function getSanitizedPhrase(phrase: string) {
     .split(" ");
 }
 
-function getCheckIconStyles(phrase: string) {
+function getCheckIconStyles(isSuccess: boolean) {
   return clsx(
     "w-4 h-4 opacity-50 cursor-pointer",
-    phrase.length > 0 ? "stroke-BorderSuccessColor" : "stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor",
+    isSuccess ? "stroke-BorderSuccessColor" : "stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor",
   );
 }

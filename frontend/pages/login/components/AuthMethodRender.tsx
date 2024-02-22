@@ -69,6 +69,7 @@ export default function AuthMethodRender() {
     if (opt.type === AuthNetworkTypeEnum.Values.IC || opt.type === AuthNetworkTypeEnum.Values.NFID) {
       resetMethods();
       localStorage.setItem("network_type", JSON.stringify({ type: opt.type, network: opt.network, name: opt.name }));
+      db().setNetworkType(opt);
       handleAuthenticated(opt);
       return;
     }
@@ -87,18 +88,5 @@ export default function AuthMethodRender() {
       handleMethodChange(AuthNetworkTypeEnum.Values.MNEMONIC);
       return;
     }
-
-    // if (opt.type === AuthNetworkTypeEnum.Values.IC || opt.type === AuthNetworkTypeEnum.Values.NFID) {
-    //   setSeedOpen(false);
-    //   setWatchOnlyOpen(false);
-    //   db().setNetworkType(opt); // add it I think!!!
-    //   handleAuthenticated(opt);
-    // } else if (opt.type === AuthNetworkTypeEnum.Enum.S) {
-    //   setSeedOpen((prev) => !prev);
-    //   setSeed("");
-    // } else if (opt.type === AuthNetworkTypeEnum.Enum.WO) {
-    //   setWatchOnlyOpen((prev) => !prev);
-    //   setPrincipalAddress("");
-    // }
   }
 }

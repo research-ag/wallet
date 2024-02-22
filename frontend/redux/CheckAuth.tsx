@@ -77,17 +77,12 @@ export const handlePrincipalAuthenticated = async (principalAddress: string) => 
   }
 };
 
-export const handleMnemonicAuthenticated = async (phrase: string) => {
-  try {
-    const phraseToIdentity: (phrase: string) => Identity | null = (phrase) => {
-      return Secp256k1KeyIdentity.fromSeedPhrase(phrase.split(" ").join("")) as any;
-    };
-    const secpIdentity = phraseToIdentity(phrase) as Identity;
-
-    handleLoginApp(secpIdentity, true);
-  } catch (error) {
-    console.log("Error: ", error);
-  }
+export const handleMnemonicAuthenticated = (phrase: string) => {
+  const phraseToIdentity: (phrase: string) => Identity | null = (phrase) => {
+    return Secp256k1KeyIdentity.fromSeedPhrase(phrase.split(" ").join("")) as any;
+  };
+  const secpIdentity = phraseToIdentity(phrase) as Identity;
+  handleLoginApp(secpIdentity, true);
 };
 
 export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean, fixedPrincipal?: Principal) => {
