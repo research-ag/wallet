@@ -25,6 +25,14 @@ export abstract class IWalletDatabase {
     return JSON.parse(localStorage.getItem("network_type") || "null");
   }
 
+  getDbLocation(): "local" | "rxdb" | null {
+    return localStorage.dbLocation;
+  }
+
+  setDbLocation(value: "local" | "rxdb"): void {
+    localStorage.dbLocation = value;
+  }
+
   setNetworkType(value: AuthNetwork): void {
     localStorage.setItem(
       "network_type",

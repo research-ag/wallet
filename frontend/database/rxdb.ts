@@ -126,7 +126,7 @@ export class RxdbDatabase extends IWalletDatabase {
     // Don't allow watch-only mode to use the DB
     if (!this.identity.getPrincipal().isAnonymous()) {
       await this.init();
-      await this._doesDbExist();
+      await this._doesRecordByPrincipalExist();
     }
 
     this.identityChanged$.next();
@@ -478,9 +478,11 @@ export class RxdbDatabase extends IWalletDatabase {
     return raw;
   }
 
-  private async _doesDbExist() {
+  private async _doesRecordByPrincipalExist() {
+    // Look for entry record by current prinicpal ID
     const exist: boolean = await this.replicaCanister?.doesStorageExist();
 
+    // If does not exist it means that this is a brand new account
     if (!exist) {
       try {
         await (

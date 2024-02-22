@@ -28,7 +28,7 @@ import { AssetHook } from "@pages/home/hooks/assetHook";
 import { useAppSelector } from "@redux/Store";
 import { db } from "@/database/db";
 
-const TopBarComponent = () => {
+const TopBarComponent = ({ isLoginPage }: { isLoginPage: boolean }) => {
   const { t } = useTranslation();
   const { onLanguageChange } = LanguageHook();
   const { watchOnlyMode } = useAppSelector((state) => state.auth);
@@ -37,6 +37,7 @@ const TopBarComponent = () => {
   const { getTotalAmountInCurrency, reloadBallance, assetLoading } = AssetHook();
 
   const [langOpen, setLangOpen] = useState(false);
+  const [dbLocationOpen, setDbLocationOpen] = useState(false);
 
   const langOpts = [
     { abrev: "en", name: "english", flag: <UsaFlagIcon className={flag} /> },
@@ -54,29 +55,34 @@ const TopBarComponent = () => {
           ) : (
             <ICRC1Logo className="max-w-[7rem] h-auto" />
           )}
-          <div className="flex flex-row justify-start items-center gap-3">
-            <p className="opacity-50">{shortAddress(authClient, 12, 10)}</p>
-            <CustomCopy size={"small"} copyText={authClient} />
-            <RefreshIcon
-              className={`h-4 w-4 cursor-pointer fill-PrimaryTextColorLight dark:fill-PrimaryTextColor ${
-                assetLoading ? "do-spin" : ""
-              }`}
-              onClick={handleReloadButton}
-            />
-            {watchOnlyMode && <p className="opacity-50">{t("watchOnlyMode.title")}</p>}
-          </div>
+          {!isLoginPage && (
+            <div className="flex flex-row justify-start items-center gap-3">
+              <p className="opacity-50">{shortAddress(authClient, 12, 10)}</p>
+              <CustomCopy size={"small"} copyText={authClient} />
+              <RefreshIcon
+                className={`h-4 w-4 cursor-pointer fill-PrimaryTextColorLight dark:fill-PrimaryTextColor ${
+                  assetLoading ? "do-spin" : ""
+                }`}
+                onClick={handleReloadButton}
+              />
+              {watchOnlyMode && <p className="opacity-50">{t("watchOnlyMode.title")}</p>}
+            </div>
+          )}
         </div>
         <div className="flex flex-row justify-start items-center pr-9 gap-9">
-          <div className="flex flex-row justify-start items-center gap-2 text-md">
-            <WalletIcon className="fill-SvgColor dark:fill-SvgColor max-w-[1.5rem] h-auto"></WalletIcon>
-            <p className="opacity-70">{t("total.balance")}:</p>
-            <p className="font-medium">{`$${getTotalAmountInCurrency().toFixed(2)}`}</p>
-            <p className="opacity-70">USD</p>
-          </div>
+          {!isLoginPage && (
+            <div className="flex flex-row justify-start items-center gap-2 text-md">
+              <WalletIcon className="fill-SvgColor dark:fill-SvgColor max-w-[1.5rem] h-auto"></WalletIcon>
+              <p className="opacity-70">{t("total.balance")}:</p>
+              <p className="font-medium">{`$${getTotalAmountInCurrency().toFixed(2)}`}</p>
+              <p className="opacity-70">USD</p>
+            </div>
+          )}
           <DropdownMenu.Root
             modal={false}
             onOpenChange={() => {
               setLangOpen(false);
+              setDbLocationOpen(false);
             }}
           >
             <DropdownMenu.Trigger asChild>
@@ -123,14 +129,37 @@ const TopBarComponent = () => {
                 >
                   <p>{t("themes")}</p>
                 </DropdownMenu.Item>
-                <DropdownMenu.Item
-                  className={clsx(gearPopItem, "!justify-between", "rounded-b-lg")}
-                  onSelect={() => {
-                    logout();
-                  }}
-                >
-                  <p className="text-LockColor">{t("lock")}</p>
-                </DropdownMenu.Item>
+                {isLoginPage ? (
+                  <DropdownMenu.Item
+                    className={clsx(gearPopItem, "!justify-between", "rounded-b-lg")}
+                    onSelect={(e: Event) => {
+                      e.preventDefault();
+                      setDbLocationOpen(!dbLocationOpen);
+                    }}
+                  >
+                    <p>{t("database.location")}</p>
+                    <ChevronIcon className={`fill-SvgColor dark:fill-SvgColor ${langOpen ? "" : "-rotate-90"}`} />
+                  </DropdownMenu.Item>
+                ) : (
+                  <DropdownMenu.Item
+                    className={clsx(gearPopItem, "!justify-between", "rounded-b-lg")}
+                    onSelect={() => {
+                      logout();
+                    }}
+                  >
+                    <p className="text-LockColor">{t("lock")}</p>
+                  </DropdownMenu.Item>
+                )}
+                {dbLocationOpen && (
+                  <>
+                    <DropdownMenu.Item className={clsx(gearPopItem)} onSelect={() => changeDbLocation("local")}>
+                      <p>{t("database.localStorage")}</p>
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Item className={clsx(gearPopItem)} onSelect={() => changeDbLocation("rxdb")}>
+                      <p>{t("database.canister")}</p>
+                    </DropdownMenu.Item>
+                  </>
+                )}
               </DropdownMenu.Content>
             </DropdownMenu.Portal>
           </DropdownMenu.Root>
@@ -151,6 +180,10 @@ const TopBarComponent = () => {
     i18n.changeLanguage(lang, () => {
       db().setLanguage(lang);
     });
+  }
+
+  function changeDbLocation(location: "local" | "rxdb") {
+    db().setDbLocation(location);
   }
 };
 export default TopBarComponent;

@@ -2,11 +2,9 @@
 import HplWalletIcon from "@/assets/svg/files/logo_ICRC-1-dark.svg";
 import HplWalletLightIcon from "@/assets/svg/files/logo_ICRC-1.svg";
 import { ReactComponent as LoginLogoIcon } from "@/assets/svg/files/login-logo.svg";
-import { ReactComponent as ChevIcon } from "@/assets/svg/files/chev-icon.svg";
 import { ReactComponent as CheckIcon } from "@assets/svg/files/edit-check.svg";
 //
 import { LoginHook } from "./hooks/loginhook";
-import FlagSelector from "./components/flagSelector";
 import { useTranslation } from "react-i18next";
 import { ThemeHook } from "@hooks/themeHook";
 import { ChangeEvent, Fragment, useState } from "react";
@@ -21,9 +19,7 @@ import { db } from "@/database/db";
 const Login = () => {
   const { t } = useTranslation();
   const {
-    handleOpenChange,
     loginOpts,
-    open,
     seedOpen,
     setSeedOpen,
     seed,
@@ -137,17 +133,6 @@ const Login = () => {
               <span className="text-lg font-bold">{t("login.bottom.msg.terms")}</span> {t("and")}{" "}
               <span>{t("login.bottom.msg.policy")}</span>
             </p>
-          </div>
-          <div className="absolute flex flex-row items-center justify-center right-8 top-6 bg-none">
-            <FlagSelector open={open} handleOpenChange={handleOpenChange}></FlagSelector>
-            <div
-              className={`p-1 cursor-pointer ${open ? "" : "rotate-90"}`}
-              onClick={() => {
-                handleOpenChange(!open);
-              }}
-            >
-              <ChevIcon className="w-8 h-8 " />
-            </div>
           </div>
         </div>
       </div>
