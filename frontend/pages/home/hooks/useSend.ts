@@ -8,8 +8,20 @@ import { isHexadecimalValid } from "@/utils/checkers";
 
 export default function useSend() {
   const { userPrincipal } = useAppSelector((state) => state.auth);
+  const { assets } = useAppSelector((state) => state.asset);
   const { sender, receiver, amount, sendingStatus, errors, initTime, endTime } = useAppSelector(
     (state) => state.transaction,
+  );
+
+  const updateAsset = useMemo(
+    () => assets.find((asset) => asset?.tokenSymbol === sender?.asset?.tokenSymbol),
+    [assets, sender],
+  );
+
+  const updateSubAccount = useMemo(
+    () =>
+      updateAsset?.subAccounts.find((subAccount) => subAccount?.sub_account_id === sender?.subAccount?.sub_account_id),
+    [updateAsset, sender],
   );
 
   function getReceiverPrincipal() {
@@ -64,7 +76,7 @@ export default function useSend() {
   async function getSenderBalance() {
     try {
       if (sender?.senderOption === TransactionSenderOptionEnum.Values.own) {
-        return toFullDecimal(sender?.subAccount?.amount || "0", Number(sender?.asset?.decimal));
+        return toFullDecimal(updateSubAccount?.amount || "0", Number(updateAsset?.decimal));
       }
 
       const principal = getSenderPrincipal();
@@ -86,11 +98,10 @@ export default function useSend() {
   }
 
   const getTransactionFee = () => {
-    if (!sender?.asset?.subAccounts[0]?.transaction_fee) {
+    if (!updateSubAccount?.transaction_fee) {
       return toFullDecimal("0", Number(0));
     }
-
-    return toFullDecimal(sender.asset.subAccounts[0].transaction_fee, Number(sender.asset.decimal));
+    return toFullDecimal(updateSubAccount.transaction_fee, Number(updateAsset?.decimal));
   };
 
   const isSender = useMemo(

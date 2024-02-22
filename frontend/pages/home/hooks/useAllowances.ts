@@ -13,7 +13,7 @@ import {
 export default function useAllowances() {
   const { allowances: rawAllowances } = useAppSelector((state) => state.allowance);
   const [sorting, setSorting] = useState<SortOrder>(SortOrderEnum.Values.ASC);
-  const [column, setColumn] = useState<AllowancesTableColumns>(AllowancesTableColumnsEnum.Values.subAccount);
+  const [column, setColumn] = useState<AllowancesTableColumns>(AllowancesTableColumnsEnum.Values.subAccountId);
 
   const { selectedAsset } = useAppSelector((state) => state.asset);
 
@@ -33,7 +33,7 @@ export default function useAllowances() {
       ? filterByAsset(selectedAsset?.tokenSymbol, rawAllowances)
       : rawAllowances;
 
-    if (column === AllowancesTableColumnsEnum.Values.subAccount) {
+    if (column === AllowancesTableColumnsEnum.Values.subAccountId) {
       return sortBySubAccount(sorting, filtered || []);
     }
 

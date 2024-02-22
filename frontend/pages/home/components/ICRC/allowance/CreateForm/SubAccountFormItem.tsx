@@ -17,6 +17,7 @@ interface ISubAccountFormItemProps {
 export default function SubAccountFormItem(props: ISubAccountFormItemProps) {
   const { t } = useTranslation();
   const { errors } = useAppSelector((state) => state.allowance);
+  const { assets } = useAppSelector((state) => state.asset);
   const { allowance, selectedAsset, setAllowanceState, isLoading } = props;
   const [searchValue, setSearchValue] = useState<string | null>(null);
   const onOpenChange = () => setSearchValue(null);
@@ -24,14 +25,17 @@ export default function SubAccountFormItem(props: ISubAccountFormItemProps) {
     setSearchValue(searchValue);
   };
 
-  const { subAccount } = allowance;
+  const { subAccountId } = allowance;
+
+  const allowanceAsset = useMemo(
+    () => assets.find((asset) => asset.tokenSymbol === allowance.asset.tokenSymbol),
+    [assets, allowance],
+  );
 
   const options = useMemo(() => {
     const accountsToMap = searchValue
-      ? allowance?.asset?.subAccounts?.filter((account) =>
-          account.name.toLowerCase().includes(searchValue.toLowerCase()),
-        )
-      : allowance?.asset?.subAccounts || selectedAsset?.subAccounts;
+      ? allowanceAsset?.subAccounts?.filter((account) => account.name.toLowerCase().includes(searchValue.toLowerCase()))
+      : allowanceAsset?.subAccounts || selectedAsset?.subAccounts;
 
     return (
       accountsToMap?.map((account) => ({
@@ -51,22 +55,22 @@ export default function SubAccountFormItem(props: ISubAccountFormItemProps) {
       <Select
         onSelect={onChange}
         options={options}
-        initialValue={allowance?.subAccount?.sub_account_id}
-        currentValue={subAccount?.sub_account_id || ""}
+        initialValue={allowance?.subAccountId}
+        currentValue={subAccountId || ""}
         disabled={isLoading}
         border={isError() ? "error" : undefined}
         onSearch={onSearchChange}
         onOpenChange={onOpenChange}
+        contentWidth="23rem"
       />
     </div>
   );
 
   function onChange(option: SelectOption) {
     setSearchValue(null);
-    const fullSubAccount = allowance?.asset?.subAccounts.find((account) => account.sub_account_id === option.value);
-
+    const fullSubAccount = allowanceAsset?.subAccounts.find((account) => account.sub_account_id === option.value);
     if (!fullSubAccount || !fullSubAccount.address) return;
-    setAllowanceState({ ...allowance, subAccount: fullSubAccount });
+    setAllowanceState({ ...allowance, subAccountId: fullSubAccount.sub_account_id });
   }
 
   function isError(): boolean {

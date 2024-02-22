@@ -14,16 +14,21 @@ export default function useAllowanceTable() {
   const { t } = useTranslation();
   const columnHelper = createColumnHelper<TAllowance>();
   const { contacts } = useAppSelector((state) => state.contacts);
+  const { assets } = useAppSelector((state) => state.asset);
 
   const columns = [
-    columnHelper.accessor(AllowancesTableColumnsEnum.Values.subAccount, {
+    columnHelper.accessor(AllowancesTableColumnsEnum.Values.subAccountId, {
       cell: (info) => {
-        const name = info?.getValue()?.name;
-        const subAccountId = info?.getValue()?.sub_account_id;
+        const subAccountId = info?.getValue();
+        const assetToken = info.row.original.asset.tokenSymbol;
+        const asset = assets.find((asset) => asset.tokenSymbol === assetToken);
+        const subAccount = asset?.subAccounts.find((subAccount) => subAccount.sub_account_id === subAccountId);
+        const subAccountName = subAccount?.name;
+
         return (
           <div className="flex flex-col items-start justify-center cursor-pointer">
-            {name && <p className={getCellStyles()}>{name}</p>}
-            {subAccountId && <p className={getCellStyles(Boolean(name))}>{subAccountId}</p>}
+            {subAccountName && <p className={getCellStyles()}>{subAccountName || subAccountName}</p>}
+            {subAccountId && <p className={getCellStyles(Boolean(subAccountId))}>{subAccountId}</p>}
           </div>
         );
       },
@@ -35,7 +40,7 @@ export default function useAllowanceTable() {
     }),
     columnHelper.accessor(AllowancesTableColumnsEnum.Values.spender, {
       cell: (info) => {
-        const principal = info.getValue()?.principal;
+        const principal = info.getValue();
 
         const spenderName = useMemo(() => {
           const contact = contacts.find((contact) => contact.principal === principal);
@@ -60,7 +65,7 @@ export default function useAllowanceTable() {
         let isExpired = false;
         const allowance = info.row.original;
 
-        if (!allowance.noExpire && allowance?.expiration) {
+        if (allowance?.expiration) {
           isExpired = isDateExpired(allowance?.expiration);
         }
 
@@ -86,7 +91,7 @@ export default function useAllowanceTable() {
         const userDate = info.getValue() ? formatDateTime(info.getValue() || "") : t("no.expiration");
         const allowance = info.row.original;
 
-        if (!allowance.noExpire && allowance?.expiration) {
+        if (allowance?.expiration) {
           isExpired = isDateExpired(allowance?.expiration);
         }
 

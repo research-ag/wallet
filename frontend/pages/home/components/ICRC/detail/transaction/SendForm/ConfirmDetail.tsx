@@ -13,6 +13,7 @@ import {
   setSendingStatusAction,
   setInitTxTime,
   setEndTxTime,
+  setFullErrorsAction,
 } from "@redux/transaction/TransactionActions";
 import { useTranslation } from "react-i18next";
 import { TransactionValidationErrorsEnum } from "@/@types/transactions";
@@ -104,6 +105,12 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
       const assetAddress = sender.asset.address;
       const decimal = sender.asset.decimal;
 
+      if (!amount || Number(amount) <= 0) {
+        setErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.amount"]);
+        return;
+      }
+      removeErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.amount"]);
+
       const isValid = await validateBalance();
       if (!isValid) {
         setIsLoadingAction(false);
@@ -152,6 +159,7 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
   }
 
   function OnBack() {
+    setFullErrorsAction([]);
     setIsInspectDetailAction(false);
   }
 

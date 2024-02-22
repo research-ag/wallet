@@ -1,5 +1,5 @@
 import { VariantProps } from "cva";
-import { InputHTMLAttributes, ReactNode, useState } from "react";
+import { InputHTMLAttributes, ReactNode } from "react";
 import { inputCurrencyCVA } from "./styles.cva";
 
 interface InputCurrencyProps extends InputHTMLAttributes<HTMLImageElement>, VariantProps<typeof inputCurrencyCVA> {
@@ -11,11 +11,9 @@ interface InputCurrencyProps extends InputHTMLAttributes<HTMLImageElement>, Vari
 
 export default function CurrencyInput(props: InputCurrencyProps) {
   const { className, onCurrencyChange, icon, currency, isLoading, value, border } = props;
-  const [amount, setAmount] = useState("");
 
   const handleCurrencyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newAmount = e.target.value;
-    setAmount(newAmount);
     onCurrencyChange(newAmount);
   };
 
@@ -26,7 +24,7 @@ export default function CurrencyInput(props: InputCurrencyProps) {
         className="w-4/5 outline-none bg-inherit"
         autoComplete="false"
         onChange={handleCurrencyChange}
-        value={amount || value || ""}
+        value={value || ""}
       />
       <div className="flex items-center justify-between">
         {icon}

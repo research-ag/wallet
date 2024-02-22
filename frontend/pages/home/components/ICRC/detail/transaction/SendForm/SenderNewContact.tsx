@@ -46,29 +46,22 @@ export default function SenderNewContact() {
   function onPrincipalChange(event: any) {
     const principalValue = event.target.value.trim();
 
-    if (!validatePrincipal(principalValue)) {
-      setErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.sender.principal"]);
-    } else {
-      removeErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.sender.principal"]);
-    }
-
     const newAllowanceContact: NewContact = {
       ...sender.newAllowanceContact,
       principal: principalValue,
     };
     setSenderContactNewAction(newAllowanceContact);
+
+    if (!validatePrincipal(principalValue)) {
+      setErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.sender.principal"]);
+    } else {
+      removeErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.sender.principal"]);
+    }
   }
 
   function onSubAccountChange(event: any) {
     const subAccountIndex = event.target.value.trim() as string;
     setInputValue(subAccountIndex);
-
-    if (!isHexadecimalValid(subAccountIndex)) {
-      setErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.sender.subaccount"]);
-      return;
-    } else {
-      removeErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.sender.subaccount"]);
-    }
 
     const newAllowanceContact: NewContact = {
       ...sender.newAllowanceContact,
@@ -76,6 +69,13 @@ export default function SenderNewContact() {
     };
 
     setSenderContactNewAction(newAllowanceContact);
+
+    if (!isHexadecimalValid(subAccountIndex)) {
+      setErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.sender.subaccount"]);
+      return;
+    } else {
+      removeErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.sender.subaccount"]);
+    }
   }
 
   function hasPrincipalError() {
