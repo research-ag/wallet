@@ -17,7 +17,6 @@ import { Asset, ICPSubAccount, SubAccount } from "@redux/models/AccountModels";
 import { Principal } from "@dfinity/principal";
 import { AccountDefaultEnum } from "@/const";
 import bigInt from "big-integer";
-import { getICRCSupportedStandards } from "@pages/home/helpers/icrc";
 
 export const updateAllBalances = async (
   loading: boolean,
