@@ -107,6 +107,7 @@
   "asset.add.warning.2": " estafas y riesgos de seguridad",
   "theme.modal.msg": "Cambie la apariencia de HPL en todos sus espacios de trabajo",
   "theme.modal.msg.option": "Te ves bien hoy",
+  "database.modal.msg": "Cambiar la ubicación desde donde obtener lectura/escritura de sus datos",
   "type": "Tipo",
   "transactionID": "ID de Transacción",
   "date": "Fecha",

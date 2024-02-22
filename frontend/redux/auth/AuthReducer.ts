@@ -16,7 +16,7 @@ interface AuthState {
   theme: string;
   blur: boolean;
   disclaimer: boolean;
-
+  dbLocation: string;
   userAgent: HttpAgent;
   userPrincipal: Principal;
 }
@@ -32,6 +32,7 @@ const initialState: AuthState = {
   authClient: "",
   assetList: [],
   disclaimer: true,
+  dbLocation: "local",
   userAgent: defaultValue,
   userPrincipal: defaultValue,
 };
@@ -55,7 +56,15 @@ const authSlice = createSlice({
       state.debugMode = false;
     },
     setAuthenticated: {
-      reducer(state, action: PayloadAction<{ authenticated: boolean; superAdmin: boolean; watchOnlyMode: boolean; authClient: string }>) {
+      reducer(
+        state,
+        action: PayloadAction<{
+          authenticated: boolean;
+          superAdmin: boolean;
+          watchOnlyMode: boolean;
+          authClient: string;
+        }>,
+      ) {
         const { authenticated, superAdmin, watchOnlyMode, authClient } = action.payload;
         state.authLoading = false;
         state.authenticated = authenticated;
@@ -84,6 +93,9 @@ const authSlice = createSlice({
     setDisclaimer(state, action) {
       state.disclaimer = action.payload;
     },
+    setDbLocation(state, action) {
+      state.dbLocation = action.payload;
+    },
     setUserAgent(state, action) {
       state.userAgent = action.payload;
     },
@@ -109,6 +121,7 @@ export const {
   setTheme,
   setBlur,
   setDisclaimer,
+  setDbLocation,
   setUserAgent,
   setUserPrincipal,
 } = authSlice.actions;

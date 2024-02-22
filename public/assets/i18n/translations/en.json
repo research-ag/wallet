@@ -105,6 +105,7 @@
   "asset.add.warning.2": " scams and security risks",
   "theme.modal.msg": "Change the appearance of HPL across all of your workspaces",
   "theme.modal.msg.option": "You look nice today",
+  "database.modal.msg": "Change location from where to get read/write your data",
   "type": "Type",
   "transactionID": "Transaction ID",
   "date": "Date",

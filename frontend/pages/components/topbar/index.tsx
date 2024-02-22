@@ -27,6 +27,7 @@ import { CustomCopy } from "@components/CopyTooltip";
 import { AssetHook } from "@pages/home/hooks/assetHook";
 import { useAppSelector } from "@redux/Store";
 import { db } from "@/database/db";
+import DbLocationModal from "./dbLocationModal";
 
 const TopBarComponent = ({ isLoginPage }: { isLoginPage: boolean }) => {
   const { t } = useTranslation();
@@ -82,7 +83,6 @@ const TopBarComponent = ({ isLoginPage }: { isLoginPage: boolean }) => {
             modal={false}
             onOpenChange={() => {
               setLangOpen(false);
-              setDbLocationOpen(false);
             }}
           >
             <DropdownMenu.Trigger asChild>
@@ -132,13 +132,11 @@ const TopBarComponent = ({ isLoginPage }: { isLoginPage: boolean }) => {
                 {isLoginPage ? (
                   <DropdownMenu.Item
                     className={clsx(gearPopItem, "!justify-between", "rounded-b-lg")}
-                    onSelect={(e: Event) => {
-                      e.preventDefault();
-                      setDbLocationOpen(!dbLocationOpen);
+                    onSelect={() => {
+                      setDbLocationOpen(true);
                     }}
                   >
                     <p>{t("database.location")}</p>
-                    <ChevronIcon className={`fill-SvgColor dark:fill-SvgColor ${langOpen ? "" : "-rotate-90"}`} />
                   </DropdownMenu.Item>
                 ) : (
                   <DropdownMenu.Item
@@ -150,16 +148,6 @@ const TopBarComponent = ({ isLoginPage }: { isLoginPage: boolean }) => {
                     <p className="text-LockColor">{t("lock")}</p>
                   </DropdownMenu.Item>
                 )}
-                {dbLocationOpen && (
-                  <>
-                    <DropdownMenu.Item className={clsx(gearPopItem)} onSelect={() => changeDbLocation("local")}>
-                      <p>{t("database.localStorage")}</p>
-                    </DropdownMenu.Item>
-                    <DropdownMenu.Item className={clsx(gearPopItem)} onSelect={() => changeDbLocation("rxdb")}>
-                      <p>{t("database.canister")}</p>
-                    </DropdownMenu.Item>
-                  </>
-                )}
               </DropdownMenu.Content>
             </DropdownMenu.Portal>
           </DropdownMenu.Root>
@@ -167,6 +155,9 @@ const TopBarComponent = ({ isLoginPage }: { isLoginPage: boolean }) => {
       </div>
       <Modal open={themeOpen} top="top-[35%]">
         <ThemeModal setOpen={setThemeOpen} />
+      </Modal>
+      <Modal open={dbLocationOpen} top="top-[35%]">
+        <DbLocationModal setOpen={setDbLocationOpen} />
       </Modal>
     </Fragment>
   );
@@ -180,10 +171,6 @@ const TopBarComponent = ({ isLoginPage }: { isLoginPage: boolean }) => {
     i18n.changeLanguage(lang, () => {
       db().setLanguage(lang);
     });
-  }
-
-  function changeDbLocation(location: "local" | "rxdb") {
-    db().setDbLocation(location);
   }
 };
 export default TopBarComponent;
