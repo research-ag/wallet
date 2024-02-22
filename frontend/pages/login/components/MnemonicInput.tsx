@@ -14,6 +14,7 @@ export default function MnemonicInput({ phrase, setPhrase }: MnemonicInputProps)
   const { t } = useTranslation();
   const [isError, setIsError] = useState(false);
   const isValid = useMemo(() => isPhraseValid(phrase), [phrase]);
+
   return (
     <CustomInput
       sizeInput={"medium"}
@@ -26,7 +27,7 @@ export default function MnemonicInput({ phrase, setPhrase }: MnemonicInputProps)
         <div className="flex flex-row items-center justify-start gap-1">
           <CheckIcon onClick={onLoginWithPhase} className={getCheckIconStyles(!isError && isValid)} />
           <p className="text-sm min-w-[4rem] text-PrimaryTextColorLight dark:text-PrimaryTextColor">
-            Words {phrase.split(" ").length}
+            Words {phrase.length > 0 ? phrase.split(" ").length : 0}
           </p>
         </div>
       }
@@ -40,9 +41,8 @@ export default function MnemonicInput({ phrase, setPhrase }: MnemonicInputProps)
     try {
       setIsError(false);
       const sanitizedPhrase = getSanitizedPhrase(phrase);
-      const fullPhrase = sanitizedPhrase.join(" ");
       if (isValid) {
-        handleMnemonicAuthenticated(fullPhrase);
+        handleMnemonicAuthenticated(sanitizedPhrase);
       }
     } catch (error) {
       console.log(error);
@@ -62,10 +62,9 @@ export default function MnemonicInput({ phrase, setPhrase }: MnemonicInputProps)
 }
 
 function getSanitizedPhrase(phrase: string) {
-  return phrase
-    .trim()
-    .replace(/\s{2, }/g, " ")
-    .split(" ");
+  const chunks = phrase.split(" ");
+  const cleanedChunks = chunks.filter((chunk) => chunk.trim() !== "");
+  return cleanedChunks.join(" ");
 }
 
 function getCheckIconStyles(isSuccess: boolean) {
