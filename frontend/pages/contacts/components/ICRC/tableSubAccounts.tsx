@@ -8,6 +8,7 @@ import {
 import { DeleteContactTypeEnum } from "@/const";
 import SubAccountBody from "./SubAccountBody";
 import SubAccountHeader from "./subAccountHeader";
+import { useState } from "react";
 
 interface TableSubAccountsProps {
   asst: AssetContact;
@@ -46,9 +47,10 @@ const TableSubAccounts = ({
   setSubaccEditedErr,
   setDeleteObject,
 }: TableSubAccountsProps) => {
+  const [fromPrincSub, setFromPrincSub] = useState(false);
   return (
     <table className="w-full text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md ">
-      <SubAccountHeader asst={asst} addSub={addSub} />
+      <SubAccountHeader asst={asst} addSub={addSub} fromPrincSub={fromPrincSub} />
       <SubAccountBody
         asst={asst}
         addSub={addSub}
@@ -66,6 +68,8 @@ const TableSubAccounts = ({
         setDeleteType={setDeleteType}
         setSubaccEditedErr={setSubaccEditedErr}
         setDeleteObject={setDeleteObject}
+        fromPrincSub={fromPrincSub}
+        setFromPrincSub={setFromPrincSub}
       />
     </table>
   );

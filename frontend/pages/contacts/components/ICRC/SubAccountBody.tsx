@@ -6,6 +6,8 @@ import { ReactComponent as ChevIcon } from "@assets/svg/files/chev-icon.svg";
 import { ReactComponent as CheckIcon } from "@assets/svg/files/edit-check.svg";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 
+import { Buffer } from "buffer";
+
 import { CustomCopy } from "@components/CopyTooltip";
 import { CustomInput } from "@components/Input";
 import { encodeIcrcAccount } from "@dfinity/ledger";
@@ -19,7 +21,7 @@ import {
   SubAccountContact,
   SubAccountContactErr,
 } from "@redux/models/ContactsModels";
-import { isHexadecimalValid } from "@/utils/checkers";
+import { getNormalizedHex, isHexadecimalValid } from "@/utils/checkers";
 import { getAllowanceDetails } from "@/pages/home/helpers/icrc";
 import { DeleteContactTypeEnum } from "@/const";
 import useContactTable from "../../hooks/useContactTable";
@@ -27,6 +29,8 @@ import { GeneralHook } from "@pages/home/hooks/generalHook";
 import LoadingLoader from "@components/Loader";
 import store from "@redux/Store";
 import { SupportedStandardEnum } from "@/@types/icrc";
+import { CustomButton } from "@components/Button";
+import { ChangeEvent, useState } from "react";
 
 interface SubAccountBodyProps {
   asst: AssetContact;
@@ -35,6 +39,8 @@ interface SubAccountBodyProps {
   subaccEdited: SubAccountContact;
   subaccEditedErr: SubAccountContactErr;
   cntc: Contact;
+  fromPrincSub: boolean;
+  setFromPrincSub(value: boolean): void;
   setSubaccEdited(value: SubAccountContact): void;
   changeSubIdx(value: string): void;
   changeName(value: string): void;
@@ -55,6 +61,7 @@ export default function SubAccountBody(props: SubAccountBodyProps) {
     subaccEdited,
     subaccEditedErr,
     cntc,
+    fromPrincSub,
     setSubaccEdited,
     changeSubIdx,
     changeName,
@@ -65,9 +72,11 @@ export default function SubAccountBody(props: SubAccountBodyProps) {
     setDeleteType,
     setSubaccEditedErr,
     setDeleteObject,
+    setFromPrincSub,
   } = props;
   const { asciiHex } = GeneralHook();
   const { editCntctSubacc, addCntctSubacc, isPending, setIsPending } = useContactTable();
+  const [princ, setPrinc] = useState("");
 
   return (
     <tbody>
@@ -128,27 +137,30 @@ export default function SubAccountBody(props: SubAccountBodyProps) {
               </div>
             </td>
             <td
-              className={`py-2 border-b border-BorderColorTwoLight dark:border-BorderColorTwo ${
+              className={`py-2 border-b  border-BorderColorTwoLight dark:border-BorderColorTwo ${
                 sa.subaccount_index === selSubaccIdx ? "bg-SelectRowColor/10" : ""
               }`}
             >
               <div className="relative flex flex-row items-center justify-start w-full h-10 gap-2 px-4">
                 {sa.subaccount_index === selSubaccIdx ? (
-                  <CustomInput
-                    intent={"primary"}
-                    border={subaccEditedErr.subaccount_index ? "error" : "selected"}
-                    sizeComp={"xLarge"}
-                    sizeInput="small"
-                    inputClass="text-center"
-                    value={subaccEdited.subaccount_index}
-                    onChange={(e) => {
-                      changeSubIdx(e.target.value);
-                    }}
-                    onKeyDown={onKeyDownIndex}
-                  />
+                  <div className="relative flex flex-row items-center justify-start w-full gap-2">
+                    <CustomInput
+                      intent={"primary"}
+                      border={subaccEditedErr.subaccount_index ? "error" : "selected"}
+                      sizeComp={"xLarge"}
+                      sizeInput="small"
+                      inputClass="text-center"
+                      value={fromPrincSub ? princ : subaccEdited.subaccount_index}
+                      onChange={onSubAccountChange}
+                      onKeyDown={onKeyDownIndex}
+                    />
+                    <CustomButton size={"xSmall"} onClick={onFromPrincChange}>
+                      <p>{fromPrincSub ? "Principal" : "Hex"}</p>
+                    </CustomButton>
+                  </div>
                 ) : (
                   <div className="flex flex-row items-center justify-center w-full gap-2 px-2 opacity-70">
-                    <p className=" whitespace-nowrap">{`0x${sa.subaccount_index || "0"}`}</p>
+                    <p className="text-nowrap">{shortAddress(`0x${sa.subaccount_index || "0"}`, 7, 5)}</p>
                     <CustomCopy size={"xSmall"} className="p-0" copyText={sa.subaccount_index || "0"} />
                   </div>
                 )}
@@ -185,6 +197,7 @@ export default function SubAccountBody(props: SubAccountBodyProps) {
                   <PencilIcon
                     onClick={() => {
                       onEditSubAccount(sa);
+                      setFromPrincSub(false);
                     }}
                     className="w-4 h-4 opacity-50 cursor-pointer fill-PrimaryTextColorLight dark:fill-PrimaryTextColor"
                   />
@@ -194,6 +207,7 @@ export default function SubAccountBody(props: SubAccountBodyProps) {
                   <CloseIcon
                     onClick={() => {
                       setSelSubaccIdx("");
+                      setFromPrincSub(false);
                     }}
                     className="w-5 h-5 opacity-50 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
                   />
@@ -253,12 +267,13 @@ export default function SubAccountBody(props: SubAccountBodyProps) {
                 sizeComp={"xLarge"}
                 sizeInput="small"
                 inputClass="text-center"
-                value={subaccEdited.subaccount_index}
-                onChange={(e) => {
-                  changeSubIdx(e.target.value);
-                }}
+                value={fromPrincSub ? princ : subaccEdited.subaccount_index}
+                onChange={onSubAccountChange}
                 onKeyDown={onKeyDownIndex}
               />
+              <CustomButton size={"xSmall"} onClick={onFromPrincChange}>
+                <p>{fromPrincSub ? "Principal" : "Hex"}</p>
+              </CustomButton>
             </div>
           </td>
           <td className={"py-2 border-b border-BorderColorTwoLight dark:border-BorderColorTwo bg-SelectRowColor/10"}>
@@ -296,18 +311,27 @@ export default function SubAccountBody(props: SubAccountBodyProps) {
   );
 
   async function checkSubAccount(edit: boolean, contact: Contact, asset: AssetContact, subAccount?: SubAccountContact) {
+    if (subaccEditedErr.name || subaccEditedErr.subaccount_index) return;
+    let princSubId = "";
+
+    if (fromPrincSub) {
+      const princBytes = Principal.fromText(princ).toUint8Array();
+      princSubId = `0x${princBytes.length.toString(16) + Buffer.from(princBytes).toString("hex")}`;
+    }
     setIsPending(true);
     const SUB_ACCOUNT_ID_ERROR = "SUB_ACCOUNT_ID_ERROR";
     const SUB_ACCOUNT_NAME_ERROR = "SUB_ACCOUNT_NAME_ERROR";
 
     try {
       const subAccountName = subaccEdited.name;
-      const grossSubAccountId = subaccEdited.subaccount_index.trim();
-      const subAccountIndex =
-        removeLeadingZeros(grossSubAccountId) === "" ? "0" : removeLeadingZeros(grossSubAccountId);
+      const grossSubAccountId = fromPrincSub ? princSubId : subaccEdited.subaccount_index.trim();
+      console.log("grossSubAccountId", grossSubAccountId);
 
       if (!subAccountName) throw SUB_ACCOUNT_NAME_ERROR;
-      if (!isHexadecimalValid(subAccountIndex)) throw SUB_ACCOUNT_ID_ERROR;
+      if (!isHexadecimalValid(grossSubAccountId)) throw SUB_ACCOUNT_ID_ERROR;
+
+      const normalizedHex = getNormalizedHex(grossSubAccountId);
+      const subAccountIndex = removeLeadingZeros(normalizedHex) === "" ? "0" : removeLeadingZeros(normalizedHex);
 
       const duplicated = asset.subaccounts.find((sa) => {
         return sa.subaccount_index === subAccountIndex;
@@ -359,6 +383,32 @@ export default function SubAccountBody(props: SubAccountBodyProps) {
       console.error(error);
     } finally {
       setIsPending(false);
+      setFromPrincSub(false);
+    }
+  }
+
+  function onFromPrincChange() {
+    setFromPrincSub(!fromPrincSub);
+    changeSubIdx("");
+    setPrinc("");
+  }
+
+  function onSubAccountChange(e: ChangeEvent<HTMLInputElement>) {
+    const value = e.target.value;
+    if (fromPrincSub) {
+      setPrinc(value);
+      if (value === "") {
+        setSubaccEditedErr({ ...subaccEditedErr, subaccount_index: false });
+      } else {
+        try {
+          Principal.fromText(value);
+          setSubaccEditedErr({ ...subaccEditedErr, subaccount_index: false });
+        } catch {
+          setSubaccEditedErr({ ...subaccEditedErr, subaccount_index: true });
+        }
+      }
+    } else {
+      changeSubIdx(value);
     }
   }
 
@@ -394,6 +444,7 @@ export default function SubAccountBody(props: SubAccountBodyProps) {
   function onCloseClic() {
     setAddSub(false);
     setSelSubaccIdx("");
+    setFromPrincSub(false);
   }
 
   function getSubAccount(princ: string) {
@@ -404,12 +455,14 @@ export default function SubAccountBody(props: SubAccountBodyProps) {
   }
 
   function onKeyDownIndex(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (!asciiHex.includes(e.key)) {
-      e.preventDefault();
-    }
-    if (subaccEdited.subaccount_index.includes("0x") || subaccEdited.subaccount_index.includes("0X")) {
-      if (e.key === "X" || e.key == "x") {
+    if (!fromPrincSub) {
+      if (!asciiHex.includes(e.key)) {
         e.preventDefault();
+      }
+      if (subaccEdited.subaccount_index.includes("0x") || subaccEdited.subaccount_index.includes("0X")) {
+        if (e.key === "X" || e.key == "x") {
+          e.preventDefault();
+        }
       }
     }
   }
