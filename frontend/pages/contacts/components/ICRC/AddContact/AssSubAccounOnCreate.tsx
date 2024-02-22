@@ -4,7 +4,6 @@ import { ReactComponent as TrashIcon } from "@assets/svg/files/trash-empty.svg";
 import { SubAccountContact } from "@redux/models/ContactsModels";
 import { useTranslation } from "react-i18next";
 import AllowanceTooltip from "../AllowanceTooltip";
-import { CustomButton } from "@components/Button";
 
 interface AddSubAccountOnCreateProps {
   newContactSubNameErr: number[];
@@ -85,11 +84,6 @@ export default function AddSubAccountOnCreate(props: AddSubAccountOnCreateProps)
                   onKeyDown={(e) => {
                     onKeyPressSubIdx(e, newSA);
                   }}
-                  // sufix={
-                  //   <CustomButton size={"xSmall"}>
-                  //     <p>{newContactSubIdErr.includes(k) ? "Prin" : "Hex"}</p>
-                  //   </CustomButton>
-                  // }
                 />
                 <TrashIcon
                   onClick={() => {
