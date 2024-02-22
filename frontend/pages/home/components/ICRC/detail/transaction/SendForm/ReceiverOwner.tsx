@@ -38,8 +38,14 @@ export default function ReceiverOwner() {
         .map(formatSubAccount);
     }
 
-    return subAccounts.map(formatSubAccount);
-  }, [sender, currentAsset]);
+    return subAccounts
+      .filter(
+        (subAccount) =>
+          subAccount?.name?.toLowerCase().includes(filterValue) ||
+          subAccount?.symbol?.toLocaleLowerCase().includes(filterValue),
+      )
+      .map(formatSubAccount);
+  }, [sender, currentAsset, searchSubAccountValue]);
 
   return (
     <div className="mx-4 mt-4">
