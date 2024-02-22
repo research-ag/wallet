@@ -27,7 +27,7 @@ export default function MnemonicInput({ phrase, setPhrase }: MnemonicInputProps)
         <div className="flex flex-row items-center justify-start gap-1">
           <CheckIcon onClick={onLoginWithPhase} className={getCheckIconStyles(!isError && isValid)} />
           <p className="text-sm min-w-[4rem] text-PrimaryTextColorLight dark:text-PrimaryTextColor">
-            Words {phrase.length > 0 ? phrase.split(" ").length : 0}
+            Words {getSanitizedPhrase(phrase).length > 0 ? getSanitizedPhrase(phrase).split(" ").length : 0}
           </p>
         </div>
       }

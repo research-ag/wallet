@@ -12,25 +12,3 @@ export function middleTruncation(text: string | undefined, startSize: number, en
   const endText = text.substring(text.length - endSize, text.length);
   return `${startText}...${endText}`;
 }
-
-export function removeLeadingSpaces(text: string) {
-  return text.replace(/^\s+/, "");
-}
-
-export function removeTailingSpaces(text: string) {
-  return text.replace(/\s+$/, "");
-}
-
-export function removeBetweenSpaces(text: string) {
-  return text.replace(/\s{2,}/g, " ");
-}
-
-export function removeTailingAndLeadingSpaces(text: string) {
-  return text.replace(/^\s+|\s+$/g, "");
-}
-
-export function removeTailingAndLeadingSpacesBetween(text: string) {
-  const chunks = text.split(" ");
-  const cleanedChunks = chunks.filter((chunk) => chunk.trim() !== "");
-  return cleanedChunks.join(" ");
-}
