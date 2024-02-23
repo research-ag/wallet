@@ -12,6 +12,7 @@ import { CustomInput } from "@components/Input";
 import { ThemesEnum } from "@/const";
 import { db } from "@/database/db";
 import store from "@/redux/Store";
+import { decodeIcrcAccount } from "@dfinity/ledger";
 
 interface DbLocationModalProps {
   setOpen(value: boolean): void;
@@ -23,6 +24,7 @@ const DbLocationModal = ({ setOpen }: DbLocationModalProps) => {
   const { theme } = ThemeHook();
   const { changeDbLocation, dbLocation } = DbLocationHook();
   const [canisterId, setCanisterId] = useState(db().getCustomDbCanisterId() || "");
+  const [canisterIdErr, setCanisterIdErrErr] = useState(false);
 
   return (
     <Fragment>
@@ -104,6 +106,7 @@ const DbLocationModal = ({ setOpen }: DbLocationModalProps) => {
             value={canisterId}
             onKeyUp={onKeyUp}
             onChange={onChangeId}
+            border={(canisterIdErr && "error") || undefined}
           />
         )}
       </div>
@@ -116,14 +119,21 @@ const DbLocationModal = ({ setOpen }: DbLocationModalProps) => {
   }
 
   function onKeyUp(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.nativeEvent.key === "Enter") {
+    if (!canisterIdErr && e.nativeEvent.key === "Enter") {
       db().setCustomDbCanisterId(canisterId);
       store.dispatch(setCustomDbCanisterId(canisterId));
+      setOpen(false);
     }
   }
 
-  function onChangeId(e: React.ChangeEvent<HTMLInputElement>) {
-    setCanisterId(e.target.value);
+  function onChangeId({ target: { value } }: React.ChangeEvent<HTMLInputElement>) {
+    setCanisterId(value);
+    try {
+      !!value && decodeIcrcAccount(value);
+      setCanisterIdErrErr(false);
+    } catch {
+      setCanisterIdErrErr(true);
+    }
   }
 };
 

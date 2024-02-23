@@ -35,7 +35,7 @@ export class RxdbDatabase extends IWalletDatabase {
   private identity: Identity = new AnonymousIdentity();
   private identityChanged$: Subject<void> = new Subject<void>();
   private readonly agent = new HttpAgent({ identity: this.identity, host: import.meta.env.VITE_DB_CANISTER_HOST });
-  private readonly replicaCanister = createActor(import.meta.env.VITE_DB_CANISTER_ID, { agent: this.agent });
+  private replicaCanister: any;
 
   private _tokens!: RxCollection<TokenRxdbDocument> | null;
   private tokensReplicationState?: RxReplicationState<any, any>;
@@ -125,6 +125,9 @@ export class RxdbDatabase extends IWalletDatabase {
 
     // Don't allow watch-only mode to use the DB
     if (!this.identity.getPrincipal().isAnonymous()) {
+      this.replicaCanister = createActor(this.getCustomDbCanisterId() || import.meta.env.VITE_DB_CANISTER_ID, {
+        agent: this.agent,
+      });
       await this.init();
       await this._doesRecordByPrincipalExist();
     }
