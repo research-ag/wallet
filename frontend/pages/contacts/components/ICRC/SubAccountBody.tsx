@@ -325,7 +325,6 @@ export default function SubAccountBody(props: SubAccountBodyProps) {
     try {
       const subAccountName = subaccEdited.name;
       const grossSubAccountId = fromPrincSub ? princSubId : subaccEdited.subaccount_index.trim();
-      console.log("grossSubAccountId", grossSubAccountId);
 
       if (!subAccountName) throw SUB_ACCOUNT_NAME_ERROR;
       if (!isHexadecimalValid(grossSubAccountId)) throw SUB_ACCOUNT_ID_ERROR;
@@ -367,7 +366,7 @@ export default function SubAccountBody(props: SubAccountBodyProps) {
           asst.tokenSymbol,
           subaccEdited.name.trim(),
           subAccountIndex,
-          subaccEdited.sub_account_id,
+          fromPrincSub ? princSubId : subaccEdited.sub_account_id,
           allowance,
         );
         setSelSubaccIdx("");
