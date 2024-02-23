@@ -8,9 +8,10 @@ import history from "./history";
 import PrivateRoute from "./components/privateRoute";
 import { useAppSelector } from "@redux/Store";
 import { ThemeHook } from "./hooks/themeHook";
+import { DbLocationHook } from "./hooks/dbLocationHook";
 import Loader from "./components/Loader";
 import { ThemesEnum } from "@/const";
-import { db } from "@/database/db";
+import { db, DB_Type } from "@/database/db";
 
 const Home = lazy(() => import("./home"));
 const Contacts = lazy(() => import("./contacts"));
@@ -19,6 +20,7 @@ const SwitchRoute = () => {
   const { authLoading, superAdmin, authenticated } = useAppSelector((state) => state.auth);
   const { blur } = useAppSelector((state) => state.auth);
   const { changeTheme } = ThemeHook();
+  const { changeDbLocation } = DbLocationHook();
 
   useEffect(() => {
     const theme = db().getTheme();
@@ -34,6 +36,10 @@ const SwitchRoute = () => {
       db().setTheme(ThemesEnum.enum.light);
       changeTheme(ThemesEnum.enum.light);
     }
+
+    // Default to LOCAL dbLocation if has not been set yet
+    !db().getDbLocation() && db().setDbLocation(DB_Type.LOCAL);
+    changeDbLocation(db().getDbLocation() || DB_Type.LOCAL);
   }, []);
 
   return authLoading ? (
@@ -44,7 +50,7 @@ const SwitchRoute = () => {
       <Router history={history}>
         {/* NORMAL USERS */}
         {!superAdmin && authenticated && (
-          <LayoutComponent role={1} history={history}>
+          <LayoutComponent role={1} history={history} isLoginPage={false}>
             <Switch>
               <PrivateRoute exact path={HOME} authenticated={authenticated} allowByRole={true} Component={Home} />
               <PrivateRoute
@@ -61,10 +67,12 @@ const SwitchRoute = () => {
 
         {/*  LOGINS NO AUTH */}
         {!superAdmin && !authenticated && (
-          <Switch>
-            <PrivateRoute exact path={LOGIN} authenticated={authenticated} allowByRole={true} Component={Login} />
-            <Redirect to={LOGIN} />
-          </Switch>
+          <LayoutComponent role={1} history={history} isLoginPage={true}>
+            <Switch>
+              <PrivateRoute exact path={LOGIN} authenticated={authenticated} allowByRole={true} Component={Login} />
+              <Redirect to={LOGIN} />
+            </Switch>
+          </LayoutComponent>
         )}
       </Router>
     </>

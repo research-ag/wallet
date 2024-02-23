@@ -3,7 +3,7 @@ import { Token, TokenMarketInfo } from "@redux/models/TokenModels";
 import { Asset, ICPSubAccount, SubAccount, Transaction, TransactionList } from "@redux/models/AccountModels";
 import bigInt from "big-integer";
 import { getUSDfromToken, hexToNumber } from "@/utils";
-import { db } from "@/database/db";
+import { localDb, rxDb } from "@/database/db";
 import store from "@redux/Store";
 import { setAssetFromLocalData, updateAllBalances } from "./AssetActions";
 
@@ -316,21 +316,24 @@ const assetSlice = createSlice({
   },
 });
 
-db()
-  .subscribeToAllTokens()
-  .subscribe((x) => {
-    if (x.length > 0) {
-      store.dispatch(
-        assetSlice.actions.setReduxTokens(
-          x.sort((a, b) => {
-            return a.id_number - b.id_number;
-          }),
-        ),
-      );
-      if (store.getState().asset.initLoad) setAssetFromLocalData(x, store.getState().auth.authClient);
-      updateAllBalances(true, store.getState().auth.userAgent, x);
-    }
-  });
+const dbSubscriptionHandler = (x: any[]) => {
+  if (x.length > 0) {
+    store.dispatch(
+      assetSlice.actions.setReduxTokens(
+        x.sort((a: any, b: any) => {
+          return a.id_number - b.id_number;
+        }),
+      ),
+    );
+
+    if (store.getState().asset.initLoad) setAssetFromLocalData(x, store.getState().auth.authClient);
+
+    updateAllBalances(true, store.getState().auth.userAgent, x);
+  }
+};
+
+localDb().subscribeToAllTokens().subscribe(dbSubscriptionHandler);
+rxDb().subscribeToAllTokens().subscribe(dbSubscriptionHandler);
 
 export const {
   setInitLoad,

@@ -2,8 +2,15 @@ import { RxdbDatabase } from "@/database/rxdb";
 import { IWalletDatabase } from "@/database/i-wallet-database";
 import { LocalStorageDatabase } from "@/database/local-storage";
 
-const _db: IWalletDatabase =
-  import.meta.env.VITE_DB_STORAGE === "rxdb" ? RxdbDatabase.instance : LocalStorageDatabase.instance;
+export enum DB_Type {
+  LOCAL = "local",
+  CANISTER = "rxdb",
+}
+
+export const localDb = () => LocalStorageDatabase.instance;
+
+export const rxDb = () => RxdbDatabase.instance;
+
 export const db: () => IWalletDatabase = () => {
-  return _db;
+  return localStorage.getItem("dbLocation") === DB_Type.CANISTER ? rxDb() : localDb();
 };
