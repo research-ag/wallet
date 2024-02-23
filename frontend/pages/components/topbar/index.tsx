@@ -27,8 +27,9 @@ import { CustomCopy } from "@components/CopyTooltip";
 import { AssetHook } from "@pages/home/hooks/assetHook";
 import { useAppSelector } from "@redux/Store";
 import { db } from "@/database/db";
+import DbLocationModal from "./dbLocationModal";
 
-const TopBarComponent = () => {
+const TopBarComponent = ({ isLoginPage }: { isLoginPage: boolean }) => {
   const { t } = useTranslation();
   const { onLanguageChange } = LanguageHook();
   const { watchOnlyMode } = useAppSelector((state) => state.auth);
@@ -37,6 +38,7 @@ const TopBarComponent = () => {
   const { getTotalAmountInCurrency, reloadBallance, assetLoading } = AssetHook();
 
   const [langOpen, setLangOpen] = useState(false);
+  const [dbLocationOpen, setDbLocationOpen] = useState(false);
 
   const langOpts = [
     { abrev: "en", name: "english", flag: <UsaFlagIcon className={flag} /> },
@@ -54,25 +56,29 @@ const TopBarComponent = () => {
           ) : (
             <ICRC1Logo className="max-w-[7rem] h-auto" />
           )}
-          <div className="flex flex-row justify-start items-center gap-3">
-            <p className="opacity-50">{shortAddress(authClient, 12, 10)}</p>
-            <CustomCopy size={"small"} copyText={authClient} />
-            <RefreshIcon
-              className={`h-4 w-4 cursor-pointer fill-PrimaryTextColorLight dark:fill-PrimaryTextColor ${
-                assetLoading ? "do-spin" : ""
-              }`}
-              onClick={handleReloadButton}
-            />
-            {watchOnlyMode && <p className="opacity-50">{t("watchOnlyMode.title")}</p>}
-          </div>
+          {!isLoginPage && (
+            <div className="flex flex-row justify-start items-center gap-3">
+              <p className="opacity-50">{shortAddress(authClient, 12, 10)}</p>
+              <CustomCopy size={"small"} copyText={authClient} />
+              <RefreshIcon
+                className={`h-4 w-4 cursor-pointer fill-PrimaryTextColorLight dark:fill-PrimaryTextColor ${
+                  assetLoading ? "do-spin" : ""
+                }`}
+                onClick={handleReloadButton}
+              />
+              {watchOnlyMode && <p className="opacity-50">{t("watchOnlyMode.title")}</p>}
+            </div>
+          )}
         </div>
         <div className="flex flex-row justify-start items-center pr-9 gap-9">
-          <div className="flex flex-row justify-start items-center gap-2 text-md">
-            <WalletIcon className="fill-SvgColor dark:fill-SvgColor max-w-[1.5rem] h-auto"></WalletIcon>
-            <p className="opacity-70">{t("total.balance")}:</p>
-            <p className="font-medium">{`$${getTotalAmountInCurrency().toFixed(2)}`}</p>
-            <p className="opacity-70">USD</p>
-          </div>
+          {!isLoginPage && (
+            <div className="flex flex-row justify-start items-center gap-2 text-md">
+              <WalletIcon className="fill-SvgColor dark:fill-SvgColor max-w-[1.5rem] h-auto"></WalletIcon>
+              <p className="opacity-70">{t("total.balance")}:</p>
+              <p className="font-medium">{`$${getTotalAmountInCurrency().toFixed(2)}`}</p>
+              <p className="opacity-70">USD</p>
+            </div>
+          )}
           <DropdownMenu.Root
             modal={false}
             onOpenChange={() => {
@@ -123,14 +129,25 @@ const TopBarComponent = () => {
                 >
                   <p>{t("themes")}</p>
                 </DropdownMenu.Item>
-                <DropdownMenu.Item
-                  className={clsx(gearPopItem, "!justify-between", "rounded-b-lg")}
-                  onSelect={() => {
-                    logout();
-                  }}
-                >
-                  <p className="text-LockColor">{t("lock")}</p>
-                </DropdownMenu.Item>
+                {isLoginPage ? (
+                  <DropdownMenu.Item
+                    className={clsx(gearPopItem, "!justify-between", "rounded-b-lg")}
+                    onSelect={() => {
+                      setDbLocationOpen(true);
+                    }}
+                  >
+                    <p>{t("database.location")}</p>
+                  </DropdownMenu.Item>
+                ) : (
+                  <DropdownMenu.Item
+                    className={clsx(gearPopItem, "!justify-between", "rounded-b-lg")}
+                    onSelect={() => {
+                      logout();
+                    }}
+                  >
+                    <p className="text-LockColor">{t("lock")}</p>
+                  </DropdownMenu.Item>
+                )}
               </DropdownMenu.Content>
             </DropdownMenu.Portal>
           </DropdownMenu.Root>
@@ -138,6 +155,9 @@ const TopBarComponent = () => {
       </div>
       <Modal open={themeOpen} top="top-[35%]">
         <ThemeModal setOpen={setThemeOpen} />
+      </Modal>
+      <Modal open={dbLocationOpen} top="top-[35%]">
+        <DbLocationModal setOpen={setDbLocationOpen} />
       </Modal>
     </Fragment>
   );

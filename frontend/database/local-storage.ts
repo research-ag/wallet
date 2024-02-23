@@ -3,6 +3,7 @@ import { Token } from "@redux/models/TokenModels";
 import { Contact } from "@redux/models/ContactsModels";
 import { Identity } from "@dfinity/agent";
 import { BehaviorSubject, Observable } from "rxjs";
+import { defaultTokens } from "@/defaultTokens";
 
 export class LocalStorageDatabase extends IWalletDatabase {
   // Singleton pattern
@@ -15,6 +16,8 @@ export class LocalStorageDatabase extends IWalletDatabase {
   }
 
   private principalId = "";
+  private readonly _tokens$: BehaviorSubject<Token[]> = new BehaviorSubject<Token[]>(this._getTokens());
+  private readonly _contacts$: BehaviorSubject<Contact[]> = new BehaviorSubject<Contact[]>(this._getContacts());
 
   /**
    * Initialice all necessary external systema and
@@ -34,6 +37,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
     this.principalId = identity?.getPrincipal().toText() || "";
     this._tokens$.next(this._getTokens());
     this._contacts$.next(this._getContacts());
+    !!this.principalId && this._doesRecordByPrincipalExist();
   }
 
   /**
@@ -52,16 +56,6 @@ export class LocalStorageDatabase extends IWalletDatabase {
    */
   async getTokens(): Promise<Token[]> {
     return this._getTokens();
-  }
-
-  /**
-   * Subscribable Observable that triggers after
-   * a new Identity has been set.
-   * @returns Array of Token objects from current
-   * active agent
-   */
-  subscribeToAllTokens(): Observable<Token[]> {
-    return this._tokens$.asObservable();
   }
 
   /**
@@ -107,11 +101,6 @@ export class LocalStorageDatabase extends IWalletDatabase {
     return this._getContacts().find((x) => x.principal === principal) || null;
   }
 
-  private _getContacts(): Contact[] {
-    const contactsData = JSON.parse(localStorage.getItem("contacts-" + this.principalId) || "null");
-    return contactsData?.contacts || [];
-  }
-
   /**
    * Get all Contact objects from active agent.
    * @returns Array of found Contact objects or an empty
@@ -119,16 +108,6 @@ export class LocalStorageDatabase extends IWalletDatabase {
    */
   async getContacts(): Promise<Contact[]> {
     return this._getContacts();
-  }
-
-  /**
-   * Subscribable Observable that trigger after
-   * a new Identity has been set.
-   * @returns Array of Contact objects from current
-   * active agent
-   */
-  subscribeToAllContacts(): Observable<Contact[]> {
-    return this._contacts$.asObservable();
   }
 
   /**
@@ -165,22 +144,28 @@ export class LocalStorageDatabase extends IWalletDatabase {
     this._setContacts(this._getContacts().filter((cnts) => cnts.principal !== principal));
   }
 
-  private _setContacts(contacts: Contact[]) {
-    localStorage.setItem(
-      "contacts-" + this.principalId,
-      JSON.stringify({
-        contacts,
-      }),
-    );
-    this._contacts$.next(contacts);
+  /**
+   * Subscribable Observable that triggers after
+   * a new Identity has been set.
+   * @returns Array of Token objects from current
+   * active agent
+   */
+  subscribeToAllTokens(): Observable<Token[]> {
+    return this._tokens$.asObservable();
   }
 
-  private readonly _tokens$: BehaviorSubject<Token[]> = new BehaviorSubject<Token[]>(this._getTokens());
-
-  private readonly _contacts$: BehaviorSubject<Contact[]> = new BehaviorSubject<Contact[]>(this._getContacts());
+  /**
+   * Subscribable Observable that trigger after
+   * a new Identity has been set.
+   * @returns Array of Contact objects from current
+   * active agent
+   */
+  subscribeToAllContacts(): Observable<Contact[]> {
+    return this._contacts$.asObservable();
+  }
 
   private _getTokens(): Token[] {
-    const userData = JSON.parse(localStorage.getItem(this.principalId) || "null");
+    const userData = JSON.parse(localStorage.getItem(`tokens-${this.principalId}`) || "null");
     return userData?.tokens || [];
   }
 
@@ -189,12 +174,38 @@ export class LocalStorageDatabase extends IWalletDatabase {
       return a.id_number - b.id_number;
     });
     localStorage.setItem(
-      this.principalId,
+      `tokens-${this.principalId}`,
       JSON.stringify({
         from: "II",
         tokens,
       }),
     );
     this._tokens$.next(tokens);
+  }
+
+  private _getContacts(): Contact[] {
+    const contactsData = JSON.parse(localStorage.getItem(`contacts-${this.principalId}`) || "null");
+    return contactsData?.contacts || [];
+  }
+
+  private _setContacts(contacts: Contact[]) {
+    localStorage.setItem(
+      `contacts-${this.principalId}`,
+      JSON.stringify({
+        contacts,
+      }),
+    );
+    this._contacts$.next(contacts);
+  }
+
+  private _doesRecordByPrincipalExist() {
+    // Look for entry record by current prinicpal ID
+    const exist = !!localStorage.getItem(`tokens-${this.principalId}`);
+
+    // If does not exist it means that this is a brand new account
+    if (!exist) {
+      this._setTokens(defaultTokens);
+      this._tokens$.next(this._getTokens());
+    }
   }
 }

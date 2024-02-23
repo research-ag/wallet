@@ -2,7 +2,7 @@ import { getAccountIdentifier, hexToNumber } from "@/utils";
 import { AssetContact, Contact } from "@redux/models/ContactsModels";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import bigInt from "big-integer";
-import { db } from "@/database/db";
+import { db, localDb, rxDb } from "@/database/db";
 import store from "@redux/Store";
 
 interface ContactsState {
@@ -306,9 +306,14 @@ const contactsSlice = createSlice({
   },
 });
 
-db()
-  .subscribeToAllContacts()
-  .subscribe((x) => store.dispatch(contactsSlice.actions.setReduxContacts(x)));
+const dbSubscriptionHandler = (x: any[]) => {
+  if (x.length > 0) {
+    store.dispatch(contactsSlice.actions.setReduxContacts(x));
+  }
+};
+
+localDb().subscribeToAllContacts().subscribe(dbSubscriptionHandler);
+rxDb().subscribeToAllContacts().subscribe(dbSubscriptionHandler);
 
 export const {
   setReduxContacts,
