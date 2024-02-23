@@ -11,7 +11,7 @@ import { ThemeHook } from "./hooks/themeHook";
 import { DbLocationHook } from "./hooks/dbLocationHook";
 import Loader from "./components/Loader";
 import { ThemesEnum } from "@/const";
-import { db } from "@/database/db";
+import { db, DB_Type } from "@/database/db";
 
 const Home = lazy(() => import("./home"));
 const Contacts = lazy(() => import("./contacts"));
@@ -38,8 +38,8 @@ const SwitchRoute = () => {
     }
 
     // Default to LOCAL dbLocation if has not been set yet
-    !db().getDbLocation() && db().setDbLocation("local");
-    changeDbLocation(db().getDbLocation() || "local");
+    !db().getDbLocation() && db().setDbLocation(DB_Type.LOCAL);
+    changeDbLocation(db().getDbLocation() || DB_Type.LOCAL);
   }, []);
 
   return authLoading ? (

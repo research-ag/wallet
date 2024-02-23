@@ -3,6 +3,7 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { Asset } from "@redux/models/AccountModels";
 import { ThemesEnum } from "@/const";
 import { Principal } from "@dfinity/principal";
+import { DB_Type } from "@/database/db";
 
 const defaultValue: any = {};
 interface AuthState {
@@ -33,7 +34,7 @@ const initialState: AuthState = {
   authClient: "",
   assetList: [],
   disclaimer: true,
-  dbLocation: "local",
+  dbLocation: DB_Type.LOCAL,
   customDbCanisterId: "",
   userAgent: defaultValue,
   userPrincipal: defaultValue,

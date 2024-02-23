@@ -2,6 +2,7 @@ import { AuthNetwork, Token } from "@redux/models/TokenModels";
 import { Contact } from "@redux/models/ContactsModels";
 import { Identity } from "@dfinity/agent";
 import { Observable } from "rxjs";
+import { DB_Type } from "./db";
 
 export abstract class IWalletDatabase {
   // various client settings
@@ -25,11 +26,11 @@ export abstract class IWalletDatabase {
     return JSON.parse(localStorage.getItem("network_type") || "null");
   }
 
-  getDbLocation(): "local" | "rxdb" | null {
+  getDbLocation(): DB_Type | null {
     return localStorage.dbLocation;
   }
 
-  setDbLocation(value: "local" | "rxdb"): void {
+  setDbLocation(value: DB_Type): void {
     localStorage.dbLocation = value;
   }
 

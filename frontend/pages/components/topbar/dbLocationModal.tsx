@@ -10,7 +10,7 @@ import { DbLocationHook } from "@pages/hooks/dbLocationHook";
 import { setCustomDbCanisterId } from "@/redux/auth/AuthReducer";
 import { CustomInput } from "@components/Input";
 import { ThemesEnum } from "@/const";
-import { db } from "@/database/db";
+import { db, DB_Type } from "@/database/db";
 import store from "@/redux/Store";
 import { decodeIcrcAccount } from "@dfinity/ledger";
 
@@ -41,7 +41,7 @@ const DbLocationModal = ({ setOpen }: DbLocationModalProps) => {
       <div
         className={clsx(themeBox, "bg-ThemeColorSelectorLight", "border-BorderColor")}
         onClick={() => {
-          handleChange("local");
+          handleChange(DB_Type.LOCAL);
         }}
       >
         <div
@@ -50,7 +50,7 @@ const DbLocationModal = ({ setOpen }: DbLocationModalProps) => {
           <RadioGroup.Root
             value={dbLocation}
             onChange={() => {
-              handleChange("local");
+              handleChange(DB_Type.LOCAL);
             }}
           >
             <div className="flex flex-row items-center p-3">
@@ -58,7 +58,7 @@ const DbLocationModal = ({ setOpen }: DbLocationModalProps) => {
                 className={`w-5 h-5 rounded-full border-2  outline-none p-0 ${
                   theme === ThemesEnum.enum.light ? "border-RadioCheckColor" : "border-RadioNoCheckColorLight"
                 }`}
-                value={"local"}
+                value={DB_Type.LOCAL}
                 id="r-local"
               >
                 <RadioGroup.Indicator className="flex items-center justify-center w-full h-full relative after:content-[''] after:block after:w-3 after:h-3 after:rounded-full after:bg-RadioCheckColor" />
@@ -74,13 +74,13 @@ const DbLocationModal = ({ setOpen }: DbLocationModalProps) => {
         <div
           className={clsx(option, optionBottom, "border-BorderColor", "bg-PrimaryColorLight", "dark:bg-PrimaryColor")}
           onClick={() => {
-            handleChange("rxdb");
+            handleChange(DB_Type.CANISTER);
           }}
         >
           <RadioGroup.Root
             value={dbLocation}
             onChange={() => {
-              handleChange("rxdb");
+              handleChange(DB_Type.CANISTER);
             }}
           >
             <div className="flex flex-row items-center p-3">
@@ -88,7 +88,7 @@ const DbLocationModal = ({ setOpen }: DbLocationModalProps) => {
                 className={`w-5 h-5 rounded-full border-2  outline-none p-0 ${
                   theme === ThemesEnum.enum.light ? "border-RadioCheckColor" : "border-RadioNoCheckColorLight"
                 }`}
-                value={"rxdb"}
+                value={DB_Type.CANISTER}
                 id="r-rxdb"
               >
                 <RadioGroup.Indicator className="flex items-center justify-center w-full h-full relative after:content-[''] after:block after:w-3 after:h-3 after:rounded-full after:bg-RadioCheckColor" />
@@ -99,7 +99,7 @@ const DbLocationModal = ({ setOpen }: DbLocationModalProps) => {
             </div>
           </RadioGroup.Root>
         </div>
-        {dbLocation === "rxdb" && (
+        {dbLocation === DB_Type.CANISTER && (
           <CustomInput
             intent={"primary"}
             placeholder="Canister ID (optional)"
@@ -113,7 +113,7 @@ const DbLocationModal = ({ setOpen }: DbLocationModalProps) => {
     </Fragment>
   );
 
-  function handleChange(location: "local" | "rxdb") {
+  function handleChange(location: DB_Type) {
     changeDbLocation(location);
     db().setDbLocation(location);
   }
