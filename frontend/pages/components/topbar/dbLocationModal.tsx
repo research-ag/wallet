@@ -1,14 +1,17 @@
 // svgs
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { clsx } from "clsx";
 import * as RadioGroup from "@radix-ui/react-radio-group";
 import { ThemeHook } from "@pages/hooks/themeHook";
 import { DbLocationHook } from "@pages/hooks/dbLocationHook";
+import { setCustomDbCanisterId } from "@/redux/auth/AuthReducer";
+import { CustomInput } from "@components/Input";
 import { ThemesEnum } from "@/const";
 import { db } from "@/database/db";
+import store from "@/redux/Store";
 
 interface DbLocationModalProps {
   setOpen(value: boolean): void;
@@ -19,6 +22,7 @@ const DbLocationModal = ({ setOpen }: DbLocationModalProps) => {
 
   const { theme } = ThemeHook();
   const { changeDbLocation, dbLocation } = DbLocationHook();
+  const [canisterId, setCanisterId] = useState(db().getCustomDbCanisterId() || "");
 
   return (
     <Fragment>
@@ -93,6 +97,15 @@ const DbLocationModal = ({ setOpen }: DbLocationModalProps) => {
             </div>
           </RadioGroup.Root>
         </div>
+        {dbLocation === "rxdb" && (
+          <CustomInput
+            intent={"primary"}
+            placeholder="Canister ID (optional)"
+            value={canisterId}
+            onKeyUp={onKeyUp}
+            onChange={onChangeId}
+          />
+        )}
       </div>
     </Fragment>
   );
@@ -100,6 +113,17 @@ const DbLocationModal = ({ setOpen }: DbLocationModalProps) => {
   function handleChange(location: "local" | "rxdb") {
     changeDbLocation(location);
     db().setDbLocation(location);
+  }
+
+  function onKeyUp(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.nativeEvent.key === "Enter") {
+      db().setCustomDbCanisterId(canisterId);
+      store.dispatch(setCustomDbCanisterId(canisterId));
+    }
+  }
+
+  function onChangeId(e: React.ChangeEvent<HTMLInputElement>) {
+    setCanisterId(e.target.value);
   }
 };
 

@@ -8,6 +8,7 @@ import history from "./history";
 import PrivateRoute from "./components/privateRoute";
 import { useAppSelector } from "@redux/Store";
 import { ThemeHook } from "./hooks/themeHook";
+import { DbLocationHook } from "./hooks/dbLocationHook";
 import Loader from "./components/Loader";
 import { ThemesEnum } from "@/const";
 import { db } from "@/database/db";
@@ -19,6 +20,7 @@ const SwitchRoute = () => {
   const { authLoading, superAdmin, authenticated } = useAppSelector((state) => state.auth);
   const { blur } = useAppSelector((state) => state.auth);
   const { changeTheme } = ThemeHook();
+  const { changeDbLocation } = DbLocationHook();
 
   useEffect(() => {
     const theme = db().getTheme();
@@ -37,6 +39,7 @@ const SwitchRoute = () => {
 
     // Default to LOCAL dbLocation if has not been set yet
     !db().getDbLocation() && db().setDbLocation("local");
+    changeDbLocation(db().getDbLocation() || "local");
   }, []);
 
   return authLoading ? (

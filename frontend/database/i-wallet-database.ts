@@ -33,6 +33,14 @@ export abstract class IWalletDatabase {
     localStorage.dbLocation = value;
   }
 
+  getCustomDbCanisterId(): string | null {
+    return localStorage.getItem("customDbCanisterId");
+  }
+
+  setCustomDbCanisterId(value: string): void {
+    localStorage.setItem("customDbCanisterId", value);
+  }
+
   setNetworkType(value: AuthNetwork): void {
     localStorage.setItem(
       "network_type",
