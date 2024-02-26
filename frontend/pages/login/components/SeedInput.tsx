@@ -11,7 +11,7 @@ interface SeedMethodInputProps {
 }
 
 export default function SeedInput({ seed, setSeed }: SeedMethodInputProps) {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
 
   return (
     <CustomInput
