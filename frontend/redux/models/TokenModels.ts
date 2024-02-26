@@ -7,7 +7,6 @@ const TokenSubAccount = z.object({
   name: z.string(),
   amount: z.string(),
   currency_amount: z.string(),
-  allowanceSpenders: z.array(z.string()).optional(),
 });
 export type TokenSubAccount = z.infer<typeof TokenSubAccount>;
 

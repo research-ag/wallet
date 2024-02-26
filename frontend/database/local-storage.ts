@@ -1,16 +1,13 @@
 import { IWalletDatabase } from "@/database/i-wallet-database";
 import { Token } from "@redux/models/TokenModels";
 import { Contact } from "@redux/models/ContactsModels";
+import { TAllowance } from "@/@types/allowance";
 import { Identity } from "@dfinity/agent";
 import { BehaviorSubject, Observable } from "rxjs";
 import { Principal } from "@dfinity/principal";
 import { defaultTokens } from "@/defaultTokens";
 
 export class LocalStorageDatabase extends IWalletDatabase {
-  private principalId = "";
-  private readonly _tokens$: BehaviorSubject<Token[]> = new BehaviorSubject<Token[]>(this._getTokens());
-  private readonly _contacts$: BehaviorSubject<Contact[]> = new BehaviorSubject<Contact[]>(this._getContacts());
-
   // Singleton pattern
   private static _instance: LocalStorageDatabase | undefined;
   public static get instance(): LocalStorageDatabase {
@@ -23,6 +20,9 @@ export class LocalStorageDatabase extends IWalletDatabase {
   private principalId = "";
   private readonly _tokens$: BehaviorSubject<Token[]> = new BehaviorSubject<Token[]>(this._getTokens());
   private readonly _contacts$: BehaviorSubject<Contact[]> = new BehaviorSubject<Contact[]>(this._getContacts());
+  private readonly _allowances$: BehaviorSubject<TAllowance[]> = new BehaviorSubject<TAllowance[]>(
+    this._getAllowances(),
+  );
 
   /**
    * Initialice all necessary external systema and
@@ -42,6 +42,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
     this.principalId = fixedPrincipal?.toString() || identity?.getPrincipal().toText() || "";
     this._tokens$.next(this._getTokens());
     this._contacts$.next(this._getContacts());
+    this._allowances$.next(this._getAllowances());
     !!this.principalId && this._doesRecordByPrincipalExist();
   }
 
@@ -150,6 +151,58 @@ export class LocalStorageDatabase extends IWalletDatabase {
   }
 
   /**
+   * Find a Allowance object by its Spender Principal ID.
+   * @param spenderPrincipal Spender Princial ID
+   * @returns Allowance object or NULL if not found
+   */
+  async getAllowance(spenderPrincipal: string): Promise<TAllowance | null> {
+    return this._getAllowances().find((x) => x.spender === spenderPrincipal) || null;
+  }
+
+  /**
+   * Get all Allowance objects from active agent.
+   * @returns Array of found Allowance objects or an empty
+   * array if no Allowance object were found
+   */
+  async getAllowances(): Promise<TAllowance[]> {
+    return this._getAllowances();
+  }
+
+  /**
+   * Add a new Allowance object to the list of Allowance objects
+   * current active agent has.
+   * @param allowance Allowance object to be added
+   */
+  async addAllowance(allowance: TAllowance): Promise<void> {
+    const allowances = this._getAllowances();
+    this._setAllowances([...allowances, allowance]);
+  }
+
+  /**
+   * Find a Allowance object by its Spender Principal ID and replace it
+   * with another Allowance object with the date of update.
+   * @param spenderPrincipal Spender Principal ID
+   * @param newDoc Allowance object
+   */
+  async updateAllowance(spenderPrincipal: string, newDoc: TAllowance): Promise<void> {
+    this._setAllowances(
+      this._getAllowances().map((allowance) => {
+        if (allowance.spender === spenderPrincipal) {
+          return newDoc;
+        } else return allowance;
+      }),
+    );
+  }
+
+  /**
+   * Find and remove a Allowance object by its Spender Princial ID.
+   * @param spenderPrincipal Spender Principal ID
+   */
+  async deleteAllowance(spenderPrincipal: string): Promise<void> {
+    this._setAllowances(this._getAllowances().filter((allowance) => allowance.spender !== spenderPrincipal));
+  }
+
+  /**
    * Subscribable Observable that triggers after
    * a new Identity has been set.
    * @returns Array of Token objects from current
@@ -167,6 +220,16 @@ export class LocalStorageDatabase extends IWalletDatabase {
    */
   subscribeToAllContacts(): Observable<Contact[]> {
     return this._contacts$.asObservable();
+  }
+
+  /**
+   * Subscribable Observable that trigger after
+   * a new Identity has been set.
+   * @returns Array of Allowances objects from current
+   * active agent
+   */
+  subscribeToAllAllowances(): Observable<TAllowance[]> {
+    return this._allowances$.asObservable();
   }
 
   private _getTokens(): Token[] {
@@ -188,6 +251,16 @@ export class LocalStorageDatabase extends IWalletDatabase {
   private _setContacts(contacts: Contact[]) {
     localStorage.setItem(`contacts-${this.principalId}`, JSON.stringify(contacts));
     this._contacts$.next(contacts);
+  }
+
+  private _getAllowances(): TAllowance[] {
+    const userData = JSON.parse(localStorage.getItem(`allowances-${this.principalId}`) || "null");
+    return userData?.allowances || [];
+  }
+
+  private _setAllowances(allowances: TAllowance[]) {
+    localStorage.setItem(`allowances-${this.principalId}`, JSON.stringify({ allowances }));
+    this._allowances$.next(allowances);
   }
 
   private _doesRecordByPrincipalExist() {

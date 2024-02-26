@@ -6,13 +6,17 @@ type WalletDatabase = service {
       record {
         vec opt TokenDocument;
         vec opt ContactDocument;
+        vec opt AllowanceDocument;
       };
     }
   ) query;
   pullContacts : (nat32, opt text, nat) -> (vec ContactDocument) query;
   pullTokens : (nat32, opt text, nat) -> (vec TokenDocument) query;
+  pullAllawances : (nat32, opt text, nat) -> (vec AllowanceDocument) query;
   pushContacts : (vec ContactDocument) -> (vec ContactDocument);
   pushTokens : (vec TokenDocument) -> (vec TokenDocument);
+  pushAllawances : (vec AllowanceDocument) -> (vec AllowanceDocument);
+  doesStorageExist : () -> (bool) query;
 };
 type TokenDocument = record {
   address : text;
@@ -27,13 +31,12 @@ type TokenDocument = record {
   subAccounts : vec record {
     amount : text;
     currency_amount : text;
-    name : text;
-    numb : text;
   };
-  supportedStandards : vec text;
-  symbol : text;
-  tokenName : text;
-  tokenSymbol : text;
+  fee : text;
+  index : text;
+  logo : text;
+  supportedStandards : [text];
+  deleted : bool;
   updatedAt : nat32;
 };
 type ContactDocument = record {
@@ -61,4 +64,26 @@ type ContactDocument = record {
   "principal" : text;
   updatedAt : nat32;
 };
+
+/**
+* Template of a Allowance record
+*/
+type AllowanceDocument_v0 = {
+  asset : {
+    logo : text;
+    name : text;
+    address : text;
+    decimal : text;
+    tokenName : text;
+    tokenSymbol : text;
+    supportedStandards : [text];
+  };
+  subAccountId : text;
+  amount : text;
+  spender : text;
+  expiration : text;
+  updatedAt : nat32;
+  deleted : bool;
+};
+
 service : () -> WalletDatabase;

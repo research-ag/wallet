@@ -9,7 +9,7 @@ interface SnsMetadata {
 }
 
 const supportedStandards = [SupportedStandardEnum.Values["ICRC-1"], SupportedStandardEnum.Values["ICRC-2"]];
-const defaultSubAccount = { numb: "0", name: "Default", amount: "0", currency_amount: "0", allowanceSpenders: [] };
+const defaultSubAccount = { numb: "0", name: "Default", amount: "0", currency_amount: "0" };
 
 //
 export const ICRC1systemAssets: Array<Token> = [

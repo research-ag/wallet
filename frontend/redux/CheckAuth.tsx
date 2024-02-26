@@ -38,7 +38,6 @@ export const handleAuthenticated = async (opt: AuthNetwork) => {
           ? opt?.network + AUTH_PATH
           : "https://identity.ic0.app/#authorize",
       onSuccess: () => {
-        switchDB(DBMode.RXDB);
         handleLoginApp(authClient.getIdentity());
         store.dispatch(setDebugMode(false));
         resolve();
@@ -65,7 +64,6 @@ export const handleSeedAuthenticated = (seed: string) => {
   const newIdentity = seedToIdentity(seed);
   if (newIdentity) {
     store.dispatch(setDebugMode(true));
-    switchDB(DBMode.RXDB);
     handleLoginApp(newIdentity, true);
   }
 };
@@ -74,7 +72,6 @@ export const handlePrincipalAuthenticated = async (principalAddress: string) => 
   try {
     const authClient = await AuthClient.create();
     const principal = Principal.fromText(principalAddress);
-    switchDB(DBMode.LOCAL);
     handleLoginApp(authClient.getIdentity(), false, principal);
   } catch {
     return;

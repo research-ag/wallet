@@ -17,7 +17,7 @@ interface AuthState {
   theme: string;
   blur: boolean;
   disclaimer: boolean;
-  dbLocation: string;
+  dbLocation: DB_Type;
   customDbCanisterId: string;
   userAgent: HttpAgent;
   userPrincipal: Principal;

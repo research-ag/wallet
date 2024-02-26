@@ -1,6 +1,5 @@
 import { TAllowance } from "@/@types/allowance";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { db } from "@/database/db";
 
 export const initialAllowanceState: TAllowance = {
   asset: {
@@ -74,12 +73,6 @@ const allowanceSlice = createSlice({
     },
   },
 });
-
-db()
-  .subscribeToAllTokens()
-  .subscribe((x) => {
-    console.log("ASSET REDUCER", x);
-  });
 
 export const {
   setIsUpdateAllowance,

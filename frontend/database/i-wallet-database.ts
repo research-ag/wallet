@@ -1,5 +1,6 @@
 import { AuthNetwork, Token } from "@redux/models/TokenModels";
 import { Contact } from "@redux/models/ContactsModels";
+import { TAllowance } from "@/@types/allowance";
 import { Identity } from "@dfinity/agent";
 import { Observable } from "rxjs";
 import { Principal } from "@dfinity/principal";
@@ -153,4 +154,47 @@ export abstract class IWalletDatabase {
    * @param principal Principal ID
    */
   abstract deleteContact(principal: string): Promise<void>;
+
+  /**
+   * Find a Allowance object by its Spender Principal ID.
+   * @param spenderPrincipal Spender Princial ID
+   * @returns Allowance object or NULL if not found
+   */
+  abstract getAllowance(principal: string): Promise<TAllowance | null>;
+
+  /**
+   * Get all Allowance objects from active agent.
+   * @returns Array of found Allowance objects or an empty
+   * array if no Allowance object were found
+   */
+  abstract getAllowances(): Promise<TAllowance[]>;
+
+  /**
+   * Subscribable Observable that trigger after
+   * a new Identity has been set.
+   * @returns Array of Allowances objects from current
+   * active agent
+   */
+  abstract subscribeToAllAllowances(): Observable<TAllowance[]>;
+
+  /**
+   * Add a new Allowance object to the list of Allowance objects
+   * current active agent has.
+   * @param allowance Allowance object to be added
+   */
+  abstract addAllowance(allowance: TAllowance): Promise<void>;
+
+  /**
+   * Find a Allowance object by its Spender Principal ID and replace it
+   * with another Allowance object with the date of update.
+   * @param spenderPrincipal Spender Principal ID
+   * @param newDoc Allowance object
+   */
+  abstract updateAllowance(spenderPrincipal: string, newDoc: TAllowance): Promise<void>;
+
+  /**
+   * Find and remove a Allowance object by its Spender Princial ID.
+   * @param spenderPrincipal Spender Principal ID
+   */
+  abstract deleteAllowance(spenderPrincipal: string): Promise<void>;
 }
