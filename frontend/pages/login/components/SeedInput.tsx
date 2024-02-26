@@ -3,6 +3,7 @@ import { ReactComponent as CheckIcon } from "@assets/svg/files/edit-check.svg";
 import { CustomInput } from "@components/Input";
 import { handleSeedAuthenticated } from "@redux/CheckAuth";
 import clsx from "clsx";
+import { useTranslation } from "react-i18next";
 
 interface SeedMethodInputProps {
   seed: string;
@@ -10,6 +11,8 @@ interface SeedMethodInputProps {
 }
 
 export default function SeedInput({ seed, setSeed }: SeedMethodInputProps) {
+  const {t} = useTranslation();
+
   return (
     <CustomInput
       sizeInput={"medium"}
@@ -26,7 +29,7 @@ export default function SeedInput({ seed, setSeed }: SeedMethodInputProps) {
             }}
             className={getCheckIconStyles(seed)}
           />
-          <p className="text-sm text-PrimaryTextColorLight dark:text-PrimaryTextColor">Max 32</p>
+          <p className="text-sm text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("max")} 32</p>
         </div>
       }
       onKeyDown={(e) => {
