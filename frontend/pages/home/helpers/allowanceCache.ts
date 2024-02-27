@@ -41,7 +41,6 @@ export async function allowanceCacheRefresh(principal: string) {
       }
     }
   }
-
   localStorage.setItem(allowancePrefix, JSON.stringify(updatedAllowances.map(getToCreateAllowance)));
   setAllowancesAction(updatedAllowances);
 }

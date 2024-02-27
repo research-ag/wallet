@@ -1,5 +1,7 @@
 import { TAllowance } from "@/@types/allowance";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { localDb, rxDb } from "@/database/db";
+import store from "@redux/Store";
 
 export const initialAllowanceState: TAllowance = {
   asset: {
@@ -73,6 +75,15 @@ const allowanceSlice = createSlice({
     },
   },
 });
+
+const dbSubscriptionHandler = (x: any[]) => {
+  if (x.length > 0) {
+    store.dispatch(allowanceSlice.actions.setAllowances(x));
+  }
+};
+
+localDb().subscribeToAllContacts().subscribe(dbSubscriptionHandler);
+rxDb().subscribeToAllContacts().subscribe(dbSubscriptionHandler);
 
 export const {
   setIsUpdateAllowance,

@@ -10,6 +10,7 @@ interface SnsMetadata {
 
 const supportedStandards = [SupportedStandardEnum.Values["ICRC-1"], SupportedStandardEnum.Values["ICRC-2"]];
 const defaultSubAccount = { numb: "0", name: "Default", amount: "0", currency_amount: "0" };
+const defaultTokensSubAccount = { ...defaultSubAccount, numb: "0x0" };
 
 //
 export const ICRC1systemAssets: Array<Token> = [
@@ -96,7 +97,7 @@ export const defaultTokens: Token[] = [
     decimal: "8",
     shortDecimal: "8",
     fee: "10000",
-    subAccounts: [defaultSubAccount],
+    subAccounts: [defaultTokensSubAccount],
     supportedStandards,
   },
   {
@@ -110,7 +111,7 @@ export const defaultTokens: Token[] = [
     shortDecimal: "8",
     fee: "10",
     index: "n5wcd-faaaa-aaaar-qaaea-cai",
-    subAccounts: [defaultSubAccount],
+    subAccounts: [defaultTokensSubAccount],
     supportedStandards,
   },
   {
@@ -124,7 +125,7 @@ export const defaultTokens: Token[] = [
     shortDecimal: "18",
     fee: "2000000000000",
     index: "s3zol-vqaaa-aaaar-qacpa-cai",
-    subAccounts: [defaultSubAccount],
+    subAccounts: [defaultTokensSubAccount],
     supportedStandards,
   },
 ];

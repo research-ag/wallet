@@ -485,7 +485,7 @@ export class RxdbDatabase extends IWalletDatabase {
    * to the DB
    */
   subscribeOnPushing(): Observable<boolean> {
-    return combineLatest([this.pushingTokens$, this.pushingContacts$, this.pullingAllowances$]).pipe(
+    return combineLatest([this.pushingTokens$, this.pushingContacts$, this.pushingAllowances$]).pipe(
       map(([a, b]) => a || b),
       distinctUntilChanged(),
     );
@@ -493,9 +493,22 @@ export class RxdbDatabase extends IWalletDatabase {
 
   private _mapContactDoc(doc: RxDocument<ContactRxdbDocument>): Contact {
     return {
-      ...doc,
+      name: doc.name,
+      principal: doc.principal,
+      accountIdentier: doc.accountIdentier,
       assets: doc.assets.map((a) => ({
-        ...a,
+        symbol: a.symbol,
+        tokenSymbol: a.tokenSymbol,
+        logo: a.logo,
+        subaccounts: a.subaccounts.map((sa) => ({
+          name: sa.name,
+          subaccount_index: sa.subaccount_index,
+          sub_account_id: sa.sub_account_id,
+          allowance: sa.allowance,
+        })),
+        address: a.address,
+        decimal: a.decimal,
+        shortDecimal: a.shortDecimal,
         supportedStandards: a.supportedStandards as typeof SupportedStandardEnum.options,
       })),
     };
@@ -503,16 +516,40 @@ export class RxdbDatabase extends IWalletDatabase {
 
   private _mapTokenDoc(doc: RxDocument<TokenRxdbDocument>): Token {
     return {
-      ...doc,
+      name: doc.name,
+      id_number: doc.id_number,
+      address: doc.address,
+      logo: doc.logo,
+      decimal: doc.decimal,
+      symbol: doc.symbol,
+      index: doc.index,
+      subAccounts: doc.subAccounts.map((sa) => ({
+        numb: sa.numb,
+        name: sa.name,
+        amount: sa.amount,
+        currency_amount: sa.currency_amount,
+      })),
+      fee: doc.fee,
+      tokenName: doc.tokenName,
+      tokenSymbol: doc.tokenSymbol,
+      shortDecimal: doc.shortDecimal,
       supportedStandards: doc.supportedStandards as typeof SupportedStandardEnum.options,
     };
   }
 
   private _mapAllowanceDoc(doc: RxDocument<AllowanceRxdbDocument>): TAllowance {
     return {
-      ...doc,
+      subAccountId: doc.subAccountId,
+      amount: doc.amount,
+      spender: doc.spender,
+      expiration: doc.expiration,
       asset: {
-        ...doc.asset,
+        logo: doc.asset.logo,
+        name: doc.asset.name,
+        address: doc.asset.address,
+        decimal: doc.asset.decimal,
+        tokenName: doc.asset.tokenName,
+        tokenSymbol: doc.asset.tokenSymbol,
         supportedStandards: doc.asset.supportedStandards as typeof SupportedStandardEnum.options,
       },
     };
@@ -666,8 +703,8 @@ export class RxdbDatabase extends IWalletDatabase {
         )?.bulkInsert(
           defaultTokens.map((dT) => ({
             ...dT,
-            index: dT.index || "",
-            logo: dT.logo || "",
+            index: extractValueFromArray(dT.index),
+            logo: extractValueFromArray(dT.logo),
             deleted: false,
             updatedAt: Date.now(),
           })),
