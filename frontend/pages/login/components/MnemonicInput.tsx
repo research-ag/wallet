@@ -4,6 +4,7 @@ import { handleMnemonicAuthenticated } from "@redux/CheckAuth";
 import clsx from "clsx";
 import { ChangeEvent, Dispatch, SetStateAction, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import * as bip39 from "bip39";
 
 interface MnemonicInputProps {
   phrase: string;
@@ -13,6 +14,15 @@ interface MnemonicInputProps {
 export default function MnemonicInput({ phrase, setPhrase }: MnemonicInputProps) {
   const { t } = useTranslation();
   const [isError, setIsError] = useState(false);
+
+  const wordlists = useMemo(() => {
+    const enWords = bip39.wordlists.english;
+    const esWords = bip39.wordlists.spanish;
+    const itWords = bip39.wordlists.italian;
+    const ptWords = bip39.wordlists.portuguese;
+    return [...enWords, ...esWords, ...itWords, ...ptWords];
+  }, []);
+
   const isValid = useMemo(() => isPhraseValid(phrase), [phrase]);
 
   return (
@@ -56,7 +66,20 @@ export default function MnemonicInput({ phrase, setPhrase }: MnemonicInputProps)
 
   function isPhraseValid(phrase: string) {
     const sanitizedPhrase = getSanitizedPhrase(phrase);
-    if (!(sanitizedPhrase.length > 0) || phrase.length === 0) return false;
+
+    const sanitizedChunks = sanitizedPhrase.split(" ");
+
+    if (!(sanitizedChunks.length > 0) || sanitizedPhrase.length === 0) return false;
+    if (sanitizedPhrase.match(/[^a-zA-Z\s]/)) {
+      return false;
+    }
+
+    for (const word of sanitizedChunks) {
+      if (!wordlists.includes(word)) {
+        return false;
+      }
+    }
+
     return true;
   }
 }
