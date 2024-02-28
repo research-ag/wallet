@@ -55,6 +55,11 @@ export default defineConfig({
       target: "ESNext",
     },
   },
+  build: {
+    rollupOptions: {
+      external: ["@safe-window/safe-apps-provider", "@safe-window/safe-apps-sdk"]
+    }
+  },
   esbuild: {
     // https://github.com/vitejs/vite/issues/8644#issuecomment-1159308803
     logOverride: { "this-is-undefined-in-esm": "silent" },
