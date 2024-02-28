@@ -150,6 +150,12 @@ export abstract class IWalletDatabase {
   abstract updateContact(principal: string, newDoc: Contact): Promise<void>;
 
   /**
+   * Find and update Contacts in bulk by their Principal ID.
+   * @param newDocs Array of Allowance objects
+   */
+  abstract updateContacts(newDocs: Contact[]): Promise<void>;
+
+  /**
    * Find and remove a Contact object by its Principal ID.
    * @param principal Principal ID
    */
@@ -191,6 +197,12 @@ export abstract class IWalletDatabase {
    * @param newDoc Allowance object
    */
   abstract updateAllowance(spenderPrincipal: string, newDoc: TAllowance): Promise<void>;
+
+  /**
+   * Find and update Allowances in bulk by their Spender Principal ID.
+   * @param newDocs Array of Allowance objects
+   */
+  abstract updateAllowances(newDocs: TAllowance[]): Promise<void>;
 
   /**
    * Find and remove a Allowance object by its Spender Princial ID.

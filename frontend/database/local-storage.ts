@@ -143,6 +143,14 @@ export class LocalStorageDatabase extends IWalletDatabase {
   }
 
   /**
+   * Find and update Contacts in bulk by their Principal ID.
+   * @param newDocs Array of Allowance objects
+   */
+  async updateContacts(newDocs: Contact[]): Promise<void> {
+    this._setContacts(newDocs);
+  }
+
+  /**
    * Find and remove a Contact object by its Principal ID.
    * @param principal Principal ID
    */
@@ -192,6 +200,14 @@ export class LocalStorageDatabase extends IWalletDatabase {
         } else return allowance;
       }),
     );
+  }
+
+  /**
+   * Find and update Allowances in bulk by their Spender Principal ID.
+   * @param newDocs Array of Allowance objects
+   */
+  async updateAllowances(newDocs: TAllowance[]): Promise<void> {
+    this._setAllowances(newDocs);
   }
 
   /**
@@ -254,12 +270,12 @@ export class LocalStorageDatabase extends IWalletDatabase {
   }
 
   private _getAllowances(): TAllowance[] {
-    const userData = JSON.parse(localStorage.getItem(`allowances-${this.principalId}`) || "null");
-    return userData?.allowances || [];
+    const allowancesData = JSON.parse(localStorage.getItem(`allowances-${this.principalId}`) || "null");
+    return allowancesData || [];
   }
 
   private _setAllowances(allowances: TAllowance[]) {
-    localStorage.setItem(`allowances-${this.principalId}`, JSON.stringify({ allowances }));
+    localStorage.setItem(`allowances-${this.principalId}`, JSON.stringify(allowances));
     this._allowances$.next(allowances);
   }
 

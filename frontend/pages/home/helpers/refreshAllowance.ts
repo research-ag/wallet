@@ -1,31 +1,21 @@
 import { TAllowance } from "@/@types/allowance";
-import store from "@redux/Store";
-import { setAllowancesAction } from "@redux/allowance/AllowanceActions";
-import { replaceAllowancesToStorage } from "../services/allowance";
+import { db } from "@/database/db";
 
-export async function refreshAllowance(allowance: TAllowance, isDelete = false) {
+export async function refreshAllowance(allowance: TAllowance, isDeleted = false) {
   try {
-    const allowances = store.getState().allowance.allowances;
+    const { spender: principalSpender } = allowance;
 
-    const spenderPrincipal = allowance.spender;
-    const spenderSubaccount = allowance.subAccountId;
+    if (isDeleted) {
+      await db().deleteAllowance(principalSpender);
+    } else {
+      const isNew = await db().getAllowance(principalSpender);
 
-    const filtered = allowances.filter(
-      (currentAllowance) =>
-        currentAllowance.spender !== spenderPrincipal ||
-        currentAllowance.subAccountId !== spenderSubaccount ||
-        currentAllowance.asset.tokenSymbol !== allowance.asset.tokenSymbol,
-    );
-
-    if (isDelete) {
-      setAllowancesAction(filtered);
-      replaceAllowancesToStorage(filtered);
-      return;
+      if (isNew) {
+        await db().addAllowance(allowance);
+      } else {
+        await db().updateAllowance(principalSpender, allowance);
+      }
     }
-
-    const updatedAllowances = [...filtered, allowance];
-    setAllowancesAction(updatedAllowances);
-    replaceAllowancesToStorage(updatedAllowances);
   } catch (error) {
     console.log(error);
   }

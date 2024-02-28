@@ -72,9 +72,8 @@ export const WorkerHook = () => {
     } else {
       await updateAllBalances(true, userAgent, defaultTokens, true);
     }
-    const myPrincipal = await userAgent.getPrincipal();
     await contactCacheRefresh();
-    await allowanceCacheRefresh(myPrincipal.toText());
+    await allowanceCacheRefresh();
     dispatch(setLoading(false));
   };
 

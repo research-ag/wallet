@@ -4,7 +4,6 @@ import {
   setIsUpdateAllowance,
   setIsCreateAllowance,
   setSelectedAllowance,
-  setAllowances,
   setAllowanceError,
   removeAllowanceError,
   setFullAllowanceErrors,
@@ -26,10 +25,6 @@ export const setIsDeleteAllowanceAction = (isDelete: boolean) => {
 
 export const setSelectedAllowanceAction = (allowance: TAllowance) => {
   store.dispatch(setSelectedAllowance(allowance));
-};
-
-export const setAllowancesAction = (allowances: TAllowance[]) => {
-  store.dispatch(setAllowances(allowances));
 };
 
 export const setAllowanceErrorAction = (error: string) => {

@@ -325,6 +325,30 @@ export class RxdbDatabase extends IWalletDatabase {
   }
 
   /**
+   * Find and update Contacts in bulk by their Principal ID.
+   * @param newDocs Array of Allowance objects
+   */
+  async updateContacts(newDocs: Contact[]): Promise<void> {
+    try {
+      await (
+        await this.contacts
+      )?.bulkUpsert(
+        newDocs.map((doc) => ({
+          ...doc,
+          accountIdentier: extractValueFromArray(doc.accountIdentier),
+          assets: doc.assets.map((a) => ({
+            ...a,
+            logo: extractValueFromArray(a.logo),
+          })),
+          updatedAt: Date.now(),
+        })),
+      );
+    } catch (e) {
+      console.error("RxDb updateAllowances", e);
+    }
+  }
+
+  /**
    * Find and remove a Contact object by its Principal ID.
    * @param principal Principal ID
    */
@@ -411,6 +435,30 @@ export class RxdbDatabase extends IWalletDatabase {
       });
     } catch (e) {
       console.error("RxDb UpdateAllowance", e);
+    }
+  }
+
+  /**
+   * Find and update Allowances in bulk by their Spender Principal ID.
+   * @param newDocs Array of Allowance objects
+   */
+  async updateAllowances(newDocs: TAllowance[]): Promise<void> {
+    try {
+      await (
+        await this.allowances
+      )?.bulkUpsert(
+        newDocs.map((doc) => ({
+          ...doc,
+          expiration: extractValueFromArray(doc.expiration),
+          asset: {
+            ...doc.asset,
+            logo: extractValueFromArray(doc.asset.logo),
+          },
+          updatedAt: Date.now(),
+        })),
+      );
+    } catch (e) {
+      console.error("RxDb updateAllowances", e);
     }
   }
 
@@ -668,7 +716,7 @@ export class RxdbDatabase extends IWalletDatabase {
       expiration: extractValueFromArray(x.expiration),
       asset: {
         ...x.asset,
-        logo: extractValueFromArray(x.asset.logo),
+        logo: extractValueFromArray(x.asset?.logo),
       },
     }));
 
