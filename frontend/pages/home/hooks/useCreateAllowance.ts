@@ -56,7 +56,7 @@ export default function useCreateAllowance() {
 
     const asset = assets.find((asset) => asset.tokenSymbol === allowance.asset.tokenSymbol) as Asset;
     validateCreateAllowance(allowance, asset);
-    const duplicated = getDuplicatedAllowance(allowance);
+    const duplicated = await getDuplicatedAllowance(allowance);
 
     if (duplicated) {
       const isExpirationSame = allowance.expiration === duplicated.expiration;

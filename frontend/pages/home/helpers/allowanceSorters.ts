@@ -2,7 +2,7 @@ import { TAllowance } from "@/@types/allowance";
 import { SortOrder, SortOrderEnum } from "@/@types/common";
 
 export function filterByAsset(tokenSymbol: string, grossData: TAllowance[]): TAllowance[] {
-  const filteredData = grossData.filter((allowance) => allowance.asset.tokenSymbol === tokenSymbol);
+  const filteredData = grossData.filter((allowance) => allowance.asset?.tokenSymbol === tokenSymbol);
   return filteredData;
 }
 

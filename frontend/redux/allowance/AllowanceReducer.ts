@@ -82,8 +82,8 @@ const dbSubscriptionHandler = (x: any[]) => {
   }
 };
 
-localDb().subscribeToAllContacts().subscribe(dbSubscriptionHandler);
-rxDb().subscribeToAllContacts().subscribe(dbSubscriptionHandler);
+localDb().subscribeToAllAllowances().subscribe(dbSubscriptionHandler);
+rxDb().subscribeToAllAllowances().subscribe(dbSubscriptionHandler);
 
 export const {
   setIsUpdateAllowance,

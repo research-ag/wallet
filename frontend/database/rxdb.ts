@@ -119,7 +119,7 @@ export class RxdbDatabase extends IWalletDatabase {
         contactsReplication;
 
       const allowancesReplication = await setupReplication<AllowanceRxdbDocument, string>(
-        contacts,
+        allowances,
         `allowances-${this.principalId}`,
         "spender",
         (items) => this._allowancesPushHandler(items),
@@ -405,7 +405,7 @@ export class RxdbDatabase extends IWalletDatabase {
         expiration: extractValueFromArray(allowance.expiration),
         asset: {
           ...allowance.asset,
-          logo: extractValueFromArray(allowance.asset.logo),
+          logo: extractValueFromArray(allowance.asset?.logo),
         },
         deleted: false,
         updatedAt: Date.now(),
@@ -429,7 +429,7 @@ export class RxdbDatabase extends IWalletDatabase {
         expiration: extractValueFromArray(newDoc.expiration),
         asset: {
           ...newDoc.asset,
-          logo: extractValueFromArray(newDoc.asset.logo),
+          logo: extractValueFromArray(newDoc.asset?.logo),
         },
         updatedAt: Date.now(),
       });
@@ -452,7 +452,7 @@ export class RxdbDatabase extends IWalletDatabase {
           expiration: extractValueFromArray(doc.expiration),
           asset: {
             ...doc.asset,
-            logo: extractValueFromArray(doc.asset.logo),
+            logo: extractValueFromArray(doc.asset?.logo),
           },
           updatedAt: Date.now(),
         })),
