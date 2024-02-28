@@ -7,6 +7,11 @@
       "source": ["dist/"],
       "type": "assets"
     },
+    "ic_siwe_provider": {
+      "type": "custom",
+      "candid": "https://github.com/kristoferlund/ic-siwe/releases/download/v0.0.4/ic_siwe_provider.did",
+      "wasm": "https://github.com/kristoferlund/ic-siwe/releases/download/v0.0.4/ic_siwe_provider.wasm.gz"
+    },
     "db": {
       "main": "db-canister/main.mo",
       "type": "motoko",
