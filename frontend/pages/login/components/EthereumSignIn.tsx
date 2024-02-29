@@ -1,9 +1,11 @@
 import { useAccount, useNetwork } from "wagmi";
 import ConnectButton from "./ConnectButton";
+import AddressPill from "./AddressPill";
+import { isChainIdSupported } from "@/wagmi.config";
 
 export default function EthereumSignIn() {
   const { isConnected, address } = useAccount();
-  console.log({ isConnected, address });
+  const { chain } = useNetwork();
 
   return (
     <div className="flex flex-col items-start gap-5 p-5">
@@ -13,9 +15,9 @@ export default function EthereumSignIn() {
         </div>
         <div>
           {!isConnected && <ConnectButton />}
-          {/* {isConnected && isChainIdSupported(chain?.id) && (
+          {isConnected && isChainIdSupported(chain?.id) && (
             <AddressPill address={address} className="justify-center w-36" />
-          )} */}
+          )}
           {/* {isConnected && !isChainIdSupported(chain?.id) && (
             <CustomButton disabled className="text-sm opacity-50 bg-GrayColor w-36">
               Unsupported Network
