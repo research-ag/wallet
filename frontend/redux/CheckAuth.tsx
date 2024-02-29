@@ -135,7 +135,6 @@ export const logout = async () => {
   store.dispatch(clearDataContacts());
   store.dispatch(clearDataAsset());
   store.dispatch(clearDataAuth());
-  await db().updateAllowances([]);
   store.dispatch(setUnauthenticated());
   store.dispatch(setUserAgent(undefined));
   store.dispatch(setUserPrincipal(undefined));
