@@ -33,7 +33,6 @@ export const LoginHook = () => {
     },
     {
       name: AuthNetworkNameEnum.Values.Ethereum,
-      extra: "not.yet.available",
       icon: <img src={ethereumUrl} alt="ethereum-logo" />,
       type: AuthNetworkTypeEnum.Values.ETH,
       network: "",
