@@ -4,6 +4,7 @@ import AddressPill from "./AddressPill";
 import { isChainIdSupported } from "@/wagmi.config";
 import { CustomButton } from "@components/Button";
 import { useTranslation } from "react-i18next";
+import LoginButton from "./LoginButton";
 
 export default function EthereumSignIn() {
   const { t } = useTranslation();
@@ -32,7 +33,9 @@ export default function EthereumSignIn() {
         <div className="flex items-center justify-center w-8 h-8 text-lg font-bold rounded-full bg-SecondaryColorLight text-SecondaryColor">
           2
         </div>
-        <div>{/* <LoginButton /> */}</div>
+        <div>
+          <LoginButton />
+        </div>
       </div>
     </div>
   );
