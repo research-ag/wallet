@@ -20,6 +20,7 @@ import { Principal } from "@dfinity/principal";
 import { allowanceCacheRefresh } from "@pages/home/helpers/allowanceCache";
 import contactCacheRefresh from "@pages/contacts/helpers/contacts";
 import { setAllowances } from "./allowance/AllowanceReducer";
+import { Secp256k1KeyIdentity } from "@dfinity/identity-secp256k1";
 import { db } from "@/database/db";
 
 const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${
@@ -74,6 +75,14 @@ export const handlePrincipalAuthenticated = async (principalAddress: string) => 
   } catch {
     return;
   }
+};
+
+export const handleMnemonicAuthenticated = (phrase: string) => {
+  const phraseToIdentity: (phrase: string) => Identity | null = (phrase) => {
+    return Secp256k1KeyIdentity.fromSeedPhrase(phrase.split(" ").join("")) as any;
+  };
+  const secpIdentity = phraseToIdentity(phrase) as Identity;
+  handleLoginApp(secpIdentity, true);
 };
 
 export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean, fixedPrincipal?: Principal) => {

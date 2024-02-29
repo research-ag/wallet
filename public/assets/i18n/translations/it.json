@@ -101,6 +101,7 @@
   "login.bottom.msg": "Iscrivendoti, accetti i Nostri",
   "login.bottom.msg.terms": "Termini di servizio",
   "login.bottom.msg.policy": "Informativa sulla privacy",
+  "login.mnemonic.expected": "Frase prevista tra 12 e 24 parole (padrão BIP39)",
   "transfer.between.accounts": "Trasferimento sul proprio conto",
   "max.amount.to.send": "Massimo da inviare",
   "asset.add.warning.1": "Il rilevamento del token è disponibile solo sulla rete ICRC1. Importa il token manualmente e assicurati che sia affidabile. Ulteriori informazioni",

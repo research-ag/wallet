@@ -20,7 +20,7 @@ export const setupReplication: <T extends { updatedAt: number; deleted: boolean 
   primaryKey: keyof T,
   pushFunc: (items: T[]) => Promise<T[]>,
   pullFunc: (minTimestamp: number, lastId: PK | null, batchSize: number) => Promise<T[]>,
-) => Promise<[RxReplicationState<any, any>, number, BehaviorSubject<boolean>, BehaviorSubject<boolean>]> = async <
+) => Promise<[RxReplicationState<any, any>, any, BehaviorSubject<boolean>, BehaviorSubject<boolean>]> = async <
   T extends { updatedAt: number; deleted: boolean },
   PK,
 >(
