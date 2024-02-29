@@ -6,7 +6,6 @@ import { IcrcIndexCanister, IcrcLedgerCanister } from "@dfinity/ledger";
 import { getMetadataInfo, toFullDecimal } from "@/utils";
 import { CustomInput } from "@components/Input";
 import { CustomCopy } from "@components/CopyTooltip";
-import { editAssetName } from "@redux/contacts/ContactsReducer";
 import { editToken } from "@redux/assets/AssetReducer";
 import { CustomButton } from "@components/Button";
 import { useTranslation } from "react-i18next";
@@ -21,6 +20,7 @@ import LoadingLoader from "@components/Loader";
 import { AccountHook } from "@pages/hooks/accountHook";
 import { getICRCSupportedStandards } from "@pages/home/helpers/icrc";
 import { db } from "@/database/db";
+import { Contact } from "@redux/models/ContactsModels";
 
 interface AddAssetManualProps {
   manual: boolean;
@@ -361,7 +361,29 @@ const AddAssetManual = ({
         return;
       }
       // Change contacts local and reducer
-      dispatch(editAssetName(asset.tokenSymbol, newToken.symbol));
+      setTimeout(async () => {
+        const affectedContacts: Contact[] = [];
+        const currentContacts = await db().getContacts();
+
+        for (const cnt of currentContacts) {
+          let affected = false;
+          const newDoc = {
+            ...cnt,
+            assets: cnt.assets.map((asst) => {
+              if (asst.tokenSymbol === asset.tokenSymbol) {
+                affected = true;
+                return { ...asst, symbol: asset.symbol };
+              } else return asst;
+            }),
+          };
+          if (affected) {
+            affectedContacts.push(newDoc);
+          }
+        }
+
+        await Promise.all(affectedContacts.map((c) => db().updateContact(c.principal, c)));
+      }, 0);
+
       // List all tokens modifying the one we selected
       const token = await db().getToken(newToken.address);
       if (token) {
