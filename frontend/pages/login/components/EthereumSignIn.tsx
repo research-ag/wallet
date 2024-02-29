@@ -2,8 +2,11 @@ import { useAccount, useNetwork } from "wagmi";
 import ConnectButton from "./ConnectButton";
 import AddressPill from "./AddressPill";
 import { isChainIdSupported } from "@/wagmi.config";
+import { CustomButton } from "@components/Button";
+import { useTranslation } from "react-i18next";
 
 export default function EthereumSignIn() {
+  const { t } = useTranslation();
   const { isConnected, address } = useAccount();
   const { chain } = useNetwork();
 
@@ -18,11 +21,11 @@ export default function EthereumSignIn() {
           {isConnected && isChainIdSupported(chain?.id) && (
             <AddressPill address={address} className="justify-center w-36" />
           )}
-          {/* {isConnected && !isChainIdSupported(chain?.id) && (
+          {isConnected && !isChainIdSupported(chain?.id) && (
             <CustomButton disabled className="text-sm opacity-50 bg-GrayColor w-36">
-              Unsupported Network
+              {t("unsupported.network")}
             </CustomButton>
-          )} */}
+          )}
         </div>
       </div>
       <div className="flex items-center justify-start w-full gap-5">

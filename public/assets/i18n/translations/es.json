@@ -52,6 +52,7 @@
   "sending": "Enviando",
   "network": "Red",
   "error": "ERROR",
+  "unsupported.network": "Red no compatible",
   "succes.caps": "ÉXITO",
   "subacc": "SubCnt",
   "sub-acc": "Sub-cuenta",

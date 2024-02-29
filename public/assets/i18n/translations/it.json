@@ -52,6 +52,7 @@
   "sending": "Invio",
   "network": "Rete",
   "error": "ERRORE",
+  "unsupported.network": "Rete non supportata",
   "succes.caps": "SUCCESSO",
   "subacc": "AcSec",
   "sub-acc": "Sub-account",
