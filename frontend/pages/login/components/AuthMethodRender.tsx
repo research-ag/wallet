@@ -79,6 +79,8 @@ export default function AuthMethodRender() {
     }
 
     if (opt.type === AuthNetworkTypeEnum.Values.ETH) {
+      localStorage.setItem("network_type", JSON.stringify({ type: opt.type, network: opt.network, name: opt.name }));
+      db().setNetworkType(opt);
       handleMethodChange(AuthNetworkTypeEnum.Values.ETH);
       return;
     }
