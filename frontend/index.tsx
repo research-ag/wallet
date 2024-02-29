@@ -4,10 +4,12 @@ import "@rainbow-me/rainbowkit/styles.css";
 import * as ReactDOM from "react-dom/client";
 
 import { RainbowKitProvider, darkTheme } from "@rainbow-me/rainbowkit";
+import { canisterId, idlFactory } from "./declarations/ic_siwe_provider";
 import { chains, wagmiConfig } from "./wagmi.config";
 
 import App from "./App";
 import React from "react";
+import { SiweIdentityProvider } from "./siwe";
 import { WagmiConfig } from "wagmi";
 import reportWebVitals from "./reportWebVitals";
 
@@ -24,7 +26,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           overlayBlur: "none",
         })}
       >
-        <App />
+        <SiweIdentityProvider canisterId={canisterId} idlFactory={idlFactory}>
+          <App />
+        </SiweIdentityProvider>
       </RainbowKitProvider>
     </WagmiConfig>
   </React.StrictMode>,
