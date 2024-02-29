@@ -317,6 +317,7 @@ export class RxdbDatabase extends IWalletDatabase {
           ...a,
           logo: extractValueFromArray(a.logo),
         })),
+        deleted: false,
         updatedAt: Date.now(),
       });
     } catch (e) {
@@ -340,11 +341,12 @@ export class RxdbDatabase extends IWalletDatabase {
             ...a,
             logo: extractValueFromArray(a.logo),
           })),
+          deleted: false,
           updatedAt: Date.now(),
         })),
       );
     } catch (e) {
-      console.error("RxDb updateAllowances", e);
+      console.error("RxDb updateContacts", e);
     }
   }
 
@@ -431,6 +433,7 @@ export class RxdbDatabase extends IWalletDatabase {
           ...newDoc.asset,
           logo: extractValueFromArray(newDoc.asset?.logo),
         },
+        deleted: false,
         updatedAt: Date.now(),
       });
     } catch (e) {
@@ -454,6 +457,7 @@ export class RxdbDatabase extends IWalletDatabase {
             ...doc.asset,
             logo: extractValueFromArray(doc.asset?.logo),
           },
+          deleted: false,
           updatedAt: Date.now(),
         })),
       );

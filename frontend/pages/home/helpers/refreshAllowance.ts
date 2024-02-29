@@ -8,12 +8,12 @@ export async function refreshAllowance(allowance: TAllowance, isDeleted = false)
     if (isDeleted) {
       await db().deleteAllowance(principalSpender);
     } else {
-      const isNew = await db().getAllowance(principalSpender);
+      const alreadyExist = await db().getAllowance(principalSpender);
 
-      if (isNew) {
-        await db().addAllowance(allowance);
-      } else {
+      if (alreadyExist) {
         await db().updateAllowance(principalSpender, allowance);
+      } else {
+        await db().addAllowance(allowance);
       }
     }
   } catch (error) {

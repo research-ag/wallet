@@ -62,6 +62,9 @@ export const updateAllBalances = async (
   });
 
   const myPrincipal = store.getState().auth.userPrincipal;
+
+  if (!myPrincipal) return;
+
   const tokensAseets = await Promise.all(
     auxTokens.map(async (tkn, idNum) => {
       try {
