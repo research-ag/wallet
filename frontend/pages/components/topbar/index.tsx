@@ -43,7 +43,7 @@ const TopBarComponent = ({ isLoginPage }: { isLoginPage: boolean }) => {
 
   const [langOpen, setLangOpen] = useState(false);
   const [dbLocationOpen, setDbLocationOpen] = useState(false);
-  const { identity } = useSiweIdentity();
+  const { identity, clear: clearSiweIdentity } = useSiweIdentity();
   const { address } = useAccount();
 
   const langOpts = [
@@ -150,6 +150,7 @@ const TopBarComponent = ({ isLoginPage }: { isLoginPage: boolean }) => {
                     className={clsx(gearPopItem, "!justify-between", "rounded-b-lg")}
                     onSelect={() => {
                       logout();
+                      clearSiweIdentity();
                     }}
                   >
                     <p className="text-LockColor">{t("lock")}</p>
