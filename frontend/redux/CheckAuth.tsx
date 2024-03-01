@@ -104,7 +104,7 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean,
 
   dispatchAuths(myAgent, myPrincipal);
 
-  await db().setIdentity(authIdentity);
+  await db().setIdentity(authIdentity, fixedPrincipal);
 
   store.dispatch(setAuthenticated(true, false, !!fixedPrincipal, identityPrincipalStr.toLocaleLowerCase()));
 

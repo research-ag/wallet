@@ -1,16 +1,6 @@
 import { DeleteContactTypeEnum } from "@/const";
-import { useAppDispatch } from "@redux/Store";
-
-import {
-  addAssetToContact,
-  addContactSubacc,
-  editContact,
-  editContactSubacc,
-  removeContact,
-  removeContactAsset,
-  removeContactSubacc,
-} from "@redux/contacts/ContactsReducer";
-
+import { hexToNumber } from "@/utils";
+import bigInt from "big-integer";
 import {
   AssetContact,
   Contact,
@@ -19,39 +9,131 @@ import {
   SubAccountContact,
   SubAccountContactErr,
 } from "@redux/models/ContactsModels";
+import { db } from "@/database/db";
 
 import { useState } from "react";
 
 export default function useContactTable() {
-  const dispatch = useAppDispatch();
   const [isPending, setIsPending] = useState(false);
 
-  const updateContact = (editedContact: Contact, pastPrincipal: string) =>
-    dispatch(editContact(editedContact, pastPrincipal));
+  const updateContact = async (editedContact: Contact, pastPrincipal: string) =>
+    await db().updateContact(pastPrincipal, editedContact);
 
-  const addAsset = (asset: AssetContact[], pastPrincipal: string) => dispatch(addAssetToContact(asset, pastPrincipal));
-  const removeCntct = (principal: string) => dispatch(removeContact(principal));
-  const removeAsset = (principal: string, tokenSymbol: string) => dispatch(removeContactAsset(principal, tokenSymbol));
-  const removeSubacc = (principal: string, tokenSymbol: string, subIndex: string) =>
-    dispatch(removeContactSubacc(principal, tokenSymbol, subIndex));
+  const addAsset = async (asset: AssetContact[], pastPrincipal: string) => {
+    const contact = await db().getContact(pastPrincipal);
+    contact &&
+      (await db().updateContact(pastPrincipal, {
+        ...contact,
+        assets: [...contact.assets, ...asset],
+      }));
+  };
 
-  const editCntctSubacc = (
+  const removeCntct = async (principal: string) => await db().deleteContact(principal);
+  const removeAsset = async (principal: string, tokenSymbol: string) => {
+    const contact = await db().getContact(principal);
+    contact &&
+      (await db().updateContact(principal, {
+        ...contact,
+        assets: contact.assets.filter((asst) => asst.tokenSymbol !== tokenSymbol),
+      }));
+  };
+  const removeSubacc = async (principal: string, tokenSymbol: string, subIndex: string) => {
+    const contact = await db().getContact(principal);
+    contact &&
+      (await db().updateContact(principal, {
+        ...contact,
+        assets: contact.assets.map((asset) => {
+          if (asset.tokenSymbol !== tokenSymbol) {
+            return asset;
+          } else {
+            return {
+              ...asset,
+              subaccounts: asset.subaccounts.filter((subAccount) => subAccount.subaccount_index !== subIndex),
+            };
+          }
+        }),
+      }));
+  };
+
+  const editCntctSubacc = async (
     principal: string,
     tokenSymbol: string,
     subIndex: string,
     newName: string,
     newIndex: string,
     allowance: { allowance: string; expires_at: string } | undefined,
-  ) => dispatch(editContactSubacc(principal, tokenSymbol, subIndex, newName, newIndex, allowance));
+  ) => {
+    const contact = await db().getContact(principal);
+    contact &&
+      (await db().updateContact(principal, {
+        ...contact,
+        assets: contact.assets.map((asset) => {
+          if (asset.tokenSymbol !== tokenSymbol) {
+            return asset;
+          } else {
+            return {
+              ...asset,
+              subaccounts: asset.subaccounts
+                .map((subAccount) => {
+                  if (subAccount.subaccount_index !== subIndex) return subAccount;
+                  else {
+                    return {
+                      name: newName,
+                      subaccount_index: newIndex,
+                      sub_account_id: `0x${newIndex}`,
+                      allowance: allowance,
+                    };
+                  }
+                })
+                .sort(
+                  (a, b) =>
+                    hexToNumber(`0x${a.subaccount_index}`)?.compare(
+                      hexToNumber(`0x${b.subaccount_index}`) || bigInt(0),
+                    ) || 0,
+                ),
+            };
+          }
+        }),
+      }));
+  };
 
-  const addCntctSubacc = (
+  const addCntctSubacc = async (
     principal: string,
     tokenSymbol: string,
     newName: string,
     newIndex: string,
     subAccountId: string,
     allowance?: { allowance: string; expires_at: string },
-  ) => dispatch(addContactSubacc(principal, tokenSymbol, newName, newIndex, subAccountId, allowance));
+  ) => {
+    const contact = await db().getContact(principal);
+    contact &&
+      (await db().updateContact(principal, {
+        ...contact,
+        assets: contact.assets.map((asset) => {
+          if (asset.tokenSymbol !== tokenSymbol) {
+            return asset;
+          } else {
+            return {
+              ...asset,
+              subaccounts: [
+                ...asset.subaccounts,
+                {
+                  name: newName,
+                  subaccount_index: newIndex,
+                  sub_account_id: subAccountId,
+                  allowance: allowance,
+                },
+              ].sort(
+                (a, b) =>
+                  hexToNumber(`0x${a.subaccount_index}`)?.compare(
+                    hexToNumber(`0x${b.subaccount_index}`) || bigInt(0),
+                  ) || 0,
+              ),
+            };
+          }
+        }),
+      }));
+  };
 
   const [deleteModal, setDeleteModal] = useState(false);
   const [deleteType, setDeleteType] = useState<DeleteContactTypeEnum>(DeleteContactTypeEnum.Enum.ASSET);
