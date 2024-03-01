@@ -13,7 +13,7 @@ const ICRCTransactionsTable = ({ setDrawerOpen }: ICRCTransactionsTableProps) =>
   const { selectedTransaction, changeSelectedTransaction } = UseTransaction();
   const { columns, sorting, setSorting } = TableHook();
   const table = useReactTable({
-    data: transactions,
+    data: transactions || [],
     columns,
     state: {
       sorting,

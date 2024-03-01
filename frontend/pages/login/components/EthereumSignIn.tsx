@@ -21,6 +21,11 @@ export default function EthereumSignIn() {
   }, [isConnected, address, prepareLogin, isPrepareLoginIdle]);
 
   useEffect(() => {
+    // (async () => {
+    //   if (!identity) return;
+    //   const authClient = await AuthClient.create();
+    //   handleLoginApp(authClient.getIdentity(), false, identity.getPrincipal());
+    // })();
     if (!identity) return;
     handleLoginApp(identity);
   }, [identity]);
