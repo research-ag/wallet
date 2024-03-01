@@ -1,17 +1,19 @@
+import React from "react";
+import ReactDOM from "react-dom/client";
+
 import "./index.css";
 import "@rainbow-me/rainbowkit/styles.css";
 
-import * as ReactDOM from "react-dom/client";
-
-import { RainbowKitProvider, darkTheme } from "@rainbow-me/rainbowkit";
-import { canisterId, idlFactory } from "./declarations/ic_siwe_provider";
-import { chains, wagmiConfig } from "./wagmi.config";
-
 import App from "./App";
-import React from "react";
-import { SiweIdentityProvider } from "./siwe";
+import { RainbowKitProvider, darkTheme } from "@rainbow-me/rainbowkit";
+
+import { chains, wagmiConfig } from "./wagmi.config";
 import { WagmiConfig } from "wagmi";
+
+import { canisterId, idlFactory } from "@/candid/ic_siwe_provider";
+
 import reportWebVitals from "./reportWebVitals";
+import { SiweIdentityProvider } from "./siwe";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -33,6 +35,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     </WagmiConfig>
   </React.StrictMode>,
 );
+
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
