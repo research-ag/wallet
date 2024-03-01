@@ -2,6 +2,7 @@ import { AuthNetwork, Token } from "@redux/models/TokenModels";
 import { Contact } from "@redux/models/ContactsModels";
 import { Identity } from "@dfinity/agent";
 import { Observable } from "rxjs";
+import { Principal } from "@dfinity/principal";
 import { DB_Type } from "./db";
 
 export abstract class IWalletDatabase {
@@ -63,9 +64,9 @@ export abstract class IWalletDatabase {
    * Set Identity object or fixed Principal ID
    * as current active agent.
    * @param identity Identity object
-   * @param principalId Principal ID
+   * @param fixedPrincipal Watch-only login Principal ID
    */
-  abstract setIdentity(identity: Identity | null): void;
+  abstract setIdentity(identity: Identity | null, fixedPrincipal?: Principal): void;
 
   /**
    * Get a Token object by its ID.

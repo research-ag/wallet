@@ -5,7 +5,6 @@ import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 import { useCreateContact } from "@pages/contacts/hooks/useCreateContact";
 import usePrincipalValidator from "@pages/contacts/hooks/usePrincipalValidator";
 import { GeneralHook } from "@pages/home/hooks/generalHook";
-import { useAppDispatch } from "@redux/Store";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import ContactMainDetails from "./ContactMainDetails";
@@ -13,19 +12,19 @@ import ContactAssetDetails from "./ContactAssetDetails";
 import LoadingLoader from "@components/Loader";
 import { CustomButton } from "@components/Button";
 import { retrieveSubAccountsWithAllowance, retrieveAssetsWithAllowance } from "@/pages/home/helpers/icrc";
-import { addContact } from "@redux/contacts/ContactsReducer";
 import { AssetContact } from "@redux/models/ContactsModels";
 import { isHexadecimalValid, validateSubaccounts } from "@/utils/checkers";
 import clsx from "clsx";
 import { validatePrincipal } from "@/utils/identity";
 import { SupportedStandardEnum } from "@/@types/icrc";
+import { db } from "@/database/db";
+import { getAccountIdentifier } from "@/utils";
 
 interface AddContactProps {
   setAddOpen(value: boolean): void;
 }
 
 export default function AddContact({ setAddOpen }: AddContactProps) {
-  const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const [isAllowancesChecking, setIsAllowancesChecking] = useState<boolean>(false);
   const { assets, asciiHex } = GeneralHook();
@@ -198,8 +197,9 @@ export default function AddContact({ setAddOpen }: AddContactProps) {
         const toStoreContact = {
           ...auxContact,
           assets: result,
+          accountIdentier: getAccountIdentifier(auxContact.principal, 0),
         };
-        dispatch(addContact(toStoreContact));
+        await db().addContact(toStoreContact);
         setIsCreating(false);
         setAddOpen(false);
       }

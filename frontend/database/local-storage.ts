@@ -3,6 +3,7 @@ import { Token } from "@redux/models/TokenModels";
 import { Contact } from "@redux/models/ContactsModels";
 import { Identity } from "@dfinity/agent";
 import { BehaviorSubject, Observable } from "rxjs";
+import { Principal } from "@dfinity/principal";
 import { defaultTokens } from "@/defaultTokens";
 
 export class LocalStorageDatabase extends IWalletDatabase {
@@ -31,10 +32,10 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * Set Identity object or fixed Principal ID
    * as current active agent.
    * @param identity Identity object
-   * @param principalId Principal ID
+   * @param fixedPrincipal Watch-only login Principal ID
    */
-  setIdentity(identity: Identity | null): void {
-    this.principalId = identity?.getPrincipal().toText() || "";
+  setIdentity(identity: Identity | null, fixedPrincipal?: Principal): void {
+    this.principalId = fixedPrincipal?.toString() || identity?.getPrincipal().toText() || "";
     this._tokens$.next(this._getTokens());
     this._contacts$.next(this._getContacts());
     !!this.principalId && this._doesRecordByPrincipalExist();
@@ -165,36 +166,23 @@ export class LocalStorageDatabase extends IWalletDatabase {
   }
 
   private _getTokens(): Token[] {
-    const userData = JSON.parse(localStorage.getItem(`tokens-${this.principalId}`) || "null");
-    return userData?.tokens || [];
+    const tokensData = JSON.parse(localStorage.getItem(`tokens-${this.principalId}`) || "null");
+    return tokensData || [];
   }
 
   private _setTokens(allTokens: Token[]) {
-    const tokens = allTokens.sort((a, b) => {
-      return a.id_number - b.id_number;
-    });
-    localStorage.setItem(
-      `tokens-${this.principalId}`,
-      JSON.stringify({
-        from: "II",
-        tokens,
-      }),
-    );
+    const tokens = allTokens.sort((a, b) => a.id_number - b.id_number);
+    localStorage.setItem(`tokens-${this.principalId}`, JSON.stringify(tokens));
     this._tokens$.next(tokens);
   }
 
   private _getContacts(): Contact[] {
     const contactsData = JSON.parse(localStorage.getItem(`contacts-${this.principalId}`) || "null");
-    return contactsData?.contacts || [];
+    return contactsData || [];
   }
 
   private _setContacts(contacts: Contact[]) {
-    localStorage.setItem(
-      `contacts-${this.principalId}`,
-      JSON.stringify({
-        contacts,
-      }),
-    );
+    localStorage.setItem(`contacts-${this.principalId}`, JSON.stringify(contacts));
     this._contacts$.next(contacts);
   }
 
@@ -204,7 +192,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
 
     // If does not exist it means that this is a brand new account
     if (!exist) {
-      this._setTokens(defaultTokens);
+      this._setTokens([...defaultTokens]);
       this._tokens$.next(this._getTokens());
     }
   }
