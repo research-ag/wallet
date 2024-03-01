@@ -9,13 +9,7 @@ export default function ConnectButton() {
   const buttonText = isConnecting ? "Connecting" : "Connect wallet";
 
   return (
-    <CustomButton
-      className="disabled:opacity-50 w-36"
-      disabled={isConnecting}
-      // icon={buttonIcon}
-      onClick={handleClick}
-      // spin={isConnecting}
-    >
+    <CustomButton className="disabled:opacity-50 w-36" disabled={isConnecting} onClick={handleClick}>
       {buttonText}
     </CustomButton>
   );
