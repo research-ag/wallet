@@ -13,7 +13,7 @@ import { WagmiConfig } from "wagmi";
 import { canisterId, idlFactory } from "@/candid/ic_siwe_provider";
 
 import reportWebVitals from "./reportWebVitals";
-import { SiweIdentityProvider } from "./siwe";
+import { SiweIdentityProvider } from "@/siwe";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

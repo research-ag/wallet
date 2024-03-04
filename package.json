@@ -40,6 +40,7 @@
     "i18next": "^22.5.0",
     "i18next-browser-languagedetector": "^7.0.2",
     "i18next-http-backend": "^2.2.1",
+    "ic-use-siwe-identity": "^0.0.7",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
     "react": "^18.2.0",
