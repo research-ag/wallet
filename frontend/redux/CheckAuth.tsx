@@ -77,8 +77,8 @@ export const handlePrincipalAuthenticated = async (principalAddress: string) => 
   }
 };
 
-export const handleMnemonicAuthenticated = (phrase: string) => {
-  const phraseToIdentity: (phrase: string) => Identity | null = (phrase) => {
+export const handleMnemonicAuthenticated = (phrase: string[]) => {
+  const phraseToIdentity: (phrase: string[]) => Identity | null = (phrase) => {
     return Secp256k1KeyIdentity.fromSeedPhrase(phrase) as any;
   };
   const secpIdentity = phraseToIdentity(phrase) as Identity;

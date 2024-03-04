@@ -52,7 +52,7 @@ export default function MnemonicInput({ phrase, setPhrase }: MnemonicInputProps)
       setIsError(false);
       const sanitizedPhrase = getSanitizedPhrase(phrase);
       if (isValid) {
-        handleMnemonicAuthenticated(sanitizedPhrase);
+        handleMnemonicAuthenticated(sanitizedPhrase.split(" "));
       }
     } catch (error) {
       console.log(error);
