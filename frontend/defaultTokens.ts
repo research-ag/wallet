@@ -234,7 +234,7 @@ export const mapSnsToToken = (sns: MapSnsToTokenProps): Token => {
     address,
     index,
     name,
-    logo,
+    logo: logo.toString(),
     tokenName: name,
     tokenSymbol: metadata["icrc1:symbol"],
     symbol: metadata["icrc1:symbol"],

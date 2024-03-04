@@ -6,7 +6,7 @@ import { allowanceCacheRefresh } from "@pages/home/helpers/allowanceCache";
 // import { AssetList, Metadata } from "@candid/metadata/service.did";
 import store, { useAppDispatch, useAppSelector } from "@redux/Store";
 import { getAllTransactionsICP, getAllTransactionsICRC1, updateAllBalances } from "@redux/assets/AssetActions";
-import { setLoading, setTxWorker } from "@redux/assets/AssetReducer";
+import { setLoading, setTxWorker, setICRC1SystemAssets } from "@redux/assets/AssetReducer";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { Token } from "@redux/models/TokenModels";
 import { timerWorkerScript, snsAggregatorWorkerScript } from "@workers/index";
@@ -91,10 +91,9 @@ export const WorkerHook = () => {
 
   // SNS AGGREGATOR WEB WORKER
   const snsAggregatorWorker = new Worker(snsAggregatorWorkerScript, { type: "module", credentials: "include" });
-  snsAggregatorWorker.onmessage = ({ data }) => {
-    console.log("WORKER", data.map(mapSnsToToken));
-  };
-  snsAggregatorWorker.onerror = (event) => console.log(event);
+  snsAggregatorWorker.onmessage = ({ data }: { data: any[] }) =>
+    dispatch(setICRC1SystemAssets(data.map(mapSnsToToken)));
+  snsAggregatorWorker.onerror = (event) => console.error("SNS Aggregator Worken", event);
 
   useEffect(() => {
     const postRequest = { message: true };

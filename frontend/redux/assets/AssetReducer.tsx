@@ -6,12 +6,14 @@ import { getUSDfromToken, hexToNumber } from "@/utils";
 import { localDb, rxDb } from "@/database/db";
 import store from "@redux/Store";
 import { setAssetFromLocalData, updateAllBalances } from "./AssetActions";
+import { ICRC1systemAssets } from "@/defaultTokens";
 
 interface AssetState {
   initLoad: boolean;
   ICPSubaccounts: Array<ICPSubAccount>;
   assetLoading: boolean;
   tokens: Token[];
+  icr1SystemTokens: Token[];
   tokensMarket: TokenMarketInfo[];
   assets: Array<Asset>;
   accounts: Array<SubAccount>;
@@ -29,6 +31,7 @@ const initialState: AssetState = {
   ICPSubaccounts: [],
   assetLoading: false,
   tokens: [],
+  icr1SystemTokens: ICRC1systemAssets,
   tokensMarket: [],
   assets: [],
   accounts: [],
@@ -50,6 +53,9 @@ const assetSlice = createSlice({
     },
     setReduxTokens(state, action: PayloadAction<Token[]>) {
       state.tokens = action.payload;
+    },
+    setICRC1SystemAssets(state, action: PayloadAction<Token[]>) {
+      state.icr1SystemTokens = action.payload;
     },
     setICPSubaccounts(state, action: PayloadAction<ICPSubAccount[]>) {
       state.ICPSubaccounts = action.payload;
@@ -338,6 +344,7 @@ rxDb().subscribeToAllTokens().subscribe(dbSubscriptionHandler);
 export const {
   setInitLoad,
   clearDataAsset,
+  setICRC1SystemAssets,
   setICPSubaccounts,
   setLoading,
   removeToken,
