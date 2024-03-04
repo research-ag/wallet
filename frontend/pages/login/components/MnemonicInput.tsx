@@ -53,7 +53,7 @@ export default function MnemonicInput() {
       setIsError(false);
       const sanitizedPhrase = getWords(phrase);
       if (isValid) {
-        handleMnemonicAuthenticated(sanitizedPhrase);
+        handleMnemonicAuthenticated(sanitizedPhrase.split(" "));
       }
     } catch (error) {
       logger.debug(error);
