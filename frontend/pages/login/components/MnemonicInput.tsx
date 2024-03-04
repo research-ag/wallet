@@ -37,7 +37,7 @@ export default function MnemonicInput({ phrase, setPhrase }: MnemonicInputProps)
         <div className="flex flex-row items-center justify-start gap-1">
           <CheckIcon onClick={onLoginWithPhase} className={getCheckIconStyles(!isError && isValid)} />
           <p className="text-sm min-w-[4rem] text-PrimaryTextColorLight dark:text-PrimaryTextColor">
-            Words {getSanitizedPhrase(phrase).length > 0 ? getSanitizedPhrase(phrase).split(" ").length : 0}
+            Words {getWords(phrase).length > 0 ? getWords(phrase).length : 0}
           </p>
         </div>
       }
@@ -50,9 +50,9 @@ export default function MnemonicInput({ phrase, setPhrase }: MnemonicInputProps)
   function onLoginWithPhase() {
     try {
       setIsError(false);
-      const sanitizedPhrase = getSanitizedPhrase(phrase);
+      const sanitizedPhrase = getWords(phrase);
       if (isValid) {
-        handleMnemonicAuthenticated(sanitizedPhrase.split(" "));
+        handleMnemonicAuthenticated(sanitizedPhrase);
       }
     } catch (error) {
       console.log(error);
@@ -65,16 +65,11 @@ export default function MnemonicInput({ phrase, setPhrase }: MnemonicInputProps)
   }
 
   function isPhraseValid(phrase: string) {
-    const sanitizedPhrase = getSanitizedPhrase(phrase);
+    const sanitizedPhrase = getWords(phrase);
 
-    const sanitizedChunks = sanitizedPhrase.split(" ");
+    if (sanitizedPhrase.length === 0) return false;
 
-    if (!(sanitizedChunks.length > 0) || sanitizedPhrase.length === 0) return false;
-    if (sanitizedPhrase.match(/[^a-zA-Z\s]/)) {
-      return false;
-    }
-
-    for (const word of sanitizedChunks) {
+    for (const word of sanitizedPhrase) {
       if (!wordlists.includes(word)) {
         return false;
       }
@@ -84,10 +79,9 @@ export default function MnemonicInput({ phrase, setPhrase }: MnemonicInputProps)
   }
 }
 
-function getSanitizedPhrase(phrase: string) {
+function getWords(phrase: string): string[] {
   const chunks = phrase.split(" ");
-  const cleanedChunks = chunks.filter((chunk) => chunk.trim() !== "");
-  return cleanedChunks.join(" ");
+  return chunks.filter((chunk) => chunk.trim() !== "");
 }
 
 function getCheckIconStyles(isSuccess: boolean) {
