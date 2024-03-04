@@ -1,6 +1,12 @@
 import { Token } from "@redux/models/TokenModels";
 import { SupportedStandardEnum } from "./@types/icrc";
 
+interface MapSnsToTokenProps {
+  canister_ids: { ledger_canister_id: string; index_canister_id: string };
+  meta: { name: string; logo: string };
+  icrc1_metadata: any[];
+}
+
 const supportedStandards = [SupportedStandardEnum.Values["ICRC-1"], SupportedStandardEnum.Values["ICRC-2"]];
 
 //
@@ -211,3 +217,31 @@ export const defaultTokens: Token[] = [
     supportedStandards,
   },
 ];
+
+export const mapSnsToToken = (sns: MapSnsToTokenProps): Token => {
+  const {
+    canister_ids: { ledger_canister_id: address, index_canister_id: index },
+    meta: { name, logo },
+    icrc1_metadata,
+  } = sns;
+
+  const metadata: any = icrc1_metadata
+    .map((meta) => ({ [meta[0]]: meta[1].Text || meta[1].Nat[0] }))
+    .reduce((prev, curr) => Object.assign(prev, curr), {});
+
+  return {
+    id_number: 0,
+    address,
+    index,
+    name,
+    logo,
+    tokenName: name,
+    tokenSymbol: metadata["icrc1:symbol"],
+    symbol: metadata["icrc1:symbol"],
+    decimal: metadata["icrc1:decimals"],
+    shortDecimal: metadata["icrc1:decimals"],
+    fee: metadata["icrc1:fee"],
+    subAccounts: [{ numb: "0", name: "Default", amount: "0", currency_amount: "0" }],
+    supportedStandards,
+  };
+};
