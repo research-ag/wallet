@@ -86,7 +86,7 @@ export const handleMnemonicAuthenticated = (phrase: string[]) => {
   handleLoginApp(secpIdentity, true);
 };
 
-// BUG: identity fail on icrc ledger interaction
+// FIXME: identity fail on icrc ledger interaction
 export const handleSiweAuthenticated = async (identity: DelegationIdentity) => {
   handleLoginApp(identity);
 };

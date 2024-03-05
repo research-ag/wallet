@@ -13,7 +13,7 @@ export default function EthereumSignIn() {
   const { t } = useTranslation();
   const { isConnected, address } = useAccount();
   const { chain } = useNetwork();
-  const { prepareLogin, isPrepareLoginIdle, identity, clear } = useSiweIdentity();
+  const { prepareLogin, isPrepareLoginIdle, identity } = useSiweIdentity();
 
   useEffect(() => {
     if (!isPrepareLoginIdle || !isConnected || !address) return;
@@ -21,12 +21,8 @@ export default function EthereumSignIn() {
   }, [isConnected, address, prepareLogin, isPrepareLoginIdle]);
 
   useEffect(() => {
-    (async () => {
-      if (!identity) return;
-      await handleSiweAuthenticated(identity);
-      console.log("cleaning");
-      clear();
-    })();
+    if (!identity) return;
+    handleSiweAuthenticated(identity);
   }, [identity]);
 
   return (
