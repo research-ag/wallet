@@ -14,13 +14,14 @@ import { AuthClient } from "@dfinity/auth-client";
 import { clearDataAsset, setInitLoad, setLoading } from "./assets/AssetReducer";
 import { AuthNetwork } from "./models/TokenModels";
 import { AuthNetworkTypeEnum } from "@/const";
-import { Ed25519KeyIdentity } from "@dfinity/identity";
+import { Ed25519KeyIdentity, DelegationIdentity } from "@dfinity/identity";
 import { clearDataContacts } from "./contacts/ContactsReducer";
 import { Principal } from "@dfinity/principal";
 import { allowanceCacheRefresh } from "@pages/home/helpers/allowanceCache";
 import contactCacheRefresh from "@pages/contacts/helpers/contacts";
 import { setAllowances } from "./allowance/AllowanceReducer";
 import { Secp256k1KeyIdentity } from "@dfinity/identity-secp256k1";
+import { IcrcLedgerCanister } from "@dfinity/ledger";
 import { db } from "@/database/db";
 
 const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${
@@ -83,6 +84,11 @@ export const handleMnemonicAuthenticated = (phrase: string[]) => {
   };
   const secpIdentity = phraseToIdentity(phrase) as Identity;
   handleLoginApp(secpIdentity, true);
+};
+
+// BUG: identity fail on icrc ledger interaction
+export const handleSiweAuthenticated = async (identity: DelegationIdentity) => {
+  handleLoginApp(identity);
 };
 
 export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean, fixedPrincipal?: Principal) => {

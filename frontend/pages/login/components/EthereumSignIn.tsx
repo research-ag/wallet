@@ -7,13 +7,13 @@ import { useTranslation } from "react-i18next";
 import LoginButton from "./LoginButton";
 import { useSiweIdentity } from "@/siwe";
 import { useEffect } from "react";
-import { handleLoginApp } from "@redux/CheckAuth";
+import { handleSiweAuthenticated } from "@redux/CheckAuth";
 
 export default function EthereumSignIn() {
   const { t } = useTranslation();
   const { isConnected, address } = useAccount();
   const { chain } = useNetwork();
-  const { prepareLogin, isPrepareLoginIdle, identity } = useSiweIdentity();
+  const { prepareLogin, isPrepareLoginIdle, identity, clear } = useSiweIdentity();
 
   useEffect(() => {
     if (!isPrepareLoginIdle || !isConnected || !address) return;
@@ -21,8 +21,12 @@ export default function EthereumSignIn() {
   }, [isConnected, address, prepareLogin, isPrepareLoginIdle]);
 
   useEffect(() => {
-    if (!identity) return;
-    handleLoginApp(identity);
+    (async () => {
+      if (!identity) return;
+      await handleSiweAuthenticated(identity);
+      console.log("cleaning");
+      clear();
+    })();
   }, [identity]);
 
   return (
