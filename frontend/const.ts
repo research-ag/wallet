@@ -11,6 +11,22 @@ import GoldTokenIcon from "@/assets/svg/files/gldt_icon.svg";
 import OrigynIcon from "@/assets/svg/files/ogy_icon.svg";
 import DragginzIcon from "@/assets/svg/files/dragginz.svg";
 import GLDGovIcon from "@/assets/svg/files/GLDov_icon.svg";
+import SocIcon from "@/assets/svg/files/soc.svg";
+import SonicIcon from "@/assets/svg/files/sonic.svg";
+import GhostIcon from "@/assets/svg/files/ghost.svg";
+import BoomIcon from "@/assets/svg/files/boom.svg";
+import CatIcon from "@/assets/svg/files/cat.svg";
+import ElnaIcon from "@/assets/svg/files/elna.svg";
+import EmcIcon from "@/assets/svg/files/emc.svg";
+import IclIcon from "@/assets/svg/files/icl.svg";
+import IcxIcon from "@/assets/svg/files/icx.svg";
+import ModIcon from "@/assets/svg/files/mod.svg";
+import NtnIcon from "@/assets/svg/files/ntn.svg";
+import NuaIcon from "@/assets/svg/files/nua.svg";
+import QroIcon from "@/assets/svg/files/qro.svg";
+import SeerIcon from "@/assets/svg/files/seer.svg";
+import SneedIcon from "@/assets/svg/files/sneed.svg";
+import TraxIcon from "@/assets/svg/files/trax.svg";
 import { z } from "zod";
 import { Token } from "@redux/models/TokenModels";
 import { ICRC1systemAssets } from "./defaultTokens";
@@ -56,7 +72,15 @@ export type AccountDefault = z.infer<typeof AccountDefaultEnum>;
 export const WorkerTaskEnum = z.enum(["TRANSACTIONS", "ASSETS"]);
 export type WorkerTask = z.infer<typeof WorkerTaskEnum>;
 
-export const AuthNetworkNameEnum = z.enum(["Internet Identity", "NFID", "Metamask", "Seed", "Watch-Only", "Mnemonic", "NONE"]);
+export const AuthNetworkNameEnum = z.enum([
+  "Internet Identity",
+  "NFID",
+  "Metamask",
+  "Seed",
+  "Watch-Only",
+  "Mnemonic",
+  "NONE",
+]);
 export type AuthNetworkName = z.infer<typeof AuthNetworkNameEnum>;
 
 export const AuthNetworkTypeEnum = z.enum(["IC", "NFID", "MM", "S", "WO", "MNEMONIC", "NONE"]);
@@ -93,4 +117,20 @@ export const symbolIconDict: { [key: string]: string } = {
   GLDT: GoldTokenIcon,
   OGY: OrigynIcon,
   GLDGov: GLDGovIcon,
+  SOC: SocIcon,
+  SONIC: SonicIcon,
+  GHOST: GhostIcon,
+  BOOM: BoomIcon,
+  CAT: CatIcon,
+  ELNA: ElnaIcon,
+  EMC: EmcIcon,
+  ICL: IclIcon,
+  ICX: IcxIcon,
+  MOD: ModIcon,
+  NTN: NtnIcon,
+  NUA: NuaIcon,
+  QRO: QroIcon,
+  SEER: SeerIcon,
+  SNEED: SneedIcon,
+  TRAX: TraxIcon,
 };

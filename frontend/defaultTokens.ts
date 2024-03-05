@@ -221,7 +221,7 @@ export const defaultTokens: Token[] = [
 export const mapSnsToToken = (sns: MapSnsToTokenProps): Token => {
   const {
     canister_ids: { ledger_canister_id: address, index_canister_id: index },
-    meta: { name, logo },
+    meta: { name },
     icrc1_metadata,
   } = sns;
 
@@ -234,13 +234,12 @@ export const mapSnsToToken = (sns: MapSnsToTokenProps): Token => {
     address,
     index,
     name,
-    logo: logo.toString(),
     tokenName: name,
     tokenSymbol: metadata["icrc1:symbol"],
     symbol: metadata["icrc1:symbol"],
     decimal: metadata["icrc1:decimals"],
     shortDecimal: metadata["icrc1:decimals"],
-    fee: metadata["icrc1:fee"],
+    fee: metadata["icrc1:fee"].toString(),
     subAccounts: [{ numb: "0", name: "Default", amount: "0", currency_amount: "0" }],
     supportedStandards,
   };
