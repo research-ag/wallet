@@ -1,10 +1,11 @@
 import { Token } from "@redux/models/TokenModels";
 import { SupportedStandardEnum } from "./@types/icrc";
+import { getMetadataInfo } from "./utils";
+import { IcrcLedgerCanister } from "@dfinity/ledger";
+import { HttpAgent } from "@dfinity/agent";
 
-interface MapSnsToTokenProps {
+interface SnsMetadata {
   canister_ids: { ledger_canister_id: string; index_canister_id: string };
-  meta: { name: string; logo: string };
-  icrc1_metadata: any[];
 }
 
 const supportedStandards = [SupportedStandardEnum.Values["ICRC-1"], SupportedStandardEnum.Values["ICRC-2"]];
@@ -54,48 +55,6 @@ export const ICRC1systemAssets: Array<Token> = [
   },
   {
     id_number: 10003,
-    address: "2ouva-viaaa-aaaaq-aaamq-cai",
-    symbol: "CHAT",
-    name: "openChat",
-    tokenSymbol: "CHAT",
-    tokenName: "openChat",
-    decimal: "8",
-    shortDecimal: "8",
-    fee: "100000",
-    subAccounts: [{ numb: "0", name: "Default", amount: "0", currency_amount: "0" }],
-    index: "2awyi-oyaaa-aaaaq-aaanq-cai",
-    supportedStandards,
-  },
-  {
-    id_number: 10004,
-    address: "73mez-iiaaa-aaaaq-aaasq-cai",
-    symbol: "KINIC",
-    name: "Kinic",
-    tokenSymbol: "KINIC",
-    tokenName: "Kinic",
-    decimal: "8",
-    shortDecimal: "8",
-    fee: "10000",
-    subAccounts: [{ numb: "0", name: "Default", amount: "0", currency_amount: "0" }],
-    index: "7vojr-tyaaa-aaaaq-aaatq-cai",
-    supportedStandards,
-  },
-  {
-    id_number: 10005,
-    address: "zfcdd-tqaaa-aaaaq-aaaga-cai",
-    symbol: "SNS1",
-    name: "Draggins",
-    tokenSymbol: "SNS1",
-    tokenName: "Draggins",
-    decimal: "8",
-    shortDecimal: "8",
-    fee: "1000",
-    subAccounts: [{ numb: "0", name: "Default", amount: "0", currency_amount: "0" }],
-    index: "zlaol-iaaaa-aaaaq-aaaha-cai",
-    supportedStandards,
-  },
-  {
-    id_number: 10007,
     address: "oh54a-baaaa-aaaap-abryq-cai",
     symbol: "GLDT",
     name: "Gold token",
@@ -109,7 +68,7 @@ export const ICRC1systemAssets: Array<Token> = [
     supportedStandards,
   },
   {
-    id_number: 10008,
+    id_number: 10004,
     address: "jwcfb-hyaaa-aaaaj-aac4q-cai",
     symbol: "OGY",
     name: "Origyn",
@@ -120,34 +79,6 @@ export const ICRC1systemAssets: Array<Token> = [
     fee: "200000",
     subAccounts: [{ numb: "0", name: "Default", amount: "0", currency_amount: "0" }],
     index: "",
-    supportedStandards,
-  },
-  {
-    id_number: 10009,
-    address: "6rdgd-kyaaa-aaaaq-aaavq-cai",
-    symbol: "HOT",
-    name: "Hot or Not",
-    tokenSymbol: "HOT",
-    tokenName: "Hot or Not",
-    decimal: "8",
-    shortDecimal: "8",
-    fee: "100000",
-    subAccounts: [{ numb: "0", name: "Default", amount: "0", currency_amount: "0" }],
-    index: "6dfr2-giaaa-aaaaq-aaawq-cai",
-    supportedStandards,
-  },
-  {
-    id_number: 10010,
-    address: "tyyy3-4aaaa-aaaaq-aab7a-cai",
-    symbol: "GLDGov",
-    name: "Gold Governance Token",
-    tokenSymbol: "GLDGov",
-    tokenName: "Gold Governance Token",
-    decimal: "8",
-    shortDecimal: "8",
-    fee: "100000",
-    subAccounts: [{ numb: "0", name: "Default", amount: "0", currency_amount: "0" }],
-    index: "efv5g-kqaaa-aaaaq-aacaa-cai",
     supportedStandards,
   },
 ];
@@ -218,29 +149,30 @@ export const defaultTokens: Token[] = [
   },
 ];
 
-export const mapSnsToToken = (sns: MapSnsToTokenProps): Token => {
+export const mapSnsToToken = async (sns: SnsMetadata, id: number, myAgent: HttpAgent): Promise<Token> => {
   const {
     canister_ids: { ledger_canister_id: address, index_canister_id: index },
-    meta: { name },
-    icrc1_metadata,
   } = sns;
 
-  const metadata: any = icrc1_metadata
-    .map((meta) => ({ [meta[0]]: meta[1].Text || meta[1].Nat[0] }))
-    .reduce((prev, curr) => Object.assign(prev, curr), {});
+  const { metadata } = IcrcLedgerCanister.create({ agent: myAgent, canisterId: address as any });
+
+  const currentMetadata = await metadata({ certified: false });
+
+  const { name, symbol, decimals, logo, fee } = getMetadataInfo(currentMetadata);
 
   return {
-    id_number: 0,
+    id_number: id + 10005,
     address,
-    index,
+    index: index || "",
     name,
+    symbol,
+    logo: logo || "",
+    fee,
     tokenName: name,
-    tokenSymbol: metadata["icrc1:symbol"],
-    symbol: metadata["icrc1:symbol"],
-    decimal: metadata["icrc1:decimals"],
-    shortDecimal: metadata["icrc1:decimals"],
-    fee: metadata["icrc1:fee"].toString(),
-    subAccounts: [{ numb: "0", name: "Default", amount: "0", currency_amount: "0" }],
+    tokenSymbol: symbol,
+    decimal: decimals.toString(),
+    shortDecimal: decimals.toString(),
+    subAccounts: [{ numb: "0x0", name: "Default", amount: "0", currency_amount: "0" }],
     supportedStandards,
   };
 };

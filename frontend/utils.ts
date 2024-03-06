@@ -5,7 +5,12 @@ import { Buffer } from "buffer";
 import bigInt from "big-integer";
 import store from "@redux/Store";
 import { Transaction, Operation, RosettaTransaction, Asset } from "./redux/models/AccountModels";
-import { IcrcTokenMetadataResponse, IcrcAccount, encodeIcrcAccount } from "@dfinity/ledger";
+import {
+  IcrcMetadataResponseEntries,
+  IcrcTokenMetadataResponse,
+  IcrcAccount,
+  encodeIcrcAccount,
+} from "@dfinity/ledger";
 import {
   OperationStatusEnum,
   OperationTypeEnum,
@@ -470,23 +475,23 @@ export const getMetadataInfo = (myMetadata: IcrcTokenMetadataResponse) => {
   let fee = "";
 
   myMetadata.map((dt) => {
-    if (dt[0] === "icrc1:symbol") {
+    if (dt[0] === IcrcMetadataResponseEntries.SYMBOL) {
       const auxSymbol = dt[1] as { Text: string };
       symbol = auxSymbol.Text;
     }
-    if (dt[0] === "icrc1:name") {
+    if (dt[0] === IcrcMetadataResponseEntries.NAME) {
       const auxName = dt[1] as { Text: string };
       name = auxName.Text;
     }
-    if (dt[0] === "icrc1:decimals") {
+    if (dt[0] === IcrcMetadataResponseEntries.DECIMALS) {
       const auxDec = dt[1] as any;
       decimals = Number(auxDec.Nat);
     }
-    if (dt[0] === "icrc1:logo") {
+    if (dt[0] === IcrcMetadataResponseEntries.LOGO) {
       const auxName = dt[1] as { Text: string };
       logo = auxName.Text;
     }
-    if (dt[0] === "icrc1:fee") {
+    if (dt[0] === IcrcMetadataResponseEntries.FEE) {
       const auxName = dt[1] as any;
       fee = String(auxName.Nat);
     }

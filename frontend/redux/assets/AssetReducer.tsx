@@ -55,7 +55,7 @@ const assetSlice = createSlice({
       state.tokens = action.payload;
     },
     setICRC1SystemAssets(state, action: PayloadAction<Token[]>) {
-      state.icr1SystemTokens = action.payload;
+      state.icr1SystemTokens = [...ICRC1systemAssets, ...action.payload];
     },
     setICPSubaccounts(state, action: PayloadAction<ICPSubAccount[]>) {
       state.ICPSubaccounts = action.payload;

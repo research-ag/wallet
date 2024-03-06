@@ -162,7 +162,7 @@ const AddAssetAutomatic = ({
                         }}
                       >
                         <div className="flex flex-row items-center justify-start">
-                          {getAssetIcon(IconTypeEnum.Enum.ASSET, newAsset.symbol, newToken.logo)}
+                          {getAssetIcon(IconTypeEnum.Enum.ASSET, newAsset.symbol, newAsset.logo)}
                           <p className="ml-3">{`${newAsset.symbol}`}</p>
                         </div>
                       </DropdownMenu.Item>
