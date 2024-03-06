@@ -50,6 +50,7 @@
   "sending": "Sending",
   "network": "Network",
   "error": "ERROR",
+  "unsupported.network": "Unsupported Network",
   "succes.caps": "SUCCESS",
   "subacc": "SubAc",
   "sub-acc": "Sub-account",

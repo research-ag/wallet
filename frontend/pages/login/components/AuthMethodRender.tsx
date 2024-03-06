@@ -7,6 +7,7 @@ import SeedInput from "./SeedInput";
 import WatchOnlyInput from "./WatchOnlyInput";
 import MnemonicInput from "./MnemonicInput";
 import { db } from "@/database/db";
+import EthereumSignIn from "./EthereumSignIn";
 
 export default function AuthMethodRender() {
   const { t } = useTranslation();
@@ -14,6 +15,7 @@ export default function AuthMethodRender() {
     loginOpts,
     seedOpen,
     seed,
+    ethereumOpen,
     watchOnlyOpen,
     principalAddress,
     mnemonicOpen,
@@ -52,6 +54,8 @@ export default function AuthMethodRender() {
           {opt.icon}
         </div>
 
+        {ethereumOpen && opt.type === AuthNetworkTypeEnum.Enum.ETH && <EthereumSignIn />}
+
         {seedOpen && opt.type === AuthNetworkTypeEnum.Enum.S && <SeedInput seed={seed} setSeed={setSeed} />}
 
         {watchOnlyOpen && opt.type === AuthNetworkTypeEnum.Enum.WO && (
@@ -71,6 +75,13 @@ export default function AuthMethodRender() {
       localStorage.setItem("network_type", JSON.stringify({ type: opt.type, network: opt.network, name: opt.name }));
       db().setNetworkType(opt);
       handleAuthenticated(opt);
+      return;
+    }
+
+    if (opt.type === AuthNetworkTypeEnum.Values.ETH) {
+      localStorage.setItem("network_type", JSON.stringify({ type: opt.type, network: opt.network, name: opt.name }));
+      db().setNetworkType(opt);
+      handleMethodChange(AuthNetworkTypeEnum.Values.ETH);
       return;
     }
 
