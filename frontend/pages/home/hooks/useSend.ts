@@ -129,16 +129,22 @@ export default function useSend() {
     return senderPrincipal === ownerPrincipal && isAllowance;
   }
 
+  function isReceiverOwn() {
+    const receiverPrincipal = getReceiverPrincipal();
+    const ownerPrincipal = userPrincipal.toText();
+    return receiverPrincipal === ownerPrincipal;
+  };
+
   const enableSend = useMemo(
     () =>
       Boolean(
         sender?.asset?.address &&
-          sender?.asset?.decimal &&
-          amount &&
-          getSenderSubAccount() &&
-          getSenderPrincipal() &&
-          getReceiverPrincipal() &&
-          getReceiverSubAccount(),
+        sender?.asset?.decimal &&
+        amount &&
+        getSenderSubAccount() &&
+        getSenderPrincipal() &&
+        getReceiverPrincipal() &&
+        getReceiverSubAccount(),
       ),
     [sender, receiver, amount],
   );
@@ -151,6 +157,7 @@ export default function useSend() {
     transactionFee: getTransactionFee(),
     isSenderValid: getSenderValid(),
     isReceiverValid: getReceiverValid(),
+    isReceiverOwnSubAccount: isReceiverOwn(),
     getSenderBalance,
     isSenderAllowance,
     isSenderSameAsReceiver,
