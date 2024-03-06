@@ -52,6 +52,7 @@
   "sending": "Enviando",
   "network": "Rede",
   "error": "ERRO",
+  "unsupported.network": "Rede não suportada",
   "succes.caps": "SUCESSO",
   "subacc": "SubCon",
   "sub-acc": "Sub-conta",

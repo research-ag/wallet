@@ -2,7 +2,7 @@
 import XxxxIcon from "@/assets/svg/files/xxxx-logo.svg";
 import icUrl from "@/assets/img/icp-logo.png";
 import nfidUrl from "@/assets/img/nfid-logo.png";
-import metamaskUrl from "@/assets/img/metamask-logo.png";
+import ethereumUrl from "@/assets/svg/files/ethereum-icon.svg";
 //
 import { useState } from "react";
 import { AuthNetworkNameEnum, AuthNetworkType, AuthNetworkTypeEnum } from "@/const";
@@ -10,10 +10,12 @@ import { AuthNetwork } from "@redux/models/TokenModels";
 
 export const LoginHook = () => {
   const [seedOpen, setSeedOpen] = useState(false);
-  const [seed, setSeed] = useState("");
   const [watchOnlyOpen, setWatchOnlyOpen] = useState(false);
-  const [principalAddress, setPrincipalAddress] = useState("");
   const [mnemonicOpen, setMnemonicOpen] = useState(false);
+  const [ethereumOpen, setEthereumOpen] = useState(false);
+
+  const [seed, setSeed] = useState("");
+  const [principalAddress, setPrincipalAddress] = useState("");
   const [phrase, setPhrase] = useState("");
 
   const loginOpts: AuthNetwork[] = [
@@ -30,10 +32,9 @@ export const LoginHook = () => {
       network: import.meta.env.VITE_AGGENT_NFID_HOST,
     },
     {
-      name: AuthNetworkNameEnum.Values.Metamask,
-      extra: "not.yet.available",
-      icon: <img src={metamaskUrl} alt="metamask-logo" />,
-      type: AuthNetworkTypeEnum.Values.MM,
+      name: AuthNetworkNameEnum.Values.Ethereum,
+      icon: <img src={ethereumUrl} alt="ethereum-logo" />,
+      type: AuthNetworkTypeEnum.Values.ETH,
       network: "",
     },
     {
@@ -58,15 +59,16 @@ export const LoginHook = () => {
   ];
 
   function clearLoginInputs() {
-    setSeed("");
-    setPrincipalAddress("");
-    setPhrase("");
+    if (seed.length > 0) setSeed("");
+    if (principalAddress.length > 0) setPrincipalAddress("");
+    if (phrase.length > 0) setPhrase("");
   }
 
   function closeLoginInputs() {
-    setSeedOpen(false);
-    setWatchOnlyOpen(false);
-    setMnemonicOpen(false);
+    if (seedOpen) setSeedOpen(false);
+    if (watchOnlyOpen) setWatchOnlyOpen(false);
+    if (mnemonicOpen) setMnemonicOpen(false);
+    if (ethereumOpen) setEthereumOpen(false);
   }
 
   function resetMethods() {
@@ -88,6 +90,10 @@ export const LoginHook = () => {
     if (method === AuthNetworkTypeEnum.Enum.MNEMONIC) {
       setMnemonicOpen((prev) => !prev);
     }
+
+    if (method === AuthNetworkTypeEnum.Enum.ETH) {
+      setEthereumOpen((prev) => !prev);
+    }
   }
 
   return {
@@ -95,6 +101,7 @@ export const LoginHook = () => {
     seedOpen,
     seed,
     setSeed,
+    ethereumOpen,
     watchOnlyOpen,
     mnemonicOpen,
     principalAddress,
