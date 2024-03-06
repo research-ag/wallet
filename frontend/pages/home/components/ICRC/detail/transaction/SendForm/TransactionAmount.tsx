@@ -1,6 +1,5 @@
 import { TransactionValidationErrorsEnum } from "@/@types/transactions";
 import { toFullDecimal, toHoleBigInt, validateAmount } from "@/utils";
-import { ReactComponent as ExchangeIcon } from "@assets/svg/files/arrows-exchange-v.svg";
 import LoadingLoader from "@components/Loader";
 import useSend from "@pages/home/hooks/useSend";
 import { useAppSelector } from "@redux/Store";
@@ -35,13 +34,12 @@ export default function TransactionAmount() {
         {isMaxAmountLoading && <LoadingLoader className="mr-2" />}
         {!isMaxAmountLoading && (
           <button
-            className="flex items-center justify-center p-1 rounded cursor-pointer bg-RadioCheckColor"
+            className="flex items-center justify-center p-1 mr-2 rounded cursor-pointer bg-RadioCheckColor"
             onClick={onMaxAmount}
           >
             <p className="text-sm text-PrimaryTextColor">{t("max")}</p>
           </button>
         )}
-        <ExchangeIcon />
       </div>
       <div className="flex flex-row items-center justify-end gap-2 text-md whitespace-nowrap text-black-color dark:text-secondary-color-1-light">
         <p className="opacity-60">{t("fee")}</p>
