@@ -26,8 +26,8 @@ const DrawerAction = ({ drawerOption, setDrawerOption, setDrawerOpen, children }
   const selectedButton = "border-AccpetButtonColor";
   const unselectedButton = "text-PrimaryTextColorLight dark:text-PrimaryTextColor";
   const drawerOptions = [
-    { name: "send", style: customSend(), type: DrawerOptionEnum.Enum.SEND },
-    { name: "receive", style: customReceive(), type: DrawerOptionEnum.Enum.RECEIVE },
+    { name: "transfer", style: customSend(), type: DrawerOptionEnum.Enum.SEND },
+    { name: "deposit", style: customReceive(), type: DrawerOptionEnum.Enum.RECEIVE },
     // { name: "wrap", style: customWrap, type: DrawerOptionEnum.Enum.WRAP },
   ];
 
