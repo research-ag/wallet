@@ -1,3 +1,4 @@
+import { SendingStatus } from "@/const";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { z } from "zod";
 
@@ -107,6 +108,38 @@ export interface SenderState {
   allowanceContactSubAccount: ContactSubAccount;
   newAllowanceContact: NewContact;
   subAccount: SubAccount;
+}
+
+/**
+ * Interface representing the state of a transaction within your redux store.
+ *
+ * This interface captures various properties that define the current stage and
+ * details of a transaction. It provides a central location to manage transaction
+ * data and facilitates communication between components before and after a transaction.
+ *
+ * @typedef {Object} TransactionState
+ * @property {TransactionScannerOption} scannerActiveOption - The chosen option for the transaction scanner (if applicable).
+ * @property {boolean} isLoading - Indicates whether the transaction is currently being loaded or processed.
+ * @property {boolean} isInspectTransference - Indicates whether the user is inspecting a previous transaction.
+ * @property {SendingStatus} sendingStatus - The current sending status of the transaction (if applicable).
+ * @property {SenderState} sender - Details about the sender configuration for the transaction.
+ * @property {ReceiverState} receiver - Details about the receiver configuration for the transaction.
+ * @property {TransactionValidationErrorsType[]} [errors] - An optional array of validation errors encountered during transaction processing.
+ * @property {string} [amount] - The transaction amount (if applicable).
+ * @property {Date} initTime - The timestamp when the transaction was initiated.
+ * @property {Date} endTime - The timestamp when the transaction was completed (or last updated).
+ */
+export interface TransactionState {
+  scannerActiveOption: TransactionScannerOption;
+  isLoading: boolean;
+  isInspectTransference: boolean;
+  sendingStatus: SendingStatus;
+  sender: SenderState;
+  receiver: ReceiverState;
+  errors?: TransactionValidationErrorsType[];
+  amount?: string;
+  initTime: Date;
+  endTime: Date;
 }
 
 
