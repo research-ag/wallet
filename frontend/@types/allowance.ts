@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { z } from "zod";
 import { SupportedStandardEnum } from "./icrc";
 
@@ -49,39 +48,3 @@ export const AllowanceValidationErrorsEnum = z.enum([
   "error.self.allowance",
 ]);
 export type AllowanceValidationErrors = z.infer<typeof AllowanceValidationErrorsEnum>;
-=======
-import { Asset, SubAccount } from "@redux/models/AccountModels";
-import { Contact } from "@redux/models/ContactsModels";
-
-export interface Allowance {
-  id?: string;
-  asset: Asset;
-  subAccount: SubAccount;
-  spender: Contact;
-  amount: string;
-  expiration: string | undefined;
-  noExpire: boolean;
-}
-<<<<<<< HEAD
->>>>>>> 7e4ce2e2 (feat: allowances)
-=======
-
-export const enum AllowancesTableColumns {
-  subAccount = "subAccount",
-  spender = "spender",
-  amount = "amount",
-  expiration = "expiration",
-  action = "action",
-}
-<<<<<<< HEAD
->>>>>>> ef24f489 (feat: react query and persist)
-=======
-
-export const enum ErrorFields {
-  spender = "spender",
-  asset = "asset",
-  amount = "amount",
-  expiration = "expiration",
-  subAccount = "subAccount",
-};
->>>>>>> ddc4df4a (feat: default sub account selected on create allowance)

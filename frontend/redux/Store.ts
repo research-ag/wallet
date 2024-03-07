@@ -10,8 +10,7 @@ const store = configureStore({
     getDefaultMiddleware({
       serializableCheck: false,
     }),
-}); // Add Redux DevTools Extension
-
+});
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;
 // Selector Typed Hook

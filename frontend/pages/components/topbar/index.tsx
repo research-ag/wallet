@@ -158,7 +158,6 @@ const TopBarComponent = ({ isLoginPage }: { isLoginPage: boolean }) => {
                     onSelect={() => {
                       clearSiweIdentity();
                       logout();
-                      clearSiweIdentity();
                     }}
                   >
                     <p className="text-LockColor">{t("lock")}</p>

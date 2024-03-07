@@ -1,3 +1,4 @@
+import { clsx } from "clsx";
 import { ReactNode } from "react";
 
 interface CommonProps {
@@ -9,29 +10,37 @@ interface CommonProps {
 export function Table({ children, className }: CommonProps) {
   return (
     <table
-      className={`${className} w-full relative p-1 flex flex-col overflow-y-scroll  max-h-[calc(90vh-11.25rem)] scroll-y-light`}
+      className={`${className} w-full relative flex flex-col overflow-y-scroll  max-h-[calc(90vh-11.25rem)] scroll-y-light`}
     >
       {children}
     </table>
   );
 }
 
-export const TableHead = ({ children, className }: CommonProps) => {
-  return <thead className={`${className}`}>{children}</thead>;
-};
+export function TableHead({ children, className }: CommonProps) {
+  return (
+    <thead className={`sticky top-0 border-b border-BorderColorTwoLight dark:border-BorderColorTwo ${className}`}>
+      {children}
+    </thead>
+  );
+}
 
-export const TableBody = ({ children, className }: CommonProps) => {
+export function TableBody({ children, className }: CommonProps) {
   return <tbody className={className}>{children}</tbody>;
-};
+}
 
-export const TableRow = ({ children, className, disabled }: CommonProps) => {
-  return <tr className={`${className}  ${disabled ? "opacity-20" : ""}`}>{children}</tr>;
-};
+export function TableRow({ children, className }: CommonProps) {
+  return <tr className={`${className}`}>{children}</tr>;
+}
 
-export const TableHeaderCell = ({ children, className }: CommonProps) => {
-  return <th className={`${className} py-2 text-lg text-left`}>{children}</th>;
-};
+export function TableHeaderCell({ children, className }: CommonProps) {
+  return <th className={`${className} p-2 text-md text-left`}>{children}</th>;
+}
 
-export const TableBodyCell = ({ children, className }: CommonProps) => {
-  return <td className={`${className} py-2 text-left`}>{children}</td>;
-};
+export function TableBodyCell({ children, className, disabled }: CommonProps) {
+  return <td className={`${className}  ${getTableBodyStyles(disabled)} py-2 text-left`}>{children}</td>;
+}
+
+function getTableBodyStyles(disabled = false) {
+  return clsx(disabled ? "text-PrimaryTextColorLight/50 dark:text-PrimaryTextColor/50" : "", "py-2 text-left");
+}
