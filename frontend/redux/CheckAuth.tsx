@@ -14,7 +14,7 @@ import { AuthClient } from "@dfinity/auth-client";
 import { clearDataAsset, setInitLoad, setLoading } from "./assets/AssetReducer";
 import { AuthNetwork } from "./models/TokenModels";
 import { AuthNetworkTypeEnum } from "@/const";
-import { Ed25519KeyIdentity } from "@dfinity/identity";
+import { Ed25519KeyIdentity, DelegationIdentity } from "@dfinity/identity";
 import { clearDataContacts } from "./contacts/ContactsReducer";
 import { Principal } from "@dfinity/principal";
 import { allowanceCacheRefresh } from "@pages/home/helpers/allowanceCache";
@@ -77,12 +77,17 @@ export const handlePrincipalAuthenticated = async (principalAddress: string) => 
   }
 };
 
-export const handleMnemonicAuthenticated = (phrase: string) => {
-  const phraseToIdentity: (phrase: string) => Identity | null = (phrase) => {
-    return Secp256k1KeyIdentity.fromSeedPhrase(phrase.split(" ").join("")) as any;
+export const handleMnemonicAuthenticated = (phrase: string[]) => {
+  const phraseToIdentity: (phrase: string[]) => Identity | null = (phrase) => {
+    return Secp256k1KeyIdentity.fromSeedPhrase(phrase) as any;
   };
   const secpIdentity = phraseToIdentity(phrase) as Identity;
   handleLoginApp(secpIdentity, true);
+};
+
+// FIXME: identity fail on icrc ledger interaction
+export const handleSiweAuthenticated = async (identity: DelegationIdentity) => {
+  handleLoginApp(identity);
 };
 
 export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean, fixedPrincipal?: Principal) => {
