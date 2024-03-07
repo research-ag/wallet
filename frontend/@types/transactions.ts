@@ -1,14 +1,6 @@
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { z } from "zod";
 
-export type SetSenderAsset = (asset: Asset) => void;
-export type SetSenderSubAccount = (subAccount: SubAccount) => void;
-export type SetSenderAllowanceContact = (allowanceContact: ContactSubAccount) => void;
-export type SetSenderNewAllowanceContact = (newAllowanceContact: NewContact) => void;
-export type SetReceiverOwnSubAccount = (subAccount: SubAccount) => void;
-export type SetReceiverNewContact = (newContact: NewContact) => void;
-export type SetReceiverThirdContactSubAccount = (subAccount: ContactSubAccount) => void;
-
 export const ContactSubAccountSchema = z.object({
   contactName: z.string(),
   contactPrincipal: z.string(),
