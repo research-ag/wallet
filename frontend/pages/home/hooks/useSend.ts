@@ -68,6 +68,7 @@ export default function useSend() {
     if (sender?.allowanceContactSubAccount?.contactPrincipal)
       return sender?.allowanceContactSubAccount?.contactPrincipal;
     if (sender?.subAccount?.sub_account_id) return userPrincipal.toText();
+    console.warn("No sender principal found. Please ensure that the sender configuration is properly set up.");
     return "";
   }
 
@@ -83,6 +84,7 @@ export default function useSend() {
     if (sender?.newAllowanceContact?.subAccountId) return sender?.newAllowanceContact?.subAccountId;
     if (sender?.allowanceContactSubAccount?.subAccountId) return sender?.allowanceContactSubAccount?.subAccountId;
     if (sender?.subAccount?.sub_account_id) return sender?.subAccount?.sub_account_id;
+    console.warn("No sender sub-account found. Please ensure that the sender configuration is properly set up.");
     return "";
   }
 
@@ -198,6 +200,9 @@ export default function useSend() {
     if (receiver?.thirdContactSubAccount?.contactPrincipal) return receiver?.thirdContactSubAccount?.contactPrincipal;
     if (receiver?.thirdNewContact?.principal) return receiver?.thirdNewContact?.principal;
     if (receiver?.ownSubAccount?.sub_account_id) return userPrincipal.toText();
+
+    console.warn("No receiver principal found. Please ensure that the receiver configuration is properly set up.");
+
     return "";
   }
 
@@ -213,6 +218,9 @@ export default function useSend() {
     if (receiver?.thirdContactSubAccount?.subAccountId) return receiver?.thirdContactSubAccount?.subAccountId;
     if (receiver?.thirdNewContact?.subAccountId) return receiver?.thirdNewContact?.subAccountId;
     if (receiver?.ownSubAccount?.sub_account_id) return receiver?.ownSubAccount?.sub_account_id;
+
+    console.warn("No receiver sub-account found. Please ensure that the receiver configuration is properly set up.");
+
     return "";
   }
 
