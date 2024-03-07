@@ -14,28 +14,70 @@ export const ContactSubAccountSchema = z.object({
   assetName: z.string().optional(),
   subAccountIndex: z.string().optional(),
   subAccountId: z.string(),
-  subAccountAllowance: z
-    .object({
-      allowance: z.string(),
-      expires_at: z.string(),
-    })
-    .optional(),
+  subAccountAllowance: z.object({
+    allowance: z.string(),
+    expires_at: z.string(),
+  }).optional(),
   subAccountName: z.string(),
 });
+
+/**
+ * Interface representing a validated ContactSubAccount object structure.
+ *
+ * This type is inferred from the `ContactSubAccountSchema` Zod schema.
+ * It ensures type safety and clarity when working with contact sub-account data.
+ *
+ * @typedef {Object} ContactSubAccount
+ * @property {string} contactName - The name of the contact.
+ * @property {string} contactPrincipal - The principal identifier of the contact.
+ * @property {string} [contactAccountIdentifier] - Optional account identifier for the contact.
+ * @property {string} [assetLogo] - Optional URL or path to the asset's logo.
+ * @property {string} [assetSymbol] - Optional symbol representation of the asset.
+ * @property {string} [assetTokenSymbol] - Optional token symbol of the asset (if applicable).
+ * @property {string} [assetAddress] - Optional address of the asset contract (if applicable).
+ * @property {string} [assetDecimal] - Optional number of decimal places for the asset.
+ * @property {string} [assetShortDecimal] - Optional shortened representation of asset decimals.
+ * @property {string} [assetName] - Optional full name of the asset.
+ * @property {string} [subAccountIndex] - Optional index of the sub-account within the contact.
+ * @property {string} subAccountId - Required identifier for the sub-account.
+ * @property {Object} [subAccountAllowance] - Optional allowance information for the sub-account.
+ *   @property {string} allowance - The allowance amount granted to the contact.
+ *   @property {string} expires_at - The timestamp when the allowance expires (if applicable).
+ * @property {string} subAccountName - Required name of the sub-account.
+ */
 export type ContactSubAccount = z.infer<typeof ContactSubAccountSchema>;
+
 
 export const NewContactSchema = z.object({
   principal: z.string(),
   subAccountId: z.string(),
 });
+
+/**
+ * Interface representing a validated NewContact object structure.
+ *
+ * This type is inferred from the `NewContactSchema` Zod schema.
+ * It ensures type safety and clarity when working with new contact data.
+ *
+ * @typedef {Object} NewContact
+ * @property {string} principal - The principal identifier of the new contact.
+ * @property {string} subAccountId - The sub-account ID that will be associated with the new contact.
+ */
 export type NewContact = z.infer<typeof NewContactSchema>;
 
-export const TransactionErrorSchema = z.object({
-  field: z.string(),
-  message: z.string(),
-});
-export type TransactionError = z.infer<typeof TransactionErrorSchema>;
-
+/**
+ * Interface representing the state of a transaction receiver.
+ *
+ * This interface defines the properties that describe the receiver configuration
+ * for a transaction within your application.
+ *
+ * @typedef {Object} ReceiverState
+ * @property {boolean} isManual - Indicates whether the receiver selection is manual or automatic.
+ * @property {TransactionReceiverOption} receiverOption - The chosen option for the receiver.
+ * @property {SubAccount} ownSubAccount - The sender's own sub-account to be used (if applicable).
+ * @property {NewContact} thirdNewContact - Information for a new contact to be created as a receiver (if applicable).
+ * @property {ContactSubAccount} thirdContactSubAccount - Details of an existing third-party contact sub-account (if applicable).
+ */
 export interface ReceiverState {
   isManual: boolean;
   receiverOption: TransactionReceiverOption;
@@ -44,6 +86,20 @@ export interface ReceiverState {
   thirdContactSubAccount: ContactSubAccount;
 }
 
+/**
+ * Interface representing the state of a transaction sender.
+ *
+ * This interface defines the properties that describe the sender configuration
+ * for a transaction within your application.
+ *
+ * @typedef {Object} SenderState
+ * @property {Asset} asset - The asset to be used for the transaction.
+ * @property {boolean} isNewSender - Indicates whether the sender is a newly selected entity.
+ * @property {TransactionSenderOption} senderOption - The chosen option for the sender.
+ * @property {ContactSubAccount} allowanceContactSubAccount - Details of an existing contact sub-account with an allowance (if applicable).
+ * @property {NewContact} newAllowanceContact - Information for a new contact to be created with an allowance (if applicable).
+ * @property {SubAccount} subAccount - The sender's sub-account to be used (if applicable).
+ */
 export interface SenderState {
   asset: Asset;
   isNewSender: boolean;
@@ -52,6 +108,7 @@ export interface SenderState {
   newAllowanceContact: NewContact;
   subAccount: SubAccount;
 }
+
 
 export interface KeyValidationErrors {
   [key: string]: string;
