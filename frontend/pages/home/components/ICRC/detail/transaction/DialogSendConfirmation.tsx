@@ -24,8 +24,6 @@ const DialogSendConfirmation = ({ setDrawerOpen, showConfirmationModal, modal }:
   const { receiverPrincipal, receiverSubAccount, amount, sender, sendingStatus, errors, initTime, endTime } = useSend();
   const { t } = useTranslation();
 
-  console.log("receiverSubAccount: ", receiverSubAccount);
-
   return (
     <Modal
       open={modal}
