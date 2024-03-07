@@ -103,7 +103,6 @@ export function resetSendStateAction() {
 export function setIsLoadingAction(isLoading: boolean) {
   store.dispatch(setIsLoading(isLoading));
 }
-
 export function setInitTxTime(init: Date) {
   store.dispatch(setInitTime(init));
 }
