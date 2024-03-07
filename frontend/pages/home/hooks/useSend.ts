@@ -41,15 +41,17 @@ export default function useSend() {
   );
 
   /**
-   * Calculates the transaction fee based on the selected sender sub-account in the transaction state.
+   * Calculates the transaction fee formatted as a full decimal string.
    *
-   * @returns {string} The formatted transaction fee string.
+   * @returns {string} The formatted transaction fee string, or "0" if no fee is applicable.
    */
   const getTransactionFee = () => {
-    if (!updateSubAccount?.transaction_fee) {
-      return toFullDecimal("0", Number(0));
-    }
-    return toFullDecimal(updateSubAccount.transaction_fee, Number(updateAsset?.decimal));
+    const hasTransactionFee = updateSubAccount?.transaction_fee !== undefined;
+    const decimalPlaces = updateAsset?.decimal ?? 0;
+
+    return hasTransactionFee
+      ? toFullDecimal(updateSubAccount.transaction_fee, Number(decimalPlaces))
+      : "0";
   };
 
   // Sender
@@ -59,8 +61,6 @@ export default function useSend() {
    *
    * This function helps in identifying the correct principal associated with the transaction sender.
    *
-   * @param {TransactionState} sender - The current transaction state object.
-   * @param {UserPrincipal} userPrincipal - The principal object of the session user.
    * @returns {string} The principal identifier for the transaction sender or an empty string.
    */
   function getSenderPrincipal() {
@@ -71,7 +71,6 @@ export default function useSend() {
     console.warn("No sender principal found. Please ensure that the sender configuration is properly set up.");
     return "";
   }
-
 
   /**
    * Determines and returns the sub-account identifier for the transaction sender.
@@ -99,15 +98,13 @@ export default function useSend() {
    */
   function getSenderValid(): boolean {
     const principal = getSenderPrincipal();
-
-    if (!validatePrincipal(principal)) return false;
+    if (!validatePrincipal(principal)) {
+      return false;
+    }
 
     const subaccount = getSenderSubAccount();
-    if (!isHexadecimalValid(subaccount)) return false;
-
-    return true;
+    return isHexadecimalValid(subaccount);
   }
-
 
   /**
    * Asynchronously retrieves the available balance for the transaction sender.
@@ -138,7 +135,7 @@ export default function useSend() {
 
       return response?.allowance || "0";
     } catch (error) {
-      console.log(error);
+      console.warn("Error fetching sender balance:", error);
       return "0";
     }
   }
