@@ -7,6 +7,7 @@ import { validatePrincipal } from "@/utils/identity";
 import { isHexadecimalValid } from "@/utils/checkers";
 
 export default function useSend() {
+  // General
   const { userPrincipal } = useAppSelector((state) => state.auth);
   const { assets } = useAppSelector((state) => state.asset);
   const { sender, receiver, amount, sendingStatus, errors, initTime, endTime } = useAppSelector(
@@ -24,20 +25,14 @@ export default function useSend() {
     [updateAsset, sender],
   );
 
-  function getReceiverPrincipal() {
-    if (receiver?.thirdContactSubAccount?.contactPrincipal) return receiver?.thirdContactSubAccount?.contactPrincipal;
-    if (receiver?.thirdNewContact?.principal) return receiver?.thirdNewContact?.principal;
-    if (receiver?.ownSubAccount?.sub_account_id) return userPrincipal.toText();
-    return "";
-  }
+  const getTransactionFee = () => {
+    if (!updateSubAccount?.transaction_fee) {
+      return toFullDecimal("0", Number(0));
+    }
+    return toFullDecimal(updateSubAccount.transaction_fee, Number(updateAsset?.decimal));
+  };
 
-  function getReceiverSubAccount() {
-    if (receiver?.thirdContactSubAccount?.subAccountId) return receiver?.thirdContactSubAccount?.subAccountId;
-    if (receiver?.thirdNewContact?.subAccountId) return receiver?.thirdNewContact?.subAccountId;
-    if (receiver?.ownSubAccount?.sub_account_id) return receiver?.ownSubAccount?.sub_account_id;
-    return "";
-  }
-
+  // Sender
   function getSenderPrincipal() {
     if (sender?.newAllowanceContact?.principal) return sender?.newAllowanceContact?.principal;
     if (sender?.allowanceContactSubAccount?.contactPrincipal)
@@ -58,16 +53,6 @@ export default function useSend() {
     if (!validatePrincipal(principal)) return false;
 
     const subaccount = getSenderSubAccount();
-    if (!isHexadecimalValid(subaccount)) return false;
-
-    return true;
-  }
-
-  function getReceiverValid(): boolean {
-    const principal = getReceiverPrincipal();
-    if (!validatePrincipal(principal)) return false;
-
-    const subaccount = getReceiverSubAccount();
     if (!isHexadecimalValid(subaccount)) return false;
 
     return true;
@@ -97,19 +82,6 @@ export default function useSend() {
     }
   }
 
-  const getTransactionFee = () => {
-    if (!updateSubAccount?.transaction_fee) {
-      return toFullDecimal("0", Number(0));
-    }
-    return toFullDecimal(updateSubAccount.transaction_fee, Number(updateAsset?.decimal));
-  };
-
-  const isSender = useMemo(
-    () => Boolean(getSenderPrincipal() && getSenderSubAccount() && sender?.asset?.tokenSymbol),
-    [sender],
-  );
-  const isReceiver = useMemo(() => Boolean(getReceiverPrincipal() && getReceiverSubAccount()), [receiver]);
-
   function isSenderAllowance() {
     return sender?.senderOption === TransactionSenderOptionEnum.Values.allowance;
   }
@@ -129,12 +101,45 @@ export default function useSend() {
     return senderPrincipal === ownerPrincipal && isAllowance;
   }
 
+  const isSender = useMemo(
+    () => Boolean(getSenderPrincipal() && getSenderSubAccount() && sender?.asset?.tokenSymbol),
+    [sender],
+  );
+
+  // Receiver
+  function getReceiverPrincipal() {
+    if (receiver?.thirdContactSubAccount?.contactPrincipal) return receiver?.thirdContactSubAccount?.contactPrincipal;
+    if (receiver?.thirdNewContact?.principal) return receiver?.thirdNewContact?.principal;
+    if (receiver?.ownSubAccount?.sub_account_id) return userPrincipal.toText();
+    return "";
+  }
+
+  function getReceiverSubAccount() {
+    if (receiver?.thirdContactSubAccount?.subAccountId) return receiver?.thirdContactSubAccount?.subAccountId;
+    if (receiver?.thirdNewContact?.subAccountId) return receiver?.thirdNewContact?.subAccountId;
+    if (receiver?.ownSubAccount?.sub_account_id) return receiver?.ownSubAccount?.sub_account_id;
+    return "";
+  }
+
+  function getReceiverValid(): boolean {
+    const principal = getReceiverPrincipal();
+    if (!validatePrincipal(principal)) return false;
+
+    const subaccount = getReceiverSubAccount();
+    if (!isHexadecimalValid(subaccount)) return false;
+
+    return true;
+  }
+
+  const isReceiver = useMemo(() => Boolean(getReceiverPrincipal() && getReceiverSubAccount()), [receiver]);
+
   function isReceiverOwn() {
     const receiverPrincipal = getReceiverPrincipal();
     const ownerPrincipal = userPrincipal.toText();
     return receiverPrincipal === ownerPrincipal;
   };
 
+  // both
   const enableSend = useMemo(
     () =>
       Boolean(
