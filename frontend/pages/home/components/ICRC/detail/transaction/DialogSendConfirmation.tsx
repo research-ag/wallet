@@ -24,6 +24,8 @@ const DialogSendConfirmation = ({ setDrawerOpen, showConfirmationModal, modal }:
   const { receiverPrincipal, receiverSubAccount, amount, sender, sendingStatus, errors, initTime, endTime } = useSend();
   const { t } = useTranslation();
 
+  console.log("receiverSubAccount: ", receiverSubAccount);
+
   return (
     <Modal
       open={modal}
@@ -63,7 +65,7 @@ const DialogSendConfirmation = ({ setDrawerOpen, showConfirmationModal, modal }:
               <CustomCopy size={"small"} copyText={receiverPrincipal} />
             </div>
             <div className="flex flex-row items-center justify-start gap-2">
-              <p>{receiverSubAccount.length > 20 && middleTruncation(receiverSubAccount, 10, 10)}</p>
+              <p>{receiverSubAccount.length > 20 ? middleTruncation(receiverSubAccount, 10, 10) : receiverSubAccount}</p>
               <CustomCopy size={"small"} copyText={receiverSubAccount} />
             </div>
             <p>
