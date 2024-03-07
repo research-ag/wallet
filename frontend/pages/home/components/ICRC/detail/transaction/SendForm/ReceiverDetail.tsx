@@ -5,6 +5,7 @@ import { middleTruncation } from "@/utils/strings";
 import { clearReceiverAction, setIsInspectDetailAction } from "@redux/transaction/TransactionActions";
 import { useTranslation } from "react-i18next";
 import useSend from "@pages/home/hooks/useSend";
+import OwnSubAccountCard from "./OwnSubAccountCard";
 
 export default function ReceiverDetail() {
   const { t } = useTranslation();
@@ -23,7 +24,8 @@ export default function ReceiverDetail() {
     receiver?.thirdNewContact?.principal
   }`;
 
-  return isReceiverOwnSubAccount ? <p>From component</p> : <ReceiverThirdParty />;
+  return isReceiverOwnSubAccount ? <p>Info</p> : <ReceiverThirdParty />;
+  // return isReceiverOwnSubAccount ? <OwnSubAccountCard /> : <ReceiverThirdParty />;
 
   function ReceiverThirdParty() {
     return (
