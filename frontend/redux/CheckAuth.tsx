@@ -78,19 +78,19 @@ export const handlePrincipalAuthenticated = async (principalAddress: string) => 
 };
 
 export const handleMnemonicAuthenticated = (phrase: string[]) => {
-  const phraseToIdentity: (phrase: string[]) => Identity | null = (phrase) => {
-    return Secp256k1KeyIdentity.fromSeedPhrase(phrase) as any;
-  };
-  const secpIdentity = phraseToIdentity(phrase) as Identity;
-  handleLoginApp(secpIdentity, true);
+  // const phraseToIdentity: (phrase: string[]) => Identity | null = (phrase) => {
+  //   return Secp256k1KeyIdentity.fromSeedPhrase(phrase) as any;
+  // };
+  // const secpIdentity = phraseToIdentity(phrase) as Identity;
+  // handleLoginApp(secpIdentity, true);
 };
 
-// FIXME: identity fail on icrc ledger interaction
 export const handleSiweAuthenticated = async (identity: DelegationIdentity) => {
   handleLoginApp(identity);
 };
 
 export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean, fixedPrincipal?: Principal) => {
+  console.log("running");
   store.dispatch(setLoading(true));
   const opt: AuthNetwork | null = db().getNetworkType();
   if (opt === null && !fromSeed && !fixedPrincipal) {

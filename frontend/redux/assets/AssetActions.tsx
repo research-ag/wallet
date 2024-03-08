@@ -12,7 +12,7 @@ import {
   hexToNumber,
 } from "@/utils";
 import { setAssets, setTransactions, setTokenMarket, setICPSubaccounts, setAcordeonAssetIdx } from "./AssetReducer";
-import { AccountIdentifier, SubAccount as SubAccountNNS } from "@dfinity/nns";
+import { AccountIdentifier, SubAccount as SubAccountNNS } from "@dfinity/ledger-icp";
 import { Asset, ICPSubAccount, SubAccount } from "@redux/models/AccountModels";
 import { Principal } from "@dfinity/principal";
 import { AccountDefaultEnum } from "@/const";
