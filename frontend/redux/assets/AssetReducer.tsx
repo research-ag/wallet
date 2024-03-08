@@ -318,6 +318,7 @@ const assetSlice = createSlice({
       state.selectedAsset = undefined;
       state.selectedTransaction = undefined;
       state.acordeonIdx = [];
+      state.icr1SystemTokens = ICRC1systemAssets;
     },
   },
 });

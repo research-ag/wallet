@@ -1,7 +1,7 @@
 import { HttpAgent } from "@dfinity/agent";
 import store from "@redux/Store";
 import { SnsToken, Token, TokenMarketInfo, TokenSubAccount } from "@redux/models/TokenModels";
-import { IcrcAccount, IcrcIndexCanister, IcrcLedgerCanister } from "@dfinity/ledger";
+import { IcrcAccount, IcrcIndexCanister, IcrcLedgerCanister, IcrcTokenMetadataResponse } from "@dfinity/ledger";
 import {
   formatIcpTransaccion,
   getSubAccountArray,
@@ -17,6 +17,7 @@ import { Asset, ICPSubAccount, SubAccount } from "@redux/models/AccountModels";
 import { Principal } from "@dfinity/principal";
 import { AccountDefaultEnum } from "@/const";
 import bigInt from "big-integer";
+import { SupportedStandardEnum } from "@/@types/icrc";
 
 export const updateAllBalances = async (
   loading: boolean,
@@ -445,11 +446,38 @@ export const getAllTransactionsICRC1 = async (
 };
 
 export const getSNSTokens = async () => {
-  try {
-    const response = await fetch("https://3r4gx-wqaaa-aaaaq-aaaia-cai.icp0.io/v1/sns/list/page/0/slow.json");
-    const snses: SnsToken[] = await response.json();
-    console.log("snses", snses);
-  } catch (error) {
-    console.error("snses", error);
+  let tokens: SnsToken[] = [];
+  for (let index = 0; index < 100; index++) {
+    try {
+      const response = await fetch(`https://3r4gx-wqaaa-aaaaq-aaaia-cai.icp0.io/v1/sns/list/page/${index}/slow.json`);
+      if (response.ok && response.status === 200) {
+        const snses: SnsToken[] = await response.json();
+        tokens = [...tokens, ...snses];
+        if (snses.length < 10) break;
+      } else {
+        break;
+      }
+    } catch (error) {
+      console.error("snses", error);
+      break;
+    }
   }
+
+  return tokens.map((tkn, k) => {
+    const metadata = getMetadataInfo(tkn.icrc1_metadata as IcrcTokenMetadataResponse);
+    return {
+      id_number: 10005 + k,
+      symbol: "",
+      name: "",
+      tokenSymbol: metadata.symbol,
+      tokenName: metadata.name,
+      address: tkn.canister_ids.ledger_canister_id,
+      decimal: metadata.decimals.toString(),
+      shortDecimal: metadata.decimals.toString(),
+      fee: metadata.fee,
+      subAccounts: [{ numb: "0", name: "Default", amount: "0", currency_amount: "0" }],
+      supportedStandards: [SupportedStandardEnum.Values["ICRC-1"]],
+      logo: metadata.logo !== "" ? metadata.logo : "https://3r4gx-wqaaa-aaaaq-aaaia-cai.ic0.app" + tkn.meta.logo,
+    } as Token;
+  });
 };

@@ -9,7 +9,7 @@ import { getAllTransactionsICP, getAllTransactionsICRC1, updateAllBalances } fro
 import { setLoading, setTxWorker, setICRC1SystemAssets } from "@redux/assets/AssetReducer";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { Token } from "@redux/models/TokenModels";
-import { timerWorkerScript, snsAggregatorWorkerScript } from "@workers/index";
+import { timerWorkerScript } from "@workers/index";
 import { useEffect } from "react";
 import { db } from "@/database/db";
 
@@ -89,30 +89,12 @@ export const WorkerHook = () => {
   };
   timerWorker.onerror = (event) => console.log(event);
 
-  // SNS AGGREGATOR WEB WORKER
-  const snsAggregatorWorker = new Worker(snsAggregatorWorkerScript, { type: "module", credentials: "include" });
-  snsAggregatorWorker.onmessage = ({ data }: { data: any[] }) => {
-    Promise.all(data.map(async (sns: any, index: number) => await mapSnsToToken(sns, index, userAgent))).then(
-      (mappedTokens) => {
-        // It will return a few duplicates
-        const woDuplicates = mappedTokens.filter(
-          (token, index, self) => index === self.findIndex((t) => t.symbol === token.symbol),
-        );
-
-        dispatch(setICRC1SystemAssets(woDuplicates));
-      },
-    );
-  };
-  snsAggregatorWorker.onerror = (event) => console.error("SNS Aggregator Worken", event);
-
   useEffect(() => {
     const postRequest = { message: true };
     timerWorker.postMessage(postRequest);
-    snsAggregatorWorker.postMessage(postRequest);
 
     return () => {
       timerWorker.terminate();
-      snsAggregatorWorker.terminate();
     };
   }, []);
 
