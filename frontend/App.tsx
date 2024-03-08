@@ -11,6 +11,7 @@ import { GlobalDebug } from "./RemoveLogs";
 import { queryClient } from "./config/query";
 import { db } from "@/database/db";
 import { QueryClientProvider } from "@tanstack/react-query";
+import { EthereumSignInProvider } from "./config/wagmi.config";
 
 const App: React.FC = () => {
   const { i18n } = useTranslation();
@@ -50,4 +51,10 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+export default function AppWrapper() {
+  return (
+    <EthereumSignInProvider>
+      <App />
+    </EthereumSignInProvider>
+  );
+}

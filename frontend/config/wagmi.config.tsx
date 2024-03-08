@@ -12,8 +12,8 @@ export const supportedChains = [mainnet, polygon, optimism, arbitrum, base, zora
 export const { chains, publicClient } = configureChains(supportedChains, [publicProvider()]);
 
 const { connectors } = getDefaultWallets({
-  appName: "icrc-1-wallet",
-  projectId: "e8e4bbcc79064b8170622441993742c1",
+  appName: import.meta.env.VITE_APP_NAME,
+  projectId: import.meta.env.VITE_PROJECT_ID,
   chains,
 });
 
