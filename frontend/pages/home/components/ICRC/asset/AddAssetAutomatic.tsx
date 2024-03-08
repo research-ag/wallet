@@ -144,7 +144,7 @@ const AddAssetAutomatic = ({
             </DropdownMenu.Trigger>
             <DropdownMenu.Portal>
               <DropdownMenu.Content
-                className="text-lg bg-PrimaryColorLight w-[16rem] rounded-lg dark:bg-SecondaryColor z-[2000] text-PrimaryTextColorLight dark:text-PrimaryTextColor shadow-sm shadow-BorderColorTwoLight dark:shadow-BorderColorTwo border border-BorderColorLight dark:border-BorderColor"
+                className="text-lg bg-PrimaryColorLight w-[16rem] max-h-96 overflow-auto rounded-lg dark:bg-SecondaryColor z-[2000] text-PrimaryTextColorLight dark:text-PrimaryTextColor shadow-sm shadow-BorderColorTwoLight dark:shadow-BorderColorTwo border border-BorderColorLight dark:border-BorderColor"
                 sideOffset={2}
                 align="end"
               >
@@ -162,8 +162,8 @@ const AddAssetAutomatic = ({
                         }}
                       >
                         <div className="flex flex-row items-center justify-start">
-                          {getAssetIcon(IconTypeEnum.Enum.ASSET, newAsset.symbol, newToken.logo)}
-                          <p className="ml-3">{`${newAsset.symbol}`}</p>
+                          {getAssetIcon(IconTypeEnum.Enum.ASSET, newAsset.tokenSymbol, newAsset.logo)}
+                          <p className="ml-3">{`${newAsset.tokenSymbol}`}</p>
                         </div>
                       </DropdownMenu.Item>
                     );
