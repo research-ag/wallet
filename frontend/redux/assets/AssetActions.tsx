@@ -1,6 +1,6 @@
 import { HttpAgent } from "@dfinity/agent";
 import store from "@redux/Store";
-import { Token, TokenMarketInfo, TokenSubAccount } from "@redux/models/TokenModels";
+import { SnsToken, Token, TokenMarketInfo, TokenSubAccount } from "@redux/models/TokenModels";
 import { IcrcAccount, IcrcIndexCanister, IcrcLedgerCanister } from "@dfinity/ledger";
 import {
   formatIcpTransaccion,
@@ -441,5 +441,15 @@ export const getAllTransactionsICRC1 = async (
     }
   } catch {
     return [];
+  }
+};
+
+export const getSNSTokens = async () => {
+  try {
+    const response = await fetch("https://3r4gx-wqaaa-aaaaq-aaaia-cai.icp0.io/v1/sns/list/page/0/slow.json");
+    const snses: SnsToken[] = await response.json();
+    console.log("snses", snses);
+  } catch (error) {
+    console.error("snses", error);
   }
 };
