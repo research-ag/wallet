@@ -8,7 +8,7 @@ import "@rainbow-me/rainbowkit/styles.css";
 import App from "./App";
 import { RainbowKitProvider, darkTheme } from "@rainbow-me/rainbowkit";
 
-import { chains, wagmiConfig } from "./wagmi.config";
+import { chains, wagmiConfig } from "@/config/wagmi.config";
 import { WagmiConfig } from "wagmi";
 
 import { canisterId, idlFactory } from "@/candid/ic_siwe_provider";
