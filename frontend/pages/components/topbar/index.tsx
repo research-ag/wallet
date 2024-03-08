@@ -29,7 +29,7 @@ import { AssetHook } from "@pages/home/hooks/assetHook";
 import { useAppSelector } from "@redux/Store";
 import { db } from "@/database/db";
 import DbLocationModal from "./dbLocationModal";
-import { useSiweIdentity } from "@/siwe";
+import { useSiweIdentity } from "ic-use-siwe-identity";
 import { useAccount } from "wagmi";
 import Pill from "./Pill";
 

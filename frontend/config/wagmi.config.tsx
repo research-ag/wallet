@@ -5,17 +5,19 @@ import { WagmiConfig, configureChains, createConfig } from "wagmi";
 import { RainbowKitProvider, darkTheme, getDefaultWallets } from "@rainbow-me/rainbowkit";
 import { publicProvider } from "wagmi/providers/public";
 import { canisterId, idlFactory } from "@/candid/ic_siwe_provider";
-import { SiweIdentityProvider } from "@/siwe";
+import { SiweIdentityProvider } from "ic-use-siwe-identity";
 
 export const supportedChains = [mainnet, polygon, optimism, arbitrum, base, zora];
 
 export const { chains, publicClient } = configureChains(supportedChains, [publicProvider()]);
 
-const { connectors } = getDefaultWallets({
+const info = {
   appName: import.meta.env.VITE_APP_NAME,
   projectId: import.meta.env.VITE_PROJECT_ID,
   chains,
-});
+};
+
+const { connectors } = getDefaultWallets(info);
 
 export const wagmiConfig = createConfig({
   autoConnect: true,
