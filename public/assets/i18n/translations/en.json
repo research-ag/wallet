@@ -32,6 +32,8 @@
   "dark": "Dark",
   "light": "Light",
   "send": "Send",
+  "transfer": "Transfer",
+  "deposit": "Deposit",
   "receive": "Receive",
   "confirm": "Confirm",
   "name": "Name",

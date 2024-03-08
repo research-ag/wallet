@@ -1,32 +1,18 @@
 import {
   ContactSubAccount,
   NewContact,
-  ReceiverState,
-  SenderState,
   TransactionReceiverOption,
   TransactionReceiverOptionEnum,
   TransactionScannerOption,
   TransactionScannerOptionEnum,
   TransactionSenderOption,
   TransactionSenderOptionEnum,
+  TransactionState,
   TransactionValidationErrorsType,
 } from "@/@types/transactions";
 import { SendingStatusEnum, SendingStatus } from "@/const";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-
-interface TransactionState {
-  scannerActiveOption: TransactionScannerOption;
-  isLoading: boolean;
-  isInspectTransference: boolean;
-  sendingStatus: SendingStatus;
-  sender: SenderState;
-  receiver: ReceiverState;
-  errors?: TransactionValidationErrorsType[];
-  amount?: string;
-  initTime: Date;
-  endTime: Date;
-}
 
 export const initialTransactionState = {
   scannerActiveOption: TransactionScannerOptionEnum.Values.none,

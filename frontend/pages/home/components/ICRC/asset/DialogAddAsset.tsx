@@ -60,9 +60,9 @@ const DialogAddAsset = ({
       border="border border-BorderColorTwoLight dark:border-BorderColorTwo"
       open={newSub ? true : false}
     >
-      <div className="reative flex flex-col justify-start items-start w-full gap-2">
+      <div className="flex flex-col items-start justify-start w-full gap-2 reative">
         <CloseIcon
-          className="absolute top-6 right-5 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
+          className="absolute cursor-pointer top-6 right-5 stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
           onClick={() => {
             addToAcordeonIdx();
             setNewSub(undefined);
@@ -83,7 +83,7 @@ const DialogAddAsset = ({
           onChange={onChangeName}
           onKeyUp={onKeyUp}
         />
-        <button className="p-0 flex flex-row gap-2" onClick={onChangeCheckboxHex}>
+        <button className="flex flex-row gap-2 p-0" onClick={onChangeCheckboxHex}>
           <CustomCheck className="border-BorderColorLight dark:border-BorderColor" checked={hexChecked} />
           <p className="text-sm">{t("hex.check")}</p>
         </button>
@@ -102,7 +102,7 @@ const DialogAddAsset = ({
             sufix={<p className="text-sm opacity-70">(Hex)</p>}
           />
         )}
-        <div className="flex flex-row justify-end items-center w-full">
+        <div className="flex flex-row items-center justify-end w-full">
           <CustomButton size={"small"} className="min-w-[5rem]" onClick={onEnter}>
             <p>{t("add")}</p>
           </CustomButton>
@@ -196,7 +196,6 @@ const DialogAddAsset = ({
               certified: false,
             });
             const token = tokens[Number(idx)];
-            console.log(idx, "tokens", tokens, tokens[Number(idx)]);
 
             const tokenToUpdate = {
               ...token,
