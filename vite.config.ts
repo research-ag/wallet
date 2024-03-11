@@ -5,7 +5,8 @@ import fs from "fs";
 import react from "@vitejs/plugin-react";
 import viteTsconfigPaths from "vite-tsconfig-paths";
 import svgrPlugin from "vite-plugin-svgr";
-import { nodePolyfills } from "vite-plugin-node-polyfills";
+// https://github.com/TanStack/query/issues/5175
+import nodePolyfills from "vite-plugin-node-stdlib-browser";
 
 const isDev = process.env["DFX_NETWORK"] !== "ic";
 
@@ -52,6 +53,24 @@ const DFX_PORT = dfxJson.networks.local.bind.split(":")[1];
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
   return {
+
+    build: {
+      rollupOptions: {
+        /**
+         * Ignore "use client" waning since we are not using SSR
+         * @see {@link https://github.com/TanStack/query/pull/5161#issuecomment-1477389761 Preserve 'use client' directives TanStack/query#5161}
+         */
+        onwarn(warning, warn) {
+          if (
+            warning.code === "MODULE_LEVEL_DIRECTIVE" &&
+            warning.message.includes("use client")
+          ) {
+            return;
+          }
+          warn(warning);
+        },
+      },
+    },
     optimizeDeps: {
       esbuildOptions: {
         target: "ESNext",
@@ -62,6 +81,7 @@ export default defineConfig(({ mode }) => {
       logOverride: { "this-is-undefined-in-esm": "silent" },
     },
     plugins: [
+      nodePolyfills(),
       react({
         include: "**/*.tsx",
         babel: {
@@ -71,7 +91,6 @@ export default defineConfig(({ mode }) => {
       }),
       svgrPlugin(),
       viteTsconfigPaths(),
-      nodePolyfills(),
     ],
     resolve: {
       alias: {

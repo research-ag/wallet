@@ -21,6 +21,7 @@ import { allowanceCacheRefresh } from "@pages/home/helpers/allowanceCache";
 import contactCacheRefresh from "@pages/contacts/helpers/contacts";
 import { setAllowances } from "./allowance/AllowanceReducer";
 import { db } from "@/database/db";
+import { Secp256k1KeyIdentity } from "@dfinity/identity-secp256k1";
 
 const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${
   import.meta.env.VITE_APP_LOGO
@@ -77,12 +78,11 @@ export const handlePrincipalAuthenticated = async (principalAddress: string) => 
 };
 
 export const handleMnemonicAuthenticated = (phrase: string[]) => {
-  console.log(phrase);
-  // const phraseToIdentity: (phrase: string[]) => Identity | null = (phrase) => {
-  //   return Secp256k1KeyIdentity.fromSeedPhrase(phrase) as any;
-  // };
-  // const secpIdentity = phraseToIdentity(phrase) as Identity;
-  // handleLoginApp(secpIdentity, true);
+  const phraseToIdentity: (phrase: string[]) => Identity | null = (phrase) => {
+    return Secp256k1KeyIdentity.fromSeedPhrase(phrase) as any;
+  };
+  const secpIdentity = phraseToIdentity(phrase) as Identity;
+  handleLoginApp(secpIdentity, true);
 };
 
 export const handleSiweAuthenticated = async (identity: DelegationIdentity) => {
@@ -90,7 +90,6 @@ export const handleSiweAuthenticated = async (identity: DelegationIdentity) => {
 };
 
 export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean, fixedPrincipal?: Principal) => {
-  console.log("running");
   store.dispatch(setLoading(true));
   const opt: AuthNetwork | null = db().getNetworkType();
   if (opt === null && !fromSeed && !fixedPrincipal) {
