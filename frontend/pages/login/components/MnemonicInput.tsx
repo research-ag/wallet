@@ -15,12 +15,14 @@ export default function MnemonicInput({ phrase, setPhrase }: MnemonicInputProps)
   const { t } = useTranslation();
   const [isError, setIsError] = useState(false);
 
-  const wordlists = useMemo(() => {
-    const enWords = bip39.wordlists.english;
-    const esWords = bip39.wordlists.spanish;
-    const itWords = bip39.wordlists.italian;
-    const ptWords = bip39.wordlists.portuguese;
-    return [...enWords, ...esWords, ...itWords, ...ptWords];
+  const wordList = useMemo(() => {
+    let words: string[] = [];
+
+    for (const key in bip39.wordlists) {
+      words = words.concat(bip39.wordlists[key]);
+    }
+
+    return words;
   }, []);
 
   const isValid = useMemo(() => isPhraseValid(phrase), [phrase]);
@@ -70,7 +72,7 @@ export default function MnemonicInput({ phrase, setPhrase }: MnemonicInputProps)
     if (sanitizedPhrase.length === 0) return false;
 
     for (const word of sanitizedPhrase) {
-      if (!wordlists.includes(word)) {
+      if (!wordList.includes(word)) {
         return false;
       }
     }
