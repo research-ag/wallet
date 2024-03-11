@@ -41,11 +41,18 @@ export default function TransactionAmount() {
           </button>
         )}
       </div>
-      <div className="flex flex-row items-center justify-end gap-2 text-md whitespace-nowrap text-black-color dark:text-secondary-color-1-light">
-        <p className="opacity-60">{t("fee")}</p>
-        <p className="">
-          {transactionFee} {sender?.asset?.tokenSymbol}
-        </p>
+      <div className="flex items-center justify-between w-full">
+        <div className="flex">
+          <p className="mr-1 text-md">Max: </p>
+          <p className="mr-2 text-md">0</p>
+          <p className="text-gray-400 text-md">(0.5 available)</p>
+        </div>
+        <div className="flex">
+          <p className="mr-1 text-gray-400 text-md">{t("fee")}</p>
+          <p className="text-md">
+            {transactionFee} {sender?.asset?.tokenSymbol || "-"}
+          </p>
+        </div>
       </div>
     </>
   );
