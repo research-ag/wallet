@@ -12,7 +12,7 @@ import {
 } from "@/@types/icrc";
 import { hexToUint8Array, toFullDecimal, toHoleBigInt } from "@/utils";
 import { Actor, HttpAgent } from "@dfinity/agent";
-import { ApproveParams, IcrcLedgerCanister, TransferFromParams } from "@dfinity/ledger";
+import { ApproveParams, TransferFromParams } from "@dfinity/ledger";
 import { Principal } from "@dfinity/principal";
 import store from "@redux/Store";
 import { AssetContact } from "@redux/models/ContactsModels";
@@ -22,16 +22,8 @@ dayjs.extend(utc);
 //
 import { _SERVICE as LedgerActor } from "@candid/icrcLedger/icrcLedgerService";
 import { idlFactory as LedgerFactory } from "@candid/icrcLedger/icrcLedgerCandid.did";
+import { getCanister } from "./icrc/getIcrcCanister";
 
-function getCanister(assetAddress: string) {
-  const agent = store.getState().auth.userAgent;
-  const canisterId = Principal.fromText(assetAddress);
-  const canister = IcrcLedgerCanister.create({
-    agent,
-    canisterId,
-  });
-  return canister;
-}
 
 export async function getTransactionFee(params: TransactionFeeParams) {
   try {
