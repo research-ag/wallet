@@ -9,7 +9,7 @@ import { getAllTransactionsICP, getAllTransactionsICRC1, updateAllBalances } fro
 import { setLoading, setTxWorker } from "@redux/assets/AssetReducer";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { Token } from "@redux/models/TokenModels";
-import timer_script from "@workers/timerWorker";
+import { timerWorkerScript } from "@workers/index";
 import { useEffect } from "react";
 import { db } from "@/database/db";
 
@@ -79,32 +79,20 @@ export const WorkerHook = () => {
   };
 
   // TRANSACTION WEB WORKER
-  const timerWorker = new Worker(timer_script, { type: "module", credentials: "include" });
-
-  timerWorker.onmessage = (event) => {
-    if (event.data && event.data.debug) {
-      if (event.data) {
-        console.log("message from worker: %o", event.data);
-      }
-    } else {
-      if (event.data === WorkerTaskEnum.Values.TRANSACTIONS) {
-        getTransactionsWorker();
-      } else if (event.data === WorkerTaskEnum.Values.ASSETS) {
-        getAssetsWorker();
-      }
+  const timerWorker = new Worker(timerWorkerScript, { type: "module", credentials: "include" });
+  timerWorker.onmessage = ({ data }) => {
+    if (data && data.debug) console.log("message from worker: %o", data);
+    else {
+      if (data === WorkerTaskEnum.Values.TRANSACTIONS) getTransactionsWorker();
+      if (data === WorkerTaskEnum.Values.ASSETS) getAssetsWorker();
     }
   };
-
-  timerWorker.onerror = (event) => {
-    console.log(event);
-  };
+  timerWorker.onerror = (event) => console.log(event);
 
   useEffect(() => {
-    const postRequest = {
-      message: true,
-    };
-
+    const postRequest = { message: true };
     timerWorker.postMessage(postRequest);
+
     return () => {
       timerWorker.terminate();
     };

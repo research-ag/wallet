@@ -2,15 +2,8 @@
 import IcIcon from "@/assets/img/icp.png";
 import EthereumIcon from "@/assets/svg/files/ethereum-icon.svg";
 import BitcoinIcon from "@/assets/svg/files/bitcoin-icon.svg";
-import ckBtcIcon from "@/assets/svg/files/ckbtc.svg";
-import ckEthIcon from "@/assets/svg/files/ckETH.svg";
-import OpenChatIcon from "@/assets/svg/files/openchat.svg";
-import KinicIcon from "@/assets/svg/files/kinic.svg";
-import HotOrNotIcon from "@/assets/svg/files/hot-or-not.svg";
 import GoldTokenIcon from "@/assets/svg/files/gldt_icon.svg";
 import OrigynIcon from "@/assets/svg/files/ogy_icon.svg";
-import DragginzIcon from "@/assets/svg/files/dragginz.svg";
-import GLDGovIcon from "@/assets/svg/files/GLDov_icon.svg";
 import { z } from "zod";
 import { Token } from "@redux/models/TokenModels";
 import { ICRC1systemAssets } from "./defaultTokens";
@@ -56,7 +49,15 @@ export type AccountDefault = z.infer<typeof AccountDefaultEnum>;
 export const WorkerTaskEnum = z.enum(["TRANSACTIONS", "ASSETS"]);
 export type WorkerTask = z.infer<typeof WorkerTaskEnum>;
 
-export const AuthNetworkNameEnum = z.enum(["Internet Identity", "NFID", "Ethereum", "Seed", "Watch-Only", "Mnemonic", "NONE"]);
+export const AuthNetworkNameEnum = z.enum([
+  "Internet Identity",
+  "NFID",
+  "Ethereum",
+  "Seed",
+  "Watch-Only",
+  "Mnemonic",
+  "NONE",
+]);
 export type AuthNetworkName = z.infer<typeof AuthNetworkNameEnum>;
 
 export const AuthNetworkTypeEnum = z.enum(["IC", "NFID", "ETH", "S", "WO", "MNEMONIC", "NONE"]);
@@ -84,13 +85,6 @@ export const symbolIconDict: { [key: string]: string } = {
   BTC: BitcoinIcon,
   ICP: IcIcon,
   ETH: EthereumIcon,
-  ckBTC: ckBtcIcon,
-  ckETH: ckEthIcon,
-  CHAT: OpenChatIcon,
-  KINIC: KinicIcon,
-  SNS1: DragginzIcon,
-  HOT: HotOrNotIcon,
   GLDT: GoldTokenIcon,
   OGY: OrigynIcon,
-  GLDGov: GLDGovIcon,
 };
