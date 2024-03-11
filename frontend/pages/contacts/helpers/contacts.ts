@@ -1,6 +1,6 @@
 import store from "@redux/Store";
 import { setReduxContacts } from "@redux/contacts/ContactsReducer";
-import { retrieveAssetsWithAllowance } from "@/pages/home/helpers/icrc";
+import { retrieveAssetsWithAllowance } from "@/pages/home/helpers/icrc/";
 
 export default async function contactCacheRefresh() {
   try {

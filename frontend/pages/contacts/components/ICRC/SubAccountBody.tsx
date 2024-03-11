@@ -22,7 +22,7 @@ import {
   SubAccountContactErr,
 } from "@redux/models/ContactsModels";
 import { getNormalizedHex, isHexadecimalValid } from "@/utils/checkers";
-import { getAllowanceDetails } from "@/pages/home/helpers/icrc";
+import { getAllowanceDetails } from "@/pages/home/helpers/icrc/";
 import { DeleteContactTypeEnum } from "@/const";
 import useContactTable from "../../hooks/useContactTable";
 import { GeneralHook } from "@pages/home/hooks/generalHook";
