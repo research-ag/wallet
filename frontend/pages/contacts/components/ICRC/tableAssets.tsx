@@ -187,6 +187,7 @@ const TableAssets = ({
         name: "",
         subaccount_index: "",
         sub_account_id: "",
+        allowance: { allowance: "", expires_at: "" },
       });
       setSelSubaccIdx("");
       setSubaccEditedErr({

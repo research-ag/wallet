@@ -183,7 +183,7 @@ export default function AddContact({ setAddOpen }: AddContactProps) {
         setSelAstContact(contAst.tokenSymbol);
         setNewSubaccounts(
           contAst.subaccounts.length === 0
-            ? [{ name: "", subaccount_index: "", sub_account_id: "" }]
+            ? [{ name: "", subaccount_index: "", sub_account_id: "", allowance: { allowance: "", expires_at: "" } }]
             : contAst.subaccounts,
         );
       } else {

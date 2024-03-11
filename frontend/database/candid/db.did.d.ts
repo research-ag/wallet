@@ -2,6 +2,23 @@ import type { Principal } from '@dfinity/principal';
 import type { ActorMethod } from '@dfinity/agent';
 import type { IDL } from '@dfinity/candid';
 
+export interface AllowanceDocument {
+  'deleted' : boolean,
+  'asset' : {
+    'logo' : string,
+    'name' : string,
+    'tokenSymbol' : string,
+    'supportedStandards' : Array<string>,
+    'address' : string,
+    'tokenName' : string,
+    'decimal' : string,
+  },
+  'updatedAt' : number,
+  'expiration' : string,
+  'amount' : string,
+  'subAccountId' : string,
+  'spender' : string,
+}
 export interface ContactDocument {
   'principal' : string,
   'deleted' : boolean,
@@ -57,8 +74,19 @@ export interface WalletDatabase {
   'dump' : ActorMethod<
     [],
     Array<
-      [Principal, [Array<[] | [TokenDocument]>, Array<[] | [ContactDocument]>]]
+      [
+        Principal,
+        [
+          Array<[] | [TokenDocument]>,
+          Array<[] | [ContactDocument]>,
+          Array<[] | [AllowanceDocument]>,
+        ],
+      ]
     >
+  >,
+  'pullAllowances' : ActorMethod<
+    [number, [] | [string], bigint],
+    Array<AllowanceDocument>
   >,
   'pullContacts' : ActorMethod<
     [number, [] | [string], bigint],
@@ -67,6 +95,10 @@ export interface WalletDatabase {
   'pullTokens' : ActorMethod<
     [number, [] | [string], bigint],
     Array<TokenDocument>
+  >,
+  'pushAllowances' : ActorMethod<
+    [Array<AllowanceDocument>],
+    Array<AllowanceDocument>
   >,
   'pushContacts' : ActorMethod<
     [Array<ContactDocument>],

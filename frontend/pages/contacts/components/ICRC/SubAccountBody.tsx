@@ -357,7 +357,7 @@ export default function SubAccountBody(props: SubAccountBodyProps) {
           subAccount?.subaccount_index || "0",
           subaccEdited.name.trim(),
           subAccountIndex,
-          allowance,
+          allowance || { allowance: "", expires_at: "" },
         );
         setSelSubaccIdx("");
       } else {
@@ -367,7 +367,7 @@ export default function SubAccountBody(props: SubAccountBodyProps) {
           subaccEdited.name.trim(),
           subAccountIndex,
           fromPrincSub ? princSubId : subaccEdited.sub_account_id,
-          allowance,
+          allowance || { allowance: "", expires_at: "" },
         );
         setSelSubaccIdx("");
         setAddSub(false);

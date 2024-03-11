@@ -26,3 +26,4 @@ Makefile.prod
 *.sln
 *.sw?
 canister_ids.json
+src/declarations

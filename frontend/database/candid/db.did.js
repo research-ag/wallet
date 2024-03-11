@@ -51,6 +51,23 @@ export const idlFactory = ({ IDL }) => {
     'updatedAt' : IDL.Nat32,
     'accountIdentier' : IDL.Text,
   });
+  const AllowanceDocument = IDL.Record({
+    'deleted' : IDL.Bool,
+    'asset' : IDL.Record({
+      'logo' : IDL.Text,
+      'name' : IDL.Text,
+      'tokenSymbol' : IDL.Text,
+      'supportedStandards' : IDL.Vec(IDL.Text),
+      'address' : IDL.Text,
+      'tokenName' : IDL.Text,
+      'decimal' : IDL.Text,
+    }),
+    'updatedAt' : IDL.Nat32,
+    'expiration' : IDL.Text,
+    'amount' : IDL.Text,
+    'subAccountId' : IDL.Text,
+    'spender' : IDL.Text,
+  });
   const WalletDatabase = IDL.Service({
     'doesStorageExist' : IDL.Func([], [IDL.Bool], ['query']),
     'dump' : IDL.Func(
@@ -62,10 +79,16 @@ export const idlFactory = ({ IDL }) => {
               IDL.Tuple(
                 IDL.Vec(IDL.Opt(TokenDocument)),
                 IDL.Vec(IDL.Opt(ContactDocument)),
+                IDL.Vec(IDL.Opt(AllowanceDocument)),
               ),
             )
           ),
         ],
+        ['query'],
+      ),
+    'pullAllowances' : IDL.Func(
+        [IDL.Nat32, IDL.Opt(IDL.Text), IDL.Nat],
+        [IDL.Vec(AllowanceDocument)],
         ['query'],
       ),
     'pullContacts' : IDL.Func(
@@ -77,6 +100,11 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Nat32, IDL.Opt(IDL.Text), IDL.Nat],
         [IDL.Vec(TokenDocument)],
         ['query'],
+      ),
+    'pushAllowances' : IDL.Func(
+        [IDL.Vec(AllowanceDocument)],
+        [IDL.Vec(AllowanceDocument)],
+        [],
       ),
     'pushContacts' : IDL.Func(
         [IDL.Vec(ContactDocument)],

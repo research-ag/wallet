@@ -1,89 +1,94 @@
-type WalletDatabase = service {
-  doesStorageExist : () -> (bool) query;
-  dump : () -> (
-    vec record {
-      principal;
+type WalletDatabase = 
+ service {
+   doesStorageExist: () -> (bool) query;
+   dump: () ->
+    (vec
       record {
-        vec opt TokenDocument;
-        vec opt ContactDocument;
-        vec opt AllowanceDocument;
-      };
-    }
-  ) query;
-  pullContacts : (nat32, opt text, nat) -> (vec ContactDocument) query;
-  pullTokens : (nat32, opt text, nat) -> (vec TokenDocument) query;
-  pullAllawances : (nat32, opt text, nat) -> (vec AllowanceDocument) query;
-  pushContacts : (vec ContactDocument) -> (vec ContactDocument);
-  pushTokens : (vec TokenDocument) -> (vec TokenDocument);
-  pushAllawances : (vec AllowanceDocument) -> (vec AllowanceDocument);
-  doesStorageExist : () -> (bool) query;
-};
-type TokenDocument = record {
-  address : text;
-  decimal : text;
-  deleted : bool;
-  fee : text;
-  id_number : nat32;
-  index : text;
-  logo : text;
-  name : text;
-  shortDecimal : text;
-  subAccounts : vec record {
-    amount : text;
-    currency_amount : text;
-  };
-  fee : text;
-  index : text;
-  logo : text;
-  supportedStandards : [text];
-  deleted : bool;
-  updatedAt : nat32;
-};
-type ContactDocument = record {
-  accountIdentier : text;
-  assets : vec record {
-    address : text;
-    decimal : text;
-    logo : text;
-    shortDecimal : text;
-    subaccounts : vec record {
-      allowance : opt record {
-        allowance : text;
-        expires_at : text;
-      };
-      name : text;
-      sub_account_id : text;
-      subaccount_index : text;
+        principal;
+        record {
+          vec opt TokenDocument;
+          vec opt ContactDocument;
+          vec opt AllowanceDocument;
+        };
+      }) query;
+   pullAllowances: (nat32, opt text, nat) -> (vec AllowanceDocument) query;
+   pullContacts: (nat32, opt text, nat) -> (vec ContactDocument) query;
+   pullTokens: (nat32, opt text, nat) -> (vec TokenDocument) query;
+   pushAllowances: (vec AllowanceDocument) -> (vec AllowanceDocument);
+   pushContacts: (vec ContactDocument) -> (vec ContactDocument);
+   pushTokens: (vec TokenDocument) -> (vec TokenDocument);
+ };
+type TokenDocument = 
+ record {
+   address: text;
+   decimal: text;
+   deleted: bool;
+   fee: text;
+   id_number: nat32;
+   index: text;
+   logo: text;
+   name: text;
+   shortDecimal: text;
+   subAccounts:
+    vec record {
+          amount: text;
+          currency_amount: text;
+          name: text;
+          numb: text;
+        };
+   supportedStandards: vec text;
+   symbol: text;
+   tokenName: text;
+   tokenSymbol: text;
+   updatedAt: nat32;
+ };
+type ContactDocument = 
+ record {
+   accountIdentier: text;
+   assets:
+    vec
+     record {
+       address: text;
+       decimal: text;
+       logo: text;
+       shortDecimal: text;
+       subaccounts:
+        vec
+         record {
+           allowance: opt record {
+                            allowance: text;
+                            expires_at: text;
+                          };
+           name: text;
+           sub_account_id: text;
+           subaccount_index: text;
+         };
+       supportedStandards: vec text;
+       symbol: text;
+       tokenSymbol: text;
+     };
+   deleted: bool;
+   name: text;
+   "principal": text;
+   updatedAt: nat32;
+ };
+type AllowanceDocument = 
+ record {
+   amount: text;
+   asset:
+    record {
+      address: text;
+      decimal: text;
+      logo: text;
+      name: text;
+      supportedStandards: vec text;
+      tokenName: text;
+      tokenSymbol: text;
     };
-    supportedStandards : vec text;
-    symbol : text;
-    tokenSymbol : text;
-  };
-  deleted : bool;
-  name : text;
-  "principal" : text;
-  updatedAt : nat32;
-};
-
-/**
-* Template of a Allowance record
-*/
-type AllowanceDocument_v0 = {
-  asset : {
-    logo : text;
-    name : text;
-    address : text;
-    decimal : text;
-    tokenName : text;
-    tokenSymbol : text;
-    supportedStandards : [text];
-  };
-  subAccountId : text;
-  amount : text;
-  spender : text;
-  expiration : text;
-  updatedAt : nat32;
-  deleted : bool;
-};
-
-service : () -> WalletDatabase;
+   deleted: bool;
+   expiration: text;
+   spender: text;
+   subAccountId: text;
+   updatedAt: nat32;
+ };
+service : () -> WalletDatabase
