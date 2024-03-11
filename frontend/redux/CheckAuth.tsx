@@ -97,6 +97,7 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean,
     return;
   }
 
+  // INFO: setAuthenticated will stop the authLoading
   store.dispatch(setAuthLoading(true));
   const myAgent = new HttpAgent({
     identity: authIdentity,
