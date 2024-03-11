@@ -16,10 +16,12 @@ import { useSiweIdentity } from "ic-use-siwe-identity";
 
 const App: React.FC = () => {
   const { i18n } = useTranslation();
-  const { clear } = useSiweIdentity();
+  const { clear, identity } = useSiweIdentity();
 
   useEffect(() => {
-    clear();
+    if (identity) {
+      clear();
+    }
   }, []);
 
   useEffect(() => {
