@@ -12,7 +12,7 @@ import { CustomCopy } from "@components/CopyTooltip";
 import { CustomInput } from "@components/Input";
 import { ReactComponent as MoneyHandIcon } from "@assets/svg/files/money-hand.svg";
 import { Fragment, ChangeEvent } from "react";
-import { AccountIdentifier } from "@dfinity/nns";
+import { AccountIdentifier } from "@dfinity/ledger-icp";
 import { clsx } from "clsx";
 import { Principal } from "@dfinity/principal";
 import { AssetToAdd } from "@redux/models/AccountModels";

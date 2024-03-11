@@ -20,7 +20,7 @@ import {
 } from "./const";
 import { Account, Transaction as T } from "@dfinity/ledger/dist/candid/icrc1_index";
 import { isNullish, uint8ArrayToHexString, bigEndianCrc32, encodeBase32 } from "@dfinity/utils";
-import { AccountIdentifier, SubAccount as SubAccountNNS } from "@dfinity/nns";
+import { AccountIdentifier, SubAccount as SubAccountNNS } from "@dfinity/ledger-icp";
 
 export const MILI_PER_SECOND = 1000000;
 

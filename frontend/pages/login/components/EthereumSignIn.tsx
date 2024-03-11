@@ -1,11 +1,11 @@
 import { useAccount, useNetwork } from "wagmi";
 import ConnectButton from "./ConnectButton";
 import AddressPill from "./AddressPill";
-import { isChainIdSupported } from "@/wagmi.config";
+import { isChainIdSupported } from "@/config/wagmi.config";
 import { CustomButton } from "@components/Button";
 import { useTranslation } from "react-i18next";
 import LoginButton from "./LoginButton";
-import { useSiweIdentity } from "@/siwe";
+import { useSiweIdentity } from "ic-use-siwe-identity";
 import { useEffect } from "react";
 import { handleSiweAuthenticated } from "@redux/CheckAuth";
 
