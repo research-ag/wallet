@@ -136,7 +136,7 @@ export async function getSubAccountBalance(params: GetBalanceParams) {
     return balance;
   } catch (error) {
     console.error(error);
-    return 0;
+    return BigInt(0);
   }
 }
 

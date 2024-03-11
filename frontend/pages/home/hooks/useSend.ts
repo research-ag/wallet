@@ -113,7 +113,7 @@ export default function useSend() {
    *
    * @returns {Promise<string>} A Promise that resolves to the sender's balance, formatted as a string.
    */
-  async function getSenderBalance(): Promise<string> {
+  async function getSenderMaxAmount(): Promise<string> {
     try {
       if (sender?.senderOption === TransactionSenderOptionEnum.Values.own) {
         return toFullDecimal(updateSubAccount?.amount || "0", Number(updateAsset?.decimal));
@@ -293,7 +293,7 @@ export default function useSend() {
     isSenderValid: getSenderValid(),
     isReceiverValid: getReceiverValid(),
     isReceiverOwnSubAccount: isReceiverOwn(),
-    getSenderBalance,
+    getSenderMaxAmount,
     isSenderAllowance,
     isSenderSameAsReceiver,
     isSenderAllowanceOwn,

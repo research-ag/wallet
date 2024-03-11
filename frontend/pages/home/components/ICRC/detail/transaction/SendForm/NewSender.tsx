@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 
 export default function NewSender() {
   const { sender } = useAppSelector((state) => state.transaction);
-  const { getSenderBalance, senderSubAccount, senderPrincipal } = useSend();
+  const { getSenderMaxAmount, senderSubAccount, senderPrincipal } = useSend();
   const [balance, setBalance] = useState("");
 
   useEffect(() => {
@@ -29,7 +29,7 @@ export default function NewSender() {
 
   async function getAmount() {
     try {
-      const balance = await getSenderBalance();
+      const balance = await getSenderMaxAmount();
       setBalance(balance || "");
     } catch (error) {
       console.log(error);

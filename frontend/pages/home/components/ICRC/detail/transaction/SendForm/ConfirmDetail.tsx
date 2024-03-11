@@ -38,7 +38,7 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
     amount,
     enableSend,
     transactionFee,
-    getSenderBalance,
+    getSenderMaxAmount,
     isSenderAllowance,
     senderPrincipal,
   } = useSend();
@@ -62,7 +62,7 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
   );
 
   async function validateBalance() {
-    const balance = await getSenderBalance();
+    const balance = await getSenderMaxAmount();
     const bigintBalance = toHoleBigInt(balance || "0", Number(sender?.asset?.decimal));
     const bigintFee = toHoleBigInt(transactionFee || "0", Number(sender?.asset?.decimal));
     const bigintAmount = toHoleBigInt(amount || "0", Number(sender?.asset?.decimal));
