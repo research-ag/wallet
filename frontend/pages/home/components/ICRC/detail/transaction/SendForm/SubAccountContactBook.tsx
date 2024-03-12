@@ -6,7 +6,7 @@ import OwnSubAccountCard from "./OwnSubAccountCard";
 export default function SubAccountContactBook() {
   const [balance, setBalance] = useState("");
   const { sender } = useAppSelector((state) => state.transaction);
-  const { getSenderBalance } = useSend();
+  const { getSenderMaxAmount } = useSend();
 
   const subAccountName =
     sender?.subAccount?.name ||
@@ -26,7 +26,7 @@ export default function SubAccountContactBook() {
   );
 
   async function getAmount() {
-    const balance = await getSenderBalance();
+    const balance = await getSenderMaxAmount();
     setBalance(balance || "0");
   }
 }

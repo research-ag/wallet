@@ -1,7 +1,7 @@
 import { toFullDecimal } from "@/utils";
 import { useAppSelector } from "@redux/Store";
 import { useMemo } from "react";
-import { getAllowanceDetails } from "../helpers/icrc";
+import { getAllowanceDetails } from "../helpers/icrc/";
 import { TransactionSenderOptionEnum } from "@/@types/transactions";
 import { validatePrincipal } from "@/utils/identity";
 import { isHexadecimalValid } from "@/utils/checkers";
@@ -48,6 +48,8 @@ export default function useSend() {
   const getTransactionFee = () => {
     const hasTransactionFee = updateSubAccount?.transaction_fee !== undefined;
     const decimalPlaces = updateAsset?.decimal ?? 0;
+
+    // TODO: if not call the getTransactionFeeFromLedger
 
     return hasTransactionFee
       ? toFullDecimal(updateSubAccount.transaction_fee, Number(decimalPlaces))
@@ -113,7 +115,7 @@ export default function useSend() {
    *
    * @returns {Promise<string>} A Promise that resolves to the sender's balance, formatted as a string.
    */
-  async function getSenderBalance(): Promise<string> {
+  async function getSenderMaxAmount(): Promise<string> {
     try {
       if (sender?.senderOption === TransactionSenderOptionEnum.Values.own) {
         return toFullDecimal(updateSubAccount?.amount || "0", Number(updateAsset?.decimal));
@@ -293,7 +295,7 @@ export default function useSend() {
     isSenderValid: getSenderValid(),
     isReceiverValid: getReceiverValid(),
     isReceiverOwnSubAccount: isReceiverOwn(),
-    getSenderBalance,
+    getSenderMaxAmount,
     isSenderAllowance,
     isSenderSameAsReceiver,
     isSenderAllowanceOwn,
