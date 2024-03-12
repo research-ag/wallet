@@ -28,6 +28,10 @@ const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAM
   import.meta.env.VITE_APP_LOGO
 }#authorize`;
 
+const EMPTY_SEED_ANONYMOUS_PRINCIPAL = "2vxsx-fae";
+const NETWORK_AUTHORIZE_PATH = "https://identity.ic0.app/#authorize";
+const HTTP_AGENT_HOST = "https://identity.ic0.app";
+
 export const handleAuthenticated = async (opt: AuthNetwork) => {
   const authClient = await AuthClient.create();
   await new Promise<void>((resolve, reject) => {
@@ -36,7 +40,7 @@ export const handleAuthenticated = async (opt: AuthNetwork) => {
       identityProvider:
         !!opt?.type && opt?.type === AuthNetworkTypeEnum.Values.NFID
           ? opt?.network + AUTH_PATH
-          : "https://identity.ic0.app/#authorize",
+          : NETWORK_AUTHORIZE_PATH,
       onSuccess: () => {
         handleLoginApp(authClient.getIdentity());
         store.dispatch(setDebugMode(false));
@@ -56,8 +60,7 @@ export const handleSeedAuthenticated = async (seed: string) => {
   if (seed.length > 32) return;
 
   if (seed.length === 0) {
-    const principal = "2vxsx-fae";
-    await handlePrincipalAuthenticated(principal);
+    await handlePrincipalAuthenticated(EMPTY_SEED_ANONYMOUS_PRINCIPAL);
     return;
   }
 
@@ -110,7 +113,7 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean,
   store.dispatch(setAuthLoading(true));
   const myAgent = new HttpAgent({
     identity: authIdentity,
-    host: "https://identity.ic0.app",
+    host: HTTP_AGENT_HOST,
   });
 
   const myPrincipal = fixedPrincipal || (await myAgent.getPrincipal());
