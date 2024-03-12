@@ -46,6 +46,6 @@ export default function SeedInput({ seed, setSeed }: SeedMethodInputProps) {
 function getCheckIconStyles(seed: string) {
   return clsx(
     "w-4 h-4 opacity-50 cursor-pointer",
-    seed.length > 0 ? "stroke-BorderSuccessColor" : "stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor",
+    seed.length >= 0 ? "stroke-BorderSuccessColor" : "stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor",
   );
 }
