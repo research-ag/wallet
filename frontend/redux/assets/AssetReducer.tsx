@@ -323,19 +323,22 @@ const assetSlice = createSlice({
   },
 });
 
-const dbSubscriptionHandler = (x: any[]) => {
+const dbSubscriptionHandler = async (x: any[]) => {
   if (x.length > 0) {
-    store.dispatch(
-      assetSlice.actions.setReduxTokens(
-        x.sort((a: any, b: any) => {
-          return a.id_number - b.id_number;
-        }),
-      ),
-    );
+    const {
+      asset,
+      auth: { authClient, userAgent },
+    } = store.getState();
 
-    if (store.getState().asset.initLoad) setAssetFromLocalData(x, store.getState().auth.authClient);
+    const balances = await updateAllBalances(true, userAgent, x);
 
-    updateAllBalances(true, store.getState().auth.userAgent, x);
+    if (balances) {
+      const { tokens } = balances;
+
+      store.dispatch(assetSlice.actions.setReduxTokens(tokens));
+
+      if (asset.initLoad) setAssetFromLocalData(tokens, authClient);
+    }
   }
 };
 

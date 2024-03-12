@@ -20,6 +20,7 @@ import { Principal } from "@dfinity/principal";
 import { allowanceCacheRefresh } from "@pages/home/helpers/allowanceCache";
 import contactCacheRefresh from "@pages/contacts/helpers/contacts";
 import { Secp256k1KeyIdentity } from "@dfinity/identity-secp256k1";
+import { DB_Type, db } from "@/database/db";
 import { getSNSTokens } from "./assets/AssetActions";
 
 const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${
@@ -68,6 +69,7 @@ export const handleSeedAuthenticated = (seed: string) => {
 
 export const handlePrincipalAuthenticated = async (principalAddress: string) => {
   try {
+    db().setDbLocation(DB_Type.LOCAL);
     const authClient = await AuthClient.create();
     const principal = Principal.fromText(principalAddress);
     handleLoginApp(authClient.getIdentity(), false, principal);

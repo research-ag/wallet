@@ -18,7 +18,7 @@ import {
   TokenDocument as TokenRxdbDocument,
   ContactDocument as ContactRxdbDocument,
   AllowanceDocument as AllowanceRxdbDocument,
-} from "./candid/db";
+} from "./candid/db.did";
 import { SupportedStandardEnum } from "@/@types/icrc";
 
 addRxPlugin(RxDBUpdatePlugin);
@@ -292,6 +292,10 @@ export class RxdbDatabase extends IWalletDatabase {
         assets: contact.assets.map((a) => ({
           ...a,
           logo: extractValueFromArray(a.logo),
+          subaccounts: a.subaccounts.map((sa) => ({
+            ...sa,
+            allowance: [sa.allowance],
+          })),
         })),
         deleted: false,
         updatedAt: Date.now(),
@@ -316,6 +320,10 @@ export class RxdbDatabase extends IWalletDatabase {
         assets: newDoc.assets.map((a) => ({
           ...a,
           logo: extractValueFromArray(a.logo),
+          subaccounts: a.subaccounts.map((sa) => ({
+            ...sa,
+            allowance: [sa.allowance],
+          })),
         })),
         deleted: false,
         updatedAt: Date.now(),
@@ -326,7 +334,7 @@ export class RxdbDatabase extends IWalletDatabase {
   }
 
   /**
-   * Find and update Contacts in bulk by their Principal ID.
+   * Update Contacts in bulk.
    * @param newDocs Array of Allowance objects
    */
   async updateContacts(newDocs: Contact[]): Promise<void> {
@@ -340,13 +348,17 @@ export class RxdbDatabase extends IWalletDatabase {
           assets: doc.assets.map((a) => ({
             ...a,
             logo: extractValueFromArray(a.logo),
+            subaccounts: a.subaccounts.map((sa) => ({
+              ...sa,
+              allowance: [sa.allowance],
+            })),
           })),
           deleted: false,
           updatedAt: Date.now(),
         })),
       );
     } catch (e) {
-      console.error("RxDb updateContacts", e);
+      console.error("RxDb UpdateContacts", e);
     }
   }
 
@@ -442,7 +454,7 @@ export class RxdbDatabase extends IWalletDatabase {
   }
 
   /**
-   * Find and update Allowances in bulk by their Spender Principal ID.
+   * Update Allowances in bulk.
    * @param newDocs Array of Allowance objects
    */
   async updateAllowances(newDocs: TAllowance[]): Promise<void> {
@@ -462,7 +474,7 @@ export class RxdbDatabase extends IWalletDatabase {
         })),
       );
     } catch (e) {
-      console.error("RxDb updateAllowances", e);
+      console.error("RxDb UpdateAllowances", e);
     }
   }
 
@@ -556,7 +568,7 @@ export class RxdbDatabase extends IWalletDatabase {
           name: sa.name,
           subaccount_index: sa.subaccount_index,
           sub_account_id: sa.sub_account_id,
-          allowance: sa.allowance,
+          allowance: sa.allowance[0] || { allowance: "", expires_at: "" },
         })),
         address: a.address,
         decimal: a.decimal,

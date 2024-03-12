@@ -143,7 +143,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
   }
 
   /**
-   * Find and update Contacts in bulk by their Principal ID.
+   * Update Contacts in bulk.
    * @param newDocs Array of Allowance objects
    */
   async updateContacts(newDocs: Contact[]): Promise<void> {
@@ -203,7 +203,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
   }
 
   /**
-   * Find and update Allowances in bulk by their Spender Principal ID.
+   * Update Allowances in bulk.
    * @param newDocs Array of Allowance objects
    */
   async updateAllowances(newDocs: TAllowance[]): Promise<void> {
@@ -254,7 +254,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
   }
 
   private _setTokens(allTokens: Token[]) {
-    const tokens = allTokens.sort((a, b) => a.id_number - b.id_number);
+    const tokens = [...allTokens].sort((a, b) => a.id_number - b.id_number);
     localStorage.setItem(`tokens-${this.principalId}`, JSON.stringify(tokens));
     this._tokens$.next(tokens);
   }
