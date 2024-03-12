@@ -52,16 +52,23 @@ export const handleAuthenticated = async (opt: AuthNetwork) => {
   });
 };
 
-export const handleSeedAuthenticated = (seed: string) => {
+export const handleSeedAuthenticated = async (seed: string) => {
+  if (seed.length > 32) return;
+
+  if (seed.length === 0) {
+    const principal = "2vxsx-fae";
+    await handlePrincipalAuthenticated(principal);
+    return;
+  }
+
   const seedToIdentity: (seed: string) => Identity | null = (seed) => {
     const seedBuf = new Uint8Array(new ArrayBuffer(32));
-    if (seed.length && seed.length > 0 && seed.length <= 32) {
-      seedBuf.set(new TextEncoder().encode(seed));
-      return Ed25519KeyIdentity.generate(seedBuf);
-    }
-    return null;
+    seedBuf.set(new TextEncoder().encode(seed));
+    return Ed25519KeyIdentity.generate(seedBuf);
   };
+
   const newIdentity = seedToIdentity(seed);
+
   if (newIdentity) {
     store.dispatch(setDebugMode(true));
     handleLoginApp(newIdentity, true);
