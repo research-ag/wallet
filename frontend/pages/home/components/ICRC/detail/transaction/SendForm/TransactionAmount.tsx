@@ -51,14 +51,14 @@ export default function TransactionAmount() {
         <div className="flex">
           {!isMaxAmountLoading && showMax && (
             <>
-              <p className="mr-1 text-sm text-primary-color">Max: </p>
+              <p className="mr-1 text-sm text-primary-color">{t("max")}: </p>
               <p className="mr-2 text-sm text-primary-color">
                 {amountFromMax} {sender?.asset?.tokenSymbol || "-"}
               </p>
             </>
           )}
           {!isMaxAmountLoading && showAvailable && (
-            <p className="text-sm text-primary-color">({allowanceSubAccountBalance} available)</p>
+            <p className="text-sm text-primary-color">({allowanceSubAccountBalance} {t("available")})</p>
           )}
         </div>
         <div className="flex">

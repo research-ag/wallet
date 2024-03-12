@@ -59,6 +59,7 @@
   "subacc": "SubCnt",
   "sub-acc": "Sub-cuenta",
   "not.yet.available": "no disponible",
+  "available": "disponible",
   "devs.only": "sólo desarrolladores",
   "err.qr.img": "No se pudo detectar un QR válido para la carga de la imagen.",
   "hex.check": "Agregar índice manualmente",

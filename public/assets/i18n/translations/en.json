@@ -57,6 +57,7 @@
   "subacc": "SubAc",
   "sub-acc": "Sub-account",
   "not.yet.available": "not yet available",
+  "available": "available",
   "devs.only": "developers only",
   "err.qr.img": "Coudnt detect a valid QR for the image upload",
   "hex.check": "Add index manually",
