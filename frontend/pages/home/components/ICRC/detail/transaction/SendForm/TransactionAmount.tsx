@@ -114,18 +114,18 @@ export default function TransactionAmount() {
           subAccount: senderSubAccount,
           assetAddress: sender?.asset?.address,
         };
-        
+
         const allowanceBigintBalance = await getSubAccountBalance(params);
         const readableBalance = toFullDecimal(allowanceBigintBalance, Number(sender?.asset?.decimal));
-        
+
         if (allowanceBigintBalance < bigintMaxAmount) {
           setAmountAction(readableBalance);
           setAmountFromMax(readableBalance);
           setShowMax(true);
         }
-        
+
         setAllowanceSubAccountBalance(readableBalance);
-        
+
         if (allowanceBigintBalance < bigintMaxAmount) {
           setShowAvailable(true);
         }
