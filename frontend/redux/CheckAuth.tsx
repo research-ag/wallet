@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { HttpAgent, Identity } from "@dfinity/agent";
+import { AnonymousIdentity, HttpAgent, Identity } from "@dfinity/agent";
 import store from "./Store";
 import {
   clearDataAuth,
@@ -28,7 +28,6 @@ const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAM
   import.meta.env.VITE_APP_LOGO
 }#authorize`;
 
-const EMPTY_SEED_ANONYMOUS_PRINCIPAL = "2vxsx-fae";
 const NETWORK_AUTHORIZE_PATH = "https://identity.ic0.app/#authorize";
 const HTTP_AGENT_HOST = "https://identity.ic0.app";
 
@@ -60,7 +59,8 @@ export const handleSeedAuthenticated = async (seed: string) => {
   if (seed.length > 32) return;
 
   if (seed.length === 0) {
-    await handlePrincipalAuthenticated(EMPTY_SEED_ANONYMOUS_PRINCIPAL);
+    const identity = new AnonymousIdentity();
+    handleLoginApp(identity);
     return;
   }
 
