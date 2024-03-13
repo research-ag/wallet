@@ -31,7 +31,7 @@ deploy:
 
 deploy-local:
 	dfx deploy assets
-	dfx deploy --ic ic_siwe_provider --argument "( \
+	dfx deploy ic_siwe_provider --argument "( \
 	    record { \
 	        domain = \"localhost\"; \
 	        uri = \"http://localhost:3000\"; \

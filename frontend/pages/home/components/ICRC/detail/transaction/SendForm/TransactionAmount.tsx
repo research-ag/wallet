@@ -1,6 +1,7 @@
 import { TransactionValidationErrorsEnum } from "@/@types/transactions";
 import { toFullDecimal, toHoleBigInt, validateAmount } from "@/utils";
 import LoadingLoader from "@components/Loader";
+import { getSubAccountBalance } from "@pages/home/helpers/icrc";
 import useSend from "@pages/home/hooks/useSend";
 import { useAppSelector } from "@redux/Store";
 import { removeErrorAction, setAmountAction, setErrorAction } from "@redux/transaction/TransactionActions";
@@ -9,9 +10,14 @@ import { ChangeEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 export default function TransactionAmount() {
+  const [amountFromMax, setAmountFromMax] = useState<string>("0");
+  const [allowanceSubAccountBalance, setAllowanceSubAccountBalance] = useState<string>("0");
+  const [showAvailable, setShowAvailable] = useState(false);
+  const [showMax, setShowMax] = useState(false);
+
   const [isMaxAmountLoading, setMaxAmountLoading] = useState(false);
   const { sender, errors, amount } = useAppSelector((state) => state.transaction);
-  const { transactionFee, getSenderBalance } = useSend();
+  const { transactionFee, getSenderMaxAmount, isSenderAllowance, senderPrincipal, senderSubAccount } = useSend();
   const { t } = useTranslation();
 
   return (
@@ -31,7 +37,7 @@ export default function TransactionAmount() {
           onChange={onChangeAmount}
           value={amount || ""}
         />
-        {isMaxAmountLoading && <LoadingLoader className="mr-2" />}
+        {isMaxAmountLoading && <LoadingLoader className="mr-4" />}
         {!isMaxAmountLoading && (
           <button
             className="flex items-center justify-center p-1 mr-2 rounded cursor-pointer bg-RadioCheckColor"
@@ -41,11 +47,28 @@ export default function TransactionAmount() {
           </button>
         )}
       </div>
-      <div className="flex flex-row items-center justify-end gap-2 text-md whitespace-nowrap text-black-color dark:text-secondary-color-1-light">
-        <p className="opacity-60">{t("fee")}</p>
-        <p className="">
-          {transactionFee} {sender?.asset?.tokenSymbol}
-        </p>
+      <div className={getAmountDetailsStyles(!isMaxAmountLoading && (showAvailable || showMax))}>
+        <div className="flex">
+          {!isMaxAmountLoading && showMax && (
+            <>
+              <p className="mr-1 text-sm text-primary-color">{t("max")}: </p>
+              <p className="mr-2 text-sm text-primary-color">
+                {amountFromMax} {sender?.asset?.tokenSymbol || "-"}
+              </p>
+            </>
+          )}
+          {!isMaxAmountLoading && showAvailable && (
+            <p className="text-sm text-primary-color">
+              ({allowanceSubAccountBalance} {t("available")})
+            </p>
+          )}
+        </div>
+        <div className="flex">
+          <p className="mr-1 text-sm text-gray-400">{t("fee")}</p>
+          <p className="text-sm">
+            {transactionFee} {sender?.asset?.tokenSymbol || "-"}
+          </p>
+        </div>
       </div>
     </>
   );
@@ -53,6 +76,10 @@ export default function TransactionAmount() {
   function onChangeAmount(e: ChangeEvent<HTMLInputElement>) {
     const amount = e.target.value.trim();
     setAmountAction(amount);
+    setShowAvailable(false);
+    setShowMax(false);
+    setAmountFromMax("0");
+    setAllowanceSubAccountBalance("0");
     const isValidAmount = validateAmount(amount, Number(sender.asset.decimal));
 
     if (!isValidAmount || Number(amount) === 0) {
@@ -66,18 +93,47 @@ export default function TransactionAmount() {
   async function onMaxAmount() {
     try {
       setMaxAmountLoading(true);
-      const balance = await getSenderBalance();
-      const bigintBalance = toHoleBigInt(balance || "0", Number(sender?.asset?.decimal));
+      setShowAvailable(false);
+      setShowMax(false);
+      const maxAmount = await getSenderMaxAmount();
+      const bigintBalance = toHoleBigInt(maxAmount || "0", Number(sender?.asset?.decimal));
       const bigintFee = toHoleBigInt(transactionFee || "0", Number(sender?.asset?.decimal));
       const bigintMaxAmount = bigintBalance - bigintFee;
 
-      if (bigintBalance <= bigintFee) {
-        setErrorAction(TransactionValidationErrorsEnum.Values["error.not.enough.balance"]);
-        return;
+      if (!isSenderAllowance()) {
+        if (bigintBalance <= bigintFee) {
+          setErrorAction(TransactionValidationErrorsEnum.Values["error.not.enough.balance"]);
+          return;
+        }
+        removeErrorAction(TransactionValidationErrorsEnum.Values["error.not.enough.balance"]);
       }
-      removeErrorAction(TransactionValidationErrorsEnum.Values["error.not.enough.balance"]);
-      const maxAmount = toFullDecimal(bigintMaxAmount, Number(sender?.asset?.decimal));
-      setAmountAction(maxAmount);
+
+      const topAmount = toFullDecimal(bigintMaxAmount, Number(sender?.asset?.decimal));
+
+      if (isSenderAllowance()) {
+        const params = {
+          principal: senderPrincipal,
+          subAccount: senderSubAccount,
+          assetAddress: sender?.asset?.address,
+        };
+
+        const allowanceBigintBalance = await getSubAccountBalance(params);
+        const readableBalance = toFullDecimal(allowanceBigintBalance, Number(sender?.asset?.decimal));
+
+        setAmountAction(readableBalance);
+        setAmountFromMax(readableBalance);
+        setShowMax(true);
+
+        setAllowanceSubAccountBalance(readableBalance);
+
+        if (allowanceBigintBalance < bigintMaxAmount) {
+          setShowAvailable(true);
+        }
+      } else {
+        setAmountAction(topAmount);
+        setAmountFromMax(topAmount);
+        setShowMax(true);
+      }
     } catch (error) {
       console.log(error);
     } finally {
@@ -99,4 +155,8 @@ function getAmountInputStyles(hasError: boolean) {
     "border",
     hasError ? "border-slate-color-error" : "border-BorderColorLight dark:border-BorderColor",
   );
+}
+
+function getAmountDetailsStyles(showAvailable: boolean) {
+  return clsx("flex items-center w-full", showAvailable ? "justify-between" : "justify-end");
 }

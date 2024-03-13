@@ -1,12 +1,14 @@
 import { toFullDecimal } from "@/utils";
 import { useAppSelector } from "@redux/Store";
-import { useMemo } from "react";
-import { getAllowanceDetails } from "../helpers/icrc";
+import { useEffect, useMemo, useState } from "react";
+import { getAllowanceDetails, getTransactionFeeFromLedger } from "../helpers/icrc/";
 import { TransactionSenderOptionEnum } from "@/@types/transactions";
 import { validatePrincipal } from "@/utils/identity";
 import { isHexadecimalValid } from "@/utils/checkers";
+import { Asset } from "@redux/models/AccountModels";
 
 export default function useSend() {
+  const [transactionFee, setTransactionFee] = useState<string>("0");
   const { userPrincipal } = useAppSelector((state) => state.auth);
   const { assets } = useAppSelector((state) => state.asset);
   const {
@@ -22,12 +24,12 @@ export default function useSend() {
   /**
    * Calculates the latest and updated asset information based on the selected asset in the transaction state.
    *
-   * @returns {Asset | undefined} The matching asset object or undefined if not found.
+   * @returns {Asset} The matching asset object or undefined if not found.
    */
   const updateAsset = useMemo(
     () => assets.find((asset) => asset?.tokenSymbol === sender?.asset?.tokenSymbol),
     [assets, sender],
-  );
+  ) as Asset;
 
   /**
    * Calculates the latest and updated sender sub-account information based on the selected sub-account in the transaction state.
@@ -43,19 +45,25 @@ export default function useSend() {
   /**
    * Calculates the transaction fee formatted as a full decimal string.
    *
-   * @returns {string} The formatted transaction fee string, or "0" if no fee is applicable.
+   * @returns {Promise<string>} A Promise that resolves to the transaction fee formatted as a full decimal string.
    */
-  const getTransactionFee = () => {
-    const hasTransactionFee = updateSubAccount?.transaction_fee !== undefined;
+  const getTransactionFee = async () => {
+    let transactionFee = updateAsset?.subAccounts[0]?.transaction_fee || "0";
     const decimalPlaces = updateAsset?.decimal ?? 0;
 
-    return hasTransactionFee
-      ? toFullDecimal(updateSubAccount.transaction_fee, Number(decimalPlaces))
-      : "0";
+    if (transactionFee == "0" && updateAsset?.address && decimalPlaces) {
+      transactionFee = await getTransactionFeeFromLedger({
+        assetAddress: updateAsset.address,
+        assetDecimal: decimalPlaces,
+      }) || "0";
+
+      return transactionFee;
+    }
+
+    return toFullDecimal(transactionFee, Number(decimalPlaces));
   };
 
   // Sender
-
   /**
    * Determines and returns the principal identifier for the transaction sender.
    *
@@ -113,7 +121,7 @@ export default function useSend() {
    *
    * @returns {Promise<string>} A Promise that resolves to the sender's balance, formatted as a string.
    */
-  async function getSenderBalance(): Promise<string> {
+  async function getSenderMaxAmount(): Promise<string> {
     try {
       if (sender?.senderOption === TransactionSenderOptionEnum.Values.own) {
         return toFullDecimal(updateSubAccount?.amount || "0", Number(updateAsset?.decimal));
@@ -283,17 +291,23 @@ export default function useSend() {
     [sender, receiver, amount],
   );
 
+  useEffect(() => {
+    (async () => {
+      const fee = await getTransactionFee();
+      setTransactionFee(fee);
+    })();
+  }, [sender]);
 
   return {
     receiverPrincipal: getReceiverPrincipal(),
     receiverSubAccount: getReceiverSubAccount(),
     senderPrincipal: getSenderPrincipal(),
     senderSubAccount: getSenderSubAccount(),
-    transactionFee: getTransactionFee(),
     isSenderValid: getSenderValid(),
     isReceiverValid: getReceiverValid(),
     isReceiverOwnSubAccount: isReceiverOwn(),
-    getSenderBalance,
+    transactionFee,
+    getSenderMaxAmount,
     isSenderAllowance,
     isSenderSameAsReceiver,
     isSenderAllowanceOwn,

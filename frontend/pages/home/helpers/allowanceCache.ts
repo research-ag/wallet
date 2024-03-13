@@ -1,5 +1,5 @@
 import { TAllowance } from "@/@types/allowance";
-import { getAllowanceDetails } from "@/pages/home/helpers/icrc";
+import { getAllowanceDetails } from "@/pages/home/helpers/icrc/";
 import { setAllowancesAction } from "@redux/allowance/AllowanceActions";
 import { getToCreateAllowance } from "./allowanceMappers";
 
