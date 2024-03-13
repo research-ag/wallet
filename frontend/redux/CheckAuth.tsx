@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { HttpAgent, Identity } from "@dfinity/agent";
+import { AnonymousIdentity, HttpAgent, Identity } from "@dfinity/agent";
 import store from "./Store";
 import {
   clearDataAuth,
@@ -28,6 +28,9 @@ const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAM
   import.meta.env.VITE_APP_LOGO
 }#authorize`;
 
+const NETWORK_AUTHORIZE_PATH = "https://identity.ic0.app/#authorize";
+const HTTP_AGENT_HOST = "https://identity.ic0.app";
+
 export const handleAuthenticated = async (opt: AuthNetwork) => {
   const authClient = await AuthClient.create();
   await new Promise<void>((resolve, reject) => {
@@ -36,7 +39,7 @@ export const handleAuthenticated = async (opt: AuthNetwork) => {
       identityProvider:
         !!opt?.type && opt?.type === AuthNetworkTypeEnum.Values.NFID
           ? opt?.network + AUTH_PATH
-          : "https://identity.ic0.app/#authorize",
+          : NETWORK_AUTHORIZE_PATH,
       onSuccess: () => {
         handleLoginApp(authClient.getIdentity());
         store.dispatch(setDebugMode(false));
@@ -52,16 +55,23 @@ export const handleAuthenticated = async (opt: AuthNetwork) => {
   });
 };
 
-export const handleSeedAuthenticated = (seed: string) => {
+export const handleSeedAuthenticated = async (seed: string) => {
+  if (seed.length > 32) return;
+
+  if (seed.length === 0) {
+    const identity = new AnonymousIdentity();
+    handleLoginApp(identity);
+    return;
+  }
+
   const seedToIdentity: (seed: string) => Identity | null = (seed) => {
     const seedBuf = new Uint8Array(new ArrayBuffer(32));
-    if (seed.length && seed.length > 0 && seed.length <= 32) {
-      seedBuf.set(new TextEncoder().encode(seed));
-      return Ed25519KeyIdentity.generate(seedBuf);
-    }
-    return null;
+    seedBuf.set(new TextEncoder().encode(seed));
+    return Ed25519KeyIdentity.generate(seedBuf);
   };
+
   const newIdentity = seedToIdentity(seed);
+
   if (newIdentity) {
     store.dispatch(setDebugMode(true));
     handleLoginApp(newIdentity, true);
@@ -102,7 +112,7 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean,
   store.dispatch(setAuthLoading(true));
   const myAgent = new HttpAgent({
     identity: authIdentity,
-    host: "https://identity.ic0.app",
+    host: HTTP_AGENT_HOST,
   });
 
   const myPrincipal = fixedPrincipal || (await myAgent.getPrincipal());
