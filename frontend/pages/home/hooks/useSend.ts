@@ -294,7 +294,6 @@ export default function useSend() {
   useEffect(() => {
     (async () => {
       const fee = await getTransactionFee();
-      console.log(fee)
       setTransactionFee(fee);
     })();
   }, [sender]);

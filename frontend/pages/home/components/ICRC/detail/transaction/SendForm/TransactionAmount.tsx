@@ -100,11 +100,13 @@ export default function TransactionAmount() {
       const bigintFee = toHoleBigInt(transactionFee || "0", Number(sender?.asset?.decimal));
       const bigintMaxAmount = bigintBalance - bigintFee;
 
-      if (bigintBalance <= bigintFee) {
-        setErrorAction(TransactionValidationErrorsEnum.Values["error.not.enough.balance"]);
-        return;
+      if (!isSenderAllowance()) {
+        if (bigintBalance <= bigintFee) {
+          setErrorAction(TransactionValidationErrorsEnum.Values["error.not.enough.balance"]);
+          return;
+        }
+        removeErrorAction(TransactionValidationErrorsEnum.Values["error.not.enough.balance"]);
       }
-      removeErrorAction(TransactionValidationErrorsEnum.Values["error.not.enough.balance"]);
 
       const topAmount = toFullDecimal(bigintMaxAmount, Number(sender?.asset?.decimal));
 
@@ -118,11 +120,9 @@ export default function TransactionAmount() {
         const allowanceBigintBalance = await getSubAccountBalance(params);
         const readableBalance = toFullDecimal(allowanceBigintBalance, Number(sender?.asset?.decimal));
 
-        if (allowanceBigintBalance < bigintMaxAmount) {
-          setAmountAction(readableBalance);
-          setAmountFromMax(readableBalance);
-          setShowMax(true);
-        }
+        setAmountAction(readableBalance);
+        setAmountFromMax(readableBalance);
+        setShowMax(true);
 
         setAllowanceSubAccountBalance(readableBalance);
 
