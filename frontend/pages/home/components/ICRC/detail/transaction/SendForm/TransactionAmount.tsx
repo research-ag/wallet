@@ -58,7 +58,9 @@ export default function TransactionAmount() {
             </>
           )}
           {!isMaxAmountLoading && showAvailable && (
-            <p className="text-sm text-primary-color">({allowanceSubAccountBalance} {t("available")})</p>
+            <p className="text-sm text-primary-color">
+              ({allowanceSubAccountBalance} {t("available")})
+            </p>
           )}
         </div>
         <div className="flex">
@@ -105,9 +107,6 @@ export default function TransactionAmount() {
       removeErrorAction(TransactionValidationErrorsEnum.Values["error.not.enough.balance"]);
 
       const topAmount = toFullDecimal(bigintMaxAmount, Number(sender?.asset?.decimal));
-      setAmountAction(topAmount);
-      setAmountFromMax(topAmount);
-      setShowMax(true);
 
       if (isSenderAllowance()) {
         const params = {
@@ -115,16 +114,25 @@ export default function TransactionAmount() {
           subAccount: senderSubAccount,
           assetAddress: sender?.asset?.address,
         };
-
+        
         const allowanceBigintBalance = await getSubAccountBalance(params);
-
         const readableBalance = toFullDecimal(allowanceBigintBalance, Number(sender?.asset?.decimal));
-
+        
+        if (allowanceBigintBalance < bigintMaxAmount) {
+          setAmountAction(readableBalance);
+          setAmountFromMax(readableBalance);
+          setShowMax(true);
+        }
+        
         setAllowanceSubAccountBalance(readableBalance);
-
+        
         if (allowanceBigintBalance < bigintMaxAmount) {
           setShowAvailable(true);
         }
+      } else {
+        setAmountAction(topAmount);
+        setAmountFromMax(topAmount);
+        setShowMax(true);
       }
     } catch (error) {
       console.log(error);
