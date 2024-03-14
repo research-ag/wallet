@@ -133,7 +133,7 @@ export default function CreateForm() {
 
       if (!duplicated && newAllowance.amount !== "0") {
         const updatedAllowances = [...allowances, newAllowance];
-        await db().updateAllowances(updatedAllowances);
+        await db().updateAllowances(updatedAllowances.map((a) => ({ ...a, id: db().generateAllowancePrimaryKey(a) })));
       }
       setAllowanceState(newAllowance);
     } catch (error) {
