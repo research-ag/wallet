@@ -69,7 +69,7 @@ export default function SubAccountFormItem(props: ISubAccountFormItemProps) {
   function onChange(option: SelectOption) {
     setSearchValue(null);
     const fullSubAccount = allowanceAsset?.subAccounts.find((account) => account.sub_account_id === option.value);
-    if (!fullSubAccount || !fullSubAccount.address) return;
+    if (!fullSubAccount) return;
     setAllowanceState({ ...allowance, subAccountId: fullSubAccount.sub_account_id });
   }
 
