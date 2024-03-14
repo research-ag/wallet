@@ -82,11 +82,13 @@ type AllowanceDocument =
       logo: text;
       name: text;
       supportedStandards: vec text;
+      symbol: text;
       tokenName: text;
       tokenSymbol: text;
     };
    deleted: bool;
    expiration: text;
+   id: text;
    spender: text;
    subAccountId: text;
    updatedAt: nat32;

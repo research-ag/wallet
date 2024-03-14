@@ -159,12 +159,12 @@ export class LocalStorageDatabase extends IWalletDatabase {
   }
 
   /**
-   * Find a Allowance object by its Spender Principal ID.
-   * @param spenderPrincipal Spender Princial ID
+   * Find a Allowance object.
+   * @param id Primary Key
    * @returns Allowance object or NULL if not found
    */
-  async getAllowance(spenderPrincipal: string): Promise<TAllowance | null> {
-    return this._getAllowances().find((x) => x.spender === spenderPrincipal) || null;
+  async getAllowance(id: string): Promise<TAllowance | null> {
+    return this._getAllowances().find((x) => x.id === id) || null;
   }
 
   /**
@@ -187,15 +187,15 @@ export class LocalStorageDatabase extends IWalletDatabase {
   }
 
   /**
-   * Find a Allowance object by its Spender Principal ID and replace it
+   * Find a Allowance object and replace it
    * with another Allowance object with the date of update.
-   * @param spenderPrincipal Spender Principal ID
+   * @param id Primary Key
    * @param newDoc Allowance object
    */
-  async updateAllowance(spenderPrincipal: string, newDoc: TAllowance): Promise<void> {
+  async updateAllowance(id: string, newDoc: TAllowance): Promise<void> {
     this._setAllowances(
       this._getAllowances().map((allowance) => {
-        if (allowance.spender === spenderPrincipal) {
+        if (allowance.id === id) {
           return newDoc;
         } else return allowance;
       }),
@@ -211,11 +211,11 @@ export class LocalStorageDatabase extends IWalletDatabase {
   }
 
   /**
-   * Find and remove a Allowance object by its Spender Princial ID.
-   * @param spenderPrincipal Spender Principal ID
+   * Find and remove a Allowance object.
+   * @param id Primary Key
    */
-  async deleteAllowance(spenderPrincipal: string): Promise<void> {
-    this._setAllowances(this._getAllowances().filter((allowance) => allowance.spender !== spenderPrincipal));
+  async deleteAllowance(id: string): Promise<void> {
+    this._setAllowances(this._getAllowances().filter((allowance) => allowance.id !== id));
   }
 
   /**

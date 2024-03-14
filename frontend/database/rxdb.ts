@@ -121,7 +121,7 @@ export class RxdbDatabase extends IWalletDatabase {
       const allowancesReplication = await setupReplication<AllowanceRxdbDocument, string>(
         allowances,
         `allowances-${this.principalId}`,
-        "spender",
+        "id",
         (items) => this._allowancesPushHandler(items),
         (minTimestamp, lastId, batchSize) => this._allowancesPullHandler(minTimestamp, lastId, batchSize),
       );
@@ -376,13 +376,13 @@ export class RxdbDatabase extends IWalletDatabase {
   }
 
   /**
-   * Find a Allowance object by its Spender Principal ID.
-   * @param spenderPrincipal Spender Princial ID
+   * Find a Allowance object.
+   * @param id Primary Key
    * @returns Allowance object or NULL if not found
    */
-  async getAllowance(spenderPrincipal: string): Promise<TAllowance | null> {
+  async getAllowance(id: string): Promise<TAllowance | null> {
     try {
-      const document = await (await this.allowances)?.findOne(spenderPrincipal).exec();
+      const document = await (await this.allowances)?.findOne(id).exec();
       return (document && this._mapAllowanceDoc(document)) || null;
     } catch (e) {
       console.error("RxDb GetAllowance", e);
@@ -430,14 +430,14 @@ export class RxdbDatabase extends IWalletDatabase {
   }
 
   /**
-   * Find a Allowance object by its Spender Principal ID and replace it
+   * Find a Allowance object and replace it
    * with another Allowance object with the date of update.
-   * @param spenderPrincipal Spender Principal ID
+   * @param id Primary Key
    * @param newDoc Allowance object
    */
-  async updateAllowance(spenderPrincipal: string, newDoc: TAllowance): Promise<void> {
+  async updateAllowance(id: string, newDoc: TAllowance): Promise<void> {
     try {
-      const document = await (await this.allowances)?.findOne(spenderPrincipal).exec();
+      const document = await (await this.allowances)?.findOne(id).exec();
       document?.patch({
         ...newDoc,
         expiration: extractValueFromArray(newDoc.expiration),
@@ -479,12 +479,12 @@ export class RxdbDatabase extends IWalletDatabase {
   }
 
   /**
-   * Find and remove a Allowance object by its Spender Princial ID.
-   * @param spenderPrincipal Spender Principal ID
+   * Find and remove a Allowance object.
+   * @param id Primary Key
    */
-  async deleteAllowance(spenderPrincipal: string): Promise<void> {
+  async deleteAllowance(id: string): Promise<void> {
     try {
-      const document = await (await this.allowances)?.findOne(spenderPrincipal).exec();
+      const document = await (await this.allowances)?.findOne(id).exec();
       document?.remove();
     } catch (e) {
       console.error("RxDb DeleteAllowance", e);
@@ -603,6 +603,7 @@ export class RxdbDatabase extends IWalletDatabase {
 
   private _mapAllowanceDoc(doc: RxDocument<AllowanceRxdbDocument>): TAllowance {
     return {
+      id: doc.id,
       subAccountId: doc.subAccountId,
       amount: doc.amount,
       spender: doc.spender,
@@ -610,6 +611,7 @@ export class RxdbDatabase extends IWalletDatabase {
       asset: {
         logo: doc.asset.logo,
         name: doc.asset.name,
+        symbol: doc.asset.symbol,
         address: doc.asset.address,
         decimal: doc.asset.decimal,
         tokenName: doc.asset.tokenName,

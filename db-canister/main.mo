@@ -66,12 +66,14 @@ actor class WalletDatabase() {
     asset : {
       logo : Text;
       name : Text;
+      symbol : Text;
       address : Text;
       decimal : Text;
       tokenName : Text;
       tokenSymbol : Text;
       supportedStandards : [Text];
     };
+    id : Text;
     subAccountId : Text;
     amount : Text;
     spender : Text;
@@ -125,7 +127,7 @@ actor class WalletDatabase() {
         let db = (
           DB.use<TokenDocument, Text>(tInit, func(x) = x.address, Text.compare, func(x) = x.updatedAt),
           DB.use<ContactDocument, Text>(cInit, func(x) = x.principal, Text.compare, func(x) = x.updatedAt),
-          DB.use<AllowanceDocument, Text>(aInit, func(x) = x.spender, Text.compare, func(x) = x.updatedAt),
+          DB.use<AllowanceDocument, Text>(aInit, func(x) = x.id, Text.compare, func(x) = x.updatedAt),
         );
         let (upd, _) = AssocList.replace(databasesCache, owner, Principal.equal, ?db);
         databasesCache := upd;

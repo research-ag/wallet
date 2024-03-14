@@ -3,17 +3,17 @@ import { db } from "@/database/db";
 
 export async function refreshAllowance(allowance: TAllowance, isDeleted = false) {
   try {
-    const { spender: principalSpender } = allowance;
+    const primaryKey = db().generateAllowancePrimaryKey(allowance);
 
     if (isDeleted) {
-      await db().deleteAllowance(principalSpender);
+      await db().deleteAllowance(primaryKey);
     } else {
-      const alreadyExist = await db().getAllowance(principalSpender);
+      const alreadyExist = await db().getAllowance(primaryKey);
 
       if (alreadyExist) {
-        await db().updateAllowance(principalSpender, allowance);
+        await db().updateAllowance(primaryKey, allowance);
       } else {
-        await db().addAllowance(allowance);
+        await db().addAllowance({ ...allowance, id: primaryKey });
       }
     }
   } catch (error) {

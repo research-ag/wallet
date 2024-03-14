@@ -52,6 +52,7 @@ export const idlFactory = ({ IDL }) => {
     'accountIdentier' : IDL.Text,
   });
   const AllowanceDocument = IDL.Record({
+    'id' : IDL.Text,
     'deleted' : IDL.Bool,
     'asset' : IDL.Record({
       'logo' : IDL.Text,
@@ -61,6 +62,7 @@ export const idlFactory = ({ IDL }) => {
       'address' : IDL.Text,
       'tokenName' : IDL.Text,
       'decimal' : IDL.Text,
+      'symbol' : IDL.Text,
     }),
     'updatedAt' : IDL.Nat32,
     'expiration' : IDL.Text,

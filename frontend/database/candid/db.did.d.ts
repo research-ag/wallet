@@ -3,6 +3,7 @@ import type { ActorMethod } from '@dfinity/agent';
 import type { IDL } from '@dfinity/candid';
 
 export interface AllowanceDocument {
+  'id' : string,
   'deleted' : boolean,
   'asset' : {
     'logo' : string,
@@ -12,6 +13,7 @@ export interface AllowanceDocument {
     'address' : string,
     'tokenName' : string,
     'decimal' : string,
+    'symbol' : string,
   },
   'updatedAt' : number,
   'expiration' : string,

@@ -4,6 +4,7 @@ import { SupportedStandardEnum } from "./icrc";
 export const AllowanceAssetSchema = z.object({
   logo: z.string().optional(),
   name: z.string(),
+  symbol: z.string(),
   address: z.string(),
   decimal: z.string(),
   tokenName: z.string(),
@@ -12,6 +13,7 @@ export const AllowanceAssetSchema = z.object({
 });
 
 export const allowanceSchema = z.object({
+  id: z.string(),
   asset: AllowanceAssetSchema,
   subAccountId: z.string(),
   amount: z.string(),

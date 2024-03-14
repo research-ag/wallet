@@ -117,8 +117,9 @@
     "schema": {
       "type": "object",
       "version": 0,
-      "primaryKey": "spender",
+      "primaryKey": "id",
       "properties": {
+        "id": { "type": "string", "maxLength": 100 },
         "subAccountId": { "type": "string", "maxLength": 100 },
         "amount": { "type": "string", "maxLength": 100 },
         "spender": { "type": "string", "maxLength": 100 },
@@ -128,6 +129,7 @@
           "properties": {
             "logo": { "type": "string", "maxLength": 100 },
             "name": { "type": "string", "maxLength": 100 },
+            "symbol": { "type": "string", "maxLength": 100 },
             "address": { "type": "string", "maxLength": 100 },
             "decimal": { "type": "string", "maxLength": 100 },
             "tokenName": { "type": "string", "maxLength": 100 },
@@ -137,10 +139,10 @@
               "items": { "type": "string", "maxLength": 100 }
             }
           },
-          "required": ["logo", "name", "address", "decimal", "tokenName", "tokenSymbol", "supportedStandards"]
+          "required": ["logo", "name", "symbol", "address", "decimal", "tokenName", "tokenSymbol", "supportedStandards"]
         }
       },
-      "required": ["subAccountId", "amount", "asset"]
+      "required": ["subAccountId", "amount", "asset", "spender"]
     }
   }
 }

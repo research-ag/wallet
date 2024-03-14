@@ -55,6 +55,10 @@ export abstract class IWalletDatabase {
     );
   }
 
+  generateAllowancePrimaryKey({ spender, subAccountId, asset: { symbol } }: TAllowance): string {
+    return `${symbol}|${subAccountId}|${spender}`;
+  }
+
   /**
    * Initialice all necessary external systema and
    * data structure before first use.
@@ -162,11 +166,11 @@ export abstract class IWalletDatabase {
   abstract deleteContact(principal: string): Promise<void>;
 
   /**
-   * Find a Allowance object by its Spender Principal ID.
-   * @param spenderPrincipal Spender Princial ID
+   * Find a Allowance object.
+   * @param id Primary Key
    * @returns Allowance object or NULL if not found
    */
-  abstract getAllowance(principal: string): Promise<TAllowance | null>;
+  abstract getAllowance(id: string): Promise<TAllowance | null>;
 
   /**
    * Get all Allowance objects from active agent.
@@ -191,12 +195,12 @@ export abstract class IWalletDatabase {
   abstract addAllowance(allowance: TAllowance): Promise<void>;
 
   /**
-   * Find a Allowance object by its Spender Principal ID and replace it
+   * Find a Allowance object and replace it
    * with another Allowance object with the date of update.
-   * @param spenderPrincipal Spender Principal ID
+   * @param id Primary Key
    * @param newDoc Allowance object
    */
-  abstract updateAllowance(spenderPrincipal: string, newDoc: TAllowance): Promise<void>;
+  abstract updateAllowance(id: string, newDoc: TAllowance): Promise<void>;
 
   /**
    * Update Allowances in bulk.
@@ -205,8 +209,8 @@ export abstract class IWalletDatabase {
   abstract updateAllowances(newDocs: TAllowance[]): Promise<void>;
 
   /**
-   * Find and remove a Allowance object by its Spender Princial ID.
-   * @param spenderPrincipal Spender Principal ID
+   * Find and remove a Allowance object.
+   * @param id Primary Key
    */
-  abstract deleteAllowance(spenderPrincipal: string): Promise<void>;
+  abstract deleteAllowance(id: string): Promise<void>;
 }
