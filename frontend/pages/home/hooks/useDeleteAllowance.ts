@@ -45,7 +45,6 @@ export default function useDeleteAllowance() {
       const amount = await getSubAccountBalance(refreshParams);
       const balance = amount ? amount.toString() : "0";
       dispatch(updateSubAccountBalance(selectedAllowance.asset.tokenSymbol, selectedAllowance.subAccountId, balance));
-      setSelectedAllowanceAction(initialAllowanceState);
 
       setSelectedAllowanceAction(initialAllowanceState);
       setFullAllowanceErrorsAction([]);

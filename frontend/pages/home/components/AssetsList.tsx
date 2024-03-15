@@ -76,8 +76,8 @@ const AssetsList = () => {
                 });
 
                 if (
-                  asset.name.toLowerCase().includes(mySearchKey) ||
-                  asset.symbol.toLowerCase().includes(mySearchKey) ||
+                  asset.name?.toLowerCase().includes(mySearchKey) ||
+                  asset.symbol?.toLowerCase().includes(mySearchKey) ||
                   includeInSub ||
                   searchKey.trim() === ""
                 )

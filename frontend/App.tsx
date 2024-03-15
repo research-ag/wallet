@@ -9,10 +9,15 @@ import { handleLoginApp } from "@redux/CheckAuth";
 import { setAuth } from "@redux/auth/AuthReducer";
 import { GlobalDebug } from "./RemoveLogs";
 import { queryClient } from "./config/query";
-import { db } from "@/database/db";
+import { db, localDb, rxDb } from "@/database/db";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { EthereumSignInProvider } from "./config/wagmi.config";
 import { useSiweIdentity } from "ic-use-siwe-identity";
+import { setReduxAllowances } from "@/redux/allowance/AllowanceReducer";
+import { setReduxTokens } from "@/redux/assets/AssetReducer";
+import { setReduxContacts } from "@/redux/contacts/ContactsReducer";
+import { setAssetFromLocalData, updateAllBalances } from "@/redux/assets/AssetActions";
+import { defaultTokens } from "./defaultTokens";
 
 const App: React.FC = () => {
   const { i18n } = useTranslation();
@@ -47,6 +52,35 @@ const App: React.FC = () => {
     };
     getIdentity().catch(console.error);
   }, []);
+
+  // Subscribe all DB documents observables after Redux store has been initialized
+  useEffect(() => {
+    const allowancesSubscriptionHandler = (x: any[]) => store.dispatch(setReduxAllowances(x));
+    const contactsSubscriptionHandler = (x: any[]) => store.dispatch(setReduxContacts(x));
+    const tokensSubscriptionHandler = (x: any[]) => {
+      if (x.length > 0) {
+        const {
+          asset,
+          auth: { authClient, userAgent },
+        } = store.getState();
+
+        store.dispatch(setReduxTokens(x));
+
+        if (asset.initLoad) setAssetFromLocalData(x, authClient);
+
+        updateAllBalances(true, userAgent, x, false, true);
+      }
+    };
+
+    localDb().subscribeToAllTokens().subscribe(allowancesSubscriptionHandler);
+    rxDb().subscribeToAllTokens().subscribe(allowancesSubscriptionHandler);
+
+    localDb().subscribeToAllContacts().subscribe(contactsSubscriptionHandler);
+    rxDb().subscribeToAllContacts().subscribe(contactsSubscriptionHandler);
+
+    localDb().subscribeToAllAllowances().subscribe(tokensSubscriptionHandler);
+    rxDb().subscribeToAllAllowances().subscribe(tokensSubscriptionHandler);
+  }, [store]);
 
   return (
     <div className="App">

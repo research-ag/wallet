@@ -1,7 +1,5 @@
 import { Contact } from "@redux/models/ContactsModels";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { localDb, rxDb } from "@/database/db";
-import store from "@redux/Store";
 
 interface ContactsState {
   contacts: Contact[];
@@ -23,15 +21,6 @@ const contactsSlice = createSlice({
     },
   },
 });
-
-const dbSubscriptionHandler = (x: any[]) => {
-  if (x.length > 0) {
-    store.dispatch(contactsSlice.actions.setReduxContacts(x));
-  }
-};
-
-localDb().subscribeToAllContacts().subscribe(dbSubscriptionHandler);
-rxDb().subscribeToAllContacts().subscribe(dbSubscriptionHandler);
 
 export const { setReduxContacts, clearDataContacts } = contactsSlice.actions;
 

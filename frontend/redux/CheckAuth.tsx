@@ -11,7 +11,7 @@ import {
   setUserPrincipal,
 } from "./auth/AuthReducer";
 import { AuthClient } from "@dfinity/auth-client";
-import { clearDataAsset, setICRC1SystemAssets, setInitLoad, setLoading } from "./assets/AssetReducer";
+import { clearDataAsset, setICRC1SystemAssets, setInitLoad, setLoading, setReduxTokens } from "./assets/AssetReducer";
 import { AuthNetwork } from "./models/TokenModels";
 import { AuthNetworkTypeEnum } from "@/const";
 import { Ed25519KeyIdentity, DelegationIdentity } from "@dfinity/identity";
@@ -21,7 +21,8 @@ import { allowanceCacheRefresh } from "@pages/home/helpers/allowanceCache";
 import contactCacheRefresh from "@pages/contacts/helpers/contacts";
 import { Secp256k1KeyIdentity } from "@dfinity/identity-secp256k1";
 import { DB_Type, db } from "@/database/db";
-import { getSNSTokens } from "./assets/AssetActions";
+import { getSNSTokens, updateAllBalances } from "./assets/AssetActions";
+import { defaultTokens } from "@/defaultTokens";
 
 const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${
   import.meta.env.VITE_APP_LOGO
@@ -116,6 +117,16 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean,
   store.dispatch(setICRC1SystemAssets(snsTokens));
 
   store.dispatch(setAuthenticated(true, false, !!fixedPrincipal, identityPrincipalStr.toLocaleLowerCase()));
+
+  // TOKENS
+  const storedTokens = await db().getTokens();
+  if (storedTokens.length < 0) {
+    const balances = await updateAllBalances(true, myAgent, defaultTokens, true, true);
+
+    if (balances && balances.tokens) {
+      store.dispatch(setReduxTokens(balances.tokens));
+    }
+  }
 
   // ALLOWANCES
   await contactCacheRefresh();

@@ -317,7 +317,7 @@ export const setAssetFromLocalData = (tokens: Token[], myPrincipal: string) => {
   const assets: Asset[] = [];
   tokens.map((tkn) => {
     const subAccList: SubAccount[] = [];
-    tkn.subAccounts.map((sa) => {
+    tkn.subAccounts?.map((sa) => {
       subAccList.push({
         name: sa.name,
         sub_account_id: sa.numb,

@@ -3,9 +3,6 @@ import { Token, TokenMarketInfo } from "@redux/models/TokenModels";
 import { Asset, ICPSubAccount, SubAccount, Transaction, TransactionList } from "@redux/models/AccountModels";
 import bigInt from "big-integer";
 import { getUSDfromToken, hexToNumber } from "@/utils";
-import { localDb, rxDb } from "@/database/db";
-import store from "@redux/Store";
-import { setAssetFromLocalData, updateAllBalances } from "./AssetActions";
 import { ICRC1systemAssets } from "@/defaultTokens";
 
 interface AssetState {
@@ -323,30 +320,9 @@ const assetSlice = createSlice({
   },
 });
 
-const dbSubscriptionHandler = async (x: any[]) => {
-  if (x.length > 0) {
-    const {
-      asset,
-      auth: { authClient, userAgent },
-    } = store.getState();
-
-    const balances = await updateAllBalances(true, userAgent, x);
-
-    if (balances) {
-      const { tokens } = balances;
-
-      store.dispatch(assetSlice.actions.setReduxTokens(tokens));
-
-      if (asset.initLoad) setAssetFromLocalData(tokens, authClient);
-    }
-  }
-};
-
-localDb().subscribeToAllTokens().subscribe(dbSubscriptionHandler);
-rxDb().subscribeToAllTokens().subscribe(dbSubscriptionHandler);
-
 export const {
   setInitLoad,
+  setReduxTokens,
   clearDataAsset,
   setICRC1SystemAssets,
   setICPSubaccounts,

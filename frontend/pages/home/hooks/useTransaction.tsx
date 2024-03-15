@@ -57,7 +57,7 @@ export const UseTransaction = () => {
   useEffect(() => {
     if (selectedAsset) {
       const founded = txWorker.find((tx) => {
-        return selectedAccount?.symbol === tx.tokenSymbol && selectedAccount.sub_account_id === tx.subaccount;
+        return selectedAccount?.symbol === tx.tokenSymbol && selectedAccount?.sub_account_id === tx.subaccount;
       });
 
       if (founded) dispatch(setTransactions(founded.tx));

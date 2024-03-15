@@ -60,11 +60,11 @@ export const AssetHook = () => {
   useEffect(() => {
     const auxAssets = assets.filter((asset) => {
       let includeInSub = false;
-      asset.subAccounts.map((sa) => {
+      asset.subAccounts?.map((sa) => {
         if (sa.name.toLowerCase().includes(searchKey.toLowerCase())) includeInSub = true;
       });
 
-      return asset.name.toLowerCase().includes(searchKey.toLowerCase()) || includeInSub || searchKey === "";
+      return asset.name?.toLowerCase().includes(searchKey.toLowerCase()) || includeInSub || searchKey === "";
     });
 
     if (auxAssets.length > 0) {
