@@ -1,4 +1,4 @@
-import { IcrcLedgerCanister } from "@dfinity/ledger";
+import { IcrcLedgerCanister } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
 import store from "@redux/Store";
 
