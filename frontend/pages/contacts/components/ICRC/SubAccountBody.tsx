@@ -10,7 +10,7 @@ import { Buffer } from "buffer";
 
 import { CustomCopy } from "@components/CopyTooltip";
 import { CustomInput } from "@components/Input";
-import { encodeIcrcAccount } from "@dfinity/ledger";
+import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
 import { getInitialFromName, hexToUint8Array, removeLeadingZeros, shortAddress } from "@/utils";
 import AllowanceTooltip from "./AllowanceTooltip";

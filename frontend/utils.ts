@@ -22,6 +22,7 @@ import { Account, Transaction as IcrcTransaction } from "@dfinity/ledger-icrc/di
 // import { Account, Transaction as IcrcTransaction } from "@dfinity/ledger/dist/candid/icrc1_index";
 import { isNullish, uint8ArrayToHexString, bigEndianCrc32, encodeBase32 } from "@dfinity/utils";
 import { AccountIdentifier, SubAccount as SubAccountNNS } from "@dfinity/ledger-icp";
+import { Subaccount as ICRCSubAcount } from "@dfinity/ledger-icrc/dist/candid/icrc_ledger";
 
 export const MILI_PER_SECOND = 1000000;
 
@@ -210,7 +211,12 @@ export const hexToUint8Array = (hex: string) => {
   } else return new Uint8Array(32);
 };
 
-export const subUint8ArrayToHex = (sub: Uint8Array | undefined) => {
+/**
+ * INFO: Uint8Array | number[]; was added, Unit8Array was removed from @dfinity/ledger-icrc. Remove when @dfinity/ledger will be replaced by @dfinity/ledger-icrc entirely on HPL.
+ * Reference: https://github.com/dfinity/ic-js/blob/bf808fef5e3dbe4c3662abe8b350a04ba684619d/packages/ledger-icrc/candid/icrc_ledger.d.ts#L161
+ * TODO: confirm no breaking changes on @dfinity/ledger-icrc adding
+ */
+export const subUint8ArrayToHex = (sub: Uint8Array | number[] | undefined) => {
   if (sub) {
     const hex = removeLeadingZeros(Buffer.from(sub).toString("hex"));
     if (hex === "") return "0";

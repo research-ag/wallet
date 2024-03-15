@@ -14,7 +14,7 @@ import { useAppDispatch } from "@redux/Store";
 import { addSubAccount, setAcordeonAssetIdx } from "@redux/assets/AssetReducer";
 import bigInt from "big-integer";
 import { ChangeEvent, useState } from "react";
-import { IcrcLedgerCanister } from "@dfinity/ledger";
+import { IcrcLedgerCanister } from "@dfinity/ledger-icrc";
 import { db } from "@/database/db";
 
 interface DialogAddAssetProps {

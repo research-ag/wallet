@@ -12,7 +12,7 @@ import { CustomInput } from "@components/Input";
 import { ThemesEnum } from "@/const";
 import { db, DB_Type } from "@/database/db";
 import store from "@/redux/Store";
-import { decodeIcrcAccount } from "@dfinity/ledger";
+import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 
 interface DbLocationModalProps {
   setOpen(value: boolean): void;
