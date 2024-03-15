@@ -4,6 +4,7 @@ import { hexToUint8Array, toFullDecimal, toHoleBigInt } from "@/utils";
 import { Principal } from "@dfinity/principal";
 import { TransferFromParams } from "@dfinity/ledger-icrc";
 import store from "@redux/Store";
+import { getIcrcActor } from "./getICRCSupportedStandards";
 
 export async function getTransactionFeeFromLedger(params: TransactionFeeParams) {
     try {
@@ -21,8 +22,14 @@ export async function transferTokens(params: TransferTokensParams) {
     const { receiverPrincipal, transferAmount, assetAddress, decimal, fromSubAccount, toSubAccount } = params;
     const canister = getCanister(assetAddress);
     const amount = toHoleBigInt(transferAmount, Number(decimal));
+    const agent = store.getState().auth.userAgent;
 
-    await canister.transfer({
+    const ledgerActor = await getIcrcActor({
+        agent,
+        assetAddress,
+    })
+
+    await ledgerActor.icrc1_transfer({
         to: {
             owner: Principal.fromText(receiverPrincipal),
             subaccount: [hexToUint8Array(toSubAccount)],

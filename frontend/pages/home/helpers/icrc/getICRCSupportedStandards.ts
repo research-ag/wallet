@@ -7,6 +7,8 @@ dayjs.extend(utc);
 //
 import { _SERVICE as LedgerActor } from "@candid/icrcLedger/icrcLedgerService";
 import { idlFactory as LedgerFactory } from "@candid/icrcLedger/icrcLedgerCandid.did";
+// import { PollStrategy, PollStrategyFactory } from "@dfinity/agent/lib/cjs/polling";
+import { backoff, chain, conditionalDelay, once, timeout } from "@dfinity/agent/lib/cjs/polling/strategy";
 
 interface ICRCSupportedStandardsParams {
     assetAddress: string;
@@ -28,3 +30,16 @@ export async function getICRCSupportedStandards(params: ICRCSupportedStandardsPa
         return [];
     }
 }
+
+const FIVE_MINUTES_IN_MSEC = 5 * 60 * 1000;
+
+export function getIcrcActor(params: ICRCSupportedStandardsParams): LedgerActor {
+    const { assetAddress, agent } = params;
+    const canisterId = Principal.fromText(assetAddress);
+    const ledgerActor = Actor.createActor<LedgerActor>(LedgerFactory, {
+        agent,
+        canisterId,
+        pollingStrategyFactory: () => chain(conditionalDelay(once(), 1000), backoff(1000, 1.2), timeout(FIVE_MINUTES_IN_MSEC)),
+    });
+    return ledgerActor;
+};

@@ -209,6 +209,11 @@ export const hexToUint8Array = (hex: string) => {
   } else return new Uint8Array(32);
 };
 
+export const hexadecimalToUint8Array = (hexadecimalSubAccount: string): [] | [Uint8Array | number[]] => {
+  if (hexadecimalSubAccount.length === 0) return [];
+  else return [hexToUint8Array(hexadecimalSubAccount)];
+};
+
 /**
  * INFO: Uint8Array | number[]; was added, Unit8Array was removed from @dfinity/ledger-icrc. Remove when @dfinity/ledger will be replaced by @dfinity/ledger-icrc entirely on HPL.
  * Reference: https://github.com/dfinity/ic-js/blob/bf808fef5e3dbe4c3662abe8b350a04ba684619d/packages/ledger-icrc/candid/icrc_ledger.d.ts#L161
