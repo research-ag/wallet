@@ -5,7 +5,7 @@ import QRIcon from "@assets/svg/files/qr.svg";
 //
 import { CustomButton } from "@components/Button";
 import { CustomInput } from "@components/Input";
-import { IcrcAccount, decodeIcrcAccount, encodeIcrcAccount } from "@dfinity/ledger";
+import { IcrcAccount, decodeIcrcAccount, encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
 import { getICRC1Acc, shortAddress, subUint8ArrayToHex, getFirstNFrom, hexToUint8Array, checkHexString } from "@/utils";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
