@@ -355,7 +355,9 @@ export const formatckBTCTransaccion = (
   if (kind === SpecialTxTypeEnum.Enum.mint)
     /**
      * INFO: memo type modified from [] | [Uint8Array] to [] | [Uint8Array | number[]] on ledger-icrc
-     * Reference: https://github.com/dfinity/ic-js/blob/bf808fef5e3dbe4c3662abe8b350a04ba684619d/packages/ledger-icrc/candid/icrc_ledger.d.ts#L148
+     * References:
+     * - https://forum.dfinity.org/t/breaking-changes-in-ledger-icrc-icp-javascript-libraries/23465
+     * - https://github.com/dfinity/ic-js/blob/bf808fef5e3dbe4c3662abe8b350a04ba684619d/packages/ledger-icrc/candid/icrc_ledger.d.ts#L148
      */
     mint.forEach(
       (operation: { to: Account; memo: [] | [Uint8Array | number[]]; created_at_time: [] | [bigint]; amount: bigint }) => {
@@ -392,7 +394,9 @@ export const formatckBTCTransaccion = (
       // Get Tx data from Burn record
       /**
        * INFO: memo type modified from [] | [Uint8Array] to [] | [Uint8Array | number[]] on ledger-icrc
-       * Reference: https://github.com/dfinity/ic-js/blob/bf808fef5e3dbe4c3662abe8b350a04ba684619d/packages/ledger-icrc/candid/icrc_ledger.d.ts#L148
+       * References:
+       * - https://forum.dfinity.org/t/breaking-changes-in-ledger-icrc-icp-javascript-libraries/23465
+       * - https://github.com/dfinity/ic-js/blob/bf808fef5e3dbe4c3662abe8b350a04ba684619d/packages/ledger-icrc/candid/icrc_ledger.d.ts#L148
        */
       (operation: { from: Account; memo: [] | [Uint8Array | number[]]; created_at_time: [] | [bigint]; amount: bigint }) => {
         const value = operation.amount;
