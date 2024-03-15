@@ -1,7 +1,7 @@
 import { HttpAgent } from "@dfinity/agent";
 import store from "@redux/Store";
 import { SnsToken, Token, TokenMarketInfo, TokenSubAccount } from "@redux/models/TokenModels";
-import { IcrcAccount, IcrcIndexCanister, IcrcLedgerCanister, IcrcTokenMetadataResponse } from "@dfinity/ledger";
+import { IcrcAccount, IcrcIndexCanister, IcrcLedgerCanister, IcrcTokenMetadataResponse } from "@dfinity/ledger-icrc";
 import {
   formatIcpTransaccion,
   getSubAccountArray,

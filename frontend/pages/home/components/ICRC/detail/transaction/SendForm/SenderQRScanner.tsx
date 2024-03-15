@@ -1,6 +1,6 @@
 import { TransactionScannerOptionEnum, TransactionSenderOptionEnum } from "@/@types/transactions";
 import { subUint8ArrayToHex } from "@/utils";
-import { decodeIcrcAccount } from "@dfinity/ledger";
+import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import QRscanner from "@pages/components/QRscanner";
 import {
   setIsNewSenderAction,

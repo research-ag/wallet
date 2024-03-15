@@ -2,7 +2,7 @@ import { GetBalanceParams, TransactionFeeParams, TransferFromAllowanceParams, Tr
 import { getCanister } from "./getIcrcCanister";
 import { hexToUint8Array, toFullDecimal, toHoleBigInt } from "@/utils";
 import { Principal } from "@dfinity/principal";
-import { TransferFromParams } from "@dfinity/ledger";
+import { TransferFromParams } from "@dfinity/ledger-icrc";
 import store from "@redux/Store";
 
 export async function getTransactionFeeFromLedger(params: TransactionFeeParams) {

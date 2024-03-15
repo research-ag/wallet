@@ -13,7 +13,7 @@ import { AssetContact } from "@redux/models/ContactsModels";
 import { _SERVICE as LedgerActor } from "@candid/icrcLedger/icrcLedgerService";
 import { idlFactory as LedgerFactory } from "@candid/icrcLedger/icrcLedgerCandid.did";
 import dayjs from "dayjs";
-import { ApproveParams } from "@dfinity/ledger";
+import { ApproveParams } from "@dfinity/ledger-icrc";
 import { getCanister } from "./getIcrcCanister";
 import { TAllowance } from "@/@types/allowance";
 
