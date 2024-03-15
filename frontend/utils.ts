@@ -10,7 +10,7 @@ import {
   IcrcTokenMetadataResponse,
   IcrcAccount,
   encodeIcrcAccount,
-} from "@dfinity/ledger";
+} from "@dfinity/ledger-icrc";
 import {
   OperationStatusEnum,
   OperationTypeEnum,
@@ -18,7 +18,8 @@ import {
   TransactionType,
   SpecialTxTypeEnum,
 } from "./const";
-import { Account, Transaction as T } from "@dfinity/ledger/dist/candid/icrc1_index";
+import { Account, Transaction as IcrcTransaction } from "@dfinity/ledger-icrc/dist/candid/icrc_index";
+// import { Account, Transaction as IcrcTransaction } from "@dfinity/ledger/dist/candid/icrc1_index";
 import { isNullish, uint8ArrayToHexString, bigEndianCrc32, encodeBase32 } from "@dfinity/utils";
 import { AccountIdentifier, SubAccount as SubAccountNNS } from "@dfinity/ledger-icp";
 
@@ -337,7 +338,7 @@ export const formatIcpTransaccion = (
 };
 
 export const formatckBTCTransaccion = (
-  ckBTCTransaction: T,
+  ckBTCTransaction: IcrcTransaction,
   id: bigint,
   principal: string,
   symbol: string,
@@ -348,8 +349,12 @@ export const formatckBTCTransaccion = (
   const trans = { status: OperationStatusEnum.Enum.COMPLETED, kind: kind } as Transaction;
   // Check Tx type ["transfer", "mint", "burn"]
   if (kind === SpecialTxTypeEnum.Enum.mint)
+    /**
+     * INFO: memo type modified from [] | [Uint8Array] to [] | [Uint8Array | number[]] on ledger-icrc
+     * Reference: https://github.com/dfinity/ic-js/blob/bf808fef5e3dbe4c3662abe8b350a04ba684619d/packages/ledger-icrc/candid/icrc_ledger.d.ts#L148
+     */
     mint.forEach(
-      (operation: { to: Account; memo: [] | [Uint8Array]; created_at_time: [] | [bigint]; amount: bigint }) => {
+      (operation: { to: Account; memo: [] | [Uint8Array | number[]]; created_at_time: [] | [bigint]; amount: bigint }) => {
         // Get Tx data from Mint record
         const value = operation.amount;
         const amount = value.toString();
@@ -381,7 +386,11 @@ export const formatckBTCTransaccion = (
   else if (kind === SpecialTxTypeEnum.Enum.burn)
     burn.forEach(
       // Get Tx data from Burn record
-      (operation: { from: Account; memo: [] | [Uint8Array]; created_at_time: [] | [bigint]; amount: bigint }) => {
+      /**
+       * INFO: memo type modified from [] | [Uint8Array] to [] | [Uint8Array | number[]] on ledger-icrc
+       * Reference: https://github.com/dfinity/ic-js/blob/bf808fef5e3dbe4c3662abe8b350a04ba684619d/packages/ledger-icrc/candid/icrc_ledger.d.ts#L148
+       */
+      (operation: { from: Account; memo: [] | [Uint8Array | number[]]; created_at_time: [] | [bigint]; amount: bigint }) => {
         const value = operation.amount;
         const amount = value.toString();
         trans.from = (operation.from.owner as Principal).toString();
