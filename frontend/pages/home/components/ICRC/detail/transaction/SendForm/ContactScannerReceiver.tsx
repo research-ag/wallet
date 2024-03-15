@@ -3,7 +3,7 @@ import { ReactComponent as SearchIcon } from "@assets/svg/files/icon-search.svg"
 import { ChangeEvent, useEffect, useState } from "react";
 import { removeErrorAction, setErrorAction, setReceiverNewContactAction } from "@redux/transaction/TransactionActions";
 import { useTranslation } from "react-i18next";
-import { decodeIcrcAccount, encodeIcrcAccount } from "@dfinity/ledger";
+import { decodeIcrcAccount, encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { hexToUint8Array, subUint8ArrayToHex } from "@/utils";
 import ContactSuffix from "./ContactSuffix";
 import { TransactionValidationErrorsEnum } from "@/@types/transactions";
