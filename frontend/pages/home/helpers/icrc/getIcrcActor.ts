@@ -20,7 +20,7 @@ export interface IcrcActorParams {
 
 /**
  * Creates a new ICRC Ledger Actor instance.
- *
+ * 
  * This function takes an `IcrcActorParams` object containing the asset address and the HTTP agent
  * and returns a new `LedgerActor` instance. The function uses the provided agent and canister ID to
  * create the actor and configures a polling strategy that combines conditional delay, backoff, and timeout.
@@ -32,9 +32,9 @@ export function getIcrcActor(params: IcrcActorParams): LedgerActor {
   const { assetAddress, agent } = params;
   const canisterId = Principal.fromText(assetAddress);
   const ledgerActor = Actor.createActor<LedgerActor>(LedgerFactory, {
-    agent,
-    canisterId,
-    pollingStrategyFactory: () => chain(conditionalDelay(once(), DELAY), backoff(0, 0), timeout(FIVE_MINUTES_IN_MSEC)),
+      agent,
+      canisterId,
+      pollingStrategyFactory: () => chain(conditionalDelay(once(), DELAY), backoff(0, 0), timeout(FIVE_MINUTES_IN_MSEC)),
   });
   return ledgerActor;
 }

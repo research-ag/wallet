@@ -7,7 +7,7 @@
     "serve": "vite preview",
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
-    "format:write": "prettier --write ."
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@builder.io/partytown": "^0.8.0",

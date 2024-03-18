@@ -46,11 +46,10 @@ export default function useSend() {
     const decimalPlaces = updateAsset?.decimal ?? 0;
 
     if (transactionFee == "0" && updateAsset?.address && decimalPlaces) {
-      transactionFee =
-        (await getTransactionFeeFromLedger({
-          assetAddress: updateAsset.address,
-          assetDecimal: decimalPlaces,
-        })) || "0";
+      transactionFee = await getTransactionFeeFromLedger({
+        assetAddress: updateAsset.address,
+        assetDecimal: decimalPlaces,
+      }) || "0";
 
       return transactionFee;
     }
@@ -273,12 +272,12 @@ export default function useSend() {
     () =>
       Boolean(
         sender?.asset?.address &&
-          sender?.asset?.decimal &&
-          amount &&
-          getSenderSubAccount() &&
-          getSenderPrincipal() &&
-          getReceiverPrincipal() &&
-          getReceiverSubAccount(),
+        sender?.asset?.decimal &&
+        amount &&
+        getSenderSubAccount() &&
+        getSenderPrincipal() &&
+        getReceiverPrincipal() &&
+        getReceiverSubAccount(),
       ),
     [sender, receiver, amount],
   );

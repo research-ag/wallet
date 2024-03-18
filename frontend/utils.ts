@@ -365,12 +365,7 @@ export const formatckBTCTransaccion = (
      * - https://github.com/dfinity/ic-js/blob/bf808fef5e3dbe4c3662abe8b350a04ba684619d/packages/ledger-icrc/candid/icrc_ledger.d.ts#L148
      */
     mint.forEach(
-      (operation: {
-        to: Account;
-        memo: [] | [Uint8Array | number[]];
-        created_at_time: [] | [bigint];
-        amount: bigint;
-      }) => {
+      (operation: { to: Account; memo: [] | [Uint8Array | number[]]; created_at_time: [] | [bigint]; amount: bigint }) => {
         // Get Tx data from Mint record
         const value = operation.amount;
         const amount = value.toString();
@@ -408,12 +403,7 @@ export const formatckBTCTransaccion = (
        * - https://forum.dfinity.org/t/breaking-changes-in-ledger-icrc-icp-javascript-libraries/23465
        * - https://github.com/dfinity/ic-js/blob/bf808fef5e3dbe4c3662abe8b350a04ba684619d/packages/ledger-icrc/candid/icrc_ledger.d.ts#L148
        */
-      (operation: {
-        from: Account;
-        memo: [] | [Uint8Array | number[]];
-        created_at_time: [] | [bigint];
-        amount: bigint;
-      }) => {
+      (operation: { from: Account; memo: [] | [Uint8Array | number[]]; created_at_time: [] | [bigint]; amount: bigint }) => {
         const value = operation.amount;
         const amount = value.toString();
         trans.from = (operation.from.owner as Principal).toString();
