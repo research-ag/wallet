@@ -3,7 +3,7 @@ import { formatDateTime } from "@/utils/formatTime";
 import { middleTruncation, toTitleCase } from "@/utils/strings";
 import { createColumnHelper } from "@tanstack/react-table";
 import { TAllowance, AllowancesTableColumnsEnum } from "@/@types/allowance";
-import clsx from "clsx";
+import { clsx } from "clsx";
 import { isDateExpired } from "@/utils/time";
 import { useTranslation } from "react-i18next";
 import ActionCard from "../components/ICRC/allowance/ActionCard";

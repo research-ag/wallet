@@ -1,7 +1,7 @@
+import { clsx } from "clsx";
 import { ReactComponent as CheckIcon } from "@assets/svg/files/edit-check.svg";
 import { CustomInput } from "@components/Input";
 import { handleMnemonicAuthenticated } from "@redux/CheckAuth";
-import clsx from "clsx";
 import { ChangeEvent, Dispatch, SetStateAction, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import * as bip39 from "bip39";

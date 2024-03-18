@@ -12,10 +12,10 @@ const DELAY = 250;
  * Interface defining the parameters required to create an ICRC Ledger Actor.
  */
 export interface IcrcActorParams {
-    /** The address of the ICRC Ledger canister. */
-    assetAddress: string;
-    /** The HTTP agent used for communication with the Dfinity network. */
-    agent: HttpAgent;
+  /** The address of the ICRC Ledger canister. */
+  assetAddress: string;
+  /** The HTTP agent used for communication with the Dfinity network. */
+  agent: HttpAgent;
 }
 
 /**
@@ -29,12 +29,12 @@ export interface IcrcActorParams {
  * @returns A new `LedgerActor` instance.
  */
 export function getIcrcActor(params: IcrcActorParams): LedgerActor {
-    const { assetAddress, agent } = params;
-    const canisterId = Principal.fromText(assetAddress);
-    const ledgerActor = Actor.createActor<LedgerActor>(LedgerFactory, {
-        agent,
-        canisterId,
-        pollingStrategyFactory: () => chain(conditionalDelay(once(), DELAY), backoff(0, 0), timeout(FIVE_MINUTES_IN_MSEC)),
-    });
-    return ledgerActor;
+  const { assetAddress, agent } = params;
+  const canisterId = Principal.fromText(assetAddress);
+  const ledgerActor = Actor.createActor<LedgerActor>(LedgerFactory, {
+      agent,
+      canisterId,
+      pollingStrategyFactory: () => chain(conditionalDelay(once(), DELAY), backoff(0, 0), timeout(FIVE_MINUTES_IN_MSEC)),
+  });
+  return ledgerActor;
 }
