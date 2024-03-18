@@ -13,7 +13,7 @@ import {
   setSelectedAllowanceAction,
 } from "@redux/allowance/AllowanceActions";
 import { initialAllowanceState } from "@redux/allowance/AllowanceReducer";
-import clsx from "clsx";
+import { clsx } from "clsx";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 

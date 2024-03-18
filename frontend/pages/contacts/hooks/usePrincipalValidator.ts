@@ -1,4 +1,4 @@
-import { decodeIcrcAccount } from "@dfinity/ledger";
+import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { useAppSelector } from "@redux/Store";
 
 export default function usePrincipalValidator() {

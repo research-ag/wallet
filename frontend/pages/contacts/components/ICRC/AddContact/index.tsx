@@ -13,7 +13,7 @@ import LoadingLoader from "@components/Loader";
 import { CustomButton } from "@components/Button";
 import { AssetContact } from "@redux/models/ContactsModels";
 import { isHexadecimalValid, validateSubaccounts } from "@/utils/checkers";
-import clsx from "clsx";
+import { clsx } from "clsx";
 import { validatePrincipal } from "@/utils/identity";
 import { SupportedStandardEnum } from "@/@types/icrc";
 import { db } from "@/database/db";

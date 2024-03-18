@@ -180,3 +180,21 @@ export type TransactionReceiverOption = z.infer<typeof TransactionReceiverOption
 
 export const TransactionScannerOptionEnum = z.enum(["sender", "receiver", "none"]);
 export type TransactionScannerOption = z.infer<typeof TransactionScannerOptionEnum>;
+
+export const transactionErrors: KeyValidationErrors = {
+  [TransactionValidationErrorsEnum.Values["error.asset.empty"]]: TransactionValidationErrorsEnum.Values["error.asset.empty"],
+  [TransactionValidationErrorsEnum.Values["error.sender.empty"]]: TransactionValidationErrorsEnum.Values["error.sender.empty"],
+  [TransactionValidationErrorsEnum.Values["error.receiver.empty"]]: TransactionValidationErrorsEnum.Values["error.receiver.empty"],
+  [TransactionValidationErrorsEnum.Values["error.own.sender.not.allowed"]]: TransactionValidationErrorsEnum.Values["error.own.sender.not.allowed"],
+  [TransactionValidationErrorsEnum.Values["error.same.sender.receiver"]]: TransactionValidationErrorsEnum.Values["error.same.sender.receiver"],
+  [TransactionValidationErrorsEnum.Values["error.invalid.sender.principal"]]: TransactionValidationErrorsEnum.Values["error.invalid.sender.principal"],
+  [TransactionValidationErrorsEnum.Values["error.invalid.sender.subaccount"]]: TransactionValidationErrorsEnum.Values["error.invalid.sender.subaccount"],
+  [TransactionValidationErrorsEnum.Values["error.invalid.receiver.principal"]]: TransactionValidationErrorsEnum.Values["error.invalid.receiver.principal"],
+  [TransactionValidationErrorsEnum.Values["error.invalid.receiver.subaccount"]]: TransactionValidationErrorsEnum.Values["error.invalid.receiver.subaccount"],
+  [TransactionValidationErrorsEnum.Values["invalid.receiver.identifier"]]: TransactionValidationErrorsEnum.Values["invalid.receiver.identifier"],
+  [TransactionValidationErrorsEnum.Values["error.invalid.sender"]]: TransactionValidationErrorsEnum.Values["error.invalid.sender"],
+  [TransactionValidationErrorsEnum.Values["error.invalid.receiver"]]: TransactionValidationErrorsEnum.Values["error.invalid.receiver"],
+  [TransactionValidationErrorsEnum.Values["error.invalid.amount"]]: TransactionValidationErrorsEnum.Values["error.invalid.amount"],
+  [TransactionValidationErrorsEnum.Values["error.not.enough.balance"]]: TransactionValidationErrorsEnum.Values["error.not.enough.balance"],
+  [TransactionValidationErrorsEnum.Values["error.allowance.subaccount.not.enough"]]: TransactionValidationErrorsEnum.Values["error.allowance.subaccount.not.enough"],
+};

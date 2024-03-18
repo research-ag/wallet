@@ -3,7 +3,7 @@ import { ReactComponent as PencilIcon } from "@assets/svg/files/pencil.svg";
 import { ReactComponent as DotsIcon } from "@assets/svg/files/dots-icon.svg";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { TAllowance } from "@/@types/allowance";
-import clsx from "clsx";
+import { clsx } from "clsx";
 import { useTranslation } from "react-i18next";
 import useAllowanceDrawer from "@pages/home/hooks/useAllowanceDrawer";
 import { setIsDeleteAllowanceAction, setSelectedAllowanceAction } from "@redux/allowance/AllowanceActions";

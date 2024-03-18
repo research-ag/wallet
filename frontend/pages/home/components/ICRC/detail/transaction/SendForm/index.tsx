@@ -13,7 +13,7 @@ import useSend from "@pages/home/hooks/useSend";
 import SenderAsset from "./SenderAsset";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "@redux/Store";
-import { TransactionValidationErrorsEnum } from "@/@types/transactions";
+import { TransactionValidationErrorsEnum, transactionErrors } from "@/@types/transactions";
 import LoadingLoader from "@components/Loader";
 
 interface SendFormProps {
@@ -87,23 +87,9 @@ export default function SendForm({ setDrawerOpen }: SendFormProps) {
   }
 
   function getError() {
-    switch (true) {
-      case errors?.includes(TransactionValidationErrorsEnum.Values["error.asset.empty"]):
-        return TransactionValidationErrorsEnum.Values["error.asset.empty"];
-      case errors?.includes(TransactionValidationErrorsEnum.Values["error.invalid.sender"]):
-        return TransactionValidationErrorsEnum.Values["error.invalid.sender"];
-      case errors?.includes(TransactionValidationErrorsEnum.Values["error.invalid.receiver"]):
-        return TransactionValidationErrorsEnum.Values["error.invalid.receiver"];
-      case errors?.includes(TransactionValidationErrorsEnum.Values["error.sender.empty"]):
-        return TransactionValidationErrorsEnum.Values["error.sender.empty"];
-      case errors?.includes(TransactionValidationErrorsEnum.Values["error.receiver.empty"]):
-        return TransactionValidationErrorsEnum.Values["error.receiver.empty"];
-      case errors?.includes(TransactionValidationErrorsEnum.Values["error.own.sender.not.allowed"]):
-        return TransactionValidationErrorsEnum.Values["error.own.sender.not.allowed"];
-      case errors?.includes(TransactionValidationErrorsEnum.Values["error.same.sender.receiver"]):
-        return TransactionValidationErrorsEnum.Values["error.same.sender.receiver"];
-      default:
-        return "";
-    }
+    if (!errors || !errors?.length) return "";
+    const error = transactionErrors[errors[0]];
+    if (error) return error;
+    return "";
   }
 }

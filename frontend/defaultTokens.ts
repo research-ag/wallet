@@ -1,7 +1,7 @@
 import { Token } from "@redux/models/TokenModels";
 import { SupportedStandardEnum } from "./@types/icrc";
 import { getMetadataInfo } from "./utils";
-import { IcrcLedgerCanister } from "@dfinity/ledger";
+import { IcrcLedgerCanister } from "@dfinity/ledger-icrc";
 import { HttpAgent } from "@dfinity/agent";
 
 interface SnsMetadata {
@@ -157,7 +157,6 @@ export const mapSnsToToken = async (sns: SnsMetadata, id: number, myAgent: HttpA
   const { metadata } = IcrcLedgerCanister.create({ agent: myAgent, canisterId: address as any });
 
   const currentMetadata = await metadata({ certified: false });
-
   const { name, symbol, decimals, logo, fee } = getMetadataInfo(currentMetadata);
 
   return {

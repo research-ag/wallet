@@ -1,9 +1,9 @@
 import { ReactComponent as CheckIcon } from "@assets/svg/files/edit-check.svg";
 //
 import { CustomInput } from "@components/Input";
-import { decodeIcrcAccount } from "@dfinity/ledger";
+import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { handlePrincipalAuthenticated } from "@redux/CheckAuth";
-import clsx from "clsx";
+import { clsx } from "clsx";
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 
 interface WatchOnlyInputProps {
