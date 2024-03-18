@@ -1,4 +1,4 @@
-import clsx from "clsx";
+import { clsx } from "clsx";
 
 interface TabProps {
   tabs: { tabName: string; content: JSX.Element; disabled?: boolean }[];

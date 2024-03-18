@@ -2,7 +2,7 @@ import { ChangeEvent, Dispatch, SetStateAction } from "react";
 import { ReactComponent as CheckIcon } from "@assets/svg/files/edit-check.svg";
 import { CustomInput } from "@components/Input";
 import { handleSeedAuthenticated } from "@redux/CheckAuth";
-import clsx from "clsx";
+import { clsx } from "clsx";
 import { useTranslation } from "react-i18next";
 
 interface SeedMethodInputProps {

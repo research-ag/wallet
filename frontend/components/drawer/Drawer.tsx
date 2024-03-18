@@ -1,6 +1,6 @@
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 import { getDrawerBlank, getDrawerContainerStyle } from "./styles.cva";
-import clsx from "clsx";
+import { clsx } from "clsx";
 
 interface IDrawerProps {
   isDrawerOpen: boolean;

@@ -1,4 +1,4 @@
-import clsx from "clsx";
+import { clsx } from "clsx";
 
 export function getDrawerContainerStyle(isDrawerOpen: boolean) {
   return clsx(

@@ -5,7 +5,7 @@ import { getSubAccountBalance } from "@pages/home/helpers/icrc";
 import useSend from "@pages/home/hooks/useSend";
 import { useAppSelector } from "@redux/Store";
 import { removeErrorAction, setAmountAction, setErrorAction } from "@redux/transaction/TransactionActions";
-import clsx from "clsx";
+import { clsx } from "clsx";
 import { ChangeEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 

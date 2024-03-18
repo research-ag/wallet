@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Dispatch, PropsWithChildren, SetStateAction, useEffect, useMemo } from "react";
 import AddAllowanceButton from "../allowance/AddAllowanceButton";
 import { Tab } from "@components/tabs";
-import clsx from "clsx";
+import { clsx } from "clsx";
 import { useAppSelector } from "@redux/Store";
 import { SupportedStandardEnum } from "@/@types/icrc";
 

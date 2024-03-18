@@ -4,7 +4,7 @@ import { Table, TableBody, TableBodyCell, TableHead, TableHeaderCell, TableRow }
 import useAllowanceTable from "@pages/home/hooks/useAllowanceTable";
 import useAllowances from "@pages/home/hooks/useAllowances";
 import { flexRender, getCoreRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
-import clsx from "clsx";
+import { clsx } from "clsx";
 import UpdateAllowanceDrawer from "./UpdateAllowanceDrawer";
 import DeleteAllowanceModal from "./DeleteAllowanceModal";
 

@@ -6,7 +6,7 @@ import { CustomInput } from "@components/Input";
 import SearchIcon from "@assets/svg/files/icon-search.svg";
 import { SelectOption } from "@/@types/components";
 import { selectContentCVA, selectTriggerCVA } from "./styles.cva";
-import clsx from "clsx";
+import { clsx } from "clsx";
 import { useTranslation } from "react-i18next";
 
 interface TSelectProps extends VariantProps<typeof selectTriggerCVA>, VariantProps<typeof selectContentCVA> {

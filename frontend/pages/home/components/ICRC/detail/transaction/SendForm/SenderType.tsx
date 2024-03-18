@@ -3,7 +3,7 @@ import { TransactionSenderOption, TransactionSenderOptionEnum } from "@/@types/t
 import * as RadioGroup from "@radix-ui/react-radio-group";
 import { useAppSelector } from "@redux/Store";
 import { clearSenderAction, setSenderOptionAction } from "@redux/transaction/TransactionActions";
-import clsx from "clsx";
+import { clsx } from "clsx";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 

@@ -4,7 +4,7 @@ import { getAssetIcon } from "@/utils/icons";
 import { middleTruncation } from "@/utils/strings";
 import { Chip } from "@components/chip";
 import { useAppSelector } from "@redux/Store";
-import clsx from "clsx";
+import { clsx } from "clsx";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 

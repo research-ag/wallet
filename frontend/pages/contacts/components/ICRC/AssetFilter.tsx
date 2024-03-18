@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import ChevronRightIcon from "@assets/svg/files/chevron-right-icon.svg";
 import ChevronRightDarkIcon from "@assets/svg/files/chevron-right-dark-icon.svg";
 import { Asset } from "@redux/models/AccountModels";
-import clsx from "clsx";
+import { clsx } from "clsx";
 import { CustomCheck } from "@components/CheckBox";
 
 interface AssetFilterProps {
