@@ -17,7 +17,6 @@ import { setReduxAllowances } from "@/redux/allowance/AllowanceReducer";
 import { setReduxTokens } from "@/redux/assets/AssetReducer";
 import { setReduxContacts } from "@/redux/contacts/ContactsReducer";
 import { setAssetFromLocalData, updateAllBalances } from "@/redux/assets/AssetActions";
-import { defaultTokens } from "./defaultTokens";
 
 const App: React.FC = () => {
   const { i18n } = useTranslation();
