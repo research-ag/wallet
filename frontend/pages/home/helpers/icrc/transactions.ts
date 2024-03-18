@@ -1,4 +1,4 @@
-import { getIcrcActor } from "./getIcrcActor";
+import { getIcrcActor } from "@/pages/home/helpers/icrc";
 import { GetBalanceParams, TransactionFeeParams, TransferFromAllowanceParams, TransferTokensParams } from "@/@types/icrc";
 import { getCanister } from "./getIcrcCanister";
 import { hexToUint8Array, hexadecimalToUint8Array, toFullDecimal, toHoleBigInt } from "@/utils";
