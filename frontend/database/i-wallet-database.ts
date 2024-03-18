@@ -5,6 +5,8 @@ import { Identity } from "@dfinity/agent";
 import { Observable } from "rxjs";
 import { Principal } from "@dfinity/principal";
 import { DB_Type } from "./db";
+import { LocalStorageKeyEnum } from "@/@types/localstorage";
+import { Themes } from "@/const";
 
 export abstract class IWalletDatabase {
   /**
@@ -13,7 +15,7 @@ export abstract class IWalletDatabase {
    * @returns The language code stored in local storage, or null if not set.
    */
   getLanguage(): string | null {
-    return localStorage.getItem("language");
+    return localStorage.getItem(LocalStorageKeyEnum.Values.language);
   }
 
   /**
@@ -22,7 +24,7 @@ export abstract class IWalletDatabase {
      * @param value The language code to store.
      */
   setLanguage(value: string): void {
-    localStorage.setItem("language", value);
+    localStorage.setItem(LocalStorageKeyEnum.Values.language, value);
   }
 
   /**
@@ -30,7 +32,7 @@ export abstract class IWalletDatabase {
      * 
      * @returns The theme value ("dark" or "light") stored in local storage, or null if not set.
      */
-  getTheme(): "dark" | "light" | null {
+  getTheme(): Themes | null {
     return localStorage.theme;
   }
 
@@ -39,7 +41,7 @@ export abstract class IWalletDatabase {
     * 
     * @param value The theme value ("dark" or "light") to store.
     */
-  setTheme(value: "dark" | "light"): void {
+  setTheme(value: Themes): void {
     localStorage.theme = value;
   }
 
@@ -49,7 +51,7 @@ export abstract class IWalletDatabase {
    * @returns The parsed network type object from local storage, or null if not set.
    */
   getNetworkType(): AuthNetwork | null {
-    return JSON.parse(localStorage.getItem("network_type") || "null");
+    return JSON.parse(localStorage.getItem(LocalStorageKeyEnum.Values.network_type) || "null");
   }
 
   /**
@@ -67,7 +69,6 @@ export abstract class IWalletDatabase {
      * @param value The database location value (of type DB_Type) to store.
      */
   setDbLocation(value: DB_Type): void {
-    console.log("i wallet database db-location: ", value);
     localStorage.dbLocation = value;
   }
 
@@ -77,7 +78,7 @@ export abstract class IWalletDatabase {
    * @returns The custom database canister ID value from local storage, or null if not set.
    */
   getCustomDbCanisterId(): string | null {
-    return localStorage.getItem("customDbCanisterId");
+    return localStorage.getItem(LocalStorageKeyEnum.Values.customDbCanisterId);
   }
 
   /**
@@ -86,7 +87,7 @@ export abstract class IWalletDatabase {
    * @param value The custom database canister ID value to store.
    */
   setCustomDbCanisterId(value: string): void {
-    localStorage.setItem("customDbCanisterId", value);
+    localStorage.setItem(LocalStorageKeyEnum.Values.customDbCanisterId, value);
   }
 
   /**
@@ -96,7 +97,7 @@ export abstract class IWalletDatabase {
    */
   setNetworkType(value: AuthNetwork): void {
     localStorage.setItem(
-      "network_type",
+      LocalStorageKeyEnum.Values.network_type,
       JSON.stringify({
         type: value.type,
         network: value.network,
