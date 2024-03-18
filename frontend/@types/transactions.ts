@@ -15,10 +15,12 @@ export const ContactSubAccountSchema = z.object({
   assetName: z.string().optional(),
   subAccountIndex: z.string().optional(),
   subAccountId: z.string(),
-  subAccountAllowance: z.object({
-    allowance: z.string(),
-    expires_at: z.string(),
-  }).optional(),
+  subAccountAllowance: z
+    .object({
+      allowance: z.string(),
+      expires_at: z.string(),
+    })
+    .optional(),
   subAccountName: z.string(),
 });
 
@@ -47,7 +49,6 @@ export const ContactSubAccountSchema = z.object({
  * @property {string} subAccountName - Required name of the sub-account.
  */
 export type ContactSubAccount = z.infer<typeof ContactSubAccountSchema>;
-
 
 export const NewContactSchema = z.object({
   principal: z.string(),
@@ -142,7 +143,6 @@ export interface TransactionState {
   endTime: Date;
 }
 
-
 export interface KeyValidationErrors {
   [key: string]: string;
 }
@@ -182,19 +182,34 @@ export const TransactionScannerOptionEnum = z.enum(["sender", "receiver", "none"
 export type TransactionScannerOption = z.infer<typeof TransactionScannerOptionEnum>;
 
 export const transactionErrors: KeyValidationErrors = {
-  [TransactionValidationErrorsEnum.Values["error.asset.empty"]]: TransactionValidationErrorsEnum.Values["error.asset.empty"],
-  [TransactionValidationErrorsEnum.Values["error.sender.empty"]]: TransactionValidationErrorsEnum.Values["error.sender.empty"],
-  [TransactionValidationErrorsEnum.Values["error.receiver.empty"]]: TransactionValidationErrorsEnum.Values["error.receiver.empty"],
-  [TransactionValidationErrorsEnum.Values["error.own.sender.not.allowed"]]: TransactionValidationErrorsEnum.Values["error.own.sender.not.allowed"],
-  [TransactionValidationErrorsEnum.Values["error.same.sender.receiver"]]: TransactionValidationErrorsEnum.Values["error.same.sender.receiver"],
-  [TransactionValidationErrorsEnum.Values["error.invalid.sender.principal"]]: TransactionValidationErrorsEnum.Values["error.invalid.sender.principal"],
-  [TransactionValidationErrorsEnum.Values["error.invalid.sender.subaccount"]]: TransactionValidationErrorsEnum.Values["error.invalid.sender.subaccount"],
-  [TransactionValidationErrorsEnum.Values["error.invalid.receiver.principal"]]: TransactionValidationErrorsEnum.Values["error.invalid.receiver.principal"],
-  [TransactionValidationErrorsEnum.Values["error.invalid.receiver.subaccount"]]: TransactionValidationErrorsEnum.Values["error.invalid.receiver.subaccount"],
-  [TransactionValidationErrorsEnum.Values["invalid.receiver.identifier"]]: TransactionValidationErrorsEnum.Values["invalid.receiver.identifier"],
-  [TransactionValidationErrorsEnum.Values["error.invalid.sender"]]: TransactionValidationErrorsEnum.Values["error.invalid.sender"],
-  [TransactionValidationErrorsEnum.Values["error.invalid.receiver"]]: TransactionValidationErrorsEnum.Values["error.invalid.receiver"],
-  [TransactionValidationErrorsEnum.Values["error.invalid.amount"]]: TransactionValidationErrorsEnum.Values["error.invalid.amount"],
-  [TransactionValidationErrorsEnum.Values["error.not.enough.balance"]]: TransactionValidationErrorsEnum.Values["error.not.enough.balance"],
-  [TransactionValidationErrorsEnum.Values["error.allowance.subaccount.not.enough"]]: TransactionValidationErrorsEnum.Values["error.allowance.subaccount.not.enough"],
+  [TransactionValidationErrorsEnum.Values["error.asset.empty"]]:
+    TransactionValidationErrorsEnum.Values["error.asset.empty"],
+  [TransactionValidationErrorsEnum.Values["error.sender.empty"]]:
+    TransactionValidationErrorsEnum.Values["error.sender.empty"],
+  [TransactionValidationErrorsEnum.Values["error.receiver.empty"]]:
+    TransactionValidationErrorsEnum.Values["error.receiver.empty"],
+  [TransactionValidationErrorsEnum.Values["error.own.sender.not.allowed"]]:
+    TransactionValidationErrorsEnum.Values["error.own.sender.not.allowed"],
+  [TransactionValidationErrorsEnum.Values["error.same.sender.receiver"]]:
+    TransactionValidationErrorsEnum.Values["error.same.sender.receiver"],
+  [TransactionValidationErrorsEnum.Values["error.invalid.sender.principal"]]:
+    TransactionValidationErrorsEnum.Values["error.invalid.sender.principal"],
+  [TransactionValidationErrorsEnum.Values["error.invalid.sender.subaccount"]]:
+    TransactionValidationErrorsEnum.Values["error.invalid.sender.subaccount"],
+  [TransactionValidationErrorsEnum.Values["error.invalid.receiver.principal"]]:
+    TransactionValidationErrorsEnum.Values["error.invalid.receiver.principal"],
+  [TransactionValidationErrorsEnum.Values["error.invalid.receiver.subaccount"]]:
+    TransactionValidationErrorsEnum.Values["error.invalid.receiver.subaccount"],
+  [TransactionValidationErrorsEnum.Values["invalid.receiver.identifier"]]:
+    TransactionValidationErrorsEnum.Values["invalid.receiver.identifier"],
+  [TransactionValidationErrorsEnum.Values["error.invalid.sender"]]:
+    TransactionValidationErrorsEnum.Values["error.invalid.sender"],
+  [TransactionValidationErrorsEnum.Values["error.invalid.receiver"]]:
+    TransactionValidationErrorsEnum.Values["error.invalid.receiver"],
+  [TransactionValidationErrorsEnum.Values["error.invalid.amount"]]:
+    TransactionValidationErrorsEnum.Values["error.invalid.amount"],
+  [TransactionValidationErrorsEnum.Values["error.not.enough.balance"]]:
+    TransactionValidationErrorsEnum.Values["error.not.enough.balance"],
+  [TransactionValidationErrorsEnum.Values["error.allowance.subaccount.not.enough"]]:
+    TransactionValidationErrorsEnum.Values["error.allowance.subaccount.not.enough"],
 };

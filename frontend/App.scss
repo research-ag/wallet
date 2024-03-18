@@ -92,17 +92,17 @@ body {
   position: relative;
 
   input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
-      /* display: none; <- Crashes Chrome on hover */
-      -webkit-appearance: none;
-      margin: 0;
-      /* <-- Apparently some margin are still there even though it's hidden */
-    }
-  
-    input[type=number] {
-      -moz-appearance: textfield;
-      /* Firefox */
-    }
+  input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0;
+    /* <-- Apparently some margin are still there even though it's hidden */
+  }
+
+  input[type="number"] {
+    -moz-appearance: textfield;
+    /* Firefox */
+  }
 }
 
 p,
@@ -124,15 +124,18 @@ h5 {
     display: flex !important;
     justify-content: center;
     align-items: center;
-    border-radius: 1rem;border: 0 !important;
+    border-radius: 1rem;
+    border: 0 !important;
     video {
-      border-radius: 1rem;border: 0 !important;
+      border-radius: 1rem;
+      border: 0 !important;
     }
     img {
       width: 10rem;
       padding: 0.3rem;
       border-radius: 0.5rem;
-      background: #ffffff;border: 0 !important;
+      background: #ffffff;
+      border: 0 !important;
     }
   }
   #scanner__header_message {
@@ -148,7 +151,6 @@ h5 {
     color: #1b183f !important;
   }
 }
-
 
 .do-spin {
   animation-name: spin;

@@ -63,7 +63,9 @@ const DialogSendConfirmation = ({ setDrawerOpen, showConfirmationModal, modal }:
               <CustomCopy size={"small"} copyText={receiverPrincipal} />
             </div>
             <div className="flex flex-row items-center justify-start gap-2">
-              <p>{receiverSubAccount.length > 20 ? middleTruncation(receiverSubAccount, 10, 10) : receiverSubAccount}</p>
+              <p>
+                {receiverSubAccount.length > 20 ? middleTruncation(receiverSubAccount, 10, 10) : receiverSubAccount}
+              </p>
               <CustomCopy size={"small"} copyText={receiverSubAccount} />
             </div>
             <p>

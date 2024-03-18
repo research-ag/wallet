@@ -1,6 +1,6 @@
 import { cva } from "cva";
 
-export const chipCVA = cva(["h-6","rounded-md", "font-bold"], {
+export const chipCVA = cva(["h-6", "rounded-md", "font-bold"], {
   variants: {
     type: {
       gray: ["bg-[#7D7B91]"],

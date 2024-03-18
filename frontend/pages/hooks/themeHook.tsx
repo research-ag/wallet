@@ -15,6 +15,5 @@ export const ThemeHook = () => {
     else document.body.classList.remove("light");
   }, [theme]);
 
-
   return { theme, changeTheme, themeOpen, setThemeOpen };
 };
