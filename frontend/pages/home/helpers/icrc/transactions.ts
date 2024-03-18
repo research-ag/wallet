@@ -1,10 +1,10 @@
 import { GetBalanceParams, TransactionFeeParams, TransferFromAllowanceParams, TransferTokensParams } from "@/@types/icrc";
 import { getCanister } from "./getIcrcCanister";
+import { getIcrcActor } from "./getIcrcActor";
 import { hexToUint8Array, toFullDecimal, toHoleBigInt } from "@/utils";
 import { Principal } from "@dfinity/principal";
 import { TransferFromParams } from "@dfinity/ledger-icrc";
 import store from "@redux/Store";
-import { getIcrcActor } from "./getICRCSupportedStandards";
 
 export async function getTransactionFeeFromLedger(params: TransactionFeeParams) {
     try {
@@ -20,7 +20,6 @@ export async function getTransactionFeeFromLedger(params: TransactionFeeParams) 
 
 export async function transferTokens(params: TransferTokensParams) {
     const { receiverPrincipal, transferAmount, assetAddress, decimal, fromSubAccount, toSubAccount } = params;
-    const canister = getCanister(assetAddress);
     const amount = toHoleBigInt(transferAmount, Number(decimal));
     const agent = store.getState().auth.userAgent;
 
