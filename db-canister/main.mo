@@ -36,6 +36,7 @@ actor class WalletDatabase() {
     logo : Text;
     supportedStandards : [Text];
   };
+
   type ContactDocument_v0 = {
     name : Text;
     updatedAt : Nat32;

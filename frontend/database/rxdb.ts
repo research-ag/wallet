@@ -24,9 +24,11 @@ import {
   AllowanceDocument as AllowanceRxdbDocument,
 } from "./candid/db.did";
 
-
+// Enables data updates, deletions, and replacements within collections
 addRxPlugin(RxDBUpdatePlugin);
+// Facilitates schema evolution for future-proof databases
 addRxPlugin(RxDBMigrationPlugin);
+// Might be useful for debugging and development (disable for production)
 addRxPlugin(RxDBDevModePlugin);
 
 export class RxdbDatabase extends IWalletDatabase {
@@ -78,8 +80,9 @@ export class RxdbDatabase extends IWalletDatabase {
   }
 
   /**
-   * Initialice all necessary external systema and
-   * data structure before first use.
+   * Initialize the rxdb object, adding the collections and setting up the replication.
+   * @returns Promise<void>
+   * @throws Error
    */
   async init(): Promise<void> {
     try {
@@ -95,7 +98,6 @@ export class RxdbDatabase extends IWalletDatabase {
         storage: getRxStorageDexie(),
         ignoreDuplicate: true,
         eventReduce: true,
-        cleanupPolicy: {},
       });
 
       const { tokens, contacts, allowances } = await db.addCollections(DBSchemas);
@@ -166,6 +168,7 @@ export class RxdbDatabase extends IWalletDatabase {
     this.identityChanged$.next();
   }
 
+  // INFO: TOKENS
   /**
    * Get a Token object by its ID.
    * @param address Address ID of a Token object
@@ -248,9 +251,10 @@ export class RxdbDatabase extends IWalletDatabase {
       document?.remove();
     } catch (e) {
       console.error("RxDb DeleteToken", e);
-    }
+    };
   }
 
+  // INFO: CONTACTS
   /**
    * Find a Contact object by its Principal ID.
    * @param principal Princial ID
@@ -379,6 +383,7 @@ export class RxdbDatabase extends IWalletDatabase {
     }
   }
 
+  // INFO: ALLOWANCES
   /**
    * Find a Allowance object.
    * @param id Primary Key
@@ -495,6 +500,7 @@ export class RxdbDatabase extends IWalletDatabase {
     }
   }
 
+  // INFO: SUBSCRIPTIONS
   /**
    * Observable that trigger after
    * a new Identity has been set.
@@ -559,6 +565,8 @@ export class RxdbDatabase extends IWalletDatabase {
     );
   }
 
+
+  // INFO: HELPERS
   private _mapContactDoc(doc: RxDocument<ContactRxdbDocument>): Contact {
     return {
       name: doc.name,

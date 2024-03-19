@@ -3,7 +3,6 @@ import { defaultTokens } from "@/defaultTokens";
 import { hexToUint8Array } from "@/utils";
 import contactCacheRefresh from "@pages/contacts/helpers/contacts";
 import { allowanceCacheRefresh } from "@pages/home/helpers/allowanceCache";
-// import { AssetList, Metadata } from "@candid/metadata/service.did";
 import store, { useAppDispatch, useAppSelector } from "@redux/Store";
 import { getAllTransactionsICP, getAllTransactionsICRC1, updateAllBalances } from "@redux/assets/AssetActions";
 import { setLoading, setTxWorker } from "@redux/assets/AssetReducer";
