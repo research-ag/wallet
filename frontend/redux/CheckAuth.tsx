@@ -129,22 +129,18 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean,
   store.dispatch(setAuthenticated(true, false, !!fixedPrincipal, identityPrincipalStr.toLocaleLowerCase()));
 
   // TOKENS
+  // WARNING: if (storedTokens.length < 0) run this code
   const storedTokens = await db().getTokens();
+  const balances = await updateAllBalances({
+    loading: true,
+    myAgent,
+    tokens: [...defaultTokens, ...storedTokens],
+    basicSearch: true,
+    fromLogin: true,
+  });
 
-  // FIXME: validate less than 0 is not correct
-  if (storedTokens.length < 0) {
-
-    const balances = await updateAllBalances({
-      loading: true,
-      myAgent,
-      defaultTokens,
-      basicSearch: true,
-      fromLogin: true,
-    });
-
-    if (balances && balances.tokens) {
-      store.dispatch(setReduxTokens(balances.tokens));
-    }
+  if (balances && balances.tokens) {
+    store.dispatch(setReduxTokens(balances.tokens));
   }
 
   // ALLOWANCES
