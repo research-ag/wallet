@@ -19,48 +19,61 @@ import { AccountDefaultEnum } from "@/const";
 import bigInt from "big-integer";
 import { SupportedStandardEnum } from "@/@types/icrc";
 
-export const updateAllBalances = async (
-  loading: boolean,
-  myAgent: HttpAgent,
-  tokens: Token[],
-  basicSearch?: boolean,
-  fromLogin?: boolean,
-) => {
-  let tokenMarkets: TokenMarketInfo[] = [];
+async function getTokensFromMarket() {
+  const marketUrl = import.meta.env.VITE_APP_TOKEN_MARKET;
 
   try {
-    const auxTokenMarkets: TokenMarketInfo[] = await fetch(import.meta.env.VITE_APP_TOKEN_MARKET).then((x) => x.json());
-    tokenMarkets = auxTokenMarkets.filter((x) => !x.unreleased);
-  } catch {
-    tokenMarkets = [];
+    const response = await fetch(marketUrl);
+    const tokenMarkets: TokenMarketInfo[] = await response.json();
+    return tokenMarkets.filter((token) => !token.unreleased);
+  } catch (error) {
+    console.warn("Error fetching token markets:", error);
+    return [];
   }
+}
 
+async function getETHRate() {
   try {
-    const ethRate = await fetch(import.meta.env.VITE_APP_ETH_MARKET).then((x) => x.json());
-    tokenMarkets = [
-      ...tokenMarkets,
-      {
-        id: 999,
-        name: "Ethereum",
-        symbol: "ckETH",
-        price: ethRate.USD,
-        marketcap: 0,
-        volume24: 0,
-        circulating: 0,
-        total: 0,
-        liquidity: 0,
-        unreleased: 0,
-      },
-    ];
-  } catch {
-    //
+    const ethUrl = import.meta.env.VITE_APP_ETH_MARKET;
+    const ethRate = await fetch(ethUrl).then((x) => x.json());
+
+    return {
+      // FIXME: add a proper id based on the length of the token list
+      id: 999,
+      name: "Ethereum",
+      symbol: "ckETH",
+      price: ethRate.USD,
+      marketcap: 0,
+      volume24: 0,
+      circulating: 0,
+      total: 0,
+      liquidity: 0,
+      unreleased: 0,
+    };
+  } catch (error) {
+    console.warn("Error fetching ETH rate:", error);
+    return undefined;
   }
+}
+
+interface updateAllBalancesParams {
+  loading: boolean;
+  myAgent: HttpAgent;
+  defaultTokens: Token[];
+  basicSearch?: boolean;
+  fromLogin?: boolean;
+}
+
+export const updateAllBalances = async (params: updateAllBalancesParams) => {
+  const { loading, myAgent, defaultTokens, basicSearch, fromLogin } = params;
+
+  const tokenMarkets = await getTokensFromMarket();
+  const ETHRate = await getETHRate();
+  if (ETHRate) tokenMarkets.push(ETHRate);
+
   store.dispatch(setTokenMarket(tokenMarkets));
 
-  const auxTokens = [...tokens].sort((a, b) => {
-    return a.id_number - b.id_number;
-  });
-
+  const auxTokens = defaultTokens.sort((a, b) => a.id_number - b.id_number);
   const myPrincipal = store.getState().auth.userPrincipal;
 
   if (!myPrincipal) return;

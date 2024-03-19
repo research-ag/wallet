@@ -67,9 +67,18 @@ export const WorkerHook = () => {
     dispatch(setLoading(true));
     const dbTokens = await db().getTokens();
     if (dbTokens) {
-      await updateAllBalances(true, userAgent, dbTokens);
+      await updateAllBalances({
+        loading: true,
+        myAgent: userAgent,
+        defaultTokens: dbTokens,
+      });
     } else {
-      await updateAllBalances(true, userAgent, defaultTokens, true);
+      await updateAllBalances({
+        loading: true,
+        myAgent: userAgent,
+        defaultTokens,
+        basicSearch: true,
+      });
     }
     await contactCacheRefresh();
     await allowanceCacheRefresh();

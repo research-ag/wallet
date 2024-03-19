@@ -130,8 +130,17 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean,
 
   // TOKENS
   const storedTokens = await db().getTokens();
+
+  // FIXME: validate less than 0 is not correct
   if (storedTokens.length < 0) {
-    const balances = await updateAllBalances(true, myAgent, defaultTokens, true, true);
+
+    const balances = await updateAllBalances({
+      loading: true,
+      myAgent,
+      defaultTokens,
+      basicSearch: true,
+      fromLogin: true,
+    });
 
     if (balances && balances.tokens) {
       store.dispatch(setReduxTokens(balances.tokens));

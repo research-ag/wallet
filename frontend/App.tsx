@@ -54,31 +54,40 @@ const App: React.FC = () => {
 
   // Subscribe all DB documents observables after Redux store has been initialized
   useEffect(() => {
-    const allowancesSubscriptionHandler = (x: any[]) => store.dispatch(setReduxAllowances(x));
-    const contactsSubscriptionHandler = (x: any[]) => store.dispatch(setReduxContacts(x));
-    const tokensSubscriptionHandler = (x: any[]) => {
-      if (x.length > 0) {
-        const {
-          asset,
-          auth: { authClient, userAgent },
-        } = store.getState();
+    (function () {
+      const allowancesSubscriptionHandler = (x: any[]) => store.dispatch(setReduxAllowances(x));
+      const contactsSubscriptionHandler = (x: any[]) => store.dispatch(setReduxContacts(x));
 
-        store.dispatch(setReduxTokens(x));
+      const tokensSubscriptionHandler = async (x: any[]) => {
+        if (x.length > 0) {
+          const {
+            asset,
+            auth: { authClient, userAgent },
+          } = store.getState();
 
-        if (asset.initLoad) setAssetFromLocalData(x, authClient);
+          store.dispatch(setReduxTokens(x));
 
-        updateAllBalances(true, userAgent, x, false, true);
-      }
-    };
+          if (asset.initLoad) setAssetFromLocalData(x, authClient);
 
-    localDb().subscribeToAllTokens().subscribe(allowancesSubscriptionHandler);
-    rxDb().subscribeToAllTokens().subscribe(allowancesSubscriptionHandler);
+          await updateAllBalances({
+            loading: true,
+            myAgent: userAgent,
+            defaultTokens: x,
+            basicSearch: false,
+            fromLogin: true,
+          });
+        }
+      };
 
-    localDb().subscribeToAllContacts().subscribe(contactsSubscriptionHandler);
-    rxDb().subscribeToAllContacts().subscribe(contactsSubscriptionHandler);
+      localDb().subscribeToAllTokens().subscribe(allowancesSubscriptionHandler);
+      rxDb().subscribeToAllTokens().subscribe(allowancesSubscriptionHandler);
 
-    localDb().subscribeToAllAllowances().subscribe(tokensSubscriptionHandler);
-    rxDb().subscribeToAllAllowances().subscribe(tokensSubscriptionHandler);
+      localDb().subscribeToAllContacts().subscribe(contactsSubscriptionHandler);
+      rxDb().subscribeToAllContacts().subscribe(contactsSubscriptionHandler);
+
+      localDb().subscribeToAllAllowances().subscribe(tokensSubscriptionHandler);
+      rxDb().subscribeToAllAllowances().subscribe(tokensSubscriptionHandler);
+    })();
   }, [store]);
 
   return (

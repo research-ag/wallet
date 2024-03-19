@@ -37,7 +37,13 @@ export const AssetHook = () => {
 
   const reloadBallance = async (tkns?: Token[]) => {
     dispatch(setLoading(true));
-    updateAllBalances(true, userAgent, tkns ? tkns : tokens.length > 0 ? tokens : defaultTokens);
+    updateAllBalances({
+      loading: true,
+      myAgent: userAgent,
+      defaultTokens: tkns ? tkns : tokens.length > 0 ? tokens : defaultTokens,
+      basicSearch: false,
+      fromLogin: true,
+    });
     await allowanceCacheRefresh();
     await contactCacheRefresh();
     dispatch(setLoading(false));
