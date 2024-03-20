@@ -1,5 +1,5 @@
 import { TAllowance } from "@/@types/allowance";
-import { CalendarPicker } from "@components/CalendarPicker";
+import { CalendarPicker } from "@components/calendar";
 import CheckBox from "@components/checkbox/CheckBox";
 import dayjs from "dayjs";
 import { useMemo } from "react";
