@@ -10,12 +10,15 @@ import { ChangeEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 export default function TransactionAmount() {
+  // INFO: amountFromMax is the allowance amount (if allowance) else the subaccount balance
   const [amountFromMax, setAmountFromMax] = useState<string>("0");
+  // INFO: the allowance subaccount balance is the balance of the person who has given the allowance, will be shown if sender is allowance only
   const [allowanceSubAccountBalance, setAllowanceSubAccountBalance] = useState<string>("0");
+
   const [showAvailable, setShowAvailable] = useState(false);
   const [showMax, setShowMax] = useState(false);
-
   const [isMaxAmountLoading, setMaxAmountLoading] = useState(false);
+
   const { sender, errors, amount } = useAppSelector((state) => state.transaction);
   const { transactionFee, getSenderMaxAmount, isSenderAllowance, senderPrincipal, senderSubAccount } = useSend();
   const { t } = useTranslation();
@@ -49,6 +52,7 @@ export default function TransactionAmount() {
       </div>
       <div className={getAmountDetailsStyles(!isMaxAmountLoading && (showAvailable || showMax))}>
         <div className="flex">
+          {/* show max about */}
           {!isMaxAmountLoading && showMax && (
             <>
               <p className="mr-1 text-sm text-primary-color">{t("max")}: </p>
@@ -92,48 +96,64 @@ export default function TransactionAmount() {
 
   async function onMaxAmount() {
     try {
-      setMaxAmountLoading(true);
-      setShowAvailable(false);
-      setShowMax(false);
-      const maxAmount = await getSenderMaxAmount();
-      const bigintBalance = toHoleBigInt(maxAmount || "0", Number(sender?.asset?.decimal));
-      const bigintFee = toHoleBigInt(transactionFee || "0", Number(sender?.asset?.decimal));
-      const bigintMaxAmount = bigintBalance - bigintFee;
-
-      if (!isSenderAllowance()) {
-        if (bigintBalance <= bigintFee) {
-          setErrorAction(TransactionValidationErrorsEnum.Values["error.not.enough.balance"]);
-          return;
-        }
-        removeErrorAction(TransactionValidationErrorsEnum.Values["error.not.enough.balance"]);
-      }
-
-      const topAmount = toFullDecimal(bigintMaxAmount, Number(sender?.asset?.decimal));
+      let allowanceSubaccountBalance = 0;
+      // INFO: both can be from sub account balance of from allowance
+      let transactionAmount = 0;
+      let transactionAmountWithoutFee = 0;
 
       if (isSenderAllowance()) {
-        const params = {
-          principal: senderPrincipal,
-          subAccount: senderSubAccount,
-          assetAddress: sender?.asset?.address,
-        };
-
-        const allowanceBigintBalance = await getSubAccountBalance(params);
-        const readableBalance = toFullDecimal(allowanceBigintBalance, Number(sender?.asset?.decimal));
-
-        setAmountAction(readableBalance);
-        setAmountFromMax(readableBalance);
-        setShowMax(true);
-
-        setAllowanceSubAccountBalance(readableBalance);
-
-        if (allowanceBigintBalance < bigintMaxAmount) {
-          setShowAvailable(true);
-        }
+        console.log("is an allowance");
       } else {
-        setAmountAction(topAmount);
-        setAmountFromMax(topAmount);
-        setShowMax(true);
+        console.log("is not an allowance");
       }
+
+      // ------------------------------------------------------------------------------
+      // setMaxAmountLoading(true);
+      // setShowAvailable(false);
+      // setShowMax(false);
+
+      // // INFO: get the allowance amount or the subaccount balance. (include the fee)
+      // const maxAmount = await getSenderMaxAmount();
+      // const bigintBalance = toHoleBigInt(maxAmount || "0", Number(sender?.asset?.decimal));
+
+      // // INFO: if allowance or sub account balance, the max amount must not include the fee
+      // const bigintFee = toHoleBigInt(transactionFee || "0", Number(sender?.asset?.decimal));
+      // const bigintMaxAmount = bigintBalance - bigintFee;
+
+      // if (!isSenderAllowance()) {
+      //   if (bigintBalance <= bigintFee) {
+      //     setErrorAction(TransactionValidationErrorsEnum.Values["error.not.enough.balance"]);
+      //     return;
+      //   }
+      //   removeErrorAction(TransactionValidationErrorsEnum.Values["error.not.enough.balance"]);
+      // }
+
+      // // INFO: convert the bigintMaxAmount to a readable amount, without the fee (Amount that the user is allowed to transfer and must be set to the input)
+      // const topAmount = toFullDecimal(bigintMaxAmount, Number(sender?.asset?.decimal));
+
+      // if (isSenderAllowance()) {
+      //   const params = {
+      //     principal: senderPrincipal,
+      //     subAccount: senderSubAccount,
+      //     assetAddress: sender?.asset?.address,
+      //   };
+      //   // INFO: get the balance of the person who has given the allowance, to check if the balance is enough to cover the allowance
+      //   const allowanceBigintBalance = await getSubAccountBalance(params);
+      //   const readableBalance = toFullDecimal(allowanceBigintBalance, Number(sender?.asset?.decimal));
+
+      //   setAmountAction(readableBalance);
+      //   setAmountFromMax(topAmount);
+      //   setShowMax(true);
+      //   setAllowanceSubAccountBalance(readableBalance);
+
+      //   if (allowanceBigintBalance < bigintMaxAmount) {
+      //     setShowAvailable(true);
+      //   }
+      // } else {
+      //   setAmountAction(topAmount);
+      //   setAmountFromMax(topAmount);
+      //   setShowMax(true);
+      // }
     } catch (error) {
       console.log(error);
     } finally {
