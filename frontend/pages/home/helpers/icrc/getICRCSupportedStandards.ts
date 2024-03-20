@@ -1,9 +1,9 @@
 import { getIcrcActor } from "@/pages/home/helpers/icrc";
 import { SupportedStandard } from "@/@types/icrc";
 import { HttpAgent } from "@dfinity/agent";
-import dayjs from "dayjs";
+import { extend } from "dayjs";
 import utc from "dayjs/plugin/utc";
-dayjs.extend(utc);
+extend(utc);
 //
 
 interface ICRCSupportedStandardsParams {

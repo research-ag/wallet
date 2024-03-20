@@ -2,7 +2,6 @@ import { AllowanceValidationErrorsEnum, TAllowance } from "@/@types/allowance";
 import { submitAllowanceApproval, createApproveAllowanceParams, getSubAccountBalance } from "@/pages/home/helpers/icrc";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { useMutation } from "@tanstack/react-query";
-import { throttle } from "lodash";
 import { useCallback, useState } from "react";
 import useAllowanceDrawer from "./useAllowanceDrawer";
 import { validateUpdateAllowance } from "../validators/allowance";
@@ -16,6 +15,8 @@ import {
 import { Asset } from "@redux/models/AccountModels";
 import dayjs from "dayjs";
 import { refreshAllowance } from "../helpers/refreshAllowance";
+// eslint-disable-next-line import/named
+import { throttle } from "lodash";
 
 export function useUpdateAllowance() {
   const dispatch = useAppDispatch();

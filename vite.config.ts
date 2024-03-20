@@ -25,7 +25,7 @@ try {
 
 // List of all aliases for canisters
 // This will allow us to: import { canisterName } from "canisters/canisterName"
-const aliases = Object.entries(dfxJson.canisters).reduce((acc, [name, _value]) => {
+const aliases = Object.entries(dfxJson.canisters).reduce((acc, [name]) => {
   // Get the network name, or `local` by default.
   const networkName = process.env["DFX_NETWORK"] ?? "local";
   const outputRoot = path.join(__dirname, ".dfx", networkName, "canisters", name);

@@ -23,6 +23,7 @@ export default function WatchOnlyInput(props: WatchOnlyInputProps) {
       value={principalAddress}
       onChange={onPrincipalChange}
       border={watchOnlyLoginErr ? "error" : undefined}
+      // eslint-disable-next-line jsx-a11y/no-autofocus
       autoFocus
       sufix={<CheckIcon className={getCheckIconStyles(principalAddress, watchOnlyLoginErr)} />}
       onKeyDown={(e) => {

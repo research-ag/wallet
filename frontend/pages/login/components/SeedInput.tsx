@@ -20,6 +20,7 @@ export default function SeedInput({ seed, setSeed }: SeedMethodInputProps) {
       compOutClass=""
       value={seed}
       onChange={onSeedChange}
+      // eslint-disable-next-line jsx-a11y/no-autofocus
       autoFocus
       sufix={
         <div className="flex flex-row items-center justify-start gap-2">

@@ -79,6 +79,7 @@ const DialogAddAsset = ({
           sizeComp="small"
           sizeInput="small"
           inputClass="!py-1"
+          // eslint-disable-next-line jsx-a11y/no-autofocus
           autoFocus
           onChange={onChangeName}
           onKeyUp={onKeyUp}

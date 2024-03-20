@@ -255,6 +255,7 @@ export default function SubAccountBody(props: SubAccountBodyProps) {
                 onChange={(e) => {
                   changeName(e.target.value);
                 }}
+                // eslint-disable-next-line jsx-a11y/no-autofocus
                 autoFocus
               />
             </div>

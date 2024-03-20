@@ -34,6 +34,7 @@ export default function MnemonicInput({ phrase, setPhrase }: MnemonicInputProps)
       placeholder={t("login.mnemonic.expected")}
       value={phrase}
       onChange={onPhraseChange}
+      // eslint-disable-next-line jsx-a11y/no-autofocus
       autoFocus
       sufix={
         <div className="flex flex-row items-center justify-start gap-1">
