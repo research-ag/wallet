@@ -1,5 +1,5 @@
 import { VariantProps, cva } from "cva";
-import { FC, InputHTMLAttributes } from "react";
+import { InputHTMLAttributes } from "react";
 
 const inputComp = cva("button", {
   variants: {
@@ -77,7 +77,7 @@ export interface InputProps
   inputClass?: string;
 }
 
-export const CustomInput: FC<InputProps> = ({
+export default function CustomInput({
   className,
   sizeInput,
   textStyle,
@@ -92,7 +92,7 @@ export const CustomInput: FC<InputProps> = ({
   compOutClass = "",
   inputClass = "",
   ...props
-}) => {
+}: InputProps) {
   return (
     <div className={`realtive roun flex flex-row justify-start items-center w-full gap-1 ${compOutClass}`}>
       {prefix && prefixPosition === "out" && prefix}
@@ -117,4 +117,4 @@ export const CustomInput: FC<InputProps> = ({
       {sufix && sufixPosition === "out" && sufix}
     </div>
   );
-};
+}

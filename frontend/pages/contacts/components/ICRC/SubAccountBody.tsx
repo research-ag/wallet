@@ -9,7 +9,7 @@ import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 import { Buffer } from "buffer";
 
 import { CustomCopy } from "@components/tooltip";
-import { CustomInput } from "@components/Input";
+import { CustomInput } from "@components/input";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
 import { getInitialFromName, hexToUint8Array, removeLeadingZeros, shortAddress } from "@/utils";

@@ -4,7 +4,7 @@ import SearchIcon from "@assets/svg/files/icon-search.svg";
 //
 import { useTranslation } from "react-i18next";
 import { IUseContactFilters } from "../hooks/useContactFilters";
-import { CustomInput } from "@components/Input";
+import { CustomInput } from "@components/input";
 import IconButton from "@components/button/IconButton";
 import AssetFilter from "./ICRC/AssetFilter";
 

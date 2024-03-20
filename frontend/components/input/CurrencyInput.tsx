@@ -1,6 +1,32 @@
-import { VariantProps } from "cva";
+import { cva, VariantProps } from "cva";
 import { InputHTMLAttributes, ReactNode } from "react";
-import { inputCurrencyCVA } from "./styles.cva";
+
+const inputCurrencyCVA = cva(
+  [
+    "flex",
+    "border",
+    "bg-ThemeColorSelectorLight dark:bg-SecondaryColor",
+    "text-PrimaryTextColorLight dark:text-PrimaryTextColor",
+    "py-2 px-4",
+    "rounded-lg",
+  ],
+  {
+    variants: {
+      isLoading: {
+        true: ["opacity-50 pointer-events-none"],
+        false: [""],
+      },
+      border: {
+        error: ["border border-TextErrorColor"],
+        none: ["border", "border-BorderColorLight", "dark:border-BorderColor"],
+      },
+    },
+    defaultVariants: {
+      isLoading: false,
+      border: "none",
+    },
+  },
+);
 
 interface InputCurrencyProps extends InputHTMLAttributes<HTMLImageElement>, VariantProps<typeof inputCurrencyCVA> {
   onCurrencyChange: (currency: string) => void;

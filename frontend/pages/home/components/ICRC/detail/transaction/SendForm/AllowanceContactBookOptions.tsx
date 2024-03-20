@@ -6,7 +6,7 @@ import { setSenderContactAction } from "@redux/transaction/TransactionActions";
 import { getIconSrc } from "@/utils/icons";
 import { AvatarEmpty } from "@components/avatar";
 import SearchIcon from "@assets/svg/files/icon-search.svg";
-import { CustomInput } from "@components/Input";
+import { CustomInput } from "@components/input";
 
 interface AllowanceContactBookOptionsProps {
   searchSubAccountValue: string | null;

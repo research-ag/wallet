@@ -2,7 +2,7 @@
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
 import Modal from "@components/Modal";
-import { CustomInput } from "@components/Input";
+import { CustomInput } from "@components/input";
 import { CustomCheck } from "@components/checkbox";
 import { CustomButton } from "@components/button";
 import { useTranslation } from "react-i18next";

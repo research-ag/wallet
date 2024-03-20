@@ -2,7 +2,7 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { VariantProps } from "cva";
 import { useMemo, useRef, useState } from "react";
 import { ReactComponent as DropIcon } from "@assets/svg/files/chevron-right-icon.svg";
-import { CustomInput } from "@components/Input";
+import { CustomInput } from "@components/input";
 import SearchIcon from "@assets/svg/files/icon-search.svg";
 import { SelectOption } from "@/@types/components";
 import { selectContentCVA, selectTriggerCVA } from "./styles.cva";

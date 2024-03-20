@@ -9,7 +9,7 @@ import ContactAssetPop from "./contactAssetPop";
 import { getInitialFromName, shortAddress } from "@/utils";
 import TableAssets from "./tableAssets";
 import { CustomCopy } from "@components/tooltip";
-import { CustomInput } from "@components/Input";
+import { CustomInput } from "@components/input";
 import { ReactComponent as MoneyHandIcon } from "@assets/svg/files/money-hand.svg";
 import { Fragment, ChangeEvent } from "react";
 import { AccountIdentifier } from "@dfinity/ledger-icp";

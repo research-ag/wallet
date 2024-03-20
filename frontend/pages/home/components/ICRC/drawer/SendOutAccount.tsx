@@ -4,7 +4,7 @@ import SearchIcon from "@assets/svg/files/icon-search.svg";
 import QRIcon from "@assets/svg/files/qr.svg";
 //
 import { CustomButton } from "@components/button";
-import { CustomInput } from "@components/Input";
+import { CustomInput } from "@components/input";
 import { IcrcAccount, decodeIcrcAccount, encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
 import { getICRC1Acc, shortAddress, subUint8ArrayToHex, getFirstNFrom, hexToUint8Array, checkHexString } from "@/utils";

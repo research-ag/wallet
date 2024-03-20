@@ -4,7 +4,7 @@ import { ReactComponent as InfoIcon } from "@assets/svg/files/info-icon.svg";
 import { GeneralHook } from "../../../hooks/generalHook";
 import { IcrcIndexCanister, IcrcLedgerCanister } from "@dfinity/ledger-icrc";
 import { getMetadataInfo, toFullDecimal } from "@/utils";
-import { CustomInput } from "@components/Input";
+import { CustomInput } from "@components/input";
 import { CustomCopy } from "@components/tooltip";
 import { editToken } from "@redux/assets/AssetReducer";
 import { CustomButton } from "@components/button";
