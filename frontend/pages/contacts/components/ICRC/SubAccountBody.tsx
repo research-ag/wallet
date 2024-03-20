@@ -26,7 +26,7 @@ import { getAllowanceDetails } from "@/pages/home/helpers/icrc/";
 import { DeleteContactTypeEnum } from "@/const";
 import useContactTable from "../../hooks/useContactTable";
 import { GeneralHook } from "@pages/home/hooks/generalHook";
-import LoadingLoader from "@components/Loader";
+import { LoadingLoader } from "@components/loader";
 import store from "@redux/Store";
 import { SupportedStandardEnum } from "@/@types/icrc";
 import { CustomButton } from "@components/button";

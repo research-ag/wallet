@@ -1,6 +1,6 @@
 import { cva, VariantProps } from "cva";
 import { ButtonHTMLAttributes } from "react";
-import LoadingLoader from "@components/Loader";
+import { LoadingLoader } from "@components/loader";
 
 export const buttonCVA = cva(["bg-AccpetButtonColor", "rounded-md", "flex justify-center items-center", "p-2"], {
   variants: {

@@ -14,7 +14,7 @@ import SenderAsset from "./SenderAsset";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "@redux/Store";
 import { TransactionValidationErrorsEnum, transactionErrors } from "@/@types/transactions";
-import LoadingLoader from "@components/Loader";
+import { LoadingLoader } from "@components/loader";
 
 interface SendFormProps {
   setDrawerOpen(value: boolean): void;

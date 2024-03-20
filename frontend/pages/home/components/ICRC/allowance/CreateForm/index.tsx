@@ -19,7 +19,7 @@ import {
 } from "@redux/allowance/AllowanceActions";
 import { getDuplicatedAllowance } from "@pages/home/validators/allowance";
 import { replaceAllowancesToStorage } from "@pages/home/services/allowance";
-import LoadingLoader from "@components/Loader";
+import { LoadingLoader } from "@components/loader";
 import { refreshAllowance } from "@pages/home/helpers/refreshAllowance";
 
 export default function CreateForm() {

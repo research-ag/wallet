@@ -16,7 +16,7 @@ import { Asset } from "@redux/models/AccountModels";
 import { IdentityHook } from "@pages/hooks/identityHook";
 import { ChangeEvent, useState } from "react";
 import { Principal } from "@dfinity/principal";
-import LoadingLoader from "@components/Loader";
+import { LoadingLoader } from "@components/loader";
 import { AccountHook } from "@pages/hooks/accountHook";
 import { getICRCSupportedStandards } from "@pages/home/helpers/icrc";
 import { db } from "@/database/db";

@@ -20,7 +20,7 @@ import { TransactionValidationErrorsEnum } from "@/@types/transactions";
 import { SendingStatusEnum } from "@/const";
 import { AssetHook } from "@pages/home/hooks/assetHook";
 import { getSubAccountBalance, transferTokens, transferTokensFromAllowance } from "@pages/home/helpers/icrc";
-import LoadingLoader from "@components/Loader";
+import { LoadingLoader } from "@components/loader";
 import { toFullDecimal, toHoleBigInt } from "@/utils";
 
 interface ConfirmDetailProps {

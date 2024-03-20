@@ -2,7 +2,7 @@ import { AllowanceValidationErrorsEnum } from "@/@types/allowance";
 import { middleTruncation } from "@/utils/strings";
 import { ReactComponent as AlertIcon } from "@assets/svg/files/alert-icon.svg";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
-import LoadingLoader from "@components/Loader";
+import { LoadingLoader } from "@components/loader";
 import Modal from "@components/Modal";
 import Button from "@components/button/Button";
 import useDeleteAllowance from "@pages/home/hooks/useDeleteAllowance";
