@@ -151,7 +151,7 @@ const AddAssetManual = ({
         />
       </div>
       <div className="flex flex-col items-start w-full mb-3">
-        <p className="opacity-60">{t("fee")}</p>
+        <p className="opacity-60 ">{t("fee")}</p>
         <CustomInput
           sizeInput={"medium"}
           intent={"secondary"}

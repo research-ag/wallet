@@ -14,13 +14,13 @@ export default function NewSender() {
   }, []);
 
   return (
-    <div className="px-4 py-2 border rounded-md border-gray-color-2 bg-secondary-color-2 text-start">
-      <p>
+    <div className="px-4 py-2 border rounded-md border-gray-color-2 dark:bg-secondary-color-2 bg-secondary-color-1-light text-start">
+      <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
         {middleTruncation(senderPrincipal, 15, 15)} {senderSubAccount}
       </p>
       <div className="flex items-center justify-start">
         <img src={getIconSrc(sender?.asset?.logo, sender?.asset?.tokenSymbol)} className="w-4 h-4 mr-2" alt="" />
-        <p className="opacity-50 text-md">
+        <p className="opacity-50 text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
           {balance} {sender?.asset?.tokenSymbol}
         </p>
       </div>

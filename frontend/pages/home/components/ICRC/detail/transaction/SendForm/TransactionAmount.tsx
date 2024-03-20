@@ -54,8 +54,8 @@ export default function TransactionAmount() {
         </div>
 
         <div className="flex">
-          <p className="mr-1 text-sm text-gray-400">{t("fee")}</p>
-          <p className="text-sm">
+          <p className="mr-1 text-sm text-gray-400 ">{t("fee")}</p>
+          <p className="text-sm text-PrimaryTextColorLight dark:text-PrimaryTextColor">
             {transactionFee} {sender?.asset?.tokenSymbol || "-"}
           </p>
         </div>
