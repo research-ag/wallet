@@ -1,36 +1,36 @@
 @import "../../App.scss";
 
 .loader > div {
-    width: 3vw;
-    height: 3vw;
-    border-radius: 100%;
-    margin: 2vw;
-    animation: bounce 3.5s 0.5s linear infinite; 
+  width: 3vw;
+  height: 3vw;
+  border-radius: 100%;
+  margin: 2vw;
+  animation: bounce 3.5s 0.5s linear infinite;
 }
 .loader {
-    .one {
-        animation-delay: 0ms;
-    }
-    .two {
-        animation-delay: 200ms;
-    }
-    .three {
-        animation-delay: 400ms;
-    }
-    .four {
-        animation-delay: 600ms;
-    }
+  .one {
+    animation-delay: 0ms;
+  }
+  .two {
+    animation-delay: 200ms;
+  }
+  .three {
+    animation-delay: 400ms;
+  }
+  .four {
+    animation-delay: 600ms;
+  }
 }
 @keyframes bounce {
-    0%,
-    50%,
-    100% {
-        transform: scale(1);
-    }
-    25% {
-        transform: scale(0.6);
-    }
-    75% {
-        transform: scale(1.4);
-    }
+  0%,
+  50%,
+  100% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(0.6);
+  }
+  75% {
+    transform: scale(1.4);
+  }
 }

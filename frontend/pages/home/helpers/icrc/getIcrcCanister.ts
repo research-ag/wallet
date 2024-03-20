@@ -9,15 +9,11 @@ import store from "@redux/Store";
  * @returns An IcrcLedgerCanister object representing the canister for the given asset address.
  */
 export function getCanister(assetAddress: string | Principal): IcrcLedgerCanister {
-    const agent = store.getState().auth.userAgent;
-    const canisterId = typeof assetAddress === "string"
-        ? Principal.fromText(assetAddress)
-        : assetAddress;
+  const agent = store.getState().auth.userAgent;
+  const canisterId = typeof assetAddress === "string" ? Principal.fromText(assetAddress) : assetAddress;
 
-    return IcrcLedgerCanister.create({
-        agent,
-        canisterId,
-    });
+  return IcrcLedgerCanister.create({
+    agent,
+    canisterId,
+  });
 }
-
-

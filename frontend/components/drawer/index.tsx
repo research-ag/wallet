@@ -1,1 +1,1 @@
-export {default as BasicDrawer} from "./BasicDrawer";
+export { default as BasicDrawer } from "./BasicDrawer";

@@ -2,7 +2,7 @@
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 import UpAmountIcon from "@assets/svg/files/up-amount-icon.svg";
 //
-import {BasicModal} from "@components/modal";
+import { BasicModal } from "@components/modal";
 import { CustomCopy } from "@components/tooltip";
 import { shortAddress } from "@/utils";
 import { ProtocolType, SendingStatusEnum } from "@/const";
@@ -63,7 +63,9 @@ const DialogSendConfirmation = ({ setDrawerOpen, showConfirmationModal, modal }:
               <CustomCopy size={"small"} copyText={receiverPrincipal} />
             </div>
             <div className="flex flex-row items-center justify-start gap-2">
-              <p>{receiverSubAccount.length > 20 ? middleTruncation(receiverSubAccount, 10, 10) : receiverSubAccount}</p>
+              <p>
+                {receiverSubAccount.length > 20 ? middleTruncation(receiverSubAccount, 10, 10) : receiverSubAccount}
+              </p>
               <CustomCopy size={"small"} copyText={receiverSubAccount} />
             </div>
             <p>

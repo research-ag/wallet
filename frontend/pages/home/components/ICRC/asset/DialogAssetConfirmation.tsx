@@ -1,7 +1,7 @@
 // svgs
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
-import {BasicModal} from "@components/modal";
+import { BasicModal } from "@components/modal";
 import { GeneralHook } from "../../../hooks/generalHook";
 import { AddingAssetsEnum, TokenNetwork, IconTypeEnum, TokenNetworkEnum, AddingAssets } from "@/const";
 import { useTranslation } from "react-i18next";

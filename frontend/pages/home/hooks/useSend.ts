@@ -11,15 +11,9 @@ export default function useSend() {
   const [transactionFee, setTransactionFee] = useState<string>("0");
   const { userPrincipal } = useAppSelector((state) => state.auth);
   const { assets } = useAppSelector((state) => state.asset);
-  const {
-    sender,
-    receiver,
-    amount,
-    sendingStatus,
-    errors,
-    initTime,
-    endTime
-  } = useAppSelector((state) => state.transaction);
+  const { sender, receiver, amount, sendingStatus, errors, initTime, endTime } = useAppSelector(
+    (state) => state.transaction,
+  );
 
   /**
    * Calculates the latest and updated asset information based on the selected asset in the transaction state.
@@ -52,10 +46,11 @@ export default function useSend() {
     const decimalPlaces = updateAsset?.decimal ?? 0;
 
     if (transactionFee == "0" && updateAsset?.address && decimalPlaces) {
-      transactionFee = await getTransactionFeeFromLedger({
-        assetAddress: updateAsset.address,
-        assetDecimal: decimalPlaces,
-      }) || "0";
+      transactionFee =
+        (await getTransactionFeeFromLedger({
+          assetAddress: updateAsset.address,
+          assetDecimal: decimalPlaces,
+        })) || "0";
 
       return transactionFee;
     }
@@ -94,7 +89,6 @@ export default function useSend() {
     return "";
   }
 
-
   /**
    * Validates the transaction sender configuration.
    * The function returns `true` if both principal and sub-account are valid, otherwise it returns `false`.
@@ -114,7 +108,7 @@ export default function useSend() {
 
   /**
    * Asynchronously retrieves the available balance for the transaction sender.
-   * 
+   *
    * In case of errors during the allowance request, it logs the error and returns "0" as a fallback.
    *
    * This function ensures accurate balance representation for the transaction sender, considering different sender setups.
@@ -209,7 +203,6 @@ export default function useSend() {
     return "";
   }
 
-
   /**
    * Determines and returns the sub-account identifier for the transaction receiver.
    *
@@ -260,8 +253,7 @@ export default function useSend() {
     const receiverPrincipal = getReceiverPrincipal();
     const ownerPrincipal = userPrincipal.toText();
     return receiverPrincipal === ownerPrincipal;
-  };
-
+  }
 
   /**
    * Calculates whether a transaction can be enabled based on sender, receiver, amount, and asset information.
@@ -281,12 +273,12 @@ export default function useSend() {
     () =>
       Boolean(
         sender?.asset?.address &&
-        sender?.asset?.decimal &&
-        amount &&
-        getSenderSubAccount() &&
-        getSenderPrincipal() &&
-        getReceiverPrincipal() &&
-        getReceiverSubAccount(),
+          sender?.asset?.decimal &&
+          amount &&
+          getSenderSubAccount() &&
+          getSenderPrincipal() &&
+          getReceiverPrincipal() &&
+          getReceiverSubAccount(),
       ),
     [sender, receiver, amount],
   );
