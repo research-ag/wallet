@@ -11,14 +11,14 @@ import { clsx } from "clsx";
 import { ChangeEvent, Fragment, useState } from "react";
 import { GeneralHook } from "../../../hooks/generalHook";
 import { toFullDecimal } from "@/utils";
-import { CustomInput } from "@components/Input";
+import { CustomInput } from "@components/input";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch } from "@redux/Store";
 import { Token } from "@redux/models/TokenModels";
-import { CustomCopy } from "@components/CopyTooltip";
+import { CustomCopy } from "@components/tooltip";
 import { addSubAccount, removeSubAcc } from "@redux/assets/AssetReducer";
-import Modal from "@components/Modal";
-import { CustomButton } from "@components/Button";
+import { BasicModal } from "@components/modal";
+import { CustomButton } from "@components/button";
 import bigInt from "big-integer";
 import { db } from "@/database/db";
 
@@ -78,9 +78,9 @@ const AccountElement = ({
           if (editNameId !== subAccount.sub_account_id) setEditNameId("");
         }}
       >
-        <div className="flex flex-col justify-center items-start">
+        <div className="flex flex-col items-start justify-center">
           {editNameId === subAccount.sub_account_id ? (
-            <div className="flex flex-row justify-start items-center">
+            <div className="flex flex-row items-center justify-start">
               <CustomInput
                 intent={"primary"}
                 placeholder={""}
@@ -100,7 +100,7 @@ const AccountElement = ({
                 <p className="text-sm text-PrimaryTextColor">{t("save")}</p>
               </button>
               <button
-                className="flex justify-center items-center ml-2 p-1 bg-LockColor rounded cursor-pointer"
+                className="flex items-center justify-center p-1 ml-2 rounded cursor-pointer bg-LockColor"
                 onClick={onAdd}
               >
                 <img src={PlusIcon} className="w-4 h-4 rotate-45" alt="info-icon" />
@@ -111,7 +111,7 @@ const AccountElement = ({
               <p className={`${accName()} break-words max-w-[9rem]`}>{`${subAccount?.name}`}</p>
             </button>
           )}
-          <div className="flex flex-row justify-start items-center gap-3 min-h-5">
+          <div className="flex flex-row items-center justify-start gap-3 min-h-5">
             <p className={`${accId()} break-words max-w-[9rem] text-left`}>{subAccount?.sub_account_id}</p>
             {chechEqId() && (
               <CustomCopy size={"xSmall"} className="p-0" copyText={subAccount?.sub_account_id.substring(2) || "0"} />
@@ -123,7 +123,7 @@ const AccountElement = ({
             subAccount?.sub_account_id !== "0x0" && Number(subAccount?.amount) === 0 && !newSub ? "" : "pr-6"
           }`}
         >
-          <div className="flex flex-col justify-center items-end">
+          <div className="flex flex-col items-end justify-center">
             <p className="whitespace-nowrap">{`${toFullDecimal(
               subAccount?.amount,
               subAccount.decimal,
@@ -143,15 +143,15 @@ const AccountElement = ({
           )}
         </div>
       </div>
-      <Modal
+      <BasicModal
         width="w-[18rem]"
         padding="py-5 px-4"
         border="border border-BorderColorTwoLight dark:border-BorderColorTwo"
         open={deleteModal}
       >
-        <div className="reative flex flex-col justify-start items-start w-full text-md gap-4">
+        <div className="flex flex-col items-start justify-start w-full gap-4 reative text-md">
           <CloseIcon
-            className="absolute top-5 right-5 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
+            className="absolute cursor-pointer top-5 right-5 stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
             onClick={() => {
               setDeleteModal(false);
             }}
@@ -165,13 +165,13 @@ const AccountElement = ({
             ?
           </p>
 
-          <div className="flex flex-row justify-end items-start w-full ">
+          <div className="flex flex-row items-start justify-end w-full ">
             <CustomButton className="min-w-[5rem]" onClick={onConfirm} size={"small"}>
               <p>{t("yes")}</p>
             </CustomButton>
           </div>
         </div>
-      </Modal>
+      </BasicModal>
     </Fragment>
   );
 

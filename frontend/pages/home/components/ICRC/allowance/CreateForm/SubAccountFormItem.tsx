@@ -1,7 +1,7 @@
 import { TAllowance, AllowanceValidationErrorsEnum } from "@/@types/allowance";
 import { SelectOption } from "@/@types/components";
-import { Chip } from "@components/chip";
-import { Select } from "@components/select";
+import { BasicChip } from "@components/chip";
+import { BasicSelect } from "@components/select";
 import { useAppSelector } from "@redux/Store";
 import { Asset } from "@redux/models/AccountModels";
 import { useMemo, useState } from "react";
@@ -41,7 +41,7 @@ export default function SubAccountFormItem(props: ISubAccountFormItemProps) {
       accountsToMap?.map((account) => ({
         value: account?.sub_account_id,
         label: account?.name,
-        icon: <Chip text={account.sub_account_id} size="medium" className="mr-4" />,
+        icon: <BasicChip text={account.sub_account_id} size="medium" className="mr-4" />,
       })) || []
     );
   }, [allowance.asset, searchValue, selectedAsset]);
@@ -52,7 +52,7 @@ export default function SubAccountFormItem(props: ISubAccountFormItemProps) {
         {t("subAccount")}
       </label>
 
-      <Select
+      <BasicSelect
         onSelect={onChange}
         options={options}
         initialValue={allowance?.subAccountId}

@@ -1,5 +1,5 @@
 import { TransactionValidationErrorsEnum } from "@/@types/transactions";
-import LoadingLoader from "@components/Loader";
+import { LoadingLoader } from "@components/loader";
 import useTransactionAmount from "@pages/home/hooks/useTransactionAmount";
 import { useAppSelector } from "@redux/Store";
 import { clsx } from "clsx";

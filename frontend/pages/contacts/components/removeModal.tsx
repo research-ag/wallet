@@ -2,8 +2,8 @@
 import { ReactComponent as WarningIcon } from "@assets/svg/files/warning.svg";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
-import Modal from "@components/Modal";
-import { CustomButton } from "@components/Button";
+import { BasicModal } from "@components/modal";
+import { CustomButton } from "@components/button";
 import { useTranslation } from "react-i18next";
 import { DeleteContactTypeEnum } from "@/const";
 import useContactTable from "../hooks/useContactTable";
@@ -30,7 +30,7 @@ const RemoveModal = ({ deleteModal, setDeleteModal, deleteType, getDeleteMsg, de
   const { removeCntct, removeAsset, removeSubacc } = useContactTable();
 
   return (
-    <Modal
+    <BasicModal
       open={deleteModal}
       width="w-[18rem]"
       padding="py-5"
@@ -72,7 +72,7 @@ const RemoveModal = ({ deleteModal, setDeleteModal, deleteType, getDeleteMsg, de
           </CustomButton>
         </div>
       </div>
-    </Modal>
+    </BasicModal>
   );
 
   function handleConfirmButton() {

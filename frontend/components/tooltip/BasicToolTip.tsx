@@ -5,7 +5,7 @@ interface ToolTipProps {
   children: React.ReactNode;
 }
 
-export default function ToolTip(props: ToolTipProps) {
+export default function BasicToolTip(props: ToolTipProps) {
   const { trigger, children } = props;
   return (
     <div className="w-fit">

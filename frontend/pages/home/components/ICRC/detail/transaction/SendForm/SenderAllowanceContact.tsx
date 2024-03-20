@@ -1,4 +1,4 @@
-import { Switch } from "@components/switch";
+import { BasicSwitch } from "@components/switch";
 import { useTranslation } from "react-i18next";
 import { ReactComponent as QRScanIcon } from "@assets/svg/files/qr.svg";
 import { AllowanceContactBook } from "./AllowanceContactBook";
@@ -22,7 +22,7 @@ export default function SenderAllowanceContact() {
           <p className="mr-1 opacity-50 text-md text-start text-PrimaryTextColorLight dark:text-PrimaryTextColor">
             {t("contact.book")}
           </p>
-          <Switch checked={sender.isNewSender} onChange={onContactBookChange} disabled={false} />
+          <BasicSwitch checked={sender.isNewSender} onChange={onContactBookChange} disabled={false} />
           <p className="ml-1 opacity-50 text-start text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
             {t("new")}
           </p>

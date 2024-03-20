@@ -1,6 +1,6 @@
 import { SelectOption } from "@/@types/components";
 import formatAsset from "@/utils/formatAsset";
-import { Select } from "@components/select";
+import { BasicSelect } from "@components/select";
 import { useAppSelector } from "@redux/Store";
 import { setSenderAssetAction } from "@redux/transaction/TransactionActions";
 import { useMemo, useState } from "react";
@@ -28,7 +28,7 @@ export default function SenderAsset() {
   return (
     <div>
       <p className="opacity-50 text-start text-black-color dark:text-white">{t("asset")}</p>
-      <Select
+      <BasicSelect
         onSelect={onAssetChange}
         options={options}
         initialValue={sender?.asset?.tokenName}

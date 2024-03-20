@@ -1,5 +1,60 @@
 import { VariantProps, cva } from "cva";
-import { FC, InputHTMLAttributes } from "react";
+import { InputHTMLAttributes } from "react";
+
+export interface InputProps
+  extends InputHTMLAttributes<HTMLInputElement>,
+    VariantProps<typeof input>,
+    VariantProps<typeof inputComp> {
+  compInClass?: string;
+  compOutClass?: string;
+  prefix?: any;
+  prefixPosition?: "out" | "in";
+  sufix?: any;
+  sufixPosition?: "out" | "in";
+  inputClass?: string;
+}
+
+export default function CustomInput({
+  className,
+  sizeInput,
+  textStyle,
+  intent,
+  border,
+  sizeComp,
+  prefix,
+  prefixPosition = "in",
+  sufix,
+  sufixPosition = "in",
+  compInClass = "",
+  compOutClass = "",
+  inputClass = "",
+  ...props
+}: InputProps) {
+  return (
+    <div className={`realtive roun flex flex-row justify-start items-center w-full gap-1 ${compOutClass}`}>
+      {prefix && prefixPosition === "out" && prefix}
+      <div
+        lang="en-US"
+        className={`realtive flex flex-row justify-start items-center w-full px-1 cursor-text ${compInClass} ${inputComp(
+          { intent, border, sizeComp, className },
+        )}`}
+      >
+        {prefix && prefixPosition === "in" && prefix}
+        <input
+          autoComplete="false"
+          spellCheck={false}
+          className={`w-full bg-inherit outline-none mx-1 py-2 ${inputClass} ${input({
+            sizeInput,
+            textStyle,
+          })}`}
+          {...props}
+        />
+        {sufix && sufixPosition === "in" && sufix}
+      </div>
+      {sufix && sufixPosition === "out" && sufix}
+    </div>
+  );
+}
 
 const inputComp = cva("button", {
   variants: {
@@ -63,58 +118,3 @@ const input = cva("button", {
     textStyle: "primary",
   },
 });
-
-export interface InputProps
-  extends InputHTMLAttributes<HTMLInputElement>,
-    VariantProps<typeof input>,
-    VariantProps<typeof inputComp> {
-  compInClass?: string;
-  compOutClass?: string;
-  prefix?: any;
-  prefixPosition?: "out" | "in";
-  sufix?: any;
-  sufixPosition?: "out" | "in";
-  inputClass?: string;
-}
-
-export const CustomInput: FC<InputProps> = ({
-  className,
-  sizeInput,
-  textStyle,
-  intent,
-  border,
-  sizeComp,
-  prefix,
-  prefixPosition = "in",
-  sufix,
-  sufixPosition = "in",
-  compInClass = "",
-  compOutClass = "",
-  inputClass = "",
-  ...props
-}) => {
-  return (
-    <div className={`realtive roun flex flex-row justify-start items-center w-full gap-1 ${compOutClass}`}>
-      {prefix && prefixPosition === "out" && prefix}
-      <div
-        lang="en-US"
-        className={`realtive flex flex-row justify-start items-center w-full px-1 cursor-text ${compInClass} ${inputComp(
-          { intent, border, sizeComp, className },
-        )}`}
-      >
-        {prefix && prefixPosition === "in" && prefix}
-        <input
-          autoComplete="false"
-          spellCheck={false}
-          className={`w-full bg-inherit outline-none mx-1 py-2 ${inputClass} ${input({
-            sizeInput,
-            textStyle,
-          })}`}
-          {...props}
-        />
-        {sufix && sufixPosition === "in" && sufix}
-      </div>
-      {sufix && sufixPosition === "out" && sufix}
-    </div>
-  );
-};

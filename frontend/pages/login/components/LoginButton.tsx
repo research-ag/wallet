@@ -1,6 +1,6 @@
 import { useSiweIdentity } from "ic-use-siwe-identity";
 import { isChainIdSupported } from "@/config/wagmi.config";
-import { CustomButton } from "@components/Button";
+import { CustomButton } from "@components/button";
 import { useAccount, useNetwork } from "wagmi";
 
 export default function LoginButton() {

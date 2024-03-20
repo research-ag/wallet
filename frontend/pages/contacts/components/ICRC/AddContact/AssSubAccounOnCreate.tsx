@@ -1,4 +1,4 @@
-import { CustomInput } from "@components/Input";
+import { CustomInput } from "@components/input";
 import { checkHexString } from "@/utils";
 import { ReactComponent as TrashIcon } from "@assets/svg/files/trash-empty.svg";
 import { SubAccountContact } from "@redux/models/ContactsModels";

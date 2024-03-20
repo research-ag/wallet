@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 import { AvatarEmpty } from "@components/avatar";
 import { ReactComponent as DropIcon } from "@assets/svg/files/chevron-right-icon.svg";
 import { getIconSrc } from "@/utils/icons";
-import { CustomInput } from "@components/Input";
+import { CustomInput } from "@components/input";
 import { ContactSubAccount } from "@/@types/transactions";
 import { setSenderContactAction } from "@redux/transaction/TransactionActions";
 import { useTranslation } from "react-i18next";

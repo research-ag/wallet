@@ -11,7 +11,7 @@ interface CalendarDatePickerProps extends DateTimePickerProps<dayjs.Dayjs> {
   onEnableChange: (enabled: boolean) => void;
 }
 
-export const CalendarPicker = (props: CalendarDatePickerProps) => {
+export default function CalendarPicker(props: CalendarDatePickerProps) {
   const {
     timezone = "system",
     format = "MM/DD/YY hh:mm:ss a",
@@ -63,7 +63,7 @@ export const CalendarPicker = (props: CalendarDatePickerProps) => {
     if (!disabled) return;
     onEnableChange(false);
   }
-};
+}
 
 function dateTimePickerStyles(theme: string) {
   return clsx("!cursor-pointer !w-full", theme === "light" ? "date-picker-light" : "date-picker");

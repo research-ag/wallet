@@ -3,9 +3,82 @@ import { ReactComponent as CopyIcon } from "@assets/svg/files/copy-icon.svg";
 import { ReactComponent as CopyGrayIcon } from "@/assets/svg/files/copy-gray-icon.svg";
 //
 import { VariantProps, cva } from "cva";
-import { ButtonHTMLAttributes, FC, useState } from "react";
+import { ButtonHTMLAttributes, useState } from "react";
 import * as Popover from "@radix-ui/react-popover";
 import { useTranslation } from "react-i18next";
+
+export interface TooltipProps
+  extends ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof copyIcon>,
+    VariantProps<typeof customCopy> {
+  side?: "top" | "right" | "bottom" | "left" | undefined;
+  sideOffset?: number | undefined;
+  align?: "center" | "end" | "start" | undefined;
+  alignOffset?: number | undefined;
+  showTime?: number | undefined;
+  copyStroke?: string;
+  copyText?: string;
+  isTransaction?: boolean;
+}
+
+export default function CustomCopy({
+  className,
+  copyText = "copy",
+  background,
+  rounded,
+  size,
+  boxSize,
+  side = "top",
+  sideOffset = 0,
+  align = "start",
+  alignOffset = 0,
+  showTime = 1000,
+  copyStroke = "fill-PrimaryTextColorLight dark:fill-PrimaryTextColor",
+  isTransaction = false,
+  ...props
+}: TooltipProps) {
+  const { t } = useTranslation();
+  const [open, setOpen] = useState(false);
+  return (
+    <Popover.Root open={open}>
+      <Popover.Trigger asChild>
+        <button
+          onClick={handleCopyClic}
+          className={`p-0 ${customCopy({ background, rounded, boxSize, className })}`}
+          {...props}
+        >
+          {isTransaction ? (
+            <CopyGrayIcon className={`!stroke-0 ${copyStroke} ${copyIcon({ size })}`} />
+          ) : (
+            <CopyIcon className={`!stroke-0 ${copyStroke} ${copyIcon({ size })}`} />
+          )}
+        </button>
+      </Popover.Trigger>
+      <Popover.Portal className="z-[9999]">
+        <Popover.Content
+          className="z-[9999] shadow-md"
+          side={side}
+          sideOffset={sideOffset}
+          align={align}
+          alignOffset={alignOffset}
+        >
+          <div className="flex flex-row items-center justify-start px-2 py-1 rounded-md bg-SecondaryColorLight/50 dark:bg-SecondaryColor/50">
+            <p className="text-sm text-PrimaryTextColorLight/60 dark:text-PrimaryTextColor/60">{t("copied")}</p>
+          </div>
+          <Popover.Arrow className="fill-SecondaryColorLight/50 dark:fill-SecondaryColor/50" />
+        </Popover.Content>
+      </Popover.Portal>
+    </Popover.Root>
+  );
+
+  function handleCopyClic() {
+    navigator.clipboard.writeText(copyText);
+    setOpen(true);
+    setTimeout(() => {
+      setOpen(false);
+    }, showTime);
+  }
+}
 
 const customCopy = cva("customCopy", {
   variants: {
@@ -45,76 +118,3 @@ const copyIcon = cva("copyIcon", {
     size: "medium",
   },
 });
-
-export interface TooltipProps
-  extends ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof copyIcon>,
-    VariantProps<typeof customCopy> {
-  side?: "top" | "right" | "bottom" | "left" | undefined;
-  sideOffset?: number | undefined;
-  align?: "center" | "end" | "start" | undefined;
-  alignOffset?: number | undefined;
-  showTime?: number | undefined;
-  copyStroke?: string;
-  copyText?: string;
-  isTransaction?: boolean;
-}
-
-export const CustomCopy: FC<TooltipProps> = ({
-  className,
-  copyText = "copy",
-  background,
-  rounded,
-  size,
-  boxSize,
-  side = "top",
-  sideOffset = 0,
-  align = "start",
-  alignOffset = 0,
-  showTime = 1000,
-  copyStroke = "fill-PrimaryTextColorLight dark:fill-PrimaryTextColor",
-  isTransaction = false,
-  ...props
-}) => {
-  const { t } = useTranslation();
-  const [open, setOpen] = useState(false);
-  return (
-    <Popover.Root open={open}>
-      <Popover.Trigger asChild>
-        <button
-          onClick={handleCopyClic}
-          className={`p-0 ${customCopy({ background, rounded, boxSize, className })}`}
-          {...props}
-        >
-          {isTransaction ? (
-            <CopyGrayIcon className={`!stroke-0 ${copyStroke} ${copyIcon({ size })}`} />
-          ) : (
-            <CopyIcon className={`!stroke-0 ${copyStroke} ${copyIcon({ size })}`} />
-          )}
-        </button>
-      </Popover.Trigger>
-      <Popover.Portal className="z-[9999]">
-        <Popover.Content
-          className="z-[9999] shadow-md"
-          side={side}
-          sideOffset={sideOffset}
-          align={align}
-          alignOffset={alignOffset}
-        >
-          <div className="flex flex-row justify-start items-center py-1 px-2 bg-SecondaryColorLight/50 dark:bg-SecondaryColor/50 rounded-md">
-            <p className="text-sm text-PrimaryTextColorLight/60 dark:text-PrimaryTextColor/60">{t("copied")}</p>
-          </div>
-          <Popover.Arrow className="fill-SecondaryColorLight/50 dark:fill-SecondaryColor/50" />
-        </Popover.Content>
-      </Popover.Portal>
-    </Popover.Root>
-  );
-
-  function handleCopyClic() {
-    navigator.clipboard.writeText(copyText);
-    setOpen(true);
-    setTimeout(() => {
-      setOpen(false);
-    }, showTime);
-  }
-};

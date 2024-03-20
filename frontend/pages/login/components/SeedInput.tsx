@@ -1,6 +1,6 @@
 import { ChangeEvent, Dispatch, SetStateAction } from "react";
 import { ReactComponent as CheckIcon } from "@assets/svg/files/edit-check.svg";
-import { CustomInput } from "@components/Input";
+import { CustomInput } from "@components/input";
 import { handleSeedAuthenticated } from "@redux/CheckAuth";
 import { clsx } from "clsx";
 import { useTranslation } from "react-i18next";
@@ -20,6 +20,7 @@ export default function SeedInput({ seed, setSeed }: SeedMethodInputProps) {
       compOutClass=""
       value={seed}
       onChange={onSeedChange}
+      // eslint-disable-next-line jsx-a11y/no-autofocus
       autoFocus
       sufix={
         <div className="flex flex-row items-center justify-start gap-2">

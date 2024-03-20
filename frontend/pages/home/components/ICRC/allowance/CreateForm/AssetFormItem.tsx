@@ -3,7 +3,7 @@ import { SelectOption } from "@/@types/components";
 import { SupportedStandardEnum } from "@/@types/icrc";
 import { IconTypeEnum } from "@/const";
 import { getAssetIcon } from "@/utils/icons";
-import { Select } from "@components/select";
+import { BasicSelect } from "@components/select";
 import { getAllowanceAsset } from "@pages/home/helpers/allowanceMappers";
 import { useAppSelector } from "@redux/Store";
 import { initialAllowanceState } from "@redux/allowance/AllowanceReducer";
@@ -49,7 +49,7 @@ export default function AssetFormItem(props: AssetFormItemProps) {
       <label htmlFor="asset" className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
         {t("asset")}
       </label>
-      <Select
+      <BasicSelect
         onSelect={onAssetChange}
         options={options}
         initialValue={selectedAsset?.tokenSymbol}
