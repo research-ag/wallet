@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 import ContactMainDetails from "./ContactMainDetails";
 import ContactAssetDetails from "./ContactAssetDetails";
 import LoadingLoader from "@components/Loader";
-import { CustomButton } from "@components/Button";
+import { CustomButton } from "@components/button";
 import { AssetContact } from "@redux/models/ContactsModels";
 import { isHexadecimalValid, validateSubaccounts } from "@/utils/checkers";
 import { clsx } from "clsx";

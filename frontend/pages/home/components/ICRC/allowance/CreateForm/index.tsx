@@ -7,7 +7,7 @@ import AmountFormItem from "./AmountFormItem";
 import ExpirationFormItem from "./ExpirationFormItem";
 import { AllowanceValidationErrorsEnum } from "@/@types/allowance";
 import { useTranslation } from "react-i18next";
-import { CustomButton } from "@components/Button";
+import { CustomButton } from "@components/button";
 import { getAllowanceDetails } from "@pages/home/helpers/icrc/";
 import { validatePrincipal } from "@/utils/identity";
 import { isHexadecimalValid } from "@/utils/checkers";

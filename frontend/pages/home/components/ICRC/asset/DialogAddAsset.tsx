@@ -4,7 +4,7 @@ import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 import Modal from "@components/Modal";
 import { CustomInput } from "@components/Input";
 import { CustomCheck } from "@components/CheckBox";
-import { CustomButton } from "@components/Button";
+import { CustomButton } from "@components/button";
 import { useTranslation } from "react-i18next";
 import { checkHexString, getUSDfromToken, hexToNumber, hexToUint8Array, removeLeadingZeros } from "@/utils";
 import { Asset, SubAccount } from "@redux/models/AccountModels";

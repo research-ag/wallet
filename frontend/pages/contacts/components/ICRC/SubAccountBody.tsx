@@ -29,7 +29,7 @@ import { GeneralHook } from "@pages/home/hooks/generalHook";
 import LoadingLoader from "@components/Loader";
 import store from "@redux/Store";
 import { SupportedStandardEnum } from "@/@types/icrc";
-import { CustomButton } from "@components/Button";
+import { CustomButton } from "@components/button";
 import { ChangeEvent, useState } from "react";
 
 interface SubAccountBodyProps {

@@ -7,7 +7,7 @@ import { getMetadataInfo, toFullDecimal } from "@/utils";
 import { CustomInput } from "@components/Input";
 import { CustomCopy } from "@components/CopyTooltip";
 import { editToken } from "@redux/assets/AssetReducer";
-import { CustomButton } from "@components/Button";
+import { CustomButton } from "@components/button";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch } from "@redux/Store";
 import { Token } from "@redux/models/TokenModels";

@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
-import { CustomButton } from "@components/Button";
+import { CustomButton } from "@components/button";
 import history from "@pages/history";
 import { CONTACTS, HOME } from "@pages/paths";
 import { AssetHook } from "@pages/home/hooks/assetHook";

@@ -18,7 +18,7 @@ import { Token } from "@redux/models/TokenModels";
 import { CustomCopy } from "@components/CopyTooltip";
 import { addSubAccount, removeSubAcc } from "@redux/assets/AssetReducer";
 import Modal from "@components/Modal";
-import { CustomButton } from "@components/Button";
+import { CustomButton } from "@components/button";
 import bigInt from "big-integer";
 import { db } from "@/database/db";
 

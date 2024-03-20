@@ -2,7 +2,7 @@
 import { IconType, IconTypeEnum } from "@/const";
 import { ReactComponent as PlusIcon } from "@assets/svg/files/plus.svg";
 //
-import { CustomButton } from "@components/Button";
+import { CustomButton } from "@components/button";
 import { CustomCheck } from "@components/CheckBox";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { Asset, AssetToAdd } from "@redux/models/AccountModels";

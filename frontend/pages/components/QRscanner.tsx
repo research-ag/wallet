@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Html5QrcodeScanner } from "html5-qrcode";
-import { CustomButton } from "@components/Button";
+import { CustomButton } from "@components/button";
 import { useTranslation } from "react-i18next";
 interface QRscannerProps {
   qrView: boolean;

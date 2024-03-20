@@ -3,7 +3,7 @@
 import SearchIcon from "@assets/svg/files/icon-search.svg";
 import QRIcon from "@assets/svg/files/qr.svg";
 //
-import { CustomButton } from "@components/Button";
+import { CustomButton } from "@components/button";
 import { CustomInput } from "@components/Input";
 import { IcrcAccount, decodeIcrcAccount, encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";

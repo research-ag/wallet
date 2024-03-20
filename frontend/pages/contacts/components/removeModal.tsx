@@ -3,7 +3,7 @@ import { ReactComponent as WarningIcon } from "@assets/svg/files/warning.svg";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
 import Modal from "@components/Modal";
-import { CustomButton } from "@components/Button";
+import { CustomButton } from "@components/button";
 import { useTranslation } from "react-i18next";
 import { DeleteContactTypeEnum } from "@/const";
 import useContactTable from "../hooks/useContactTable";

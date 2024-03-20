@@ -6,7 +6,7 @@ import Modal from "@components/Modal";
 import { AccountHook } from "@pages/hooks/accountHook";
 import { useTranslation } from "react-i18next";
 import { Token } from "@redux/models/TokenModels";
-import { CustomButton } from "@components/Button";
+import { CustomButton } from "@components/button";
 import { AssetHook } from "@pages/home/hooks/assetHook";
 
 interface DeleteAssetModalPropr {

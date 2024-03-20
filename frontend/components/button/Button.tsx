@@ -1,7 +1,18 @@
-import { VariantProps } from "cva";
+import { cva, VariantProps } from "cva";
 import { ButtonHTMLAttributes } from "react";
-import { buttonCVA } from "./syles.cva";
 import LoadingLoader from "@components/Loader";
+
+export const buttonCVA = cva(["bg-AccpetButtonColor", "rounded-md", "flex justify-center items-center", "p-2"], {
+  variants: {
+    disabled: {
+      true: ["opacity-50 pointer-events-none"],
+      false: "",
+    },
+  },
+  defaultVariants: {
+    disabled: false,
+  },
+});
 
 export interface IButtonCVAProps extends ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonCVA> {
   disabled?: boolean;

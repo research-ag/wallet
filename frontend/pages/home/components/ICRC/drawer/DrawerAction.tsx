@@ -3,7 +3,7 @@ import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
 import { Fragment, PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
-import { CustomButton } from "@components/Button";
+import { CustomButton } from "@components/button";
 import { clsx } from "clsx";
 import { DrawerOption, DrawerOptionEnum } from "@/const";
 import { resetSendStateAction } from "@redux/transaction/TransactionActions";
