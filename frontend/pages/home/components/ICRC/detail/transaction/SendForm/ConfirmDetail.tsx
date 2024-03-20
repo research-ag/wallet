@@ -1,4 +1,4 @@
-import Button from "@components/button/Button";
+import { BasicButton } from "@components/button";
 import SenderDetail from "./SenderDetail";
 import ReceiverDetail from "./ReceiverDetail";
 import TransactionAmount from "./TransactionAmount";
@@ -51,12 +51,12 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
       <div className="flex items-center justify-end mt-6">
         <p className="mr-4 text-md text-slate-color-error">{t(getError())}</p>
         {isLoading && <LoadingLoader color="dark:border-secondary-color-1-light border-black-color mr-2" />}
-        <Button className="w-1/6 mr-2 font-bold bg-secondary-color-2" onClick={OnBack}>
+        <BasicButton className="w-1/6 mr-2 font-bold bg-secondary-color-2" onClick={OnBack}>
           {t("back")}
-        </Button>
-        <Button className="w-1/6 font-bold bg-primary-color" onClick={handleTransaction}>
+        </BasicButton>
+        <BasicButton className="w-1/6 font-bold bg-primary-color" onClick={handleTransaction}>
           {t("next")}
-        </Button>
+        </BasicButton>
       </div>
     </div>
   );

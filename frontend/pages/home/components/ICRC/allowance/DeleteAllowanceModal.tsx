@@ -3,8 +3,8 @@ import { middleTruncation } from "@/utils/strings";
 import { ReactComponent as AlertIcon } from "@assets/svg/files/alert-icon.svg";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 import { LoadingLoader } from "@components/loader";
-import {Modal} from "@components/modal";
-import Button from "@components/button/Button";
+import { Modal } from "@components/modal";
+import { BasicButton } from "@components/button";
 import useDeleteAllowance from "@pages/home/hooks/useDeleteAllowance";
 import { useAppSelector } from "@redux/Store";
 import {
@@ -49,13 +49,13 @@ export default function DeleteAllowanceModal() {
       <div className="flex items-center justify-end w-full mt-4">
         <p className="mr-4 text-sm text-slate-color-error">{getErrorMessage()}</p>
         {isPending && <LoadingLoader className="mr-4" />}
-        <Button
+        <BasicButton
           onClick={handleDelete}
           className="w-[4rem] h-[2rem] text-secondary-color-1-light dark:text-white"
           disabled={isPending}
         >
           {t("yes")}
-        </Button>
+        </BasicButton>
       </div>
     </Modal>
   );
