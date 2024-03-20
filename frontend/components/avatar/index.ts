@@ -1,2 +1,2 @@
-export {default as Avatar} from "./Avatar";
-export {default as AvatarEmpty} from "./AvatarEmpty";
+export { default as BasicAvatar } from "./BasicAvatar";
+export { default as AvatarEmpty } from "./AvatarEmpty";
