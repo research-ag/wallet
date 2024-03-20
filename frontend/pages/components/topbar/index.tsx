@@ -21,7 +21,7 @@ import { clsx } from "clsx";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { AccountHook } from "@hooks/accountHook";
 import { logout } from "@redux/CheckAuth";
-import Modal from "@components/Modal";
+import {Modal} from "@components/modal";
 import ThemeModal from "./themeModal";
 import { ThemesEnum } from "@/const";
 import { CustomCopy } from "@components/tooltip";

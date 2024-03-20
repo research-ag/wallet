@@ -1,7 +1,7 @@
 // svgs
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
-import Modal from "@components/Modal";
+import {Modal} from "@components/modal";
 import { CustomInput } from "@components/input";
 import { CustomCheck } from "@components/checkbox";
 import { CustomButton } from "@components/button";

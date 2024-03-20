@@ -5,7 +5,7 @@ import { Fragment } from "react";
 import AssetsList from "./components/AssetsList";
 import "./style.scss";
 import DetailList from "./components/DetailList";
-import Modal from "@components/Modal";
+import {Modal} from "@components/modal";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { CustomButton } from "@components/button";

@@ -1,7 +1,7 @@
 import Menu from "@pages/components/Menu";
 import useContactFilters from "./hooks/useContactFilters";
 import ContactFilters from "./components/contactFilters";
-import Modal from "@components/Modal";
+import {Modal} from "@components/modal";
 import AddContact from "./components/ICRC/AddContact";
 import ContactList from "./components/contactList";
 

@@ -2,7 +2,7 @@
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 import UpAmountIcon from "@assets/svg/files/up-amount-icon.svg";
 //
-import Modal from "@components/Modal";
+import {Modal} from "@components/modal";
 import { CustomCopy } from "@components/tooltip";
 import { shortAddress } from "@/utils";
 import { ProtocolType, SendingStatusEnum } from "@/const";
