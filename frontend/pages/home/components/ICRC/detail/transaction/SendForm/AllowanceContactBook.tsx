@@ -11,7 +11,7 @@ import { setSenderContactAction } from "@redux/transaction/TransactionActions";
 import { useTranslation } from "react-i18next";
 
 export function AllowanceContactBook() {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const { sender } = useAppSelector((state) => state.transaction);
   const { contacts } = useAppSelector((state) => state.contacts);
   const [isOpen, setIsOpen] = useState(false);
@@ -99,7 +99,9 @@ export function AllowanceContactBook() {
                   </div>
                 </div>
               )}
-              {!sender?.allowanceContactSubAccount?.assetName && <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("select.option")}</p>}
+              {!sender?.allowanceContactSubAccount?.assetName && (
+                <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("select.option")}</p>
+              )}
             </div>
             <DropIcon className={`fill-gray-color-4 ${isOpen ? "-rotate-90" : ""}`} />
           </div>
@@ -131,8 +133,10 @@ export function AllowanceContactBook() {
                       </p>
                       <span className="flex">
                         <img className="w-5 h-5 mr-2" src={getIconSrc(assetLogo, assetSymbol)} alt={assetSymbol} />
-                        <p className="text-md
-                         text-PrimaryTextColorLight dark:text-PrimaryTextColor">
+                        <p
+                          className="text-md
+                         text-PrimaryTextColorLight dark:text-PrimaryTextColor"
+                        >
                           {subAccountAllowance?.allowance} {assetSymbol}
                         </p>
                       </span>

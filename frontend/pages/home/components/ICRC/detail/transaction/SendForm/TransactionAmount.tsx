@@ -1,26 +1,13 @@
 import { TransactionValidationErrorsEnum } from "@/@types/transactions";
-import { toFullDecimal, toHoleBigInt, validateAmount } from "@/utils";
 import LoadingLoader from "@components/Loader";
-import { getSubAccountBalance } from "@pages/home/helpers/icrc";
-import useSend from "@pages/home/hooks/useSend";
+import useTransactionAmount from "@pages/home/hooks/useTransactionAmount";
 import { useAppSelector } from "@redux/Store";
-import { removeErrorAction, setAmountAction, setErrorAction } from "@redux/transaction/TransactionActions";
 import { clsx } from "clsx";
-import { ChangeEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 export default function TransactionAmount() {
-  // INFO: amountFromMax is the allowance amount (if allowance) else the subaccount balance
-  const [amountFromMax, setAmountFromMax] = useState<string>("0");
-  // INFO: the allowance subaccount balance is the balance of the person who has given the allowance, will be shown if sender is allowance only
-  const [allowanceSubAccountBalance, setAllowanceSubAccountBalance] = useState<string>("0");
-
-  const [showAvailable, setShowAvailable] = useState(false);
-  const [showMax, setShowMax] = useState(false);
-  const [isMaxAmountLoading, setMaxAmountLoading] = useState(false);
-
+  const { maxAmount, transactionFee, onChangeAmount, onMaxAmount } = useTransactionAmount();
   const { sender, errors, amount } = useAppSelector((state) => state.transaction);
-  const { transactionFee, getSenderMaxAmount, isSenderAllowance, senderPrincipal, senderSubAccount } = useSend();
   const { t } = useTranslation();
 
   return (
@@ -40,8 +27,8 @@ export default function TransactionAmount() {
           onChange={onChangeAmount}
           value={amount || ""}
         />
-        {isMaxAmountLoading && <LoadingLoader className="mr-4" />}
-        {!isMaxAmountLoading && (
+        {maxAmount.isLoading && <LoadingLoader className="mr-4" />}
+        {!maxAmount.isLoading && (
           <button
             className="flex items-center justify-center p-1 mr-2 rounded cursor-pointer bg-RadioCheckColor"
             onClick={onMaxAmount}
@@ -50,23 +37,22 @@ export default function TransactionAmount() {
           </button>
         )}
       </div>
-      <div className={getAmountDetailsStyles(!isMaxAmountLoading && (showAvailable || showMax))}>
+      <div className="flex items-center justify-between w-full">
         <div className="flex">
-          {/* show max about */}
-          {!isMaxAmountLoading && showMax && (
-            <>
+          {maxAmount.isAmountFromMax && !maxAmount.isLoading && (
+            <div className="flex">
               <p className="mr-1 text-sm text-primary-color">{t("max")}: </p>
-              <p className="mr-2 text-sm text-primary-color">
-                {amountFromMax} {sender?.asset?.tokenSymbol || "-"}
-              </p>
-            </>
+              <p className="mr-2 text-sm text-primary-color">{maxAmount.transactionAmountWithoutFee}</p>
+            </div>
           )}
-          {!isMaxAmountLoading && showAvailable && (
+
+          {maxAmount.isAmountFromMax && !maxAmount.isLoading && maxAmount.showAvailable && (
             <p className="text-sm text-primary-color">
-              ({allowanceSubAccountBalance} {t("available")})
+              ({maxAmount.allowanceSubAccountBalance || "0.5"} {t("available")})
             </p>
           )}
         </div>
+
         <div className="flex">
           <p className="mr-1 text-sm text-gray-400">{t("fee")}</p>
           <p className="text-sm">
@@ -76,91 +62,6 @@ export default function TransactionAmount() {
       </div>
     </>
   );
-
-  function onChangeAmount(e: ChangeEvent<HTMLInputElement>) {
-    const amount = e.target.value.trim();
-    setAmountAction(amount);
-    setShowAvailable(false);
-    setShowMax(false);
-    setAmountFromMax("0");
-    setAllowanceSubAccountBalance("0");
-    const isValidAmount = validateAmount(amount, Number(sender.asset.decimal));
-
-    if (!isValidAmount || Number(amount) === 0) {
-      setErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.amount"]);
-      return;
-    }
-
-    removeErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.amount"]);
-  }
-
-  async function onMaxAmount() {
-    try {
-      let allowanceSubaccountBalance = 0;
-      // INFO: both can be from sub account balance of from allowance
-      let transactionAmount = 0;
-      let transactionAmountWithoutFee = 0;
-
-      if (isSenderAllowance()) {
-        console.log("is an allowance");
-      } else {
-        console.log("is not an allowance");
-      }
-
-      // ------------------------------------------------------------------------------
-      // setMaxAmountLoading(true);
-      // setShowAvailable(false);
-      // setShowMax(false);
-
-      // // INFO: get the allowance amount or the subaccount balance. (include the fee)
-      // const maxAmount = await getSenderMaxAmount();
-      // const bigintBalance = toHoleBigInt(maxAmount || "0", Number(sender?.asset?.decimal));
-
-      // // INFO: if allowance or sub account balance, the max amount must not include the fee
-      // const bigintFee = toHoleBigInt(transactionFee || "0", Number(sender?.asset?.decimal));
-      // const bigintMaxAmount = bigintBalance - bigintFee;
-
-      // if (!isSenderAllowance()) {
-      //   if (bigintBalance <= bigintFee) {
-      //     setErrorAction(TransactionValidationErrorsEnum.Values["error.not.enough.balance"]);
-      //     return;
-      //   }
-      //   removeErrorAction(TransactionValidationErrorsEnum.Values["error.not.enough.balance"]);
-      // }
-
-      // // INFO: convert the bigintMaxAmount to a readable amount, without the fee (Amount that the user is allowed to transfer and must be set to the input)
-      // const topAmount = toFullDecimal(bigintMaxAmount, Number(sender?.asset?.decimal));
-
-      // if (isSenderAllowance()) {
-      //   const params = {
-      //     principal: senderPrincipal,
-      //     subAccount: senderSubAccount,
-      //     assetAddress: sender?.asset?.address,
-      //   };
-      //   // INFO: get the balance of the person who has given the allowance, to check if the balance is enough to cover the allowance
-      //   const allowanceBigintBalance = await getSubAccountBalance(params);
-      //   const readableBalance = toFullDecimal(allowanceBigintBalance, Number(sender?.asset?.decimal));
-
-      //   setAmountAction(readableBalance);
-      //   setAmountFromMax(topAmount);
-      //   setShowMax(true);
-      //   setAllowanceSubAccountBalance(readableBalance);
-
-      //   if (allowanceBigintBalance < bigintMaxAmount) {
-      //     setShowAvailable(true);
-      //   }
-      // } else {
-      //   setAmountAction(topAmount);
-      //   setAmountFromMax(topAmount);
-      //   setShowMax(true);
-      // }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setMaxAmountLoading(false);
-      removeErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.amount"]);
-    }
-  }
 }
 
 function getAmountInputStyles(hasError: boolean) {
@@ -175,8 +76,4 @@ function getAmountInputStyles(hasError: boolean) {
     "border",
     hasError ? "border-slate-color-error" : "border-BorderColorLight dark:border-BorderColor",
   );
-}
-
-function getAmountDetailsStyles(showAvailable: boolean) {
-  return clsx("flex items-center w-full", showAvailable ? "justify-between" : "justify-end");
 }
