@@ -11,7 +11,7 @@ import { AssetSymbolEnum, SpecialTxTypeEnum, TransactionTypeEnum } from "@/const
 import { Principal } from "@dfinity/principal";
 import { AccountHook } from "@pages/hooks/accountHook";
 import { IcrcAccount } from "@dfinity/ledger-icrc";
-import { CustomCopy } from "@components/CopyTooltip";
+import { CustomCopy } from "@components/tooltip";
 import { AssetHook } from "@pages/home/hooks/assetHook";
 import { GeneralHook } from "@pages/home/hooks/generalHook";
 

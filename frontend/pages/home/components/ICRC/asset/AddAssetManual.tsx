@@ -5,7 +5,7 @@ import { GeneralHook } from "../../../hooks/generalHook";
 import { IcrcIndexCanister, IcrcLedgerCanister } from "@dfinity/ledger-icrc";
 import { getMetadataInfo, toFullDecimal } from "@/utils";
 import { CustomInput } from "@components/Input";
-import { CustomCopy } from "@components/CopyTooltip";
+import { CustomCopy } from "@components/tooltip";
 import { editToken } from "@redux/assets/AssetReducer";
 import { CustomButton } from "@components/button";
 import { useTranslation } from "react-i18next";

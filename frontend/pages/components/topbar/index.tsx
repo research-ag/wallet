@@ -24,7 +24,7 @@ import { logout } from "@redux/CheckAuth";
 import Modal from "@components/Modal";
 import ThemeModal from "./themeModal";
 import { ThemesEnum } from "@/const";
-import { CustomCopy } from "@components/CopyTooltip";
+import { CustomCopy } from "@components/tooltip";
 import { AssetHook } from "@pages/home/hooks/assetHook";
 import { useAppSelector } from "@redux/Store";
 import { db } from "@/database/db";

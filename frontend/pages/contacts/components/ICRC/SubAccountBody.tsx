@@ -8,7 +8,7 @@ import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 
 import { Buffer } from "buffer";
 
-import { CustomCopy } from "@components/CopyTooltip";
+import { CustomCopy } from "@components/tooltip";
 import { CustomInput } from "@components/Input";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";

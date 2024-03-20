@@ -3,7 +3,7 @@ import { ReactComponent as CopyIcon } from "@assets/svg/files/copy-icon.svg";
 import { ReactComponent as CopyGrayIcon } from "@/assets/svg/files/copy-gray-icon.svg";
 //
 import { VariantProps, cva } from "cva";
-import { ButtonHTMLAttributes, FC, useState } from "react";
+import { ButtonHTMLAttributes, useState } from "react";
 import * as Popover from "@radix-ui/react-popover";
 import { useTranslation } from "react-i18next";
 
@@ -60,7 +60,7 @@ export interface TooltipProps
   isTransaction?: boolean;
 }
 
-export const CustomCopy: FC<TooltipProps> = ({
+export default function CustomCopy({
   className,
   copyText = "copy",
   background,
@@ -75,7 +75,7 @@ export const CustomCopy: FC<TooltipProps> = ({
   copyStroke = "fill-PrimaryTextColorLight dark:fill-PrimaryTextColor",
   isTransaction = false,
   ...props
-}) => {
+}: TooltipProps) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   return (
@@ -101,7 +101,7 @@ export const CustomCopy: FC<TooltipProps> = ({
           align={align}
           alignOffset={alignOffset}
         >
-          <div className="flex flex-row justify-start items-center py-1 px-2 bg-SecondaryColorLight/50 dark:bg-SecondaryColor/50 rounded-md">
+          <div className="flex flex-row items-center justify-start px-2 py-1 rounded-md bg-SecondaryColorLight/50 dark:bg-SecondaryColor/50">
             <p className="text-sm text-PrimaryTextColorLight/60 dark:text-PrimaryTextColor/60">{t("copied")}</p>
           </div>
           <Popover.Arrow className="fill-SecondaryColorLight/50 dark:fill-SecondaryColor/50" />
@@ -117,4 +117,4 @@ export const CustomCopy: FC<TooltipProps> = ({
       setOpen(false);
     }, showTime);
   }
-};
+}

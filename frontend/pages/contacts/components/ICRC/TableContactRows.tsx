@@ -8,7 +8,7 @@ import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 import ContactAssetPop from "./contactAssetPop";
 import { getInitialFromName, shortAddress } from "@/utils";
 import TableAssets from "./tableAssets";
-import { CustomCopy } from "@components/CopyTooltip";
+import { CustomCopy } from "@components/tooltip";
 import { CustomInput } from "@components/Input";
 import { ReactComponent as MoneyHandIcon } from "@assets/svg/files/money-hand.svg";
 import { Fragment, ChangeEvent } from "react";

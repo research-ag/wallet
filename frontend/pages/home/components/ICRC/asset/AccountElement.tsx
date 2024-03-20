@@ -15,7 +15,7 @@ import { CustomInput } from "@components/Input";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch } from "@redux/Store";
 import { Token } from "@redux/models/TokenModels";
-import { CustomCopy } from "@components/CopyTooltip";
+import { CustomCopy } from "@components/tooltip";
 import { addSubAccount, removeSubAcc } from "@redux/assets/AssetReducer";
 import Modal from "@components/Modal";
 import { CustomButton } from "@components/button";
