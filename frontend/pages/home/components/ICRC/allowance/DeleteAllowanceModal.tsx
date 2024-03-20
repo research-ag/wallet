@@ -3,7 +3,7 @@ import { middleTruncation } from "@/utils/strings";
 import { ReactComponent as AlertIcon } from "@assets/svg/files/alert-icon.svg";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 import { LoadingLoader } from "@components/loader";
-import { Modal } from "@components/modal";
+import { BasicModal } from "@components/modal";
 import { BasicButton } from "@components/button";
 import useDeleteAllowance from "@pages/home/hooks/useDeleteAllowance";
 import { useAppSelector } from "@redux/Store";
@@ -29,7 +29,7 @@ export default function DeleteAllowanceModal() {
   }, [selectedAllowance, contacts]);
 
   return (
-    <Modal open={isDeleteAllowance} width="w-[26rem]">
+    <BasicModal open={isDeleteAllowance} width="w-[26rem]">
       <div className="flex items-center justify-between w-full">
         <AlertIcon />
         <CloseIcon
@@ -57,7 +57,7 @@ export default function DeleteAllowanceModal() {
           {t("yes")}
         </BasicButton>
       </div>
-    </Modal>
+    </BasicModal>
   );
 
   async function handleDelete() {

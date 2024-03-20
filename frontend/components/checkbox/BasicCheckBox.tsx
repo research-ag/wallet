@@ -1,28 +1,34 @@
-import CheckIcon from "@assets/svg/files/check.svg";
 import { ButtonHTMLAttributes } from "react";
-import { cva, type VariantProps } from "cva";
+import { cva, VariantProps } from "cva";
+import CheckIcon from "@assets/svg/files/check.svg";
 
-export interface CheckProps extends ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof button> {
+export interface CheckProps extends ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof checkBoxCVA> {
   checked: boolean;
   icon?: any;
   checkedBG?: string;
+  disabled?: boolean;
 }
 
-export default function CustomCheck({
+export default function CheckBox({
   className,
   rounding,
   size,
   border,
   icon,
   checked,
+  disabled,
   checkedBG = "!bg-SelectRowColor",
   ...props
 }: CheckProps) {
   return (
     <button
-      className={`flex justify-center items-center cursor-pointer ${button({ rounding, size, border, className })} ${
-        checked ? checkedBG : "bg-transparent"
-      }`}
+      className={`flex justify-center items-center cursor-pointer ${checkBoxCVA({
+        disabled,
+        rounding,
+        size,
+        border,
+        className,
+      })} ${checked ? checkedBG : "bg-transparent"}`}
       {...props}
     >
       {icon ? (
@@ -34,7 +40,7 @@ export default function CustomCheck({
   );
 }
 
-const button = cva("button", {
+export const checkBoxCVA = cva("button", {
   variants: {
     rounding: {
       sm: ["rounded-sm"],
@@ -52,6 +58,10 @@ const button = cva("button", {
       border: ["border"],
       underline: ["border-0", "border-b", "!px-0", "!rounded-none", "!pb-0"],
     },
+    disabled: {
+      true: ["opacity-50 pointer-events-none"],
+      false: "",
+    },
   },
   compoundVariants: [
     {
@@ -64,5 +74,6 @@ const button = cva("button", {
     rounding: "md",
     size: "small",
     border: "border",
+    disabled: false,
   },
 });

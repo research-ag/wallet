@@ -2,7 +2,7 @@
 import { ReactComponent as WarningIcon } from "@assets/svg/files/warning.svg";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
-import {Modal} from "@components/modal";
+import { BasicModal } from "@components/modal";
 import { AccountHook } from "@pages/hooks/accountHook";
 import { useTranslation } from "react-i18next";
 import { Token } from "@redux/models/TokenModels";
@@ -22,7 +22,7 @@ const DeleteAssetModal = ({ open, setOpen, asset }: DeleteAssetModalPropr) => {
   const { name, symbol, address } = asset;
 
   return (
-    <Modal
+    <BasicModal
       width="w-[18rem]"
       padding="py-5"
       border="border border-BorderColorTwoLight dark:border-BorderColorTwo"
@@ -50,7 +50,7 @@ const DeleteAssetModal = ({ open, setOpen, asset }: DeleteAssetModalPropr) => {
           <p>{t("confirm")}</p>
         </CustomButton>
       </div>
-    </Modal>
+    </BasicModal>
   );
 
   function handleConfirmButton() {

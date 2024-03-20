@@ -1,6 +1,22 @@
 import { VariantProps, cva } from "cva";
 import { ButtonHTMLAttributes, ReactNode } from "react";
 
+export interface IconButtonProps
+  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "color">,
+    VariantProps<typeof iconButtonCVA> {
+  icon: ReactNode;
+}
+
+export default function IconButton(props: IconButtonProps) {
+  const { icon, className, onClick, color, enabled, size } = props;
+
+  return (
+    <button className={iconButtonCVA({ className, color, enabled, size })} onClick={onClick}>
+      {icon}
+    </button>
+  );
+}
+
 const iconButtonCVA = cva(["bg-AccpetButtonColor", "m-0", "rounded-md"], {
   variants: {
     color: {
@@ -29,19 +45,3 @@ const iconButtonCVA = cva(["bg-AccpetButtonColor", "m-0", "rounded-md"], {
     size: "small",
   },
 });
-
-export interface IconButtonProps
-  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "color">,
-    VariantProps<typeof iconButtonCVA> {
-  icon: ReactNode;
-}
-
-export default function IconButton(props: IconButtonProps) {
-  const { icon, className, onClick, color, enabled, size } = props;
-
-  return (
-    <button className={iconButtonCVA({ className, color, enabled, size })} onClick={onClick}>
-      {icon}
-    </button>
-  );
-}

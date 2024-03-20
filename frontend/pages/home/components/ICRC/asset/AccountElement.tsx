@@ -17,7 +17,7 @@ import { useAppDispatch } from "@redux/Store";
 import { Token } from "@redux/models/TokenModels";
 import { CustomCopy } from "@components/tooltip";
 import { addSubAccount, removeSubAcc } from "@redux/assets/AssetReducer";
-import {Modal} from "@components/modal";
+import {BasicModal} from "@components/modal";
 import { CustomButton } from "@components/button";
 import bigInt from "big-integer";
 import { db } from "@/database/db";
@@ -143,7 +143,7 @@ const AccountElement = ({
           )}
         </div>
       </div>
-      <Modal
+      <BasicModal
         width="w-[18rem]"
         padding="py-5 px-4"
         border="border border-BorderColorTwoLight dark:border-BorderColorTwo"
@@ -171,7 +171,7 @@ const AccountElement = ({
             </CustomButton>
           </div>
         </div>
-      </Modal>
+      </BasicModal>
     </Fragment>
   );
 

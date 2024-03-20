@@ -5,7 +5,7 @@ import { Fragment } from "react";
 import AssetsList from "./components/AssetsList";
 import "./style.scss";
 import DetailList from "./components/DetailList";
-import {Modal} from "@components/modal";
+import {BasicModal} from "@components/modal";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { CustomButton } from "@components/button";
@@ -22,7 +22,7 @@ const Home = () => {
         <AssetsList></AssetsList>
         <DetailList></DetailList>
       </div>
-      <Modal open={disclaimer} width="w-[30rem]">
+      <BasicModal open={disclaimer} width="w-[30rem]">
         <div className="flex flex-col items-start justify-start w-full gap-4">
           <div className="flex items-center justify-start gap-4 fle-row">
             <WarningIcon className="w-6 h-6" />
@@ -41,7 +41,7 @@ const Home = () => {
             </CustomButton>
           </div>
         </div>
-      </Modal>
+      </BasicModal>
     </Fragment>
   );
 };

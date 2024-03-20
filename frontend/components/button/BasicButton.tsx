@@ -2,18 +2,6 @@ import { cva, VariantProps } from "cva";
 import { ButtonHTMLAttributes } from "react";
 import { LoadingLoader } from "@components/loader";
 
-export const buttonCVA = cva(["bg-AccpetButtonColor", "rounded-md", "flex justify-center items-center", "p-2"], {
-  variants: {
-    disabled: {
-      true: ["opacity-50 pointer-events-none"],
-      false: "",
-    },
-  },
-  defaultVariants: {
-    disabled: false,
-  },
-});
-
 export interface IButtonCVAProps extends ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonCVA> {
   disabled?: boolean;
   isLoading?: boolean;
@@ -27,3 +15,15 @@ export default function Button({ className, children, disabled, isLoading, ...pr
     </button>
   );
 }
+
+export const buttonCVA = cva(["bg-AccpetButtonColor", "rounded-md", "flex justify-center items-center", "p-2"], {
+  variants: {
+    disabled: {
+      true: ["opacity-50 pointer-events-none"],
+      false: "",
+    },
+  },
+  defaultVariants: {
+    disabled: false,
+  },
+});

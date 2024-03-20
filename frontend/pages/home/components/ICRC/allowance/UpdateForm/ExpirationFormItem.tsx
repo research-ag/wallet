@@ -1,6 +1,6 @@
 import { TAllowance } from "@/@types/allowance";
 import { CalendarPicker } from "@components/calendar";
-import CheckBox from "@components/checkbox/CheckBox";
+import { BasicCheckBox } from "@components/checkbox";
 import dayjs from "dayjs";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
@@ -31,7 +31,7 @@ export default function ExpirationFormItem(props: IExpirationFormItemProps) {
           />
         </div>
         <div className="flex items-center justify-center h-full py-">
-          <CheckBox
+          <BasicCheckBox
             className="mr-1 border-BorderColorLight dark:border-BorderColor"
             checked={!hasExpiration}
             onClick={(e) => {

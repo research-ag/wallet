@@ -1,7 +1,7 @@
 // svgs
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
-import {Modal} from "@components/modal";
+import {BasicModal} from "@components/modal";
 import { CustomInput } from "@components/input";
 import { CustomCheck } from "@components/checkbox";
 import { CustomButton } from "@components/button";
@@ -54,7 +54,7 @@ const DialogAddAsset = ({
   const [loading, setLoading] = useState(false);
 
   return (
-    <Modal
+    <BasicModal
       width="w-[18rem]"
       padding="py-5 px-4"
       border="border border-BorderColorTwoLight dark:border-BorderColorTwo"
@@ -108,7 +108,7 @@ const DialogAddAsset = ({
           </CustomButton>
         </div>
       </div>
-    </Modal>
+    </BasicModal>
   );
 
   function onChangeName(e: ChangeEvent<HTMLInputElement>) {

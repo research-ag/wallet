@@ -1,6 +1,20 @@
 import { cva, VariantProps } from "cva";
 import { InputHTMLAttributes } from "react";
 
+interface InputProps
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, "disabled">,
+    VariantProps<typeof inputCVA>,
+    VariantProps<typeof inputContainerCVA> {}
+
+export default function Input(props: InputProps) {
+  const { disabled, border, ...additionalProps } = props;
+  return (
+    <div className={inputContainerCVA({ disabled, border })}>
+      <input className={inputCVA({})} {...additionalProps} />
+    </div>
+  );
+}
+
 export const inputContainerCVA = cva(
   [
     "flex",
@@ -30,21 +44,7 @@ export const inputContainerCVA = cva(
   },
 );
 
-export const inputCVA = cva(["w-full", "bg-transparent", "outline-none", "px-4 py-2"], {
+const inputCVA = cva(["w-full", "bg-transparent", "outline-none", "px-4 py-2"], {
   variants: {},
   defaultVariants: {},
 });
-
-interface InputProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, "disabled">,
-    VariantProps<typeof inputCVA>,
-    VariantProps<typeof inputContainerCVA> {}
-
-export default function Input(props: InputProps) {
-  const { disabled, border, ...additionalProps } = props;
-  return (
-    <div className={inputContainerCVA({ disabled, border })}>
-      <input className={inputCVA({})} {...additionalProps} />
-    </div>
-  );
-}

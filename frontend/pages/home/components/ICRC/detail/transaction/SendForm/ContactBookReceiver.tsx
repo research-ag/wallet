@@ -1,4 +1,4 @@
-import { Select } from "@components/select";
+import { BasicSelect } from "@components/select";
 import { useMemo, useState } from "react";
 import { ContactSubAccount } from "@/@types/transactions";
 import { AvatarEmpty } from "@components/avatar";
@@ -72,7 +72,7 @@ export default function ContactBookReceiver() {
 
   return (
     <div className="mx-4">
-      <Select
+      <BasicSelect
         onSelect={onSelect}
         options={formattedContacts}
         initialValue={receiver?.thirdContactSubAccount?.subAccountId}

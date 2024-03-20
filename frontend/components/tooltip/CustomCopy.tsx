@@ -7,45 +7,6 @@ import { ButtonHTMLAttributes, useState } from "react";
 import * as Popover from "@radix-ui/react-popover";
 import { useTranslation } from "react-i18next";
 
-const customCopy = cva("customCopy", {
-  variants: {
-    background: {
-      default: ["bg-AccpetButtonColor"],
-      noBG: ["bg-transparent"],
-    },
-    rounded: {
-      small: ["rounded-sm"],
-      medium: ["rounded"],
-      large: ["rounded-md"],
-      xLarge: ["rounded-lg"],
-    },
-    boxSize: {
-      none: ["p-0"],
-      small: ["p-1"],
-    },
-  },
-  defaultVariants: {
-    boxSize: "none",
-    background: "noBG",
-    rounded: "medium",
-  },
-});
-
-const copyIcon = cva("copyIcon", {
-  variants: {
-    size: {
-      xSmall: ["w-3", "h-3"],
-      small: ["w-4", "h-4"],
-      medium: ["w-5", "h-5"],
-      large: ["w-6", "h-6"],
-      xLarge: ["w-8", "h-8"],
-    },
-  },
-  defaultVariants: {
-    size: "medium",
-  },
-});
-
 export interface TooltipProps
   extends ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof copyIcon>,
@@ -118,3 +79,42 @@ export default function CustomCopy({
     }, showTime);
   }
 }
+
+const customCopy = cva("customCopy", {
+  variants: {
+    background: {
+      default: ["bg-AccpetButtonColor"],
+      noBG: ["bg-transparent"],
+    },
+    rounded: {
+      small: ["rounded-sm"],
+      medium: ["rounded"],
+      large: ["rounded-md"],
+      xLarge: ["rounded-lg"],
+    },
+    boxSize: {
+      none: ["p-0"],
+      small: ["p-1"],
+    },
+  },
+  defaultVariants: {
+    boxSize: "none",
+    background: "noBG",
+    rounded: "medium",
+  },
+});
+
+const copyIcon = cva("copyIcon", {
+  variants: {
+    size: {
+      xSmall: ["w-3", "h-3"],
+      small: ["w-4", "h-4"],
+      medium: ["w-5", "h-5"],
+      large: ["w-6", "h-6"],
+      xLarge: ["w-8", "h-8"],
+    },
+  },
+  defaultVariants: {
+    size: "medium",
+  },
+});
