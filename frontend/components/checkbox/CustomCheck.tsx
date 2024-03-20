@@ -1,5 +1,5 @@
 import CheckIcon from "@assets/svg/files/check.svg";
-import { ButtonHTMLAttributes, FC } from "react";
+import { ButtonHTMLAttributes } from "react";
 import { cva, type VariantProps } from "cva";
 
 const button = cva("button", {
@@ -41,7 +41,7 @@ export interface CheckProps extends ButtonHTMLAttributes<HTMLButtonElement>, Var
   checkedBG?: string;
 }
 
-export const CustomCheck: FC<CheckProps> = ({
+export default function CustomCheck({
   className,
   rounding,
   size,
@@ -50,17 +50,19 @@ export const CustomCheck: FC<CheckProps> = ({
   checked,
   checkedBG = "!bg-SelectRowColor",
   ...props
-}) => (
-  <button
-    className={`flex justify-center items-center cursor-pointer ${button({ rounding, size, border, className })} ${
-      checked ? checkedBG : "bg-transparent"
-    }`}
-    {...props}
-  >
-    {icon ? (
-      icon
-    ) : (
-      <img src={CheckIcon} className={`w-[0.5] h-[0.5rem] ${!checked ? "invisible" : ""}`} alt="check-icon" />
-    )}
-  </button>
-);
+}: CheckProps) {
+  return (
+    <button
+      className={`flex justify-center items-center cursor-pointer ${button({ rounding, size, border, className })} ${
+        checked ? checkedBG : "bg-transparent"
+      }`}
+      {...props}
+    >
+      {icon ? (
+        icon
+      ) : (
+        <img src={CheckIcon} className={`w-[0.5] h-[0.5rem] ${!checked ? "invisible" : ""}`} alt="check-icon" />
+      )}
+    </button>
+  );
+}

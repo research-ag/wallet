@@ -8,7 +8,7 @@ import ChevronRightIcon from "@assets/svg/files/chevron-right-icon.svg";
 import ChevronRightDarkIcon from "@assets/svg/files/chevron-right-dark-icon.svg";
 import { Asset } from "@redux/models/AccountModels";
 import { clsx } from "clsx";
-import { CustomCheck } from "@components/CheckBox";
+import { CustomCheck } from "@components/checkbox";
 
 interface AssetFilterProps {
   setAssetOpen: (open: boolean) => void;
