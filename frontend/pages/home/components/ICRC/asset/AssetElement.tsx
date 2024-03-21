@@ -173,7 +173,7 @@ const AssetElement = ({
         idx={idx}
         selectedAsset={selectedAsset}
         acordeonIdx={acordeonIdx}
-      ></DialogAddAsset>
+      />
       <DeleteAssetModal open={openDelete} setOpen={setOpenDelete} asset={asset} />
     </Fragment>
   );

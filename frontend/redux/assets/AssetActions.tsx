@@ -36,7 +36,7 @@ export const updateAllBalances = async (params: updateAllBalancesParams) => {
   if (ETHRate) tokenMarkets.push(ETHRate);
   store.dispatch(setTokenMarket(tokenMarkets));
 
-  const auxTokens = tokens.sort((a, b) => a.id_number - b.id_number);
+  const auxTokens = [...tokens].sort((a, b) => a.id_number - b.id_number);
   const myPrincipal = store.getState().auth.userPrincipal;
 
   if (!myPrincipal) return;

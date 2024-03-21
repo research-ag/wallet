@@ -37,7 +37,6 @@ const AssetsList = () => {
         <div className="w-full max-h-[calc(100vh-13rem)] scroll-y-light">
           {assets?.length > 0 && (
             <Accordion.Root
-              className=""
               type="multiple"
               defaultValue={[]}
               value={
