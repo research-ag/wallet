@@ -134,7 +134,7 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean,
   const balances = await updateAllBalances({
     loading: true,
     myAgent,
-    tokens: [...defaultTokens, ...storedTokens],
+    tokens: storedTokens,
     basicSearch: true,
     fromLogin: true,
   });
