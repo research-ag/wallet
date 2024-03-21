@@ -78,7 +78,7 @@ export const TableHook = () => {
     columnHelper.accessor((row) => row, {
       id: "amount",
       cell: (info) => {
-        let isTo =
+        const isTo =
           info.getValue().kind !== SpecialTxTypeEnum.Enum.mint &&
           getAddress(
             info.getValue().type,

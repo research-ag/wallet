@@ -1,6 +1,6 @@
 import { SelectOption } from "@/@types/components";
 import formatSubAccount from "@/utils/formatSubAccount";
-import { Select } from "@components/select";
+import { BasicSelect } from "@components/select";
 import { useAppSelector } from "@redux/Store";
 import { setSenderSubAccountAction } from "@redux/transaction/TransactionActions";
 import { useMemo, useState } from "react";
@@ -23,7 +23,7 @@ export default function SenderSubAccount() {
   return (
     <div className="mx-4">
       <p className="opacity-50 text-start text-md text-black-color dark:text-white">{t("subAccount")}</p>
-      <Select
+      <BasicSelect
         onSelect={onSelect}
         options={options}
         initialValue={sender?.subAccount?.sub_account_id}

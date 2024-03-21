@@ -8,7 +8,7 @@ import * as RadioGroup from "@radix-ui/react-radio-group";
 import { ThemeHook } from "@pages/hooks/themeHook";
 import { DbLocationHook } from "@pages/hooks/dbLocationHook";
 import { setCustomDbCanisterId } from "@/redux/auth/AuthReducer";
-import { CustomInput } from "@components/Input";
+import { CustomInput } from "@components/input";
 import { ThemesEnum } from "@/const";
 import { db, DB_Type } from "@/database/db";
 import store from "@/redux/Store";

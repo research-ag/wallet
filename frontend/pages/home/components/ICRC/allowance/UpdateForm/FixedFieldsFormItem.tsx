@@ -2,7 +2,7 @@ import { TAllowance } from "@/@types/allowance";
 import { IconTypeEnum } from "@/const";
 import { getAssetIcon } from "@/utils/icons";
 import { middleTruncation } from "@/utils/strings";
-import { Chip } from "@components/chip";
+import { BasicChip } from "@components/chip";
 import { useAppSelector } from "@redux/Store";
 import { clsx } from "clsx";
 import { useMemo } from "react";
@@ -31,7 +31,7 @@ export default function FixedFieldsFormItem({ allowance }: FixedFieldsProps) {
         </div>
 
         <div className="flex items-center justify-start">
-          <Chip size="medium" text={allowance.subAccountId || ""} className="mr-2" />
+          <BasicChip size="medium" text={allowance.subAccountId || ""} className="mr-2" />
           {/* Get the allowance sub account name here */}
           <p className={textStyles}>{}</p>
         </div>

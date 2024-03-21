@@ -1,5 +1,5 @@
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { CustomButton } from "@components/Button";
+import { CustomButton } from "@components/button";
 import { useAccount } from "wagmi";
 
 export default function ConnectButton() {

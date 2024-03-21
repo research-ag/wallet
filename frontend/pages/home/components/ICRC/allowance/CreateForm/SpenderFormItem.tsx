@@ -2,9 +2,9 @@ import { AllowanceValidationErrorsEnum, TAllowance } from "@/@types/allowance";
 import { SelectOption } from "@/@types/components";
 import formatContact from "@/utils/formatContact";
 import { validatePrincipal } from "@/utils/identity";
-import Input from "@components/input/Input";
-import { Select } from "@components/select";
-import { Switch } from "@components/switch";
+import { BasicInput } from "@components/input";
+import { BasicSelect } from "@components/select";
+import { BasicSwitch } from "@components/switch";
 import { useAppSelector } from "@redux/Store";
 import { removeAllowanceErrorAction } from "@redux/allowance/AllowanceActions";
 import { initialAllowanceState } from "@redux/allowance/AllowanceReducer";
@@ -51,12 +51,12 @@ export default function SpenderFormItem(props: ISpenderFormItemProps) {
         <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("spender")}</p>
         <div className="flex items-center justify-between w-3/6 px-2 py-1 rounded-md bg-PrimaryColorLight dark:bg-ThemeColorBack">
           <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("contact.book")}</p>
-          <Switch checked={isNew} onChange={onContactBookChange} disabled={isLoading} />
+          <BasicSwitch checked={isNew} onChange={onContactBookChange} disabled={isLoading} />
           <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("new")}</p>
         </div>
       </label>
       {!isNew && (
-        <Select
+        <BasicSelect
           onSelect={onSelectedChange}
           options={options}
           disabled={isLoading}
@@ -68,7 +68,7 @@ export default function SpenderFormItem(props: ISpenderFormItemProps) {
         />
       )}
       {isNew && (
-        <Input
+        <BasicInput
           placeholder="Principal"
           onChange={onInputChange}
           disabled={isLoading}

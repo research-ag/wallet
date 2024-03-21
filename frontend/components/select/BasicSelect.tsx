@@ -1,11 +1,10 @@
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { VariantProps } from "cva";
+import { cva, VariantProps } from "cva";
 import { useMemo, useRef, useState } from "react";
 import { ReactComponent as DropIcon } from "@assets/svg/files/chevron-right-icon.svg";
-import { CustomInput } from "@components/Input";
+import { CustomInput } from "@components/input";
 import SearchIcon from "@assets/svg/files/icon-search.svg";
 import { SelectOption } from "@/@types/components";
-import { selectContentCVA, selectTriggerCVA } from "./styles.cva";
 import { clsx } from "clsx";
 import { useTranslation } from "react-i18next";
 
@@ -125,3 +124,55 @@ function getItemStyles(width: string) {
 function getFlatStyle(width: string) {
   return clsx(`w-[${width}]`);
 }
+
+const selectTriggerCVA = cva(
+  [
+    "flex",
+    "justify-between",
+    "items-center",
+    "p-2",
+    "bg-ThemeColorSelectorLight dark:bg-SecondaryColor",
+    "border rounded-md",
+    "mt-2 ",
+    "cursor-pointer",
+    "px-4",
+    "h-14",
+  ],
+  {
+    variants: {
+      disabled: {
+        true: ["opacity-50 pointer-events-none"],
+        false: "",
+      },
+      border: {
+        none: ["border", "border-BorderColorLight", "dark:border-BorderColor"],
+        error: "border border-TextErrorColor",
+      },
+    },
+    defaultVariants: {
+      disabled: false,
+      border: "none",
+    },
+    compoundVariants: [],
+  },
+);
+
+const selectContentCVA = cva(
+  [
+    "w-fit max-h-[20vh] z-50 mt-2",
+    "bg-ThemeColorSelectorLight dark:bg-ThemeColorBack",
+    "rounded-md border border-RadioCheckColor",
+    "scroll-y-light",
+  ],
+  {
+    variants: {
+      disabled: {
+        true: ["opacity-50 pointer-events-none"],
+        false: "",
+      },
+    },
+    defaultVariants: {
+      disabled: false,
+    },
+  },
+);

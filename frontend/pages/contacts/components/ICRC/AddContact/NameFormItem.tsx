@@ -1,4 +1,4 @@
-import { CustomInput } from "@components/Input";
+import { CustomInput } from "@components/input";
 import { Contact } from "@redux/models/ContactsModels";
 import { useTranslation } from "react-i18next";
 

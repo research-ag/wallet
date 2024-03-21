@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { AllowanceValidationErrorsEnum, TAllowance } from "@/@types/allowance";
 import { submitAllowanceApproval, createApproveAllowanceParams, getSubAccountBalance } from "@/pages/home/helpers/icrc";
 import useAllowanceDrawer from "./useAllowanceDrawer";
-
+// eslint-disable-next-line import/named
 import { throttle } from "lodash";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { initialAllowanceState } from "@redux/allowance/AllowanceReducer";

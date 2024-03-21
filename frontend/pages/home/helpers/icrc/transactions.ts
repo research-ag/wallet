@@ -1,5 +1,10 @@
 import { getIcrcActor } from "@/pages/home/helpers/icrc";
-import { GetBalanceParams, TransactionFeeParams, TransferFromAllowanceParams, TransferTokensParams } from "@/@types/icrc";
+import {
+  GetBalanceParams,
+  TransactionFeeParams,
+  TransferFromAllowanceParams,
+  TransferTokensParams,
+} from "@/@types/icrc";
 import { getCanister } from "./getIcrcCanister";
 import { hexToUint8Array, hexadecimalToUint8Array, toFullDecimal, toHoleBigInt } from "@/utils";
 import { Principal } from "@dfinity/principal";
@@ -26,7 +31,7 @@ export async function transferTokens(params: TransferTokensParams) {
   const ledgerActor = getIcrcActor({
     agent,
     assetAddress,
-  })
+  });
 
   await ledgerActor.icrc1_transfer({
     to: {

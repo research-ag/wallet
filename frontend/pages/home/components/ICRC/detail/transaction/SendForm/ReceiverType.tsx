@@ -1,5 +1,5 @@
 import { TransactionReceiverOptionEnum } from "@/@types/transactions";
-import { Switch } from "@components/switch";
+import { BasicSwitch } from "@components/switch";
 import { useAppSelector } from "@redux/Store";
 import { clearReceiverAction, setReceiverIsManualAction } from "@redux/transaction/TransactionActions";
 import { useTranslation } from "react-i18next";
@@ -14,7 +14,7 @@ export default function ReceiverType() {
       {receiver.receiverOption !== TransactionReceiverOptionEnum.Values.own && (
         <div className="flex items-center justify-center">
           <p className="mr-2 text-black-color text-md dark:text-white">{t("manual")}</p>
-          <Switch checked={receiver.isManual} onChange={onCheckedChange} />
+          <BasicSwitch checked={receiver.isManual} onChange={onCheckedChange} />
         </div>
       )}
     </div>

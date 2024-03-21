@@ -1,5 +1,11 @@
-import { ButtonHTMLAttributes, FC } from "react";
+import { ButtonHTMLAttributes } from "react";
 import { cva, type VariantProps } from "cva";
+
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof button> {}
+
+export default function CustomButton({ className, intent, size, border, focusBorder, ...props }: ButtonProps) {
+  return <button className={button({ intent, size, border, focusBorder, className })} {...props} />;
+}
 
 const button = cva("button", {
   variants: {
@@ -40,9 +46,3 @@ const button = cva("button", {
     focusBorder: "none",
   },
 });
-
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof button> {}
-
-export const CustomButton: FC<ButtonProps> = ({ className, intent, size, border, focusBorder, ...props }) => (
-  <button className={button({ intent, size, border, focusBorder, className })} {...props} />
-);

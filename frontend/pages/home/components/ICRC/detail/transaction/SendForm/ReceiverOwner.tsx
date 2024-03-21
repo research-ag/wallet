@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Select } from "@components/select";
+import { BasicSelect } from "@components/select";
 import { useAppSelector } from "@redux/Store";
 import formatSubAccount from "@/utils/formatSubAccount";
 import { SelectOption } from "@/@types/components";
@@ -51,7 +51,7 @@ export default function ReceiverOwner() {
     <div className="mx-4 mt-4">
       <div>
         <p className="opacity-50 text-start text-md text-black-color dark:text-white">{t("subAccount")}</p>
-        <Select
+        <BasicSelect
           onSelect={onSelect}
           options={options}
           initialValue={receiver?.ownSubAccount?.sub_account_id}

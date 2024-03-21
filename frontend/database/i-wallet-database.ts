@@ -11,7 +11,7 @@ import { Themes } from "@/const";
 export abstract class IWalletDatabase {
   /**
    * Retrieves the current language setting from local storage.
-   * 
+   *
    * @returns The language code stored in local storage, or null if not set.
    */
   getLanguage(): string | null {
@@ -19,35 +19,35 @@ export abstract class IWalletDatabase {
   }
 
   /**
-     * Sets the language setting in local storage.
-     * 
-     * @param value The language code to store.
-     */
+   * Sets the language setting in local storage.
+   *
+   * @param value The language code to store.
+   */
   setLanguage(value: string): void {
     localStorage.setItem(LocalStorageKeyEnum.Values.language, value);
   }
 
   /**
-     * Retrieves the current theme setting from local storage.
-     * 
-     * @returns The theme value ("dark" or "light") stored in local storage, or null if not set.
-     */
+   * Retrieves the current theme setting from local storage.
+   *
+   * @returns The theme value ("dark" or "light") stored in local storage, or null if not set.
+   */
   getTheme(): Themes | null {
     return localStorage.theme;
   }
 
   /**
-    * Sets the theme setting in local storage.
-    * 
-    * @param value The theme value ("dark" or "light") to store.
-    */
+   * Sets the theme setting in local storage.
+   *
+   * @param value The theme value ("dark" or "light") to store.
+   */
   setTheme(value: Themes): void {
     localStorage.theme = value;
   }
 
   /**
    * Retrieves the current network type setting from local storage.
-   * 
+   *
    * @returns The parsed network type object from local storage, or null if not set.
    */
   getNetworkType(): AuthNetwork | null {
@@ -55,26 +55,26 @@ export abstract class IWalletDatabase {
   }
 
   /**
-     * Retrieves the current database location setting from local storage.
-     * 
-     * @returns The database location value (of type DB_Type) from local storage, or null if not set.
-  */
+   * Retrieves the current database location setting from local storage.
+   *
+   * @returns The database location value (of type DB_Type) from local storage, or null if not set.
+   */
   getDbLocation(): DB_Type | null {
     return localStorage.dbLocation;
   }
 
   /**
-     * Sets the database location setting in local storage.
-     * 
-     * @param value The database location value (of type DB_Type) to store.
-     */
+   * Sets the database location setting in local storage.
+   *
+   * @param value The database location value (of type DB_Type) to store.
+   */
   setDbLocation(value: DB_Type): void {
     localStorage.dbLocation = value;
   }
 
   /**
    * Retrieves the current custom database canister ID setting from local storage.
-   * 
+   *
    * @returns The custom database canister ID value from local storage, or null if not set.
    */
   getCustomDbCanisterId(): string | null {
@@ -83,7 +83,7 @@ export abstract class IWalletDatabase {
 
   /**
    * Sets the custom database canister ID setting in local storage.
-   * 
+   *
    * @param value The custom database canister ID value to store.
    */
   setCustomDbCanisterId(value: string): void {
@@ -92,7 +92,7 @@ export abstract class IWalletDatabase {
 
   /**
    * Retrieves the current network type setting from local storage.
-   * 
+   *
    * @returns The parsed network type object from local storage, or null if not set.
    */
   setNetworkType(value: AuthNetwork): void {
@@ -108,7 +108,7 @@ export abstract class IWalletDatabase {
 
   /**
    * Create the primary key for an allowance object based on its spender, subAccountId, and asset symbol.
-   * 
+   *
    * @returns The primary key for the allowance object.
    */
   generateAllowancePrimaryKey({ spender, subAccountId, asset: { symbol } }: TAllowance): string {

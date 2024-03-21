@@ -1,7 +1,7 @@
 // svgs
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
-import Modal from "@components/Modal";
+import { BasicModal } from "@components/modal";
 import { GeneralHook } from "../../../hooks/generalHook";
 import { AddingAssetsEnum, TokenNetwork, IconTypeEnum, TokenNetworkEnum, AddingAssets } from "@/const";
 import { useTranslation } from "react-i18next";
@@ -32,7 +32,7 @@ const DialogAssetConfirmation = ({
   const { getAssetIcon } = GeneralHook();
 
   return (
-    <Modal
+    <BasicModal
       open={modal}
       width="w-[18rem]"
       padding="py-3 px-1"
@@ -55,7 +55,7 @@ const DialogAssetConfirmation = ({
           <p className="mt-3 text-lg font-semibold">{getMessage(addStatus).botton}</p>
         </div>
       </div>
-    </Modal>
+    </BasicModal>
   );
 
   function onClose() {

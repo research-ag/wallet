@@ -8,13 +8,13 @@ import {
   setIsInspectDetailAction,
   setIsLoadingAction,
 } from "@redux/transaction/TransactionActions";
-import Button from "@components/button/Button";
+import { BasicButton } from "@components/button";
 import useSend from "@pages/home/hooks/useSend";
 import SenderAsset from "./SenderAsset";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "@redux/Store";
 import { TransactionValidationErrorsEnum, transactionErrors } from "@/@types/transactions";
-import LoadingLoader from "@components/Loader";
+import { LoadingLoader } from "@components/loader";
 
 interface SendFormProps {
   setDrawerOpen(value: boolean): void;
@@ -35,12 +35,12 @@ export default function SendForm({ setDrawerOpen }: SendFormProps) {
       <div className="flex items-center justify-end mt-6">
         <p className="mr-4 text-sm text-slate-color-error">{t(getError())}</p>
         {isLoading && <LoadingLoader className="mr-4" />}
-        <Button className="min-w-[5rem] mr-2 font-bold bg-secondary-color-2 text-md" onClick={onCancel}>
+        <BasicButton className="min-w-[5rem] mr-2 font-bold bg-secondary-color-2 text-md" onClick={onCancel}>
           {t("cancel")}
-        </Button>
-        <Button className="min-w-[5rem] font-bold bg-primary-color text-md" onClick={onNext}>
+        </BasicButton>
+        <BasicButton className="min-w-[5rem] font-bold bg-primary-color text-md" onClick={onNext}>
           {t("next")}
-        </Button>
+        </BasicButton>
       </div>
     </div>
   );

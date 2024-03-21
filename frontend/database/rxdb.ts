@@ -251,7 +251,7 @@ export class RxdbDatabase extends IWalletDatabase {
       document?.remove();
     } catch (e) {
       console.error("RxDb DeleteToken", e);
-    };
+    }
   }
 
   // INFO: CONTACTS
@@ -565,7 +565,6 @@ export class RxdbDatabase extends IWalletDatabase {
     );
   }
 
-
   // INFO: HELPERS
   private _mapContactDoc(doc: RxDocument<ContactRxdbDocument>): Contact {
     return {
@@ -666,13 +665,13 @@ export class RxdbDatabase extends IWalletDatabase {
   private async _tokensPushHandler(items: any[]): Promise<TokenRxdbDocument[]> {
     const arg = items.map(
       (x) =>
-      ({
-        ...x,
-        id_number: x.id_number,
-        updatedAt: Math.floor(Date.now() / 1000),
-        logo: extractValueFromArray(x.logo),
-        index: extractValueFromArray(x.index),
-      } as TokenRxdbDocument),
+        ({
+          ...x,
+          id_number: x.id_number,
+          updatedAt: Math.floor(Date.now() / 1000),
+          logo: extractValueFromArray(x.logo),
+          index: extractValueFromArray(x.index),
+        } as TokenRxdbDocument),
     );
 
     await this.replicaCanister?.pushTokens(arg);
@@ -710,11 +709,11 @@ export class RxdbDatabase extends IWalletDatabase {
           allowance:
             !!s.allowance && !!s.allowance.allowance
               ? [
-                {
-                  allowance: [s.allowance.allowance],
-                  expires_at: [s.allowance.expires_at],
-                },
-              ]
+                  {
+                    allowance: [s.allowance.allowance],
+                    expires_at: [s.allowance.expires_at],
+                  },
+                ]
               : [],
         })),
       })),

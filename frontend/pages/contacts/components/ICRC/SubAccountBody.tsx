@@ -8,8 +8,8 @@ import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 
 import { Buffer } from "buffer";
 
-import { CustomCopy } from "@components/CopyTooltip";
-import { CustomInput } from "@components/Input";
+import { CustomCopy } from "@components/tooltip";
+import { CustomInput } from "@components/input";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
 import { getInitialFromName, hexToUint8Array, removeLeadingZeros, shortAddress } from "@/utils";
@@ -26,10 +26,10 @@ import { getAllowanceDetails } from "@/pages/home/helpers/icrc/";
 import { DeleteContactTypeEnum } from "@/const";
 import useContactTable from "../../hooks/useContactTable";
 import { GeneralHook } from "@pages/home/hooks/generalHook";
-import LoadingLoader from "@components/Loader";
+import { LoadingLoader } from "@components/loader";
 import store from "@redux/Store";
 import { SupportedStandardEnum } from "@/@types/icrc";
-import { CustomButton } from "@components/Button";
+import { CustomButton } from "@components/button";
 import { ChangeEvent, useState } from "react";
 
 interface SubAccountBodyProps {
@@ -255,6 +255,7 @@ export default function SubAccountBody(props: SubAccountBodyProps) {
                 onChange={(e) => {
                   changeName(e.target.value);
                 }}
+                // eslint-disable-next-line jsx-a11y/no-autofocus
                 autoFocus
               />
             </div>

@@ -30,62 +30,62 @@ export const setupReplication: <T extends { updatedAt: number; deleted: boolean 
   pushFunc: (items: T[]) => Promise<T[]>,
   pullFunc: (minTimestamp: number, lastId: PK | null, batchSize: number) => Promise<T[]>,
 ) => {
-    const replicationState = replicateRxCollection({
-      collection,
-      replicationIdentifier,
-      deletedField: "deleted",
-      autoStart: false,
-      push: {
-        handler: async (docs: any): Promise<any> => {
-          pushing$.next(true);
-          const store: T[] = docs.map((x: any) => x.newDocumentState) as any;
+  const replicationState = replicateRxCollection({
+    collection,
+    replicationIdentifier,
+    deletedField: "deleted",
+    autoStart: false,
+    push: {
+      handler: async (docs: any): Promise<any> => {
+        pushing$.next(true);
+        const store: T[] = docs.map((x: any) => x.newDocumentState) as any;
 
-          try {
-            const documentsPushed = await pushFunc(store);
-            pushing$.next(false);
-            return documentsPushed;
-          } catch (err) {
-            pushing$.next(false);
-            console.error("RxDb Push", err);
-            throw err;
-          }
-        },
-        batchSize: 100,
+        try {
+          const documentsPushed = await pushFunc(store);
+          pushing$.next(false);
+          return documentsPushed;
+        } catch (err) {
+          pushing$.next(false);
+          console.error("RxDb Push", err);
+          throw err;
+        }
       },
-      pull: {
-        handler: async (lastCheckpoint: any, batchSize: any): Promise<any> => {
-          pulling$.next(true);
+      batchSize: 100,
+    },
+    pull: {
+      handler: async (lastCheckpoint: any, batchSize: any): Promise<any> => {
+        pulling$.next(true);
 
-          try {
-            let documentsFromRemote = await pullFunc(lastCheckpoint?.updatedAt || 0, lastCheckpoint?.id || "", batchSize);
+        try {
+          let documentsFromRemote = await pullFunc(lastCheckpoint?.updatedAt || 0, lastCheckpoint?.id || "", batchSize);
 
-            if (!documentsFromRemote) documentsFromRemote = [];
-            pulling$.next(false);
+          if (!documentsFromRemote) documentsFromRemote = [];
+          pulling$.next(false);
 
-            return {
-              documents: documentsFromRemote,
-              checkpoint:
-                documentsFromRemote.length === 0
-                  ? lastCheckpoint
-                  : {
+          return {
+            documents: documentsFromRemote,
+            checkpoint:
+              documentsFromRemote.length === 0
+                ? lastCheckpoint
+                : {
                     id: lastOfArray(documentsFromRemote)![primaryKey],
                     updatedAt: lastOfArray(documentsFromRemote)!.updatedAt,
                   },
-            };
-          } catch (err) {
-            pulling$.next(false);
-            console.error("RxDb Pull", err);
-            throw err;
-          }
-        },
-        batchSize: 1000,
+          };
+        } catch (err) {
+          pulling$.next(false);
+          console.error("RxDb Pull", err);
+          throw err;
+        }
       },
-    });
+      batchSize: 1000,
+    },
+  });
 
-    await replicationState.start();
+  await replicationState.start();
 
-    return [replicationState, setInterval(() => replicationState.reSync(), 15000), pushing$, pulling$];
-  };
+  return [replicationState, setInterval(() => replicationState.reSync(), 15000), pushing$, pulling$];
+};
 
 export const extractValueFromArray = (possibleArray: string[] | string = ""): string => {
   if (Array.isArray(possibleArray)) {

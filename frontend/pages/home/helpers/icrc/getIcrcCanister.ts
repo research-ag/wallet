@@ -17,5 +17,3 @@ export function getCanister(assetAddress: string | Principal): IcrcLedgerCaniste
     canisterId,
   });
 }
-
-

@@ -2,7 +2,7 @@
 import { AccountDefaultEnum, IconTypeEnum, TokenNetwork, TokenNetworkEnum } from "@/const";
 import ChevIcon from "@assets/svg/files/chev-icon.svg";
 //
-import { CustomButton } from "@components/Button";
+import { CustomButton } from "@components/button";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { clsx } from "clsx";
 import { useTranslation } from "react-i18next";

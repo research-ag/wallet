@@ -21,10 +21,10 @@ import { clsx } from "clsx";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { AccountHook } from "@hooks/accountHook";
 import { logout } from "@redux/CheckAuth";
-import Modal from "@components/Modal";
+import { BasicModal } from "@components/modal";
 import ThemeModal from "./themeModal";
 import { ThemesEnum } from "@/const";
-import { CustomCopy } from "@components/CopyTooltip";
+import { CustomCopy } from "@components/tooltip";
 import { AssetHook } from "@pages/home/hooks/assetHook";
 import { useAppSelector } from "@redux/Store";
 import { db } from "@/database/db";
@@ -161,12 +161,12 @@ const TopBarComponent = ({ isLoginPage }: { isLoginPage: boolean }) => {
           </DropdownMenu.Root>
         </div>
       </div>
-      <Modal open={themeOpen} top="top-[35%]">
+      <BasicModal open={themeOpen} top="top-[35%]">
         <ThemeModal setOpen={setThemeOpen} />
-      </Modal>
-      <Modal open={dbLocationOpen} top="top-[35%]">
+      </BasicModal>
+      <BasicModal open={dbLocationOpen} top="top-[35%]">
         <DbLocationModal setOpen={setDbLocationOpen} />
-      </Modal>
+      </BasicModal>
     </Fragment>
   );
 

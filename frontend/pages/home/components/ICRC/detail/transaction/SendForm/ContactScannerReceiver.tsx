@@ -1,4 +1,4 @@
-import { CustomInput } from "@components/Input";
+import { CustomInput } from "@components/input";
 import { ReactComponent as SearchIcon } from "@assets/svg/files/icon-search.svg";
 import { ChangeEvent, useEffect, useState } from "react";
 import { removeErrorAction, setErrorAction, setReceiverNewContactAction } from "@redux/transaction/TransactionActions";

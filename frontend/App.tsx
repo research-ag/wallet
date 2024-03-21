@@ -72,7 +72,7 @@ const App: React.FC = () => {
           await updateAllBalances({
             loading: true,
             myAgent: userAgent,
-            defaultTokens: x,
+            tokens: x,
             basicSearch: false,
             fromLogin: true,
           });

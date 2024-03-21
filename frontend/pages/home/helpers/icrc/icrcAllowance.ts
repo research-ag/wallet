@@ -129,7 +129,9 @@ export async function retrieveSubAccountsWithAllowance(params: HasSubAccountsPar
 
       return {
         ...subAccount,
+        // TODO: check the right way to handle the allowance
         allowance: response,
+        // allowance: response?.allowance?.length === 0 ? undefined : response,
       };
     }),
   );

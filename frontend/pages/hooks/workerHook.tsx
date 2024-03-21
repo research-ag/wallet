@@ -1,5 +1,4 @@
 import { AssetSymbolEnum, WorkerTaskEnum } from "@/const";
-import { defaultTokens } from "@/defaultTokens";
 import { hexToUint8Array } from "@/utils";
 import contactCacheRefresh from "@pages/contacts/helpers/contacts";
 import { allowanceCacheRefresh } from "@pages/home/helpers/allowanceCache";
@@ -70,13 +69,13 @@ export const WorkerHook = () => {
       await updateAllBalances({
         loading: true,
         myAgent: userAgent,
-        defaultTokens: dbTokens,
+        tokens: dbTokens,
       });
     } else {
       await updateAllBalances({
         loading: true,
         myAgent: userAgent,
-        defaultTokens,
+        tokens,
         basicSearch: true,
       });
     }
