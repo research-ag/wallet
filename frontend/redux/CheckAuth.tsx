@@ -22,7 +22,6 @@ import contactCacheRefresh from "@pages/contacts/helpers/contacts";
 import { Secp256k1KeyIdentity } from "@dfinity/identity-secp256k1";
 import { DB_Type, db } from "@/database/db";
 import { getSNSTokens, updateAllBalances } from "./assets/AssetActions";
-import { defaultTokens } from "@/defaultTokens";
 
 const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${
   import.meta.env.VITE_APP_LOGO
@@ -128,8 +127,6 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean,
 
   store.dispatch(setAuthenticated(true, false, !!fixedPrincipal, identityPrincipalStr.toLocaleLowerCase()));
 
-  // TOKENS
-  // WARNING: if (storedTokens.length < 0) run this code
   const storedTokens = await db().getTokens();
   const balances = await updateAllBalances({
     loading: true,
