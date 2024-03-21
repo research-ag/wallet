@@ -22,10 +22,12 @@ export const AssetHook = () => {
   );
 
   const { userAgent } = useAppSelector((state) => state.auth);
+
   const deleteAsset = (symb: string, address: string) => {
     dispatch(removeToken(symb));
     db().deleteToken(address).then();
   };
+
   const [searchKey, setSearchKey] = useState("");
   const setAcordeonIdx = (assetIdx: string[]) => dispatch(setAcordeonAssetIdx(assetIdx));
   const [assetInfo, setAssetInfo] = useState<Asset | undefined>();

@@ -13,10 +13,11 @@ export const UseAsset = () => {
   useEffect(() => {
     if (assets && assets.length > 0) {
       let actualAsset: Asset | undefined = undefined;
-      assets.map((ast: Asset) => {
-        if (ast?.tokenSymbol === selectedAsset?.tokenSymbol) {
-          actualAsset = ast;
-          changeSelectedAsset(ast);
+
+      assets.map((currentAsset: Asset) => {
+        if (currentAsset?.tokenSymbol === selectedAsset?.tokenSymbol) {
+          actualAsset = currentAsset;
+          changeSelectedAsset(currentAsset);
         }
       });
       if (!actualAsset) {
@@ -28,10 +29,10 @@ export const UseAsset = () => {
   useEffect(() => {
     if (selectedAsset) {
       let actualSub: SubAccount | undefined = undefined;
-      selectedAsset.subAccounts.map((sa: SubAccount) => {
-        if (sa.sub_account_id === (selectedAccount?.sub_account_id || "")) {
-          actualSub = sa;
-          changeSelectedAccount(sa);
+      selectedAsset.subAccounts.map((currentSubAccount: SubAccount) => {
+        if (currentSubAccount.sub_account_id === (selectedAccount?.sub_account_id || "")) {
+          actualSub = currentSubAccount;
+          changeSelectedAccount(currentSubAccount);
         }
       });
       if (!actualSub) {
