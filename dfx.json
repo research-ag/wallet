@@ -12,7 +12,7 @@
       "type": "motoko",
       "optimize": "cycles",
       "declarations": {
-        "output": "frontend/database/candid"
+        "output": "frontend/candid/database"
       }
     },
     "ic_siwe_provider": {

@@ -12,7 +12,7 @@ import { RxDBUpdatePlugin } from "rxdb/plugins/update";
 import { RxReplicationState } from "rxdb/plugins/replication";
 // candid
 import { AnonymousIdentity, HttpAgent, Identity } from "@dfinity/agent";
-import { createActor } from "@/database/candid";
+import { createActor } from "@/candid/database";
 // types
 import { Token } from "@redux/models/TokenModels";
 import { Contact } from "@redux/models/ContactsModels";
@@ -22,7 +22,7 @@ import {
   TokenDocument as TokenRxdbDocument,
   ContactDocument as ContactRxdbDocument,
   AllowanceDocument as AllowanceRxdbDocument,
-} from "./candid/db.did";
+} from "@/candid/database/db.did";
 
 // Enables data updates, deletions, and replacements within collections
 addRxPlugin(RxDBUpdatePlugin);
@@ -665,13 +665,13 @@ export class RxdbDatabase extends IWalletDatabase {
   private async _tokensPushHandler(items: any[]): Promise<TokenRxdbDocument[]> {
     const arg = items.map(
       (x) =>
-        ({
-          ...x,
-          id_number: x.id_number,
-          updatedAt: Math.floor(Date.now() / 1000),
-          logo: extractValueFromArray(x.logo),
-          index: extractValueFromArray(x.index),
-        } as TokenRxdbDocument),
+      ({
+        ...x,
+        id_number: x.id_number,
+        updatedAt: Math.floor(Date.now() / 1000),
+        logo: extractValueFromArray(x.logo),
+        index: extractValueFromArray(x.index),
+      } as TokenRxdbDocument),
     );
 
     await this.replicaCanister?.pushTokens(arg);
@@ -709,11 +709,11 @@ export class RxdbDatabase extends IWalletDatabase {
           allowance:
             !!s.allowance && !!s.allowance.allowance
               ? [
-                  {
-                    allowance: [s.allowance.allowance],
-                    expires_at: [s.allowance.expires_at],
-                  },
-                ]
+                {
+                  allowance: [s.allowance.allowance],
+                  expires_at: [s.allowance.expires_at],
+                },
+              ]
               : [],
         })),
       })),
