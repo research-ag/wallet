@@ -35,9 +35,8 @@ export interface UpdateBalanceReturn {
 
 export type UpdateAllBalances = (params: UpdateAllBalancesParams) => Promise<UpdateBalanceReturn | undefined>;
 
-
 export interface GetAllTransactionsICPParams {
   subaccount_index: string;
   loading: boolean;
   isOGY: boolean;
-};
+}

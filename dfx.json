@@ -8,7 +8,7 @@
       "type": "assets"
     },
     "db": {
-      "main": "db-canister/main.mo",
+      "main": "canisters/database/main.mo",
       "type": "motoko",
       "optimize": "cycles",
       "declarations": {
