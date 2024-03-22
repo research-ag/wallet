@@ -59,7 +59,6 @@ export const updateAllBalances = async (params: updateAllBalancesParams) => {
         const assetMarket = tokenMarkets.find((tokenMarket) => tokenMarket.symbol === symbol);
         const subAccList: SubAccount[] = [];
         const userSubAcc: TokenSubAccount[] = [];
-
         let subAccts: { saAsset: SubAccount; saToken: TokenSubAccount }[] = [];
 
         // Basic Serach look into first 1000 subaccount under the 5 consecutive zeros logic
@@ -67,19 +66,19 @@ export const updateAllBalances = async (params: updateAllBalancesParams) => {
         // If 5 consecutive subaccounts balances are zero, iteration stops
         if (basicSearch) {
           let zeros = 0;
-          for (let i = 0; i < 1000; i++) {
+          for (let basicSearchIndex = 0; basicSearchIndex < 1000; basicSearchIndex++) {
             const myBalance = await balance({
               owner: myPrincipal,
-              subaccount: new Uint8Array(getSubAccountArray(i)),
+              subaccount: new Uint8Array(getSubAccountArray(basicSearchIndex)),
               certified: false,
             });
 
-            if (Number(myBalance) > 0 || i === 0) {
+            if (Number(myBalance) > 0 || basicSearchIndex === 0) {
               zeros = 0;
 
               subAccList.push({
-                name: i === 0 ? AccountDefaultEnum.Values.Default : "-",
-                sub_account_id: `0x${i.toString(16)}`,
+                name: basicSearchIndex === 0 ? AccountDefaultEnum.Values.Default : "-",
+                sub_account_id: `0x${basicSearchIndex.toString(16)}`,
                 address: myPrincipal?.toString(),
                 amount: myBalance.toString(),
                 currency_amount: assetMarket ? getUSDfromToken(myBalance.toString(), assetMarket.price, decimals) : "0",
@@ -89,8 +88,8 @@ export const updateAllBalances = async (params: updateAllBalancesParams) => {
               });
 
               userSubAcc.push({
-                name: i === 0 ? AccountDefaultEnum.Values.Default : "-",
-                numb: `0x${i.toString(16)}`,
+                name: basicSearchIndex === 0 ? AccountDefaultEnum.Values.Default : "-",
+                numb: `0x${basicSearchIndex.toString(16)}`,
                 amount: myBalance.toString(),
                 currency_amount: assetMarket ? getUSDfromToken(myBalance.toString(), assetMarket.price, decimals) : "0",
               });
@@ -134,6 +133,7 @@ export const updateAllBalances = async (params: updateAllBalancesParams) => {
               return { saAsset, saToken };
             }),
           );
+
           let zeros = 0;
           for (let i = 0; i < 1000; i++) {
             if (!idsPushed.includes(`0x${i.toString(16)}`)) {

@@ -128,11 +128,12 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean,
   store.dispatch(setAuthenticated(true, false, !!fixedPrincipal, identityPrincipalStr.toLocaleLowerCase()));
 
   const storedTokens = await db().getTokens();
+
   const balances = await updateAllBalances({
     loading: true,
     myAgent,
     tokens: storedTokens,
-    basicSearch: true,
+    basicSearch: false,
     fromLogin: true,
   });
 
