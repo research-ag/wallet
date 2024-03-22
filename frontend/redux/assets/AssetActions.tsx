@@ -1,4 +1,3 @@
-import { HttpAgent } from "@dfinity/agent";
 import store from "@redux/Store";
 import { SnsToken, Token, TokenSubAccount } from "@redux/models/TokenModels";
 import { IcrcAccount, IcrcIndexCanister, IcrcLedgerCanister, IcrcTokenMetadataResponse } from "@dfinity/ledger-icrc";
@@ -19,16 +18,16 @@ import { AccountDefaultEnum } from "@/const";
 import bigInt from "big-integer";
 import { SupportedStandardEnum } from "@/@types/icrc";
 import { getETHRate, getTokensFromMarket } from "@/utils/market";
+import { UpdateAllBalancesParams, UpdateBalanceReturn } from "@/@types/assets";
 
-interface updateAllBalancesParams {
-  loading: boolean;
-  myAgent: HttpAgent;
-  tokens: Token[];
-  basicSearch?: boolean;
-  fromLogin?: boolean;
-}
+/**
+ * This function updates the balances for all provided tokens and their subaccounts, based on the market price and the account balance.
+ *
+ * @param params An object containing parameters for the update process.
+ * @returns An object containing updated `newAssetsUpload` and `tokens` arrays.
+ */
 
-export const updateAllBalances = async (params: updateAllBalancesParams) => {
+export async function updateAllBalances(params: UpdateAllBalancesParams): Promise<UpdateBalanceReturn | undefined> {
   const { loading, myAgent, tokens, basicSearch, fromLogin } = params;
   const tokenMarkets = await getTokensFromMarket();
 
@@ -284,7 +283,7 @@ export const updateAllBalances = async (params: updateAllBalancesParams) => {
       return a.id_number - b.id_number;
     }),
   };
-};
+}
 
 export const setAssetFromLocalData = (tokens: Token[], myPrincipal: string) => {
   const assets: Asset[] = [];
