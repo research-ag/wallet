@@ -18,7 +18,12 @@ import { AccountDefaultEnum } from "@/const";
 import bigInt from "big-integer";
 import { SupportedStandardEnum } from "@/@types/icrc";
 import { getETHRate, getTokensFromMarket } from "@/utils/market";
-import { UpdateAllBalancesParams, UpdateBalanceReturn } from "@/@types/assets";
+import {
+  GetAllTransactionsICPParams,
+  UpdateAllBalances,
+  UpdateAllBalancesParams,
+  UpdateBalanceReturn,
+} from "@/@types/assets";
 
 /**
  * This function updates the balances for all provided tokens and their subaccounts, based on the market price and the account balance.
@@ -26,8 +31,7 @@ import { UpdateAllBalancesParams, UpdateBalanceReturn } from "@/@types/assets";
  * @param params An object containing parameters for the update process.
  * @returns An object containing updated `newAssetsUpload` and `tokens` arrays.
  */
-
-export async function updateAllBalances(params: UpdateAllBalancesParams): Promise<UpdateBalanceReturn | undefined> {
+export const updateAllBalances: UpdateAllBalances = async (params) => {
   const { loading, myAgent, tokens, basicSearch, fromLogin } = params;
   const tokenMarkets = await getTokensFromMarket();
 
@@ -283,7 +287,7 @@ export async function updateAllBalances(params: UpdateAllBalancesParams): Promis
       return a.id_number - b.id_number;
     }),
   };
-}
+};
 
 export const setAssetFromLocalData = (tokens: Token[], myPrincipal: string) => {
   const assets: Asset[] = [];
@@ -323,7 +327,9 @@ export const setAssetFromLocalData = (tokens: Token[], myPrincipal: string) => {
   store.dispatch(setAssets(assets));
 };
 
-export const getAllTransactionsICP = async (subaccount_index: string, loading: boolean, isOGY: boolean) => {
+export const getAllTransactionsICP = async (params: GetAllTransactionsICPParams) => {
+  const { subaccount_index, loading, isOGY } = params;
+
   const myPrincipal = store.getState().auth.userPrincipal;
   let subacc: SubAccountNNS | undefined = undefined;
   try {
@@ -341,7 +347,6 @@ export const getAllTransactionsICP = async (subaccount_index: string, loading: b
       `${isOGY ? import.meta.env.VITE_ROSETTA_URL_OGY : import.meta.env.VITE_ROSETTA_URL}/search/transactions`,
       {
         method: "POST",
-        // mode: "no-cors",
         body: JSON.stringify({
           network_identifier: {
             blockchain: isOGY ? import.meta.env.VITE_NET_ID_BLOCKCHAIN_OGY : import.meta.env.VITE_NET_ID_BLOCKCHAIN,
@@ -369,7 +374,6 @@ export const getAllTransactionsICP = async (subaccount_index: string, loading: b
       return transactionsInfo;
     }
   } catch (error) {
-    // console.error("error", error);
     if (!loading) {
       return [];
     }
