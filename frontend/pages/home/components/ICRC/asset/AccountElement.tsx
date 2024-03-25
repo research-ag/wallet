@@ -16,11 +16,12 @@ import { useTranslation } from "react-i18next";
 import { useAppDispatch } from "@redux/Store";
 import { Token } from "@redux/models/TokenModels";
 import { CustomCopy } from "@components/tooltip";
-import { addSubAccount, removeSubAcc } from "@redux/assets/AssetReducer";
+import { addSubAccount, removeSubAcc, setSubAccountName } from "@redux/assets/AssetReducer";
 import { BasicModal } from "@components/modal";
 import { CustomButton } from "@components/button";
 import bigInt from "big-integer";
 import { db } from "@/database/db";
+import { updateAllBalances } from "@redux/assets/AssetActions";
 
 interface AccountElementProps {
   asset: Asset;
@@ -211,6 +212,8 @@ const AccountElement = ({
           ...token,
           subAccounts: subAccounts,
         });
+        // TODO: Verify if is possible to update the state from the db observable for assets
+        dispatch(setSubAccountName(tokenIndex, subaccountId, name));
       }
     } else {
       setNameError(true);

@@ -58,8 +58,10 @@ const App: React.FC = () => {
       const allowancesSubscriptionHandler = (x: any[]) => store.dispatch(setReduxAllowances(x));
       const contactsSubscriptionHandler = (x: any[]) => store.dispatch(setReduxContacts(x));
 
+      // FIXME: when an asset sub account is added, modified or deleted, the token list should be updated
       const tokensSubscriptionHandler = async (x: any[]) => {
         console.log("tokensSubscriptionHandler", x);
+        
         if (x.length > 0) {
           const {
             asset,
