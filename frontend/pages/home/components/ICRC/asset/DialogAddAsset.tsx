@@ -196,6 +196,8 @@ const DialogAddAsset = ({
               subaccount: hexToUint8Array(`0x${subClean}`),
               certified: false,
             });
+
+            // FIXME: when a new token is added, the token is only added to the assets in redux, but not to tokens. Remove this commend once this is fixed or token was totally replaced by assets.
             const token = tokens[Number(idx)];
 
             const tokenToUpdate = {
