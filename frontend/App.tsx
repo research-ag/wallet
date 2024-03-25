@@ -64,11 +64,8 @@ const App: React.FC = () => {
             asset,
             auth: { authClient, userAgent },
           } = store.getState();
-
           store.dispatch(setReduxTokens(x));
-
           if (asset.initLoad) setAssetFromLocalData(x, authClient);
-
           await updateAllBalances({
             loading: true,
             myAgent: userAgent,

@@ -19,6 +19,7 @@ import { SupportedStandardEnum } from "@/@types/icrc";
 import { db } from "@/database/db";
 import { getAccountIdentifier } from "@/utils";
 import { retrieveAssetsWithAllowance, retrieveSubAccountsWithAllowance } from "@pages/home/helpers/icrc/";
+import { getStateContact } from "@pages/contacts/helpers/mappers";
 
 interface AddContactProps {
   setAddOpen(value: boolean): void;
@@ -194,12 +195,15 @@ export default function AddContact({ setAddOpen }: AddContactProps) {
           assets: newContact.assets,
         });
 
-        const toStoreContact = {
+        const reduxContact = {
           ...auxContact,
           assets: result,
           accountIdentier: getAccountIdentifier(auxContact.principal, 0),
         };
-        await db().addContact(toStoreContact);
+
+        const databaseContact = getStateContact(reduxContact);
+        await db().addContact(databaseContact);
+
         setIsCreating(false);
         setAddOpen(false);
       }
@@ -207,7 +211,6 @@ export default function AddContact({ setAddOpen }: AddContactProps) {
       setNewContactSubIdErr([]);
       setNewContactErr("");
     } else {
-      // Set errors and error message
       setNewContactSubNameErr(errName);
       setNewContactSubIdErr(errId);
       if (errName.length > 0 || errId.length > 0) setNewContactErr("check.add.contact.subacc.err");

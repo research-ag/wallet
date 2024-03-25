@@ -369,7 +369,7 @@ export default function SubAccountBody(props: SubAccountBodyProps) {
           subAccountIndex,
           fromPrincSub ? princSubId : subaccEdited.sub_account_id,
           allowance || { allowance: "", expires_at: "" },
-        );
+          );
         setSelSubaccIdx("");
         setAddSub(false);
       }

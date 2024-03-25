@@ -579,7 +579,6 @@ export class RxdbDatabase extends IWalletDatabase {
           name: sa.name,
           subaccount_index: sa.subaccount_index,
           sub_account_id: sa.sub_account_id,
-          allowance: sa.allowance[0] || { allowance: "", expires_at: "" },
         })),
         address: a.address,
         decimal: a.decimal,
@@ -665,13 +664,13 @@ export class RxdbDatabase extends IWalletDatabase {
   private async _tokensPushHandler(items: any[]): Promise<TokenRxdbDocument[]> {
     const arg = items.map(
       (x) =>
-        ({
-          ...x,
-          id_number: x.id_number,
-          updatedAt: Math.floor(Date.now() / 1000),
-          logo: extractValueFromArray(x.logo),
-          index: extractValueFromArray(x.index),
-        } as TokenRxdbDocument),
+      ({
+        ...x,
+        id_number: x.id_number,
+        updatedAt: Math.floor(Date.now() / 1000),
+        logo: extractValueFromArray(x.logo),
+        index: extractValueFromArray(x.index),
+      } as TokenRxdbDocument),
     );
 
     await this.replicaCanister?.pushTokens(arg);
@@ -709,11 +708,11 @@ export class RxdbDatabase extends IWalletDatabase {
           allowance:
             !!s.allowance && !!s.allowance.allowance
               ? [
-                  {
-                    allowance: [s.allowance.allowance],
-                    expires_at: [s.allowance.expires_at],
-                  },
-                ]
+                {
+                  allowance: [s.allowance.allowance],
+                  expires_at: [s.allowance.expires_at],
+                },
+              ]
               : [],
         })),
       })),
