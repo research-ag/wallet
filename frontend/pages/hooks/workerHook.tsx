@@ -1,9 +1,7 @@
 import { AssetSymbolEnum, WorkerTaskEnum } from "@/const";
-import { defaultTokens } from "@/defaultTokens";
 import { hexToUint8Array } from "@/utils";
 import contactCacheRefresh from "@pages/contacts/helpers/contacts";
 import { allowanceCacheRefresh } from "@pages/home/helpers/allowanceCache";
-// import { AssetList, Metadata } from "@candid/metadata/service.did";
 import store, { useAppDispatch, useAppSelector } from "@redux/Store";
 import { getAllTransactionsICP, getAllTransactionsICRC1, updateAllBalances } from "@redux/assets/AssetActions";
 import { setLoading, setTxWorker } from "@redux/assets/AssetReducer";
@@ -22,11 +20,11 @@ export const WorkerHook = () => {
     assets.map((elementA: Asset) => {
       if (elementA.tokenSymbol === AssetSymbolEnum.Enum.ICP || elementA.tokenSymbol === AssetSymbolEnum.Enum.OGY) {
         elementA.subAccounts.map(async (elementS: SubAccount) => {
-          const transactionsICP = await getAllTransactionsICP(
-            elementS.sub_account_id,
-            false,
-            elementA.tokenSymbol === AssetSymbolEnum.Enum.OGY,
-          );
+          const transactionsICP = await getAllTransactionsICP({
+            subaccount_index: elementS.sub_account_id,
+            loading: false,
+            isOGY: elementA.tokenSymbol === AssetSymbolEnum.Enum.OGY,
+          });
 
           store.dispatch(
             setTxWorker({
@@ -68,13 +66,21 @@ export const WorkerHook = () => {
     dispatch(setLoading(true));
     const dbTokens = await db().getTokens();
     if (dbTokens) {
-      await updateAllBalances(true, userAgent, dbTokens);
+      await updateAllBalances({
+        loading: true,
+        myAgent: userAgent,
+        tokens: dbTokens,
+      });
     } else {
-      await updateAllBalances(true, userAgent, defaultTokens, true);
+      await updateAllBalances({
+        loading: true,
+        myAgent: userAgent,
+        tokens,
+        basicSearch: true,
+      });
     }
-    const myPrincipal = await userAgent.getPrincipal();
     await contactCacheRefresh();
-    await allowanceCacheRefresh(myPrincipal.toText());
+    await allowanceCacheRefresh();
     dispatch(setLoading(false));
   };
 

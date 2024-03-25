@@ -18,7 +18,7 @@ export default function ICRCSubInfo({ subInfoType, setSubInfoType, children }: I
   const { t } = useTranslation();
 
   const allowanceEnabled = useMemo(
-    () => selectedAsset?.supportedStandards.includes(SupportedStandardEnum.Values["ICRC-2"]),
+    () => selectedAsset?.supportedStandards?.includes(SupportedStandardEnum.Values["ICRC-2"]),
     [selectedAsset],
   );
 

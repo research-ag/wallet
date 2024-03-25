@@ -2,6 +2,25 @@ import type { Principal } from "@dfinity/principal";
 import type { ActorMethod } from "@dfinity/agent";
 import type { IDL } from "@dfinity/candid";
 
+export interface AllowanceDocument {
+  id: string;
+  deleted: boolean;
+  asset: {
+    logo: string;
+    name: string;
+    tokenSymbol: string;
+    supportedStandards: Array<string>;
+    address: string;
+    tokenName: string;
+    decimal: string;
+    symbol: string;
+  };
+  updatedAt: number;
+  expiration: string;
+  amount: string;
+  subAccountId: string;
+  spender: string;
+}
 export interface ContactDocument {
   principal: string;
   deleted: boolean;
@@ -11,7 +30,6 @@ export interface ContactDocument {
       name: string;
       sub_account_id: string;
       subaccount_index: string;
-      allowance: [] | [{ allowance: string; expires_at: string }];
     }>;
     logo: string;
     tokenSymbol: string;
@@ -48,9 +66,14 @@ export interface TokenDocument {
 }
 export interface WalletDatabase {
   doesStorageExist: ActorMethod<[], boolean>;
-  dump: ActorMethod<[], Array<[Principal, [Array<[] | [TokenDocument]>, Array<[] | [ContactDocument]>]]>>;
+  dump: ActorMethod<
+    [],
+    Array<[Principal, [Array<[] | [TokenDocument]>, Array<[] | [ContactDocument]>, Array<[] | [AllowanceDocument]>]]>
+  >;
+  pullAllowances: ActorMethod<[number, [] | [string], bigint], Array<AllowanceDocument>>;
   pullContacts: ActorMethod<[number, [] | [string], bigint], Array<ContactDocument>>;
   pullTokens: ActorMethod<[number, [] | [string], bigint], Array<TokenDocument>>;
+  pushAllowances: ActorMethod<[Array<AllowanceDocument>], Array<AllowanceDocument>>;
   pushContacts: ActorMethod<[Array<ContactDocument>], Array<ContactDocument>>;
   pushTokens: ActorMethod<[Array<TokenDocument>], Array<TokenDocument>>;
 }

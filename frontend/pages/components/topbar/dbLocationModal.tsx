@@ -105,7 +105,7 @@ const DbLocationModal = ({ setOpen }: DbLocationModalProps) => {
             placeholder="Canister ID (optional)"
             value={canisterId}
             onKeyUp={onKeyUp}
-            onChange={onChangeId}
+            onChange={onChangeCanisterId}
             border={(canisterIdErr && "error") || undefined}
           />
         )}
@@ -126,7 +126,7 @@ const DbLocationModal = ({ setOpen }: DbLocationModalProps) => {
     }
   }
 
-  function onChangeId({ target: { value } }: React.ChangeEvent<HTMLInputElement>) {
+  function onChangeCanisterId({ target: { value } }: React.ChangeEvent<HTMLInputElement>) {
     setCanisterId(value);
     try {
       !!value && decodeIcrcAccount(value);

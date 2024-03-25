@@ -8,7 +8,6 @@ import { AccountDefaultEnum, AddingAssetsEnum, TokenNetworkEnum } from "@/const"
 import { TokenHook } from "../../../hooks/tokenHook";
 import { Asset } from "@redux/models/AccountModels";
 import { Token } from "@redux/models/TokenModels";
-import { AssetHook } from "../../../hooks/assetHook";
 import { useAppDispatch } from "@redux/Store";
 import DialogAssetConfirmation from "./DialogAssetConfirmation";
 import AddAssetManual from "./AddAssetManual";
@@ -29,8 +28,6 @@ interface AddAssetsProps {
 const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens, assets, acordeonIdx }: AddAssetsProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-
-  const { reloadBallance } = AssetHook();
   const { checkAssetAdded } = GeneralHook();
   const {
     newToken,
@@ -172,11 +169,8 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens, assets
       showModal(true);
       dispatch(setSelectedAsset(tknSave));
       dispatch(setAcordeonAssetIdx([tknSave.symbol]));
-      reloadBallance(
-        [...tokens, tknSave].sort((a, b) => {
-          return a.id_number - b.id_number;
-        }),
-      );
+
+      // TODO: assets state must be updated
       setAssetOpen(false);
     }
   }

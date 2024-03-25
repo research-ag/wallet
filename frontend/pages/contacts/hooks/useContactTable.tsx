@@ -61,7 +61,7 @@ export default function useContactTable() {
     subIndex: string,
     newName: string,
     newIndex: string,
-    allowance: { allowance: string; expires_at: string } | undefined,
+    allowance: { allowance: string; expires_at: string },
   ) => {
     const contact = await db().getContact(principal);
     contact &&
@@ -103,7 +103,7 @@ export default function useContactTable() {
     newName: string,
     newIndex: string,
     subAccountId: string,
-    allowance?: { allowance: string; expires_at: string },
+    allowance: { allowance: string; expires_at: string },
   ) => {
     const contact = await db().getContact(principal);
     contact &&
@@ -159,6 +159,7 @@ export default function useContactTable() {
     name: "",
     subaccount_index: "",
     sub_account_id: "",
+    allowance: { allowance: "", expires_at: "" },
   });
 
   const [subaccEditedErr, setSubaccEditedErr] = useState<SubAccountContactErr>({

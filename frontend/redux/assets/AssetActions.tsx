@@ -1,6 +1,5 @@
-import { HttpAgent } from "@dfinity/agent";
 import store from "@redux/Store";
-import { SnsToken, Token, TokenMarketInfo, TokenSubAccount } from "@redux/models/TokenModels";
+import { SnsToken, Token, TokenSubAccount } from "@redux/models/TokenModels";
 import { IcrcAccount, IcrcIndexCanister, IcrcLedgerCanister, IcrcTokenMetadataResponse } from "@dfinity/ledger-icrc";
 import {
   formatIcpTransaccion,
@@ -18,73 +17,47 @@ import { Principal } from "@dfinity/principal";
 import { AccountDefaultEnum } from "@/const";
 import bigInt from "big-integer";
 import { SupportedStandardEnum } from "@/@types/icrc";
+import { getETHRate, getTokensFromMarket } from "@/utils/market";
+import { GetAllTransactionsICPParams, UpdateAllBalances } from "@/@types/assets";
 
-export const updateAllBalances = async (
-  loading: boolean,
-  myAgent: HttpAgent,
-  tokens: Token[],
-  basicSearch?: boolean,
-  fromLogin?: boolean,
-) => {
-  let tokenMarkets: TokenMarketInfo[] = [];
+/**
+ * This function updates the balances for all provided tokens and their subaccounts, based on the market price and the account balance.
+ *
+ * @param params An object containing parameters for the update process.
+ * @returns An object containing updated `newAssetsUpload` and `tokens` arrays.
+ */
+export const updateAllBalances: UpdateAllBalances = async (params) => {
+  const { loading, myAgent = store.getState().auth.userAgent, tokens, basicSearch, fromLogin } = params;
 
-  try {
-    const auxTokenMarkets: TokenMarketInfo[] = await fetch(import.meta.env.VITE_APP_TOKEN_MARKET).then((x) => x.json());
-    tokenMarkets = auxTokenMarkets.filter((x) => !x.unreleased);
-  } catch {
-    tokenMarkets = [];
-  }
+  const tokenMarkets = await getTokensFromMarket();
 
-  try {
-    const ethRate = await fetch(import.meta.env.VITE_APP_ETH_MARKET).then((x) => x.json());
-    tokenMarkets = [
-      ...tokenMarkets,
-      {
-        id: 999,
-        name: "Ethereum",
-        symbol: "ckETH",
-        price: ethRate.USD,
-        marketcap: 0,
-        volume24: 0,
-        circulating: 0,
-        total: 0,
-        liquidity: 0,
-        unreleased: 0,
-      },
-    ];
-  } catch {
-    //
-  }
+  const ETHRate = await getETHRate();
+  if (ETHRate) tokenMarkets.push(ETHRate);
   store.dispatch(setTokenMarket(tokenMarkets));
 
-  const auxTokens = [...tokens].sort((a, b) => {
-    return a.id_number - b.id_number;
-  });
-
+  const auxTokens = [...tokens].sort((a, b) => a.id_number - b.id_number);
   const myPrincipal = store.getState().auth.userPrincipal;
+
+  if (!myPrincipal) return;
+
   const tokensAseets = await Promise.all(
-    auxTokens.map(async (tkn, idNum) => {
+    auxTokens.map(async (currentToken, idNum) => {
       try {
         const { balance, metadata, transactionFee } = IcrcLedgerCanister.create({
           agent: myAgent,
-          canisterId: tkn.address as any,
+          canisterId: Principal.fromText(currentToken.address),
         });
 
         const [myMetadata, myTransactionFee] = await Promise.all([
-          metadata({
-            certified: false,
-          }),
-          transactionFee({
-            certified: false,
-          }),
+          metadata({ certified: false }),
+          transactionFee({ certified: false }),
         ]);
 
         const { decimals, name, symbol, logo } = getMetadataInfo(myMetadata);
 
-        const assetMarket = tokenMarkets.find((tm) => tm.symbol === symbol);
+        const assetMarket = tokenMarkets.find((tokenMarket) => tokenMarket.symbol === symbol);
         const subAccList: SubAccount[] = [];
         const userSubAcc: TokenSubAccount[] = [];
-
         let subAccts: { saAsset: SubAccount; saToken: TokenSubAccount }[] = [];
 
         // Basic Serach look into first 1000 subaccount under the 5 consecutive zeros logic
@@ -92,27 +65,30 @@ export const updateAllBalances = async (
         // If 5 consecutive subaccounts balances are zero, iteration stops
         if (basicSearch) {
           let zeros = 0;
-          for (let i = 0; i < 1000; i++) {
+          for (let basicSearchIndex = 0; basicSearchIndex < 1000; basicSearchIndex++) {
             const myBalance = await balance({
               owner: myPrincipal,
-              subaccount: new Uint8Array(getSubAccountArray(i)),
+              subaccount: new Uint8Array(getSubAccountArray(basicSearchIndex)),
               certified: false,
             });
-            if (Number(myBalance) > 0 || i === 0) {
+
+            if (Number(myBalance) > 0 || basicSearchIndex === 0) {
               zeros = 0;
+
               subAccList.push({
-                name: i === 0 ? AccountDefaultEnum.Values.Default : "-",
-                sub_account_id: `0x${i.toString(16)}`,
+                name: basicSearchIndex === 0 ? AccountDefaultEnum.Values.Default : "-",
+                sub_account_id: `0x${basicSearchIndex.toString(16)}`,
                 address: myPrincipal?.toString(),
                 amount: myBalance.toString(),
                 currency_amount: assetMarket ? getUSDfromToken(myBalance.toString(), assetMarket.price, decimals) : "0",
                 transaction_fee: myTransactionFee.toString(),
                 decimal: decimals,
-                symbol: tkn.symbol,
+                symbol: currentToken.symbol,
               });
+
               userSubAcc.push({
-                name: i === 0 ? AccountDefaultEnum.Values.Default : "-",
-                numb: `0x${i.toString(16)}`,
+                name: basicSearchIndex === 0 ? AccountDefaultEnum.Values.Default : "-",
+                numb: `0x${basicSearchIndex.toString(16)}`,
                 amount: myBalance.toString(),
                 currency_amount: assetMarket ? getUSDfromToken(myBalance.toString(), assetMarket.price, decimals) : "0",
               });
@@ -127,7 +103,7 @@ export const updateAllBalances = async (
           // If 5 consecutive subaccounts balances are zero, iteration stops
           const idsPushed: string[] = [];
           subAccts = await Promise.all(
-            tkn.subAccounts.map(async (sa) => {
+            currentToken.subAccounts.map(async (sa) => {
               const myBalance = await balance({
                 owner: myPrincipal,
                 subaccount: new Uint8Array(hexToUint8Array(sa.numb)),
@@ -144,7 +120,7 @@ export const updateAllBalances = async (
                 currency_amount: crncyAmnt,
                 transaction_fee: myTransactionFee.toString(),
                 decimal: decimals,
-                symbol: tkn.symbol,
+                symbol: currentToken.symbol,
               };
               const saToken: TokenSubAccount = {
                 name: sa.name,
@@ -156,6 +132,7 @@ export const updateAllBalances = async (
               return { saAsset, saToken };
             }),
           );
+
           let zeros = 0;
           for (let i = 0; i < 1000; i++) {
             if (!idsPushed.includes(`0x${i.toString(16)}`)) {
@@ -178,7 +155,7 @@ export const updateAllBalances = async (
                   currency_amount: crncyAmnt,
                   transaction_fee: myTransactionFee.toString(),
                   decimal: decimals,
-                  symbol: tkn.symbol,
+                  symbol: currentToken.symbol,
                 };
                 const saToken: TokenSubAccount = {
                   name: i === 0 ? AccountDefaultEnum.Values.Default : "-",
@@ -193,14 +170,12 @@ export const updateAllBalances = async (
             }
           }
         }
-        const saTokens = subAccts.map((saT) => {
-          return saT.saToken;
-        });
-        const saAssets = subAccts.map((saA) => {
-          return saA.saAsset;
-        });
+
+        const saTokens = subAccts.map((saT) => saT.saToken);
+        const saAssets = subAccts.map((saA) => saA.saAsset);
+
         const newToken: Token = {
-          ...tkn,
+          ...currentToken,
           logo: logo,
           tokenName: name,
           tokenSymbol: symbol,
@@ -208,32 +183,32 @@ export const updateAllBalances = async (
           subAccounts: (basicSearch ? userSubAcc : saTokens).sort((a, b) => {
             return hexToNumber(a.numb)?.compare(hexToNumber(b.numb) || bigInt()) || 0;
           }),
-          supportedStandards: tkn.supportedStandards,
+          supportedStandards: currentToken.supportedStandards,
         };
 
         const newAsset: Asset = {
-          symbol: tkn.symbol,
-          name: tkn.name,
-          address: tkn.address,
-          index: tkn.index,
+          symbol: currentToken.symbol,
+          name: currentToken.name,
+          address: currentToken.address,
+          index: currentToken.index,
           subAccounts: (basicSearch ? subAccList : saAssets).sort((a, b) => {
             return hexToNumber(a.sub_account_id)?.compare(hexToNumber(b.sub_account_id) || bigInt()) || 0;
           }),
           sort_index: idNum,
           decimal: decimals.toFixed(0),
-          shortDecimal: tkn.shortDecimal || decimals.toFixed(0),
+          shortDecimal: currentToken.shortDecimal || decimals.toFixed(0),
           tokenName: name,
           tokenSymbol: symbol,
           logo: logo,
-          supportedStandards: tkn.supportedStandards,
+          supportedStandards: currentToken.supportedStandards,
         };
         return { newToken, newAsset };
       } catch (e) {
         const newAsset: Asset = {
-          symbol: tkn.symbol,
-          name: tkn.name,
-          address: tkn.address,
-          index: tkn.index,
+          symbol: currentToken.symbol,
+          name: currentToken.name,
+          address: currentToken.address,
+          index: currentToken.index,
           subAccounts: [
             {
               name: AccountDefaultEnum.Values.Default,
@@ -243,17 +218,17 @@ export const updateAllBalances = async (
               currency_amount: "0",
               transaction_fee: "0",
               decimal: 8,
-              symbol: tkn.symbol,
+              symbol: currentToken.symbol,
             },
           ],
           decimal: "8",
           shortDecimal: "8",
           sort_index: 99999 + idNum,
-          tokenName: tkn.name,
-          tokenSymbol: tkn.symbol,
-          supportedStandards: tkn.supportedStandards,
+          tokenName: currentToken.name,
+          tokenSymbol: currentToken.symbol,
+          supportedStandards: currentToken.supportedStandards,
         };
-        return { newToken: tkn, newAsset };
+        return { newToken: currentToken, newAsset };
       }
     }),
   );
@@ -314,7 +289,7 @@ export const setAssetFromLocalData = (tokens: Token[], myPrincipal: string) => {
   const assets: Asset[] = [];
   tokens.map((tkn) => {
     const subAccList: SubAccount[] = [];
-    tkn.subAccounts.map((sa) => {
+    tkn.subAccounts?.map((sa) => {
       subAccList.push({
         name: sa.name,
         sub_account_id: sa.numb,
@@ -348,7 +323,9 @@ export const setAssetFromLocalData = (tokens: Token[], myPrincipal: string) => {
   store.dispatch(setAssets(assets));
 };
 
-export const getAllTransactionsICP = async (subaccount_index: string, loading: boolean, isOGY: boolean) => {
+export const getAllTransactionsICP = async (params: GetAllTransactionsICPParams) => {
+  const { subaccount_index, loading, isOGY } = params;
+
   const myPrincipal = store.getState().auth.userPrincipal;
   let subacc: SubAccountNNS | undefined = undefined;
   try {
@@ -366,7 +343,6 @@ export const getAllTransactionsICP = async (subaccount_index: string, loading: b
       `${isOGY ? import.meta.env.VITE_ROSETTA_URL_OGY : import.meta.env.VITE_ROSETTA_URL}/search/transactions`,
       {
         method: "POST",
-        // mode: "no-cors",
         body: JSON.stringify({
           network_identifier: {
             blockchain: isOGY ? import.meta.env.VITE_NET_ID_BLOCKCHAIN_OGY : import.meta.env.VITE_NET_ID_BLOCKCHAIN,
@@ -394,7 +370,6 @@ export const getAllTransactionsICP = async (subaccount_index: string, loading: b
       return transactionsInfo;
     }
   } catch (error) {
-    // console.error("error", error);
     if (!loading) {
       return [];
     }

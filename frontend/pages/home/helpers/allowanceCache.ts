@@ -1,12 +1,9 @@
 import { TAllowance } from "@/@types/allowance";
 import { getAllowanceDetails } from "@/pages/home/helpers/icrc/";
-import { setAllowancesAction } from "@redux/allowance/AllowanceActions";
-import { getToCreateAllowance } from "./allowanceMappers";
+import { db } from "@/database/db";
 
-export async function allowanceCacheRefresh(principal: string) {
-  const allowancePrefix = `allowances-${principal}`;
-  const stored = localStorage.getItem(allowancePrefix);
-  const allowances = JSON.parse(stored || "[]") as TAllowance[];
+export async function allowanceCacheRefresh() {
+  const allowances = await db().getAllowances();
   const updatedAllowances: TAllowance[] = [];
 
   if (allowances?.length) {
@@ -41,6 +38,6 @@ export async function allowanceCacheRefresh(principal: string) {
       }
     }
   }
-  localStorage.setItem(allowancePrefix, JSON.stringify(updatedAllowances.map(getToCreateAllowance)));
-  setAllowancesAction(updatedAllowances);
+
+  await db().updateAllowances(updatedAllowances);
 }

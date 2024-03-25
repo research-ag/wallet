@@ -5,12 +5,14 @@ export const initialAllowanceState: TAllowance = {
   asset: {
     logo: "",
     name: "",
+    symbol: "",
     address: "",
     decimal: "",
     tokenName: "",
     tokenSymbol: "",
     supportedStandards: [],
   },
+  id: "",
   subAccountId: "",
   spender: "",
   amount: "",
@@ -55,7 +57,7 @@ const allowanceSlice = createSlice({
     setSelectedAllowance(state: AllowanceState, action: PayloadAction<TAllowance>) {
       state.selectedAllowance = action.payload;
     },
-    setAllowances(state: AllowanceState, action: PayloadAction<TAllowance[]>) {
+    setReduxAllowances(state: AllowanceState, action: PayloadAction<TAllowance[]>) {
       state.allowances = action.payload;
     },
     setAllowanceError(state: AllowanceState, action: PayloadAction<string>) {
@@ -79,8 +81,8 @@ export const {
   setIsCreateAllowance,
   setIsDeleteAllowance,
   setSelectedAllowance,
+  setReduxAllowances,
   setIsLoading,
-  setAllowances,
   setAllowanceError,
   removeAllowanceError,
   setFullAllowanceErrors,

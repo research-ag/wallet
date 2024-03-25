@@ -196,6 +196,7 @@ const DialogAddAsset = ({
               subaccount: hexToUint8Array(`0x${subClean}`),
               certified: false,
             });
+
             const token = tokens[Number(idx)];
 
             const tokenToUpdate = {

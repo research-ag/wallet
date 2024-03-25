@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import SwitchRoute from "./pages";
 import { Provider } from "react-redux";
-import store from "./redux/Store";
+import store, { useAppDispatch } from "./redux/Store";
 import { useTranslation } from "react-i18next";
 import "./App.scss";
 import { AuthClient } from "@dfinity/auth-client";
@@ -13,8 +13,10 @@ import { db } from "@/database/db";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { EthereumSignInProvider } from "./config/wagmi.config";
 import { useSiweIdentity } from "ic-use-siwe-identity";
+import DatabaseProvider from "./database";
 
 const App: React.FC = () => {
+  const dispatch = useAppDispatch();
   const { i18n } = useTranslation();
   const { clear, identity } = useSiweIdentity();
 
@@ -42,7 +44,7 @@ const App: React.FC = () => {
       if (valid) {
         handleLoginApp(authClient.getIdentity());
       } else {
-        store.dispatch(setAuth());
+        dispatch(setAuth());
       }
     };
     getIdentity().catch(console.error);
@@ -51,9 +53,7 @@ const App: React.FC = () => {
   return (
     <div className="App">
       <QueryClientProvider client={queryClient}>
-        <Provider store={store}>
-          <SwitchRoute></SwitchRoute>
-        </Provider>
+        <SwitchRoute></SwitchRoute>
       </QueryClientProvider>
     </div>
   );
@@ -62,7 +62,11 @@ const App: React.FC = () => {
 export default function AppWrapper() {
   return (
     <EthereumSignInProvider>
-      <App />
+      <Provider store={store}>
+        <DatabaseProvider>
+          <App />
+        </DatabaseProvider>
+      </Provider>
     </EthereumSignInProvider>
   );
 }

@@ -29,7 +29,10 @@
         "fee": { "type": "string", "maxLength": 100 },
         "index": { "type": "string", "maxLength": 100 },
         "logo": { "type": "string", "maxLength": 1000 },
-        "supportedStandards": { "type": "array", "items": { "type": "string" } }
+        "supportedStandards": {
+          "type": "array",
+          "items": { "type": "string", "maxLength": 100 }
+        }
       },
       "required": [
         "id_number",
@@ -73,14 +76,7 @@
                   "properties": {
                     "name": { "type": "string", "maxLength": 100 },
                     "subaccount_index": { "type": "string", "maxLength": 100 },
-                    "sub_account_id": { "type": "string", "maxLength": 100 },
-                    "allowance": {
-                      "type": "record",
-                      "properties": {
-                        "allowance": { "type": "string", "maxLength": 100 },
-                        "expires_at": { "type": "string", "maxLength": 100 }
-                      }
-                    }
+                    "sub_account_id": { "type": "string", "maxLength": 100 }
                   },
                   "required": ["name", "subaccount_index", "sub_account_id"]
                 }
@@ -88,7 +84,10 @@
               "address": { "type": "string", "maxLength": 100 },
               "decimal": { "type": "string", "maxLength": 100 },
               "shortDecimal": { "type": "string", "maxLength": 100 },
-              "supportedStandards": { "type": "array", "items": { "type": "string" } }
+              "supportedStandards": {
+                "type": "array",
+                "items": { "type": "string", "maxLength": 100 }
+              }
             },
             "required": [
               "symbol",
@@ -106,5 +105,37 @@
       "required": ["name", "accountIdentier", "assets"]
     },
     "migrationStrategies": {}
+  },
+  "allowances": {
+    "schema": {
+      "type": "object",
+      "version": 0,
+      "primaryKey": "id",
+      "properties": {
+        "id": { "type": "string", "maxLength": 100 },
+        "subAccountId": { "type": "string", "maxLength": 100 },
+        "amount": { "type": "string", "maxLength": 100 },
+        "spender": { "type": "string", "maxLength": 100 },
+        "expiration": { "type": "string", "maxLength": 100 },
+        "asset": {
+          "type": "record",
+          "properties": {
+            "logo": { "type": "string", "maxLength": 100 },
+            "name": { "type": "string", "maxLength": 100 },
+            "symbol": { "type": "string", "maxLength": 100 },
+            "address": { "type": "string", "maxLength": 100 },
+            "decimal": { "type": "string", "maxLength": 100 },
+            "tokenName": { "type": "string", "maxLength": 100 },
+            "tokenSymbol": { "type": "string", "maxLength": 100 },
+            "supportedStandards": {
+              "type": "array",
+              "items": { "type": "string", "maxLength": 100 }
+            }
+          },
+          "required": ["logo", "name", "symbol", "address", "decimal", "tokenName", "tokenSymbol", "supportedStandards"]
+        }
+      },
+      "required": ["subAccountId", "amount", "asset", "spender"]
+    }
   }
 }

@@ -6,8 +6,8 @@ export const SubAccountContactSchema = z.object({
   sub_account_id: z.string(),
   allowance: z
     .object({
-      allowance: z.string(),
-      expires_at: z.string(),
+      allowance: z.string().default(""),
+      expires_at: z.string().default(""),
     })
     .optional(),
 });

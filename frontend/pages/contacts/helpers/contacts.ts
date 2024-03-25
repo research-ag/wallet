@@ -1,10 +1,11 @@
+import { retrieveAssetsWithAllowance } from "@/pages/home/helpers/icrc/";
+import { db } from "@/database/db";
 import store from "@redux/Store";
 import { setReduxContacts } from "@redux/contacts/ContactsReducer";
-import { retrieveAssetsWithAllowance } from "@/pages/home/helpers/icrc/";
 
 export default async function contactCacheRefresh() {
   try {
-    const contacts = store.getState().contacts.contacts;
+    const contacts = await db().getContacts();
 
     const updatedContacts = [];
     if (contacts) {
@@ -17,6 +18,7 @@ export default async function contactCacheRefresh() {
         updatedContacts.push({ ...contact, assets: updatedAsset });
       }
     }
+
     store.dispatch(setReduxContacts(updatedContacts));
   } catch (error) {
     console.error(error);

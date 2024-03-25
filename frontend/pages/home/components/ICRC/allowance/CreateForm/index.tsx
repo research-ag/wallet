@@ -14,11 +14,10 @@ import { isHexadecimalValid } from "@/utils/checkers";
 import {
   removeAllowanceErrorAction,
   setAllowanceErrorAction,
-  setAllowancesAction,
   setFullAllowanceErrorsAction,
 } from "@redux/allowance/AllowanceActions";
 import { getDuplicatedAllowance } from "@pages/home/validators/allowance";
-import { replaceAllowancesToStorage } from "@pages/home/services/allowance";
+import { db } from "@/database/db";
 import { LoadingLoader } from "@components/loader";
 import { refreshAllowance } from "@pages/home/helpers/refreshAllowance";
 
@@ -91,7 +90,7 @@ export default function CreateForm() {
       event.preventDefault();
       setFullAllowanceErrorsAction([]);
 
-      // INFO: this validation guarantee all the fields need for icrc2_allowance where set, if not show user feedback
+      // // INFO: this validation guarantee all the fields need for icrc2_allowance where set, if not show user feedback
       if (!allowance.asset.address || !allowance.asset.decimal)
         return setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.asset"]);
       removeAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.asset"]);
@@ -121,7 +120,7 @@ export default function CreateForm() {
         expiration: response?.expires_at || "",
       };
 
-      const duplicated = getDuplicatedAllowance(newAllowance);
+      const duplicated = await getDuplicatedAllowance(newAllowance);
 
       if (duplicated) {
         const isExpirationSame = newAllowance.expiration === duplicated.expiration;
@@ -134,9 +133,15 @@ export default function CreateForm() {
 
       if (!duplicated && newAllowance.amount !== "0") {
         const updatedAllowances = [...allowances, newAllowance];
-        setAllowancesAction(updatedAllowances);
-        replaceAllowancesToStorage(updatedAllowances);
+
+        await db().updateAllowances(
+          updatedAllowances.map((currentAllowance) => ({
+            ...currentAllowance,
+            id: db().generateAllowancePrimaryKey(currentAllowance),
+          })),
+        );
       }
+
       setAllowanceState(newAllowance);
     } catch (error) {
       console.error(error);

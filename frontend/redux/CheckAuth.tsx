@@ -17,11 +17,8 @@ import { AuthNetworkTypeEnum } from "@/const";
 import { Ed25519KeyIdentity, DelegationIdentity } from "@dfinity/identity";
 import { clearDataContacts } from "./contacts/ContactsReducer";
 import { Principal } from "@dfinity/principal";
-import { allowanceCacheRefresh } from "@pages/home/helpers/allowanceCache";
-import contactCacheRefresh from "@pages/contacts/helpers/contacts";
-import { setAllowances } from "./allowance/AllowanceReducer";
-import { db } from "@/database/db";
 import { Secp256k1KeyIdentity } from "@dfinity/identity-secp256k1";
+import { DB_Type, db } from "@/database/db";
 import { getSNSTokens } from "./assets/AssetActions";
 
 const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${
@@ -80,6 +77,7 @@ export const handleSeedAuthenticated = async (seed: string) => {
 
 export const handlePrincipalAuthenticated = async (principalAddress: string) => {
   try {
+    db().setDbLocation(DB_Type.LOCAL);
     const authClient = await AuthClient.create();
     const principal = Principal.fromText(principalAddress);
     handleLoginApp(authClient.getIdentity(), false, principal);
@@ -117,19 +115,13 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean,
 
   const myPrincipal = fixedPrincipal || (await myAgent.getPrincipal());
   const identityPrincipalStr = fixedPrincipal?.toString() || authIdentity.getPrincipal().toString();
-
   dispatchAuths(myAgent, myPrincipal);
-
   await db().setIdentity(authIdentity, fixedPrincipal);
 
   const snsTokens = await getSNSTokens();
   store.dispatch(setICRC1SystemAssets(snsTokens));
-
   store.dispatch(setAuthenticated(true, false, !!fixedPrincipal, identityPrincipalStr.toLocaleLowerCase()));
 
-  // ALLOWANCES
-  await contactCacheRefresh();
-  await allowanceCacheRefresh(myPrincipal.toText());
   store.dispatch(setLoading(false));
   store.dispatch(setInitLoad(false));
 };
@@ -142,14 +134,11 @@ export const dispatchAuths = (myAgent: HttpAgent, myPrincipal: Principal) => {
 export const logout = async () => {
   const authClient = await AuthClient.create();
   await authClient.logout();
-  store.dispatch({
-    type: "USER_LOGGED_OUT",
-  });
-  db().setIdentity(null);
+  store.dispatch({ type: "USER_LOGGED_OUT" });
+  await db().setIdentity(null);
   store.dispatch(clearDataContacts());
   store.dispatch(clearDataAsset());
   store.dispatch(clearDataAuth());
-  store.dispatch(setAllowances([]));
   store.dispatch(setUnauthenticated());
   store.dispatch(setUserAgent(undefined));
   store.dispatch(setUserPrincipal(undefined));

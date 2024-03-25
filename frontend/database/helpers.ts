@@ -6,7 +6,7 @@ const pushing$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 const pulling$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
 /**
- * Create a synchtonization process between the FE database and the BE database.
+ * Create a sync process between the FE database and the BE database.
  * @param collection Collection to replicate
  * @param replicationIdentifier ID name for the replica
  * @param primaryKey Name of the property that will be the primary key
@@ -46,7 +46,7 @@ export const setupReplication: <T extends { updatedAt: number; deleted: boolean 
           return documentsPushed;
         } catch (err) {
           pushing$.next(false);
-          console.error("RxDb Push:", err);
+          console.error("RxDb Push", err);
           throw err;
         }
       },
@@ -74,7 +74,7 @@ export const setupReplication: <T extends { updatedAt: number; deleted: boolean 
           };
         } catch (err) {
           pulling$.next(false);
-          console.error("RxDb Pull:", err);
+          console.error("RxDb Pull", err);
           throw err;
         }
       },

@@ -8,10 +8,13 @@ type WalletDatabase =
         record {
           vec opt TokenDocument;
           vec opt ContactDocument;
+          vec opt AllowanceDocument;
         };
       }) query;
+   pullAllowances: (nat32, opt text, nat) -> (vec AllowanceDocument) query;
    pullContacts: (nat32, opt text, nat) -> (vec ContactDocument) query;
    pullTokens: (nat32, opt text, nat) -> (vec TokenDocument) query;
+   pushAllowances: (vec AllowanceDocument) -> (vec AllowanceDocument);
    pushContacts: (vec ContactDocument) -> (vec ContactDocument);
    pushTokens: (vec TokenDocument) -> (vec TokenDocument);
  };
@@ -50,16 +53,11 @@ type ContactDocument =
        logo: text;
        shortDecimal: text;
        subaccounts:
-        vec
-         record {
-           allowance: opt record {
-                            allowance: text;
-                            expires_at: text;
-                          };
-           name: text;
-           sub_account_id: text;
-           subaccount_index: text;
-         };
+        vec record {
+              name: text;
+              sub_account_id: text;
+              subaccount_index: text;
+            };
        supportedStandards: vec text;
        symbol: text;
        tokenSymbol: text;
@@ -67,6 +65,27 @@ type ContactDocument =
    deleted: bool;
    name: text;
    "principal": text;
+   updatedAt: nat32;
+ };
+type AllowanceDocument = 
+ record {
+   amount: text;
+   asset:
+    record {
+      address: text;
+      decimal: text;
+      logo: text;
+      name: text;
+      supportedStandards: vec text;
+      symbol: text;
+      tokenName: text;
+      tokenSymbol: text;
+    };
+   deleted: bool;
+   expiration: text;
+   id: text;
+   spender: text;
+   subAccountId: text;
    updatedAt: nat32;
  };
 service : () -> WalletDatabase

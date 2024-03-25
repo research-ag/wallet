@@ -326,16 +326,14 @@ export default function TableContactRows(props: TableContactRowsProps) {
       contactEdited.name.trim() !== "" &&
       (checkPrincipalValid(contactEdited.principal) || contactEdited.principal === cntc.principal)
     ) {
-      updateContact(
-        {
-          ...contactEdited,
-          assets: cntc.assets,
-          accountIdentier: AccountIdentifier.fromPrincipal({
-            principal: Principal.fromText(contactEdited.principal),
-          }).toHex(),
-        },
-        cntc.principal,
-      );
+      const updatedContact = {
+        ...contactEdited,
+        assets: cntc.assets,
+        accountIdentier: AccountIdentifier.fromPrincipal({
+          principal: Principal.fromText(contactEdited.principal),
+        }).toHex(),
+      };
+      updateContact(updatedContact, cntc.principal);
       setSelContactPrin("");
     }
   }

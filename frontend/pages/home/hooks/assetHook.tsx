@@ -1,6 +1,6 @@
 import { defaultTokens } from "@/defaultTokens";
 import contactCacheRefresh from "@pages/contacts/helpers/contacts";
-import store, { useAppDispatch, useAppSelector } from "@redux/Store";
+import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { updateAllBalances } from "@redux/assets/AssetActions";
 import {
   removeToken,
@@ -22,10 +22,12 @@ export const AssetHook = () => {
   );
 
   const { userAgent } = useAppSelector((state) => state.auth);
+
   const deleteAsset = (symb: string, address: string) => {
     dispatch(removeToken(symb));
     db().deleteToken(address).then();
   };
+
   const [searchKey, setSearchKey] = useState("");
   const setAcordeonIdx = (assetIdx: string[]) => dispatch(setAcordeonAssetIdx(assetIdx));
   const [assetInfo, setAssetInfo] = useState<Asset | undefined>();
@@ -35,11 +37,16 @@ export const AssetHook = () => {
   const [newSub, setNewSub] = useState<SubAccount | undefined>();
   const [hexChecked, setHexChecked] = useState<boolean>(false);
 
-  const reloadBallance = async (tkns?: Token[]) => {
+  const reloadBallance = async (updatedTokens?: Token[]) => {
     dispatch(setLoading(true));
-    updateAllBalances(true, userAgent, tkns ? tkns : tokens.length > 0 ? tokens : defaultTokens);
-    const principal = store.getState().auth.userPrincipal.toText();
-    await allowanceCacheRefresh(principal);
+    updateAllBalances({
+      loading: true,
+      myAgent: userAgent,
+      tokens: updatedTokens ? updatedTokens : tokens.length > 0 ? tokens : defaultTokens,
+      basicSearch: false,
+      fromLogin: true,
+    });
+    await allowanceCacheRefresh();
     await contactCacheRefresh();
     dispatch(setLoading(false));
   };
@@ -61,11 +68,11 @@ export const AssetHook = () => {
   useEffect(() => {
     const auxAssets = assets.filter((asset) => {
       let includeInSub = false;
-      asset.subAccounts.map((sa) => {
+      asset.subAccounts?.map((sa) => {
         if (sa.name.toLowerCase().includes(searchKey.toLowerCase())) includeInSub = true;
       });
 
-      return asset.name.toLowerCase().includes(searchKey.toLowerCase()) || includeInSub || searchKey === "";
+      return asset.name?.toLowerCase().includes(searchKey.toLowerCase()) || includeInSub || searchKey === "";
     });
 
     if (auxAssets.length > 0) {

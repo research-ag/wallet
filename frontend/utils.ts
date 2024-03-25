@@ -75,7 +75,7 @@ export const getFirstNFrom = (address: string, digits: number) => {
 };
 
 export const getFirstNChars = (str: string, digits: number) => {
-  if (str.length > digits) return `${str.slice(0, digits)}...`;
+  if (str?.length > digits) return `${str.slice(0, digits)}...`;
   else return str;
 };
 

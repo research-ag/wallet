@@ -8,11 +8,11 @@
       "type": "assets"
     },
     "db": {
-      "main": "db-canister/main.mo",
+      "main": "canisters/database/main.mo",
       "type": "motoko",
       "optimize": "cycles",
       "declarations": {
-        "output": "frontend/database/candid"
+        "output": "frontend/candid/database"
       }
     },
     "ic_siwe_provider": {

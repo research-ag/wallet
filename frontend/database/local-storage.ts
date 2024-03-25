@@ -1,6 +1,7 @@
 import { IWalletDatabase } from "@/database/i-wallet-database";
 import { Token } from "@redux/models/TokenModels";
 import { Contact } from "@redux/models/ContactsModels";
+import { TAllowance } from "@/@types/allowance";
 import { Identity } from "@dfinity/agent";
 import { BehaviorSubject, Observable } from "rxjs";
 import { Principal } from "@dfinity/principal";
@@ -19,6 +20,9 @@ export class LocalStorageDatabase extends IWalletDatabase {
   private principalId = "";
   private readonly _tokens$: BehaviorSubject<Token[]> = new BehaviorSubject<Token[]>(this._getTokens());
   private readonly _contacts$: BehaviorSubject<Contact[]> = new BehaviorSubject<Contact[]>(this._getContacts());
+  private readonly _allowances$: BehaviorSubject<TAllowance[]> = new BehaviorSubject<TAllowance[]>(
+    this._getAllowances(),
+  );
 
   /**
    * Initialice all necessary external systema and
@@ -34,10 +38,11 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * @param identity Identity object
    * @param fixedPrincipal Watch-only login Principal ID
    */
-  setIdentity(identity: Identity | null, fixedPrincipal?: Principal): void {
+  async setIdentity(identity: Identity | null, fixedPrincipal?: Principal): Promise<void> {
     this.principalId = fixedPrincipal?.toString() || identity?.getPrincipal().toText() || "";
     this._tokens$.next(this._getTokens());
     this._contacts$.next(this._getContacts());
+    this._allowances$.next(this._getAllowances());
     !!this.principalId && this._doesRecordByPrincipalExist();
   }
 
@@ -138,11 +143,79 @@ export class LocalStorageDatabase extends IWalletDatabase {
   }
 
   /**
+   * Update Contacts in bulk.
+   * @param newDocs Array of Allowance objects
+   */
+  async updateContacts(newDocs: Contact[]): Promise<void> {
+    this._setContacts(newDocs);
+  }
+
+  /**
    * Find and remove a Contact object by its Principal ID.
    * @param principal Principal ID
    */
   async deleteContact(principal: string): Promise<void> {
     this._setContacts(this._getContacts().filter((cnts) => cnts.principal !== principal));
+  }
+
+  /**
+   * Find a Allowance object.
+   * @param id Primary Key
+   * @returns Allowance object or NULL if not found
+   */
+  async getAllowance(id: string): Promise<TAllowance | null> {
+    return this._getAllowances().find((x) => x.id === id) || null;
+  }
+
+  /**
+   * Get all Allowance objects from active agent.
+   * @returns Array of found Allowance objects or an empty
+   * array if no Allowance object were found
+   */
+  async getAllowances(): Promise<TAllowance[]> {
+    return this._getAllowances();
+  }
+
+  /**
+   * Add a new Allowance object to the list of Allowance objects
+   * current active agent has.
+   * @param allowance Allowance object to be added
+   */
+  async addAllowance(allowance: TAllowance): Promise<void> {
+    const allowances = this._getAllowances();
+    this._setAllowances([...allowances, allowance]);
+  }
+
+  /**
+   * Find a Allowance object and replace it
+   * with another Allowance object with the date of update.
+   * @param id Primary Key
+   * @param newDoc Allowance object
+   */
+  async updateAllowance(id: string, newDoc: TAllowance): Promise<void> {
+    this._setAllowances(
+      this._getAllowances().map((allowance) => {
+        if (allowance.id === id) {
+          return newDoc;
+        } else return allowance;
+      }),
+    );
+  }
+
+  /**
+   * Update Allowances in bulk.
+   * @param newDocs Array of Allowance objects
+   */
+  async updateAllowances(newDocs: TAllowance[]): Promise<void> {
+    this._setAllowances(newDocs);
+  }
+
+  /**
+   * Find and remove a Allowance object.
+   * @param id Primary Key
+   */
+  async deleteAllowance(id: string): Promise<void> {
+    this._setAllowances(this._getAllowances().filter((allowance) => allowance.id !== id));
   }
 
   /**
@@ -165,13 +238,23 @@ export class LocalStorageDatabase extends IWalletDatabase {
     return this._contacts$.asObservable();
   }
 
+  /**
+   * Subscribable Observable that trigger after
+   * a new Identity has been set.
+   * @returns Array of Allowances objects from current
+   * active agent
+   */
+  subscribeToAllAllowances(): Observable<TAllowance[]> {
+    return this._allowances$.asObservable();
+  }
+
   private _getTokens(): Token[] {
     const tokensData = JSON.parse(localStorage.getItem(`tokens-${this.principalId}`) || "null");
     return tokensData || [];
   }
 
   private _setTokens(allTokens: Token[]) {
-    const tokens = allTokens.sort((a, b) => a.id_number - b.id_number);
+    const tokens = [...allTokens].sort((a, b) => a.id_number - b.id_number);
     localStorage.setItem(`tokens-${this.principalId}`, JSON.stringify(tokens));
     this._tokens$.next(tokens);
   }
@@ -184,6 +267,16 @@ export class LocalStorageDatabase extends IWalletDatabase {
   private _setContacts(contacts: Contact[]) {
     localStorage.setItem(`contacts-${this.principalId}`, JSON.stringify(contacts));
     this._contacts$.next(contacts);
+  }
+
+  private _getAllowances(): TAllowance[] {
+    const allowancesData = JSON.parse(localStorage.getItem(`allowances-${this.principalId}`) || "null");
+    return allowancesData || [];
+  }
+
+  private _setAllowances(allowances: TAllowance[]) {
+    localStorage.setItem(`allowances-${this.principalId}`, JSON.stringify(allowances));
+    this._allowances$.next(allowances);
   }
 
   private _doesRecordByPrincipalExist() {

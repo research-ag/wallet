@@ -17,8 +17,7 @@ const Home = lazy(() => import("./home"));
 const Contacts = lazy(() => import("./contacts"));
 
 const SwitchRoute = () => {
-  const { authLoading, superAdmin, authenticated } = useAppSelector((state) => state.auth);
-  const { blur } = useAppSelector((state) => state.auth);
+  const { authLoading, superAdmin, authenticated, blur } = useAppSelector((state) => state.auth);
   const { changeTheme } = ThemeHook();
   const { changeDbLocation } = DbLocationHook();
 
