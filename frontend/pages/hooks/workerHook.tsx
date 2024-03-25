@@ -20,11 +20,11 @@ export const WorkerHook = () => {
     assets.map((elementA: Asset) => {
       if (elementA.tokenSymbol === AssetSymbolEnum.Enum.ICP || elementA.tokenSymbol === AssetSymbolEnum.Enum.OGY) {
         elementA.subAccounts.map(async (elementS: SubAccount) => {
-          const transactionsICP = await getAllTransactionsICP(
-            elementS.sub_account_id,
-            false,
-            elementA.tokenSymbol === AssetSymbolEnum.Enum.OGY,
-          );
+          const transactionsICP = await getAllTransactionsICP({
+            subaccount_index: elementS.sub_account_id,
+            loading: false,
+            isOGY: elementA.tokenSymbol === AssetSymbolEnum.Enum.OGY,
+          });
 
           store.dispatch(
             setTxWorker({

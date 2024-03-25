@@ -37,12 +37,12 @@ export const AssetHook = () => {
   const [newSub, setNewSub] = useState<SubAccount | undefined>();
   const [hexChecked, setHexChecked] = useState<boolean>(false);
 
-  const reloadBallance = async (tkns?: Token[]) => {
+  const reloadBallance = async (updatedTokens?: Token[]) => {
     dispatch(setLoading(true));
     updateAllBalances({
       loading: true,
       myAgent: userAgent,
-      tokens: tkns ? tkns : tokens.length > 0 ? tokens : defaultTokens,
+      tokens: updatedTokens ? updatedTokens : tokens.length > 0 ? tokens : defaultTokens,
       basicSearch: false,
       fromLogin: true,
     });

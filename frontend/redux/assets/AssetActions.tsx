@@ -18,10 +18,7 @@ import { AccountDefaultEnum } from "@/const";
 import bigInt from "big-integer";
 import { SupportedStandardEnum } from "@/@types/icrc";
 import { getETHRate, getTokensFromMarket } from "@/utils/market";
-import {
-  GetAllTransactionsICPParams,
-  UpdateAllBalances,
-} from "@/@types/assets";
+import { GetAllTransactionsICPParams, UpdateAllBalances } from "@/@types/assets";
 
 /**
  * This function updates the balances for all provided tokens and their subaccounts, based on the market price and the account balance.
@@ -30,7 +27,8 @@ import {
  * @returns An object containing updated `newAssetsUpload` and `tokens` arrays.
  */
 export const updateAllBalances: UpdateAllBalances = async (params) => {
-  const { loading, myAgent, tokens, basicSearch, fromLogin } = params;
+  const { loading, myAgent = store.getState().auth.userAgent, tokens, basicSearch, fromLogin } = params;
+
   const tokenMarkets = await getTokensFromMarket();
 
   const ETHRate = await getETHRate();

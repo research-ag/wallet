@@ -11,12 +11,12 @@ export interface UpdateAllBalancesParams {
    */
   loading: boolean;
   /**
-   * HttpAgent object used for making network requests
-   */
-  myAgent: HttpAgent;
-  /**
    * Array of Token objects representing the tokens to update balances for
    */
+  /**
+   * HttpAgent object used for making network requests
+   */
+  myAgent?: HttpAgent;
   tokens: Token[];
   /**
    * Optional flag indicating if basic search should be used (limited to 1000 subaccounts)

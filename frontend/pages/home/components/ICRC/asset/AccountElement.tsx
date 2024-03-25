@@ -21,7 +21,6 @@ import { BasicModal } from "@components/modal";
 import { CustomButton } from "@components/button";
 import bigInt from "big-integer";
 import { db } from "@/database/db";
-import { updateAllBalances } from "@redux/assets/AssetActions";
 
 interface AccountElementProps {
   asset: Asset;
