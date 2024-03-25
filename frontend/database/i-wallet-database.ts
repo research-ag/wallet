@@ -127,7 +127,7 @@ export abstract class IWalletDatabase {
    * @param identity Identity object
    * @param fixedPrincipal Watch-only login Principal ID
    */
-  abstract setIdentity(identity: Identity | null, fixedPrincipal?: Principal): void;
+  abstract setIdentity(identity: Identity | null, fixedPrincipal?: Principal): Promise<void>;
 
   /**
    * Get a Token object by its ID.

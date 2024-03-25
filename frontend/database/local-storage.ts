@@ -38,7 +38,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * @param identity Identity object
    * @param fixedPrincipal Watch-only login Principal ID
    */
-  setIdentity(identity: Identity | null, fixedPrincipal?: Principal): void {
+  async setIdentity(identity: Identity | null, fixedPrincipal?: Principal): Promise<void> {
     this.principalId = fixedPrincipal?.toString() || identity?.getPrincipal().toText() || "";
     this._tokens$.next(this._getTokens());
     this._contacts$.next(this._getContacts());
