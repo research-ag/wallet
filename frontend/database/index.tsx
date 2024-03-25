@@ -1,36 +1,58 @@
 import { setReduxContacts } from "@redux/contacts/ContactsReducer";
-import store from "@redux/Store";
+import store, { useAppDispatch } from "@redux/Store";
 import { useEffect } from "react";
 import { localDb, rxDb } from "./db";
 import { setReduxTokens } from "@redux/assets/AssetReducer";
 import { setAssetFromLocalData, updateAllBalances } from "@redux/assets/AssetActions";
 import { setReduxAllowances } from "@redux/allowance/AllowanceReducer";
+import { Token } from "@redux/models/TokenModels";
+import { TAllowance } from "@/@types/allowance";
+import { getAllowanceDetails, retrieveAssetsWithAllowance } from "@pages/home/helpers/icrc";
+import { Contact } from "@redux/models/ContactsModels";
 
+/**
+ * Props for the DatabaseProvider component.
+ *
+ * @interface DatabaseProviderProps
+ * @property children The child components to be wrapped by the provider.
+ */
 interface DatabaseProviderProps {
   children: JSX.Element;
 }
 
+/**
+ * A component that synchronizes data between rxdb/local storage and Redux state.
+ *
+ * It listens for changes in the database or local storage and updates the global Redux state with the latest data, ensuring consistency.
+ *
+ * @export
+ * @function DatabaseProvider
+ * @param {DatabaseProviderProps} props The component props.
+ * @returns {JSX.Element} The rendered component.
+ */
 export default function DatabaseProvider({ children }: DatabaseProviderProps) {
-  useEffect(() => {
-    const assetsSubscriptionHandler = async (x: any[]) => {
-      console.log("asset sub", x);
-      if (x.length > 0) {
+  const dispatch = useAppDispatch();
 
+  useEffect(() => {
+    const assetsSubscriptionHandler = async (assets: Token[]) => {
+      if (assets.length > 0) {
         const {
           asset,
           auth: { authClient, userAgent },
         } = store.getState();
-        store.dispatch(setReduxTokens(x));
+        store.dispatch(setReduxTokens(assets));
 
-        if (asset.initLoad) setAssetFromLocalData(x, authClient);
+        if (asset.initLoad) setAssetFromLocalData(assets, authClient);
 
-        await updateAllBalances({
+        const result = await updateAllBalances({
           loading: true,
           myAgent: userAgent,
-          tokens: x,
+          tokens: assets,
           basicSearch: false,
           fromLogin: true,
         });
+
+        dispatch(setReduxTokens(result?.tokens || []));
       }
     };
 
@@ -39,32 +61,70 @@ export default function DatabaseProvider({ children }: DatabaseProviderProps) {
   }, []);
 
   useEffect(() => {
-    const contactsSubscriptionHandler = (x: any[]) => {
-      console.log("contacts sub", x);
-      return store.dispatch(setReduxContacts(x));
+    const contactsSubscriptionHandler = async (contacts: Contact[]) => {
+      console.log("contacts: ", contacts);
+      const updatedContacts = [];
+      if (contacts) {
+        for (const contact of contacts) {
+          const updatedAsset = await retrieveAssetsWithAllowance({
+            accountPrincipal: contact.principal,
+            assets: contact.assets,
+          });
+
+          updatedContacts.push({ ...contact, assets: updatedAsset });
+        }
+      }
+
+      dispatch(setReduxContacts(updatedContacts));
     };
 
     localDb().subscribeToAllContacts().subscribe(contactsSubscriptionHandler);
     rxDb().subscribeToAllContacts().subscribe(contactsSubscriptionHandler);
-
-    // TODO: update contacts allowance here
-
   }, []);
-
 
   useEffect(() => {
-    const allowancesSubscriptionHandler = (x: any[]) => {
-      console.log("allowances sub", x);
 
-      store.dispatch(setReduxAllowances(x));
+    const allowancesSubscriptionHandler = async (allowances: TAllowance[]) => {
+      console.log("allowance subs: ", allowances);
+      const updatedAllowances: TAllowance[] = [];
+
+      for (const allowance of allowances) {
+        try {
+          const spenderPrincipal = allowance?.spender;
+          const spenderSubaccount = allowance?.subAccountId;
+          const assetAddress = allowance?.asset.address;
+          const assetDecimal = allowance?.asset.decimal;
+
+          if (
+            typeof spenderPrincipal === "string" &&
+            typeof spenderSubaccount === "string" &&
+            typeof assetAddress === "string" &&
+            typeof assetDecimal === "string"
+          ) {
+            const response = await getAllowanceDetails({
+              spenderPrincipal,
+              spenderSubaccount,
+              assetAddress,
+              assetDecimal,
+            });
+
+            updatedAllowances.push({
+              ...allowance,
+              amount: response?.allowance ? response?.allowance : "0",
+              expiration: response?.expires_at ? response?.expires_at : "",
+            });
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
+      dispatch(setReduxAllowances(updatedAllowances));
     };
+
     localDb().subscribeToAllAllowances().subscribe(allowancesSubscriptionHandler);
     rxDb().subscribeToAllAllowances().subscribe(allowancesSubscriptionHandler);
-
-    // TODO: update the allowance here
-
   }, []);
-
 
   return (<>{children}</>);
 };

@@ -11,10 +11,9 @@ import { Token } from "@redux/models/TokenModels";
 import { useAppDispatch } from "@redux/Store";
 import DialogAssetConfirmation from "./DialogAssetConfirmation";
 import AddAssetManual from "./AddAssetManual";
-import { setAcordeonAssetIdx, setReduxTokens, setSelectedAsset } from "@redux/assets/AssetReducer";
+import { setAcordeonAssetIdx, setSelectedAsset } from "@redux/assets/AssetReducer";
 import AddAssetAutomatic from "./AddAssetAutomatic";
 import { db } from "@/database/db";
-import { updateAllBalances } from "@redux/assets/AssetActions";
 
 interface AddAssetsProps {
   setAssetOpen(value: boolean): void;
@@ -156,8 +155,8 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens, assets
       const idxSorting =
         tokens.length > 0
           ? [...tokens].sort((a, b) => {
-              return b.id_number - a.id_number;
-            })
+            return b.id_number - a.id_number;
+          })
           : [];
       const idx = (idxSorting.length > 0 ? idxSorting[0]?.id_number : 0) + 1;
       const tknSave = {
@@ -171,15 +170,7 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens, assets
       dispatch(setSelectedAsset(tknSave));
       dispatch(setAcordeonAssetIdx([tknSave.symbol]));
 
-      const updatedTokens = [...tokens, tknSave];
-      const result = await updateAllBalances({
-        loading: true,
-        tokens: updatedTokens,
-        basicSearch: false,
-        fromLogin: true,
-      });
-
-      dispatch(setReduxTokens(result?.tokens || []));
+      // TODO: assets state must be updated
       setAssetOpen(false);
     }
   }
