@@ -79,14 +79,14 @@ const App: React.FC = () => {
         }
       };
 
-      localDb().subscribeToAllTokens().subscribe(allowancesSubscriptionHandler);
-      rxDb().subscribeToAllTokens().subscribe(allowancesSubscriptionHandler);
+      localDb().subscribeToAllTokens().subscribe(tokensSubscriptionHandler);
+      rxDb().subscribeToAllTokens().subscribe(tokensSubscriptionHandler);
 
       localDb().subscribeToAllContacts().subscribe(contactsSubscriptionHandler);
       rxDb().subscribeToAllContacts().subscribe(contactsSubscriptionHandler);
 
-      localDb().subscribeToAllAllowances().subscribe(tokensSubscriptionHandler);
-      rxDb().subscribeToAllAllowances().subscribe(tokensSubscriptionHandler);
+      localDb().subscribeToAllAllowances().subscribe(allowancesSubscriptionHandler);
+      rxDb().subscribeToAllAllowances().subscribe(allowancesSubscriptionHandler);
     })();
   }, [store]);
 

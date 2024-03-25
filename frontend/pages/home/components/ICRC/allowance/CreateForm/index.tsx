@@ -90,7 +90,7 @@ export default function CreateForm() {
       event.preventDefault();
       setFullAllowanceErrorsAction([]);
 
-      // INFO: this validation guarantee all the fields need for icrc2_allowance where set, if not show user feedback
+      // // INFO: this validation guarantee all the fields need for icrc2_allowance where set, if not show user feedback
       if (!allowance.asset.address || !allowance.asset.decimal)
         return setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.asset"]);
       removeAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.asset"]);
@@ -133,8 +133,15 @@ export default function CreateForm() {
 
       if (!duplicated && newAllowance.amount !== "0") {
         const updatedAllowances = [...allowances, newAllowance];
-        await db().updateAllowances(updatedAllowances.map((a) => ({ ...a, id: db().generateAllowancePrimaryKey(a) })));
+
+        await db().updateAllowances(
+          updatedAllowances.map((currentAllowance) => ({
+            ...currentAllowance,
+            id: db().generateAllowancePrimaryKey(currentAllowance),
+          })),
+        );
       }
+
       setAllowanceState(newAllowance);
     } catch (error) {
       console.error(error);
