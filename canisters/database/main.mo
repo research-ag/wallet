@@ -14,6 +14,7 @@ import DB "db";
 actor class WalletDatabase() {
 
   type StableStorage<Token, Contact, Allowance> = AssocList.AssocList<Principal, (DB.DbInit<Token, Text>, DB.DbInit<Contact, Text>, DB.DbInit<Allowance, Text>)>;
+
   type TokenDocument_v0 = {
     id_number : Nat32;
     updatedAt : Nat32;
@@ -84,23 +85,30 @@ actor class WalletDatabase() {
   };
 
   stable var storage_v0 : StableStorage<TokenDocument_v0, ContactDocument_v0, AllowanceDocument_v0> = null;
-  // example how to migrate schema to next version. Uncomment, implement cast functions, replace types below and use new stable var storage_vX everywhere instead of old storage_v0.
-  // after initial upgrade v0 stable variable can be deleted
-  // Note that it was written before refactoring primary keys, so should be updated accordingly
-  // stable var storage_v1 : StableStorage<TokenDocument_v1, ContactDocument_v1> = (
-  //   func migrateV1() : StableStorage<TokenDocument_v1, ContactDocument_v1> {
-  //     let castToken = func(item : TokenDocument_v0) : TokenDocument_v1 = item;
-  //     let castContact = func(item : ContactDocument_v0) : ContactDocument_v1 = item;
-  //     let res = List.map<(Principal, (DB.DbInit<TokenDocument_v1>, DB.DbInit<ContactDocument_v1>)), (Principal, (DB.DbInit<TokenDocument_v1>, DB.DbInit<ContactDocument_v1>))>(
-  //       storage_v0,
-  //       func((p, (x, y))) = (p, (DB.migrate(x, castToken), DB.migrate(y, castContact))),
-  //     );
-  //     storage_v0 := null;
-  //     res;
-  //   }
-  // )();
 
-  // update these when migrating database
+  /**
+    example how to migrate schema to next version.Uncomment;
+    implement cast functions;
+    replace types below and use new stable var storage_vX everywhere instead of old storage_v0.after initial upgrade v0 stable variable can be deleted Note that it was written before refactoring primary keys;
+    so should be updated accordingly
+  */
+
+  /**
+    stable var storage_v1 : StableStorage<TokenDocument_v1, ContactDocument_v1> = (
+    func migrateV1() : StableStorage<TokenDocument_v1, ContactDocument_v1> {
+      let castToken = func(item : TokenDocument_v0) : TokenDocument_v1 = item;
+      let castContact = func(item : ContactDocument_v0) : ContactDocument_v1 = item;
+      let res = List.map<(Principal, (DB.DbInit<TokenDocument_v1>, DB.DbInit<ContactDocument_v1>)), (Principal, (DB.DbInit<TokenDocument_v1>, DB.DbInit<ContactDocument_v1>))>(
+        storage_v0,
+        func((p, (x, y))) = (p, (DB.migrate(x, castToken), DB.migrate(y, castContact))),
+      );
+      storage_v0 := null;
+      res;
+    }
+  )();
+  */
+
+  // TODO: update these when migrating database
   type TokenDocument = TokenDocument_v0;
   type ContactDocument = ContactDocument_v0;
   type AllowanceDocument = AllowanceDocument_v0;

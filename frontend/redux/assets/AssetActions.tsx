@@ -21,8 +21,6 @@ import { getETHRate, getTokensFromMarket } from "@/utils/market";
 import {
   GetAllTransactionsICPParams,
   UpdateAllBalances,
-  UpdateAllBalancesParams,
-  UpdateBalanceReturn,
 } from "@/@types/assets";
 
 /**
