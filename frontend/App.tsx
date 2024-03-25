@@ -53,15 +53,12 @@ const App: React.FC = () => {
   }, []);
 
   // Subscribe all DB documents observables after Redux store has been initialized
+  // TODO: remove this useEffect and use a better way to subscribe to DB documents
   useEffect(() => {
     (function () {
       const allowancesSubscriptionHandler = (x: any[]) => store.dispatch(setReduxAllowances(x));
       const contactsSubscriptionHandler = (x: any[]) => store.dispatch(setReduxContacts(x));
-
-      // FIXME: when an asset sub account is added, modified or deleted, the token list should be updated
       const tokensSubscriptionHandler = async (x: any[]) => {
-        console.log("tokensSubscriptionHandler", x);
-
         if (x.length > 0) {
           const {
             asset,

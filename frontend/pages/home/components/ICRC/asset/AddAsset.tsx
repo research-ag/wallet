@@ -170,9 +170,8 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens, assets
       showModal(true);
       dispatch(setSelectedAsset(tknSave));
       dispatch(setAcordeonAssetIdx([tknSave.symbol]));
-      const updatedTokens = [...tokens, tknSave];
-      console.log(updatedTokens);
 
+      const updatedTokens = [...tokens, tknSave];
       const result = await updateAllBalances({
         loading: true,
         tokens: updatedTokens,
