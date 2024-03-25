@@ -35,7 +35,6 @@ export default function DatabaseProvider({ children }: DatabaseProviderProps) {
 
   useEffect(() => {
     const assetsSubscriptionHandler = async (assets: Token[]) => {
-      console.log("caching assets: ", assets);
       if (assets.length > 0) {
         const {
           asset,
@@ -64,7 +63,6 @@ export default function DatabaseProvider({ children }: DatabaseProviderProps) {
 
   useEffect(() => {
     const contactsSubscriptionHandler = async (contacts: Contact[]) => {
-      console.log("contacts: ", contacts);
       const updatedContacts = [];
       if (contacts) {
         for (const contact of contacts) {
@@ -86,7 +84,6 @@ export default function DatabaseProvider({ children }: DatabaseProviderProps) {
 
   useEffect(() => {
     const allowancesSubscriptionHandler = async (allowances: TAllowance[]) => {
-      console.log("allowance subs: ", allowances);
       const updatedAllowances: TAllowance[] = [];
 
       for (const allowance of allowances) {

@@ -87,12 +87,6 @@ export default function useTransactionAmount() {
           // INFO: allowance + fee is less than the balance, set Max: 1.9 where 1.9 is the allowance
           transactionAmountWithoutFee = toFullDecimal(bigintTransactionAmount, Number(sender?.asset?.decimal));
 
-          console.log({
-            transactionAmount,
-            transactionAmountWithoutFee,
-            allowanceSubaccountBalance,
-          });
-
           setMaxAmount({
             transactionAmount,
             transactionAmountWithoutFee: transactionAmount,
@@ -117,11 +111,6 @@ export default function useTransactionAmount() {
           bigintTransactionAmount - bigintFee,
           Number(sender?.asset?.decimal),
         );
-
-        console.log({
-          transactionAmount,
-          transactionAmountWithoutFee,
-        });
 
         setMaxAmount({
           transactionAmount,
