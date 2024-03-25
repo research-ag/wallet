@@ -53,16 +53,11 @@ type ContactDocument =
        logo: text;
        shortDecimal: text;
        subaccounts:
-        vec
-         record {
-           allowance: opt record {
-                            allowance: text;
-                            expires_at: text;
-                          };
-           name: text;
-           sub_account_id: text;
-           subaccount_index: text;
-         };
+        vec record {
+              name: text;
+              sub_account_id: text;
+              subaccount_index: text;
+            };
        supportedStandards: vec text;
        symbol: text;
        tokenSymbol: text;

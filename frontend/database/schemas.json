@@ -76,14 +76,7 @@
                   "properties": {
                     "name": { "type": "string", "maxLength": 100 },
                     "subaccount_index": { "type": "string", "maxLength": 100 },
-                    "sub_account_id": { "type": "string", "maxLength": 100 },
-                    "allowance": {
-                      "type": "record",
-                      "properties": {
-                        "allowance": { "type": "string", "maxLength": 100 },
-                        "expires_at": { "type": "string", "maxLength": 100 }
-                      }
-                    }
+                    "sub_account_id": { "type": "string", "maxLength": 100 }
                   },
                   "required": ["name", "subaccount_index", "sub_account_id"]
                 }

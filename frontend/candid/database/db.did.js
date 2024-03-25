@@ -34,7 +34,6 @@ export const idlFactory = ({ IDL }) => {
             name: IDL.Text,
             sub_account_id: IDL.Text,
             subaccount_index: IDL.Text,
-            allowance: IDL.Opt(IDL.Record({ allowance: IDL.Text, expires_at: IDL.Text })),
           }),
         ),
         logo: IDL.Text,

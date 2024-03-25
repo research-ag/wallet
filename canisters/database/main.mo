@@ -52,10 +52,6 @@ actor class WalletDatabase() {
         name : Text;
         subaccount_index : Text;
         sub_account_id : Text;
-        allowance : ?{
-          allowance : Text;
-          expires_at : Text;
-        };
       }];
       address : Text;
       decimal : Text;

@@ -30,7 +30,6 @@ export interface ContactDocument {
       name: string;
       sub_account_id: string;
       subaccount_index: string;
-      allowance: [] | [{ allowance: string; expires_at: string }];
     }>;
     logo: string;
     tokenSymbol: string;
