@@ -55,7 +55,7 @@ const App: React.FC = () => {
       <QueryClientProvider client={queryClient}>
         <SwitchRoute></SwitchRoute>
       </QueryClientProvider>
-    </div >
+    </div>
   );
 };
 

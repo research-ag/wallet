@@ -10,6 +10,6 @@ export function getStateContact(contact: Contact) {
         console.info("removed from contact: ", allowance);
         return { ...rest };
       }),
-    }))
+    })),
   };
-};
+}

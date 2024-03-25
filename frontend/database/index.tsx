@@ -35,11 +35,13 @@ export default function DatabaseProvider({ children }: DatabaseProviderProps) {
 
   useEffect(() => {
     const assetsSubscriptionHandler = async (assets: Token[]) => {
+      console.log("caching assets: ", assets);
       if (assets.length > 0) {
         const {
           asset,
           auth: { authClient, userAgent },
         } = store.getState();
+
         store.dispatch(setReduxTokens(assets));
 
         if (asset.initLoad) setAssetFromLocalData(assets, authClient);
@@ -83,7 +85,6 @@ export default function DatabaseProvider({ children }: DatabaseProviderProps) {
   }, []);
 
   useEffect(() => {
-
     const allowancesSubscriptionHandler = async (allowances: TAllowance[]) => {
       console.log("allowance subs: ", allowances);
       const updatedAllowances: TAllowance[] = [];
@@ -126,5 +127,5 @@ export default function DatabaseProvider({ children }: DatabaseProviderProps) {
     rxDb().subscribeToAllAllowances().subscribe(allowancesSubscriptionHandler);
   }, []);
 
-  return (<>{children}</>);
-};
+  return <>{children}</>;
+}

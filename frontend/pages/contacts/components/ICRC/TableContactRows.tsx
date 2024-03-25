@@ -316,7 +316,7 @@ export default function TableContactRows(props: TableContactRowsProps) {
     setSelContactPrin("");
   }
 
-  function onSave(cntc: Contact) {    
+  function onSave(cntc: Contact) {
     setContactEditedErr({
       name: contactEdited.name.trim() === "",
       principal: contactEdited.principal !== cntc.principal && !checkPrincipalValid(contactEdited.principal),
@@ -332,7 +332,7 @@ export default function TableContactRows(props: TableContactRowsProps) {
         accountIdentier: AccountIdentifier.fromPrincipal({
           principal: Principal.fromText(contactEdited.principal),
         }).toHex(),
-      }
+      };
       updateContact(updatedContact, cntc.principal);
       setSelContactPrin("");
     }

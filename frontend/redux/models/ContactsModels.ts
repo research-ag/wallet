@@ -4,10 +4,12 @@ export const SubAccountContactSchema = z.object({
   name: z.string(),
   subaccount_index: z.string(),
   sub_account_id: z.string(),
-  allowance: z.object({
-    allowance: z.string().default(""),
-    expires_at: z.string().default(""),
-  }).optional(),
+  allowance: z
+    .object({
+      allowance: z.string().default(""),
+      expires_at: z.string().default(""),
+    })
+    .optional(),
 });
 
 export type SubAccountContact = z.infer<typeof SubAccountContactSchema>;

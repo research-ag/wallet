@@ -155,8 +155,8 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens, assets
       const idxSorting =
         tokens.length > 0
           ? [...tokens].sort((a, b) => {
-            return b.id_number - a.id_number;
-          })
+              return b.id_number - a.id_number;
+            })
           : [];
       const idx = (idxSorting.length > 0 ? idxSorting[0]?.id_number : 0) + 1;
       const tknSave = {
