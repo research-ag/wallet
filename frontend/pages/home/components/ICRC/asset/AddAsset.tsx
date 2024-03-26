@@ -89,6 +89,7 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens, assets
             setAssetOpen={setAssetOpen}
             tokens={tokens}
             addAssetToData={addAssetToData}
+            setAssetInfo={setAssetInfo}
           ></AddAssetManual>
         ) : (
           <AddAssetAutomatic

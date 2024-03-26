@@ -39,6 +39,7 @@ interface AddAssetManualProps {
   setAssetOpen(value: boolean): void;
   tokens: Token[];
   addAssetToData(): void;
+  setAssetInfo(value: Asset | undefined): void;
 }
 
 const AddAssetManual = ({
@@ -57,6 +58,7 @@ const AddAssetManual = ({
   asset,
   setAssetOpen,
   addAssetToData,
+  setAssetInfo,
 }: AddAssetManualProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
@@ -398,6 +400,21 @@ const AddAssetManual = ({
       }
       // Edit tokens list and assets list
       dispatch(editToken(newToken, asset.tokenSymbol));
+      setNewToken({
+        address: "",
+        symbol: "",
+        name: "",
+        tokenSymbol: "",
+        tokenName: "",
+        decimal: "",
+        shortDecimal: "",
+        fee: "0",
+        subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default, amount: "0", currency_amount: "0" }],
+        index: "",
+        id_number: 999,
+        supportedStandards: [],
+      });
+      setAssetInfo(undefined);
       setAssetOpen(false);
     } else if (await onTest(false)) addAssetToData();
   }
