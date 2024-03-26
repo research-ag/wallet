@@ -6,6 +6,7 @@ import {
   removeToken,
   setAcordeonAssetIdx,
   setLoading,
+  setReduxTokens,
   setSelectedAccount,
   setSelectedAsset,
 } from "@redux/assets/AssetReducer";
@@ -40,7 +41,7 @@ export const AssetHook = () => {
   const reloadBallance = async (updatedTokens?: Token[]) => {
     dispatch(setLoading(true));
 
-    await updateAllBalances({
+    const updatedAssets = await updateAllBalances({
       loading: true,
       myAgent: userAgent,
       tokens: updatedTokens ? updatedTokens : tokens.length > 0 ? tokens : defaultTokens,
@@ -50,6 +51,7 @@ export const AssetHook = () => {
     await allowanceCacheRefresh();
     await contactCacheRefresh();
 
+    if (updatedAssets?.tokens) dispatch(setReduxTokens(updatedAssets.tokens));
     dispatch(setLoading(false));
   };
 
