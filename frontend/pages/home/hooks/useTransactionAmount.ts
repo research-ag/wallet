@@ -21,6 +21,7 @@ const maxAmountInitialState: MaxAmount = {
   transactionAmountWithoutFee: "0",
   transactionFee: "0",
   showAvailable: false,
+  // available amount less fee
   allowanceSubAccountBalance: "0",
   isLoading: false,
   isAmountFromMax: false,
@@ -71,14 +72,20 @@ export default function useTransactionAmount() {
         const bigintFee = toHoleBigInt(transactionFee || "0", Number(sender?.asset?.decimal));
         const bigintTransactionAmount = toHoleBigInt(transactionAmount || "0", Number(sender?.asset?.decimal));
 
-        if (bigintFee + bigintTransactionAmount >= allowanceBigintBalance) {
+        if (bigintTransactionAmount + bigintFee >= allowanceBigintBalance) {
           // INFO: allowance + fee is greater than the balance, show Max: 1.9 (available 0.1) where 1.9 is the allowance and 0.1 is the sub account balance
+
+          const availableAmount =
+            allowanceBigintBalance > bigintFee
+              ? toFullDecimal(allowanceBigintBalance - bigintFee, Number(sender.asset.decimal))
+              : "0";
+
           setMaxAmount({
             transactionAmount,
             transactionAmountWithoutFee: transactionAmount,
             transactionFee: transactionFee || "0",
             showAvailable: true,
-            allowanceSubAccountBalance: allowanceSubaccountBalance,
+            allowanceSubAccountBalance: availableAmount,
             isLoading: false,
             isAmountFromMax: true,
           });
