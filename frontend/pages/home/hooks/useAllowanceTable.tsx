@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 import ActionCard from "../components/ICRC/allowance/ActionCard";
 import { useMemo } from "react";
 import { useAppSelector } from "@redux/Store";
+import { CustomCopy } from "@components/tooltip";
 
 export default function useAllowanceTable() {
   const { t } = useTranslation();
@@ -50,7 +51,12 @@ export default function useAllowanceTable() {
         return (
           <div className="flex flex-col items-start justify-center cursor-pointer">
             {spenderName && <p className={getCellStyles()}>{spenderName}</p>}
-            {principal && <p className={getCellStyles(Boolean(name))}>{middleTruncation(principal, 3, 3)}</p>}
+            {principal && (
+              <div className="flex">
+                <p className={getCellStyles(Boolean(name))}>{middleTruncation(principal, 3, 3)}</p>
+                <CustomCopy size={"xSmall"} className="p-0 ml-1" copyText={principal} />
+              </ div>
+            )}
           </div>
         );
       },
