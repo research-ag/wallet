@@ -122,7 +122,7 @@ export function AllowanceContactBook() {
               return (
                 <DropdownMenu.Item
                   onSelect={() => onSelect(contact)}
-                  key={contact.contactPrincipal}
+                  key={`${contact.contactPrincipal}-${contact.subAccountIndex}`}
                   className="flex items-center justify-start px-2 py-2 bg-opacity-50 cursor-pointer hover:bg-RadioCheckColor"
                 >
                   <div className="flex items-center justify-between mr-2">
@@ -134,8 +134,7 @@ export function AllowanceContactBook() {
                       <span className="flex">
                         <img className="w-5 h-5 mr-2" src={getIconSrc(assetLogo, assetSymbol)} alt={assetSymbol} />
                         <p
-                          className="text-md
-                         text-PrimaryTextColorLight dark:text-PrimaryTextColor"
+                          className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor"
                         >
                           {subAccountAllowance?.allowance} {assetSymbol}
                         </p>
