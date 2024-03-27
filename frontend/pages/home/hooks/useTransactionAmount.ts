@@ -81,7 +81,7 @@ export default function useTransactionAmount() {
               : "0";
 
           setMaxAmount({
-            transactionAmount,
+            transactionAmount: toFullDecimal(bigintTransactionAmount - bigintFee, Number(sender.asset.decimal)),
             transactionAmountWithoutFee: transactionAmount,
             transactionFee: transactionFee || "0",
             showAvailable: true,
