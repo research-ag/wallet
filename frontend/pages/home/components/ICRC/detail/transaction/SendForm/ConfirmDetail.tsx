@@ -62,17 +62,18 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
   );
 
   async function validateBalance() {
-    const balance = await getSenderMaxAmount();
-    const bigintBalance = toHoleBigInt(balance || "0", Number(sender?.asset?.decimal));
+    const senderMaxAmount = await getSenderMaxAmount();
+    const bigintSenderMaxAmountBalance = toHoleBigInt(senderMaxAmount || "0", Number(sender?.asset?.decimal));
     const bigintFee = toHoleBigInt(transactionFee || "0", Number(sender?.asset?.decimal));
     const bigintAmount = toHoleBigInt(amount || "0", Number(sender?.asset?.decimal));
 
-    const bigintMaxAmount = bigintBalance - bigintFee;
+    const bigintMaxAmount = bigintSenderMaxAmountBalance - bigintFee;
 
     if (bigintAmount > bigintMaxAmount) {
       setErrorAction(TransactionValidationErrorsEnum.Values["error.not.enough.balance"]);
       return false;
     }
+
     removeErrorAction(TransactionValidationErrorsEnum.Values["error.not.enough.balance"]);
     return true;
   }
@@ -86,6 +87,7 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
     });
 
     const subAccountBalance = toFullDecimal(balance || "0", Number(sender?.asset?.decimal));
+    // 
     const bigintBalance = toHoleBigInt(subAccountBalance || "0", Number(sender?.asset?.decimal));
     const bigintFee = toHoleBigInt(transactionFee || "0", Number(sender?.asset?.decimal));
     const maxSubAccountBalance = bigintBalance - bigintFee;
@@ -111,20 +113,15 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
       }
       removeErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.amount"]);
 
-      const isValid = await validateBalance();
-      if (!isValid) {
-        setIsLoadingAction(false);
-        return;
-      }
-
       if (enableSend && !errors?.length) {
+
         if (assetAddress && decimal && senderSubAccount && receiverPrincipal && receiverSubAccount && amount) {
           setSendingStatusAction(SendingStatusEnum.Values.sending);
           showConfirmationModal(true);
 
-          await validateSubAccountBalance();
 
           if (isSenderAllowance()) {
+            await validateSubAccountBalance();
             await transferTokensFromAllowance({
               receiverPrincipal,
               senderPrincipal,
@@ -136,6 +133,13 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
               transactionFee,
             });
           } else {
+
+            const isValid = await validateBalance();
+            if (!isValid) {
+              setIsLoadingAction(false);
+              return;
+            }
+
             await transferTokens({
               receiverPrincipal,
               assetAddress,
@@ -145,9 +149,10 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
               toSubAccount: receiverSubAccount,
             });
           }
+
+          setSendingStatusAction(SendingStatusEnum.Values.done);
+          setEndTxTime(new Date());
         }
-        setSendingStatusAction(SendingStatusEnum.Values.done);
-        setEndTxTime(new Date());
       }
     } catch (error) {
       setSendingStatusAction(SendingStatusEnum.Values.error);
