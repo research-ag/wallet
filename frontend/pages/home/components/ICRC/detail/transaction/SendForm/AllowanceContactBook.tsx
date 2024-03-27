@@ -133,9 +133,7 @@ export function AllowanceContactBook() {
                       </p>
                       <span className="flex">
                         <img className="w-5 h-5 mr-2" src={getIconSrc(assetLogo, assetSymbol)} alt={assetSymbol} />
-                        <p
-                          className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor"
-                        >
+                        <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
                           {subAccountAllowance?.allowance} {assetSymbol}
                         </p>
                       </span>

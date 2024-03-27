@@ -55,7 +55,7 @@ export default function useAllowanceTable() {
               <div className="flex">
                 <p className={getCellStyles(Boolean(name))}>{middleTruncation(principal, 3, 3)}</p>
                 <CustomCopy size={"xSmall"} className="p-0 ml-1" copyText={principal} />
-              </ div>
+              </div>
             )}
           </div>
         );
