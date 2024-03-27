@@ -102,17 +102,20 @@ const TopBarComponent = ({ isLoginPage }: { isLoginPage: boolean }) => {
                 className="text-lg bg-PrimaryColorLight rounded-lg dark:bg-SecondaryColor mr-4 z-[999] text-PrimaryTextColorLight dark:text-PrimaryTextColor shadow-sm shadow-BorderColorTwoLight dark:shadow-BorderColorTwo"
                 sideOffset={5}
               >
-                <DropdownMenu.Item
-                  className={clsx(gearPopItem, "!justify-between", "rounded-t-lg")}
-                  onSelect={(e: Event) => {
-                    e.preventDefault();
-                    setLangOpen(!langOpen);
-                  }}
-                >
-                  <p>{t("language.word")}</p>
-                  <ChevronIcon className={`fill-SvgColor dark:fill-SvgColor ${langOpen ? "" : "-rotate-90"}`} />
-                </DropdownMenu.Item>
-                {langOpen &&
+                {!isLoginPage && (
+                  <DropdownMenu.Item
+                    className={clsx(gearPopItem, "!justify-between", "rounded-t-lg")}
+                    onSelect={(e: Event) => {
+                      e.preventDefault();
+                      setLangOpen(!langOpen);
+                    }}
+                  >
+                    <p>{t("language.word")}</p>
+                    <ChevronIcon className={`fill-SvgColor dark:fill-SvgColor ${langOpen ? "" : "-rotate-90"}`} />
+                  </DropdownMenu.Item>
+                )}
+                {!isLoginPage &&
+                  langOpen &&
                   langOpts.map((lOpt, k) => {
                     return (
                       <DropdownMenu.Item
