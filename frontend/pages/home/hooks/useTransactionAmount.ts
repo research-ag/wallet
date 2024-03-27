@@ -72,7 +72,7 @@ export default function useTransactionAmount() {
         const bigintFee = toHoleBigInt(transactionFee || "0", Number(sender?.asset?.decimal));
         const bigintTransactionAmount = toHoleBigInt(transactionAmount || "0", Number(sender?.asset?.decimal));
 
-        if (bigintTransactionAmount + bigintFee >= allowanceBigintBalance) {
+        if (bigintTransactionAmount + bigintFee > allowanceBigintBalance) {
           // INFO: allowance + fee is greater than the balance, show Max: 1.9 (available 0.1) where 1.9 is the allowance and 0.1 is the sub account balance
 
           const availableAmount =

@@ -70,12 +70,17 @@ export async function transferTokensFromAllowance(params: TransferFromAllowanceP
 export async function getSubAccountBalance(params: GetBalanceParams) {
   try {
     const { principal, subAccount, assetAddress } = params;
-    const canister = getCanister(assetAddress);
     const sessionPrincipal = store.getState().auth.userPrincipal;
+    const agent = store.getState().auth.userAgent;
 
-    const balance = await canister.balance({
+    const ledgerActor = getIcrcActor({
+      agent,
+      assetAddress,
+    });
+
+    const balance = await ledgerActor.icrc1_balance_of({
       owner: principal ? Principal.fromText(principal) : sessionPrincipal,
-      subaccount: hexToUint8Array(subAccount),
+      subaccount: [hexToUint8Array(subAccount)],
     });
     return balance;
   } catch (error) {
