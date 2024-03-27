@@ -451,6 +451,7 @@ export const getSNSTokens = async () => {
         tokenSymbol: metadata.symbol,
         tokenName: metadata.name,
         address: tkn.canister_ids.ledger_canister_id,
+        index: tkn.canister_ids.index_canister_id || "",
         decimal: metadata.decimals.toString(),
         shortDecimal: metadata.decimals.toString(),
         fee: metadata.fee,
@@ -460,5 +461,5 @@ export const getSNSTokens = async () => {
       } as Token);
     }
   });
-  return deduplicatedTokens;
+  return deduplicatedTokens.reverse();
 };
