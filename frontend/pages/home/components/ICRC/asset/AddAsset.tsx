@@ -165,6 +165,8 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens, assets
         id_number: idx,
         subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default, amount: "0", currency_amount: "0" }],
       };
+      console.log("tknSave:", tknSave);
+
       await db().addToken(tknSave);
       setAddStatus(AddingAssetsEnum.enum.adding);
       showModal(true);

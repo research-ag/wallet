@@ -176,7 +176,7 @@ export const updateAllBalances: UpdateAllBalances = async (params) => {
 
         const newToken: Token = {
           ...currentToken,
-          logo: logo,
+          logo: logo !== "" ? logo : currentToken.logo && currentToken.logo !== "" ? currentToken.logo : "",
           tokenName: name,
           tokenSymbol: symbol,
           decimal: decimals.toFixed(0),
@@ -199,7 +199,7 @@ export const updateAllBalances: UpdateAllBalances = async (params) => {
           shortDecimal: currentToken.shortDecimal || decimals.toFixed(0),
           tokenName: name,
           tokenSymbol: symbol,
-          logo: logo,
+          logo: logo !== "" ? logo : currentToken.logo && currentToken.logo !== "" ? currentToken.logo : "",
           supportedStandards: currentToken.supportedStandards,
         };
         return { newToken, newAsset };
@@ -446,8 +446,8 @@ export const getSNSTokens = async () => {
       symbolsAdded.push(metadata.symbol);
       deduplicatedTokens.push({
         id_number: 10005 + k,
-        symbol: "",
-        name: "",
+        symbol: metadata.symbol,
+        name: metadata.name,
         tokenSymbol: metadata.symbol,
         tokenName: metadata.name,
         address: tkn.canister_ids.ledger_canister_id,

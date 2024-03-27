@@ -205,6 +205,8 @@ const AddAssetAutomatic = ({
   }
 
   function onSelectToken(newAsset: Token) {
+    console.log("newAsset:", newAsset);
+
     setNewToken(newAsset);
     setErrToken("");
     setValidToken(true);
