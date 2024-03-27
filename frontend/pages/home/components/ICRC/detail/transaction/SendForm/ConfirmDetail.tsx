@@ -86,10 +86,7 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
       subAccount: senderSubAccount,
     });
 
-    const allowanceGuaranteed = toHoleBigInt(
-      await getSenderMaxAmount(),
-      Number(sender?.asset?.decimal)
-    );
+    const allowanceGuaranteed = toHoleBigInt(await getSenderMaxAmount(), Number(sender?.asset?.decimal));
 
     const bigintFee = toHoleBigInt(transactionFee || "0", Number(sender?.asset?.decimal));
     const bigintAmount = toHoleBigInt(amount || "0", Number(sender?.asset?.decimal));
@@ -97,7 +94,7 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
     // INFO: allowance guaranteed must cover the fee
     const isAllowanceCoveringFee = bigintAmount <= allowanceGuaranteed - bigintFee;
     // INFO: the allowance sub account balance must cover the amount and the fee
-    const isAvailableAmountEnough = bigintAmount <= (balance - bigintFee);
+    const isAvailableAmountEnough = bigintAmount <= balance - bigintFee;
 
     if (!isAllowanceCoveringFee || !isAvailableAmountEnough) {
       setErrorAction(TransactionValidationErrorsEnum.Values["error.allowance.subaccount.not.enough"]);
@@ -120,11 +117,9 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
       removeErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.amount"]);
 
       if (enableSend && !errors?.length) {
-
         if (assetAddress && decimal && senderSubAccount && receiverPrincipal && receiverSubAccount && amount) {
           setSendingStatusAction(SendingStatusEnum.Values.sending);
           showConfirmationModal(true);
-
 
           if (isSenderAllowance()) {
             await validateSubAccountBalance();
@@ -139,7 +134,6 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
               transactionFee,
             });
           } else {
-
             const isValid = await validateBalance();
             if (!isValid) {
               setIsLoadingAction(false);

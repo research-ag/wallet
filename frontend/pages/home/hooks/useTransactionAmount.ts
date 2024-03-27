@@ -75,12 +75,10 @@ export default function useTransactionAmount() {
         if (bigintTransactionAmount + bigintFee > allowanceBigintBalance) {
           // INFO: allowance + fee is greater than the balance, show Max: 1.9 (available 0.1) where 1.9 is the allowance and 0.1 is the sub account balance
 
-
           const availableAmount =
             allowanceBigintBalance > bigintFee
               ? toFullDecimal(allowanceBigintBalance - bigintFee, Number(sender.asset.decimal))
               : "0";
-
 
           setMaxAmount({
             transactionAmount: toFullDecimal(bigintTransactionAmount - bigintFee, Number(sender.asset.decimal)),
@@ -94,7 +92,10 @@ export default function useTransactionAmount() {
           setAmountAction(toFullDecimal(bigintTransactionAmount - bigintFee, Number(sender.asset.decimal)));
         } else {
           // INFO: allowance + fee is less than the balance, set Max: 1.9 where 1.9 is the allowance
-          transactionAmountWithoutFee = toFullDecimal(bigintTransactionAmount - bigintFee, Number(sender?.asset?.decimal));
+          transactionAmountWithoutFee = toFullDecimal(
+            bigintTransactionAmount - bigintFee,
+            Number(sender?.asset?.decimal),
+          );
 
           setMaxAmount({
             transactionAmount,
