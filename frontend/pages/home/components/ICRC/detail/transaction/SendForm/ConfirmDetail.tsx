@@ -21,7 +21,7 @@ import { SendingStatusEnum } from "@/const";
 import { AssetHook } from "@pages/home/hooks/assetHook";
 import { getSubAccountBalance, transferTokens, transferTokensFromAllowance } from "@pages/home/helpers/icrc";
 import { LoadingLoader } from "@components/loader";
-import { toFullDecimal, toHoleBigInt } from "@/utils";
+import { toHoleBigInt } from "@/utils";
 
 interface ConfirmDetailProps {
   showConfirmationModal: Dispatch<SetStateAction<boolean>>;
@@ -86,14 +86,20 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
       subAccount: senderSubAccount,
     });
 
-    const subAccountBalance = toFullDecimal(balance || "0", Number(sender?.asset?.decimal));
-    // 
-    const bigintBalance = toHoleBigInt(subAccountBalance || "0", Number(sender?.asset?.decimal));
+    const allowanceGuaranteed = toHoleBigInt(
+      await getSenderMaxAmount(),
+      Number(sender?.asset?.decimal)
+    );
+
     const bigintFee = toHoleBigInt(transactionFee || "0", Number(sender?.asset?.decimal));
-    const maxSubAccountBalance = bigintBalance - bigintFee;
     const bigintAmount = toHoleBigInt(amount || "0", Number(sender?.asset?.decimal));
 
-    if (bigintAmount > maxSubAccountBalance) {
+    // INFO: allowance guaranteed must cover the fee
+    const isAllowanceCoveringFee = bigintAmount <= allowanceGuaranteed - bigintFee;
+    // INFO: the allowance sub account balance must cover the amount and the fee
+    const isAvailableAmountEnough = bigintAmount <= (balance - bigintFee);
+
+    if (!isAllowanceCoveringFee || !isAvailableAmountEnough) {
       setErrorAction(TransactionValidationErrorsEnum.Values["error.allowance.subaccount.not.enough"]);
       throw new Error("error.allowance.subaccount.not.enough");
     }
