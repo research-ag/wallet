@@ -84,9 +84,15 @@ export default function useTransactionAmount() {
         // ----
 
         if (availableWithoutFee >= allowanceWithoutFee) {
+          // The amount must come from the allowance guaranteed
+
+          const endTransactionAmount = allowanceWithoutFee < 0 ? "0" : transactionAmount;
+
+          const endTransactionWithoutFee = allowanceWithoutFee < 0 ? "0" : transactionAmountWithoutFee;
+
           setMaxAmount({
-            transactionAmount,
-            transactionAmountWithoutFee,
+            transactionAmount: endTransactionAmount,
+            transactionAmountWithoutFee: endTransactionWithoutFee,
             transactionFee: transactionFee || "0",
             showAvailable: false,
             allowanceSubAccountBalance: allowanceSubaccountBalance,
@@ -94,24 +100,30 @@ export default function useTransactionAmount() {
             isAmountFromMax: true,
           });
 
-          setAmountAction(transactionAmountWithoutFee);
+          setAmountAction(endTransactionWithoutFee);
         } else {
+          // The amount must come from the available balance
+          const endTransactionAmount =
+            availableWithoutFee < 0 ? "0" : toFullDecimal(allowanceBigintBalance, Number(sender.asset.decimal));
+
+          const endTransactionWithoutFee =
+            availableWithoutFee < 0 ? "0" : toFullDecimal(availableWithoutFee, Number(sender.asset.decimal));
+
           const availableAmount =
             allowanceBigintBalance > bigintFee
               ? toFullDecimal(allowanceBigintBalance - bigintFee, Number(sender.asset.decimal))
               : "0";
 
           setMaxAmount({
-            transactionAmount,
-            transactionAmountWithoutFee,
+            transactionAmount: endTransactionAmount,
+            transactionAmountWithoutFee: endTransactionWithoutFee,
             transactionFee: transactionFee || "0",
             showAvailable: true,
             allowanceSubAccountBalance: availableAmount,
             isLoading: false,
             isAmountFromMax: true,
           });
-          setAmountAction(transactionAmountWithoutFee);
-
+          setAmountAction(endTransactionWithoutFee);
         }
       } else {
         transactionAmount = await getSenderMaxAmount();
@@ -126,16 +138,20 @@ export default function useTransactionAmount() {
           Number(sender?.asset?.decimal),
         );
 
+        const endTransactionAmount = bigintTransactionAmount - bigintFee < 0 ? "0" : transactionAmount;
+
+        const endTransactionWithoutFee = bigintTransactionAmount - bigintFee < 0 ? "0" : transactionAmountWithoutFee;
+
         setMaxAmount({
-          transactionAmount,
-          transactionAmountWithoutFee,
+          transactionAmount: endTransactionAmount,
+          transactionAmountWithoutFee: endTransactionWithoutFee,
           showAvailable: false,
           transactionFee: transactionFee || "0",
           isLoading: false,
           isAmountFromMax: true,
         });
 
-        setAmountAction(transactionAmountWithoutFee);
+        setAmountAction(endTransactionWithoutFee);
       }
     } catch (error) {
       console.log(error);
