@@ -16,7 +16,6 @@ import { Asset, ICPSubAccount, SubAccount } from "@redux/models/AccountModels";
 import { Principal } from "@dfinity/principal";
 import { AccountDefaultEnum } from "@/const";
 import bigInt from "big-integer";
-import { SupportedStandardEnum } from "@/@types/icrc";
 import { getETHRate, getTokensFromMarket } from "@/utils/market";
 import { GetAllTransactionsICPParams, UpdateAllBalances } from "@/@types/assets";
 import { getICRCSupportedStandards } from "@pages/home/helpers/icrc";
