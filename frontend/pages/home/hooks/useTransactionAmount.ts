@@ -72,6 +72,12 @@ export default function useTransactionAmount() {
         const bigintFee = toHoleBigInt(transactionFee || "0", Number(sender?.asset?.decimal));
         const bigintTransactionAmount = toHoleBigInt(transactionAmount || "0", Number(sender?.asset?.decimal));
 
+        // INFO: allowance + fee is less than the balance, set Max: 1.9 where 1.9 is the allowance
+        transactionAmountWithoutFee = toFullDecimal(
+          bigintTransactionAmount - bigintFee,
+          Number(sender?.asset?.decimal),
+        );
+
         if (bigintTransactionAmount + bigintFee > allowanceBigintBalance) {
           // INFO: allowance + fee is greater than the balance, show Max: 1.9 (available 0.1) where 1.9 is the allowance and 0.1 is the sub account balance
 
@@ -82,24 +88,18 @@ export default function useTransactionAmount() {
 
           setMaxAmount({
             transactionAmount: toFullDecimal(bigintTransactionAmount - bigintFee, Number(sender.asset.decimal)),
-            transactionAmountWithoutFee: transactionAmount,
+            transactionAmountWithoutFee,
             transactionFee: transactionFee || "0",
             showAvailable: true,
             allowanceSubAccountBalance: availableAmount,
             isLoading: false,
             isAmountFromMax: true,
           });
-          setAmountAction(toFullDecimal(bigintTransactionAmount - bigintFee, Number(sender.asset.decimal)));
+          setAmountAction(transactionAmountWithoutFee);
         } else {
-          // INFO: allowance + fee is less than the balance, set Max: 1.9 where 1.9 is the allowance
-          transactionAmountWithoutFee = toFullDecimal(
-            bigintTransactionAmount - bigintFee,
-            Number(sender?.asset?.decimal),
-          );
-
           setMaxAmount({
             transactionAmount,
-            transactionAmountWithoutFee: transactionAmount,
+            transactionAmountWithoutFee,
             transactionFee: transactionFee || "0",
             showAvailable: allowanceBigintBalance < bigintTransactionAmount,
             allowanceSubAccountBalance: allowanceSubaccountBalance,
