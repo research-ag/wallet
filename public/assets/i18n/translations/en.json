@@ -182,6 +182,7 @@
   "error.invalid.amount": "Amount is not valid",
   "error.not.enough.balance": "Not enough balance",
   "error.allowance.subaccount.not.enough": "Allowance subaccount balance not enough",
+  "error.allowance.not.exist": "Allowance not exist",
 
   "error.invalid.asset": "Invalid asset",
   "error.invalid.expiration": "Invalid expiration",

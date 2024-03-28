@@ -100,6 +100,10 @@ const DialogSendConfirmation = ({ setDrawerOpen, showConfirmationModal, modal }:
     switch (true) {
       case errors?.includes(TransactionValidationErrorsEnum.Values["error.allowance.subaccount.not.enough"]):
         return t(TransactionValidationErrorsEnum.Values["error.allowance.subaccount.not.enough"]);
+
+      case errors?.includes(TransactionValidationErrorsEnum.Values["error.allowance.not.exist"]):
+        return t(TransactionValidationErrorsEnum.Values["error.allowance.not.exist"]);
+
       default:
         return "";
     }

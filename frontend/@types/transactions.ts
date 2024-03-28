@@ -167,6 +167,7 @@ export const TransactionValidationErrorsEnum = z.enum([
   "error.invalid.amount",
   "error.not.enough.balance",
   "error.allowance.subaccount.not.enough",
+  "error.allowance.not.exist",
 ]);
 export type TransactionValidationErrorsType = z.infer<typeof TransactionValidationErrorsEnum>;
 

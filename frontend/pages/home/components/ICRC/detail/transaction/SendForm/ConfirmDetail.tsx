@@ -96,11 +96,18 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
     // INFO: the allowance sub account balance must cover the amount and the fee
     const isAvailableAmountEnough = bigintAmount <= balance - bigintFee;
 
+    if (allowanceGuaranteed === BigInt(0)) {
+      setErrorAction(TransactionValidationErrorsEnum.Values["error.allowance.not.exist"]);
+      throw new Error(TransactionValidationErrorsEnum.Values["error.allowance.not.exist"]);
+    }
+
     if (!isAllowanceCoveringFee || !isAvailableAmountEnough) {
       setErrorAction(TransactionValidationErrorsEnum.Values["error.allowance.subaccount.not.enough"]);
       throw new Error("error.allowance.subaccount.not.enough");
     }
+
     removeErrorAction(TransactionValidationErrorsEnum.Values["error.allowance.subaccount.not.enough"]);
+    removeErrorAction(TransactionValidationErrorsEnum.Values["error.allowance.not.exist"]);
   }
 
   async function handleTransaction() {
@@ -111,10 +118,10 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
       const decimal = sender.asset.decimal;
 
       if (!amount || Number(amount) <= 0) {
-        setErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.amount"]);
+        setErrorAction(TransactionValidationErrorsEnum.Values["error.allowance.not.exist"]);
         return;
       }
-      removeErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.amount"]);
+      removeErrorAction(TransactionValidationErrorsEnum.Values["error.allowance.not.exist"]);
 
       if (enableSend && !errors?.length) {
         if (assetAddress && decimal && senderSubAccount && receiverPrincipal && receiverSubAccount && amount) {
@@ -172,6 +179,10 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
     switch (true) {
       case errors?.includes(TransactionValidationErrorsEnum.Values["error.not.enough.balance"]):
         return TransactionValidationErrorsEnum.Values["error.not.enough.balance"];
+
+      case errors?.includes(TransactionValidationErrorsEnum.Values["error.allowance.not.exist"]):
+        return TransactionValidationErrorsEnum.Values["error.allowance.not.exist"];
+
       default:
         return "";
     }
