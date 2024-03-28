@@ -66,7 +66,7 @@ export default function useTransactionAmount() {
         const allowanceSubaccountBalance = toFullDecimal(allowanceBigintBalance, Number(sender?.asset?.decimal));
 
         // INFO: get the allowance amount guaranteed
-        transactionAmount = await getSenderMaxAmount();
+        transactionAmount = await getSenderMaxAmount();        
 
         // INFO: reduce the fee to the allowance amount
         const bigintFee = toHoleBigInt(transactionFee || "0", Number(sender?.asset?.decimal));
@@ -87,7 +87,7 @@ export default function useTransactionAmount() {
               : "0";
 
           setMaxAmount({
-            transactionAmount: toFullDecimal(bigintTransactionAmount - bigintFee, Number(sender.asset.decimal)),
+            transactionAmount,
             transactionAmountWithoutFee,
             transactionFee: transactionFee || "0",
             showAvailable: true,

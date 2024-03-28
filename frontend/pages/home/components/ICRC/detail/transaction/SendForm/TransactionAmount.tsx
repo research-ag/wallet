@@ -42,13 +42,13 @@ export default function TransactionAmount() {
           {maxAmount.isAmountFromMax && !maxAmount.isLoading && (
             <div className="flex">
               <p className="mr-1 text-sm text-primary-color">{t("max")}: </p>
-              <p className="mr-2 text-sm text-primary-color">{maxAmount.transactionAmountWithoutFee}</p>
+              <p className="mr-2 text-sm text-primary-color">{maxAmount.transactionAmount}</p>
             </div>
           )}
 
           {maxAmount.isAmountFromMax && !maxAmount.isLoading && maxAmount.showAvailable && (
             <p className="text-sm text-primary-color">
-              ({maxAmount.allowanceSubAccountBalance || "0.5"} {t("available")})
+              ({maxAmount.allowanceSubAccountBalance} {t("available")})
             </p>
           )}
         </div>
