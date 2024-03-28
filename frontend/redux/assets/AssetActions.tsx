@@ -19,6 +19,8 @@ import bigInt from "big-integer";
 import { SupportedStandardEnum } from "@/@types/icrc";
 import { getETHRate, getTokensFromMarket } from "@/utils/market";
 import { GetAllTransactionsICPParams, UpdateAllBalances } from "@/@types/assets";
+import { getICRCSupportedStandards } from "@pages/home/helpers/icrc";
+import { HttpAgent } from "@dfinity/agent";
 
 /**
  * This function updates the balances for all provided tokens and their subaccounts, based on the market price and the account balance.
@@ -420,7 +422,7 @@ export const getAllTransactionsICRC1 = async (
   }
 };
 
-export const getSNSTokens = async () => {
+export const getSNSTokens = async (agent: HttpAgent) => {
   let tokens: SnsToken[] = [];
   for (let index = 0; index < 100; index++) {
     try {
@@ -440,26 +442,32 @@ export const getSNSTokens = async () => {
 
   const deduplicatedTokens: Token[] = [];
   const symbolsAdded: string[] = [];
-  tokens.reverse().map((tkn, k) => {
-    const metadata = getMetadataInfo(tkn.icrc1_metadata as IcrcTokenMetadataResponse);
-    if (!symbolsAdded.includes(metadata.symbol)) {
-      symbolsAdded.push(metadata.symbol);
-      deduplicatedTokens.push({
-        id_number: 10005 + k,
-        symbol: metadata.symbol,
-        name: metadata.name,
-        tokenSymbol: metadata.symbol,
-        tokenName: metadata.name,
-        address: tkn.canister_ids.ledger_canister_id,
-        index: tkn.canister_ids.index_canister_id || "",
-        decimal: metadata.decimals.toString(),
-        shortDecimal: metadata.decimals.toString(),
-        fee: metadata.fee,
-        subAccounts: [{ numb: "0", name: "Default", amount: "0", currency_amount: "0" }],
-        supportedStandards: [SupportedStandardEnum.Values["ICRC-1"]],
-        logo: metadata.logo !== "" ? metadata.logo : "https://3r4gx-wqaaa-aaaaq-aaaia-cai.ic0.app" + tkn.meta.logo,
-      } as Token);
-    }
-  });
+  await Promise.all(
+    tokens.reverse().map(async (tkn, k) => {
+      const metadata = getMetadataInfo(tkn.icrc1_metadata as IcrcTokenMetadataResponse);
+      if (!symbolsAdded.includes(metadata.symbol)) {
+        symbolsAdded.push(metadata.symbol);
+        const supportedStandards = await getICRCSupportedStandards({
+          assetAddress: tkn.canister_ids.ledger_canister_id,
+          agent: agent,
+        });
+        deduplicatedTokens.push({
+          id_number: 10005 + k,
+          symbol: metadata.symbol,
+          name: metadata.name,
+          tokenSymbol: metadata.symbol,
+          tokenName: metadata.name,
+          address: tkn.canister_ids.ledger_canister_id,
+          index: tkn.canister_ids.index_canister_id || "",
+          decimal: metadata.decimals.toString(),
+          shortDecimal: metadata.decimals.toString(),
+          fee: metadata.fee,
+          subAccounts: [{ numb: "0", name: "Default", amount: "0", currency_amount: "0" }],
+          supportedStandards: supportedStandards,
+          logo: metadata.logo !== "" ? metadata.logo : "https://3r4gx-wqaaa-aaaaq-aaaia-cai.ic0.app" + tkn.meta.logo,
+        } as Token);
+      }
+    }),
+  );
   return deduplicatedTokens.reverse();
 };

@@ -118,7 +118,7 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean,
   dispatchAuths(myAgent, myPrincipal);
   await db().setIdentity(authIdentity, fixedPrincipal);
 
-  const snsTokens = await getSNSTokens();
+  const snsTokens = await getSNSTokens(myAgent);
   store.dispatch(setICRC1SystemAssets(snsTokens));
   store.dispatch(setAuthenticated(true, false, !!fixedPrincipal, identityPrincipalStr.toLocaleLowerCase()));
 
