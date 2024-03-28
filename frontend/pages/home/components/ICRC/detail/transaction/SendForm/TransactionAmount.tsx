@@ -42,7 +42,7 @@ export default function TransactionAmount() {
           {maxAmount.isAmountFromMax && !maxAmount.isLoading && (
             <div className="flex">
               <p className="mr-1 text-sm text-primary-color">{t("max")}: </p>
-              <p className="mr-2 text-sm text-primary-color">{maxAmount.transactionAmount}</p>
+              <p className="mr-2 text-sm text-primary-color">{maxAmount.transactionAmountWithoutFee}</p>
             </div>
           )}
 
