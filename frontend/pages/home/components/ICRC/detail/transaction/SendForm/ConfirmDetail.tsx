@@ -118,10 +118,10 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
       const decimal = sender.asset.decimal;
 
       if (!amount || Number(amount) <= 0) {
-        setErrorAction(TransactionValidationErrorsEnum.Values["error.allowance.not.exist"]);
+        setErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.amount"]);
         return;
       }
-      removeErrorAction(TransactionValidationErrorsEnum.Values["error.allowance.not.exist"]);
+      removeErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.amount"]);
 
       if (enableSend && !errors?.length) {
         if (assetAddress && decimal && senderSubAccount && receiverPrincipal && receiverSubAccount && amount) {
