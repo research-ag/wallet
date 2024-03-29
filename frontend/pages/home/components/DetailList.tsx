@@ -1,27 +1,34 @@
 import { Fragment, useState } from "react";
 import DrawerSend from "./ICRC/drawer/DrawerSend";
 import DrawerReceive from "./ICRC/drawer/DrawerReceive";
-import DrawerAction from "./ICRC/drawer/DrawerAction";
+import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 import { DrawerHook } from "../hooks/drawerHook";
-import { UseTransaction } from "../hooks/useTransaction";
 import { DrawerOption, DrawerOptionEnum, ICRCSubaccountInfo, ICRCSubaccountInfoEnum } from "@/const";
 import ICRCSubaccountAction from "./ICRC/detail/SubaccountAction";
 import ICRCTransactionsTable from "./ICRC/detail/transaction/TransactionsTable";
-import DrawerTransaction from "./ICRC/detail/transaction/Transaction";
 import ICRCSubInfo from "./ICRC/detail/subaccountTableInfo";
 import AllowanceList from "./ICRC/allowance/AllowanceList";
 import AddAllowanceDrawer from "./ICRC/allowance/AddAllowanceDrawer";
-
-const icrc1DrawerOptions = [
-  { name: "send", type: DrawerOptionEnum.Enum.SEND },
-  { name: "receive", type: DrawerOptionEnum.Enum.RECEIVE },
-];
+import { resetSendStateAction } from "@redux/transaction/TransactionActions";
+import { CustomButton } from "@components/button";
+import { BasicDrawer } from "@components/drawer";
+import clsx from "clsx";
+import { useTranslation } from "react-i18next";
 
 const DetailList = () => {
   const { drawerOption, setDrawerOption, drawerOpen, setDrawerOpen } = DrawerHook();
-
-  const { selectedTransaction } = UseTransaction();
+  const selectedButton = "border-AccpetButtonColor";
+  const unselectedButton = "text-PrimaryTextColorLight dark:text-PrimaryTextColor";
   const [subInfoType, setSubInfoType] = useState<ICRCSubaccountInfo>(ICRCSubaccountInfoEnum.Enum.TRANSACTIONS);
+
+  const { t } = useTranslation();
+
+  const drawerOptions = [
+    { name: "transfer", style: customSend(), type: DrawerOptionEnum.Enum.SEND },
+    { name: "deposit", style: customReceive(), type: DrawerOptionEnum.Enum.RECEIVE },
+  ];
+
+  console.log(subInfoType);
 
   return (
     <Fragment>
@@ -46,14 +53,42 @@ const DetailList = () => {
         </ICRCSubInfo>
       </div>
 
-      <div
-        id="right-drower"
-        className={`h-full fixed z-[999] top-0 w-[28rem] overflow-x-hidden transition-{right} duration-500 ${
-          drawerOpen ? "!right-0" : "right-[-30rem]"
-        }`}
-      >
-        {getDrawers()}
-      </div>
+      <BasicDrawer isDrawerOpen={drawerOpen}>
+        <div className="flex items-center justify-between w-full row">
+          <div className="flex flex-row items-center justify-start w-full gap-4">
+            {drawerOptions.map((dOpt, k) => {
+              return (
+                <CustomButton
+                  key={k}
+                  intent={"noBG"}
+                  border={"underline"}
+                  className={`!font-light ${dOpt.style}`}
+                  onClick={() => {
+                    console.log(dOpt);
+                    setDrawerOption(dOpt.type);
+                  }}
+                >
+                  <p>{t(dOpt.name)}</p>
+                </CustomButton>
+              );
+            })}
+          </div>
+
+          <CloseIcon
+            className="cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
+            onClick={() => {
+              setDrawerOpen(false);
+              resetSendStateAction();
+            }}
+          />
+        </div>
+
+        {drawerOption === DrawerOptionEnum.Enum.SEND && (
+          <DrawerSend drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />
+        )}
+
+        {drawerOption === DrawerOptionEnum.Enum.RECEIVE && <DrawerReceive />}
+      </BasicDrawer>
     </Fragment>
   );
 
@@ -64,24 +99,16 @@ const DetailList = () => {
     }, 150);
   }
 
-  function getDrawers() {
-    return selectedTransaction ? (
-      <DrawerTransaction setDrawerOpen={setDrawerOpen} />
-    ) : (
-      <div className="flex flex-col items-center justify-start w-full h-full gap-5 px-6 pt-8 bg-PrimaryColorLight dark:bg-PrimaryColor">
-        <DrawerAction
-          options={icrc1DrawerOptions}
-          drawerOption={drawerOption}
-          setDrawerOption={setDrawerOption}
-          setDrawerOpen={setDrawerOpen}
-        >
-          {drawerOption === DrawerOptionEnum.Enum.SEND && (
-            <DrawerSend drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />
-          )}
-          {drawerOption === DrawerOptionEnum.Enum.RECEIVE && <DrawerReceive />}
-        </DrawerAction>
-      </div>
-    );
+  function chechEqId(option: DrawerOption) {
+    return drawerOption === option;
+  }
+
+  function customSend() {
+    return clsx(chechEqId(DrawerOptionEnum.Enum.SEND) ? selectedButton : unselectedButton);
+  }
+
+  function customReceive() {
+    return clsx(chechEqId(DrawerOptionEnum.Enum.RECEIVE) ? selectedButton : unselectedButton);
   }
 };
 

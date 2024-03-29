@@ -1,4 +1,3 @@
-import { Fragment } from "react";
 import { GeneralHook } from "../../../hooks/generalHook";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
@@ -12,7 +11,7 @@ const DrawerReceive = () => {
   const { authClient } = AccountHook();
 
   return (
-    <Fragment>
+    <div className="overflow-y-auto">
       <div className="flex flex-col justify-start items-center w-full h-full gap-4 pt-[30%]">
         <div className="flex justify-center items-center w-[60%] border-4 border-SelectRowColor bg-white rounded-lg p-3">
           <QRCode
@@ -31,7 +30,7 @@ const DrawerReceive = () => {
           />
         </div>
       </div>
-    </Fragment>
+    </div>
   );
 
   function copyValue() {

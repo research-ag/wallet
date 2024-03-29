@@ -30,7 +30,7 @@ export default function CreateForm() {
   const { userPrincipal } = useAppSelector((state) => state.auth);
 
   return (
-    <form className="flex flex-col text-left">
+    <form className="flex flex-col overflow-y-auto text-left">
       <AssetFormItem
         allowance={allowance}
         assets={assets}

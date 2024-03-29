@@ -16,7 +16,7 @@ function DrawerSend({ drawerOpen, setDrawerOpen }: DrawerSendProps) {
   if (!drawerOpen) return <></>;
 
   return (
-    <>
+    <div className="mt-8 overflow-y-auto">
       <SenderInitializer>
         <SendFormConditionalRender showConfirmationModal={showConfirmationModal}>
           <SendForm setDrawerOpen={setDrawerOpen} />
@@ -28,7 +28,7 @@ function DrawerSend({ drawerOpen, setDrawerOpen }: DrawerSendProps) {
         showConfirmationModal={showConfirmationModal}
         network={ProtocolTypeEnum.Enum.ICRC1}
       />
-    </>
+    </div>
   );
 }
 
