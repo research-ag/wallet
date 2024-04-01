@@ -33,9 +33,9 @@ export default function useAllowanceTable() {
           </div>
         );
       },
-      header: ({ header }) => (
+      header: () => (
         <div className="flex items-center justify-center cursor-pointer">
-          <p className={titleHeaderStyles}>{toTitleCase(header.id)}</p> <SortIcon className={sortIconStyles} />
+          <p className={titleHeaderStyles}>{t("subAccount")}</p> <SortIcon className={sortIconStyles} />
         </div>
       ),
     }),
