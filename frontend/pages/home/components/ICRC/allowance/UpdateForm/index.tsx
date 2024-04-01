@@ -13,7 +13,7 @@ export default function UpdateForm() {
   const { allowance, setAllowanceState, updateAllowance, isPending } = useUpdateAllowance();
 
   return (
-    <form className="flex flex-col overflow-y-auto text-left">
+    <form className="flex flex-col px-8 overflow-y-auto text-left">
       <FixedFieldsFormItem allowance={allowance} />
 
       <AmountFormItem allowance={allowance} isLoading={isPending} setAllowanceState={setAllowanceState} />
