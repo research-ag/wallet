@@ -75,7 +75,14 @@ export default function Select(props: TSelectProps) {
           {options
             .filter((option) => option.value !== selectedValue?.value)
             .map((option, index) => (
-              <div onSelect={() => handleSelectOption(option)} key={index} className={getItemStyles(contentWidth)}>
+              <div
+                onClick={() => {
+                  handleSelectOption(option);
+                  setIsOpen(false);
+                }}
+                key={index}
+                className={getItemStyles(contentWidth)}
+              >
                 {option?.icon}
                 <div className="ml-2">
                   <p className={textStyles()}>{option.label}</p>
