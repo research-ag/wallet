@@ -14,6 +14,7 @@ import AddAssetManual from "./AddAssetManual";
 import { setAcordeonAssetIdx, setSelectedAsset } from "@redux/assets/AssetReducer";
 import AddAssetAutomatic from "./AddAssetAutomatic";
 import { db } from "@/database/db";
+import { updateAllBalances } from "@redux/assets/AssetActions";
 
 interface AddAssetsProps {
   setAssetOpen(value: boolean): void;
@@ -28,7 +29,7 @@ interface AddAssetsProps {
 const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens, assets, acordeonIdx }: AddAssetsProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const { checkAssetAdded } = GeneralHook();
+  const { checkAssetAdded, userAgent } = GeneralHook();
   const {
     newToken,
     setNewToken,
@@ -165,16 +166,16 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens, assets
         id_number: idx,
         subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default, amount: "0", currency_amount: "0" }],
       };
-      console.log("tknSave:", tknSave);
-
-      await db().addToken(tknSave);
       setAddStatus(AddingAssetsEnum.enum.adding);
       showModal(true);
+      await db().addToken(tknSave);
       dispatch(setSelectedAsset(tknSave));
       dispatch(setAcordeonAssetIdx([tknSave.symbol]));
 
+      await updateAllBalances({ loading: false, myAgent: userAgent, tokens: [...tokens, tknSave] });
       // TODO: assets state must be updated
       setAssetOpen(false);
+      showModal(false);
     }
   }
 
