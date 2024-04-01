@@ -90,6 +90,8 @@ export default function useAllowanceTable() {
       cell: (info) => {
 
         const allowance = info.row.original;
+        console.log(allowance);
+        
         const hidden = !allowance?.expiration && allowance.amount === "0";
         const userDate = info.getValue()
           ? formatDateTime(info.getValue() || "")
