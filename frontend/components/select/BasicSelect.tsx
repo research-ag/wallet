@@ -35,6 +35,8 @@ export default function Select(props: TSelectProps) {
   const searchTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
 
   const selectedValue = useMemo(() => {
+    console.log("current value: ", currentValue);
+
     const result = options.find((option) => option.value === currentValue);
     if (result) return result;
     return options.find((option) => option.value === initialValue);
@@ -72,19 +74,21 @@ export default function Select(props: TSelectProps) {
         )}
         <DropdownMenu.Group>
           {options.length === 0 && <DropdownMenu.Item className={`${getFlatStyle(contentWidth)}`}></DropdownMenu.Item>}
-          {options.map((option, index) => (
-            <DropdownMenu.Item
-              onSelect={() => handleSelectOption(option)}
-              key={index}
-              className={getItemStyles(contentWidth)}
-            >
-              {option?.icon}
-              <div className="ml-2">
-                <p className={textStyles()}>{option.label}</p>
-                <p className={textStyles(true)}>{option?.subLabel}</p>
-              </div>
-            </DropdownMenu.Item>
-          ))}
+          {options
+            .filter((option) => option.value !== selectedValue?.value)
+            .map((option, index) => (
+              <DropdownMenu.Item
+                onSelect={() => handleSelectOption(option)}
+                key={index}
+                className={getItemStyles(contentWidth)}
+              >
+                {option?.icon}
+                <div className="ml-2">
+                  <p className={textStyles()}>{option.label}</p>
+                  <p className={textStyles(true)}>{option?.subLabel}</p>
+                </div>
+              </DropdownMenu.Item>
+            ))}
         </DropdownMenu.Group>
       </DropdownMenu.Content>
     </DropdownMenu.Root>
