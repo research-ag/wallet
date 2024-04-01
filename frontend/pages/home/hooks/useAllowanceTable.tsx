@@ -68,19 +68,15 @@ export default function useAllowanceTable() {
     }),
     columnHelper.accessor(AllowancesTableColumnsEnum.Values.amount, {
       cell: (info) => {
-        let isExpired = false;
+
         const allowance = info.row.original;
-
-        if (allowance?.expiration) {
-          isExpired = isDateExpired(allowance?.expiration);
-        }
-
+        const hidden = !allowance?.expiration && allowance.amount === "0";
         const assetSymbol = info.row.original.asset.tokenSymbol;
 
         return (
           <p className={getCellStyles()}>
-            {isExpired && "-"}
-            {!isExpired && info.getValue()} {!isExpired && assetSymbol}
+            {hidden && "-"}
+            {!hidden && info.getValue()} {!hidden && assetSymbol}
           </p>
         );
       },
@@ -92,16 +88,14 @@ export default function useAllowanceTable() {
     }),
     columnHelper.accessor(AllowancesTableColumnsEnum.Values.expiration, {
       cell: (info) => {
-        let isExpired = false;
 
-        const userDate = info.getValue() ? formatDateTime(info.getValue() || "") : t("no.expiration");
         const allowance = info.row.original;
+        const hidden = !allowance?.expiration && allowance.amount === "0";
+        const userDate = info.getValue()
+          ? formatDateTime(info.getValue() || "")
+          : t("no.expiration");
 
-        if (allowance?.expiration) {
-          isExpired = isDateExpired(allowance?.expiration);
-        }
-
-        return <p className={getCellStyles()}>{isExpired ? "-" : userDate}</p>;
+        return <p className={getCellStyles()}>{hidden ? "-" : userDate}</p>;
       },
       header: ({ header }) => (
         <div className="flex items-center justify-center cursor-pointer">
