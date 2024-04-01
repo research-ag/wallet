@@ -39,7 +39,6 @@ function getCloseIconStyles(enabled: boolean) {
 function getDrawerContainerStyle(isDrawerOpen: boolean) {
   return clsx(
     "fixed",
-    "px-8 py-4",
     "z-[1000]",
     "w-[28rem]",
     "h-screen",

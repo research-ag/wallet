@@ -24,12 +24,14 @@ import {
   setInitTime,
   setEndTime,
   setFullErrors,
+  setTransactionDrawer,
 } from "./TransactionReducer";
 
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import {
   ContactSubAccount,
   NewContact,
+  TransactionDrawer,
   TransactionReceiverOption,
   TransactionScannerOption,
   TransactionSenderOption,
@@ -108,4 +110,7 @@ export function setInitTxTime(init: Date) {
 }
 export function setEndTxTime(init: Date) {
   store.dispatch(setEndTime(init));
+}
+export function setTransactionDrawerAction(option: TransactionDrawer) {
+  store.dispatch(setTransactionDrawer(option));
 }

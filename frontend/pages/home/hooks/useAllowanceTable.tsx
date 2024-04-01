@@ -4,7 +4,6 @@ import { middleTruncation, toTitleCase } from "@/utils/strings";
 import { createColumnHelper } from "@tanstack/react-table";
 import { TAllowance, AllowancesTableColumnsEnum } from "@/@types/allowance";
 import { clsx } from "clsx";
-import { isDateExpired } from "@/utils/time";
 import { useTranslation } from "react-i18next";
 import ActionCard from "../components/ICRC/allowance/ActionCard";
 import { useMemo } from "react";
@@ -68,7 +67,6 @@ export default function useAllowanceTable() {
     }),
     columnHelper.accessor(AllowancesTableColumnsEnum.Values.amount, {
       cell: (info) => {
-
         const allowance = info.row.original;
         const hidden = !allowance?.expiration && allowance.amount === "0";
         const assetSymbol = info.row.original.asset.tokenSymbol;
@@ -88,14 +86,11 @@ export default function useAllowanceTable() {
     }),
     columnHelper.accessor(AllowancesTableColumnsEnum.Values.expiration, {
       cell: (info) => {
-
         const allowance = info.row.original;
         console.log(allowance);
-        
+
         const hidden = !allowance?.expiration && allowance.amount === "0";
-        const userDate = info.getValue()
-          ? formatDateTime(info.getValue() || "")
-          : t("no.expiration");
+        const userDate = info.getValue() ? formatDateTime(info.getValue() || "") : t("no.expiration");
 
         return <p className={getCellStyles()}>{hidden ? "-" : userDate}</p>;
       },

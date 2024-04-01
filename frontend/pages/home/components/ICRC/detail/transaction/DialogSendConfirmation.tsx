@@ -8,19 +8,18 @@ import { shortAddress } from "@/utils";
 import { ProtocolType, SendingStatusEnum } from "@/const";
 import { useTranslation } from "react-i18next";
 import useSend from "@pages/home/hooks/useSend";
-import { resetSendStateAction } from "@redux/transaction/TransactionActions";
-import { TransactionValidationErrorsEnum } from "@/@types/transactions";
+import { resetSendStateAction, setTransactionDrawerAction } from "@redux/transaction/TransactionActions";
+import { TransactionDrawer, TransactionValidationErrorsEnum } from "@/@types/transactions";
 import { getElapsedSecond } from "@/utils/formatTime";
 import { middleTruncation } from "@/utils/strings";
 
 interface DialogSendConfirmationProps {
-  setDrawerOpen(value: boolean): void;
   showConfirmationModal(value: boolean): void;
   modal: boolean;
   network: ProtocolType;
 }
 
-const DialogSendConfirmation = ({ setDrawerOpen, showConfirmationModal, modal }: DialogSendConfirmationProps) => {
+const DialogSendConfirmation = ({ showConfirmationModal, modal }: DialogSendConfirmationProps) => {
   const { receiverPrincipal, receiverSubAccount, amount, sender, sendingStatus, errors, initTime, endTime } = useSend();
   const { t } = useTranslation();
 
@@ -78,7 +77,7 @@ const DialogSendConfirmation = ({ setDrawerOpen, showConfirmationModal, modal }:
   );
 
   function onClose() {
-    setDrawerOpen(false);
+    setTransactionDrawerAction(TransactionDrawer.NONE);
     showConfirmationModal(false);
     resetSendStateAction();
   }

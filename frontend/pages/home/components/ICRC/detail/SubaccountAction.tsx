@@ -1,27 +1,23 @@
 // svgs
 import ArrowBottomLeftIcon from "@assets/svg/files/arrow-bottom-left-icon.svg";
 import ArrowTopRightIcon from "@assets/svg/files/arrow-top-right-icon.svg";
-// import WrapIcon from "@assets/svg/files/wrap-icon.svg";
 //
-import { DrawerOption, DrawerOptionEnum, IconTypeEnum } from "@/const";
+import { IconTypeEnum } from "@/const";
 import { toFullDecimal } from "@/utils";
 import { GeneralHook } from "@pages/home/hooks/generalHook";
-import { FC, Fragment } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "@redux/Store";
 import { clsx } from "clsx";
+import { setTransactionDrawerAction } from "@redux/transaction/TransactionActions";
+import { TransactionDrawer } from "@/@types/transactions";
 
-interface ICRCSubaccountActionProps {
-  onActionClick(value: DrawerOption): void;
-}
-
-const ICRCSubaccountAction: FC<ICRCSubaccountActionProps> = ({ onActionClick }) => {
+export default function ICRCSubaccountAction() {
   const { getAssetIcon, selectedAsset, selectedAccount } = GeneralHook();
   const { watchOnlyMode } = useAppSelector((state) => state.auth);
   const { t } = useTranslation();
 
   return (
-    <Fragment>
+    <div className="flex flex-row justify-between items-center w-full h-[4.75rem] bg-TransactionHeaderColorLight dark:bg-TransactionHeaderColor rounded-md">
       <div className="flex flex-col justify-center items-start bg-SelectRowColor w-[17rem] h-full rounded-l-md p-4 text-[#ffff]">
         <div className="flex flex-row items-center justify-between w-full gap-1">
           {getAssetIcon(IconTypeEnum.Enum.HEADER, selectedAsset?.tokenSymbol, selectedAsset?.logo)}
@@ -48,7 +44,7 @@ const ICRCSubaccountAction: FC<ICRCSubaccountActionProps> = ({ onActionClick }) 
               (watchOnlyMode && "bg-GrayColor") || "bg-SelectRowColor",
             )}
             onClick={() => {
-              onActionClick(DrawerOptionEnum.Enum.SEND);
+              setTransactionDrawerAction(TransactionDrawer.SEND);
             }}
           >
             <img src={ArrowTopRightIcon} className="w-3 h-3" alt="send-icon" />
@@ -59,7 +55,7 @@ const ICRCSubaccountAction: FC<ICRCSubaccountActionProps> = ({ onActionClick }) 
           <div
             className="flex flex-row items-center justify-center rounded-md cursor-pointer w-7 h-7 bg-SelectRowColor"
             onClick={() => {
-              onActionClick(DrawerOptionEnum.Enum.RECEIVE);
+              setTransactionDrawerAction(TransactionDrawer.RECEIVE);
             }}
           >
             <img src={ArrowBottomLeftIcon} className="w-3 h-3" alt="receive-icon" />
@@ -67,8 +63,6 @@ const ICRCSubaccountAction: FC<ICRCSubaccountActionProps> = ({ onActionClick }) 
           <p className="text-md">{t("deposit")}</p>
         </div>
       </div>
-    </Fragment>
+    </div>
   );
-};
-
-export default ICRCSubaccountAction;
+}

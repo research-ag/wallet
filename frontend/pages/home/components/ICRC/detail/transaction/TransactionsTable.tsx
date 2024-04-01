@@ -1,14 +1,12 @@
+import { TransactionDrawer } from "@/@types/transactions";
 import { GeneralHook } from "@pages/home/hooks/generalHook";
 import { UseTransaction } from "@pages/home/hooks/useTransaction";
 import { TableHook } from "@pages/hooks/tableHook";
+import { setTransactionDrawerAction } from "@redux/transaction/TransactionActions";
 import { flexRender, getCoreRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 import { clsx } from "clsx";
 
-interface ICRCTransactionsTableProps {
-  setDrawerOpen(value: boolean): void;
-}
-
-const ICRCTransactionsTable = ({ setDrawerOpen }: ICRCTransactionsTableProps) => {
+const ICRCTransactionsTable = () => {
   const { transactions } = GeneralHook();
   const { selectedTransaction, changeSelectedTransaction } = UseTransaction();
   const { columns, sorting, setSorting } = TableHook();
@@ -56,7 +54,7 @@ const ICRCTransactionsTable = ({ setDrawerOpen }: ICRCTransactionsTableProps) =>
               key={`tr-transac-${idxTR}`}
               onClick={() => {
                 changeSelectedTransaction(row.original);
-                setDrawerOpen(true);
+                setTransactionDrawerAction(TransactionDrawer.INSPECT);
               }}
             >
               {row.getVisibleCells().map((cell, idxTD) => (

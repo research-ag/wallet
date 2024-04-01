@@ -35,8 +35,6 @@ export default function Select(props: TSelectProps) {
   const searchTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
 
   const selectedValue = useMemo(() => {
-    console.log("current value: ", currentValue);
-
     const result = options.find((option) => option.value === currentValue);
     if (result) return result;
     return options.find((option) => option.value === initialValue);

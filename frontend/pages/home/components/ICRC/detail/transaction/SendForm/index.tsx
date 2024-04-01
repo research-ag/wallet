@@ -7,20 +7,17 @@ import {
   setErrorAction,
   setIsInspectDetailAction,
   setIsLoadingAction,
+  setTransactionDrawerAction,
 } from "@redux/transaction/TransactionActions";
 import { BasicButton } from "@components/button";
 import useSend from "@pages/home/hooks/useSend";
 import SenderAsset from "./SenderAsset";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "@redux/Store";
-import { TransactionValidationErrorsEnum, transactionErrors } from "@/@types/transactions";
+import { TransactionDrawer, TransactionValidationErrorsEnum, transactionErrors } from "@/@types/transactions";
 import { LoadingLoader } from "@components/loader";
 
-interface SendFormProps {
-  setDrawerOpen(value: boolean): void;
-}
-
-export default function SendForm({ setDrawerOpen }: SendFormProps) {
+export default function SendForm() {
   const { t } = useTranslation();
   const { isLoading, errors, sender } = useAppSelector((state) => state.transaction);
   const { isSender, isReceiver, isSenderSameAsReceiver, isSenderAllowanceOwn, isSenderValid, isReceiverValid } =
@@ -82,7 +79,7 @@ export default function SendForm({ setDrawerOpen }: SendFormProps) {
   }
 
   function onCancel() {
-    setDrawerOpen(false);
+    setTransactionDrawerAction(TransactionDrawer.NONE);
     resetSendStateAction();
   }
 

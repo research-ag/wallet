@@ -5,26 +5,18 @@ import SenderInitializer from "../detail/transaction/SendForm/SenderInitializer"
 import SendFormConditionalRender from "../detail/transaction/SendForm/SendFormConditionalRender";
 import { ProtocolTypeEnum } from "@/const";
 
-interface DrawerSendProps {
-  setDrawerOpen(value: boolean): void;
-  drawerOpen: boolean;
-}
-
-function DrawerSend({ drawerOpen, setDrawerOpen }: DrawerSendProps) {
+function DrawerSend() {
   const [modal, showConfirmationModal] = useState(false);
 
-  if (!drawerOpen) return <></>;
-
   return (
-    <div className="mt-8 overflow-y-auto">
+    <div className="px-8 mt-8 overflow-y-auto">
       <SenderInitializer>
         <SendFormConditionalRender showConfirmationModal={showConfirmationModal}>
-          <SendForm setDrawerOpen={setDrawerOpen} />
+          <SendForm />
         </SendFormConditionalRender>
       </SenderInitializer>
       <DialogSendConfirmation
         modal={modal}
-        setDrawerOpen={setDrawerOpen}
         showConfirmationModal={showConfirmationModal}
         network={ProtocolTypeEnum.Enum.ICRC1}
       />

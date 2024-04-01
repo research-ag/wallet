@@ -1,13 +1,10 @@
 // svgs
-import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
-import UpAmountIcon from "@assets/svg/files/up-amount-icon.svg";
-import DownAmountIcon from "@assets/svg/files/down-amount-icon.svg";
 import { ReactComponent as DownBlueArrow } from "@assets/svg/files/down-blue-arrow.svg";
 //
 import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
-import { getAddress, getAssetSymbol, getICRC1Acc, hexToUint8Array, shortAddress, toFullDecimal } from "@/utils";
-import { AssetSymbolEnum, SpecialTxTypeEnum, TransactionTypeEnum } from "@/const";
+import { getAssetSymbol, getICRC1Acc, hexToUint8Array, shortAddress, toFullDecimal } from "@/utils";
+import { AssetSymbolEnum, SpecialTxTypeEnum } from "@/const";
 import { Principal } from "@dfinity/principal";
 import { AccountHook } from "@pages/hooks/accountHook";
 import { IcrcAccount } from "@dfinity/ledger-icrc";
@@ -15,65 +12,21 @@ import { CustomCopy } from "@components/tooltip";
 import { AssetHook } from "@pages/home/hooks/assetHook";
 import { GeneralHook } from "@pages/home/hooks/generalHook";
 
-interface DrawerTransactionProps {
-  setDrawerOpen(value: boolean): void;
-}
-
-const DrawerTransaction = ({ setDrawerOpen }: DrawerTransactionProps) => {
+const DrawerTransaction = () => {
   const { t } = useTranslation();
 
   const { authClient } = AccountHook();
   const { assets } = AssetHook();
-  const { ICPSubaccounts, selectedTransaction, selectedAccount, changeSelectedTransaction } = GeneralHook();
+  const { ICPSubaccounts, selectedTransaction, selectedAccount } = GeneralHook();
 
-  const isTo = getAddress(
-    selectedTransaction?.type || TransactionTypeEnum.Enum.NONE,
-    selectedTransaction?.from || "",
-    selectedTransaction?.fromSub || "",
-    selectedAccount?.address || "",
-    selectedAccount?.sub_account_id || "",
-  );
   const assetSymbol = getAssetSymbol(selectedTransaction?.symbol || "", assets);
 
   return (
     <Fragment>
-      <div className="flex flex-col items-center justify-start w-full h-full pt-8 bg-PrimaryColorLight dark:bg-SideColor text-md text-PrimaryTextColorLight/70 dark:text-PrimaryTextColor/70">
-        {/* TITLE SECTION */}
-        <div className="flex flex-row items-center justify-between w-full px-6 mb-4">
-          <div className="flex flex-row items-center justify-start gap-7">
-            <p className="text-lg font-semibold text-PrimaryTextColorLight dark:text-PrimaryTextColor">
-              {selectedTransaction?.kind === SpecialTxTypeEnum.Enum.mint
-                ? "Mint"
-                : selectedTransaction?.kind === SpecialTxTypeEnum.Enum.burn
-                ? "Burn"
-                : selectedTransaction?.type === TransactionTypeEnum.Enum.RECEIVE
-                ? t("transaction.received")
-                : t("transaction.sent")}
-            </p>
-            <img
-              src={
-                selectedTransaction?.kind === SpecialTxTypeEnum.Enum.mint
-                  ? DownAmountIcon
-                  : selectedTransaction?.kind === SpecialTxTypeEnum.Enum.burn
-                  ? UpAmountIcon
-                  : isTo
-                  ? UpAmountIcon
-                  : DownAmountIcon
-              }
-              alt=""
-            />
-          </div>
-          <CloseIcon
-            className="cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
-            onClick={() => {
-              setDrawerOpen(false);
-              changeSelectedTransaction(undefined);
-            }}
-          />
-        </div>
+      <div className="flex flex-col items-center justify-start w-full h-full pt-4 mt-4 text-md text-PrimaryTextColorLight/70 dark:text-PrimaryTextColor/70">
         {/* FROM SECTION */}
         {selectedTransaction?.kind !== SpecialTxTypeEnum.Enum.mint && (
-          <div className="flex flex-col justify-center items-center gap-4 w-[calc(100%-3rem)] mx-6 p-4 bg-FromBoxColorLight dark:bg-FromBoxColor">
+          <div className="flex flex-col justify-center items-center gap-4 w-[calc(100%-3rem)] mx-6 p-4 bg-secondary-color-1-light dark:bg-level-1-color">
             <div className="flex flex-row items-center justify-between w-full">
               <p className="font-medium text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("from")}</p>
             </div>
@@ -136,12 +89,13 @@ const DrawerTransaction = ({ setDrawerOpen }: DrawerTransactionProps) => {
             </div>
           </div>
         )}
+
         {/* ARROW SECTION */}
         {selectedTransaction?.kind !== SpecialTxTypeEnum.Enum.burn &&
           selectedTransaction?.kind !== SpecialTxTypeEnum.Enum.mint && <DownBlueArrow className="my-3"></DownBlueArrow>}
         {/* TO SECTION */}
         {selectedTransaction?.kind !== SpecialTxTypeEnum.Enum.burn && (
-          <div className="flex flex-col justify-center items-center gap-4 w-[calc(100%-3rem)] mx-6 p-4 bg-FromBoxColorLight dark:bg-FromBoxColor rounded-md">
+          <div className="flex flex-col justify-center items-center gap-4 w-[calc(100%-3rem)] mx-6 p-4 bg-secondary-color-1-light dark:bg-level-1-color rounded-md">
             <div className="flex flex-row items-center justify-between w-full">
               <p className="font-medium text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("to")}</p>
             </div>
@@ -205,7 +159,7 @@ const DrawerTransaction = ({ setDrawerOpen }: DrawerTransactionProps) => {
           </div>
         )}
         {selectedTransaction?.kind !== SpecialTxTypeEnum.Enum.mint && (
-          <div className="flex flex-col justify-center items-center gap-4 w-[calc(100%-3rem)] mx-6 mt-5 p-4 bg-FromBoxColorLight dark:bg-FromBoxColor rounded-md">
+          <div className="flex flex-col justify-center items-center gap-4 w-[calc(100%-3rem)] mx-6 mt-5 p-4 bg-secondary-color-1-light dark:bg-level-1-color rounded-md">
             <div className="flex flex-row items-center justify-between w-full font-normal">
               <p className="font-bold">{t("fee")}</p>
               <p className="font-bold">{`${toFullDecimal(
