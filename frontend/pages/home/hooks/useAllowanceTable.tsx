@@ -87,8 +87,6 @@ export default function useAllowanceTable() {
     columnHelper.accessor(AllowancesTableColumnsEnum.Values.expiration, {
       cell: (info) => {
         const allowance = info.row.original;
-        console.log(allowance);
-
         const hidden = !allowance?.expiration && allowance.amount === "0";
         const userDate = info.getValue() ? formatDateTime(info.getValue() || "") : t("no.expiration");
 
