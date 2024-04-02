@@ -59,15 +59,15 @@ export default function SendForm() {
       if (!isSender) return setErrorAction(TransactionValidationErrorsEnum.Values["error.sender.empty"]);
       removeErrorAction(TransactionValidationErrorsEnum.Values["error.sender.empty"]);
 
-      if (!isReceiver) setErrorAction(TransactionValidationErrorsEnum.Values["error.receiver.empty"]);
+      if (!isReceiver) return setErrorAction(TransactionValidationErrorsEnum.Values["error.receiver.empty"]);
       removeErrorAction(TransactionValidationErrorsEnum.Values["error.receiver.empty"]);
 
       if (isSenderSameAsReceiver())
-        setErrorAction(TransactionValidationErrorsEnum.Values["error.same.sender.receiver"]);
+        return setErrorAction(TransactionValidationErrorsEnum.Values["error.same.sender.receiver"]);
       removeErrorAction(TransactionValidationErrorsEnum.Values["error.same.sender.receiver"]);
 
       if (isSenderAllowanceOwn())
-        setErrorAction(TransactionValidationErrorsEnum.Values["error.own.sender.not.allowed"]);
+        return setErrorAction(TransactionValidationErrorsEnum.Values["error.own.sender.not.allowed"]);
       removeErrorAction(TransactionValidationErrorsEnum.Values["error.own.sender.not.allowed"]);
 
       setIsInspectDetailAction(true);
