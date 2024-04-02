@@ -63,14 +63,13 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
 
   async function validateBalance() {
     const senderMaxAmount = await getSenderMaxAmount();
-    console.log("senderMaxAmount", senderMaxAmount);
     const bigintSenderMaxAmountBalance = toHoleBigInt(senderMaxAmount || "0", Number(sender?.asset?.decimal));
     const bigintFee = toHoleBigInt(transactionFee || "0", Number(sender?.asset?.decimal));
     const bigintAmount = toHoleBigInt(amount || "0", Number(sender?.asset?.decimal));
 
     const bigintMaxAmount = bigintSenderMaxAmountBalance - bigintFee;
 
-    if (bigintAmount > bigintMaxAmount) {
+    if (bigintAmount > bigintMaxAmount || bigintSenderMaxAmountBalance === BigInt(0)) {
       setErrorAction(TransactionValidationErrorsEnum.Values["error.not.enough.balance"]);
       return false;
     }
@@ -113,8 +112,8 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
 
   async function handleTransaction() {
     try {
+      setSendingStatusAction(SendingStatusEnum.Values.none);
       setInitTxTime(new Date());
-      setIsLoadingAction(true);
       const assetAddress = sender.asset.address;
       const decimal = sender.asset.decimal;
 
@@ -126,11 +125,13 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
 
       if (enableSend && !errors?.length) {
         if (assetAddress && decimal && senderSubAccount && receiverPrincipal && receiverSubAccount && amount) {
-          setSendingStatusAction(SendingStatusEnum.Values.sending);
-          showConfirmationModal(true);
-
           if (isSenderAllowance()) {
             await validateSubAccountBalance();
+
+            setSendingStatusAction(SendingStatusEnum.Values.sending);
+            showConfirmationModal(true);
+            setIsLoadingAction(true);
+
             await transferTokensFromAllowance({
               receiverPrincipal,
               senderPrincipal,
@@ -143,10 +144,10 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
             });
           } else {
             const isValid = await validateBalance();
-            if (!isValid) {
-              setIsLoadingAction(false);
-              return;
-            }
+            if (!isValid) return;
+            setSendingStatusAction(SendingStatusEnum.Values.sending);
+            showConfirmationModal(true);
+            setIsLoadingAction(true);
 
             await transferTokens({
               receiverPrincipal,
