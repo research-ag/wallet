@@ -20,7 +20,8 @@ export default function ReceiverDetail() {
       (subAccount) => subAccount?.sub_account_id === receiver.ownSubAccount.sub_account_id,
     );
 
-    return toFullDecimal(latestSubAccount?.amount || "0", Number(latestAsset?.decimal)) || "0";
+    if (!latestSubAccount?.amount) return null;
+    return toFullDecimal(latestSubAccount.amount, Number(latestAsset?.decimal)) || "0";
   }, [assets, receiver, sender]);
 
   const title = useMemo(

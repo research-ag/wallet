@@ -157,10 +157,19 @@ export default function useSend() {
   }
 
   function getReceiverBalance() {
-    if (!isReceiverOwn()) {
-      return updateSubAccount?.amount || "0";
-    }
+    if (isReceiverOwn()) {
+      const receiverSubAccount = getReceiverSubAccount();
 
+      const currentAsset = assets.find((asset) => asset?.tokenSymbol === sender?.asset?.tokenSymbol);
+      if (!currentAsset) return "0";
+
+      const currentSubAccount = currentAsset.subAccounts.find(
+        (subAccount) => subAccount?.sub_account_id === receiverSubAccount,
+      );
+      if (!currentSubAccount) return "0";
+
+      return toFullDecimal(currentSubAccount.amount || "0", Number(currentAsset?.decimal)) || "0";
+    }
     return "0";
   }
 
