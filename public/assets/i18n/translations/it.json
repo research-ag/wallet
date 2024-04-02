@@ -46,6 +46,7 @@
   "account": "Account",
   "address": "Indirizzo",
   "amount": "Importo",
+  "amount.received": "Importo ricevuto",
   "asset": "Risorsa",
   "assets": "Risorse",
   "agree": "d'Accordo",

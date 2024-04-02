@@ -46,6 +46,7 @@
   "account": "Cuenta",
   "address": "Dirección",
   "amount": "Cantidad",
+  "amount.received": "Cantidad Recibida",
   "asset": "Activo",
   "assets": "Activos",
   "agree": "Acepto",

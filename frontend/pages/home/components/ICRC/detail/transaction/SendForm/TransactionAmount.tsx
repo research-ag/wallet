@@ -12,7 +12,7 @@ export default function TransactionAmount() {
 
   return (
     <>
-      <p className="font-bold bg-transparent opacity-50 text-md text-start">{t("amount")}</p>
+      <p className="font-bold bg-transparent opacity-50 text-md text-start">{t("amount.received")}</p>
       <div
         className={clsx(
           getAmountInputStyles(

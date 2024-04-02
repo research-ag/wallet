@@ -44,6 +44,7 @@
   "account": "Account",
   "address": "Address",
   "amount": "Amount",
+  "amount.received": "Amount Received",
   "asset": "Asset",
   "assets": "Assets",
   "agree": "Agree",
