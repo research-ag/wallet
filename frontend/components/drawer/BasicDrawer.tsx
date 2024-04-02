@@ -9,7 +9,7 @@ interface IDrawerProps {
   enableClose?: boolean;
 }
 
-export default function Drawer(props: IDrawerProps) {
+export default function BasicDrawer(props: IDrawerProps) {
   const { isDrawerOpen, onClose, children, title, enableClose = true } = props;
   return (
     <>

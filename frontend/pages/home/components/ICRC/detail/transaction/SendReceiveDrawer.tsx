@@ -2,7 +2,7 @@ import { TransactionDrawer } from "@/@types/transactions";
 import { CustomButton } from "@components/button";
 import { BasicDrawer } from "@components/drawer";
 import { useAppSelector } from "@redux/Store";
-import { setTransactionDrawerAction } from "@redux/transaction/TransactionActions";
+import { resetSendStateAction, setTransactionDrawerAction } from "@redux/transaction/TransactionActions";
 import { useTranslation } from "react-i18next";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 import { DrawerOptionEnum } from "@/const";
@@ -51,6 +51,7 @@ export default function SendReceiveDrawer() {
           className="cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
           onClick={() => {
             setTransactionDrawerAction(TransactionDrawer.NONE);
+            resetSendStateAction();
           }}
         />
       </div>
