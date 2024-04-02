@@ -73,6 +73,7 @@
   "already.used.index": "Index already used",
   "icrc.account": "ICRC Account",
   "sending.successful": "Sending Successful",
+  "transfer.successful": "Transfer Successful",
   "sending.failed": "Failed Transaction",
   "no.enought.balance": "No enought balance to send asset",
   "adding.asset": "Checking balances of new Asset",

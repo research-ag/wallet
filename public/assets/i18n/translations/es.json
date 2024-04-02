@@ -75,6 +75,7 @@
   "already.used.index": "Índice ya utilizado",
   "icrc.account": "Cuenta ICRC",
   "sending.successful": "Envío Exitoso",
+  "transfer.successful": "Transferencia Exitosa",
   "sending.failed": "Transacción fallida",
   "no.enought.balance": "No hay saldo suficiente para enviar activos",
   "adding.asset": "Consultando saldo del nuevo activo",

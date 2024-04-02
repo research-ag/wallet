@@ -75,6 +75,7 @@
   "already.used.index": "Índice já utilizado",
   "icrc.account": "Contya ICRC",
   "sending.successful": "Enviando com Sucesso",
+  "transfer.successful": "Transferência bem-sucedida",
   "sending.failed": "Falha na transação",
   "no.enought.balance": "Nessun saldo sufficiente per inviare asset",
   "adding.asset": "Verificando saldo do novo ativo",

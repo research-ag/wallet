@@ -87,7 +87,7 @@ const DialogSendConfirmation = ({ showConfirmationModal, modal }: DialogSendConf
       case SendingStatusEnum.enum.sending:
         return t("sending");
       case SendingStatusEnum.enum.done:
-        return t("sending.successful");
+        return t("transfer.successful");
       case SendingStatusEnum.enum.error:
         return t("sending.failed");
       default:
