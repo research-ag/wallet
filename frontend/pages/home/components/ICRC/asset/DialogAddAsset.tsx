@@ -16,6 +16,7 @@ import bigInt from "big-integer";
 import { ChangeEvent, useState } from "react";
 import { IcrcLedgerCanister } from "@dfinity/ledger-icrc";
 import { db } from "@/database/db";
+import { LoadingLoader } from "@components/loader";
 
 interface DialogAddAssetProps {
   newErr: any;
@@ -105,7 +106,7 @@ const DialogAddAsset = ({
         )}
         <div className="flex flex-row items-center justify-end w-full">
           <CustomButton size={"small"} className="min-w-[5rem]" onClick={onEnter}>
-            <p>{t("add")}</p>
+            {loading ? <LoadingLoader /> : <p>{t("add")}</p>}
           </CustomButton>
         </div>
       </div>
@@ -222,19 +223,23 @@ const DialogAddAsset = ({
               amount: myBalance.toString(),
               currency_amount: assetMrkt ? getUSDfromToken(myBalance.toString(), assetMrkt, decimal) : "0",
             };
-            dispatch(addSubAccount(idx, savedSub));
-            setNewSub(undefined);
-            setAddOpen(false);
-            setHexChecked(false);
-            changeSelectedAccount(savedSub);
+
+            setTimeout(() => {
+              setAddOpen(false);
+              setHexChecked(false);
+              changeSelectedAccount(savedSub);
+              setNewSub(undefined);
+              setLoading(false);
+            }, 2500);
           } catch (e) {
             console.log("AddErr: ", e);
+            setLoading(false);
           }
         } else {
           setNewErr({ name: errName, idx: errIdx });
+          setLoading(false);
         }
       }
-      setLoading(false);
     }
   }
   function addToAcordeonIdx() {
