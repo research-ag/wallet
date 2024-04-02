@@ -51,7 +51,7 @@ export default function ActionCard(props: ActionCardProps) {
   }
 
   function onUpdateHandler() {
-    setSelectedAllowanceAction(allowance);
+    setSelectedAllowanceAction({ ...allowance, amount: allowance.amount.replace(/,/g, "") });
     onOpenUpdateAllowanceDrawer();
   }
 }

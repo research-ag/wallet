@@ -142,7 +142,7 @@ export default function CreateForm() {
         );
       }
 
-      setAllowanceState(newAllowance);
+      setAllowanceState({ ...newAllowance, amount: newAllowance.amount.replace(/,/g, "") });
     } catch (error) {
       console.error(error);
     } finally {
