@@ -63,6 +63,7 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
 
   async function validateBalance() {
     const senderMaxAmount = await getSenderMaxAmount();
+    console.log("senderMaxAmount", senderMaxAmount);
     const bigintSenderMaxAmountBalance = toHoleBigInt(senderMaxAmount || "0", Number(sender?.asset?.decimal));
     const bigintFee = toHoleBigInt(transactionFee || "0", Number(sender?.asset?.decimal));
     const bigintAmount = toHoleBigInt(amount || "0", Number(sender?.asset?.decimal));

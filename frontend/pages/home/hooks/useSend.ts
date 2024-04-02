@@ -10,6 +10,7 @@ import { Asset } from "@redux/models/AccountModels";
 export default function useSend() {
   const [transactionFee, setTransactionFee] = useState<string>("0");
   const { userPrincipal } = useAppSelector((state) => state.auth);
+  const { contacts } = useAppSelector((state) => state.contacts);
   const { assets } = useAppSelector((state) => state.asset);
   const { sender, receiver, amount, sendingStatus, errors, initTime, endTime } = useAppSelector(
     (state) => state.transaction,
@@ -123,8 +124,23 @@ export default function useSend() {
 
       const principal = getSenderPrincipal();
       const subAccount = getSenderSubAccount();
+
       const assetAddress = sender?.asset?.address;
       const decimal = sender?.asset?.decimal;
+
+      const senderContact = contacts.find((contact) => contact.principal === principal);
+
+      if (senderContact) {
+        const contactAsset = senderContact.assets.find((asset) => asset.address === assetAddress);
+        if (contactAsset) {
+          const contactSubAccount = contactAsset.subaccounts.find(
+            (currentSubAccount) => currentSubAccount.sub_account_id === subAccount,
+          );
+          if (contactSubAccount && contactSubAccount.allowance?.allowance) {
+            return contactSubAccount.allowance.allowance;
+          }
+        }
+      }
 
       const response = await getAllowanceDetails({
         spenderSubaccount: subAccount,
