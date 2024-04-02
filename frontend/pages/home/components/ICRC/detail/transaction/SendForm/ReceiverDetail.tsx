@@ -10,7 +10,7 @@ export default function ReceiverDetail() {
   const { t } = useTranslation();
   const { assets } = useAppSelector((state) => state.asset);
   const { receiver, sender } = useAppSelector((state) => state.transaction);
-  const { isReceiverOwnSubAccount } = useSend();
+  const { isReceiverOwnSubAccount, receiverSubAccount, getReceiverBalance } = useSend();
 
   const subAccountName = useMemo(() => receiver?.ownSubAccount?.name, []);
 
@@ -48,8 +48,8 @@ export default function ReceiverDetail() {
       <p className="font-bold opacity-50 text-md text-start">{t("to")}</p>
       {isReceiverOwnSubAccount ? (
         <OwnSubAccountCard
-          subAccountName={subAccountName}
-          balance={balance}
+          subAccountName={subAccountName || receiverSubAccount || "-"}
+          balance={balance || getReceiverBalance() || "0"}
           assetLogo={sender?.asset?.logo || ""}
           assetSymbol={sender?.asset?.tokenSymbol || ""}
         />

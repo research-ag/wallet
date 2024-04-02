@@ -156,6 +156,14 @@ export default function useSend() {
     }
   }
 
+  function getReceiverBalance() {
+    if (!isReceiverOwn()) {
+      return updateSubAccount?.amount || "0";
+    }
+
+    return "0";
+  }
+
   /**
    * Determines if the sender configuration utilizes an allowance.
    *
@@ -181,13 +189,6 @@ export default function useSend() {
     const senderSubAccount = getSenderSubAccount();
     const receiverPrincipal = getReceiverPrincipal();
     const receiverSubAccount = getReceiverSubAccount();
-    console.log({
-      senderPrincipal,
-      senderSubAccount,
-      receiverPrincipal,
-      receiverSubAccount,
-      result: Boolean(senderPrincipal === receiverPrincipal && senderSubAccount === receiverSubAccount),
-    });
     return Boolean(senderPrincipal === receiverPrincipal && senderSubAccount === receiverSubAccount);
   }
 
@@ -322,6 +323,7 @@ export default function useSend() {
     isReceiverValid: getReceiverValid(),
     isReceiverOwnSubAccount: isReceiverOwn(),
     transactionFee,
+    getReceiverBalance,
     getSenderMaxAmount,
     isSenderAllowance,
     isSenderSameAsReceiver,
