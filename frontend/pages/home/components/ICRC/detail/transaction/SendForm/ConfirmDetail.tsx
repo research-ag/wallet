@@ -40,6 +40,7 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
     transactionFee,
     getSenderMaxAmount,
     isSenderAllowance,
+    getAllowanceAmount,
     senderPrincipal,
   } = useSend();
 
@@ -86,7 +87,7 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
       subAccount: senderSubAccount,
     });
 
-    const allowanceGuaranteed = toHoleBigInt(await getSenderMaxAmount(), Number(sender?.asset?.decimal));
+    const allowanceGuaranteed = toHoleBigInt(await getAllowanceAmount(), Number(sender?.asset?.decimal));
 
     const bigintFee = toHoleBigInt(transactionFee || "0", Number(sender?.asset?.decimal));
     const bigintAmount = toHoleBigInt(amount || "0", Number(sender?.asset?.decimal));

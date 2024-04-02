@@ -126,7 +126,6 @@ export default function useSend() {
       const subAccount = getSenderSubAccount();
 
       const assetAddress = sender?.asset?.address;
-      const decimal = sender?.asset?.decimal;
 
       const senderContact = contacts.find((contact) => contact.principal === principal);
 
@@ -141,6 +140,21 @@ export default function useSend() {
           }
         }
       }
+
+      const response = await getAllowanceAmount();
+      return response;
+    } catch (error) {
+      console.warn("Error fetching sender balance:", error);
+      return "0";
+    }
+  }
+
+  async function getAllowanceAmount() {
+    try {
+      const principal = getSenderPrincipal();
+      const subAccount = getSenderSubAccount();
+      const assetAddress = sender?.asset?.address;
+      const decimal = sender?.asset?.decimal;
 
       const response = await getAllowanceDetails({
         spenderSubaccount: subAccount,
@@ -337,6 +351,7 @@ export default function useSend() {
     isSenderAllowance,
     isSenderSameAsReceiver,
     isSenderAllowanceOwn,
+    getAllowanceAmount,
     sender,
     amount,
     enableSend,
