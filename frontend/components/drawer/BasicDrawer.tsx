@@ -21,7 +21,7 @@ export default function Drawer(props: IDrawerProps) {
             <CloseIcon onClick={() => onClose?.()} className={getCloseIconStyles(enableClose)} />
           </div>
         )}
-        {children}
+        {isDrawerOpen && children && children}
       </div>
     </>
   );
