@@ -123,7 +123,8 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
       }
       removeErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.amount"]);
 
-      if (enableSend && !errors?.length) {
+      // INFO: enabled verify all the fields were filled
+      if (enableSend) {
         if (assetAddress && decimal && senderSubAccount && receiverPrincipal && receiverSubAccount && amount) {
           if (isSenderAllowance()) {
             await validateSubAccountBalance();
