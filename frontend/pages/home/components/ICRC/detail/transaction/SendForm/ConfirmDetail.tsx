@@ -55,7 +55,7 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
           {t("back")}
         </BasicButton>
         <BasicButton className="w-1/6 font-bold bg-primary-color" onClick={handleTransaction}>
-          {t("next")}
+          {t("submit")}
         </BasicButton>
       </div>
     </div>
