@@ -11,7 +11,7 @@ import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { GeneralHook } from "../../../hooks/generalHook";
 import { Token } from "@redux/models/TokenModels";
 import { useAppDispatch } from "@redux/Store";
-import { addSubAccount, setAcordeonAssetIdx } from "@redux/assets/AssetReducer";
+import { setAcordeonAssetIdx } from "@redux/assets/AssetReducer";
 import bigInt from "big-integer";
 import { ChangeEvent, useState } from "react";
 import { IcrcLedgerCanister } from "@dfinity/ledger-icrc";
