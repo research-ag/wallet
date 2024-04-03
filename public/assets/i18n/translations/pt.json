@@ -102,6 +102,7 @@
   "token.validation.msg": "Interface do razão reconhecida. Recomenda-se não alterar o símbolo, nome e decimais do token",
   "index.validation.msg": "Interface de índice reconhecida",
   "sendes.as.receiver": "Remetente igual ao Destinatário, verifique o endereço ou selecione uma subconta",
+  "new.subacc.added": " {{name}} adicionado corretamente ao {{asset}}",
   "login.title": "Faça login no HPl com",
   "login.choose.msg": "Escolha entre as seguintes opções de login",
   "login.bottom.msg": "Ao se inscrever, você concorda com o Nosso",

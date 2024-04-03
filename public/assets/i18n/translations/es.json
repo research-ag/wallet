@@ -102,6 +102,7 @@
   "token.validation.msg": "Se reconoce la interfaz del libro mayor. Se recomienda no cambiar el símbolo, el nombre y los decimales del token",
   "index.validation.msg": "Interfaz de índice reconocida",
   "sendes.as.receiver": "El remitente es el mismo que el destinatario, verifique la dirección o seleccione una subcuenta",
+  "new.subacc.added": " {{name}} agregado correctamente a {{asset}}",
   "login.title": "Inicie sesión en HPL con",
   "login.choose.msg": "Elija entre las siguientes opciones de inicio de sesión",
   "login.bottom.msg": "Al registrarte, aceptas Nuestros",
