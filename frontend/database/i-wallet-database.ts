@@ -1,4 +1,4 @@
-import { AuthNetwork, Token } from "@redux/models/TokenModels";
+import { AuthNetwork } from "@redux/models/TokenModels";
 import { Contact } from "@redux/models/ContactsModels";
 import { TAllowance } from "@/@types/allowance";
 import { Identity } from "@dfinity/agent";
@@ -135,14 +135,14 @@ export abstract class IWalletDatabase {
    * @param address Address ID of a Token object
    * @returns Token object or NULL if not found
    */
-  abstract getToken(address: string): Promise<Token | null>;
+  abstract getToken(address: string): Promise<Asset | null>;
 
   /**
    * Get all Token objects from the active agent.
    * @returns Array of found Token objects or an empty
    * array if no Token objects were found
    */
-  abstract getTokens(): Promise<Token[]>;
+  abstract getTokens(): Promise<Asset[]>;
 
   /**
    * Subscribable Observable that triggers after
@@ -150,14 +150,14 @@ export abstract class IWalletDatabase {
    * @returns Array of Token objects from current
    * active agent
    */
-  abstract subscribeToAllTokens(): Observable<Token[]>;
+  abstract subscribeToAllTokens(): Observable<Asset[]>;
 
   /**
    * Add a new Token object to the list of Token objects
    * current active agent has.
    * @param token Token object to be added
    */
-  abstract addToken(token: Token): Promise<void>;
+  abstract addToken(token: Asset): Promise<void>;
 
   /**
    * Find a Token object by its ID and replace it with

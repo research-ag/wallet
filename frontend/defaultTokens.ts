@@ -3,19 +3,41 @@ import { SupportedStandardEnum } from "./@types/icrc";
 import { getMetadataInfo } from "./utils";
 import { IcrcLedgerCanister } from "@dfinity/ledger-icrc";
 import { HttpAgent } from "@dfinity/agent";
+import { Asset, SubAccount } from "@redux/models/AccountModels";
 
 interface SnsMetadata {
   canister_ids: { ledger_canister_id: string; index_canister_id: string };
 }
 
 const supportedStandards = [SupportedStandardEnum.Values["ICRC-1"], SupportedStandardEnum.Values["ICRC-2"]];
-const defaultSubAccount = { numb: "0", name: "Default", amount: "0", currency_amount: "0" };
-const defaultTokensSubAccount = { ...defaultSubAccount, numb: "0x0" };
+
+const defaultSubAccount: SubAccount = {
+  sub_account_id: "0",
+  name: "Default",
+  amount: "0",
+  currency_amount: "0",
+  address: "",
+  decimal: 0,
+  symbol: "",
+  transaction_fee: ""
+
+};
+const defaultAssetSubAccount: SubAccount = {
+  ...defaultSubAccount,
+  sub_account_id: "0x0",
+  name: "Default",
+  amount: "0",
+  currency_amount: "0",
+  address: "",
+  decimal: 0,
+  symbol: "",
+  transaction_fee: ""
+};
 
 //
 export const ICRC1systemAssets: Array<Token> = [
   {
-    id_number: 10000,
+    sortIndex: 10000,
     symbol: "ICP",
     name: "Internet Computer",
     tokenSymbol: "ICP",
@@ -28,7 +50,7 @@ export const ICRC1systemAssets: Array<Token> = [
     supportedStandards,
   },
   {
-    id_number: 10001,
+    sortIndex: 10001,
     symbol: "ckBTC",
     name: "ckBTC",
     tokenSymbol: "ckBTC",
@@ -42,7 +64,7 @@ export const ICRC1systemAssets: Array<Token> = [
     supportedStandards,
   },
   {
-    id_number: 10002,
+    sortIndex: 10002,
     symbol: "ckETH",
     name: "ckETH",
     tokenName: "ckETH",
@@ -56,7 +78,7 @@ export const ICRC1systemAssets: Array<Token> = [
     supportedStandards,
   },
   {
-    id_number: 10003,
+    sortIndex: 10003,
     address: "oh54a-baaaa-aaaap-abryq-cai",
     symbol: "GLDT",
     name: "Gold token",
@@ -70,7 +92,7 @@ export const ICRC1systemAssets: Array<Token> = [
     supportedStandards,
   },
   {
-    id_number: 10004,
+    sortIndex: 10004,
     address: "jwcfb-hyaaa-aaaaj-aac4q-cai",
     symbol: "OGY",
     name: "Origyn",
@@ -86,9 +108,9 @@ export const ICRC1systemAssets: Array<Token> = [
 ];
 
 //
-export const defaultTokens: Token[] = [
+export const defaultTokens: Asset[] = [
   {
-    id_number: 0,
+    sortIndex: 0,
     symbol: "ICP",
     name: "Internet Computer",
     tokenSymbol: "ICP",
@@ -96,12 +118,15 @@ export const defaultTokens: Token[] = [
     address: "ryjl3-tyaaa-aaaaa-aaaba-cai",
     decimal: "8",
     shortDecimal: "8",
-    fee: "10000",
-    subAccounts: [defaultTokensSubAccount],
+    // fee: "10000",
+    sort_index: 0,
+    index: "",
+    logo: "",
+    subAccounts: [defaultAssetSubAccount],
     supportedStandards,
   },
   {
-    id_number: 1,
+    sortIndex: 1,
     symbol: "ckBTC",
     name: "ckBTC",
     tokenSymbol: "ckBTC",
@@ -109,13 +134,15 @@ export const defaultTokens: Token[] = [
     address: "mxzaz-hqaaa-aaaar-qaada-cai",
     decimal: "8",
     shortDecimal: "8",
-    fee: "10",
+    // fee: "10",
+    sort_index: 0,
+    logo: "",
     index: "n5wcd-faaaa-aaaar-qaaea-cai",
-    subAccounts: [defaultTokensSubAccount],
+    subAccounts: [defaultAssetSubAccount],
     supportedStandards,
   },
   {
-    id_number: 2,
+    sortIndex: 2,
     symbol: "ckETH",
     name: "ckETH",
     tokenSymbol: "ckETH",
@@ -123,9 +150,11 @@ export const defaultTokens: Token[] = [
     address: "ss2fx-dyaaa-aaaar-qacoq-cai",
     decimal: "18",
     shortDecimal: "18",
-    fee: "2000000000000",
+    // fee: "2000000000000",
+    sort_index: 0,
+    logo: "",
     index: "s3zol-vqaaa-aaaar-qacpa-cai",
-    subAccounts: [defaultTokensSubAccount],
+    subAccounts: [defaultAssetSubAccount],
     supportedStandards,
   },
 ];
@@ -141,7 +170,7 @@ export const mapSnsToToken = async (sns: SnsMetadata, id: number, myAgent: HttpA
   const { name, symbol, decimals, logo, fee } = getMetadataInfo(currentMetadata);
 
   return {
-    id_number: id + 10005,
+    sortIndex: id + 10005,
     address,
     index: index || "",
     name,

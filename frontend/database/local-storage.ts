@@ -1,11 +1,11 @@
 import { IWalletDatabase } from "@/database/i-wallet-database";
-import { Token } from "@redux/models/TokenModels";
 import { Contact } from "@redux/models/ContactsModels";
 import { TAllowance } from "@/@types/allowance";
 import { Identity } from "@dfinity/agent";
 import { BehaviorSubject, Observable } from "rxjs";
 import { Principal } from "@dfinity/principal";
 import { defaultTokens } from "@/defaultTokens";
+import { Asset } from "@redux/models/AccountModels";
 
 export class LocalStorageDatabase extends IWalletDatabase {
   // Singleton pattern
@@ -18,7 +18,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
   }
 
   private principalId = "";
-  private readonly _tokens$: BehaviorSubject<Token[]> = new BehaviorSubject<Token[]>(this._getTokens());
+  private readonly _tokens$: BehaviorSubject<Asset[]> = new BehaviorSubject<Asset[]>(this._getTokens());
   private readonly _contacts$: BehaviorSubject<Contact[]> = new BehaviorSubject<Contact[]>(this._getContacts());
   private readonly _allowances$: BehaviorSubject<TAllowance[]> = new BehaviorSubject<TAllowance[]>(
     this._getAllowances(),
@@ -51,7 +51,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * @param address Address ID of a Token object
    * @returns Token object or NULL if not found
    */
-  async getToken(address: string): Promise<Token | null> {
+  async getToken(address: string): Promise<Asset | null> {
     return this._getTokens().find((x) => x.address === address) || null;
   }
 
@@ -60,7 +60,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * @returns Array of found Token objects or an empty
    * array if no Token objects were found
    */
-  async getTokens(): Promise<Token[]> {
+  async getTokens(): Promise<Asset[]> {
     return this._getTokens();
   }
 
@@ -69,7 +69,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * current active agent has.
    * @param token Token object to be added
    */
-  async addToken(token: Token): Promise<void> {
+  async addToken(token: Asset): Promise<void> {
     const tokens = this._getTokens();
     this._setTokens([...tokens, token]);
   }
@@ -80,7 +80,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * @param address Address ID of a Token object
    * @param newDoc Token object
    */
-  async updateToken(address: string, newDoc: Token): Promise<void> {
+  async updateToken(address: string, newDoc: Asset): Promise<void> {
     this._setTokens(
       this._getTokens().map((tkn) => {
         if (tkn.address === address) {
@@ -224,7 +224,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * @returns Array of Token objects from current
    * active agent
    */
-  subscribeToAllTokens(): Observable<Token[]> {
+  subscribeToAllTokens(): Observable<Asset[]> {
     return this._tokens$.asObservable();
   }
 
@@ -248,13 +248,13 @@ export class LocalStorageDatabase extends IWalletDatabase {
     return this._allowances$.asObservable();
   }
 
-  private _getTokens(): Token[] {
+  private _getTokens(): Asset[] {
     const tokensData = JSON.parse(localStorage.getItem(`assets-${this.principalId}`) || "null");
     return tokensData || [];
   }
 
-  private _setTokens(allTokens: Token[]) {
-    const tokens = [...allTokens].sort((a, b) => a.id_number - b.id_number);
+  private _setTokens(allTokens: Asset[]) {
+    const tokens = [...allTokens].sort((a, b) => a.sortIndex - b.sortIndex);
     localStorage.setItem(`assets-${this.principalId}`, JSON.stringify(tokens));
     this._tokens$.next(tokens);
   }
