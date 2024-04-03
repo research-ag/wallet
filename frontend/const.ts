@@ -7,6 +7,8 @@ import OrigynIcon from "@/assets/svg/files/ogy_icon.svg";
 import { z } from "zod";
 import { Token } from "@redux/models/TokenModels";
 import { ICRC1systemAssets } from "./defaultTokens";
+import { Asset } from "@redux/models/AccountModels";
+import { SupportedStandardEnum } from "./@types/icrc";
 
 // Enums
 
@@ -77,8 +79,8 @@ export type SpecialTxType = z.infer<typeof SpecialTxTypeEnum>;
 
 export const DIP20systemAssets: Array<Token> = [];
 export const EXTsystemAssets: Array<Token> = [];
-export const systemAssets: { [key: string]: Array<Token> } = {
-  "ICRC-1": ICRC1systemAssets,
+export const systemAssets: { [key: string]: Array<Asset> } = {
+  [SupportedStandardEnum.Values["ICRC-1"]]: ICRC1systemAssets,
 };
 
 export const symbolIconDict: { [key: string]: string } = {

@@ -6,10 +6,10 @@ import { Token } from "@redux/models/TokenModels";
 import { useEffect, useState } from "react";
 
 export const TokenHook = (asset: Asset | undefined) => {
-  const { assetLoading, icr1SystemTokens } = useAppSelector((state) => state.asset);
+  const { assetLoading, icr1SystemAssets } = useAppSelector((state) => state.asset);
   const [manual, setManual] = useState(false);
   const [network, setNetwork] = useState<TokenNetwork>(TokenNetworkEnum.enum["ICRC-1"]);
-  const [newAssetList, setNewAssetList] = useState<Array<Token>>(ICRC1systemAssets);
+  const [newAssetList, setNewAssetList] = useState<Array<Asset>>(ICRC1systemAssets);
   const [networkTOpen, setNetworkTOpen] = useState(false);
   const [assetTOpen, setAssetTOpen] = useState(false);
   const [errToken, setErrToken] = useState("");
@@ -49,7 +49,7 @@ export const TokenHook = (asset: Asset | undefined) => {
           return { name: ast.name, numb: ast.sub_account_id, amount: ast.amount, currency_amount: ast.currency_amount };
         }),
         index: asset.index,
-        id_number: asset.sort_index,
+        id_number: asset.sortIndex,
         supportedStandards: asset.supportedStandards,
       });
       setErrToken("");
@@ -61,7 +61,7 @@ export const TokenHook = (asset: Asset | undefined) => {
     if (!assetLoading) setAddStatus(AddingAssetsEnum.Enum.done);
   }, [assetLoading]);
 
-  useEffect(() => setNewAssetList(icr1SystemTokens), [icr1SystemTokens]);
+  useEffect(() => setNewAssetList(icr1SystemAssets), [icr1SystemAssets]);
 
   return {
     manual,

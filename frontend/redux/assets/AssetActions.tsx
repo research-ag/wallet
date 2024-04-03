@@ -51,7 +51,7 @@ import { HttpAgent } from "@dfinity/agent";
  */
 export const updateAllBalances: UpdateAllBalances = async (params) => {
   console.log(params);
-  
+
   // const { loading, myAgent = store.getState().auth.userAgent, assets, basicSearch, fromLogin } = params;
 
   // const tokenMarkets = await getTokensFromMarket();
@@ -453,8 +453,9 @@ export const getAllTransactionsICRC1 = async (
   }
 };
 
-export const getSNSTokens = async (agent: HttpAgent) => {
+export const getSNSTokens = async (agent: HttpAgent): Promise<Asset[]> => {
   let tokens: SnsToken[] = [];
+
   for (let index = 0; index < 100; index++) {
     try {
       const response = await fetch(`https://3r4gx-wqaaa-aaaaq-aaaia-cai.icp0.io/v1/sns/list/page/${index}/slow.json`);
@@ -471,34 +472,48 @@ export const getSNSTokens = async (agent: HttpAgent) => {
     }
   }
 
-  const deduplicatedTokens: Token[] = [];
+  const deduplicatedTokens: Asset[] = [];
   const symbolsAdded: string[] = [];
+
   await Promise.all(
     tokens.reverse().map(async (tkn, k) => {
       const metadata = getMetadataInfo(tkn.icrc1_metadata as IcrcTokenMetadataResponse);
+
       if (!symbolsAdded.includes(metadata.symbol)) {
+
         symbolsAdded.push(metadata.symbol);
+
         const supportedStandards = await getICRCSupportedStandards({
           assetAddress: tkn.canister_ids.ledger_canister_id,
           agent: agent,
         });
+
         deduplicatedTokens.push({
-          id_number: 10005 + k,
-          symbol: metadata.symbol,
+          sortIndex: 10005 + k,
+          logo: metadata.logo !== "" ? metadata.logo : "https://3r4gx-wqaaa-aaaaq-aaaia-cai.ic0.app" + tkn.meta.logo,
           name: metadata.name,
-          tokenSymbol: metadata.symbol,
-          tokenName: metadata.name,
+          symbol: metadata.symbol,
           address: tkn.canister_ids.ledger_canister_id,
-          index: tkn.canister_ids.index_canister_id || "",
           decimal: metadata.decimals.toString(),
           shortDecimal: metadata.decimals.toString(),
-          fee: metadata.fee,
-          subAccounts: [{ numb: "0", name: "Default", amount: "0", currency_amount: "0" }],
+          index: tkn.canister_ids.index_canister_id || "",
+          tokenName: metadata.name,
+          tokenSymbol: metadata.symbol,
+          subAccounts: [{
+            name: "Default",
+            sub_account_id: "0",
+            address: "",
+            amount: "0",
+            currency_amount: "0",
+            transaction_fee: metadata.fee,
+            decimal: 0,
+            symbol: "",
+          }],
           supportedStandards: supportedStandards,
-          logo: metadata.logo !== "" ? metadata.logo : "https://3r4gx-wqaaa-aaaaq-aaaia-cai.ic0.app" + tkn.meta.logo,
-        } as Token);
+        });
       }
     }),
   );
+
   return deduplicatedTokens.reverse();
 };

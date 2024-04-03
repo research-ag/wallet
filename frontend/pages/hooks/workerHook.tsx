@@ -71,12 +71,12 @@ export const WorkerHook = () => {
 
   const getAssetsWorker = async () => {
     dispatch(setLoading(true));
-    const dbTokens = await db().getTokens();
-    if (dbTokens) {
+    const dbAssets = await db().getTokens();
+    if (dbAssets) {
       await updateAllBalances({
         loading: true,
         myAgent: userAgent,
-        tokens: dbTokens,
+        assets: dbAssets,
       });
     } else {
       await updateAllBalances({
@@ -84,7 +84,7 @@ export const WorkerHook = () => {
         myAgent: userAgent,
         // REMOVE: tokens,
         // TODO: tokens were from the state, replace it for assets.
-        tokens: [],
+        assets: [],
         basicSearch: true,
       });
     }

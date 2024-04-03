@@ -27,13 +27,13 @@ export const AssetSchema = z.object({
   logo: z.string().optional(),
   name: z.string(),
   symbol: z.string(),
-  subAccounts: z.array(SubAccount),
   address: z.string(),
   decimal: z.string(),
   shortDecimal: z.string(),
   index: z.string().optional(),
   tokenName: z.string(),
   tokenSymbol: z.string(),
+  subAccounts: z.array(SubAccount),
   supportedStandards: z.array(SupportedStandardEnum),
 });
 

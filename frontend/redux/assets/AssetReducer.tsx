@@ -9,7 +9,7 @@ interface AssetState {
   ICPSubaccounts: Array<ICPSubAccount>;
   assetLoading: boolean;
   // REMOVE: tokens: Token[];
-  icr1SystemTokens: Token[];
+  icr1SystemAssets: Asset[];
   tokensMarket: TokenMarketInfo[];
   assets: Array<Asset>;
   accounts: Array<SubAccount>;
@@ -27,7 +27,7 @@ const initialState: AssetState = {
   ICPSubaccounts: [],
   assetLoading: false,
   // REMOVE: tokens: [],
-  icr1SystemTokens: ICRC1systemAssets,
+  icr1SystemAssets: ICRC1systemAssets,
   tokensMarket: [],
   assets: [],
   accounts: [],
@@ -50,8 +50,8 @@ const assetSlice = createSlice({
     setReduxTokens() {
       // REMOVE: state.tokens = action.payload;
     },
-    setICRC1SystemAssets(state, action: PayloadAction<Token[]>) {
-      state.icr1SystemTokens = [...ICRC1systemAssets, ...action.payload];
+    setICRC1SystemAssets(state, action: PayloadAction<Asset[]>) {
+      state.icr1SystemAssets = [...ICRC1systemAssets, ...action.payload];
     },
     setICPSubaccounts(state, action: PayloadAction<ICPSubAccount[]>) {
       state.ICPSubaccounts = action.payload;
@@ -84,7 +84,7 @@ const assetSlice = createSlice({
       state.assets.map((asst) => {
         count++;
         if (asst.tokenSymbol !== symbolToRemove) {
-          auxAssets.push({ ...asst, sort_index: count - 1 });
+          auxAssets.push({ ...asst, sortIndex: count - 1 });
         }
       });
       state.assets = auxAssets;
@@ -323,7 +323,7 @@ const assetSlice = createSlice({
       state.selectedAsset = undefined;
       state.selectedTransaction = undefined;
       state.acordeonIdx = [];
-      state.icr1SystemTokens = ICRC1systemAssets;
+      state.icr1SystemAssets = ICRC1systemAssets;
     },
   },
 });

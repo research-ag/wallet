@@ -387,16 +387,37 @@ const AddAssetManual = ({
       }, 0);
 
       // List all tokens modifying the one we selected
-      const token = await db().getToken(newToken.address);
-      if (token) {
-        await db().updateToken(token.address, {
+      const asset = await db().getToken(newToken.address);
+      if (asset) {
+
+        const old = {
           ...newToken,
           decimal: Number(newToken.decimal).toFixed(0),
           shortDecimal:
             newToken.shortDecimal === ""
               ? Number(newToken.decimal).toFixed(0)
               : Number(newToken.shortDecimal).toFixed(0),
-        });
+        };
+
+        const updatedFull: Asset = {
+          ...newToken,
+          decimal: Number(newToken.decimal).toFixed(0),
+          shortDecimal: newToken.shortDecimal === ""
+            ? Number(newToken.decimal).toFixed(0)
+            : Number(newToken.shortDecimal).toFixed(0),
+          sortIndex: asset.sortIndex,
+          logo: asset.logo,
+          address: asset.address,
+          supportedStandards: asset.supportedStandards,
+          index: asset.index,
+          name: asset.name,
+          subAccounts: asset.subAccounts,
+          symbol: asset.symbol,
+          tokenName: asset.tokenName,
+          tokenSymbol: asset.tokenSymbol,
+        };
+
+        await db().updateToken(asset.address, updatedFull);
       }
       // Edit tokens list and assets list
       dispatch(editToken(newToken, asset.tokenSymbol));

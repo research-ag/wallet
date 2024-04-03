@@ -10,7 +10,6 @@ import {
   setSelectedAsset,
 } from "@redux/assets/AssetReducer";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
-import { Token } from "@redux/models/TokenModels";
 import { useEffect, useState } from "react";
 import { allowanceCacheRefresh } from "../helpers/allowanceCache";
 import { db } from "@/database/db";
@@ -43,7 +42,7 @@ export const AssetHook = () => {
   const [newSub, setNewSub] = useState<SubAccount | undefined>();
   const [hexChecked, setHexChecked] = useState<boolean>(false);
 
-  const reloadBallance = async (updatedTokens?: Token[]) => {
+  const reloadBallance = async (updatedTokens?: Asset[]) => {
     dispatch(setLoading(true));
 
     await updateAllBalances({
@@ -51,7 +50,7 @@ export const AssetHook = () => {
       myAgent: userAgent,
       // REMOVE: tokens: updatedTokens ? updatedTokens : tokens.length > 0 ? tokens : defaultTokens,
       // TODO: check what does this function do, and what it should receive.
-      tokens: updatedTokens ? updatedTokens : defaultTokens,
+      assets: updatedTokens ? updatedTokens : defaultTokens,
       basicSearch: false,
       fromLogin: true,
     });
