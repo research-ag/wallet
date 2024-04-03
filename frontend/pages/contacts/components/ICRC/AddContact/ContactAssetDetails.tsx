@@ -45,6 +45,7 @@ export default function ContactAssetDetails(props: ContactAssetDetailsProps) {
         <ContactAssetPop
           assets={assets}
           getAssetIcon={getAssetIcon}
+          btnClass="bg-AddSecondaryButton rounded-l-sm w-8 h-8"
           onAdd={(data) => {
             assetToAddEmpty(data);
           }}
