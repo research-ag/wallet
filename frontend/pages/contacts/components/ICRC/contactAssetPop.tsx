@@ -59,11 +59,11 @@ const ContactAssetPop = ({
               sideOffset={2}
               align="end"
             >
-              <div className="flex flex-col justify-start items-start bg-SecondaryColorLight dark:bg-SecondaryColor rounded-lg w-40 border border-BorderColorLight/20 dark:border-BorderColor/20 shadow max-h-64 z-[2000]">
+              <div className="flex flex-col justify-start items-start  dark:bg-SecondaryColor rounded-lg w-40 border border-BorderColorLight/20 dark:border-BorderColor/20 shadow max-h-64 z-[2000]">
                 <div className="flex flex-col w-full scroll-y-light">
                   <button
                     className={
-                      "flex flex-row justify-between items-center rounded-t-lg px-3 py-2 w-full hover:bg-HoverColorLight hover:dark:bg-HoverColor"
+                      "flex flex-row justify-between items-center rounded-t-lg px-3 py-2 w-full hover:bg-secondary-color-1-light hover:dark:bg-HoverColor"
                     }
                     onClick={handleSelectAll}
                   >
@@ -77,7 +77,7 @@ const ContactAssetPop = ({
                     return (
                       <button
                         key={k}
-                        className={`flex flex-row justify-between items-center px-3 py-2 w-full hover:bg-HoverColorLight hover:dark:bg-HoverColor ${
+                        className={`flex flex-row justify-between items-center px-3 py-2 w-full hover:bg-secondary-color-1-light hover:dark:bg-HoverColor ${
                           symbolToAdd.includes(asset.tokenSymbol) && assetsToAdd.length !== assets.length
                             ? "bg-HoverColorLight dark:bg-HoverColor"
                             : ""

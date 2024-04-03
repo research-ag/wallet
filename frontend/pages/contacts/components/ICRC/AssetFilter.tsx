@@ -54,11 +54,11 @@ export default function AssetFilter(props: AssetFilterProps) {
         <DropdownMenu.Content className={contentContainerStyles} sideOffset={2} align="end">
           <button
             onClick={handleSelectAll}
-            className="flex flex-row items-center justify-between w-full px-3 py-2 rounded-t-lg hover:bg-HoverColorLight hover:dark:bg-HoverColor"
+            className="flex flex-row items-center justify-between w-full px-3 py-2 rounded-t-lg hover:bg-secondary-color-1-light hover:dark:bg-HoverColor"
           >
             <p>{t("selected.all")}</p>
             <CustomCheck
-              className="border-BorderColorLight dark:border-BorderColor"
+              className="border-secondary-color-2-light dark:border-BorderColor"
               checked={assetFilter.length === assets.length}
             />
           </button>
@@ -108,7 +108,7 @@ export default function AssetFilter(props: AssetFilterProps) {
 
 const assetStyle = (k: number, assets: Asset[]) =>
   clsx({
-    ["flex flex-row justify-between items-center px-3 py-2 w-full hover:bg-HoverColorLight hover:dark:bg-HoverColor"]:
+    ["flex flex-row justify-between items-center px-3 py-2 w-full hover:bg-secondary-color-1-light hover:dark:bg-HoverColor"]:
       true,
     ["rounded-b-lg"]: k === assets.length - 1,
   });
