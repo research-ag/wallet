@@ -104,7 +104,7 @@ export class RxdbDatabase extends IWalletDatabase {
 
       const tokensReplication = await setupReplication<TokenRxdbDocument, string>(
         tokens,
-        `tokens-${this.principalId}`,
+        `assets-${this.principalId}`,
         "address",
         (items) => this._tokensPushHandler(items),
         (minTimestamp, lastId, batchSize) => this._tokensPullHandler(minTimestamp, lastId, batchSize),

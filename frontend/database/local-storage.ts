@@ -249,13 +249,13 @@ export class LocalStorageDatabase extends IWalletDatabase {
   }
 
   private _getTokens(): Token[] {
-    const tokensData = JSON.parse(localStorage.getItem(`tokens-${this.principalId}`) || "null");
+    const tokensData = JSON.parse(localStorage.getItem(`assets-${this.principalId}`) || "null");
     return tokensData || [];
   }
 
   private _setTokens(allTokens: Token[]) {
     const tokens = [...allTokens].sort((a, b) => a.id_number - b.id_number);
-    localStorage.setItem(`tokens-${this.principalId}`, JSON.stringify(tokens));
+    localStorage.setItem(`assets-${this.principalId}`, JSON.stringify(tokens));
     this._tokens$.next(tokens);
   }
 
@@ -281,7 +281,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
 
   private _doesRecordByPrincipalExist() {
     // Look for entry record by current prinicpal ID
-    const exist = !!localStorage.getItem(`tokens-${this.principalId}`);
+    const exist = !!localStorage.getItem(`assets-${this.principalId}`);
 
     // If does not exist it means that this is a brand new account
     if (!exist) {
