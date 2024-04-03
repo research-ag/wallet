@@ -37,22 +37,21 @@ export default function DatabaseProvider({ children }: DatabaseProviderProps) {
     const assetsSubscriptionHandler = async (assets: Token[]) => {
       if (assets.length > 0) {
         const {
-          asset,
+          asset: { initLoad },
           auth: { authClient, userAgent },
         } = store.getState();
 
         store.dispatch(setReduxTokens(assets));
 
-        if (asset.initLoad) setAssetFromLocalData(assets, authClient);
+        if (initLoad) setAssetFromLocalData(assets, authClient);
 
         const result = await updateAllBalances({
           loading: true,
           myAgent: userAgent,
           tokens: assets,
           basicSearch: false,
-          fromLogin: true,
+          fromLogin: initLoad,
         });
-
         dispatch(setReduxTokens(result?.tokens || []));
       }
     };
