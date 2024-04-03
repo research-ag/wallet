@@ -53,7 +53,7 @@ export default function AmountFormItem(props: IAmountFormItemProps) {
   }
 
   function onAmountChange(value: string) {
-    const amount = value.trim();
+    const amount = value.trim().replace(/[^0-9.]/g, "");
     setAllowanceState({ amount });
     const isValid = validateAmount(amount, Number(allowance.asset.decimal));
     if (!isValid) {
