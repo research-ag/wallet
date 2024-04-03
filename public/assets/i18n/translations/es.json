@@ -187,6 +187,7 @@
   "error.invalid.amount": "El importe no es válido",
   "error.not.enough.balance": "Saldo insuficiente",
   "error.allowance.subaccount.not.enough": "Saldo de la subcuenta de la autorización insuficiente",
+  "error.allowance.not.enough": "Autorización insuficiente",
   "error.allowance.not.exist": "La asignación no existe",
 
   "error.invalid.asset": "Activo no válido",

@@ -187,6 +187,7 @@
   "error.invalid.receiver": "Destinatario non valido",
   "error.not.enough.balance": "Saldo insuficiente",
   "error.allowance.subaccount.not.enough": "Saldo da subconta da autorização insuficiente",
+  "error.allowance.not.enough": "Autorização insuficiente",
   "error.allowance.not.exist": "Permissão não existe",
 
   "error.invalid.asset": "Recurso inválido",
