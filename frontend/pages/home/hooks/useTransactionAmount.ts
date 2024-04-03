@@ -33,7 +33,7 @@ export default function useTransactionAmount() {
   const { transactionFee, getSenderMaxAmount, isSenderAllowance, senderPrincipal, senderSubAccount } = useSend();
 
   function onChangeAmount(e: ChangeEvent<HTMLInputElement>) {
-    const amount = e.target.value.trim();
+    const amount = e.target.value.trim().replace(/[^0-9.]/g, "");
     setAmountAction(amount);
     setMaxAmount(maxAmountInitialState);
     const isValidAmount = validateAmount(amount, Number(sender.asset.decimal));
