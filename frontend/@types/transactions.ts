@@ -221,6 +221,8 @@ export const transactionErrors: KeyValidationErrors = {
     TransactionValidationErrorsEnum.Values["error.invalid.amount"],
   [TransactionValidationErrorsEnum.Values["error.not.enough.balance"]]:
     TransactionValidationErrorsEnum.Values["error.not.enough.balance"],
+  [TransactionValidationErrorsEnum.Values["error.allowance.not.exist"]]:
+    TransactionValidationErrorsEnum.Values["error.allowance.not.exist"],
   [TransactionValidationErrorsEnum.Values["error.allowance.subaccount.not.enough"]]:
     TransactionValidationErrorsEnum.Values["error.allowance.subaccount.not.enough"],
 };
