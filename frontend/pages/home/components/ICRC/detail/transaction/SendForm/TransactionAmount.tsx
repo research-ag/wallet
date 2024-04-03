@@ -16,9 +16,9 @@ export default function TransactionAmount() {
       <div
         className={clsx(
           getAmountInputStyles(
-            errors?.includes(TransactionValidationErrorsEnum.Values["error.invalid.amount"])
-            || errors?.includes(TransactionValidationErrorsEnum.Values["error.allowance.not.enough"])
-            || false,
+            errors?.includes(TransactionValidationErrorsEnum.Values["error.invalid.amount"]) ||
+              errors?.includes(TransactionValidationErrorsEnum.Values["error.allowance.not.enough"]) ||
+              false,
           ),
         )}
       >

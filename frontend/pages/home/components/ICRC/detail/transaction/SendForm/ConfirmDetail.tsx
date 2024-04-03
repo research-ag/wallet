@@ -200,7 +200,6 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
       case errors?.includes(TransactionValidationErrorsEnum.Values["error.allowance.not.enough"]):
         return TransactionValidationErrorsEnum.Values["error.allowance.not.enough"];
 
-
       case errors?.includes(TransactionValidationErrorsEnum.Values["error.allowance.subaccount.not.enough"]):
         return TransactionValidationErrorsEnum.Values["error.allowance.subaccount.not.enough"];
       default:
