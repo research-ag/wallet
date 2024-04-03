@@ -14,7 +14,6 @@ import { toFullDecimal } from "@/utils";
 import { CustomInput } from "@components/input";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch } from "@redux/Store";
-import { Token } from "@redux/models/TokenModels";
 import { CustomCopy } from "@components/tooltip";
 import { addSubAccount, removeSubAcc, setSubAccountName } from "@redux/assets/AssetReducer";
 import { BasicModal } from "@components/modal";
@@ -34,7 +33,7 @@ interface AccountElementProps {
   setNewSub(value: SubAccount | undefined): void;
   tokenIndex: number;
   newSub: boolean;
-  tokens: Token[];
+  assets: Asset[];
   subaccountId: number;
   setAddOpen(value: boolean): void;
 }
@@ -51,7 +50,7 @@ const AccountElement = ({
   tokenIndex,
   setNewSub,
   newSub,
-  tokens,
+  assets,
   subaccountId,
   setAddOpen,
 }: AccountElementProps) => {
@@ -184,7 +183,7 @@ const AccountElement = ({
     if (name.trim() !== "") {
       setEditNameId("");
       if (newSub) {
-        const token = tokens[+tokenIndex];
+        const token = assets[+tokenIndex];
         const subAccounts = token.subAccounts
           .map((sa) => ({
             ...sa,
@@ -202,9 +201,9 @@ const AccountElement = ({
         setNewSub(undefined);
         setAddOpen(false);
       } else {
-        const token = tokens[+tokenIndex];
+        const token = assets[+tokenIndex];
         const subAccounts = token.subAccounts.map((sa) =>
-          sa.numb === subAccount.sub_account_id ? { ...sa, name: name } : sa,
+          sa.sub_account_id === subAccount.sub_account_id ? { ...sa, name: name } : sa,
         );
 
         await db().updateToken(token.address, {
@@ -226,9 +225,10 @@ const AccountElement = ({
   }
 
   async function onConfirm() {
-    const token = tokens[Number(tokenIndex)];
+    const token = assets[Number(tokenIndex)];
     const subAccounts = token.subAccounts
-      .map((sa) => (sa.numb !== subAccount.sub_account_id ? sa : null!))
+      // TODO: verify if numb is same to sub_account_id
+      .map((sa) => (sa.sub_account_id !== subAccount.sub_account_id ? sa : null!))
       .filter((x) => !!x);
 
     await db().updateToken(token.address, {

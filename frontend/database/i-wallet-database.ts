@@ -7,6 +7,7 @@ import { Principal } from "@dfinity/principal";
 import { DB_Type } from "./db";
 import { LocalStorageKeyEnum } from "@/@types/localstorage";
 import { Themes } from "@/const";
+import { Asset } from "@redux/models/AccountModels";
 
 export abstract class IWalletDatabase {
   /**
@@ -164,7 +165,7 @@ export abstract class IWalletDatabase {
    * @param address Address ID of a Token object
    * @param newDoc Token object
    */
-  abstract updateToken(address: string, newDoc: Token): Promise<void>;
+  abstract updateToken(address: string, newDoc: Asset): Promise<void>;
 
   /**
    * Find and remove a Token object by its ID.

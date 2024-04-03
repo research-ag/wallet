@@ -9,7 +9,6 @@ import { useTranslation } from "react-i18next";
 import { checkHexString, getUSDfromToken, hexToNumber, hexToUint8Array, removeLeadingZeros } from "@/utils";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { GeneralHook } from "../../../hooks/generalHook";
-import { Token } from "@redux/models/TokenModels";
 import { useAppDispatch } from "@redux/Store";
 import { setAcordeonAssetIdx } from "@redux/assets/AssetReducer";
 import bigInt from "big-integer";
@@ -28,7 +27,7 @@ interface DialogAddAssetProps {
   getLowestMissing(value: string[]): any;
   hexChecked: boolean;
   setHexChecked(value: any): void;
-  tokens: Token[];
+  assets: Asset[];
   idx: number;
   selectedAsset?: Asset;
   acordeonIdx: string[];
@@ -43,7 +42,7 @@ const DialogAddAsset = ({
   getLowestMissing,
   hexChecked,
   setHexChecked,
-  tokens,
+  assets,
   idx,
   selectedAsset,
   setAddOpen,
@@ -198,24 +197,42 @@ const DialogAddAsset = ({
               certified: false,
             });
 
-            const token = tokens[Number(idx)];
+            const asset = assets[Number(idx)];
 
-            const tokenToUpdate = {
-              ...token,
+            const assetToUpdate: Asset = {
+              ...asset,
               subAccounts: [
-                ...token.subAccounts,
+                ...asset.subAccounts,
                 {
                   name: newSub.name,
-                  numb: `0x${subClean}`.toLowerCase(),
+                  sub_account_id: `0x${subClean}`.toLowerCase(),
                   amount: myBalance.toString(),
                   currency_amount: assetMrkt ? getUSDfromToken(myBalance.toString(), assetMrkt, decimal) : "0",
+                  transaction_fee: asset.subAccounts[0].transaction_fee,
+                  address: asset.subAccounts[0].address,
+                  decimal: asset.subAccounts[0].decimal,
+                  symbol: asset.subAccounts[0].symbol,
                 },
-              ].sort((a, b) => {
-                return hexToNumber(a.numb)?.compare(hexToNumber(b.numb) || bigInt()) || 0;
-              }),
+              ].sort((a, b) => hexToNumber(a.sub_account_id)?.compare(hexToNumber(b.sub_account_id) || bigInt()) || 0),
             };
 
-            await db().updateToken(token.address, tokenToUpdate);
+            // TODO: remove this old code, when the assets work properly with this modification
+            // const tokenToUpdate = {
+            //   ...asset,
+            //   subAccounts: [
+            //     ...asset.subAccounts,
+            //     {
+            //       name: newSub.name,
+            //       numb: `0x${subClean}`.toLowerCase(),
+            //       amount: myBalance.toString(),
+            //       currency_amount: assetMrkt ? getUSDfromToken(myBalance.toString(), assetMrkt, decimal) : "0",
+            //     },
+            //   ].sort((a, b) => {
+            //     return hexToNumber(a.numb)?.compare(hexToNumber(b.numb) || bigInt()) || 0;
+            //   }),
+            // };
+
+            await db().updateToken(asset.address, assetToUpdate);
 
             const savedSub = {
               ...newSub,

@@ -67,7 +67,6 @@ const AssetsList = () => {
                       setAssetOpen={setAssetOpen}
                       // REMOVE: tokens={tokens}
                       // TODO: pass assets instead of tokens
-                      tokens={[]}
                       setAddOpen={setAddOpen}
                     />
                   );

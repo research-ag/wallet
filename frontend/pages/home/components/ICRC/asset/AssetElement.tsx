@@ -13,7 +13,6 @@ import { ThemeHook } from "@hooks/themeHook";
 import { IconTypeEnum, ThemesEnum } from "@/const";
 import { getFirstNChars, getUSDfromToken, hexToNumber, toFullDecimal } from "@/utils";
 import { AssetHook } from "../../../hooks/assetHook";
-import { Token } from "@redux/models/TokenModels";
 import bigInt from "big-integer";
 import { AccountHook } from "@pages/hooks/accountHook";
 import DialogAddAsset from "./DialogAddAsset";
@@ -25,19 +24,10 @@ interface AssetElementProps {
   acordeonIdx: string[];
   setAssetInfo(value: Asset | undefined): void;
   setAssetOpen(value: boolean): void;
-  tokens: Token[];
   setAddOpen(value: boolean): void;
 }
 
-const AssetElement = ({
-  asset,
-  idx,
-  acordeonIdx,
-  setAssetInfo,
-  setAssetOpen,
-  tokens,
-  setAddOpen,
-}: AssetElementProps) => {
+const AssetElement = ({ asset, idx, acordeonIdx, setAssetInfo, setAssetOpen, setAddOpen }: AssetElementProps) => {
   const { theme } = ThemeHook();
   const { authClient } = AccountHook();
 
@@ -150,7 +140,7 @@ const AssetElement = ({
                     newSub={false}
                     setNewSub={setNewSub}
                     setAddOpen={setAddOpen}
-                    tokens={tokens}
+                    assets={assets}
                     subaccountId={subIdx}
                   ></AccountElement>
                 );
@@ -169,7 +159,7 @@ const AssetElement = ({
         getLowestMissing={getLowestMissing}
         hexChecked={hexChecked}
         setHexChecked={setHexChecked}
-        tokens={tokens}
+        assets={assets}
         idx={idx}
         selectedAsset={selectedAsset}
         acordeonIdx={acordeonIdx}
