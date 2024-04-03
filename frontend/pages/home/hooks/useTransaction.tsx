@@ -5,18 +5,25 @@ import { Asset, SubAccount, Transaction } from "@redux/models/AccountModels";
 import { addTxWorker, setSelectedTransaction, setTransactions } from "@redux/assets/AssetReducer";
 import { AssetSymbolEnum } from "@/const";
 import { hexToUint8Array } from "@/utils";
-import { Token } from "@redux/models/TokenModels";
 export const UseTransaction = () => {
   const dispatch = useAppDispatch();
 
-  const { tokens, selectedAsset, selectedAccount, selectedTransaction, txWorker } = useAppSelector(
-    (state) => state.asset,
-  );
+  const {
+    // REMOVE: tokens,
+    assets,
+    selectedAsset,
+    selectedAccount,
+    selectedTransaction,
+    txWorker,
+  } = useAppSelector((state) => state.asset);
 
   const changeSelectedTransaction = (value: Transaction) => dispatch(setSelectedTransaction(value));
 
   const getSelectedSubaccountICRCTx = async (founded: boolean) => {
-    const selectedToken = tokens.find((tk: Token) => tk.symbol === selectedAsset?.symbol);
+    // const selectedToken = tokens.find((tk: Token) => tk.symbol === selectedAsset?.symbol);
+    // TODO: tokens replaced for assets, verify it is working properly
+    const selectedToken = assets.find((tk: Asset) => tk.symbol === selectedAsset?.symbol);
+
     if (selectedToken) {
       const auxTx: Transaction[] = await getAllTransactionsICRC1(
         selectedToken?.index || "",

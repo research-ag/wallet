@@ -6,14 +6,18 @@ import store, { useAppDispatch, useAppSelector } from "@redux/Store";
 import { getAllTransactionsICP, getAllTransactionsICRC1, updateAllBalances } from "@redux/assets/AssetActions";
 import { setLoading, setTxWorker } from "@redux/assets/AssetReducer";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
-import { Token } from "@redux/models/TokenModels";
 import { timerWorkerScript } from "@workers/index";
 import { useEffect } from "react";
 import { db } from "@/database/db";
 
 export const WorkerHook = () => {
   const dispatch = useAppDispatch();
-  const { tokens, assets, txWorker } = useAppSelector((state) => state.asset);
+  const {
+    // REMOVE: tokens,
+
+    assets,
+    txWorker,
+  } = useAppSelector((state) => state.asset);
   const { userAgent } = useAppSelector((state) => state.auth);
 
   const getTransactionsWorker = async () => {
@@ -36,7 +40,10 @@ export const WorkerHook = () => {
           );
         });
       } else {
-        const selectedToken = tokens.find((tk: Token) => tk.symbol === elementA?.symbol);
+        // REMOVE: const selectedToken = tokens.find((tk: Token) => tk.symbol === elementA?.symbol);
+        // TODO: replaced for assets, verify it's working properly
+        const selectedToken = assets.find((tk: Asset) => tk.symbol === elementA?.symbol);
+
         if (selectedToken) {
           elementA.subAccounts.map(async (elementS: SubAccount) => {
             const transactionsICRC1 = await getAllTransactionsICRC1(
@@ -75,7 +82,9 @@ export const WorkerHook = () => {
       await updateAllBalances({
         loading: true,
         myAgent: userAgent,
-        tokens,
+        // REMOVE: tokens,
+        // TODO: tokens were from the state, replace it for assets.
+        tokens: [],
         basicSearch: true,
       });
     }

@@ -23,7 +23,7 @@ const AssetsList = () => {
     acordeonIdx,
     assetInfo,
     setAssetInfo,
-    tokens,
+    // REMOVE: tokens,
     selectedAsset,
   } = AssetHook();
   const [addOpen, setAddOpen] = useState(false);
@@ -65,7 +65,9 @@ const AssetsList = () => {
                       acordeonIdx={acordeonIdx}
                       setAssetInfo={setAssetInfo}
                       setAssetOpen={setAssetOpen}
-                      tokens={tokens}
+                      // REMOVE: tokens={tokens}
+                      // TODO: pass assets instead of tokens
+                      tokens={[]}
                       setAddOpen={setAddOpen}
                     />
                   );
@@ -84,7 +86,9 @@ const AssetsList = () => {
           setAssetOpen={setAssetOpen}
           asset={assetInfo}
           setAssetInfo={setAssetInfo}
-          tokens={tokens}
+          // TODO: pass assets instead of tokens
+          // REMOVE: tokens={tokens}
+          tokens={[]}
           assetOpen={assetOpen}
           assets={assets}
           acordeonIdx={acordeonIdx}

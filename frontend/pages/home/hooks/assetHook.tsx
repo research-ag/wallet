@@ -6,7 +6,6 @@ import {
   removeToken,
   setAcordeonAssetIdx,
   setLoading,
-  setReduxTokens,
   setSelectedAccount,
   setSelectedAsset,
 } from "@redux/assets/AssetReducer";
@@ -18,9 +17,15 @@ import { db } from "@/database/db";
 
 export const AssetHook = () => {
   const dispatch = useAppDispatch();
-  const { tokens, assets, assetLoading, selectedAsset, selectedAccount, acordeonIdx, tokensMarket } = useAppSelector(
-    (state) => state.asset,
-  );
+  const {
+    // REMOVE: tokens,
+    assets,
+    assetLoading,
+    selectedAsset,
+    selectedAccount,
+    acordeonIdx,
+    tokensMarket,
+  } = useAppSelector((state) => state.asset);
 
   const { userAgent } = useAppSelector((state) => state.auth);
 
@@ -41,17 +46,19 @@ export const AssetHook = () => {
   const reloadBallance = async (updatedTokens?: Token[]) => {
     dispatch(setLoading(true));
 
-    const updatedAssets = await updateAllBalances({
+    await updateAllBalances({
       loading: true,
       myAgent: userAgent,
-      tokens: updatedTokens ? updatedTokens : tokens.length > 0 ? tokens : defaultTokens,
+      // REMOVE: tokens: updatedTokens ? updatedTokens : tokens.length > 0 ? tokens : defaultTokens,
+      // TODO: check what does this function do, and what it should receive.
+      tokens: updatedTokens ? updatedTokens : defaultTokens,
       basicSearch: false,
       fromLogin: true,
     });
     await allowanceCacheRefresh();
     await contactCacheRefresh();
 
-    if (updatedAssets?.tokens) dispatch(setReduxTokens(updatedAssets.tokens));
+    // REMOVE: if (updatedAssets?.tokens) dispatch(setReduxTokens(updatedAssets.tokens));
     dispatch(setLoading(false));
   };
 
@@ -97,7 +104,7 @@ export const AssetHook = () => {
   }, [searchKey]);
 
   return {
-    tokens,
+    // REMOVE: tokens,
     assets,
     assetLoading,
     selectedAsset,

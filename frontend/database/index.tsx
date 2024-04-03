@@ -2,7 +2,6 @@ import { setReduxContacts } from "@redux/contacts/ContactsReducer";
 import store, { useAppDispatch } from "@redux/Store";
 import { useEffect } from "react";
 import { localDb, rxDb } from "./db";
-import { setReduxTokens } from "@redux/assets/AssetReducer";
 import { setAssetFromLocalData, updateAllBalances } from "@redux/assets/AssetActions";
 import { setReduxAllowances } from "@redux/allowance/AllowanceReducer";
 import { Token } from "@redux/models/TokenModels";
@@ -41,11 +40,11 @@ export default function DatabaseProvider({ children }: DatabaseProviderProps) {
           auth: { authClient, userAgent },
         } = store.getState();
 
-        store.dispatch(setReduxTokens(assets));
+        // REMOVE: store.dispatch(setReduxTokens(assets));
 
         if (asset.initLoad) setAssetFromLocalData(assets, authClient);
 
-        const result = await updateAllBalances({
+        await updateAllBalances({
           loading: true,
           myAgent: userAgent,
           tokens: assets,
@@ -53,7 +52,7 @@ export default function DatabaseProvider({ children }: DatabaseProviderProps) {
           fromLogin: true,
         });
 
-        dispatch(setReduxTokens(result?.tokens || []));
+        // REMOVE: dispatch(setReduxTokens(result?.tokens || []));
       }
     };
 

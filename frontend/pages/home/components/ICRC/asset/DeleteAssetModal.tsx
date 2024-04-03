@@ -3,9 +3,7 @@ import { ReactComponent as WarningIcon } from "@assets/svg/files/warning.svg";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
 import { BasicModal } from "@components/modal";
-import { AccountHook } from "@pages/hooks/accountHook";
 import { useTranslation } from "react-i18next";
-import { Token } from "@redux/models/TokenModels";
 import { CustomButton } from "@components/button";
 import { AssetHook } from "@pages/home/hooks/assetHook";
 
@@ -17,8 +15,10 @@ interface DeleteAssetModalPropr {
 
 const DeleteAssetModal = ({ open, setOpen, asset }: DeleteAssetModalPropr) => {
   const { t } = useTranslation();
-  const { authClient } = AccountHook();
-  const { tokens, deleteAsset } = AssetHook();
+  const {
+    // REMOVE: tokens,
+    deleteAsset,
+  } = AssetHook();
   const { name, symbol, address } = asset;
 
   return (
@@ -54,23 +54,25 @@ const DeleteAssetModal = ({ open, setOpen, asset }: DeleteAssetModalPropr) => {
   );
 
   function handleConfirmButton() {
-    const auxTokens = tokens.filter((tkn) => tkn.symbol !== symbol);
-    saveInLocalStorage(auxTokens);
+    // INFO: this function update the local storage with all the tokens avoiding the deleted one
+    // REMOVE: const auxTokens = tokens.filter((tkn) => tkn.symbol !== symbol);
+    // REMOVE: saveInLocalStorage(auxTokens);
     deleteAsset(symbol, address);
     setOpen(false);
   }
 
-  function saveInLocalStorage(tokens: Token[]) {
-    localStorage.setItem(
-      authClient,
-      JSON.stringify({
-        from: "II",
-        tokens: tokens.sort((a, b) => {
-          return a.id_number - b.id_number;
-        }),
-      }),
-    );
-  }
+  // TODO: replace Token[] for Asset[]
+  // function saveInLocalStorage(tokens: Token[]) {
+  //   localStorage.setItem(
+  //     authClient,
+  //     JSON.stringify({
+  //       from: "II",
+  //       tokens: tokens.sort((a, b) => {
+  //         return a.id_number - b.id_number;
+  //       }),
+  //     }),
+  //   );
+  // }
 };
 
 export default DeleteAssetModal;
