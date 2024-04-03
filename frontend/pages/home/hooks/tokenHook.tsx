@@ -2,7 +2,6 @@ import { AddingAssets, AddingAssetsEnum, TokenNetwork, TokenNetworkEnum, Account
 import { ICRC1systemAssets } from "@/defaultTokens";
 import { useAppSelector } from "@redux/Store";
 import { Asset } from "@redux/models/AccountModels";
-import { Token } from "@redux/models/TokenModels";
 import { useEffect, useState } from "react";
 
 export const TokenHook = (asset: Asset | undefined) => {
@@ -14,7 +13,7 @@ export const TokenHook = (asset: Asset | undefined) => {
   const [assetTOpen, setAssetTOpen] = useState(false);
   const [errToken, setErrToken] = useState("");
   const [errIndex, setErrIndex] = useState("");
-  const [newToken, setNewToken] = useState<Token>({
+  const [newToken, setNewToken] = useState<Asset>({
     address: "",
     symbol: "",
     name: "",
@@ -22,10 +21,18 @@ export const TokenHook = (asset: Asset | undefined) => {
     tokenName: "",
     decimal: "",
     shortDecimal: "",
-    fee: "",
-    subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default, amount: "0", currency_amount: "0" }],
+    subAccounts: [{
+      sub_account_id: "0x0",
+      name: AccountDefaultEnum.Values.Default,
+      amount: "0",
+      currency_amount: "0",
+      address: "",
+      decimal: 0,
+      symbol: "",
+      transaction_fee: "0",
+    }],
     index: "",
-    id_number: 999,
+    sortIndex: 999,
     supportedStandards: [],
   });
   const [validToken, setValidToken] = useState(false);
@@ -44,12 +51,20 @@ export const TokenHook = (asset: Asset | undefined) => {
         tokenSymbol: asset.tokenSymbol,
         decimal: asset.decimal,
         shortDecimal: asset.shortDecimal,
-        fee: asset.subAccounts[0]?.transaction_fee || "0",
         subAccounts: asset.subAccounts.map((ast) => {
-          return { name: ast.name, numb: ast.sub_account_id, amount: ast.amount, currency_amount: ast.currency_amount };
+          return {
+            name: ast.name,
+            sub_account_id: ast.sub_account_id,
+            amount: ast.amount,
+            currency_amount: ast.currency_amount,
+            address: ast.address,
+            decimal: ast.decimal,
+            symbol: ast.symbol,
+            transaction_fee: ast.transaction_fee,
+          };
         }),
         index: asset.index,
-        id_number: asset.sortIndex,
+        sortIndex: asset.sortIndex,
         supportedStandards: asset.supportedStandards,
       });
       setErrToken("");

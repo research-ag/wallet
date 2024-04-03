@@ -7,7 +7,6 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { clsx } from "clsx";
 import { useTranslation } from "react-i18next";
 import { GeneralHook } from "../../../hooks/generalHook";
-import { Token } from "@redux/models/TokenModels";
 import { Asset } from "@redux/models/AccountModels";
 
 interface AddAssetAutomaticProps {
@@ -15,8 +14,8 @@ interface AddAssetAutomaticProps {
   networkTOpen: boolean;
   setNetwork(value: TokenNetwork): void;
   network: TokenNetwork;
-  setNewToken(value: Token): void;
-  newToken: Token;
+  setNewToken(value: Asset): void;
+  newToken: Asset;
   setAssetTOpen(value: boolean): void;
   addAssetToData(): void;
   assetTOpen: boolean;
@@ -24,7 +23,7 @@ interface AddAssetAutomaticProps {
   setErrToken(value: string): void;
   errToken: string;
   setManual(value: boolean): void;
-  newAssetList: Token[];
+  newAssetList: Asset[];
   assets: Asset[];
 }
 
@@ -204,7 +203,7 @@ const AddAssetAutomatic = ({
       });
   }
 
-  function onSelectToken(newAsset: Token) {
+  function onSelectToken(newAsset: Asset) {
     setNewToken(newAsset);
     setErrToken("");
     setValidToken(true);

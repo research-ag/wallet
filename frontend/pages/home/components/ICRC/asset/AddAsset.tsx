@@ -7,7 +7,6 @@ import { GeneralHook } from "../../../hooks/generalHook";
 import { AccountDefaultEnum, AddingAssetsEnum, TokenNetworkEnum } from "@/const";
 import { TokenHook } from "../../../hooks/tokenHook";
 import { Asset } from "@redux/models/AccountModels";
-import { Token } from "@redux/models/TokenModels";
 import { useAppDispatch } from "@redux/Store";
 import DialogAssetConfirmation from "./DialogAssetConfirmation";
 import AddAssetManual from "./AddAssetManual";
@@ -21,7 +20,7 @@ interface AddAssetsProps {
   assetOpen: boolean;
   asset: Asset | undefined;
   setAssetInfo(value: Asset | undefined): void;
-  tokens: Token[];
+  tokens: Asset[];
   assets: Asset[];
   acordeonIdx: string[];
 }

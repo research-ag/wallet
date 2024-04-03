@@ -4,10 +4,10 @@ import { useEffect } from "react";
 import { localDb, rxDb } from "./db";
 import { setAssetFromLocalData, updateAllBalances } from "@redux/assets/AssetActions";
 import { setReduxAllowances } from "@redux/allowance/AllowanceReducer";
-import { Token } from "@redux/models/TokenModels";
 import { TAllowance } from "@/@types/allowance";
 import { getAllowanceDetails, retrieveAssetsWithAllowance } from "@pages/home/helpers/icrc";
 import { Contact } from "@redux/models/ContactsModels";
+import { Asset } from "@redux/models/AccountModels";
 
 /**
  * Props for the DatabaseProvider component.
@@ -33,7 +33,7 @@ export default function DatabaseProvider({ children }: DatabaseProviderProps) {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    const assetsSubscriptionHandler = async (assets: Token[]) => {
+    const assetsSubscriptionHandler = async (assets: Asset[]) => {
       if (assets.length > 0) {
         const {
           asset,
@@ -47,7 +47,7 @@ export default function DatabaseProvider({ children }: DatabaseProviderProps) {
         await updateAllBalances({
           loading: true,
           myAgent: userAgent,
-          tokens: assets,
+          assets,
           basicSearch: false,
           fromLogin: true,
         });
@@ -57,7 +57,8 @@ export default function DatabaseProvider({ children }: DatabaseProviderProps) {
     };
 
     localDb().subscribeToAllTokens().subscribe(assetsSubscriptionHandler);
-    rxDb().subscribeToAllTokens().subscribe(assetsSubscriptionHandler);
+    // TODO: enable rxdb
+    // rxDb().subscribeToAllTokens().subscribe(assetsSubscriptionHandler);
   }, []);
 
   useEffect(() => {

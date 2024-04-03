@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { Token, TokenMarketInfo } from "@redux/models/TokenModels";
+import { TokenMarketInfo } from "@redux/models/TokenModels";
 import { Asset, ICPSubAccount, SubAccount, Transaction, TransactionList } from "@redux/models/AccountModels";
 import { getUSDfromToken } from "@/utils";
 import { ICRC1systemAssets } from "@/defaultTokens";
@@ -67,7 +67,7 @@ const assetSlice = createSlice({
       // Iterate all Tokens and ignore the one that has
       // the symbol marked to be removed
       // REMOVE:
-      // const auxTkns: Token[] = [];
+      // const auxTkns: Asset[] = [];
       // state.tokens.map((tkn) => {
       //   count++;
       //   if (tkn.symbol !== symbolToRemove) {
@@ -93,7 +93,7 @@ const assetSlice = createSlice({
       reducer(
         state,
         action: PayloadAction<{
-          token: Token;
+          token: Asset;
           tokenSymbol: string;
         }>,
       ) {
@@ -125,7 +125,7 @@ const assetSlice = createSlice({
         // state.tokens = auxTokens;
         state.assets = auxAssets;
       },
-      prepare(token: Token, tokenSymbol: string) {
+      prepare(token: Asset, tokenSymbol: string) {
         return {
           payload: { token, tokenSymbol },
         };

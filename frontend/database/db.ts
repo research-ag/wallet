@@ -11,6 +11,8 @@ export const localDb = () => LocalStorageDatabase.instance;
 
 export const rxDb = () => RxdbDatabase.instance;
 
+// TODO: enable switching between local and rxdb
+
 export const db: () => IWalletDatabase = () => {
-  return localStorage.getItem("dbLocation") === DB_Type.CANISTER ? rxDb() : localDb();
+  return  localDb();
 };

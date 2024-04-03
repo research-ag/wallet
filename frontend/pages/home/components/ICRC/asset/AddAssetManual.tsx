@@ -10,7 +10,6 @@ import { editToken } from "@redux/assets/AssetReducer";
 import { CustomButton } from "@components/button";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch } from "@redux/Store";
-import { Token } from "@redux/models/TokenModels";
 import { AccountDefaultEnum, IconTypeEnum } from "@/const";
 import { Asset } from "@redux/models/AccountModels";
 import { IdentityHook } from "@pages/hooks/identityHook";
@@ -33,11 +32,11 @@ interface AddAssetManualProps {
   setValidToken(value: boolean): void;
   validIndex: boolean;
   setValidIndex(value: boolean): void;
-  newToken: Token;
+  newToken: Asset;
   setNewToken(value: any): void;
   asset: Asset | undefined;
   setAssetOpen(value: boolean): void;
-  tokens: Token[];
+  tokens: Asset[];
   addAssetToData(): void;
   setAssetInfo(value: Asset | undefined): void;
 }

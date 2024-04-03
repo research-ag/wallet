@@ -1,7 +1,6 @@
 import store from "@redux/Store";
 import {
   SnsToken,
-  Token,
   // TokenSubAccount
 } from "@redux/models/TokenModels";
 
@@ -205,7 +204,7 @@ export const updateAllBalances: UpdateAllBalances = async (params) => {
   //       const saTokens = subAccts.map((saT) => saT.saToken);
   //       const saAssets = subAccts.map((saA) => saA.saAsset);
 
-  //       const newToken: Token = {
+  //       const newToken: Asset = {
   //         ...currentAsset,
   //         logo: logo !== "" ? logo : currentAsset.logo && currentAsset.logo !== "" ? currentAsset.logo : "",
   //         tokenName: name,
@@ -318,24 +317,25 @@ export const updateAllBalances: UpdateAllBalances = async (params) => {
   return { newAssetsUpload: [], assets: [] };
 };
 
-export const setAssetFromLocalData = (tokens: Token[], myPrincipal: string) => {
-  const assets: Asset[] = [];
-  tokens.map((tkn) => {
+export const setAssetFromLocalData = (assets: Asset[], myPrincipal: string) => {
+  const endAssets: Asset[] = [];
+
+  assets.map((tkn) => {
     const subAccList: SubAccount[] = [];
     tkn.subAccounts?.map((sa) => {
       subAccList.push({
         name: sa.name,
-        sub_account_id: sa.numb,
+        sub_account_id: sa.sub_account_id || "0",
         address: myPrincipal,
         amount: sa.amount || "0",
         currency_amount: sa.currency_amount || "0",
-        transaction_fee: tkn.fee || "0",
+        transaction_fee: sa.transaction_fee || "0",
         decimal: Number(tkn.decimal),
         symbol: tkn.symbol,
       });
     });
 
-    // assets.push({
+    // endAssets.push({
     //   symbol: tkn.symbol,
     //   name: tkn.name,
     //   address: tkn.address,
@@ -353,7 +353,7 @@ export const setAssetFromLocalData = (tokens: Token[], myPrincipal: string) => {
     // });
   });
 
-  store.dispatch(setAssets(assets));
+  store.dispatch(setAssets(endAssets));
 };
 
 export const getAllTransactionsICP = async (params: GetAllTransactionsICPParams) => {
