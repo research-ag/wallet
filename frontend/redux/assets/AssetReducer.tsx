@@ -8,7 +8,6 @@ interface AssetState {
   initLoad: boolean;
   ICPSubaccounts: Array<ICPSubAccount>;
   assetLoading: boolean;
-  // REMOVE: tokens: Token[];
   icr1SystemAssets: Asset[];
   tokensMarket: TokenMarketInfo[];
   assets: Array<Asset>;
@@ -26,7 +25,6 @@ const initialState: AssetState = {
   initLoad: true,
   ICPSubaccounts: [],
   assetLoading: false,
-  // REMOVE: tokens: [],
   icr1SystemAssets: ICRC1systemAssets,
   tokensMarket: [],
   assets: [],
@@ -46,9 +44,6 @@ const assetSlice = createSlice({
   reducers: {
     setInitLoad(state, action: PayloadAction<boolean>) {
       state.initLoad = action.payload;
-    },
-    setReduxTokens() {
-      // REMOVE: state.tokens = action.payload;
     },
     setICRC1SystemAssets(state, action: PayloadAction<Asset[]>) {
       state.icr1SystemAssets = [...ICRC1systemAssets, ...action.payload];
@@ -330,7 +325,6 @@ const assetSlice = createSlice({
 
 export const {
   setInitLoad,
-  setReduxTokens,
   clearDataAsset,
   setICRC1SystemAssets,
   setICPSubaccounts,

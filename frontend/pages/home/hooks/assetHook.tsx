@@ -48,15 +48,11 @@ export const AssetHook = () => {
     await updateAllBalances({
       loading: true,
       myAgent: userAgent,
-      // REMOVE: tokens: updatedTokens ? updatedTokens : tokens.length > 0 ? tokens : defaultTokens,
-      // TODO: check what does this function do, and what it should receive.
       assets: updatedTokens ? updatedTokens : defaultTokens,
       fromLogin: true,
     });
     await allowanceCacheRefresh();
     await contactCacheRefresh();
-
-    // REMOVE: if (updatedAssets?.tokens) dispatch(setReduxTokens(updatedAssets.tokens));
     dispatch(setLoading(false));
   };
 

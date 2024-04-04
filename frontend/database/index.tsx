@@ -40,27 +40,17 @@ export default function DatabaseProvider({ children }: DatabaseProviderProps) {
           auth: { userAgent },
         } = store.getState();
 
-        // REMOVE: store.dispatch(setReduxTokens(assets));
-
-        // TODO: remove once implemented the set to state
-        // INFO: the the local storage or db assets are set in the redux state
-        // if (initLoad) setAssetFromLocalData(assets, authClient);
-
         await updateAllBalances({
           loading: true,
           myAgent: userAgent,
           assets,
           fromLogin: initLoad,
         });
-
-        // TODO: dispatch(setReduxTokens(result?.tokens || []));
-        // TODO: set the updated assets into the state
       }
     };
 
     localDb().subscribeToAllTokens().subscribe(assetsSubscriptionHandler);
-    // TODO: enable rxdb
-    // rxDb().subscribeToAllTokens().subscribe(assetsSubscriptionHandler);
+    rxDb().subscribeToAllTokens().subscribe(assetsSubscriptionHandler);
   }, []);
 
   useEffect(() => {

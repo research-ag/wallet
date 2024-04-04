@@ -14,7 +14,9 @@ import SearchAsset from "./ICRC/asset/SearchAsset";
 const AssetsList = () => {
   WorkerHook();
   UseAsset();
+  const [addOpen, setAddOpen] = useState(false);
   const { assetOpen, setAssetOpen } = DrawerHook();
+
   const {
     assets,
     searchKey,
@@ -23,10 +25,8 @@ const AssetsList = () => {
     acordeonIdx,
     assetInfo,
     setAssetInfo,
-    // REMOVE: tokens,
     selectedAsset,
   } = AssetHook();
-  const [addOpen, setAddOpen] = useState(false);
 
   return (
     <Fragment>
@@ -65,8 +65,6 @@ const AssetsList = () => {
                       acordeonIdx={acordeonIdx}
                       setAssetInfo={setAssetInfo}
                       setAssetOpen={setAssetOpen}
-                      // REMOVE: tokens={tokens}
-                      // TODO: pass assets instead of tokens
                       setAddOpen={setAddOpen}
                     />
                   );
@@ -75,23 +73,24 @@ const AssetsList = () => {
           )}
         </div>
       </div>
-      <div
-        id="asset-drower"
-        className={`h-full fixed top-0 w-[28rem] z-[1000] overflow-x-hidden transition-{right} duration-500 ${
-          assetOpen ? "!right-0" : "right-[-30rem]"
-        }`}
-      >
-        <AddAsset
-          setAssetOpen={setAssetOpen}
-          asset={assetInfo}
-          setAssetInfo={setAssetInfo}
-          // TODO: pass assets instead of tokens
-          // REMOVE: tokens={tokens}
-          assetOpen={assetOpen}
-          assets={assets}
-          acordeonIdx={acordeonIdx}
-        />
-      </div>
+
+      {assetOpen && (
+        <div
+          id="asset-drower"
+          className={`h-full fixed top-0 w-[28rem] z-[1000] overflow-x-hidden transition-{right} duration-500 ${assetOpen ? "!right-0" : "right-[-30rem]"
+            }`}
+        >
+          <AddAsset
+            setAssetOpen={setAssetOpen}
+            asset={assetInfo}
+            setAssetInfo={setAssetInfo}
+            assetOpen={assetOpen}
+            assets={assets}
+            acordeonIdx={acordeonIdx}
+          />
+        </div>
+
+      )}
     </Fragment>
   );
 

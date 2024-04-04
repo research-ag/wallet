@@ -20,8 +20,6 @@ export const UseTransaction = () => {
   const changeSelectedTransaction = (value: Transaction) => dispatch(setSelectedTransaction(value));
 
   const getSelectedSubaccountICRCTx = async (founded: boolean) => {
-    // const selectedToken = tokens.find((tk: Token) => tk.symbol === selectedAsset?.symbol);
-    // TODO: tokens replaced for assets, verify it is working properly
     const selectedToken = assets.find((tk: Asset) => tk.symbol === selectedAsset?.symbol);
 
     if (selectedToken) {

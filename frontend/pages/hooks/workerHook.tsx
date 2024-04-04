@@ -35,8 +35,6 @@ export const WorkerHook = () => {
           );
         });
       } else {
-        // REMOVE: const selectedToken = tokens.find((tk: Token) => tk.symbol === elementA?.symbol);
-        // TODO: replaced for assets, verify it's working properly
         const selectedToken = assets.find((tk: Asset) => tk.symbol === elementA?.symbol);
 
         if (selectedToken) {

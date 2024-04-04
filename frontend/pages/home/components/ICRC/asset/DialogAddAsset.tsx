@@ -229,22 +229,6 @@ const DialogAddAsset = ({
               ].sort((a, b) => hexToNumber(a.sub_account_id)?.compare(hexToNumber(b.sub_account_id) || bigInt()) || 0),
             };
 
-            // TODO: remove this old code, when the assets work properly with this modification
-            // const tokenToUpdate = {
-            //   ...asset,
-            //   subAccounts: [
-            //     ...asset.subAccounts,
-            //     {
-            //       name: newSub.name,
-            //       numb: `0x${subClean}`.toLowerCase(),
-            //       amount: myBalance.toString(),
-            //       currency_amount: assetMrkt ? getUSDfromToken(myBalance.toString(), assetMrkt, decimal) : "0",
-            //     },
-            //   ].sort((a, b) => {
-            //     return hexToNumber(a.numb)?.compare(hexToNumber(b.numb) || bigInt()) || 0;
-            //   }),
-            // };
-
             await db().updateToken(asset.address, assetToUpdate);
 
             const savedSub = {
