@@ -21,8 +21,16 @@ import { toHoleBigInt } from "@/utils";
 export default function SendForm() {
   const { t } = useTranslation();
   const { isLoading, errors, sender } = useAppSelector((state) => state.transaction);
-  const { isSender, isReceiver, isSenderSameAsReceiver, isSenderAllowanceOwn, isSenderValid, isReceiverValid, getAllowanceAmount, isSenderAllowance } =
-    useSend();
+  const {
+    isSender,
+    isReceiver,
+    isSenderSameAsReceiver,
+    isSenderAllowanceOwn,
+    isSenderValid,
+    isReceiverValid,
+    getAllowanceAmount,
+    isSenderAllowance,
+  } = useSend();
 
   return (
     <div className={`w-full ${isLoading ? "opacity-50 pointer-events-none" : ""} `}>
@@ -77,7 +85,7 @@ export default function SendForm() {
           return setErrorAction(TransactionValidationErrorsEnum.Values["error.allowance.not.exist"]);
         }
         removeErrorAction(TransactionValidationErrorsEnum.Values["error.allowance.not.exist"]);
-      };
+      }
 
       setIsInspectDetailAction(true);
     } catch (error) {
