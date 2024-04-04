@@ -14,5 +14,5 @@ export const rxDb = () => RxdbDatabase.instance;
 // TODO: enable switching between local and rxdb
 
 export const db: () => IWalletDatabase = () => {
-  return  localDb();
+  return localDb();
 };

@@ -114,10 +114,10 @@ const DialogAddAsset = ({
             </div>
           </Fragment>
         ) : (
-          <div className="flex flex-col justify-center items-center w-full gap-3">
-            {getAssetIcon(IconTypeEnum.Enum.ASSET, tokens[Number(idx)].symbol, tokens[Number(idx)].logo)}
+          <div className="flex flex-col items-center justify-center w-full gap-3">
+            {getAssetIcon(IconTypeEnum.Enum.ASSET, assets[Number(idx)].symbol, assets[Number(idx)].logo)}
             <p className={"text-lg font-semibold text-center"}>
-              {t("new.subacc.added", { name: newSub?.name || "", asset: tokens[Number(idx)].tokenName })}
+              {t("new.subacc.added", { name: newSub?.name || "", asset: assets[Number(idx)].tokenName })}
             </p>
           </div>
         )}

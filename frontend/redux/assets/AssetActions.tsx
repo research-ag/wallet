@@ -8,7 +8,7 @@ import {
   IcrcAccount,
   IcrcIndexCanister,
   // IcrcLedgerCanister,
-  IcrcTokenMetadataResponse
+  IcrcTokenMetadataResponse,
 } from "@dfinity/ledger-icrc";
 
 import {
@@ -32,7 +32,7 @@ import { AccountIdentifier, SubAccount as SubAccountNNS } from "@dfinity/ledger-
 import {
   Asset,
   // ICPSubAccount,
-  SubAccount
+  SubAccount,
 } from "@redux/models/AccountModels";
 import { Principal } from "@dfinity/principal";
 // import { AccountDefaultEnum } from "@/const";
@@ -480,7 +480,6 @@ export const getSNSTokens = async (agent: HttpAgent): Promise<Asset[]> => {
       const metadata = getMetadataInfo(tkn.icrc1_metadata as IcrcTokenMetadataResponse);
 
       if (!symbolsAdded.includes(metadata.symbol)) {
-
         symbolsAdded.push(metadata.symbol);
 
         const supportedStandards = await getICRCSupportedStandards({
@@ -499,16 +498,18 @@ export const getSNSTokens = async (agent: HttpAgent): Promise<Asset[]> => {
           index: tkn.canister_ids.index_canister_id || "",
           tokenName: metadata.name,
           tokenSymbol: metadata.symbol,
-          subAccounts: [{
-            name: "Default",
-            sub_account_id: "0",
-            address: "",
-            amount: "0",
-            currency_amount: "0",
-            transaction_fee: metadata.fee,
-            decimal: 0,
-            symbol: "",
-          }],
+          subAccounts: [
+            {
+              name: "Default",
+              sub_account_id: "0",
+              address: "",
+              amount: "0",
+              currency_amount: "0",
+              transaction_fee: metadata.fee,
+              decimal: 0,
+              symbol: "",
+            },
+          ],
           supportedStandards: supportedStandards,
         });
       }

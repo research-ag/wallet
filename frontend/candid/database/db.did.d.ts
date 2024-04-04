@@ -53,14 +53,18 @@ export interface TokenDocument {
   address: string;
   tokenName: string;
   index: string;
+  sortIndex: number;
   shortDecimal: string;
   decimal: string;
-  id_number: number;
   subAccounts: Array<{
+    transaction_fee: string;
     currency_amount: string;
     name: string;
-    numb: string;
+    sub_account_id: string;
+    address: string;
     amount: string;
+    decimal: number;
+    symbol: string;
   }>;
   symbol: string;
 }
@@ -77,6 +81,6 @@ export interface WalletDatabase {
   pushContacts: ActorMethod<[Array<ContactDocument>], Array<ContactDocument>>;
   pushTokens: ActorMethod<[Array<TokenDocument>], Array<TokenDocument>>;
 }
-export type _SERVICE = WalletDatabase;
+export interface _SERVICE extends WalletDatabase {}
 export declare const idlFactory: IDL.InterfaceFactory;
 export declare const init: ({ IDL }: { IDL: IDL }) => IDL.Type[];

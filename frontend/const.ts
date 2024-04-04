@@ -5,7 +5,6 @@ import BitcoinIcon from "@/assets/svg/files/bitcoin-icon.svg";
 import GoldTokenIcon from "@/assets/svg/files/gldt_icon.svg";
 import OrigynIcon from "@/assets/svg/files/ogy_icon.svg";
 import { z } from "zod";
-import { Token } from "@redux/models/TokenModels";
 import { ICRC1systemAssets } from "./defaultTokens";
 import { Asset } from "@redux/models/AccountModels";
 import { SupportedStandardEnum } from "./@types/icrc";
@@ -77,8 +76,8 @@ export type ICRCSubaccountInfo = z.infer<typeof ICRCSubaccountInfoEnum>;
 export const SpecialTxTypeEnum = z.enum(["mint", "burn"]);
 export type SpecialTxType = z.infer<typeof SpecialTxTypeEnum>;
 
-export const DIP20systemAssets: Array<Token> = [];
-export const EXTsystemAssets: Array<Token> = [];
+export const DIP20systemAssets: Array<Asset> = [];
+export const EXTsystemAssets: Array<Asset> = [];
 export const systemAssets: { [key: string]: Array<Asset> } = {
   [SupportedStandardEnum.Values["ICRC-1"]]: ICRC1systemAssets,
 };

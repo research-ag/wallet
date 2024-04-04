@@ -87,7 +87,6 @@ const AssetsList = () => {
           setAssetInfo={setAssetInfo}
           // TODO: pass assets instead of tokens
           // REMOVE: tokens={tokens}
-          tokens={[]}
           assetOpen={assetOpen}
           assets={assets}
           acordeonIdx={acordeonIdx}

@@ -10,7 +10,7 @@ export interface UpdateAllBalancesParams {
    */
   loading: boolean;
   /**
-   * Array of Token objects representing the tokens to update balances for
+   * Array of Asset objects representing the tokens to update balances for
    */
   /**
    * HttpAgent object used for making network requests

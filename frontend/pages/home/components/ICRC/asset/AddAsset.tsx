@@ -20,12 +20,11 @@ interface AddAssetsProps {
   assetOpen: boolean;
   asset: Asset | undefined;
   setAssetInfo(value: Asset | undefined): void;
-  tokens: Asset[];
   assets: Asset[];
   acordeonIdx: string[];
 }
 
-const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens, assets, acordeonIdx }: AddAssetsProps) => {
+const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, assets, acordeonIdx }: AddAssetsProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { checkAssetAdded, userAgent } = GeneralHook();
@@ -87,7 +86,7 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens, assets
             setNewToken={setNewToken}
             asset={asset}
             setAssetOpen={setAssetOpen}
-            tokens={tokens}
+            assets={assets}
             addAssetToData={addAssetToData}
             setAssetInfo={setAssetInfo}
           ></AddAssetManual>
@@ -138,10 +137,18 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens, assets
       tokenName: "",
       decimal: "",
       shortDecimal: "",
-      fee: "0",
-      subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default, amount: "0", currency_amount: "0" }],
+      subAccounts: [{
+        sub_account_id: "0x0",
+        name: AccountDefaultEnum.Values.Default,
+        amount: "0",
+        currency_amount: "0",
+        address: "",
+        decimal: 0,
+        symbol: "",
+        transaction_fee: ""
+      }],
       index: "",
-      id_number: 999,
+      sortIndex: 999,
       supportedStandards: [],
     });
     setManual(false);
@@ -154,16 +161,25 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens, assets
       setValidToken(false);
     } else {
       const idxSorting =
-        tokens.length > 0
-          ? [...tokens].sort((a, b) => {
-              return b.id_number - a.id_number;
-            })
+        assets.length > 0
+          ? [...assets].sort((a, b) => {
+            return b.sortIndex - a.sortIndex;
+          })
           : [];
-      const idx = (idxSorting.length > 0 ? idxSorting[0]?.id_number : 0) + 1;
-      const tknSave = {
+      const idx = (idxSorting.length > 0 ? idxSorting[0]?.sortIndex : 0) + 1;
+      const tknSave: Asset = {
         ...newToken,
-        id_number: idx,
-        subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default, amount: "0", currency_amount: "0" }],
+        sortIndex: idx,
+        subAccounts: [{
+          sub_account_id: "0x0",
+          name: AccountDefaultEnum.Values.Default,
+          amount: "0",
+          currency_amount: "0",
+          address: "",
+          decimal: 0,
+          symbol: "",
+          transaction_fee: ""
+        }],
       };
       setAddStatus(AddingAssetsEnum.enum.adding);
       showModal(true);
@@ -171,7 +187,7 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens, assets
       dispatch(setSelectedAsset(tknSave));
       dispatch(setAcordeonAssetIdx([tknSave.symbol]));
 
-      await updateAllBalances({ loading: false, myAgent: userAgent, tokens: [...tokens, tknSave] });
+      await updateAllBalances({ loading: false, myAgent: userAgent, assets: [...assets, tknSave] });
       setAssetOpen(false);
       showModal(false);
       setNewToken({
@@ -182,10 +198,18 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens, assets
         tokenSymbol: "",
         decimal: "",
         shortDecimal: "",
-        fee: "0",
-        subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default, amount: "0", currency_amount: "0" }],
+        subAccounts: [{
+          sub_account_id: "0x0",
+          name: AccountDefaultEnum.Values.Default,
+          amount: "0",
+          currency_amount: "0",
+          address: "",
+          decimal: 0,
+          symbol: "",
+          transaction_fee: ""
+        }],
         index: "",
-        id_number: 999,
+        sortIndex: 999,
         supportedStandards: [],
       });
     }

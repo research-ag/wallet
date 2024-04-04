@@ -14,7 +14,6 @@ import { RxReplicationState } from "rxdb/plugins/replication";
 import { AnonymousIdentity, HttpAgent, Identity } from "@dfinity/agent";
 import { createActor } from "@/candid/database";
 // types
-import { Token } from "@redux/models/TokenModels";
 import { Contact } from "@redux/models/ContactsModels";
 import { TAllowance } from "@/@types/allowance";
 import { SupportedStandardEnum } from "@/@types/icrc";
@@ -23,6 +22,7 @@ import {
   ContactDocument as ContactRxdbDocument,
   AllowanceDocument as AllowanceRxdbDocument,
 } from "@/candid/database/db.did";
+import { Asset } from "@redux/models/AccountModels";
 
 // Enables data updates, deletions, and replacements within collections
 addRxPlugin(RxDBUpdatePlugin);
@@ -47,7 +47,7 @@ export class RxdbDatabase extends IWalletDatabase {
   private readonly agent = new HttpAgent({ identity: this.identity, host: import.meta.env.VITE_DB_CANISTER_HOST });
   private replicaCanister: any;
 
-  private _tokens!: RxCollection<TokenRxdbDocument> | null;
+  private _assets!: RxCollection<TokenRxdbDocument> | null;
   private tokensReplicationState?: RxReplicationState<any, any>;
   private tokensPullInterval?: any;
   private _contacts!: RxCollection<ContactRxdbDocument> | null;
@@ -64,9 +64,9 @@ export class RxdbDatabase extends IWalletDatabase {
   private pullingAllowances$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private pushingAllowances$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-  protected get tokens(): Promise<RxCollection<TokenRxdbDocument> | null> {
-    if (this._tokens) return Promise.resolve(this._tokens);
-    return this.init().then(() => this._tokens);
+  protected get assets(): Promise<RxCollection<TokenRxdbDocument> | null> {
+    if (this._assets) return Promise.resolve(this._assets);
+    return this.init().then(() => this._assets);
   }
 
   protected get contacts(): Promise<RxCollection<ContactRxdbDocument> | null> {
@@ -100,10 +100,10 @@ export class RxdbDatabase extends IWalletDatabase {
         eventReduce: true,
       });
 
-      const { tokens, contacts, allowances } = await db.addCollections(DBSchemas);
+      const { assets, contacts, allowances } = await db.addCollections(DBSchemas);
 
       const tokensReplication = await setupReplication<TokenRxdbDocument, string>(
-        tokens,
+        assets,
         `assets-${this.principalId}`,
         "address",
         (items) => this._tokensPushHandler(items),
@@ -135,7 +135,7 @@ export class RxdbDatabase extends IWalletDatabase {
       [this.allowancesReplicationState, this.allowancesPullInterval, this.pushingAllowances$, this.pullingAllowances$] =
         allowancesReplication;
 
-      this._tokens = tokens;
+      this._assets = assets;
       this._contacts = contacts;
       this._allowances = allowances;
     } catch (e) {
@@ -170,13 +170,13 @@ export class RxdbDatabase extends IWalletDatabase {
 
   // INFO: TOKENS
   /**
-   * Get a Token object by its ID.
-   * @param address Address ID of a Token object
-   * @returns Token object or NULL if not found
+   * Get a Asset object by its ID.
+   * @param address Address ID of a Asset object
+   * @returns Asset object or NULL if not found
    */
-  async getToken(address: string): Promise<Token | null> {
+  async getToken(address: string): Promise<Asset | null> {
     try {
-      const doc = await (await this.tokens)?.findOne(address).exec();
+      const doc = await (await this.assets)?.findOne(address).exec();
       return (doc && this._mapTokenDoc(doc)) || null;
     } catch (e) {
       console.error("RxDb GetToken:", e);
@@ -185,13 +185,13 @@ export class RxdbDatabase extends IWalletDatabase {
   }
 
   /**
-   * Get all Token objects from the active agent.
-   * @returns Array of found Token objects or an empty
-   * array if no Token objects were found
+   * Get all Asset objects from the active agent.
+   * @returns Array of found Asset objects or an empty
+   * array if no Asset objects were found
    */
-  async getTokens(): Promise<Token[]> {
+  async getTokens(): Promise<Asset[]> {
     try {
-      const documents = await (await this.tokens)?.find().exec();
+      const documents = await (await this.assets)?.find().exec();
       return (documents && documents.map(this._mapTokenDoc)) || [];
     } catch (e) {
       console.error("RxDb GetTokens:", e);
@@ -200,20 +200,22 @@ export class RxdbDatabase extends IWalletDatabase {
   }
 
   /**
-   * Add a new Token object to the list of Token objects
+   * Add a new Asset object to the list of Asset objects
    * current active agent has.
-   * @param token Token object to be added
+   * @param token Asset object to be added
    */
-  async addToken(token: Token): Promise<void> {
+  async addToken(token: Asset): Promise<void> {
     try {
       await (
-        await this.tokens
+        await this.assets
       )?.insert({
         ...token,
         logo: extractValueFromArray(token.logo),
         index: extractValueFromArray(token.index),
         deleted: false,
         updatedAt: Date.now(),
+        // TODO: fee should not be here
+        fee: "",
       });
     } catch (e) {
       console.error("RxDb AddToken:", e);
@@ -221,14 +223,14 @@ export class RxdbDatabase extends IWalletDatabase {
   }
 
   /**
-   * Find a Token object by its ID and replace it with
-   * another Token object with the date of update.
-   * @param address Address ID of a Token object
-   * @param newDoc Token object
+   * Find a Asset object by its ID and replace it with
+   * another Asset object with the date of update.
+   * @param address Address ID of a Asset object
+   * @param newDoc Asset object
    */
-  async updateToken(address: string, newDoc: Token): Promise<void> {
+  async updateToken(address: string, newDoc: Asset): Promise<void> {
     try {
-      const document = await (await this.tokens)?.findOne(address).exec();
+      const document = await (await this.assets)?.findOne(address).exec();
       await document?.patch({
         ...newDoc,
         logo: extractValueFromArray(newDoc.logo),
@@ -242,12 +244,12 @@ export class RxdbDatabase extends IWalletDatabase {
   }
 
   /**
-   * Find and remove a Token object by its ID.
-   * @param address Address ID of a Token object
+   * Find and remove a Asset object by its ID.
+   * @param address Address ID of a Asset object
    */
   async deleteToken(address: string): Promise<void> {
     try {
-      const document = await (await this.tokens)?.findOne(address).exec();
+      const document = await (await this.assets)?.findOne(address).exec();
       document?.remove();
     } catch (e) {
       console.error("RxDb DeleteToken", e);
@@ -517,12 +519,12 @@ export class RxdbDatabase extends IWalletDatabase {
 
   /**
    * Observable that triggers after a new Identity has been set.
-   * @returns Array of Token objects from current
+   * @returns Array of Asset objects from current
    * active agent
    */
-  subscribeToAllTokens(): Observable<Token[]> {
+  subscribeToAllTokens(): Observable<Asset[]> {
     return this.identityChanged$.pipe(
-      switchMap(() => from(this.tokens)),
+      switchMap(() => from(this.assets)),
       switchMap((collection) => collection?.find().$ || []),
       map((x: any) => x.map(this._mapTokenDoc)),
     );
@@ -588,22 +590,26 @@ export class RxdbDatabase extends IWalletDatabase {
     };
   }
 
-  private _mapTokenDoc(doc: RxDocument<TokenRxdbDocument>): Token {
+  private _mapTokenDoc(doc: RxDocument<TokenRxdbDocument>): Asset {
     return {
       name: doc.name,
-      id_number: doc.id_number,
+      sortIndex: doc.sortIndex,
       address: doc.address,
       logo: doc.logo,
       decimal: doc.decimal,
       symbol: doc.symbol,
       index: doc.index,
       subAccounts: doc.subAccounts.map((sa) => ({
-        numb: sa.numb,
+        numb: sa.sub_account_id,
         name: sa.name,
         amount: sa.amount,
         currency_amount: sa.currency_amount,
+        address: sa.address,
+        decimal: sa.decimal,
+        sub_account_id: sa.sub_account_id,
+        symbol: sa.symbol,
+        transaction_fee: sa.transaction_fee,
       })),
-      fee: doc.fee,
       tokenName: doc.tokenName,
       tokenSymbol: doc.tokenSymbol,
       shortDecimal: doc.shortDecimal,
@@ -656,7 +662,7 @@ export class RxdbDatabase extends IWalletDatabase {
       this.allowancesReplicationState.cancel().then();
       this.allowancesReplicationState = undefined;
     }
-    this._tokens = null!;
+    this._assets = null!;
     this._contacts = null!;
     this._allowances = null!;
   }
@@ -664,13 +670,13 @@ export class RxdbDatabase extends IWalletDatabase {
   private async _tokensPushHandler(items: any[]): Promise<TokenRxdbDocument[]> {
     const arg = items.map(
       (x) =>
-        ({
-          ...x,
-          id_number: x.id_number,
-          updatedAt: Math.floor(Date.now() / 1000),
-          logo: extractValueFromArray(x.logo),
-          index: extractValueFromArray(x.index),
-        } as TokenRxdbDocument),
+      ({
+        ...x,
+        id_number: x.id_number,
+        updatedAt: Math.floor(Date.now() / 1000),
+        logo: extractValueFromArray(x.logo),
+        index: extractValueFromArray(x.index),
+      } as TokenRxdbDocument),
     );
 
     await this.replicaCanister?.pushTokens(arg);
@@ -691,7 +697,7 @@ export class RxdbDatabase extends IWalletDatabase {
 
     return raw.map((x) => ({
       ...x,
-      id_number: Number(x.id_number),
+      sortIndex: Number(x.sortIndex),
     }));
   }
 
@@ -708,11 +714,11 @@ export class RxdbDatabase extends IWalletDatabase {
           allowance:
             !!s.allowance && !!s.allowance.allowance
               ? [
-                  {
-                    allowance: [s.allowance.allowance],
-                    expires_at: [s.allowance.expires_at],
-                  },
-                ]
+                {
+                  allowance: [s.allowance.allowance],
+                  expires_at: [s.allowance.expires_at],
+                },
+              ]
               : [],
         })),
       })),
@@ -775,7 +781,7 @@ export class RxdbDatabase extends IWalletDatabase {
     if (!exist) {
       try {
         await (
-          await this.tokens
+          await this.assets
         )?.bulkInsert(
           defaultTokens.map((dT) => ({
             ...dT,
@@ -783,6 +789,8 @@ export class RxdbDatabase extends IWalletDatabase {
             logo: extractValueFromArray(dT.logo),
             deleted: false,
             updatedAt: Date.now(),
+            // TODO: fee should not be here
+            fee: ""
           })),
         );
       } catch (e) {

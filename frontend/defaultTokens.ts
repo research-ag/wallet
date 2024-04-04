@@ -1,7 +1,6 @@
 import { SupportedStandardEnum } from "./@types/icrc";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 
-
 const supportedStandards = [SupportedStandardEnum.Values["ICRC-1"], SupportedStandardEnum.Values["ICRC-2"]];
 
 const defaultSubAccount: SubAccount = {
@@ -12,8 +11,7 @@ const defaultSubAccount: SubAccount = {
   address: "",
   decimal: 0,
   symbol: "",
-  transaction_fee: ""
-
+  transaction_fee: "",
 };
 const defaultAssetSubAccount: SubAccount = {
   ...defaultSubAccount,
@@ -24,7 +22,7 @@ const defaultAssetSubAccount: SubAccount = {
   address: "",
   decimal: 0,
   symbol: "",
-  transaction_fee: ""
+  transaction_fee: "",
 };
 
 //
@@ -148,5 +146,3 @@ export const defaultTokens: Asset[] = [
     supportedStandards,
   },
 ];
-
-

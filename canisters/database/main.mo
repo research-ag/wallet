@@ -13,10 +13,10 @@ import DB "db";
 
 actor class WalletDatabase() {
 
-  type StableStorage<Token, Contact, Allowance> = AssocList.AssocList<Principal, (DB.DbInit<Token, Text>, DB.DbInit<Contact, Text>, DB.DbInit<Allowance, Text>)>;
+  type StableStorage<Asset, Contact, Allowance> = AssocList.AssocList<Principal, (DB.DbInit<Asset, Text>, DB.DbInit<Contact, Text>, DB.DbInit<Allowance, Text>)>;
 
   type TokenDocument_v0 = {
-    id_number : Nat32;
+    sortIndex : Nat32;
     updatedAt : Nat32;
     deleted : Bool;
     address : Text;
@@ -27,10 +27,14 @@ actor class WalletDatabase() {
     decimal : Text;
     shortDecimal : Text;
     subAccounts : [{
-      numb : Text;
       name : Text;
+      sub_account_id : Text;
+      address : Text;
       amount : Text;
       currency_amount : Text;
+      transaction_fee : Text;
+      decimal : Nat32;
+      symbol : Text;
     }];
     fee : Text;
     index : Text;

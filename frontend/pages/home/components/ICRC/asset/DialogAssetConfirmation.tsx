@@ -45,8 +45,9 @@ const DialogAssetConfirmation = ({
         <div className="flex flex-col items-center justify-start w-full py-2">
           {getAssetIcon(IconTypeEnum.Enum.ASSET, newToken?.symbol, newToken.logo)}
           <p
-            className={`text-lg font-semibold mt-3 ${addStatus === AddingAssetsEnum.Enum.done ? "text-TextReceiveColor" : "text-TextSendColor"
-              }`}
+            className={`text-lg font-semibold mt-3 ${
+              addStatus === AddingAssetsEnum.Enum.done ? "text-TextReceiveColor" : "text-TextSendColor"
+            }`}
           >
             {getMessage(addStatus).top}
           </p>
@@ -68,16 +69,18 @@ const DialogAssetConfirmation = ({
       name: "",
       tokenSymbol: "",
       tokenName: "",
-      subAccounts: [{
-        sub_account_id: "0x0",
-        name: "Default",
-        amount: "0",
-        currency_amount: "0",
-        address: "",
-        symbol: "",
-        decimal: 0,
-        transaction_fee: "0",
-      }],
+      subAccounts: [
+        {
+          sub_account_id: "0x0",
+          name: "Default",
+          amount: "0",
+          currency_amount: "0",
+          address: "",
+          symbol: "",
+          decimal: 0,
+          transaction_fee: "0",
+        },
+      ],
       index: "",
       sortIndex: 999,
       supportedStandards: [],

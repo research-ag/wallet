@@ -1,5 +1,5 @@
 {
-  "tokens": {
+  "assets": {
     "schema": {
       "type": "object",
       "version": 0,
@@ -18,15 +18,18 @@
           "items": {
             "type": "record",
             "properties": {
-              "numb": { "type": "string", "maxLength": 100 },
               "name": { "type": "string", "maxLength": 100 },
+              "sub_account_id": { "type": "string" },
+              "address": { "type": "string" },
               "amount": { "type": "string", "maxLength": 100 },
-              "currency_amount": { "type": "string", "maxLength": 100 }
+              "currency_amount": { "type": "string", "maxLength": 100 },
+              "transaction_fee": { "type": "string", "maxLength": 100 },
+              "decimal": { "type": "string", "maxLength": 100 },
+              "symbol": { "type": "string", "maxLength": 100 }
             },
             "required": ["numb", "name", "amount", "currency_amount"]
           }
         },
-        "fee": { "type": "string", "maxLength": 100 },
         "index": { "type": "string", "maxLength": 100 },
         "logo": { "type": "string", "maxLength": 1000 },
         "supportedStandards": {

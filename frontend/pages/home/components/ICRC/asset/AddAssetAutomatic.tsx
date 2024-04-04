@@ -90,9 +90,8 @@ const AddAssetAutomatic = ({
                   return (
                     <DropdownMenu.Item
                       key={`net-${idx}`}
-                      className={`flex flex-row text-md justify-start items-center p-3 cursor-pointer ${
-                        idx > 0 ? "border-t border-BorderColorLight dark:border-BorderColor" : ""
-                      }`}
+                      className={`flex flex-row text-md justify-start items-center p-3 cursor-pointer ${idx > 0 ? "border-t border-BorderColorLight dark:border-BorderColor" : ""
+                        }`}
                       onSelect={() => {
                         onSelectNetwork(sa);
                       }}
@@ -153,9 +152,8 @@ const AddAssetAutomatic = ({
                     return (
                       <DropdownMenu.Item
                         key={`net-${idx}`}
-                        className={`flex flex-row text-md justify-start items-center p-3 cursor-pointer ${
-                          idx > 0 ? "border-t border-BorderColorLight dark:border-BorderColor" : ""
-                        }`}
+                        className={`flex flex-row text-md justify-start items-center p-3 cursor-pointer ${idx > 0 ? "border-t border-BorderColorLight dark:border-BorderColor" : ""
+                          }`}
                         onSelect={() => {
                           onSelectToken(newAsset);
                         }}
@@ -195,10 +193,18 @@ const AddAssetAutomatic = ({
         tokenSymbol: "",
         decimal: "",
         shortDecimal: "",
-        fee: "0",
-        subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default, amount: "0", currency_amount: "0" }],
+        subAccounts: [{
+          sub_account_id: "0x0",
+          name: AccountDefaultEnum.Values.Default,
+          amount: "0",
+          currency_amount: "0",
+          address: "",
+          decimal: 0,
+          symbol: "",
+          transaction_fee: ""
+        }],
         index: "",
-        id_number: 999,
+        sortIndex: 999,
         supportedStandards: [],
       });
   }
@@ -219,10 +225,18 @@ const AddAssetAutomatic = ({
       tokenSymbol: "",
       decimal: "",
       shortDecimal: "",
-      fee: "0",
-      subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default, amount: "0", currency_amount: "0" }],
+      subAccounts: [{
+        sub_account_id: "0x0",
+        name: AccountDefaultEnum.Values.Default,
+        amount: "0",
+        currency_amount: "0",
+        address: "",
+        decimal: 0,
+        symbol: "",
+        transaction_fee: "",
+      }],
       index: "",
-      id_number: 999,
+      sortIndex: 999,
       supportedStandards: [],
     });
   }

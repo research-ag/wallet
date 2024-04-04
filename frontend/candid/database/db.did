@@ -24,18 +24,23 @@ type TokenDocument =
    decimal: text;
    deleted: bool;
    fee: text;
-   id_number: nat32;
    index: text;
    logo: text;
    name: text;
    shortDecimal: text;
+   sortIndex: nat32;
    subAccounts:
-    vec record {
-          amount: text;
-          currency_amount: text;
-          name: text;
-          numb: text;
-        };
+    vec
+     record {
+       address: text;
+       amount: text;
+       currency_amount: text;
+       decimal: nat32;
+       name: text;
+       sub_account_id: text;
+       symbol: text;
+       transaction_fee: text;
+     };
    supportedStandards: vec text;
    symbol: text;
    tokenName: text;

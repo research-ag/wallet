@@ -47,27 +47,27 @@ export class LocalStorageDatabase extends IWalletDatabase {
   }
 
   /**
-   * Get a Token object by its ID.
-   * @param address Address ID of a Token object
-   * @returns Token object or NULL if not found
+   * Get a Asset object by its ID.
+   * @param address Address ID of a Asset object
+   * @returns Asset object or NULL if not found
    */
   async getToken(address: string): Promise<Asset | null> {
     return this._getTokens().find((x) => x.address === address) || null;
   }
 
   /**
-   * Get all Token objects from the active agent.
-   * @returns Array of found Token objects or an empty
-   * array if no Token objects were found
+   * Get all Asset objects from the active agent.
+   * @returns Array of found Asset objects or an empty
+   * array if no Asset objects were found
    */
   async getTokens(): Promise<Asset[]> {
     return this._getTokens();
   }
 
   /**
-   * Add a new Token object to the list of Token objects
+   * Add a new Asset object to the list of Asset objects
    * current active agent has.
-   * @param token Token object to be added
+   * @param token Asset object to be added
    */
   async addToken(token: Asset): Promise<void> {
     const tokens = this._getTokens();
@@ -75,10 +75,10 @@ export class LocalStorageDatabase extends IWalletDatabase {
   }
 
   /**
-   * Find a Token object by its ID and replace it with
-   * another Token object with the date of update.
-   * @param address Address ID of a Token object
-   * @param newDoc Token object
+   * Find a Asset object by its ID and replace it with
+   * another Asset object with the date of update.
+   * @param address Address ID of a Asset object
+   * @param newDoc Asset object
    */
   async updateToken(address: string, newDoc: Asset): Promise<void> {
     this._setTokens(
@@ -91,8 +91,8 @@ export class LocalStorageDatabase extends IWalletDatabase {
   }
 
   /**
-   * Find and remove a Token object by its ID.
-   * @param address Address ID of a Token object
+   * Find and remove a Asset object by its ID.
+   * @param address Address ID of a Asset object
    */
   async deleteToken(address: string): Promise<void> {
     this._setTokens(this._getTokens().filter((tkn) => tkn.address !== address));
@@ -221,7 +221,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
   /**
    * Subscribable Observable that triggers after
    * a new Identity has been set.
-   * @returns Array of Token objects from current
+   * @returns Array of Asset objects from current
    * active agent
    */
   subscribeToAllTokens(): Observable<Asset[]> {

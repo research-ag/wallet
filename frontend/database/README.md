@@ -2,7 +2,7 @@
 
 The database is structured around a `WalletDatabase` service, which includes several functions to interact with the data: `dump`, `pullContacts`, `pullTokens`, `pushContacts`, and `pushTokens`.
 
-The data is organized into records, each consisting of a Principal ID and a set of Token and Contact collections.
+The data is organized into records, each consisting of a Principal ID and a set of Asset and Contact collections.
 
 ## TokenDocument
 
@@ -14,15 +14,15 @@ The `ContactDocument` record includes details about a contact such as the accoun
 
 ## Database Functions
 
-- `dump` is a query function that returns all stored records. This function doesn't require any inputs and returns a vector of records, each containing a principal and a record of optional Token and Contact documents.
+- `dump` is a query function that returns all stored records. This function doesn't require any inputs and returns a vector of records, each containing a principal and a record of optional Asset and Contact documents.
 
 - `pullContacts` is a query function that returns all Contact records from the database. It takes three parameters: a natural number, an optional text, and another natural number.
 
-- `pullTokens` is similar to `pullContacts`, but it returns all Token records from the database.
+- `pullTokens` is similar to `pullContacts`, but it returns all Asset records from the database.
 
 - `pushContacts` is a function that takes a vector of Contact documents and stores them in the database.
 
-- `pushTokens` is similar to `pushContacts`, but it handles Token documents.
+- `pushTokens` is similar to `pushContacts`, but it handles Asset documents.
 
 ## How It Works
 
