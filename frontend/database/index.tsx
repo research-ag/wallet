@@ -2,7 +2,7 @@ import { setReduxContacts } from "@redux/contacts/ContactsReducer";
 import store, { useAppDispatch } from "@redux/Store";
 import { useEffect } from "react";
 import { localDb, rxDb } from "./db";
-import { setAssetFromLocalData, updateAllBalances } from "@redux/assets/AssetActions";
+import { updateAllBalances } from "@redux/assets/AssetActions";
 import { setReduxAllowances } from "@redux/allowance/AllowanceReducer";
 import { TAllowance } from "@/@types/allowance";
 import { getAllowanceDetails, retrieveAssetsWithAllowance } from "@pages/home/helpers/icrc";
@@ -37,12 +37,14 @@ export default function DatabaseProvider({ children }: DatabaseProviderProps) {
       if (assets.length > 0) {
         const {
           asset: { initLoad },
-          auth: { authClient, userAgent },
+          auth: { userAgent },
         } = store.getState();
 
         // REMOVE: store.dispatch(setReduxTokens(assets));
 
-        if (initLoad) setAssetFromLocalData(assets, authClient);
+        // TODO: remove once implemented the set to state
+        // INFO: the the local storage or db assets are set in the redux state
+        // if (initLoad) setAssetFromLocalData(assets, authClient);
 
         await updateAllBalances({
           loading: true,
@@ -52,6 +54,7 @@ export default function DatabaseProvider({ children }: DatabaseProviderProps) {
         });
 
         // TODO: dispatch(setReduxTokens(result?.tokens || []));
+        // TODO: set the updated assets into the state
       }
     };
 
