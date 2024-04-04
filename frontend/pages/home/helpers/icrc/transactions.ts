@@ -15,7 +15,7 @@ export async function getTransactionFeeFromLedger(params: TransactionFeeParams) 
   try {
     const { assetAddress, assetDecimal } = params;
 
-    const canister = getCanister(assetAddress);
+    const canister = getCanister({ assetAddress });
     const result = await canister.transactionFee({});
     return toFullDecimal(result, Number(assetDecimal));
   } catch (error) {
@@ -50,7 +50,7 @@ export async function transferTokensFromAllowance(params: TransferFromAllowanceP
   const { receiverPrincipal, senderPrincipal, assetAddress, transferAmount, decimal, toSubAccount, fromSubAccount } =
     params;
 
-  const canister = getCanister(assetAddress);
+  const canister = getCanister({ assetAddress });
 
   const transferParams: TransferFromParams = {
     from: {

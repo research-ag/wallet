@@ -68,7 +68,7 @@ export async function submitAllowanceApproval(
   assetAddress: string,
 ): Promise<bigint | undefined> {
   try {
-    const canister = getCanister(assetAddress);
+    const canister = getCanister({ assetAddress });
     const result = await canister.approve(params);
     return result;
   } catch (error) {
