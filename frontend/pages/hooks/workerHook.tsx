@@ -13,8 +13,6 @@ import { db } from "@/database/db";
 export const WorkerHook = () => {
   const dispatch = useAppDispatch();
   const {
-    // REMOVE: tokens,
-
     assets,
     txWorker,
   } = useAppSelector((state) => state.asset);
@@ -82,9 +80,7 @@ export const WorkerHook = () => {
       await updateAllBalances({
         loading: true,
         myAgent: userAgent,
-        // REMOVE: tokens,
-        // TODO: tokens were from the state, replace it for assets.
-        assets: [],
+        assets,
         basicSearch: true,
       });
     }

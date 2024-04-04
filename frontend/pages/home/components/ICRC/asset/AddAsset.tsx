@@ -10,7 +10,7 @@ import { Asset } from "@redux/models/AccountModels";
 import { useAppDispatch } from "@redux/Store";
 import DialogAssetConfirmation from "./DialogAssetConfirmation";
 import AddAssetManual from "./AddAssetManual";
-import { setAcordeonAssetIdx, setSelectedAsset } from "@redux/assets/AssetReducer";
+import { setAccordionAssetIdx, setSelectedAsset } from "@redux/assets/AssetReducer";
 import AddAssetAutomatic from "./AddAssetAutomatic";
 import { db } from "@/database/db";
 import { updateAllBalances } from "@redux/assets/AssetActions";
@@ -185,7 +185,7 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, assets, acorde
       showModal(true);
       await db().addToken(tknSave);
       dispatch(setSelectedAsset(tknSave));
-      dispatch(setAcordeonAssetIdx([tknSave.symbol]));
+      dispatch(setAccordionAssetIdx([tknSave.symbol]));
 
       await updateAllBalances({ loading: false, myAgent: userAgent, assets: [...assets, tknSave] });
       setAssetOpen(false);
@@ -217,7 +217,7 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, assets, acorde
 
   function addToAcordeonIdx() {
     if (!acordeonIdx.includes(asset?.tokenSymbol || "")) {
-      dispatch(setAcordeonAssetIdx([...acordeonIdx, asset?.tokenSymbol || ""]));
+      dispatch(setAccordionAssetIdx([...acordeonIdx, asset?.tokenSymbol || ""]));
     }
   }
 };

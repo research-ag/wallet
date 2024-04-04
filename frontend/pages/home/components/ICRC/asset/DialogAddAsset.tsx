@@ -10,7 +10,7 @@ import { checkHexString, getUSDfromToken, hexToNumber, hexToUint8Array, removeLe
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { GeneralHook } from "../../../hooks/generalHook";
 import { useAppDispatch } from "@redux/Store";
-import { setAcordeonAssetIdx } from "@redux/assets/AssetReducer";
+import { setAccordionAssetIdx } from "@redux/assets/AssetReducer";
 import bigInt from "big-integer";
 import { ChangeEvent, Fragment, useState } from "react";
 import { IcrcLedgerCanister } from "@dfinity/ledger-icrc";
@@ -279,7 +279,7 @@ const DialogAddAsset = ({
   }
   function addToAcordeonIdx() {
     if (!acordeonIdx.includes(selectedAsset?.tokenSymbol || "")) {
-      dispatch(setAcordeonAssetIdx([...acordeonIdx, selectedAsset?.tokenSymbol || ""]));
+      dispatch(setAccordionAssetIdx([...acordeonIdx, selectedAsset?.tokenSymbol || ""]));
     }
   }
 };

@@ -27,12 +27,7 @@ export interface UpdateAllBalancesParams {
   fromLogin?: boolean;
 }
 
-export interface UpdateBalanceReturn {
-  newAssetsUpload: Asset[];
-  assets: Asset[];
-}
-
-export type UpdateAllBalances = (params: UpdateAllBalancesParams) => Promise<UpdateBalanceReturn | undefined>;
+export type UpdateAllBalances = (params: UpdateAllBalancesParams) => Promise<Asset[] | undefined>;
 
 export interface GetAllTransactionsICPParams {
   subaccount_index: string;

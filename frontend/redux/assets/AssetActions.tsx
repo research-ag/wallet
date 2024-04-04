@@ -1,46 +1,43 @@
 import store from "@redux/Store";
-import {
-  SnsToken,
-  // TokenSubAccount
-} from "@redux/models/TokenModels";
+import { SnsToken } from "@redux/models/TokenModels";
 
 import {
   IcrcAccount,
   IcrcIndexCanister,
-  // IcrcLedgerCanister,
+  IcrcLedgerCanister,
   IcrcTokenMetadataResponse,
 } from "@dfinity/ledger-icrc";
 
 import {
   formatIcpTransaccion,
-  // getSubAccountArray,
+  getSubAccountArray,
   getMetadataInfo,
   formatckBTCTransaccion,
-  // getUSDfromToken,
+  getUSDfromToken,
   hexToUint8Array,
-  // hexToNumber,
 } from "@/utils";
 
 import {
   setAssets,
   setTransactions,
-  // setTokenMarket,
-  // setICPSubaccounts,
-  // setAcordeonAssetIdx
+  setTokenMarket,
+  setICPSubaccounts,
+  setAccordionAssetIdx,
+  // setAccordionAssetIdx
 } from "./AssetReducer";
 import { AccountIdentifier, SubAccount as SubAccountNNS } from "@dfinity/ledger-icp";
 import {
   Asset,
-  // ICPSubAccount,
+  ICPSubAccount,
   SubAccount,
 } from "@redux/models/AccountModels";
 import { Principal } from "@dfinity/principal";
-// import { AccountDefaultEnum } from "@/const";
-// import bigInt from "big-integer";
-// import { getETHRate, getTokensFromMarket } from "@/utils/market";
+import { AccountDefaultEnum } from "@/const";
+import { getETHRate, getTokensFromMarket } from "@/utils/market";
 import { GetAllTransactionsICPParams, UpdateAllBalances } from "@/@types/assets";
 import { getICRCSupportedStandards } from "@pages/home/helpers/icrc";
 import { HttpAgent } from "@dfinity/agent";
+import { getFirstNonEmptyString, sortSubAccounts } from "@/utils/assets";
 
 /**
  * This function updates the balances for all provided tokens and their subaccounts, based on the market price and the account balance.
@@ -49,227 +46,293 @@ import { HttpAgent } from "@dfinity/agent";
  * @returns An object containing updated `newAssetsUpload` and `tokens` arrays.
  */
 export const updateAllBalances: UpdateAllBalances = async (params) => {
-  console.log(params);
 
-  // const { loading, myAgent = store.getState().auth.userAgent, assets, basicSearch, fromLogin } = params;
+  const {
+    loading,
+    myAgent = store.getState().auth.userAgent,
+    assets,
+    basicSearch = false,
+    fromLogin } = params;
 
-  // const tokenMarkets = await getTokensFromMarket();
+  const tokenMarkets = await getTokensFromMarket();
+  const ETHRate = await getETHRate();
+  if (ETHRate) tokenMarkets.push(ETHRate);
+  store.dispatch(setTokenMarket(tokenMarkets));
 
-  // const ETHRate = await getETHRate();
-  // if (ETHRate) tokenMarkets.push(ETHRate);
-  // store.dispatch(setTokenMarket(tokenMarkets));
+  const auxAssets = [...assets].sort((a, b) => a.sortIndex - b.sortIndex);
+  const myPrincipal = store.getState().auth.userPrincipal;
 
-  // const auxAssets = [...assets].sort((a, b) => a.sortIndex - b.sortIndex);
-  // const myPrincipal = store.getState().auth.userPrincipal;
-
-  // if (!myPrincipal) return;
+  if (!myPrincipal) {
+    console.warn("No principal found");
+    return;
+  };
 
   // const tokensAseets = await Promise.all(
-  //   auxAssets.map(async (currentAsset, idNum) => {
-  //     try {
-  //       const { balance, metadata, transactionFee } = IcrcLedgerCanister.create({
-  //         agent: myAgent,
-  //         canisterId: Principal.fromText(currentAsset.address),
-  //       });
+  const updateAssets = await Promise.all(
+    auxAssets.map(async (currentAsset, idNum) => {
+      try {
+        const { balance, metadata, transactionFee } = IcrcLedgerCanister.create({
+          agent: myAgent,
+          canisterId: Principal.fromText(currentAsset.address),
+        });
 
-  //       const [myMetadata, myTransactionFee] = await Promise.all([
-  //         metadata({ certified: false }),
-  //         transactionFee({ certified: false }),
-  //       ]);
 
-  //       const { decimals, name, symbol, logo } = getMetadataInfo(myMetadata);
+        const [myMetadata, myTransactionFee] = await Promise.all([
+          metadata({ certified: false }),
+          transactionFee({ certified: false }),
+        ]);
 
-  //       const assetMarket = tokenMarkets.find((tokenMarket) => tokenMarket.symbol === symbol);
-  //       const subAccList: SubAccount[] = [];
-  //       const userSubAcc: TokenSubAccount[] = [];
-  //       let subAccts: { saAsset: SubAccount; saToken: TokenSubAccount }[] = [];
+        const { decimals, name, symbol, logo } = getMetadataInfo(myMetadata);
 
-  //       // Basic Serach look into first 1000 subaccount under the 5 consecutive zeros logic
-  //       // It iterates geting amount of each subaccount
-  //       // If 5 consecutive subaccounts balances are zero, iteration stops
-  //       if (basicSearch) {
-  //         // TODO: basic search later
-  //         let zeros = 0;
-  //         for (let basicSearchIndex = 0; basicSearchIndex < 1000; basicSearchIndex++) {
+        const assetMarket = tokenMarkets.find((tokenMarket) => tokenMarket.symbol === symbol);
+        const subAccList: SubAccount[] = [];
+        // const userSubAcc: TokenSubAccount[] = [];
+        let subAccts: { assetSubAccount: SubAccount }[] = [];
 
-  //           const myBalance = await balance({
-  //             owner: myPrincipal,
-  //             subaccount: new Uint8Array(getSubAccountArray(basicSearchIndex)),
-  //             certified: false,
-  //           });
+        // Basic Serach look into first 1000 subaccount under the 5 consecutive zeros logic
+        // It iterates geting amount of each subaccount
+        // If 5 consecutive subaccounts balances are zero, iteration stops
+        if (basicSearch) {
+          // TODO: basic search later
+          // let zeros = 0;
+          // for (let basicSearchIndex = 0; basicSearchIndex < 1000; basicSearchIndex++) {
 
-  //           if (Number(myBalance) > 0 || basicSearchIndex === 0) {
-  //             zeros = 0;
+          //   const myBalance = await balance({
+          //     owner: myPrincipal,
+          //     subaccount: new Uint8Array(getSubAccountArray(basicSearchIndex)),
+          //     certified: false,
+          //   });
 
-  //             subAccList.push({
-  //               name: basicSearchIndex === 0 ? AccountDefaultEnum.Values.Default : "-",
-  //               sub_account_id: `0x${basicSearchIndex.toString(16)}`,
-  //               address: myPrincipal?.toString(),
-  //               amount: myBalance.toString(),
-  //               currency_amount: assetMarket ? getUSDfromToken(myBalance.toString(), assetMarket.price, decimals) : "0",
-  //               transaction_fee: myTransactionFee.toString(),
-  //               decimal: decimals,
-  //               symbol: currentAsset.symbol,
-  //             });
+          //   if (Number(myBalance) > 0 || basicSearchIndex === 0) {
+          //     zeros = 0;
 
-  //             userSubAcc.push({
-  //               name: basicSearchIndex === 0 ? AccountDefaultEnum.Values.Default : "-",
-  //               numb: `0x${basicSearchIndex.toString(16)}`,
-  //               amount: myBalance.toString(),
-  //               currency_amount: assetMarket ? getUSDfromToken(myBalance.toString(), assetMarket.price, decimals) : "0",
-  //             });
+          //     subAccList.push({
+          //       name: basicSearchIndex === 0 ? AccountDefaultEnum.Values.Default : "-",
+          //       sub_account_id: `0x${basicSearchIndex.toString(16)}`,
+          //       address: myPrincipal?.toString(),
+          //       amount: myBalance.toString(),
+          //       currency_amount: assetMarket ? getUSDfromToken(myBalance.toString(), assetMarket.price, decimals) : "0",
+          //       transaction_fee: myTransactionFee.toString(),
+          //       decimal: decimals,
+          //       symbol: currentAsset.symbol,
+          //     });
 
-  //           } else zeros++;
+          //     userSubAcc.push({
+          //       name: basicSearchIndex === 0 ? AccountDefaultEnum.Values.Default : "-",
+          //       numb: `0x${basicSearchIndex.toString(16)}`,
+          //       amount: myBalance.toString(),
+          //       currency_amount: assetMarket ? getUSDfromToken(myBalance.toString(), assetMarket.price, decimals) : "0",
+          //     });
 
-  //           if (zeros === 5) break;
-  //         }
-  //       } else {
-  //         // Non Basic Serach first look into storaged subaccounts
-  //         // Then search into first 1000 subaccount that are not looked yet under the 5 consecutive zeros logic
-  //         // It iterates geting amount of each subaccount
-  //         // If 5 consecutive subaccounts balances are zero, iteration stops
-  //         const idsPushed: string[] = [];
+          //   } else zeros++;
 
-  //         subAccts = await Promise.all(
-  //           currentAsset.subAccounts.map(async (sa) => {
-  //             const myBalance = await balance({
-  //               owner: myPrincipal,
-  //               subaccount: new Uint8Array(hexToUint8Array(sa.sub_account_id)),
-  //               certified: false,
-  //             });
+          //   if (zeros === 5) break;
+          // }
+        } else {
+          // Non Basic Serach first look into storaged subaccounts
+          // Then search into first 1000 subaccount that are not looked yet under the 5 consecutive zeros logic
+          // It iterates geting amount of each subaccount
+          // If 5 consecutive subaccounts balances are zero, iteration stops
 
-  //             idsPushed.push(sa.sub_account_id);
+          // INFO: store the subaccounts that have been looked at
+          const idsPushed: string[] = [];
 
-  //             const amnt = myBalance.toString();
-  //             const crncyAmnt = assetMarket ? getUSDfromToken(myBalance.toString(), assetMarket.price, decimals) : "0";
-  //             const saAsset: SubAccount = {
-  //               name: sa.name,
-  //               sub_account_id: sa.sub_account_id,
-  //               address: myPrincipal?.toString(),
-  //               amount: amnt,
-  //               currency_amount: crncyAmnt,
-  //               transaction_fee: myTransactionFee.toString(),
-  //               decimal: decimals,
-  //               symbol: currentAsset.symbol,
-  //             };
-  //             const saToken: TokenSubAccount = {
-  //               name: sa.name,
-  //               numb: sa.sub_account_id,
-  //               amount: amnt,
-  //               currency_amount: crncyAmnt,
-  //             };
+          // INFO: get the market balance and usd conversion for each subaccount in currentAsset
+          subAccts = await Promise.all(
+            currentAsset.subAccounts.map(async (sa) => {
+              // INFO: request to the ledger canister to get the balance of the subaccount
+              const myBalance = await balance({
+                owner: myPrincipal,
+                subaccount: new Uint8Array(hexToUint8Array(sa.sub_account_id)),
+                certified: false,
+              });
 
-  //             return { saAsset, saToken };
-  //           }),
-  //         );
+              // INFO: push the subaccount id to the list of subaccounts that have been looked at
+              idsPushed.push(sa.sub_account_id);
 
-  //         let zeros = 0;
-  //         for (let i = 0; i < 1000; i++) {
-  //           if (!idsPushed.includes(`0x${i.toString(16)}`)) {
-  //             const myBalance = await balance({
-  //               owner: myPrincipal,
-  //               subaccount: new Uint8Array(getSubAccountArray(i)),
-  //               certified: false,
-  //             });
-  //             if (Number(myBalance) > 0 || i === 0) {
-  //               zeros = 0;
-  //               const amnt = myBalance.toString();
-  //               const crncyAmnt = assetMarket
-  //                 ? getUSDfromToken(myBalance.toString(), assetMarket.price, decimals)
-  //                 : "0";
-  //               const saAsset: SubAccount = {
-  //                 name: i === 0 ? AccountDefaultEnum.Values.Default : "-",
-  //                 sub_account_id: `0x${i.toString(16)}`,
-  //                 address: myPrincipal?.toString(),
-  //                 amount: amnt,
-  //                 currency_amount: crncyAmnt,
-  //                 transaction_fee: myTransactionFee.toString(),
-  //                 decimal: decimals,
-  //                 symbol: currentAsset.symbol,
-  //               };
-  //               const saToken: TokenSubAccount = {
-  //                 name: i === 0 ? AccountDefaultEnum.Values.Default : "-",
-  //                 numb: `0x${i.toString(16)}`,
-  //                 amount: amnt,
-  //                 currency_amount: crncyAmnt,
-  //               };
-  //               subAccts.push({ saAsset, saToken });
-  //             } else zeros++;
+              // INFO: convert the BigInt balance to a string
+              const amount = myBalance.toString();
 
-  //             if (zeros === 5) break;
-  //           }
-  //         }
-  //       }
+              // INFO: if the asset has a market price, convert the balance to USD
+              const USDAmount = assetMarket
+                ? getUSDfromToken(myBalance.toString(), assetMarket.price, decimals)
+                : "0";
 
-  //       const saTokens = subAccts.map((saT) => saT.saToken);
-  //       const saAssets = subAccts.map((saA) => saA.saAsset);
+              const assetSubAccount: SubAccount = {
+                name: sa.name,
+                sub_account_id: sa.sub_account_id,
+                address: myPrincipal?.toString(),
+                amount,
+                currency_amount: USDAmount,
+                transaction_fee: myTransactionFee.toString(),
+                decimal: decimals,
+                symbol: currentAsset.symbol,
+              };
 
-  //       const newToken: Asset = {
-  //         ...currentAsset,
-  //         logo: logo !== "" ? logo : currentAsset.logo && currentAsset.logo !== "" ? currentAsset.logo : "",
-  //         tokenName: name,
-  //         tokenSymbol: symbol,
-  //         decimal: decimals.toFixed(0),
-  //         subAccounts: (basicSearch ? userSubAcc : saTokens).sort((a, b) => {
-  //           return hexToNumber(a.numb)?.compare(hexToNumber(b.numb) || bigInt()) || 0;
-  //         }),
-  //         supportedStandards: currentAsset.supportedStandards,
-  //       };
+              // TODO: remove to avoid duplicated data
+              // const saToken: TokenSubAccount = {
+              //   name: sa.name,
+              //   numb: sa.sub_account_id,
+              //   amount,
+              //   currency_amount: USDAmount,
+              // };
 
-  //       const newAsset: Asset = {
-  //         symbol: currentAsset.symbol,
-  //         name: currentAsset.name,
-  //         address: currentAsset.address,
-  //         index: currentAsset.index,
-  //         subAccounts: (basicSearch ? subAccList : saAssets).sort((a, b) => {
-  //           return hexToNumber(a.sub_account_id)?.compare(hexToNumber(b.sub_account_id) || bigInt()) || 0;
-  //         }),
-  //         sort_index: idNum,
-  //         decimal: decimals.toFixed(0),
-  //         shortDecimal: currentAsset.shortDecimal || decimals.toFixed(0),
-  //         tokenName: name,
-  //         tokenSymbol: symbol,
-  //         logo: logo !== "" ? logo : currentAsset.logo && currentAsset.logo !== "" ? currentAsset.logo : "",
-  //         supportedStandards: currentAsset.supportedStandards,
-  //       };
-  //       return { newToken, newAsset };
-  //     } catch (e) {
-  //       const newAsset: Asset = {
-  //         symbol: currentAsset.symbol,
-  //         name: currentAsset.name,
-  //         address: currentAsset.address,
-  //         index: currentAsset.index,
-  //         subAccounts: [
-  //           {
-  //             name: AccountDefaultEnum.Values.Default,
-  //             sub_account_id: "0x0",
-  //             address: myPrincipal?.toString(),
-  //             amount: "0",
-  //             currency_amount: "0",
-  //             transaction_fee: "0",
-  //             decimal: 8,
-  //             symbol: currentAsset.symbol,
-  //           },
-  //         ],
-  //         decimal: "8",
-  //         shortDecimal: "8",
-  //         sort_index: 99999 + idNum,
-  //         tokenName: currentAsset.name,
-  //         tokenSymbol: currentAsset.symbol,
-  //         supportedStandards: currentAsset.supportedStandards,
-  //       };
-  //       return { newToken: currentAsset, newAsset };
-  //     }
-  //   }),
-  // );
+              return { assetSubAccount };
+            }),
+          );
 
-  // const newAssetsUpload = tokensAseets
-  //   .map((tA) => {
-  //     return tA.newAsset;
-  //   })
-  //   .sort((a, b) => {
-  //     return a.sort_index - b.sort_index;
-  //   });
+
+          let zeros = 0;
+          // INFO: search for the first 1000 subaccounts that have not been looked at yet
+          for (let i = 0; i < 1000; i++) {
+
+            if (!idsPushed.includes(`0x${i.toString(16)}`)) {
+
+              // INFO: request to the ledger canister to get the balance of the subaccount
+              const myBalance = await balance({
+                owner: myPrincipal,
+                subaccount: new Uint8Array(getSubAccountArray(i)),
+                certified: false,
+              });
+
+              // INFO: jump the default subaccount and if not balance is found
+              if (Number(myBalance) > 0 || i === 0) {
+                zeros = 0;
+
+                // INFO: convert the BigInt balance to a string
+                const amount = myBalance.toString();
+
+                // INFO: if the asset has a market price, convert the balance to USD
+                const USDAmount = assetMarket
+                  ? getUSDfromToken(myBalance.toString(), assetMarket.price, decimals)
+                  : "0";
+
+                const assetSubAccount: SubAccount = {
+                  name: i === 0 ? AccountDefaultEnum.Values.Default : "-",
+                  sub_account_id: `0x${i.toString(16)}`,
+                  address: myPrincipal?.toString(),
+                  amount,
+                  currency_amount: USDAmount,
+                  transaction_fee: myTransactionFee.toString(),
+                  decimal: decimals,
+                  symbol: currentAsset.symbol,
+                };
+
+                // TODO: remove to avoid duplicated data
+                // const saToken: TokenSubAccount = {
+                //   name: i === 0 ? AccountDefaultEnum.Values.Default : "-",
+                //   numb: `0x${i.toString(16)}`,
+                //   amount,
+                //   currency_amount: USDAmount,
+                // };
+
+                subAccts.push({ assetSubAccount });
+              } else zeros++;
+
+              if (zeros === 5) break;
+            }
+          }
+        }
+
+        // TODO: remove to avoid duplicated data
+        // const saTokens = subAccts.map((saT) => saT.saToken);
+
+        // INFO: sort the subaccounts by the subaccount id
+        // TODO: not needed (probably)
+        const assetSubAccounts = subAccts.map((sa) => sa.assetSubAccount);
+
+        // TODO: remove to avoid duplicated data
+        // const newToken: Asset = {
+        //   ...currentAsset,
+        //   logo: logo !== "" ? logo : currentAsset.logo && currentAsset.logo !== "" ? currentAsset.logo : "",
+        //   tokenName: name,
+        //   tokenSymbol: symbol,
+        //   decimal: decimals.toFixed(0),
+        //   subAccounts: (basicSearch ? userSubAcc : saTokens).sort((a, b) => {
+        //     return hexToNumber(a.numb)?.compare(hexToNumber(b.numb) || bigInt()) || 0;
+        //   }),
+        //   supportedStandards: currentAsset.supportedStandards,
+        // };
+
+        // TODO: remove code smell
+        // const newAsset: Asset = {
+        //   symbol: currentAsset.symbol,
+        //   name: currentAsset.name,
+        //   address: currentAsset.address,
+        //   index: currentAsset.index,
+        //   subAccounts: (basicSearch ? subAccList : assetSubAccounts).sort((a, b) => {
+        //     return hexToNumber(a.sub_account_id)?.compare(hexToNumber(b.sub_account_id) || bigInt()) || 0;
+        //   }),
+        //   sortIndex: idNum,
+        //   decimal: decimals.toFixed(0),
+        //   shortDecimal: currentAsset.shortDecimal || decimals.toFixed(0),
+        //   tokenName: name,
+        //   tokenSymbol: symbol,
+        //   logo: logo !== ""
+        //     ? logo
+        //     : (currentAsset.logo && currentAsset.logo !== "")
+        //       ? currentAsset.logo
+        //       : "",
+        //   supportedStandards: currentAsset.supportedStandards,
+        // };
+
+        const newAsset: Asset = {
+          symbol: currentAsset.symbol,
+          name: currentAsset.name,
+          address: currentAsset.address,
+          index: currentAsset.index,
+          subAccounts: sortSubAccounts(basicSearch ? subAccList : assetSubAccounts),
+          sortIndex: idNum,
+          decimal: decimals.toFixed(0),
+          shortDecimal: currentAsset.shortDecimal || decimals.toFixed(0),
+          tokenName: name,
+          tokenSymbol: symbol,
+          logo: getFirstNonEmptyString(logo, currentAsset?.logo || ""),
+          supportedStandards: currentAsset.supportedStandards,
+        };
+
+        return { newAsset };
+      } catch (e) {
+        const newAsset: Asset = {
+          symbol: currentAsset.symbol,
+          name: currentAsset.name,
+          address: currentAsset.address,
+          index: currentAsset.index,
+          subAccounts: [
+            {
+              name: AccountDefaultEnum.Values.Default,
+              sub_account_id: "0x0",
+              address: myPrincipal?.toString(),
+              amount: "0",
+              currency_amount: "0",
+              transaction_fee: "0",
+              decimal: 8,
+              symbol: currentAsset.symbol,
+            },
+          ],
+          decimal: "8",
+          shortDecimal: "8",
+          sortIndex: 99999 + idNum,
+          tokenName: currentAsset.name,
+          tokenSymbol: currentAsset.symbol,
+          supportedStandards: currentAsset.supportedStandards,
+        };
+        return { newAsset };
+      }
+    }),
+  );
+
+
+  // INFO: sort the assets by the sort index
+  const newAssetsUpload = updateAssets
+    .map((tA) => {
+      return tA.newAsset;
+    })
+    .sort((a, b) => {
+      return a.sortIndex - b.sortIndex;
+    });
+
+  // TODO: remove to avoid duplicated data
   // const newTokensUpload = tokensAseets
   //   .map((tA) => {
   //     return tA.newToken;
@@ -277,45 +340,49 @@ export const updateAllBalances: UpdateAllBalances = async (params) => {
   //   .sort((a, b) => {
   //     return a.id_number - b.id_number;
   //   });
-  // if (loading) {
-  //   store.dispatch(setAssets(newAssetsUpload));
 
-  //   if (fromLogin) {
-  //     newAssetsUpload.length > 0 && store.dispatch(setAcordeonAssetIdx([newAssetsUpload[0].tokenSymbol]));
-  //   }
-  // }
+  if (loading) {
+    store.dispatch(setAssets(newAssetsUpload));
 
-  // const icpAsset = newAssetsUpload.find((ast) => ast.tokenSymbol === "ICP");
-  // if (icpAsset) {
-  //   const sub: ICPSubAccount[] = [];
-  //   icpAsset.subAccounts.map((saICP) => {
-  //     let subacc: SubAccountNNS | undefined = undefined;
-  //     try {
-  //       subacc = SubAccountNNS.fromBytes(hexToUint8Array(saICP.sub_account_id)) as SubAccountNNS;
-  //     } catch {
-  //       subacc = undefined;
-  //     }
-  //     sub.push({
-  //       legacy: AccountIdentifier.fromPrincipal({
-  //         principal: myPrincipal,
-  //         subAccount: subacc,
-  //       }).toHex(),
-  //       sub_account_id: saICP.sub_account_id,
-  //     });
-  //   });
+    if (fromLogin) {
+      newAssetsUpload.length > 0 && store.dispatch(setAccordionAssetIdx([newAssetsUpload[0].tokenSymbol]));
+    }
+  }
 
-  //   store.dispatch(setICPSubaccounts(sub));
-  // }
+  const icpAsset = newAssetsUpload.find((ast) => ast.tokenSymbol === "ICP");
 
-  // return {
-  //   newAssetsUpload,
-  //   tokens: newTokensUpload.sort((a, b) => {
-  //     return a.id_number - b.id_number;
-  //   }),
-  // };
+  // INFO: if the ICP asset is found, update the subaccounts
+  // INFO: ?????
+  if (icpAsset) {
+    const sub: ICPSubAccount[] = [];
 
-  return { newAssetsUpload: [], assets: [] };
+    icpAsset.subAccounts.map((saICP) => {
+      let subacc: SubAccountNNS | undefined = undefined;
+
+      try {
+        subacc = SubAccountNNS.fromBytes(hexToUint8Array(saICP.sub_account_id)) as SubAccountNNS;
+      } catch {
+        subacc = undefined;
+      }
+
+      sub.push({
+        legacy: AccountIdentifier.fromPrincipal({
+          principal: myPrincipal,
+          subAccount: subacc,
+        }).toHex(),
+        sub_account_id: saICP.sub_account_id,
+      });
+
+    });
+
+    store.dispatch(setICPSubaccounts(sub));
+  }
+
+  return newAssetsUpload;
+  // return { newAssetsUpload: [], assets: [] };
 };
+
+// -----------------------------------------------------------------------------------------------
 
 export const setAssetFromLocalData = (assets: Asset[], myPrincipal: string) => {
   const endAssets: Asset[] = [];

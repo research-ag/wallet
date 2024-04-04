@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { updateAllBalances } from "@redux/assets/AssetActions";
 import {
   removeToken,
-  setAcordeonAssetIdx,
+  setAccordionAssetIdx,
   setLoading,
   setSelectedAccount,
   setSelectedAsset,
@@ -34,7 +34,7 @@ export const AssetHook = () => {
   };
 
   const [searchKey, setSearchKey] = useState("");
-  const setAcordeonIdx = (assetIdx: string[]) => dispatch(setAcordeonAssetIdx(assetIdx));
+  const setAcordeonIdx = (assetIdx: string[]) => dispatch(setAccordionAssetIdx(assetIdx));
   const [assetInfo, setAssetInfo] = useState<Asset | undefined>();
 
   const [editNameId, setEditNameId] = useState("");
@@ -51,7 +51,6 @@ export const AssetHook = () => {
       // REMOVE: tokens: updatedTokens ? updatedTokens : tokens.length > 0 ? tokens : defaultTokens,
       // TODO: check what does this function do, and what it should receive.
       assets: updatedTokens ? updatedTokens : defaultTokens,
-      basicSearch: false,
       fromLogin: true,
     });
     await allowanceCacheRefresh();

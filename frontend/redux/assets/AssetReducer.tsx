@@ -307,7 +307,7 @@ const assetSlice = createSlice({
     setTxLoad(state, action) {
       state.txLoad = action.payload;
     },
-    setAcordeonAssetIdx(state, action: PayloadAction<string[]>) {
+    setAccordionAssetIdx(state, action: PayloadAction<string[]>) {
       state.acordeonIdx = action.payload;
     },
     clearDataAsset(state) {
@@ -350,7 +350,7 @@ export const {
   setTxWorker,
   addTxWorker,
   setTxLoad,
-  setAcordeonAssetIdx,
+  setAccordionAssetIdx,
   updateSubAccountBalance,
 } = assetSlice.actions;
 
