@@ -1,6 +1,6 @@
 import { TokenMarketInfo } from "@redux/models/TokenModels";
 
-export async function getTokensFromMarket() {
+export async function getTokensFromMarket(): Promise<TokenMarketInfo[]> {
   const marketUrl = import.meta.env.VITE_APP_TOKEN_MARKET;
 
   try {

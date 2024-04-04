@@ -137,16 +137,18 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, assets, acorde
       tokenName: "",
       decimal: "",
       shortDecimal: "",
-      subAccounts: [{
-        sub_account_id: "0x0",
-        name: AccountDefaultEnum.Values.Default,
-        amount: "0",
-        currency_amount: "0",
-        address: "",
-        decimal: 0,
-        symbol: "",
-        transaction_fee: ""
-      }],
+      subAccounts: [
+        {
+          sub_account_id: "0x0",
+          name: AccountDefaultEnum.Values.Default,
+          amount: "0",
+          currency_amount: "0",
+          address: "",
+          decimal: 0,
+          symbol: "",
+          transaction_fee: "",
+        },
+      ],
       index: "",
       sortIndex: 999,
       supportedStandards: [],
@@ -163,23 +165,25 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, assets, acorde
       const idxSorting =
         assets.length > 0
           ? [...assets].sort((a, b) => {
-            return b.sortIndex - a.sortIndex;
-          })
+              return b.sortIndex - a.sortIndex;
+            })
           : [];
       const idx = (idxSorting.length > 0 ? idxSorting[0]?.sortIndex : 0) + 1;
       const tknSave: Asset = {
         ...newToken,
         sortIndex: idx,
-        subAccounts: [{
-          sub_account_id: "0x0",
-          name: AccountDefaultEnum.Values.Default,
-          amount: "0",
-          currency_amount: "0",
-          address: "",
-          decimal: 0,
-          symbol: "",
-          transaction_fee: ""
-        }],
+        subAccounts: [
+          {
+            sub_account_id: "0x0",
+            name: AccountDefaultEnum.Values.Default,
+            amount: "0",
+            currency_amount: "0",
+            address: "",
+            decimal: 0,
+            symbol: "",
+            transaction_fee: "",
+          },
+        ],
       };
       setAddStatus(AddingAssetsEnum.enum.adding);
       showModal(true);
@@ -198,16 +202,18 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, assets, acorde
         tokenSymbol: "",
         decimal: "",
         shortDecimal: "",
-        subAccounts: [{
-          sub_account_id: "0x0",
-          name: AccountDefaultEnum.Values.Default,
-          amount: "0",
-          currency_amount: "0",
-          address: "",
-          decimal: 0,
-          symbol: "",
-          transaction_fee: ""
-        }],
+        subAccounts: [
+          {
+            sub_account_id: "0x0",
+            name: AccountDefaultEnum.Values.Default,
+            amount: "0",
+            currency_amount: "0",
+            address: "",
+            decimal: 0,
+            symbol: "",
+            transaction_fee: "",
+          },
+        ],
         index: "",
         sortIndex: 999,
         supportedStandards: [],

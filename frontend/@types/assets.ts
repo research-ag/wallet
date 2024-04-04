@@ -1,31 +1,22 @@
 import { HttpAgent } from "@dfinity/agent";
+import { Principal } from "@dfinity/principal";
 import { Asset } from "@redux/models/AccountModels";
+import { TokenMarketInfo } from "@redux/models/TokenModels";
 
-/**
- * Interface containing parameters for the updateAllBalances function
- */
 export interface UpdateAllBalancesParams {
-  /**
-   * Flag indicating if loading animation should be displayed
-   */
   loading: boolean;
-  /**
-   * Array of Asset objects representing the tokens to update balances for
-   */
-  /**
-   * HttpAgent object used for making network requests
-   */
   myAgent?: HttpAgent;
   assets: Asset[];
-  /**
-   * Optional flag indicating if basic search should be used (limited to 1000 subaccounts)
-   */
   basicSearch?: boolean;
-  /**
-   * Optional flag indicating if data is being fetched after login
-   */
   fromLogin?: boolean;
 }
+
+export type RefreshOptions = {
+  myAgent: HttpAgent;
+  basicSearch?: boolean;
+  tokenMarkets: TokenMarketInfo[];
+  myPrincipal: Principal;
+};
 
 export type UpdateAllBalances = (params: UpdateAllBalancesParams) => Promise<Asset[] | undefined>;
 

@@ -12,10 +12,7 @@ import { db } from "@/database/db";
 
 export const WorkerHook = () => {
   const dispatch = useAppDispatch();
-  const {
-    assets,
-    txWorker,
-  } = useAppSelector((state) => state.asset);
+  const { assets, txWorker } = useAppSelector((state) => state.asset);
   const { userAgent } = useAppSelector((state) => state.auth);
 
   const getTransactionsWorker = async () => {
