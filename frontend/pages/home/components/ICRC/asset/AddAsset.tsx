@@ -174,6 +174,20 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens, assets
       await updateAllBalances({ loading: false, myAgent: userAgent, tokens: [...tokens, tknSave] });
       setAssetOpen(false);
       showModal(false);
+      setNewToken({
+        address: "",
+        symbol: "",
+        name: "",
+        tokenName: "",
+        tokenSymbol: "",
+        decimal: "",
+        shortDecimal: "",
+        fee: "0",
+        subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default, amount: "0", currency_amount: "0" }],
+        index: "",
+        id_number: 999,
+        supportedStandards: [],
+      });
     }
   }
 

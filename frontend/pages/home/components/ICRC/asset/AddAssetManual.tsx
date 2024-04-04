@@ -185,7 +185,6 @@ const AddAssetManual = ({
               intent={"secondary"}
               placeholder=""
               compOutClass=""
-              type="number"
               value={newToken.shortDecimal}
               onChange={onChangeShortDecimal}
               border={errShortDec ? "error" : undefined}
@@ -262,7 +261,10 @@ const AddAssetManual = ({
 
   function onChangeShortDecimal(e: ChangeEvent<HTMLInputElement>) {
     const value = e.target.value === "" ? "" : Number(e.target.value) === 0 ? "0" : e.target.value;
-    if (Number(value) <= Number(newToken.decimal))
+    if (
+      (Number(value) <= Number(newToken.decimal) && RegExp("^[0-9]").test(value) && !value.includes(".")) ||
+      value === ""
+    )
       setNewToken((prev: any) => {
         return { ...prev, shortDecimal: value };
       });

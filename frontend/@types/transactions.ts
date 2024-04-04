@@ -176,6 +176,7 @@ export const TransactionValidationErrorsEnum = z.enum([
   "error.invalid.amount",
   "error.not.enough.balance",
   "error.allowance.subaccount.not.enough",
+  "error.allowance.not.enough",
   "error.allowance.not.exist",
 ]);
 export type TransactionValidationErrorsType = z.infer<typeof TransactionValidationErrorsEnum>;
@@ -220,6 +221,8 @@ export const transactionErrors: KeyValidationErrors = {
     TransactionValidationErrorsEnum.Values["error.invalid.amount"],
   [TransactionValidationErrorsEnum.Values["error.not.enough.balance"]]:
     TransactionValidationErrorsEnum.Values["error.not.enough.balance"],
+  [TransactionValidationErrorsEnum.Values["error.allowance.not.exist"]]:
+    TransactionValidationErrorsEnum.Values["error.allowance.not.exist"],
   [TransactionValidationErrorsEnum.Values["error.allowance.subaccount.not.enough"]]:
     TransactionValidationErrorsEnum.Values["error.allowance.subaccount.not.enough"],
 };

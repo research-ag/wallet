@@ -1,11 +1,9 @@
-import { IconTypeEnum, ThemesEnum } from "@/const";
+import { IconTypeEnum } from "@/const";
 import { getAssetIcon } from "@/utils/icons";
-import { ThemeHook } from "@pages/hooks/themeHook";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { useAppSelector } from "@redux/Store";
 import { useTranslation } from "react-i18next";
-import ChevronRightIcon from "@assets/svg/files/chevron-right-icon.svg";
-import ChevronRightDarkIcon from "@assets/svg/files/chevron-right-dark-icon.svg";
+import { ReactComponent as DropIcon } from "@assets/svg/files/chevron-right-icon.svg";
 import { Asset } from "@redux/models/AccountModels";
 import { clsx } from "clsx";
 import { CustomCheck } from "@components/checkbox";
@@ -19,7 +17,6 @@ interface AssetFilterProps {
 
 export default function AssetFilter(props: AssetFilterProps) {
   const { t } = useTranslation();
-  const { theme } = ThemeHook();
   const { assets } = useAppSelector((state) => state.asset);
   const { setAssetOpen, assetFilter, assetOpen, setAssetFilter } = props;
 
@@ -48,11 +45,8 @@ export default function AssetFilter(props: AssetFilterProps) {
                 "selections",
               )}`}</p>
             )}
-            <img
-              src={theme === ThemesEnum.enum.dark ? ChevronRightIcon : ChevronRightDarkIcon}
-              className={`${assetOpen ? "-rotate-90 transition-transform" : "rotate-0 transition-transform"} ml-1`}
-              alt="chevron-icon"
-            />
+
+            <DropIcon className={`fill-gray-color-4 ${assetOpen ? "-rotate-90" : ""}`} />
           </div>
         </div>
       </DropdownMenu.Trigger>
@@ -60,11 +54,11 @@ export default function AssetFilter(props: AssetFilterProps) {
         <DropdownMenu.Content className={contentContainerStyles} sideOffset={2} align="end">
           <button
             onClick={handleSelectAll}
-            className="flex flex-row items-center justify-between w-full px-3 py-2 rounded-t-lg hover:bg-HoverColorLight hover:dark:bg-HoverColor"
+            className="flex flex-row items-center justify-between w-full px-3 py-2 rounded-t-lg hover:bg-secondary-color-1-light hover:dark:bg-HoverColor"
           >
             <p>{t("selected.all")}</p>
             <CustomCheck
-              className="border-BorderColorLight dark:border-BorderColor"
+              className="border-secondary-color-2-light dark:border-BorderColor"
               checked={assetFilter.length === assets.length}
             />
           </button>
@@ -114,13 +108,13 @@ export default function AssetFilter(props: AssetFilterProps) {
 
 const assetStyle = (k: number, assets: Asset[]) =>
   clsx({
-    ["flex flex-row justify-between items-center px-3 py-2 w-full hover:bg-HoverColorLight hover:dark:bg-HoverColor"]:
+    ["flex flex-row justify-between items-center px-3 py-2 w-full hover:bg-secondary-color-1-light hover:dark:bg-HoverColor"]:
       true,
     ["rounded-b-lg"]: k === assets.length - 1,
   });
 
 const triggerContainerStyles = clsx(
-  "flex flex-row justify-start items-center",
+  "flex flex-row justify-start items-center cursor-pointer",
   "border border-BorderColorLight dark:border-BorderColor",
   "rounded px-2 py-1 w-[10rem] h-[2.5rem]",
   "bg-SecondaryColorLight dark:bg-SecondaryColor",

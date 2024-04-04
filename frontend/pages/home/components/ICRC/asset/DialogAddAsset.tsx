@@ -12,10 +12,11 @@ import { GeneralHook } from "../../../hooks/generalHook";
 import { useAppDispatch } from "@redux/Store";
 import { setAcordeonAssetIdx } from "@redux/assets/AssetReducer";
 import bigInt from "big-integer";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, Fragment, useState } from "react";
 import { IcrcLedgerCanister } from "@dfinity/ledger-icrc";
 import { db } from "@/database/db";
 import { LoadingLoader } from "@components/loader";
+import { IconTypeEnum } from "@/const";
 
 interface DialogAddAssetProps {
   newErr: any;
@@ -50,8 +51,9 @@ const DialogAddAsset = ({
 }: DialogAddAssetProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const { asciiHex, userAgent, userPrincipal, changeSelectedAccount } = GeneralHook();
+  const { asciiHex, userAgent, userPrincipal, changeSelectedAccount, getAssetIcon } = GeneralHook();
   const [loading, setLoading] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   return (
     <BasicModal
@@ -60,7 +62,7 @@ const DialogAddAsset = ({
       border="border border-BorderColorTwoLight dark:border-BorderColorTwo"
       open={newSub ? true : false}
     >
-      <div className="flex flex-col items-start justify-start w-full gap-2 reative">
+      <div className="flex flex-col items-start justify-start w-full gap-2">
         <CloseIcon
           className="absolute cursor-pointer top-6 right-5 stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
           onClick={() => {
@@ -70,44 +72,55 @@ const DialogAddAsset = ({
             setHexChecked(false);
           }}
         />
-        <p className="">{t("add.subacc")}</p>
-        <CustomInput
-          intent={"primary"}
-          border={newErr.name ? "error" : "primary"}
-          placeholder={t("name.sub.account")}
-          value={newSub?.name || ""}
-          sizeComp="small"
-          sizeInput="small"
-          inputClass="!py-1"
-          // eslint-disable-next-line jsx-a11y/no-autofocus
-          autoFocus
-          onChange={onChangeName}
-          onKeyUp={onKeyUp}
-        />
-        <button className="flex flex-row gap-2 p-0" onClick={onChangeCheckboxHex}>
-          <CustomCheck className="border-BorderColorLight dark:border-BorderColor" checked={hexChecked} />
-          <p className="text-sm">{t("hex.check")}</p>
-        </button>
-        {hexChecked && (
-          <CustomInput
-            intent={"primary"}
-            border={newErr.idx ? "error" : "primary"}
-            placeholder={t("sub-acc")}
-            value={newSub?.sub_account_id || ""}
-            sizeComp="small"
-            sizeInput="small"
-            inputClass="!py-1"
-            onChange={onChangeIdx}
-            onKeyUp={onKeyUp}
-            onKeyDown={onKeyDown}
-            sufix={<p className="text-sm opacity-70">(Hex)</p>}
-          />
+        {!showConfirm ? (
+          <Fragment>
+            <p className="">{t("add.subacc")}</p>
+            <CustomInput
+              intent={"primary"}
+              border={newErr.name ? "error" : "primary"}
+              placeholder={t("name.sub.account")}
+              value={newSub?.name || ""}
+              sizeComp="small"
+              sizeInput="small"
+              inputClass="!py-1"
+              // eslint-disable-next-line jsx-a11y/no-autofocus
+              autoFocus
+              onChange={onChangeName}
+              onKeyUp={onKeyUp}
+            />
+            <button className="flex flex-row gap-2 p-0" onClick={onChangeCheckboxHex}>
+              <CustomCheck className="border-BorderColorLight dark:border-BorderColor" checked={hexChecked} />
+              <p className="text-sm">{t("hex.check")}</p>
+            </button>
+            {hexChecked && (
+              <CustomInput
+                intent={"primary"}
+                border={newErr.idx ? "error" : "primary"}
+                placeholder={t("sub-acc")}
+                value={newSub?.sub_account_id || ""}
+                sizeComp="small"
+                sizeInput="small"
+                inputClass="!py-1"
+                onChange={onChangeIdx}
+                onKeyUp={onKeyUp}
+                onKeyDown={onKeyDown}
+                sufix={<p className="text-sm opacity-70">(Hex)</p>}
+              />
+            )}
+            <div className="flex flex-row items-center justify-end w-full">
+              <CustomButton size={"small"} className="min-w-[5rem]" onClick={onEnter}>
+                {loading ? <LoadingLoader /> : <p>{t("add")}</p>}
+              </CustomButton>
+            </div>
+          </Fragment>
+        ) : (
+          <div className="flex flex-col justify-center items-center w-full gap-3">
+            {getAssetIcon(IconTypeEnum.Enum.ASSET, tokens[Number(idx)].symbol, tokens[Number(idx)].logo)}
+            <p className={"text-lg font-semibold text-center"}>
+              {t("new.subacc.added", { name: newSub?.name || "", asset: tokens[Number(idx)].tokenName })}
+            </p>
+          </div>
         )}
-        <div className="flex flex-row items-center justify-end w-full">
-          <CustomButton size={"small"} className="min-w-[5rem]" onClick={onEnter}>
-            {loading ? <LoadingLoader /> : <p>{t("add")}</p>}
-          </CustomButton>
-        </div>
       </div>
     </BasicModal>
   );
@@ -242,12 +255,17 @@ const DialogAddAsset = ({
             };
 
             setTimeout(() => {
+              setShowConfirm(true);
+            }, 2500);
+
+            setTimeout(() => {
               setAddOpen(false);
               setHexChecked(false);
               changeSelectedAccount(savedSub);
               setNewSub(undefined);
               setLoading(false);
-            }, 2500);
+              setShowConfirm(false);
+            }, 6000);
           } catch (e) {
             console.log("AddErr: ", e);
             setLoading(false);

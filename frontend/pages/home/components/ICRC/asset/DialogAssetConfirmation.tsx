@@ -37,7 +37,7 @@ const DialogAssetConfirmation = ({
       padding="py-3 px-1"
       border="border border-BorderColorTwoLight dark:border-BorderColorTwo"
     >
-      <div className="flex flex-col items-center justify-start w-full reative">
+      <div className="flex flex-col items-center justify-start w-full">
         <CloseIcon
           className="absolute cursor-pointer top-5 right-5 stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
           onClick={onClose}

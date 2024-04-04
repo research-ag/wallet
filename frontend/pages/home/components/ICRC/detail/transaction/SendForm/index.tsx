@@ -16,12 +16,21 @@ import { useTranslation } from "react-i18next";
 import { useAppSelector } from "@redux/Store";
 import { TransactionDrawer, TransactionValidationErrorsEnum, transactionErrors } from "@/@types/transactions";
 import { LoadingLoader } from "@components/loader";
+import { toHoleBigInt } from "@/utils";
 
 export default function SendForm() {
   const { t } = useTranslation();
   const { isLoading, errors, sender } = useAppSelector((state) => state.transaction);
-  const { isSender, isReceiver, isSenderSameAsReceiver, isSenderAllowanceOwn, isSenderValid, isReceiverValid } =
-    useSend();
+  const {
+    isSender,
+    isReceiver,
+    isSenderSameAsReceiver,
+    isSenderAllowanceOwn,
+    isSenderValid,
+    isReceiverValid,
+    getAllowanceAmount,
+    isSenderAllowance,
+  } = useSend();
 
   return (
     <div className={`w-full ${isLoading ? "opacity-50 pointer-events-none" : ""} `}>
@@ -69,6 +78,14 @@ export default function SendForm() {
       if (isSenderAllowanceOwn())
         return setErrorAction(TransactionValidationErrorsEnum.Values["error.own.sender.not.allowed"]);
       removeErrorAction(TransactionValidationErrorsEnum.Values["error.own.sender.not.allowed"]);
+
+      if (isSenderAllowance()) {
+        const allowanceGuaranteed = toHoleBigInt(await getAllowanceAmount(), Number(sender?.asset?.decimal));
+        if (allowanceGuaranteed === BigInt(0)) {
+          return setErrorAction(TransactionValidationErrorsEnum.Values["error.allowance.not.exist"]);
+        }
+        removeErrorAction(TransactionValidationErrorsEnum.Values["error.allowance.not.exist"]);
+      }
 
       setIsInspectDetailAction(true);
     } catch (error) {

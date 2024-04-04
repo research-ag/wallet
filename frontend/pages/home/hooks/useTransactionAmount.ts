@@ -33,7 +33,7 @@ export default function useTransactionAmount() {
   const { transactionFee, getSenderMaxAmount, isSenderAllowance, senderPrincipal, senderSubAccount } = useSend();
 
   function onChangeAmount(e: ChangeEvent<HTMLInputElement>) {
-    const amount = e.target.value.trim();
+    const amount = e.target.value.trim().replace(/[^0-9.]/g, "");
     setAmountAction(amount);
     setMaxAmount(maxAmountInitialState);
     const isValidAmount = validateAmount(amount, Number(sender.asset.decimal));
@@ -104,15 +104,18 @@ export default function useTransactionAmount() {
         } else {
           // The amount must come from the available balance
           const endTransactionAmount =
-            availableWithoutFee < 0 ? "0" : toFullDecimal(allowanceBigintBalance, Number(sender.asset.decimal));
+            availableWithoutFee < 0 ? "0" : toFullDecimal(bigintTransactionAmount, Number(sender.asset.decimal));
 
           const endTransactionWithoutFee =
-            availableWithoutFee < 0 ? "0" : toFullDecimal(availableWithoutFee, Number(sender.asset.decimal));
+            availableWithoutFee < 0 ? "0" : toFullDecimal(allowanceWithoutFee, Number(sender.asset.decimal));
 
           const availableAmount =
             allowanceBigintBalance > bigintFee
               ? toFullDecimal(allowanceBigintBalance - bigintFee, Number(sender.asset.decimal))
               : "0";
+
+          // max amount: allowance - fee
+          // available: balance - fee
 
           setMaxAmount({
             transactionAmount: endTransactionAmount,
@@ -123,7 +126,7 @@ export default function useTransactionAmount() {
             isLoading: false,
             isAmountFromMax: true,
           });
-          setAmountAction(endTransactionWithoutFee);
+          setAmountAction(availableAmount);
         }
       } else {
         transactionAmount = await getSenderMaxAmount();
