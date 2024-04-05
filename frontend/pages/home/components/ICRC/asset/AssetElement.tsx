@@ -84,7 +84,7 @@ const AssetElement = ({ asset, idx, acordeonIdx, setAssetInfo, setAssetOpen, set
                 </div>
               </div>
               <div className="flex flex-col items-end justify-center">
-                <p>{`${toFullDecimal(getFullTokenAmount().token, Number(asset.decimal), Number(asset.shortDecimal))} ${
+                <p>{`${toFullDecimal(getFullTokenAmount().asset, Number(asset.decimal), Number(asset.shortDecimal))} ${
                   asset.symbol
                 }`}</p>
                 <p
@@ -104,7 +104,7 @@ const AssetElement = ({ asset, idx, acordeonIdx, setAssetInfo, setAssetOpen, set
                   alt="chevron-icon"
                 />
               )}
-              {getFullTokenAmount().token === BigInt("0") && (
+              {getFullTokenAmount().asset === BigInt("0") && (
                 <TrashIcon
                   onClick={() => {
                     onDeleteSubAccount();
@@ -217,7 +217,7 @@ const AssetElement = ({ asset, idx, acordeonIdx, setAssetInfo, setAssetOpen, set
     const currencyTotal = assetMarket ? getUSDfromToken(total.toString(), assetMarket.price, asset.decimal) : "0.00";
 
     return {
-      token: total,
+      asset: total,
       currency: Number(currencyTotal),
     };
   }

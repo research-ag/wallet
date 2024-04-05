@@ -202,16 +202,16 @@ export class RxdbDatabase extends IWalletDatabase {
   /**
    * Add a new Asset object to the list of Asset objects
    * current active agent has.
-   * @param token Asset object to be added
+   * @param asset Asset object to be added
    */
-  async addToken(token: Asset): Promise<void> {
+  async addToken(asset: Asset): Promise<void> {
     try {
       await (
         await this.assets
       )?.insert({
-        ...token,
-        logo: extractValueFromArray(token.logo),
-        index: extractValueFromArray(token.index),
+        ...asset,
+        logo: extractValueFromArray(asset.logo),
+        index: extractValueFromArray(asset.index),
         deleted: false,
         updatedAt: Date.now(),
         // TODO: fee should not be here

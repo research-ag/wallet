@@ -18,10 +18,10 @@ import { HttpAgent } from "@dfinity/agent";
 import { refreshAssetBalances } from "@/utils/assets";
 
 /**
- * This function updates the balances for all provided tokens and their subaccounts, based on the market price and the account balance.
+ * This function updates the balances for all provided assets and their subaccounts, based on the market price and the account balance.
  *
  * @param params An object containing parameters for the update process.
- * @returns An object containing updated `newAssetsUpload` and `tokens` arrays.
+ * @returns An object containing updated `newAssetsUpload` and `assets` arrays.
  */
 export const updateAllBalances: UpdateAllBalances = async (params) => {
   const { loading, myAgent = store.getState().auth.userAgent, assets, basicSearch = false, fromLogin } = params;

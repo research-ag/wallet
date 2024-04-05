@@ -17,7 +17,6 @@ import { db } from "@/database/db";
 export const AssetHook = () => {
   const dispatch = useAppDispatch();
   const {
-    // REMOVE: tokens,
     assets,
     assetLoading,
     selectedAsset,
@@ -98,7 +97,6 @@ export const AssetHook = () => {
   }, [searchKey]);
 
   return {
-    // REMOVE: tokens,
     assets,
     assetLoading,
     selectedAsset,

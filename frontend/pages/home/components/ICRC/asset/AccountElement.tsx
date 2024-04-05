@@ -185,8 +185,8 @@ const AccountElement = ({
     if (name.trim() !== "") {
       setEditNameId("");
       if (newSub) {
-        const token = assets[+tokenIndex];
-        const subAccounts = token.subAccounts
+        const asset = assets[+tokenIndex];
+        const subAccounts = asset.subAccounts
           .map((sa) => ({
             ...sa,
             name: name,
@@ -194,8 +194,8 @@ const AccountElement = ({
           }))
           .sort((a, b) => bigInt(a.numb).compare(bigInt(b.numb)));
 
-        await db().updateToken(token.address, {
-          ...token,
+        await db().updateToken(asset.address, {
+          ...asset,
           subAccounts: subAccounts,
         });
 
@@ -203,13 +203,13 @@ const AccountElement = ({
         setNewSub(undefined);
         setAddOpen(false);
       } else {
-        const token = assets[+tokenIndex];
-        const subAccounts = token.subAccounts.map((sa) =>
+        const asset = assets[+tokenIndex];
+        const subAccounts = asset.subAccounts.map((sa) =>
           sa.sub_account_id === subAccount.sub_account_id ? { ...sa, name: name } : sa,
         );
 
-        await db().updateToken(token.address, {
-          ...token,
+        await db().updateToken(asset.address, {
+          ...asset,
           subAccounts: subAccounts,
         });
         // TODO: Verify if is possible to update the state from the db observable for assets
@@ -227,14 +227,14 @@ const AccountElement = ({
   }
 
   async function onConfirm() {
-    const token = assets[Number(tokenIndex)];
-    const subAccounts = token.subAccounts
+    const asset = assets[Number(tokenIndex)];
+    const subAccounts = asset.subAccounts
       // TODO: verify if numb is same to sub_account_id
       .map((sa) => (sa.sub_account_id !== subAccount.sub_account_id ? sa : null!))
       .filter((x) => !!x);
 
-    await db().updateToken(token.address, {
-      ...token,
+    await db().updateToken(asset.address, {
+      ...asset,
       subAccounts: subAccounts,
     });
 

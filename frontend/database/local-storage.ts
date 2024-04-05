@@ -67,11 +67,11 @@ export class LocalStorageDatabase extends IWalletDatabase {
   /**
    * Add a new Asset object to the list of Asset objects
    * current active agent has.
-   * @param token Asset object to be added
+   * @param asset Asset object to be added
    */
-  async addToken(token: Asset): Promise<void> {
-    const tokens = this._getTokens();
-    this._setTokens([...tokens, token]);
+  async addToken(asset: Asset): Promise<void> {
+    const assets = this._getTokens();
+    this._setTokens([...assets, asset]);
   }
 
   /**
@@ -254,9 +254,9 @@ export class LocalStorageDatabase extends IWalletDatabase {
   }
 
   private _setTokens(allTokens: Asset[]) {
-    const tokens = [...allTokens].sort((a, b) => a.sortIndex - b.sortIndex);
-    localStorage.setItem(`assets-${this.principalId}`, JSON.stringify(tokens));
-    this._tokens$.next(tokens);
+    const assets = [...allTokens].sort((a, b) => a.sortIndex - b.sortIndex);
+    localStorage.setItem(`assets-${this.principalId}`, JSON.stringify(assets));
+    this._tokens$.next(assets);
   }
 
   private _getContacts(): Contact[] {

@@ -76,28 +76,28 @@ const assetSlice = createSlice({
       reducer(
         state,
         action: PayloadAction<{
-          token: Asset;
+          asset: Asset;
           tokenSymbol: string;
         }>,
       ) {
-        const { token, tokenSymbol } = action.payload;
+        const { asset, tokenSymbol } = action.payload;
         const auxAssets = state.assets.map((asst) => {
           if (asst.tokenSymbol === tokenSymbol) {
             return {
               ...asst,
-              symbol: token.symbol,
-              name: token.name,
-              index: token.index,
+              symbol: asset.symbol,
+              name: asset.name,
+              index: asset.index,
               shortDecimal:
-                token.shortDecimal === "" ? Number(token.decimal).toFixed() : Number(token.shortDecimal).toFixed(),
+                asset.shortDecimal === "" ? Number(asset.decimal).toFixed() : Number(asset.shortDecimal).toFixed(),
             };
           } else return asst;
         });
         state.assets = auxAssets;
       },
-      prepare(token: Asset, tokenSymbol: string) {
+      prepare(asset: Asset, tokenSymbol: string) {
         return {
-          payload: { token, tokenSymbol },
+          payload: { asset, tokenSymbol },
         };
       },
     },

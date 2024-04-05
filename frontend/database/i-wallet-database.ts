@@ -155,9 +155,9 @@ export abstract class IWalletDatabase {
   /**
    * Add a new Asset object to the list of Asset objects
    * current active agent has.
-   * @param token Asset object to be added
+   * @param asset Asset object to be added
    */
-  abstract addToken(token: Asset): Promise<void>;
+  abstract addToken(asset: Asset): Promise<void>;
 
   /**
    * Find a Asset object by its ID and replace it with

@@ -9,7 +9,6 @@ export const UseTransaction = () => {
   const dispatch = useAppDispatch();
 
   const {
-    // REMOVE: tokens,
     assets,
     selectedAsset,
     selectedAccount,
