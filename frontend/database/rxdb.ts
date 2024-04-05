@@ -667,6 +667,7 @@ export class RxdbDatabase extends IWalletDatabase {
     this._allowances = null!;
   }
 
+  // TODO: remove id number replaced for sortIndex
   private async _tokensPushHandler(items: any[]): Promise<TokenRxdbDocument[]> {
     const arg = items.map(
       (x) =>

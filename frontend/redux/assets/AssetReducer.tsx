@@ -42,20 +42,23 @@ const assetSlice = createSlice({
   name: "asset",
   initialState,
   reducers: {
+    // INFO: utility state reducers
     setInitLoad(state, action: PayloadAction<boolean>) {
       state.initLoad = action.payload;
     },
+    setLoading(state, action: PayloadAction<boolean>) {
+      state.assetLoading = action.payload;
+    },
+
+    // INFO: asset state reducers
     setICRC1SystemAssets(state, action: PayloadAction<Asset[]>) {
       state.icr1SystemAssets = [...ICRC1systemAssets, ...action.payload];
     },
     setICPSubaccounts(state, action: PayloadAction<ICPSubAccount[]>) {
       state.ICPSubaccounts = action.payload;
     },
-    setLoading(state, action: PayloadAction<boolean>) {
-      state.assetLoading = action.payload;
-    },
     // TODO: Revisit this code to see if we can use filter()
-    removeToken(state, action: PayloadAction<string>) {
+    removeAsset(state, action: PayloadAction<string>) {
       const { payload: symbolToRemove } = action;
       let count = 0;
       // Iterate all Assets and ignore the one that has
@@ -69,7 +72,7 @@ const assetSlice = createSlice({
       });
       state.assets = auxAssets;
     },
-    editToken: {
+    updateAsset: {
       reducer(
         state,
         action: PayloadAction<{
@@ -174,28 +177,9 @@ const assetSlice = createSlice({
         };
       },
     },
-    removeSubAcc: {
-      reducer(
-        state,
-        action: PayloadAction<{
-          tokenIndex: number | string;
-          subIndex: number | string;
-        }>,
-      ) {
-        const { tokenIndex, subIndex } = action.payload;
-        if (state.assets[Number(tokenIndex)]) {
-          state.assets[Number(tokenIndex)].subAccounts.splice(Number(subIndex), 1);
-        }
-      },
-      prepare(tokenIndex: string | number, subIndex: string | number) {
-        return {
-          payload: { tokenIndex, subIndex },
-        };
-      },
-    },
     setAssets(state, action) {
-      state.assets = action.payload.sort((a: any, b: any) => {
-        return a.sort_index - b.sort_index;
+      state.assets = action.payload.sort((a: Asset, b: Asset) => {
+        return a.sortIndex - b.sortIndex;
       });
     },
     setAccounts(state, action) {
@@ -213,6 +197,24 @@ const assetSlice = createSlice({
     setSelectedTransaction(state, action) {
       state.selectedTransaction = action.payload;
     },
+    setAccordionAssetIdx(state, action: PayloadAction<string[]>) {
+      state.acordeonIdx = action.payload;
+    },
+    clearDataAsset(state) {
+      (state.initLoad = true), (state.ICPSubaccounts = []);
+      state.tokensMarket = [];
+      state.accounts = [];
+      state.assets = [];
+      state.transactions = [];
+      state.txWorker = [];
+      state.selectedAccount = undefined;
+      state.selectedAsset = undefined;
+      state.selectedTransaction = undefined;
+      state.acordeonIdx = [];
+      state.icr1SystemAssets = ICRC1systemAssets;
+    },
+
+    // INFO: service state reducers
     setTxWorker(state, action) {
       const txList = [...state.txWorker];
 
@@ -234,25 +236,6 @@ const assetSlice = createSlice({
     addTxWorker(state, action: PayloadAction<TransactionList>) {
       state.txWorker = [...state.txWorker, action.payload];
     },
-    setTxLoad(state, action) {
-      state.txLoad = action.payload;
-    },
-    setAccordionAssetIdx(state, action: PayloadAction<string[]>) {
-      state.acordeonIdx = action.payload;
-    },
-    clearDataAsset(state) {
-      (state.initLoad = true), (state.ICPSubaccounts = []);
-      state.tokensMarket = [];
-      state.accounts = [];
-      state.assets = [];
-      state.transactions = [];
-      state.txWorker = [];
-      state.selectedAccount = undefined;
-      state.selectedAsset = undefined;
-      state.selectedTransaction = undefined;
-      state.acordeonIdx = [];
-      state.icr1SystemAssets = ICRC1systemAssets;
-    },
   },
 });
 
@@ -262,12 +245,11 @@ export const {
   setICRC1SystemAssets,
   setICPSubaccounts,
   setLoading,
-  removeToken,
-  editToken,
+  removeAsset,
+  updateAsset,
   setTokenMarket,
   setSubAccountName,
   addSubAccount,
-  removeSubAcc,
   setAssets,
   setAccounts,
   setTransactions,
@@ -276,7 +258,6 @@ export const {
   setSelectedTransaction,
   setTxWorker,
   addTxWorker,
-  setTxLoad,
   setAccordionAssetIdx,
   updateSubAccountBalance,
 } = assetSlice.actions;

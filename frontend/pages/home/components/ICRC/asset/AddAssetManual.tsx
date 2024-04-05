@@ -6,7 +6,7 @@ import { IcrcIndexCanister, IcrcLedgerCanister } from "@dfinity/ledger-icrc";
 import { getMetadataInfo, toFullDecimal } from "@/utils";
 import { CustomInput } from "@components/input";
 import { CustomCopy } from "@components/tooltip";
-// import { editToken } from "@redux/assets/AssetReducer";
+// import { updateAsset } from "@redux/assets/AssetReducer";
 import { CustomButton } from "@components/button";
 import { useTranslation } from "react-i18next";
 // import { useAppDispatch } from "@redux/Store";
@@ -271,6 +271,7 @@ const AddAssetManual = ({
     serErrShortDec(false);
   }
 
+  // TODO: replace id_number for sortIndex
   function onBack() {
     setManual(false);
     setNewToken({
@@ -421,7 +422,8 @@ const AddAssetManual = ({
         await db().updateToken(asset.address, updatedFull);
       }
       // Edit tokens list and assets list
-      // dispatch(editToken(newToken, asset.tokenSymbol));
+      // dispatch(updateAsset(newToken, asset.tokenSymbol));
+      // TODO: replace id_number for sortIndex
       setNewToken({
         address: "",
         symbol: "",

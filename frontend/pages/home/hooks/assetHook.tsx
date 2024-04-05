@@ -3,7 +3,7 @@ import contactCacheRefresh from "@pages/contacts/helpers/contacts";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { updateAllBalances } from "@redux/assets/AssetActions";
 import {
-  removeToken,
+  removeAsset,
   setAccordionAssetIdx,
   setLoading,
   setSelectedAccount,
@@ -29,7 +29,7 @@ export const AssetHook = () => {
   const { userAgent } = useAppSelector((state) => state.auth);
 
   const deleteAsset = (symb: string, address: string) => {
-    dispatch(removeToken(symb));
+    dispatch(removeAsset(symb));
     db().deleteToken(address).then();
   };
 
