@@ -58,21 +58,6 @@ const assetSlice = createSlice({
     removeToken(state, action: PayloadAction<string>) {
       const { payload: symbolToRemove } = action;
       let count = 0;
-
-      // Iterate all Tokens and ignore the one that has
-      // the symbol marked to be removed
-      // REMOVE:
-      // const auxTkns: Asset[] = [];
-      // state.tokens.map((tkn) => {
-      //   count++;
-      //   if (tkn.symbol !== symbolToRemove) {
-      //     auxTkns.push({ ...tkn, id_number: count - 1 });
-      //   }
-      // });
-      // state.tokens = auxTkns;
-
-      // count = 0;
-
       // Iterate all Assets and ignore the one that has
       // the symbol marked to be removed
       const auxAssets: Asset[] = [];
@@ -93,17 +78,6 @@ const assetSlice = createSlice({
         }>,
       ) {
         const { token, tokenSymbol } = action.payload;
-        // REMOVE:
-        // const auxTokens = state.tokens.map((tkn) => {
-        //   if (tkn.id_number === token.id_number) {
-        //     return token;
-        //   } else
-        //     return {
-        //       ...tkn,
-        //       shortDecimal:
-        //         tkn.shortDecimal === "" ? Number(tkn.decimal).toFixed() : Number(tkn.shortDecimal).toFixed(),
-        //     };
-        // });
         const auxAssets = state.assets.map((asst) => {
           if (asst.tokenSymbol === tokenSymbol) {
             return {
@@ -116,8 +90,6 @@ const assetSlice = createSlice({
             };
           } else return asst;
         });
-        // REMOVE:
-        // state.tokens = auxTokens;
         state.assets = auxAssets;
       },
       prepare(token: Asset, tokenSymbol: string) {
@@ -132,29 +104,11 @@ const assetSlice = createSlice({
         { payload }: PayloadAction<{ tokenSymbol: string; subAccountId: string; amount: string }>,
       ) {
         const { tokenSymbol, subAccountId, amount } = payload;
-        // REMOVE:
-        // const tokenIndex = state.tokens.findIndex((token) => token.tokenSymbol === tokenSymbol);
         const assetIndex = state.assets.findIndex((asset) => asset.tokenSymbol === tokenSymbol);
 
         const marketPrince = state.tokensMarket.find((tokenMarket) => tokenMarket.symbol === tokenSymbol)?.price || "0";
         const decimals = state.assets.find((asset) => asset.tokenSymbol === tokenSymbol)?.decimal;
         const USDAmount = marketPrince ? getUSDfromToken(amount, marketPrince, Number(decimals)) : "0";
-
-        // REMOVE:
-        // if (tokenIndex !== -1 && state.tokens[tokenIndex]) {
-        //   const newTokenSubAccounts = state.tokens[tokenIndex].subAccounts.map((subAccount) => {
-        //     if (subAccount.numb === subAccountId) {
-        //       return {
-        //         ...subAccount,
-        //         amount,
-        //         currency_amount: USDAmount,
-        //       };
-        //     }
-        //     return subAccount;
-        //   });
-
-        //   state.tokens[tokenIndex].subAccounts = newTokenSubAccounts;
-        // }
 
         if (assetIndex !== -1 && state.assets[assetIndex]) {
           const newAssetSubAccounts = state.assets[assetIndex].subAccounts.map((subAccount) => {
@@ -188,9 +142,6 @@ const assetSlice = createSlice({
 
         if (state.assets[Number(tokenIndex)] && state.assets[Number(tokenIndex)].subAccounts[Number(subaccountId)])
           state.assets[Number(tokenIndex)].subAccounts[Number(subaccountId)].name = name;
-        // REMOVE:
-        // if (state.tokens[Number(tokenIndex)] && state.tokens[Number(tokenIndex)].subAccounts[Number(subaccountId)])
-        //   state.tokens[Number(tokenIndex)].subAccounts[Number(subaccountId)].name = name;
       },
       prepare(tokenIndex: string | number, subaccountId: string | number, name: string) {
         return {
@@ -216,18 +167,6 @@ const assetSlice = createSlice({
             return Number(a.sub_account_id) - Number(b.sub_account_id);
           });
         }
-        // REMOVE:
-        // if (state.tokens[Number(tokenIndex)]) {
-        //   state.tokens[Number(tokenIndex)].subAccounts.push({
-        //     name: subaccount.name,
-        //     numb: subaccount.sub_account_id,
-        //     amount: subaccount.amount,
-        //     currency_amount: subaccount.currency_amount,
-        //   });
-        //   state.tokens[Number(tokenIndex)].subAccounts.sort((a, b) => {
-        //     return hexToNumber(a.numb)?.compare(hexToNumber(b.numb) || bigInt(0)) || 0;
-        //   });
-        // }
       },
       prepare(tokenIndex: string | number, subaccount: SubAccount) {
         return {
@@ -247,10 +186,6 @@ const assetSlice = createSlice({
         if (state.assets[Number(tokenIndex)]) {
           state.assets[Number(tokenIndex)].subAccounts.splice(Number(subIndex), 1);
         }
-        // REMOVE:
-        // if (state.tokens[Number(tokenIndex)]) {
-        //   state.tokens[Number(tokenIndex)].subAccounts.splice(Number(subIndex), 1);
-        // }
       },
       prepare(tokenIndex: string | number, subIndex: string | number) {
         return {
@@ -307,8 +242,6 @@ const assetSlice = createSlice({
     },
     clearDataAsset(state) {
       (state.initLoad = true), (state.ICPSubaccounts = []);
-      // REMOVE:
-      // state.tokens = [];
       state.tokensMarket = [];
       state.accounts = [];
       state.assets = [];
