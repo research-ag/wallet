@@ -1,5 +1,4 @@
 import { defaultTokens } from "@/defaultTokens";
-import contactCacheRefresh from "@pages/contacts/helpers/contacts";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { updateAllBalances } from "@redux/assets/AssetActions";
 import {
@@ -13,6 +12,7 @@ import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { useEffect, useState } from "react";
 import { allowanceCacheRefresh } from "../helpers/allowanceCache";
 import { db } from "@/database/db";
+import contactCacheRefresh from "@pages/contacts/helpers/contactCacheRefresh";
 
 export const AssetHook = () => {
   const dispatch = useAppDispatch();
@@ -112,7 +112,6 @@ export const AssetHook = () => {
     setNewSub,
     hexChecked,
     setHexChecked,
-
     reloadBallance,
     getTotalAmountInCurrency,
   };

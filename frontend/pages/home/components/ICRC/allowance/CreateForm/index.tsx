@@ -16,10 +16,10 @@ import {
   setAllowanceErrorAction,
   setFullAllowanceErrorsAction,
 } from "@redux/allowance/AllowanceActions";
-import { getDuplicatedAllowance } from "@pages/home/helpers/allowance";
 import { db } from "@/database/db";
 import { LoadingLoader } from "@components/loader";
 import { refreshAllowance } from "@pages/home/helpers/refreshAllowance";
+import { getDuplicatedAllowance } from "@pages/home/helpers/allowanceValidators";
 
 export default function CreateForm() {
   const { t } = useTranslation();

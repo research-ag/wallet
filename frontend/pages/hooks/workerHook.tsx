@@ -1,6 +1,6 @@
 import { AssetSymbolEnum, WorkerTaskEnum } from "@/const";
 import { hexToUint8Array } from "@/utils";
-import contactCacheRefresh from "@pages/contacts/helpers/contacts";
+import contactCacheRefresh from "@pages/contacts/helpers/contactCacheRefresh";
 import { allowanceCacheRefresh } from "@pages/home/helpers/allowanceCache";
 import store, { useAppDispatch, useAppSelector } from "@redux/Store";
 import { getAllTransactionsICP, getAllTransactionsICRC1, updateAllBalances } from "@redux/assets/AssetActions";
