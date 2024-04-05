@@ -35,6 +35,8 @@ export const initialTransactionState = {
 
 const name = "transaction";
 
+// TODO: search on where clearDataAsset run and clear the transactions []
+
 const transactionSlice = createSlice({
   name,
   initialState: initialTransactionState,
@@ -144,6 +146,9 @@ const transactionSlice = createSlice({
       state.scannerActiveOption = initialTransactionState?.scannerActiveOption;
       state.isInspectTransference = initialTransactionState?.isInspectTransference;
     },
+    setTransactions(state, action) {
+      state.transactions = action.payload;
+    },
   },
 });
 
@@ -168,6 +173,7 @@ export const {
   setReceiverNewContact,
   setReceiverContact,
   clearSender,
+  setTransactions,
   clearReceiver,
   resetSendState,
   setInitTime,

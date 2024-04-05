@@ -9,15 +9,18 @@ import {
   setSelectedAccount,
   setSelectedAsset,
   setSelectedTransaction,
-  setTransactions,
 } from "@redux/assets/AssetReducer";
 import { IconType, IconTypeEnum, symbolIconDict } from "@/const";
+import { setTransactions } from "@redux/transaction/TransactionReducer";
 
 export const GeneralHook = () => {
   const dispatch = useAppDispatch();
+  const { transactions } = useAppSelector((state) => state.transaction);
 
-  const { ICPSubaccounts, assets, accounts, transactions, selectedAsset, selectedAccount, selectedTransaction } =
-    useAppSelector((state) => state.asset);
+  const { ICPSubaccounts, assets, accounts, selectedAsset, selectedAccount, selectedTransaction } = useAppSelector(
+    (state) => state.asset,
+  );
+
   const { userAgent, userPrincipal } = useAppSelector((state) => state.auth);
   const changeAssets = (value: Array<Asset>) => dispatch(setAssets(value));
   const changeAccounts = (value: Array<SubAccount>) => dispatch(setAccounts(value));

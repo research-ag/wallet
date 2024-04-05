@@ -2,9 +2,10 @@ import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { useEffect } from "react";
 import { getAllTransactionsICRC1, getAllTransactionsICP } from "@redux/assets/AssetActions";
 import { Asset, SubAccount, Transaction } from "@redux/models/AccountModels";
-import { addTxWorker, setSelectedTransaction, setTransactions } from "@redux/assets/AssetReducer";
+import { addTxWorker, setSelectedTransaction } from "@redux/assets/AssetReducer";
 import { AssetSymbolEnum } from "@/const";
 import { hexToUint8Array } from "@/utils";
+import { setTransactions } from "@redux/transaction/TransactionReducer";
 export const UseTransaction = () => {
   const dispatch = useAppDispatch();
 

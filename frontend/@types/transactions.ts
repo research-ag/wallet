@@ -1,5 +1,5 @@
 import { SendingStatus } from "@/const";
-import { Asset, SubAccount } from "@redux/models/AccountModels";
+import { Asset, SubAccount, Transaction } from "@redux/models/AccountModels";
 import { z } from "zod";
 
 export const ContactSubAccountSchema = z.object({
@@ -140,6 +140,7 @@ export enum TransactionDrawer {
 
 export interface TransactionState {
   scannerActiveOption: TransactionScannerOption;
+  transactions: Array<Transaction>;
   isLoading: boolean;
   isInspectTransference: boolean;
   sendingStatus: SendingStatus;
