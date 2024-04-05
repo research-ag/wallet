@@ -49,8 +49,8 @@ export default function DatabaseProvider({ children }: DatabaseProviderProps) {
       }
     };
 
-    localDb().subscribeToAllTokens().subscribe(assetsSubscriptionHandler);
-    rxDb().subscribeToAllTokens().subscribe(assetsSubscriptionHandler);
+    localDb().subscribeToAllAssets().subscribe(assetsSubscriptionHandler);
+    rxDb().subscribeToAllAssets().subscribe(assetsSubscriptionHandler);
   }, []);
 
   useEffect(() => {

@@ -6,19 +6,44 @@ type WalletDatabase =
       record {
         principal;
         record {
-          vec opt TokenDocument;
+          vec opt AssetDocument;
           vec opt ContactDocument;
           vec opt AllowanceDocument;
         };
       }) query;
    pullAllowances: (nat32, opt text, nat) -> (vec AllowanceDocument) query;
+   pullAssets: (nat32, opt text, nat) -> (vec AssetDocument) query;
    pullContacts: (nat32, opt text, nat) -> (vec ContactDocument) query;
-   pullTokens: (nat32, opt text, nat) -> (vec TokenDocument) query;
    pushAllowances: (vec AllowanceDocument) -> (vec AllowanceDocument);
+   pushAssets: (vec AssetDocument) -> (vec AssetDocument);
    pushContacts: (vec ContactDocument) -> (vec ContactDocument);
-   pushTokens: (vec TokenDocument) -> (vec TokenDocument);
  };
-type TokenDocument = 
+type ContactDocument = 
+ record {
+   accountIdentier: text;
+   assets:
+    vec
+     record {
+       address: text;
+       decimal: text;
+       logo: text;
+       shortDecimal: text;
+       subaccounts:
+        vec record {
+              name: text;
+              sub_account_id: text;
+              subaccount_index: text;
+            };
+       supportedStandards: vec text;
+       symbol: text;
+       tokenSymbol: text;
+     };
+   deleted: bool;
+   name: text;
+   "principal": text;
+   updatedAt: nat32;
+ };
+type AssetDocument = 
  record {
    address: text;
    decimal: text;
@@ -45,31 +70,6 @@ type TokenDocument =
    symbol: text;
    tokenName: text;
    tokenSymbol: text;
-   updatedAt: nat32;
- };
-type ContactDocument = 
- record {
-   accountIdentier: text;
-   assets:
-    vec
-     record {
-       address: text;
-       decimal: text;
-       logo: text;
-       shortDecimal: text;
-       subaccounts:
-        vec record {
-              name: text;
-              sub_account_id: text;
-              subaccount_index: text;
-            };
-       supportedStandards: vec text;
-       symbol: text;
-       tokenSymbol: text;
-     };
-   deleted: bool;
-   name: text;
-   "principal": text;
    updatedAt: nat32;
  };
 type AllowanceDocument = 

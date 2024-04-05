@@ -194,7 +194,7 @@ const AccountElement = ({
           }))
           .sort((a, b) => bigInt(a.numb).compare(bigInt(b.numb)));
 
-        await db().updateToken(asset.address, {
+        await db().updateAsset(asset.address, {
           ...asset,
           subAccounts: subAccounts,
         });
@@ -208,7 +208,7 @@ const AccountElement = ({
           sa.sub_account_id === subAccount.sub_account_id ? { ...sa, name: name } : sa,
         );
 
-        await db().updateToken(asset.address, {
+        await db().updateAsset(asset.address, {
           ...asset,
           subAccounts: subAccounts,
         });
@@ -233,7 +233,7 @@ const AccountElement = ({
       .map((sa) => (sa.sub_account_id !== subAccount.sub_account_id ? sa : null!))
       .filter((x) => !!x);
 
-    await db().updateToken(asset.address, {
+    await db().updateAsset(asset.address, {
       ...asset,
       subAccounts: subAccounts,
     });

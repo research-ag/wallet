@@ -229,7 +229,7 @@ const DialogAddAsset = ({
               ].sort((a, b) => hexToNumber(a.sub_account_id)?.compare(hexToNumber(b.sub_account_id) || bigInt()) || 0),
             };
 
-            await db().updateToken(asset.address, assetToUpdate);
+            await db().updateAsset(asset.address, assetToUpdate);
 
             const savedSub = {
               ...newSub,

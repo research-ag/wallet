@@ -8,13 +8,9 @@ import { hexToUint8Array } from "@/utils";
 export const UseTransaction = () => {
   const dispatch = useAppDispatch();
 
-  const {
-    assets,
-    selectedAsset,
-    selectedAccount,
-    selectedTransaction,
-    txWorker,
-  } = useAppSelector((state) => state.asset);
+  const { assets, selectedAsset, selectedAccount, selectedTransaction, txWorker } = useAppSelector(
+    (state) => state.asset,
+  );
 
   const changeSelectedTransaction = (value: Transaction) => dispatch(setSelectedTransaction(value));
 

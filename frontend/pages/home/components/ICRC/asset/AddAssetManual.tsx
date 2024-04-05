@@ -389,7 +389,7 @@ const AddAssetManual = ({
       // }, 0);
 
       // List all tokens modifying the one we selected
-      const asset = await db().getToken(newToken.address);
+      const asset = await db().getAsset(newToken.address);
       if (asset) {
         // const old = {
         //   ...newToken,
@@ -419,7 +419,7 @@ const AddAssetManual = ({
           tokenSymbol: asset.tokenSymbol,
         };
 
-        await db().updateToken(asset.address, updatedFull);
+        await db().updateAsset(asset.address, updatedFull);
       }
       // Edit tokens list and assets list
       // dispatch(updateAsset(newToken, asset.tokenSymbol));

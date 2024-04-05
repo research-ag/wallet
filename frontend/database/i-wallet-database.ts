@@ -135,14 +135,14 @@ export abstract class IWalletDatabase {
    * @param address Address ID of a Asset object
    * @returns Asset object or NULL if not found
    */
-  abstract getToken(address: string): Promise<Asset | null>;
+  abstract getAsset(address: string): Promise<Asset | null>;
 
   /**
    * Get all Asset objects from the active agent.
    * @returns Array of found Asset objects or an empty
    * array if no Asset objects were found
    */
-  abstract getTokens(): Promise<Asset[]>;
+  abstract getAssets(): Promise<Asset[]>;
 
   /**
    * Subscribable Observable that triggers after
@@ -150,14 +150,14 @@ export abstract class IWalletDatabase {
    * @returns Array of Asset objects from current
    * active agent
    */
-  abstract subscribeToAllTokens(): Observable<Asset[]>;
+  abstract subscribeToAllAssets(): Observable<Asset[]>;
 
   /**
    * Add a new Asset object to the list of Asset objects
    * current active agent has.
    * @param asset Asset object to be added
    */
-  abstract addToken(asset: Asset): Promise<void>;
+  abstract addAssets(asset: Asset): Promise<void>;
 
   /**
    * Find a Asset object by its ID and replace it with
@@ -165,13 +165,13 @@ export abstract class IWalletDatabase {
    * @param address Address ID of a Asset object
    * @param newDoc Asset object
    */
-  abstract updateToken(address: string, newDoc: Asset): Promise<void>;
+  abstract updateAsset(address: string, newDoc: Asset): Promise<void>;
 
   /**
    * Find and remove a Asset object by its ID.
    * @param address Address ID of a Asset object
    */
-  abstract deleteToken(address: string): Promise<void>;
+  abstract deleteAsset(address: string): Promise<void>;
 
   /**
    * Find a Contact object by its Principal ID.

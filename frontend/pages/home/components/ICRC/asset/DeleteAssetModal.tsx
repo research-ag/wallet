@@ -15,9 +15,7 @@ interface DeleteAssetModalPropr {
 
 const DeleteAssetModal = ({ open, setOpen, asset }: DeleteAssetModalPropr) => {
   const { t } = useTranslation();
-  const {
-    deleteAsset,
-  } = AssetHook();
+  const { deleteAsset } = AssetHook();
   const { name, symbol, address } = asset;
 
   return (

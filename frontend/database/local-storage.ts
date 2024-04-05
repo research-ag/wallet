@@ -18,7 +18,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
   }
 
   private principalId = "";
-  private readonly _tokens$: BehaviorSubject<Asset[]> = new BehaviorSubject<Asset[]>(this._getTokens());
+  private readonly _assets$: BehaviorSubject<Asset[]> = new BehaviorSubject<Asset[]>(this._getAssets());
   private readonly _contacts$: BehaviorSubject<Contact[]> = new BehaviorSubject<Contact[]>(this._getContacts());
   private readonly _allowances$: BehaviorSubject<TAllowance[]> = new BehaviorSubject<TAllowance[]>(
     this._getAllowances(),
@@ -40,7 +40,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
    */
   async setIdentity(identity: Identity | null, fixedPrincipal?: Principal): Promise<void> {
     this.principalId = fixedPrincipal?.toString() || identity?.getPrincipal().toText() || "";
-    this._tokens$.next(this._getTokens());
+    this._assets$.next(this._getAssets());
     this._contacts$.next(this._getContacts());
     this._allowances$.next(this._getAllowances());
     !!this.principalId && this._doesRecordByPrincipalExist();
@@ -51,8 +51,8 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * @param address Address ID of a Asset object
    * @returns Asset object or NULL if not found
    */
-  async getToken(address: string): Promise<Asset | null> {
-    return this._getTokens().find((x) => x.address === address) || null;
+  async getAsset(address: string): Promise<Asset | null> {
+    return this._getAssets().find((x) => x.address === address) || null;
   }
 
   /**
@@ -60,8 +60,8 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * @returns Array of found Asset objects or an empty
    * array if no Asset objects were found
    */
-  async getTokens(): Promise<Asset[]> {
-    return this._getTokens();
+  async getAssets(): Promise<Asset[]> {
+    return this._getAssets();
   }
 
   /**
@@ -69,9 +69,9 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * current active agent has.
    * @param asset Asset object to be added
    */
-  async addToken(asset: Asset): Promise<void> {
-    const assets = this._getTokens();
-    this._setTokens([...assets, asset]);
+  async addAssets(asset: Asset): Promise<void> {
+    const assets = this._getAssets();
+    this._setAssets([...assets, asset]);
   }
 
   /**
@@ -80,9 +80,9 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * @param address Address ID of a Asset object
    * @param newDoc Asset object
    */
-  async updateToken(address: string, newDoc: Asset): Promise<void> {
-    this._setTokens(
-      this._getTokens().map((tkn) => {
+  async updateAsset(address: string, newDoc: Asset): Promise<void> {
+    this._setAssets(
+      this._getAssets().map((tkn) => {
         if (tkn.address === address) {
           return newDoc;
         } else return tkn;
@@ -94,8 +94,8 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * Find and remove a Asset object by its ID.
    * @param address Address ID of a Asset object
    */
-  async deleteToken(address: string): Promise<void> {
-    this._setTokens(this._getTokens().filter((tkn) => tkn.address !== address));
+  async deleteAsset(address: string): Promise<void> {
+    this._setAssets(this._getAssets().filter((tkn) => tkn.address !== address));
   }
 
   /**
@@ -224,8 +224,8 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * @returns Array of Asset objects from current
    * active agent
    */
-  subscribeToAllTokens(): Observable<Asset[]> {
-    return this._tokens$.asObservable();
+  subscribeToAllAssets(): Observable<Asset[]> {
+    return this._assets$.asObservable();
   }
 
   /**
@@ -248,15 +248,15 @@ export class LocalStorageDatabase extends IWalletDatabase {
     return this._allowances$.asObservable();
   }
 
-  private _getTokens(): Asset[] {
-    const tokensData = JSON.parse(localStorage.getItem(`assets-${this.principalId}`) || "null");
-    return tokensData || [];
+  private _getAssets(): Asset[] {
+    const assetsData = JSON.parse(localStorage.getItem(`assets-${this.principalId}`) || "null");
+    return assetsData || [];
   }
 
-  private _setTokens(allTokens: Asset[]) {
-    const assets = [...allTokens].sort((a, b) => a.sortIndex - b.sortIndex);
+  private _setAssets(allAssets: Asset[]) {
+    const assets = [...allAssets].sort((a, b) => a.sortIndex - b.sortIndex);
     localStorage.setItem(`assets-${this.principalId}`, JSON.stringify(assets));
-    this._tokens$.next(assets);
+    this._assets$.next(assets);
   }
 
   private _getContacts(): Contact[] {
@@ -285,8 +285,8 @@ export class LocalStorageDatabase extends IWalletDatabase {
 
     // If does not exist it means that this is a brand new account
     if (!exist) {
-      this._setTokens([...defaultTokens]);
-      this._tokens$.next(this._getTokens());
+      this._setAssets([...defaultTokens]);
+      this._assets$.next(this._getAssets());
     }
   }
 }

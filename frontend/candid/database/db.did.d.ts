@@ -21,28 +21,7 @@ export interface AllowanceDocument {
   subAccountId: string;
   spender: string;
 }
-export interface ContactDocument {
-  principal: string;
-  deleted: boolean;
-  name: string;
-  assets: Array<{
-    subaccounts: Array<{
-      name: string;
-      sub_account_id: string;
-      subaccount_index: string;
-    }>;
-    logo: string;
-    tokenSymbol: string;
-    supportedStandards: Array<string>;
-    address: string;
-    shortDecimal: string;
-    decimal: string;
-    symbol: string;
-  }>;
-  updatedAt: number;
-  accountIdentier: string;
-}
-export interface TokenDocument {
+export interface AssetDocument {
   fee: string;
   deleted: boolean;
   logo: string;
@@ -68,18 +47,39 @@ export interface TokenDocument {
   }>;
   symbol: string;
 }
+export interface ContactDocument {
+  principal: string;
+  deleted: boolean;
+  name: string;
+  assets: Array<{
+    subaccounts: Array<{
+      name: string;
+      sub_account_id: string;
+      subaccount_index: string;
+    }>;
+    logo: string;
+    tokenSymbol: string;
+    supportedStandards: Array<string>;
+    address: string;
+    shortDecimal: string;
+    decimal: string;
+    symbol: string;
+  }>;
+  updatedAt: number;
+  accountIdentier: string;
+}
 export interface WalletDatabase {
   doesStorageExist: ActorMethod<[], boolean>;
   dump: ActorMethod<
     [],
-    Array<[Principal, [Array<[] | [TokenDocument]>, Array<[] | [ContactDocument]>, Array<[] | [AllowanceDocument]>]]>
+    Array<[Principal, [Array<[] | [AssetDocument]>, Array<[] | [ContactDocument]>, Array<[] | [AllowanceDocument]>]]>
   >;
   pullAllowances: ActorMethod<[number, [] | [string], bigint], Array<AllowanceDocument>>;
+  pullAssets: ActorMethod<[number, [] | [string], bigint], Array<AssetDocument>>;
   pullContacts: ActorMethod<[number, [] | [string], bigint], Array<ContactDocument>>;
-  pullTokens: ActorMethod<[number, [] | [string], bigint], Array<TokenDocument>>;
   pushAllowances: ActorMethod<[Array<AllowanceDocument>], Array<AllowanceDocument>>;
+  pushAssets: ActorMethod<[Array<AssetDocument>], Array<AssetDocument>>;
   pushContacts: ActorMethod<[Array<ContactDocument>], Array<ContactDocument>>;
-  pushTokens: ActorMethod<[Array<TokenDocument>], Array<TokenDocument>>;
 }
 export interface _SERVICE extends WalletDatabase {}
 export declare const idlFactory: IDL.InterfaceFactory;

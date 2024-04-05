@@ -187,7 +187,7 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, assets, acorde
       };
       setAddStatus(AddingAssetsEnum.enum.adding);
       showModal(true);
-      await db().addToken(tknSave);
+      await db().addAssets(tknSave);
       dispatch(setSelectedAsset(tknSave));
       dispatch(setAccordionAssetIdx([tknSave.symbol]));
 

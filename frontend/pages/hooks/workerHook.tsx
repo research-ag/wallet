@@ -64,7 +64,7 @@ export const WorkerHook = () => {
 
   const getAssetsWorker = async () => {
     dispatch(setLoading(true));
-    const dbAssets = await db().getTokens();
+    const dbAssets = await db().getAssets();
     if (dbAssets) {
       await updateAllBalances({
         loading: true,

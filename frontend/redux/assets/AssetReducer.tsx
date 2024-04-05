@@ -136,19 +136,19 @@ const assetSlice = createSlice({
       reducer(
         state,
         action: PayloadAction<{
-          tokenIndex: number | string;
+          assetIndex: number | string;
           subaccountId: number | string;
           name: string;
         }>,
       ) {
-        const { tokenIndex, subaccountId, name } = action.payload;
+        const { assetIndex, subaccountId, name } = action.payload;
 
-        if (state.assets[Number(tokenIndex)] && state.assets[Number(tokenIndex)].subAccounts[Number(subaccountId)])
-          state.assets[Number(tokenIndex)].subAccounts[Number(subaccountId)].name = name;
+        if (state.assets[Number(assetIndex)] && state.assets[Number(assetIndex)].subAccounts[Number(subaccountId)])
+          state.assets[Number(assetIndex)].subAccounts[Number(subaccountId)].name = name;
       },
-      prepare(tokenIndex: string | number, subaccountId: string | number, name: string) {
+      prepare(assetIndex: string | number, subaccountId: string | number, name: string) {
         return {
-          payload: { tokenIndex, subaccountId, name },
+          payload: { assetIndex, subaccountId, name },
         };
       },
     },
@@ -159,21 +159,21 @@ const assetSlice = createSlice({
       reducer(
         state,
         action: PayloadAction<{
-          tokenIndex: number | string;
+          assetIndex: number | string;
           subaccount: SubAccount;
         }>,
       ) {
-        const { tokenIndex, subaccount } = action.payload;
-        if (state.assets[Number(tokenIndex)]) {
-          state.assets[Number(tokenIndex)].subAccounts.push(subaccount);
-          state.assets[Number(tokenIndex)].subAccounts.sort((a, b) => {
+        const { assetIndex, subaccount } = action.payload;
+        if (state.assets[Number(assetIndex)]) {
+          state.assets[Number(assetIndex)].subAccounts.push(subaccount);
+          state.assets[Number(assetIndex)].subAccounts.sort((a, b) => {
             return Number(a.sub_account_id) - Number(b.sub_account_id);
           });
         }
       },
-      prepare(tokenIndex: string | number, subaccount: SubAccount) {
+      prepare(assetIndex: string | number, subaccount: SubAccount) {
         return {
-          payload: { tokenIndex, subaccount },
+          payload: { assetIndex, subaccount },
         };
       },
     },
@@ -214,7 +214,7 @@ const assetSlice = createSlice({
       state.icr1SystemAssets = ICRC1systemAssets;
     },
 
-    // INFO: service state reducers
+    // INFO: service worker state reducers
     setTxWorker(state, action) {
       const txList = [...state.txWorker];
 

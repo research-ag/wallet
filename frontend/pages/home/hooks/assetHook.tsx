@@ -16,20 +16,15 @@ import { db } from "@/database/db";
 
 export const AssetHook = () => {
   const dispatch = useAppDispatch();
-  const {
-    assets,
-    assetLoading,
-    selectedAsset,
-    selectedAccount,
-    acordeonIdx,
-    tokensMarket,
-  } = useAppSelector((state) => state.asset);
+  const { assets, assetLoading, selectedAsset, selectedAccount, acordeonIdx, tokensMarket } = useAppSelector(
+    (state) => state.asset,
+  );
 
   const { userAgent } = useAppSelector((state) => state.auth);
 
   const deleteAsset = (symb: string, address: string) => {
     dispatch(removeAsset(symb));
-    db().deleteToken(address).then();
+    db().deleteAsset(address).then();
   };
 
   const [searchKey, setSearchKey] = useState("");
@@ -41,13 +36,13 @@ export const AssetHook = () => {
   const [newSub, setNewSub] = useState<SubAccount | undefined>();
   const [hexChecked, setHexChecked] = useState<boolean>(false);
 
-  const reloadBallance = async (updatedTokens?: Asset[]) => {
+  const reloadBallance = async (updatedAssets?: Asset[]) => {
     dispatch(setLoading(true));
 
     await updateAllBalances({
       loading: true,
       myAgent: userAgent,
-      assets: updatedTokens ? updatedTokens : defaultTokens,
+      assets: updatedAssets ? updatedAssets : defaultTokens,
       fromLogin: true,
     });
     await allowanceCacheRefresh();
