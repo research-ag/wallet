@@ -25,7 +25,7 @@ const defaultAssetSubAccount: SubAccount = {
   transaction_fee: "",
 };
 
-//
+// INFO: default assets to add in the add asset modal
 export const ICRC1systemAssets: Array<Asset> = [
   {
     sortIndex: 10000,
@@ -98,7 +98,7 @@ export const ICRC1systemAssets: Array<Asset> = [
   },
 ];
 
-//
+// INFO: default assets of a new user
 export const defaultTokens: Asset[] = [
   {
     sortIndex: 0,
