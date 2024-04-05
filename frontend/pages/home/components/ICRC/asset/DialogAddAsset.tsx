@@ -31,7 +31,7 @@ interface DialogAddAssetProps {
   assets: Asset[];
   idx: number;
   selectedAsset?: Asset;
-  acordeonIdx: string[];
+  accordionIndex: string[];
 }
 
 const DialogAddAsset = ({
@@ -47,7 +47,7 @@ const DialogAddAsset = ({
   idx,
   selectedAsset,
   setAddOpen,
-  acordeonIdx,
+  accordionIndex,
 }: DialogAddAssetProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
@@ -262,8 +262,8 @@ const DialogAddAsset = ({
     }
   }
   function addToAcordeonIdx() {
-    if (!acordeonIdx.includes(selectedAsset?.tokenSymbol || "")) {
-      dispatch(setAccordionAssetIdx([...acordeonIdx, selectedAsset?.tokenSymbol || ""]));
+    if (!accordionIndex.includes(selectedAsset?.tokenSymbol || "")) {
+      dispatch(setAccordionAssetIdx([...accordionIndex, selectedAsset?.tokenSymbol || ""]));
     }
   }
 };

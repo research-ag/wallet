@@ -21,10 +21,10 @@ interface AddAssetsProps {
   asset: Asset | undefined;
   setAssetInfo(value: Asset | undefined): void;
   assets: Asset[];
-  acordeonIdx: string[];
+  accordionIndex: string[];
 }
 
-const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, assets, acordeonIdx }: AddAssetsProps) => {
+const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, assets, accordionIndex }: AddAssetsProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { checkAssetAdded, userAgent } = GeneralHook();
@@ -222,8 +222,8 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, assets, acorde
   }
 
   function addToAcordeonIdx() {
-    if (!acordeonIdx.includes(asset?.tokenSymbol || "")) {
-      dispatch(setAccordionAssetIdx([...acordeonIdx, asset?.tokenSymbol || ""]));
+    if (!accordionIndex.includes(asset?.tokenSymbol || "")) {
+      dispatch(setAccordionAssetIdx([...accordionIndex, asset?.tokenSymbol || ""]));
     }
   }
 };

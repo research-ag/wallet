@@ -21,13 +21,13 @@ import DeleteAssetModal from "./DeleteAssetModal";
 interface AssetElementProps {
   asset: Asset;
   idx: number;
-  acordeonIdx: string[];
+  accordionIndex: string[];
   setAssetInfo(value: Asset | undefined): void;
   setAssetOpen(value: boolean): void;
   setAddOpen(value: boolean): void;
 }
 
-const AssetElement = ({ asset, idx, acordeonIdx, setAssetInfo, setAssetOpen, setAddOpen }: AssetElementProps) => {
+const AssetElement = ({ asset, idx, accordionIndex, setAssetInfo, setAssetOpen, setAddOpen }: AssetElementProps) => {
   const { theme } = ThemeHook();
   const { authClient } = AccountHook();
 
@@ -97,7 +97,7 @@ const AssetElement = ({ asset, idx, acordeonIdx, setAssetInfo, setAssetOpen, set
                 <img
                   src={theme === ThemesEnum.enum.dark ? ChevronRightIcon : ChevronRightDarkIcon}
                   className={`${
-                    acordeonIdx.includes(asset.tokenSymbol)
+                    accordionIndex.includes(asset.tokenSymbol)
                       ? "-rotate-90 transition-transform"
                       : "rotate-0 transition-transform"
                   } `}
@@ -162,7 +162,7 @@ const AssetElement = ({ asset, idx, acordeonIdx, setAssetInfo, setAssetOpen, set
         assets={assets}
         idx={idx}
         selectedAsset={selectedAsset}
-        acordeonIdx={acordeonIdx}
+        accordionIndex={accordionIndex}
       />
       <DeleteAssetModal open={openDelete} setOpen={setOpenDelete} asset={asset} />
     </Fragment>

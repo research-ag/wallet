@@ -6,29 +6,29 @@ import { ICRC1systemAssets } from "@/defaultTokens";
 
 interface AssetState {
   initLoad: boolean;
-  ICPSubaccounts: Array<ICPSubAccount>;
   assetLoading: boolean;
+  txLoad: boolean;
+  ICPSubaccounts: Array<ICPSubAccount>;
   icr1SystemAssets: Asset[];
   tokensMarket: TokenMarketInfo[];
   assets: Array<Asset>;
   accounts: Array<SubAccount>;
-  acordeonIdx: string[];
+  accordionIndex: string[];
   selectedAsset: Asset | undefined;
   selectedAccount: SubAccount | undefined;
   selectedTransaction: Transaction | undefined;
   txWorker: Array<TransactionList>;
-  txLoad: boolean;
 }
 
 const initialState: AssetState = {
   initLoad: true,
-  ICPSubaccounts: [],
   assetLoading: false,
+  ICPSubaccounts: [],
   icr1SystemAssets: ICRC1systemAssets,
   tokensMarket: [],
   assets: [],
   accounts: [],
-  acordeonIdx: [],
+  accordionIndex: [],
   selectedAsset: undefined,
   selectedAccount: undefined,
   selectedTransaction: undefined,
@@ -193,7 +193,7 @@ const assetSlice = createSlice({
       state.selectedTransaction = action.payload;
     },
     setAccordionAssetIdx(state, action: PayloadAction<string[]>) {
-      state.acordeonIdx = action.payload;
+      state.accordionIndex = action.payload;
     },
     clearDataAsset(state) {
       (state.initLoad = true), (state.ICPSubaccounts = []);
@@ -204,7 +204,7 @@ const assetSlice = createSlice({
       state.selectedAccount = undefined;
       state.selectedAsset = undefined;
       state.selectedTransaction = undefined;
-      state.acordeonIdx = [];
+      state.accordionIndex = [];
       state.icr1SystemAssets = ICRC1systemAssets;
     },
 

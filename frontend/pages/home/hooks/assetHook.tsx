@@ -16,7 +16,7 @@ import { db } from "@/database/db";
 
 export const AssetHook = () => {
   const dispatch = useAppDispatch();
-  const { assets, assetLoading, selectedAsset, selectedAccount, acordeonIdx, tokensMarket } = useAppSelector(
+  const { assets, assetLoading, selectedAsset, selectedAccount, accordionIndex, tokensMarket } = useAppSelector(
     (state) => state.asset,
   );
 
@@ -77,7 +77,7 @@ export const AssetHook = () => {
     if (auxAssets.length > 0) {
       const auxAccordion: string[] = [];
       auxAssets.map((ast) => {
-        if (acordeonIdx.includes(ast.tokenSymbol)) auxAccordion.push(ast.tokenSymbol);
+        if (accordionIndex.includes(ast.tokenSymbol)) auxAccordion.push(ast.tokenSymbol);
       });
       setAcordeonIdx(auxAccordion);
 
@@ -99,7 +99,7 @@ export const AssetHook = () => {
     deleteAsset,
     searchKey,
     setSearchKey,
-    acordeonIdx,
+    accordionIndex,
     setAcordeonIdx,
     assetInfo,
     setAssetInfo,

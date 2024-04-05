@@ -17,7 +17,7 @@ const AssetsList = () => {
   const [addOpen, setAddOpen] = useState(false);
   const { assetOpen, setAssetOpen } = DrawerHook();
 
-  const { assets, searchKey, setSearchKey, setAcordeonIdx, acordeonIdx, assetInfo, setAssetInfo, selectedAsset } =
+  const { assets, searchKey, setSearchKey, setAcordeonIdx, accordionIndex, assetInfo, setAssetInfo, selectedAsset } =
     AssetHook();
 
   return (
@@ -32,7 +32,9 @@ const AssetsList = () => {
               type="multiple"
               defaultValue={[]}
               value={
-                (addOpen || assetOpen) && selectedAsset ? [...acordeonIdx, selectedAsset.tokenSymbol] : acordeonIdx
+                (addOpen || assetOpen) && selectedAsset
+                  ? [...accordionIndex, selectedAsset.tokenSymbol]
+                  : accordionIndex
               }
               onValueChange={onValueChange}
             >
@@ -54,7 +56,7 @@ const AssetsList = () => {
                       key={idx}
                       asset={asset}
                       idx={idx}
-                      acordeonIdx={acordeonIdx}
+                      accordionIndex={accordionIndex}
                       setAssetInfo={setAssetInfo}
                       setAssetOpen={setAssetOpen}
                       setAddOpen={setAddOpen}
@@ -79,7 +81,7 @@ const AssetsList = () => {
             setAssetInfo={setAssetInfo}
             assetOpen={assetOpen}
             assets={assets}
-            acordeonIdx={acordeonIdx}
+            accordionIndex={accordionIndex}
           />
         </div>
       )}

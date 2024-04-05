@@ -16,7 +16,7 @@ import {
   setAllowanceErrorAction,
   setFullAllowanceErrorsAction,
 } from "@redux/allowance/AllowanceActions";
-import { getDuplicatedAllowance } from "@pages/home/validators/allowance";
+import { getDuplicatedAllowance } from "@pages/home/helpers/allowance";
 import { db } from "@/database/db";
 import { LoadingLoader } from "@components/loader";
 import { refreshAllowance } from "@pages/home/helpers/refreshAllowance";
