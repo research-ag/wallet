@@ -2,7 +2,7 @@
 import XxxxIcon from "@/assets/svg/files/xxxx-logo.svg";
 import icUrl from "@/assets/img/icp-logo.png";
 import nfidUrl from "@/assets/img/nfid-logo.png";
-// import ethereumUrl from "@/assets/svg/files/ethereum-icon.svg";
+import ethereumUrl from "@/assets/svg/files/ethereum-icon.svg";
 //
 import { useState } from "react";
 import { AuthNetworkNameEnum, AuthNetworkType, AuthNetworkTypeEnum } from "@/const";
@@ -31,12 +31,12 @@ export const LoginHook = () => {
       type: AuthNetworkTypeEnum.Values.NFID,
       network: import.meta.env.VITE_AGGENT_NFID_HOST,
     },
-    // {
-    //   name: AuthNetworkNameEnum.Values.Ethereum,
-    //   icon: <img src={ethereumUrl} alt="ethereum-logo" />,
-    //   type: AuthNetworkTypeEnum.Values.ETH,
-    //   network: "",
-    // },
+    {
+      name: AuthNetworkNameEnum.Values.Ethereum,
+      icon: <img src={ethereumUrl} alt="ethereum-logo" />,
+      type: AuthNetworkTypeEnum.Values.ETH,
+      network: "",
+    },
     {
       name: AuthNetworkNameEnum.Values.Seed,
       extra: "devs.only",
