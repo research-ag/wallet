@@ -32,6 +32,8 @@ export const updateAllBalances: UpdateAllBalances = async (params) => {
   if (ETHRate) tokenMarkets.push(ETHRate);
   store.dispatch(setTokenMarket(tokenMarkets));
 
+  console.log("assets: ", assets);
+
   const auxAssets = [...assets].sort((a, b) => a.sortIndex - b.sortIndex);
   const myPrincipal = store.getState().auth.userPrincipal;
 
@@ -47,13 +49,11 @@ export const updateAllBalances: UpdateAllBalances = async (params) => {
     myPrincipal,
   });
 
-  const newAssetsUpload = updateAssets
-    .map((tA) => {
-      return tA.newAsset;
-    })
-    .sort((a, b) => {
-      return a.sortIndex - b.sortIndex;
-    });
+  console.log("updateAssets: ", updateAssets);
+
+  const newAssetsUpload = updateAssets.sort((a, b) => {
+    return a.sortIndex - b.sortIndex;
+  });
 
   if (loading) {
     store.dispatch(setAssets(newAssetsUpload));

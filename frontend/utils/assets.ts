@@ -16,7 +16,84 @@ export function getFirstNonEmptyString(...strings: string[]): string | undefined
   return strings.find((str) => str !== "");
 }
 
+async function refreshAsset(asset: Asset, options: RefreshOptions) {
+  const { myAgent, basicSearch = false, tokenMarkets, myPrincipal } = options;
+
+  const { balance, metadata, transactionFee } = IcrcLedgerCanister.create({
+    agent: myAgent,
+    canisterId: Principal.fromText(asset.address),
+  });
+
+  const [myMetadata, myTransactionFee] = await Promise.all([
+    metadata({ certified: false }),
+    transactionFee({ certified: false }),
+  ]);
+
+  const { decimals, name, symbol, logo } = getMetadataInfo(myMetadata);
+  const assetMarket = tokenMarkets.find((tokenMarket) => tokenMarket.symbol === symbol);
+
+  const assetSubAccounts: SubAccount[] = await Promise.all(
+    asset.subAccounts.map(async (currentSubAccount) => {
+      const myBalance = await balance({
+        owner: myPrincipal,
+        subaccount: new Uint8Array(hexToUint8Array(currentSubAccount.sub_account_id)),
+        certified: false,
+      });
+
+      const amount = myBalance.toString();
+
+      const USDAmount = assetMarket ? getUSDfromToken(myBalance.toString(), assetMarket.price, decimals) : "0";
+
+      const assetSubAccount: SubAccount = {
+        name: currentSubAccount.name,
+        sub_account_id: currentSubAccount.sub_account_id?.toString(),
+        address: myPrincipal?.toString(),
+        amount,
+        currency_amount: USDAmount,
+        transaction_fee: myTransactionFee.toString(),
+        decimal: decimals,
+        symbol: asset.symbol,
+      };
+
+      return assetSubAccount;
+    }),
+  );
+
+  // TODO: search the first 1000 subaccounts looking for positive balances, if 5 zeros are found, stop the search
+
+  const updatedAsset: Asset = {
+    symbol: asset.symbol,
+    name: asset.name,
+    address: asset.address,
+    index: asset.index,
+    subAccounts: sortSubAccounts(assetSubAccounts),
+    // INFO: sortIndex: idNum,
+    sortIndex: asset.sortIndex,
+    decimal: decimals.toFixed(0),
+    shortDecimal: asset.shortDecimal || decimals.toFixed(0),
+    tokenName: name,
+    tokenSymbol: symbol,
+    logo: getFirstNonEmptyString(logo, asset?.logo || ""),
+    supportedStandards: asset.supportedStandards,
+  };
+
+  return updatedAsset;
+}
+
 export async function refreshAssetBalances(assets: Asset[], options: RefreshOptions) {
+  const updatedAssets = await Promise.all(
+    assets.map((asset: Asset) => {
+      return refreshAsset(asset, options);
+    }),
+  );
+
+  return updatedAssets;
+}
+
+// -------------------------------------------------------------------------------------------------
+
+// TODO: remove this functions once the new refreshAssetBalances is tested and migrated entirely
+async function refreshAssetBalancesOld(assets: Asset[], options: RefreshOptions) {
   const { myAgent, basicSearch = false, tokenMarkets, myPrincipal } = options;
 
   return await Promise.all(
@@ -35,6 +112,7 @@ export async function refreshAssetBalances(assets: Asset[], options: RefreshOpti
         const { decimals, name, symbol, logo } = getMetadataInfo(myMetadata);
 
         const assetMarket = tokenMarkets.find((tokenMarket) => tokenMarket.symbol === symbol);
+        //
         const subAccList: SubAccount[] = [];
         let assetSubAccounts: SubAccount[] = [];
 

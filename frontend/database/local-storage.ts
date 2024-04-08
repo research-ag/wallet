@@ -279,6 +279,10 @@ export class LocalStorageDatabase extends IWalletDatabase {
     this._allowances$.next(allowances);
   }
 
+  /**
+   * Check if a record by principal ID exists.
+   * If not, it will create a new record with default tokens.
+   */
   private _doesRecordByPrincipalExist() {
     // Look for entry record by current prinicpal ID
     const exist = !!localStorage.getItem(`assets-${this.principalId}`);

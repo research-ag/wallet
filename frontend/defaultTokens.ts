@@ -4,7 +4,7 @@ import { Asset, SubAccount } from "@redux/models/AccountModels";
 const supportedStandards = [SupportedStandardEnum.Values["ICRC-1"], SupportedStandardEnum.Values["ICRC-2"]];
 
 const defaultSubAccount: SubAccount = {
-  sub_account_id: "0",
+  sub_account_id: "0x0",
   name: "Default",
   amount: "0",
   currency_amount: "0",
