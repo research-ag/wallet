@@ -228,6 +228,7 @@ export const updateAllBalances: UpdateAllBalances = async (params) => {
           tokenName: currentToken.name,
           tokenSymbol: currentToken.symbol,
           supportedStandards: currentToken.supportedStandards,
+          logo: currentToken.logo && currentToken.logo !== "" ? currentToken.logo : "",
         };
         return { newToken: currentToken, newAsset };
       }
