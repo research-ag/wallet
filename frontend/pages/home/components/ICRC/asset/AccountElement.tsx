@@ -229,7 +229,6 @@ const AccountElement = ({
   async function onConfirm() {
     const asset = assets[Number(tokenIndex)];
     const subAccounts = asset.subAccounts
-      // TODO: verify if numb is same to sub_account_id
       .map((sa) => (sa.sub_account_id !== subAccount.sub_account_id ? sa : null!))
       .filter((x) => !!x);
 

@@ -1,7 +1,7 @@
 // svgs
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
-import { Fragment, useEffect } from "react";
+import { Dispatch, Fragment, SetStateAction, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { GeneralHook } from "../../../hooks/generalHook";
 import { AccountDefaultEnum, AddingAssetsEnum, TokenNetworkEnum } from "@/const";
@@ -16,7 +16,7 @@ import { db } from "@/database/db";
 import { updateAllBalances } from "@redux/assets/AssetActions";
 
 interface AddAssetsProps {
-  setAssetOpen(value: boolean): void;
+  setAssetOpen: Dispatch<SetStateAction<boolean>>;
   assetOpen: boolean;
   asset: Asset | undefined;
   setAssetInfo(value: Asset | undefined): void;

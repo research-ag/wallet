@@ -35,8 +35,6 @@ export const initialTransactionState = {
 
 const name = "transaction";
 
-// TODO: search on where clearDataAsset run and clear the transactions []
-
 const transactionSlice = createSlice({
   name,
   initialState: initialTransactionState,

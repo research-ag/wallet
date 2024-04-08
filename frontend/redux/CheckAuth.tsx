@@ -20,6 +20,7 @@ import { Principal } from "@dfinity/principal";
 import { Secp256k1KeyIdentity } from "@dfinity/identity-secp256k1";
 import { DB_Type, db } from "@/database/db";
 import { getSNSTokens } from "./assets/AssetActions";
+import { setTransactions } from "./transaction/TransactionReducer";
 
 const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${
   import.meta.env.VITE_APP_LOGO
@@ -142,4 +143,5 @@ export const logout = async () => {
   store.dispatch(setUnauthenticated());
   store.dispatch(setUserAgent(undefined));
   store.dispatch(setUserPrincipal(undefined));
+  store.dispatch(setTransactions([]));
 };

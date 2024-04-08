@@ -13,7 +13,7 @@ import { useTranslation } from "react-i18next";
 import { AccountDefaultEnum, IconTypeEnum } from "@/const";
 import { Asset } from "@redux/models/AccountModels";
 import { IdentityHook } from "@pages/hooks/identityHook";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import { Principal } from "@dfinity/principal";
 import { LoadingLoader } from "@components/loader";
 import { AccountHook } from "@pages/hooks/accountHook";
@@ -23,19 +23,19 @@ import { db } from "@/database/db";
 
 interface AddAssetManualProps {
   manual: boolean;
-  setManual(value: boolean): void;
+  setManual: Dispatch<SetStateAction<boolean>>;
   errToken: string;
-  setErrToken(value: string): void;
+  setErrToken: Dispatch<SetStateAction<string>>;
   errIndex: string;
-  setErrIndex(value: string): void;
+  setErrIndex: Dispatch<SetStateAction<string>>;
   validToken: boolean;
-  setValidToken(value: boolean): void;
+  setValidToken: Dispatch<SetStateAction<boolean>>;
   validIndex: boolean;
-  setValidIndex(value: boolean): void;
+  setValidIndex: Dispatch<SetStateAction<boolean>>;
   newToken: Asset;
-  setNewToken(value: any): void;
+  setNewToken: Dispatch<SetStateAction<Asset>>;
   asset: Asset | undefined;
-  setAssetOpen(value: boolean): void;
+  setAssetOpen: Dispatch<SetStateAction<boolean>>;
   assets: Asset[];
   addAssetToData(): void;
   setAssetInfo(value: Asset | undefined): void;
@@ -211,9 +211,10 @@ const AddAssetManual = ({
   );
 
   function onLedgerChange(e: ChangeEvent<HTMLInputElement>) {
-    setNewToken((prev: any) => {
+    setNewToken((prev: Asset) => {
       return { ...prev, address: e.target.value.trim() };
     });
+
     setValidToken(false);
     if (e.target.value.trim() !== "")
       try {
@@ -226,7 +227,7 @@ const AddAssetManual = ({
   }
 
   function onChangeIndex(e: ChangeEvent<HTMLInputElement>) {
-    setNewToken((prev: any) => {
+    setNewToken((prev: Asset) => {
       return { ...prev, index: e.target.value };
     });
     setValidIndex(false);
@@ -242,19 +243,19 @@ const AddAssetManual = ({
 
   function onChangeSymbol(e: ChangeEvent<HTMLInputElement>) {
     if (e.target.value.length <= 8)
-      setNewToken((prev: any) => {
+      setNewToken((prev: Asset) => {
         return { ...prev, symbol: e.target.value };
       });
   }
 
   function onChangeName(e: ChangeEvent<HTMLInputElement>) {
-    setNewToken((prev: any) => {
+    setNewToken((prev: Asset) => {
       return { ...prev, name: e.target.value };
     });
   }
 
   function onChangeDecimal(e: ChangeEvent<HTMLInputElement>) {
-    setNewToken((prev: any) => {
+    setNewToken((prev: Asset) => {
       return { ...prev, decimal: e.target.value };
     });
   }
@@ -265,13 +266,12 @@ const AddAssetManual = ({
       (Number(value) <= Number(newToken.decimal) && RegExp("^[0-9]").test(value) && !value.includes(".")) ||
       value === ""
     )
-      setNewToken((prev: any) => {
+      setNewToken((prev: Asset) => {
         return { ...prev, shortDecimal: value };
       });
     serErrShortDec(false);
   }
 
-  // TODO: replace id_number for sortIndex
   function onBack() {
     setManual(false);
     setNewToken({
@@ -282,10 +282,21 @@ const AddAssetManual = ({
       shortDecimal: "",
       tokenSymbol: "",
       tokenName: "",
-      fee: "",
-      subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default, amount: "0", currency_amount: "0" }],
+      subAccounts: [
+        {
+          sub_account_id: "0x0",
+          name: AccountDefaultEnum.Values.Default,
+          amount: "0",
+          currency_amount: "0",
+          address: "",
+          decimal: 0,
+          symbol: "",
+          transaction_fee: "0",
+        },
+      ],
+      supportedStandards: [],
       index: "",
-      id_number: 999,
+      sortIndex: 999,
     });
     setErrToken("");
     setErrIndex("");
@@ -317,7 +328,7 @@ const AddAssetManual = ({
           agent: userAgent,
         });
 
-        setNewToken((prev: any) => {
+        setNewToken((prev: Asset) => {
           return {
             ...prev,
             decimal: decimals.toFixed(0),
@@ -432,10 +443,20 @@ const AddAssetManual = ({
         tokenName: "",
         decimal: "",
         shortDecimal: "",
-        fee: "0",
-        subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default, amount: "0", currency_amount: "0" }],
+        subAccounts: [
+          {
+            sub_account_id: "0x0",
+            name: AccountDefaultEnum.Values.Default,
+            amount: "0",
+            currency_amount: "0",
+            address: "",
+            decimal: 0,
+            symbol: "",
+            transaction_fee: "0",
+          },
+        ],
         index: "",
-        id_number: 999,
+        sortIndex: 999,
         supportedStandards: [],
       });
       setAssetInfo(undefined);

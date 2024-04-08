@@ -77,7 +77,6 @@ export async function submitAllowanceApproval(
   }
 }
 
-// TODO: IcrcLedgerCanister.allowance from @dfinity/ledger-icrc perform call instead of query to get the allowance, remove this function once the issue is resolved in the ledger-icrc package
 export async function getAllowanceDetails(params: CheckAllowanceParams) {
   try {
     const { spenderPrincipal, spenderSubaccount, accountPrincipal, assetAddress, assetDecimal } = params;
@@ -129,9 +128,7 @@ export async function retrieveSubAccountsWithAllowance(params: HasSubAccountsPar
 
       return {
         ...subAccount,
-        // TODO: check the right way to handle the allowance
         allowance: response,
-        // allowance: response?.allowance?.length === 0 ? undefined : response,
       };
     }),
   );
