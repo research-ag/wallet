@@ -58,7 +58,7 @@ const DeleteAssetModal = ({ open, setOpen, asset }: DeleteAssetModalPropr) => {
     setOpen(false);
   }
 
-  // TODO: replace Token[] for Asset[]
+  // TODO: check if the db update it yet
   // function saveInLocalStorage(tokens: Asset[]) {
   //   localStorage.setItem(
   //     authClient,

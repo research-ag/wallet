@@ -40,34 +40,21 @@ const assetSlice = createSlice({
   name: "asset",
   initialState,
   reducers: {
-    // INFO: utility state reducers
     setInitLoad(state, action: PayloadAction<boolean>) {
       state.initLoad = action.payload;
     },
     setLoading(state, action: PayloadAction<boolean>) {
       state.assetLoading = action.payload;
     },
-
-    // INFO: asset state reducers
     setICRC1SystemAssets(state, action: PayloadAction<Asset[]>) {
       state.icr1SystemAssets = [...ICRC1systemAssets, ...action.payload];
     },
     setICPSubaccounts(state, action: PayloadAction<ICPSubAccount[]>) {
       state.ICPSubaccounts = action.payload;
     },
-    // TODO: Revisit this code to see if we can use filter()
     removeAsset(state, action: PayloadAction<string>) {
       const { payload: symbolToRemove } = action;
-      let count = 0;
-      // Iterate all Assets and ignore the one that has
-      // the symbol marked to be removed
-      const auxAssets: Asset[] = [];
-      state.assets.map((asst) => {
-        count++;
-        if (asst.tokenSymbol !== symbolToRemove) {
-          auxAssets.push({ ...asst, sortIndex: count - 1 });
-        }
-      });
+      const auxAssets = state.assets.filter((asset) => asset.tokenSymbol !== symbolToRemove);
       state.assets = auxAssets;
     },
     updateAsset: {
@@ -207,7 +194,6 @@ const assetSlice = createSlice({
       state.accordionIndex = [];
       state.icr1SystemAssets = ICRC1systemAssets;
     },
-
     // INFO: service worker state reducers
     setTxWorker(state, action) {
       const txList = [...state.txWorker];

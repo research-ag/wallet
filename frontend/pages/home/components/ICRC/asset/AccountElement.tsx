@@ -212,7 +212,6 @@ const AccountElement = ({
           ...asset,
           subAccounts: subAccounts,
         });
-        // TODO: Verify if is possible to update the state from the db observable for assets
         dispatch(setSubAccountName(tokenIndex, subaccountId, name));
       }
     } else {

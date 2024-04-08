@@ -107,7 +107,7 @@ actor class WalletDatabase() {
   )();
   */
 
-  // TODO: update these when migrating database
+  // INFO: update these when migrating database
   type AssetDocument = AssetDocument_v0;
   type ContactDocument = ContactDocument_v0;
   type AllowanceDocument = AllowanceDocument_v0;

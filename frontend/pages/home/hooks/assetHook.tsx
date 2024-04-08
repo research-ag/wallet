@@ -22,8 +22,8 @@ export const AssetHook = () => {
 
   const { userAgent } = useAppSelector((state) => state.auth);
 
-  const deleteAsset = (symb: string, address: string) => {
-    dispatch(removeAsset(symb));
+  const deleteAsset = (symbol: string, address: string) => {
+    dispatch(removeAsset(symbol));
     db().deleteAsset(address).then();
   };
 
