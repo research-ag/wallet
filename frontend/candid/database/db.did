@@ -48,7 +48,6 @@ type AssetDocument =
    address: text;
    decimal: text;
    deleted: bool;
-   fee: text;
    index: text;
    logo: text;
    name: text;

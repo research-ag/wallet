@@ -213,8 +213,6 @@ export class RxdbDatabase extends IWalletDatabase {
         index: extractValueFromArray(asset.index),
         deleted: false,
         updatedAt: Date.now(),
-        // TODO: fee should not be here
-        fee: "",
       });
     } catch (e) {
       console.error("RxDb AddAsset:", e);
@@ -789,8 +787,6 @@ export class RxdbDatabase extends IWalletDatabase {
             logo: extractValueFromArray(dT.logo),
             deleted: false,
             updatedAt: Date.now(),
-            // TODO: fee should not be here
-            fee: "",
           })),
         );
       } catch (e) {

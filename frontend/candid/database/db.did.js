@@ -1,6 +1,5 @@
 export const idlFactory = ({ IDL }) => {
   const AssetDocument = IDL.Record({
-    fee: IDL.Text,
     deleted: IDL.Bool,
     logo: IDL.Text,
     name: IDL.Text,

@@ -394,7 +394,6 @@ const AddAssetManual = ({
                 return { ...currentAsset, symbol: asset.symbol };
               } else return currentAsset;
             }),
-
           };
 
           if (affected) {
@@ -403,13 +402,11 @@ const AddAssetManual = ({
         }
 
         await Promise.all(affectedContacts.map((c) => db().updateContact(c.principal, c)));
-
       }, 0);
 
       // List all tokens modifying the one we selected
       const asset = await db().getAsset(newToken.address);
       if (asset) {
-
         const updatedFull: Asset = {
           ...newToken,
           decimal: Number(newToken.decimal).toFixed(0),

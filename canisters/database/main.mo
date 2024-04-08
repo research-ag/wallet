@@ -36,7 +36,6 @@ actor class WalletDatabase() {
       decimal : Nat32;
       symbol : Text;
     }];
-    fee : Text;
     index : Text;
     logo : Text;
     supportedStandards : [Text];

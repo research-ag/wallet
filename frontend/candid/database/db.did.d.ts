@@ -22,7 +22,6 @@ export interface AllowanceDocument {
   spender: string;
 }
 export interface AssetDocument {
-  fee: string;
   deleted: boolean;
   logo: string;
   name: string;
