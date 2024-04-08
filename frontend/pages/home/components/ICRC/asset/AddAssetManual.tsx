@@ -6,10 +6,10 @@ import { IcrcIndexCanister, IcrcLedgerCanister } from "@dfinity/ledger-icrc";
 import { getMetadataInfo, toFullDecimal } from "@/utils";
 import { CustomInput } from "@components/input";
 import { CustomCopy } from "@components/tooltip";
-// import { updateAsset } from "@redux/assets/AssetReducer";
+import { updateAsset } from "@redux/assets/AssetReducer";
 import { CustomButton } from "@components/button";
 import { useTranslation } from "react-i18next";
-// import { useAppDispatch } from "@redux/Store";
+import { useAppDispatch } from "@redux/Store";
 import { AccountDefaultEnum, IconTypeEnum } from "@/const";
 import { Asset } from "@redux/models/AccountModels";
 import { IdentityHook } from "@pages/hooks/identityHook";
@@ -19,7 +19,7 @@ import { LoadingLoader } from "@components/loader";
 import { AccountHook } from "@pages/hooks/accountHook";
 import { getICRCSupportedStandards } from "@pages/home/helpers/icrc";
 import { db } from "@/database/db";
-// import { Contact } from "@redux/models/ContactsModels";
+import { Contact } from "@redux/models/ContactsModels";
 
 interface AddAssetManualProps {
   manual: boolean;
@@ -60,7 +60,7 @@ const AddAssetManual = ({
   setAssetInfo,
 }: AddAssetManualProps) => {
   const { t } = useTranslation();
-  // const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
 
   const { authClient } = AccountHook();
   const { getAssetIcon, checkAssetAdded } = GeneralHook();
@@ -370,46 +370,45 @@ const AddAssetManual = ({
   }
 
   async function onSave() {
-    if (asset) {
+    if (asset && asset !== undefined && asset !== null) {
       if (newToken.shortDecimal === "") {
         serErrShortDec(true);
         return;
       }
       // Change contacts local and reducer
-      // setTimeout(async () => {
-      //   const affectedContacts: Contact[] = [];
-      //   const currentContacts = await db().getContacts();
 
-      //   for (const cnt of currentContacts) {
-      //     let affected = false;
-      //     const newDoc = {
-      //       ...cnt,
-      //       assets: cnt.assets.map((asst) => {
-      //         if (asst.tokenSymbol === asset.tokenSymbol) {
-      //           affected = true;
-      //           return { ...asst, symbol: asset.symbol };
-      //         } else return asst;
-      //       }),
-      //     };
-      //     if (affected) {
-      //       affectedContacts.push(newDoc);
-      //     }
-      //   }
+      setTimeout(async () => {
+        const affectedContacts: Contact[] = [];
+        const currentContacts = await db().getContacts();
 
-      //   await Promise.all(affectedContacts.map((c) => db().updateContact(c.principal, c)));
-      // }, 0);
+        for (const contact of currentContacts) {
+          let affected = false;
+
+          const newDoc = {
+            ...contact,
+
+            assets: contact.assets.map((currentAsset) => {
+              // FIXME: the asset must not be undefined at this point
+              if (currentAsset.tokenSymbol === asset?.tokenSymbol) {
+                affected = true;
+                return { ...currentAsset, symbol: asset.symbol };
+              } else return currentAsset;
+            }),
+
+          };
+
+          if (affected) {
+            affectedContacts.push(newDoc);
+          }
+        }
+
+        await Promise.all(affectedContacts.map((c) => db().updateContact(c.principal, c)));
+
+      }, 0);
 
       // List all tokens modifying the one we selected
       const asset = await db().getAsset(newToken.address);
       if (asset) {
-        // const old = {
-        //   ...newToken,
-        //   decimal: Number(newToken.decimal).toFixed(0),
-        //   shortDecimal:
-        //     newToken.shortDecimal === ""
-        //       ? Number(newToken.decimal).toFixed(0)
-        //       : Number(newToken.shortDecimal).toFixed(0),
-        // };
 
         const updatedFull: Asset = {
           ...newToken,
@@ -432,9 +431,9 @@ const AddAssetManual = ({
 
         await db().updateAsset(asset.address, updatedFull);
       }
-      // Edit tokens list and assets list
-      // dispatch(updateAsset(newToken, asset.tokenSymbol));
-      // TODO: replace id_number for sortIndex
+
+      // FIXME: the asset must not be null at this point
+      if (asset?.tokenSymbol) dispatch(updateAsset(newToken, asset.tokenSymbol));
       setNewToken({
         address: "",
         symbol: "",
