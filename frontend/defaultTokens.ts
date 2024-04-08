@@ -3,7 +3,7 @@ import { Asset, SubAccount } from "@redux/models/AccountModels";
 
 const supportedStandards = [SupportedStandardEnum.Values["ICRC-1"], SupportedStandardEnum.Values["ICRC-2"]];
 
-const defaultSubAccount: SubAccount = {
+export const defaultSubAccount: SubAccount = {
   sub_account_id: "0x0",
   name: "Default",
   amount: "0",
@@ -11,7 +11,7 @@ const defaultSubAccount: SubAccount = {
   address: "",
   decimal: 0,
   symbol: "",
-  transaction_fee: "",
+  transaction_fee: "0",
 };
 
 // INFO: default assets to add in the add asset modal

@@ -10,8 +10,8 @@ interface DialogAssetConfirmationProps {
   modal: boolean;
   showModal(value: boolean): void;
   setAssetOpen(value: boolean): void;
-  newToken: Asset;
-  setNewToken(value: Asset): void;
+  newAsset: Asset;
+  setNewAsset(value: Asset): void;
   setNetwork(value: TokenNetwork): void;
   addStatus: AddingAssets;
   setManual(value: boolean): void;
@@ -21,8 +21,8 @@ const DialogAssetConfirmation = ({
   modal,
   showModal,
   setAssetOpen,
-  newToken,
-  setNewToken,
+  newAsset,
+  setNewAsset,
   setNetwork,
   addStatus,
   setManual,
@@ -43,7 +43,7 @@ const DialogAssetConfirmation = ({
           onClick={onClose}
         />
         <div className="flex flex-col items-center justify-start w-full py-2">
-          {getAssetIcon(IconTypeEnum.Enum.ASSET, newToken?.symbol, newToken.logo)}
+          {getAssetIcon(IconTypeEnum.Enum.ASSET, newAsset?.symbol, newAsset.logo)}
           <p
             className={`text-lg font-semibold mt-3 ${
               addStatus === AddingAssetsEnum.Enum.done ? "text-TextReceiveColor" : "text-TextSendColor"
@@ -61,7 +61,7 @@ const DialogAssetConfirmation = ({
     showModal(false);
     setAssetOpen(false);
     setNetwork(TokenNetworkEnum.enum["ICRC-1"]);
-    setNewToken({
+    setNewAsset({
       address: "",
       symbol: "",
       decimal: "",

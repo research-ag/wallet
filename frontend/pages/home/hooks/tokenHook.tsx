@@ -13,7 +13,7 @@ export const TokenHook = (asset: Asset | undefined) => {
   const [assetTOpen, setAssetTOpen] = useState(false);
   const [errToken, setErrToken] = useState("");
   const [errIndex, setErrIndex] = useState("");
-  const [newToken, setNewToken] = useState<Asset>({
+  const [newAsset, setNewAsset] = useState<Asset>({
     address: "",
     symbol: "",
     name: "",
@@ -45,7 +45,7 @@ export const TokenHook = (asset: Asset | undefined) => {
 
   useEffect(() => {
     if (asset) {
-      setNewToken({
+      setNewAsset({
         address: asset.address,
         symbol: asset.symbol,
         name: asset.name,
@@ -104,7 +104,7 @@ export const TokenHook = (asset: Asset | undefined) => {
     network,
     setNetwork,
     newAssetList,
-    newToken,
-    setNewToken,
+    newAsset,
+    setNewAsset,
   };
 };

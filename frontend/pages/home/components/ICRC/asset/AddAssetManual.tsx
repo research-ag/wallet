@@ -18,6 +18,7 @@ import { AccountHook } from "@pages/hooks/accountHook";
 import { getICRCSupportedStandards } from "@pages/home/helpers/icrc";
 import { db } from "@/database/db";
 import { Contact } from "@redux/models/ContactsModels";
+import { defaultSubAccount } from "@/defaultTokens";
 
 interface AddAssetManualProps {
   manual: boolean;
@@ -30,8 +31,8 @@ interface AddAssetManualProps {
   setValidToken: Dispatch<SetStateAction<boolean>>;
   validIndex: boolean;
   setValidIndex: Dispatch<SetStateAction<boolean>>;
-  newToken: Asset;
-  setNewToken: Dispatch<SetStateAction<Asset>>;
+  newAsset: Asset;
+  setNewAsset: Dispatch<SetStateAction<Asset>>;
   asset: Asset | undefined;
   setAssetOpen: Dispatch<SetStateAction<boolean>>;
   assets: Asset[];
@@ -50,8 +51,8 @@ const AddAssetManual = ({
   setValidToken,
   validIndex,
   setValidIndex,
-  newToken,
-  setNewToken,
+  newAsset,
+  setNewAsset,
   asset,
   setAssetOpen,
   addAssetToData,
@@ -84,13 +85,13 @@ const AddAssetManual = ({
         <p className="opacity-60">{t("token.contract.address")}</p>
         <CustomInput
           sizeInput={"medium"}
-          sufix={<CustomCopy size={"small"} copyText={newToken.address} side="left" align="center" />}
+          sufix={<CustomCopy size={"small"} copyText={newAsset.address} side="left" align="center" />}
           intent={"secondary"}
           disabled={asset ? true : false}
           inputClass={asset ? "opacity-40" : ""}
           placeholder="Ledger Principal"
           compOutClass=""
-          value={newToken.address}
+          value={newAsset.address}
           onChange={onLedgerChange}
           border={errToken ? "error" : undefined}
         />
@@ -102,10 +103,10 @@ const AddAssetManual = ({
         <CustomInput
           sizeInput={"medium"}
           intent={"secondary"}
-          sufix={<CustomCopy size={"small"} copyText={newToken.index || ""} side="left" align="center" />}
+          sufix={<CustomCopy size={"small"} copyText={newAsset.index || ""} side="left" align="center" />}
           placeholder="Index Principal"
           compOutClass=""
-          value={newToken.index}
+          value={newAsset.index}
           onChange={onChangeIndex}
           border={errToken ? "error" : undefined}
         />
@@ -115,9 +116,9 @@ const AddAssetManual = ({
       {!asset && (
         <div className="flex justify-end w-full">
           <CustomButton
-            intent={newToken.address.length > 5 ? "success" : "deny"}
+            intent={newAsset.address.length > 5 ? "success" : "deny"}
             onClick={() => onTest(true)}
-            disabled={newToken.address.length <= 5}
+            disabled={newAsset.address.length <= 5}
           >
             {testLoading ? <LoadingLoader className="mt-1" /> : t("test")}
           </CustomButton>
@@ -130,7 +131,7 @@ const AddAssetManual = ({
           intent={"secondary"}
           placeholder="-"
           compOutClass=""
-          value={newToken.symbol}
+          value={newAsset.symbol}
           onChange={onChangeSymbol}
           disabled={!asset && !tested}
         />
@@ -142,7 +143,7 @@ const AddAssetManual = ({
           intent={"secondary"}
           placeholder="-"
           compOutClass=""
-          value={newToken.name}
+          value={newAsset.name}
           onChange={onChangeName}
           disabled={!asset && !tested}
         />
@@ -154,7 +155,7 @@ const AddAssetManual = ({
           intent={"secondary"}
           placeholder="0"
           compOutClass="opacity-60"
-          value={toFullDecimal(newToken.subAccounts[0].transaction_fee || "0", Number(newToken.decimal || "0"))}
+          value={toFullDecimal(newAsset.subAccounts[0].transaction_fee || "0", Number(newAsset.decimal || "0"))}
           disabled
         />
       </div>
@@ -169,7 +170,7 @@ const AddAssetManual = ({
             disabled={true}
             compOutClass=""
             type="number"
-            value={newToken.decimal}
+            value={newAsset.decimal}
             onChange={onChangeDecimal}
           />
         </div>
@@ -181,7 +182,7 @@ const AddAssetManual = ({
               intent={"secondary"}
               placeholder=""
               compOutClass=""
-              value={newToken.shortDecimal}
+              value={newAsset.shortDecimal}
               onChange={onChangeShortDecimal}
               border={errShortDec ? "error" : undefined}
             />
@@ -196,9 +197,9 @@ const AddAssetManual = ({
           </CustomButton>
         )}
         <CustomButton
-          intent={(asset ? newToken.address.length > 5 : tested) ? "accept" : "deny"}
+          intent={(asset ? newAsset.address.length > 5 : tested) ? "accept" : "deny"}
           onClick={onSave}
-          disabled={asset ? newToken.address.length <= 5 : !tested}
+          disabled={asset ? newAsset.address.length <= 5 : !tested}
         >
           {t("save")}
         </CustomButton>
@@ -207,7 +208,7 @@ const AddAssetManual = ({
   );
 
   function onLedgerChange(e: ChangeEvent<HTMLInputElement>) {
-    setNewToken((prev: Asset) => {
+    setNewAsset((prev: Asset) => {
       return { ...prev, address: e.target.value.trim() };
     });
 
@@ -223,7 +224,7 @@ const AddAssetManual = ({
   }
 
   function onChangeIndex(e: ChangeEvent<HTMLInputElement>) {
-    setNewToken((prev: Asset) => {
+    setNewAsset((prev: Asset) => {
       return { ...prev, index: e.target.value };
     });
     setValidIndex(false);
@@ -239,19 +240,19 @@ const AddAssetManual = ({
 
   function onChangeSymbol(e: ChangeEvent<HTMLInputElement>) {
     if (e.target.value.length <= 8)
-      setNewToken((prev: Asset) => {
+      setNewAsset((prev: Asset) => {
         return { ...prev, symbol: e.target.value };
       });
   }
 
   function onChangeName(e: ChangeEvent<HTMLInputElement>) {
-    setNewToken((prev: Asset) => {
+    setNewAsset((prev: Asset) => {
       return { ...prev, name: e.target.value };
     });
   }
 
   function onChangeDecimal(e: ChangeEvent<HTMLInputElement>) {
-    setNewToken((prev: Asset) => {
+    setNewAsset((prev: Asset) => {
       return { ...prev, decimal: e.target.value };
     });
   }
@@ -259,10 +260,10 @@ const AddAssetManual = ({
   function onChangeShortDecimal(e: ChangeEvent<HTMLInputElement>) {
     const value = e.target.value === "" ? "" : Number(e.target.value) === 0 ? "0" : e.target.value;
     if (
-      (Number(value) <= Number(newToken.decimal) && RegExp("^[0-9]").test(value) && !value.includes(".")) ||
+      (Number(value) <= Number(newAsset.decimal) && RegExp("^[0-9]").test(value) && !value.includes(".")) ||
       value === ""
     )
-      setNewToken((prev: Asset) => {
+      setNewAsset((prev: Asset) => {
         return { ...prev, shortDecimal: value };
       });
     serErrShortDec(false);
@@ -270,7 +271,7 @@ const AddAssetManual = ({
 
   function onBack() {
     setManual(false);
-    setNewToken({
+    setNewAsset({
       address: "",
       symbol: "",
       name: "",
@@ -303,7 +304,7 @@ const AddAssetManual = ({
   async function onTest(override: boolean): Promise<boolean> {
     setTestLoading(true);
     let validData = false;
-    if (checkAssetAdded(newToken.address)) {
+    if (checkAssetAdded(newAsset.address)) {
       setErrToken(t("adding.asset.already.imported"));
       setValidToken(false);
       validData = false;
@@ -311,7 +312,7 @@ const AddAssetManual = ({
       try {
         const { metadata } = IcrcLedgerCanister.create({
           agent: userAgent,
-          canisterId: newToken.address as any,
+          canisterId: newAsset.address as any,
         });
 
         const myMetadata = await metadata({
@@ -320,11 +321,11 @@ const AddAssetManual = ({
 
         const { symbol, decimals, name, logo, fee } = getMetadataInfo(myMetadata);
         const supportedStandards = await getICRCSupportedStandards({
-          assetAddress: newToken.address,
+          assetAddress: newAsset.address,
           agent: userAgent,
         });
 
-        setNewToken((prev: Asset) => {
+        setNewAsset((prev: Asset) => {
           return {
             ...prev,
             decimal: decimals.toFixed(0),
@@ -346,10 +347,10 @@ const AddAssetManual = ({
         validData = false;
       }
     }
-    if (newToken.index && newToken.index !== "" && newToken.shortDecimal !== "")
+    if (newAsset.index && newAsset.index !== "" && newAsset.shortDecimal !== "")
       try {
         const { getTransactions } = IcrcIndexCanister.create({
-          canisterId: newToken.index as any,
+          canisterId: newAsset.index as any,
         });
         await getTransactions({ max_results: BigInt(1), account: { owner: Principal.fromText(authClient) } });
         setValidIndex(true);
@@ -366,11 +367,8 @@ const AddAssetManual = ({
   }
 
   async function onSave() {
-    // INFO: save changes to existing
-    // INFO: add asset manual run this function
     if (asset) {
-      console.log("edit existing asset");
-      if (newToken.shortDecimal === "") {
+      if (newAsset.shortDecimal === "") {
         serErrShortDec(true);
         return;
       }
@@ -400,33 +398,21 @@ const AddAssetManual = ({
         await Promise.all(affectedContacts.map((c) => db().updateContact(c.principal, c)));
       }, 0);
 
-      // List all tokens modifying the one we selected
-      const asset = await db().getAsset(newToken.address);
+      const asset = await db().getAsset(newAsset.address);
 
       if (asset) {
         const updatedFull: Asset = {
-          ...newToken,
-          decimal: Number(newToken.decimal).toFixed(0),
+          ...newAsset,
+          decimal: Number(newAsset.decimal).toFixed(0),
           shortDecimal:
-            newToken.shortDecimal === ""
-              ? Number(newToken.decimal).toFixed(0)
-              : Number(newToken.shortDecimal).toFixed(0),
-          sortIndex: asset.sortIndex,
-          logo: asset.logo,
-          address: asset.address,
-          supportedStandards: asset.supportedStandards,
-          index: asset.index,
-          name: asset.name,
-          subAccounts: asset.subAccounts,
-          symbol: asset.symbol,
-          tokenName: asset.tokenName,
-          tokenSymbol: asset.tokenSymbol,
+            newAsset.shortDecimal === ""
+              ? Number(newAsset.decimal).toFixed(0)
+              : Number(newAsset.shortDecimal).toFixed(0),
         };
-
         await db().updateAsset(asset.address, updatedFull);
       }
 
-      setNewToken({
+      setNewAsset({
         address: "",
         symbol: "",
         name: "",
@@ -434,18 +420,7 @@ const AddAssetManual = ({
         tokenName: "",
         decimal: "",
         shortDecimal: "",
-        subAccounts: [
-          {
-            sub_account_id: "0x0",
-            name: AccountDefaultEnum.Values.Default,
-            amount: "0",
-            currency_amount: "0",
-            address: "",
-            decimal: 0,
-            symbol: "",
-            transaction_fee: "0",
-          },
-        ],
+        subAccounts: [defaultSubAccount],
         index: "",
         sortIndex: 999,
         supportedStandards: [],

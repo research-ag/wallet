@@ -253,7 +253,6 @@ export class RxdbDatabase extends IWalletDatabase {
     }
   }
 
-  // INFO: CONTACTS
   /**
    * Find a Contact object by its Principal ID.
    * @param principal Princial ID
@@ -382,7 +381,6 @@ export class RxdbDatabase extends IWalletDatabase {
     }
   }
 
-  // INFO: ALLOWANCES
   /**
    * Find a Allowance object.
    * @param id Primary Key
@@ -499,7 +497,6 @@ export class RxdbDatabase extends IWalletDatabase {
     }
   }
 
-  // INFO: SUBSCRIPTIONS
   /**
    * Observable that trigger after
    * a new Identity has been set.
@@ -564,7 +561,6 @@ export class RxdbDatabase extends IWalletDatabase {
     );
   }
 
-  // INFO: HELPERS
   private _mapContactDoc(doc: RxDocument<ContactRxdbDocument>): Contact {
     return {
       name: doc.name,

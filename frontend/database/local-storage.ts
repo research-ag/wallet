@@ -256,6 +256,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
   private _setAssets(allAssets: Asset[]) {
     const assets = [...allAssets].sort((a, b) => a.sortIndex - b.sortIndex);
     localStorage.setItem(`assets-${this.principalId}`, JSON.stringify(assets));
+    console.log("local-storage asset update");
     this._assets$.next(assets);
   }
 

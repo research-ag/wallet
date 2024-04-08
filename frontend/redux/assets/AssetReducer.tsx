@@ -194,7 +194,6 @@ const assetSlice = createSlice({
       state.accordionIndex = [];
       state.icr1SystemAssets = ICRC1systemAssets;
     },
-    // INFO: service worker state reducers
     setTxWorker(state, action) {
       const txList = [...state.txWorker];
 

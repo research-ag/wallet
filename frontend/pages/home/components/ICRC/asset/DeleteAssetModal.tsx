@@ -5,7 +5,7 @@ import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 import { BasicModal } from "@components/modal";
 import { useTranslation } from "react-i18next";
 import { CustomButton } from "@components/button";
-import { AssetHook } from "@pages/home/hooks/assetHook";
+import { db } from "@/database/db";
 
 interface DeleteAssetModalPropr {
   open: boolean;
@@ -15,8 +15,7 @@ interface DeleteAssetModalPropr {
 
 const DeleteAssetModal = ({ open, setOpen, asset }: DeleteAssetModalPropr) => {
   const { t } = useTranslation();
-  const { deleteAsset } = AssetHook();
-  const { name, symbol, address } = asset;
+  const { name, address } = asset;
 
   return (
     <BasicModal
@@ -51,28 +50,9 @@ const DeleteAssetModal = ({ open, setOpen, asset }: DeleteAssetModalPropr) => {
   );
 
   function handleConfirmButton() {
-    // INFO: delete an asset
-    console.log("delete the asset");
-    // INFO: this function update the local storage with all the tokens avoiding the deleted one
-    // REMOVE: const auxTokens = tokens.filter((tkn) => tkn.symbol !== symbol);
-    // REMOVE: saveInLocalStorage(auxTokens);
-    // TODO: remove once the assets observable update the state
-    deleteAsset(symbol, address);
+    db().deleteAsset(address).then();
     setOpen(false);
   }
-
-  // TODO: check if the db update it yet
-  // function saveInLocalStorage(tokens: Asset[]) {
-  //   localStorage.setItem(
-  //     authClient,
-  //     JSON.stringify({
-  //       from: "II",
-  //       tokens: tokens.sort((a, b) => {
-  //         return a.id_number - b.id_number;
-  //       }),
-  //     }),
-  //   );
-  // }
 };
 
 export default DeleteAssetModal;

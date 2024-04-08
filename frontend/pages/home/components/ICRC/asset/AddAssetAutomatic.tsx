@@ -14,8 +14,8 @@ interface AddAssetAutomaticProps {
   networkTOpen: boolean;
   setNetwork(value: TokenNetwork): void;
   network: TokenNetwork;
-  setNewToken(value: Asset): void;
-  newToken: Asset;
+  setNewAsset(value: Asset): void;
+  newAsset: Asset;
   setAssetTOpen(value: boolean): void;
   addAssetToData(): void;
   assetTOpen: boolean;
@@ -32,8 +32,8 @@ const AddAssetAutomatic = ({
   networkTOpen,
   setNetwork,
   network,
-  setNewToken,
-  newToken,
+  setNewAsset,
+  newAsset,
   setAssetTOpen,
   addAssetToData,
   assetTOpen,
@@ -125,10 +125,10 @@ const AddAssetAutomatic = ({
                   "pr-0",
                 )}
               >
-                {newToken.tokenSymbol != "" ? (
+                {newAsset.tokenSymbol != "" ? (
                   <div className="flex flex-row items-center justify-start">
-                    {getAssetIcon(IconTypeEnum.Enum.ASSET, newToken.symbol, newToken.logo)}
-                    <p className="ml-3">{`${newToken.tokenName}`}</p>
+                    {getAssetIcon(IconTypeEnum.Enum.ASSET, newAsset.symbol, newAsset.logo)}
+                    <p className="ml-3">{`${newAsset.tokenName}`}</p>
                   </div>
                 ) : (
                   <p className="opacity-70">{t("adding.select")}</p>
@@ -187,7 +187,7 @@ const AddAssetAutomatic = ({
   function onSelectNetwork(sa: TokenNetwork) {
     setNetwork(sa);
     if (sa !== network)
-      setNewToken({
+      setNewAsset({
         address: "",
         symbol: "",
         name: "",
@@ -214,14 +214,14 @@ const AddAssetAutomatic = ({
   }
 
   function onSelectToken(newAsset: Asset) {
-    setNewToken(newAsset);
+    setNewAsset(newAsset);
     setErrToken("");
     setValidToken(true);
   }
 
   function onAddAssetManually() {
     setManual(true);
-    setNewToken({
+    setNewAsset({
       address: "",
       symbol: "",
       name: "",
@@ -247,7 +247,7 @@ const AddAssetAutomatic = ({
     });
   }
   async function onAdd() {
-    newToken.address.trim() !== "" && addAssetToData();
+    newAsset.address.trim() !== "" && addAssetToData();
   }
 };
 

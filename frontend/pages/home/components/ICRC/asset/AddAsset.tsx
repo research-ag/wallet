@@ -28,8 +28,8 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, assets, accord
   const dispatch = useAppDispatch();
   const { checkAssetAdded } = GeneralHook();
   const {
-    newToken,
-    setNewToken,
+    newAsset,
+    setNewAsset,
     validToken,
     setValidToken,
     validIndex,
@@ -81,8 +81,8 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, assets, accord
             setValidToken={setValidToken}
             validIndex={validIndex}
             setValidIndex={setValidIndex}
-            newToken={newToken}
-            setNewToken={setNewToken}
+            newAsset={newAsset}
+            setNewAsset={setNewAsset}
             asset={asset}
             setAssetOpen={setAssetOpen}
             assets={assets}
@@ -95,8 +95,8 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, assets, accord
             networkTOpen={networkTOpen}
             setNetwork={setNetwork}
             network={network}
-            setNewToken={setNewToken}
-            newToken={newToken}
+            setNewAsset={setNewAsset}
+            newAsset={newAsset}
             setAssetTOpen={setAssetTOpen}
             addAssetToData={addAssetToData}
             assetTOpen={assetTOpen}
@@ -114,8 +114,8 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, assets, accord
           modal={modal}
           showModal={showModal}
           setAssetOpen={setAssetOpen}
-          newToken={newToken}
-          setNewToken={setNewToken}
+          newAsset={newAsset}
+          setNewAsset={setNewAsset}
           setNetwork={setNetwork}
           addStatus={addStatus}
           setManual={setManual}
@@ -128,7 +128,7 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, assets, accord
     addToAcordeonIdx();
     setAssetOpen(false);
     setNetwork(TokenNetworkEnum.enum["ICRC-1"]);
-    setNewToken({
+    setNewAsset({
       address: "",
       symbol: "",
       name: "",
@@ -157,17 +157,14 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, assets, accord
   }
 
   async function addAssetToData() {
-    // INFO: create new asset
-    console.log("create new asset");
-
-    if (checkAssetAdded(newToken.address)) {
+    if (checkAssetAdded(newAsset.address)) {
       setErrToken(t("adding.asset.already.imported"));
       setValidToken(false);
     } else {
       const idxSorting = assets.length > 0 ? [...assets].sort((a, b) => b.sortIndex - a.sortIndex) : [];
       const idx = (idxSorting.length > 0 ? idxSorting[0]?.sortIndex : 0) + 1;
       const tknSave: Asset = {
-        ...newToken,
+        ...newAsset,
         sortIndex: idx,
         subAccounts: [
           {
@@ -190,7 +187,7 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, assets, accord
 
       setAssetOpen(false);
       showModal(false);
-      setNewToken({
+      setNewAsset({
         address: "",
         symbol: "",
         name: "",

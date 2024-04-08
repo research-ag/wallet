@@ -1,17 +1,10 @@
 import { defaultTokens } from "@/defaultTokens";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { updateAllBalances } from "@redux/assets/AssetActions";
-import {
-  removeAsset,
-  setAccordionAssetIdx,
-  setLoading,
-  setSelectedAccount,
-  setSelectedAsset,
-} from "@redux/assets/AssetReducer";
+import { setAccordionAssetIdx, setLoading, setSelectedAccount, setSelectedAsset } from "@redux/assets/AssetReducer";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { useEffect, useState } from "react";
 import { allowanceCacheRefresh } from "../helpers/allowanceCache";
-import { db } from "@/database/db";
 import contactCacheRefresh from "@pages/contacts/helpers/contactCacheRefresh";
 
 export const AssetHook = () => {
@@ -21,11 +14,6 @@ export const AssetHook = () => {
   );
 
   const { userAgent } = useAppSelector((state) => state.auth);
-
-  const deleteAsset = (symbol: string, address: string) => {
-    dispatch(removeAsset(symbol));
-    db().deleteAsset(address).then();
-  };
 
   const [searchKey, setSearchKey] = useState("");
   const setAcordeonIdx = (assetIdx: string[]) => dispatch(setAccordionAssetIdx(assetIdx));
@@ -96,7 +84,6 @@ export const AssetHook = () => {
     assetLoading,
     selectedAsset,
     selectedAccount,
-    deleteAsset,
     searchKey,
     setSearchKey,
     accordionIndex,
