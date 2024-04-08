@@ -52,40 +52,7 @@ const assetSlice = createSlice({
     setICPSubaccounts(state, action: PayloadAction<ICPSubAccount[]>) {
       state.ICPSubaccounts = action.payload;
     },
-    // removeAsset(state, action: PayloadAction<string>) {
-    //   const { payload: symbolToRemove } = action;
-    //   const auxAssets = state.assets.filter((asset) => asset.tokenSymbol !== symbolToRemove);
-    //   state.assets = auxAssets;
-    // },
-    // updateAsset: {
-    //   reducer(
-    //     state,
-    //     action: PayloadAction<{
-    //       asset: Asset;
-    //       tokenSymbol: string;
-    //     }>,
-    //   ) {
-    //     const { asset, tokenSymbol } = action.payload;
-    //     const auxAssets = state.assets.map((asst) => {
-    //       if (asst.tokenSymbol === tokenSymbol) {
-    //         return {
-    //           ...asst,
-    //           symbol: asset.symbol,
-    //           name: asset.name,
-    //           index: asset.index,
-    //           shortDecimal:
-    //             asset.shortDecimal === "" ? Number(asset.decimal).toFixed() : Number(asset.shortDecimal).toFixed(),
-    //         };
-    //       } else return asst;
-    //     });
-    //     state.assets = auxAssets;
-    //   },
-    //   prepare(asset: Asset, tokenSymbol: string) {
-    //     return {
-    //       payload: { asset, tokenSymbol },
-    //     };
-    //   },
-    // },
+    // TODO: remove this function and update the sub accounts balance after allowance interaction
     updateSubAccountBalance: {
       reducer(
         state: AssetState,
@@ -117,51 +84,9 @@ const assetSlice = createSlice({
         return { payload: { tokenSymbol, subAccountId, amount } };
       },
     },
-    // setSubAccountName: {
-    //   reducer(
-    //     state,
-    //     action: PayloadAction<{
-    //       assetIndex: number | string;
-    //       subaccountId: number | string;
-    //       name: string;
-    //     }>,
-    //   ) {
-    //     const { assetIndex, subaccountId, name } = action.payload;
-
-    //     if (state.assets[Number(assetIndex)] && state.assets[Number(assetIndex)].subAccounts[Number(subaccountId)])
-    //       state.assets[Number(assetIndex)].subAccounts[Number(subaccountId)].name = name;
-    //   },
-    //   prepare(assetIndex: string | number, subaccountId: string | number, name: string) {
-    //     return {
-    //       payload: { assetIndex, subaccountId, name },
-    //     };
-    //   },
-    // },
     setTokenMarket(state, action: PayloadAction<TokenMarketInfo[]>) {
       state.tokensMarket = action.payload;
     },
-    // addSubAccount: {
-    //   reducer(
-    //     state,
-    //     action: PayloadAction<{
-    //       assetIndex: number | string;
-    //       subaccount: SubAccount;
-    //     }>,
-    //   ) {
-    //     const { assetIndex, subaccount } = action.payload;
-    //     if (state.assets[Number(assetIndex)]) {
-    //       state.assets[Number(assetIndex)].subAccounts.push(subaccount);
-    //       state.assets[Number(assetIndex)].subAccounts.sort((a, b) => {
-    //         return Number(a.sub_account_id) - Number(b.sub_account_id);
-    //       });
-    //     }
-    //   },
-    //   prepare(assetIndex: string | number, subaccount: SubAccount) {
-    //     return {
-    //       payload: { assetIndex, subaccount },
-    //     };
-    //   },
-    // },
     setAssets(state, action) {
       state.assets = action.payload.sort((a: Asset, b: Asset) => {
         return a.sortIndex - b.sortIndex;
@@ -225,10 +150,6 @@ export const {
   setICPSubaccounts,
   setLoading,
   setTokenMarket,
-  // removeAsset,
-  // updateAsset,
-  // setSubAccountName,
-  // addSubAccount,
   setAssets,
   setAccounts,
   setSelectedAsset,
