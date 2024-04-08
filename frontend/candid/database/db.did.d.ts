@@ -80,6 +80,6 @@ export interface WalletDatabase {
   pushAssets: ActorMethod<[Array<AssetDocument>], Array<AssetDocument>>;
   pushContacts: ActorMethod<[Array<ContactDocument>], Array<ContactDocument>>;
 }
-export interface _SERVICE extends WalletDatabase {}
+export type _SERVICE = WalletDatabase;
 export declare const idlFactory: IDL.InterfaceFactory;
 export declare const init: ({ IDL }: { IDL: IDL }) => IDL.Type[];

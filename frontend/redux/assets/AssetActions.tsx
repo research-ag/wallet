@@ -32,8 +32,6 @@ export const updateAllBalances: UpdateAllBalances = async (params) => {
   if (ETHRate) tokenMarkets.push(ETHRate);
   store.dispatch(setTokenMarket(tokenMarkets));
 
-  console.log("assets: ", assets);
-
   const auxAssets = [...assets].sort((a, b) => a.sortIndex - b.sortIndex);
   const myPrincipal = store.getState().auth.userPrincipal;
 
@@ -49,11 +47,7 @@ export const updateAllBalances: UpdateAllBalances = async (params) => {
     myPrincipal,
   });
 
-  console.log("updateAssets: ", updateAssets);
-
-  const newAssetsUpload = updateAssets.sort((a, b) => {
-    return a.sortIndex - b.sortIndex;
-  });
+  const newAssetsUpload = updateAssets.sort((a, b) => a.sortIndex - b.sortIndex);
 
   if (loading) {
     store.dispatch(setAssets(newAssetsUpload));
@@ -63,7 +57,7 @@ export const updateAllBalances: UpdateAllBalances = async (params) => {
     }
   }
 
-  const icpAsset = newAssetsUpload.find((ast) => ast.tokenSymbol === "ICP");
+  const icpAsset = newAssetsUpload.find((asset) => asset.tokenSymbol === "ICP");
 
   if (icpAsset) {
     const sub: ICPSubAccount[] = [];
@@ -174,6 +168,7 @@ export const getAllTransactionsICRC1 = async (
     const transactionsInfo = ICRC1getTransactions.transactions.map(({ transaction, id }) =>
       formatckBTCTransaccion(transaction, id, myPrincipal?.toString(), assetSymbol, canister, subNumber),
     );
+
     if (
       loading &&
       store.getState().asset.selectedAccount?.sub_account_id === subNumber &&
