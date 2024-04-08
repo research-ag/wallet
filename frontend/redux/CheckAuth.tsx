@@ -22,9 +22,8 @@ import { DB_Type, db } from "@/database/db";
 import { getSNSTokens } from "./assets/AssetActions";
 import { setTransactions } from "./transaction/TransactionReducer";
 
-const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${
-  import.meta.env.VITE_APP_LOGO
-}#authorize`;
+const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${import.meta.env.VITE_APP_LOGO
+  }#authorize`;
 
 const NETWORK_AUTHORIZE_PATH = "https://identity.ic0.app/#authorize";
 const HTTP_AGENT_HOST = "https://identity.ic0.app";

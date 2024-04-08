@@ -13,9 +13,7 @@ import { GeneralHook } from "../../../hooks/generalHook";
 import { toFullDecimal } from "@/utils";
 import { CustomInput } from "@components/input";
 import { useTranslation } from "react-i18next";
-import { useAppDispatch } from "@redux/Store";
 import { CustomCopy } from "@components/tooltip";
-import { addSubAccount, setSubAccountName } from "@redux/assets/AssetReducer";
 import { BasicModal } from "@components/modal";
 import { CustomButton } from "@components/button";
 import bigInt from "big-integer";
@@ -52,11 +50,9 @@ const AccountElement = ({
   setNewSub,
   newSub,
   assets,
-  subaccountId,
   setAddOpen,
 }: AccountElementProps) => {
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
   const { selectedAsset, changeSelectedAsset, selectedAccount, changeSelectedAccount } = GeneralHook();
   const chechEqId = () => {
     return (
@@ -120,9 +116,8 @@ const AccountElement = ({
           </div>
         </div>
         <div
-          className={`flex flex-row justify-between items-center gap-2 ${
-            subAccount?.sub_account_id !== "0x0" && Number(subAccount?.amount) === 0 && !newSub ? "" : "pr-6"
-          }`}
+          className={`flex flex-row justify-between items-center gap-2 ${subAccount?.sub_account_id !== "0x0" && Number(subAccount?.amount) === 0 && !newSub ? "" : "pr-6"
+            }`}
         >
           <div className="flex flex-col items-end justify-center">
             <p className="whitespace-nowrap">{`${toFullDecimal(
@@ -199,7 +194,6 @@ const AccountElement = ({
           subAccounts: subAccounts,
         });
 
-        dispatch(addSubAccount(tokenIndex, { ...subAccount, name: name.trim() }));
         setNewSub(undefined);
         setAddOpen(false);
       } else {
@@ -212,7 +206,6 @@ const AccountElement = ({
           ...asset,
           subAccounts: subAccounts,
         });
-        dispatch(setSubAccountName(tokenIndex, subaccountId, name));
       }
     } else {
       setNameError(true);
