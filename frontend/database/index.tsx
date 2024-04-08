@@ -34,6 +34,7 @@ export default function DatabaseProvider({ children }: DatabaseProviderProps) {
 
   useEffect(() => {
     const assetsSubscriptionHandler = async (assets: Asset[]) => {
+      console.log("assetsSubscriptionHandler", assets);
       if (assets.length > 0) {
         const {
           asset: { initLoad },

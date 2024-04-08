@@ -13,7 +13,6 @@ import AddAssetManual from "./AddAssetManual";
 import { setAccordionAssetIdx, setSelectedAsset } from "@redux/assets/AssetReducer";
 import AddAssetAutomatic from "./AddAssetAutomatic";
 import { db } from "@/database/db";
-import { updateAllBalances } from "@redux/assets/AssetActions";
 
 interface AddAssetsProps {
   setAssetOpen: Dispatch<SetStateAction<boolean>>;
@@ -27,7 +26,7 @@ interface AddAssetsProps {
 const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, assets, accordionIndex }: AddAssetsProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const { checkAssetAdded, userAgent } = GeneralHook();
+  const { checkAssetAdded } = GeneralHook();
   const {
     newToken,
     setNewToken,
@@ -158,16 +157,14 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, assets, accord
   }
 
   async function addAssetToData() {
+    // INFO: create new asset
+    console.log("create new asset");
+
     if (checkAssetAdded(newToken.address)) {
       setErrToken(t("adding.asset.already.imported"));
       setValidToken(false);
     } else {
-      const idxSorting =
-        assets.length > 0
-          ? [...assets].sort((a, b) => {
-              return b.sortIndex - a.sortIndex;
-            })
-          : [];
+      const idxSorting = assets.length > 0 ? [...assets].sort((a, b) => b.sortIndex - a.sortIndex) : [];
       const idx = (idxSorting.length > 0 ? idxSorting[0]?.sortIndex : 0) + 1;
       const tknSave: Asset = {
         ...newToken,
@@ -191,7 +188,6 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, assets, accord
       dispatch(setSelectedAsset(tknSave));
       dispatch(setAccordionAssetIdx([tknSave.symbol]));
 
-      await updateAllBalances({ loading: false, myAgent: userAgent, assets: [...assets, tknSave] });
       setAssetOpen(false);
       showModal(false);
       setNewToken({

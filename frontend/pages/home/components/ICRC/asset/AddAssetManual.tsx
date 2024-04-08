@@ -6,10 +6,8 @@ import { IcrcIndexCanister, IcrcLedgerCanister } from "@dfinity/ledger-icrc";
 import { getMetadataInfo, toFullDecimal } from "@/utils";
 import { CustomInput } from "@components/input";
 import { CustomCopy } from "@components/tooltip";
-import { updateAsset } from "@redux/assets/AssetReducer";
 import { CustomButton } from "@components/button";
 import { useTranslation } from "react-i18next";
-import { useAppDispatch } from "@redux/Store";
 import { AccountDefaultEnum, IconTypeEnum } from "@/const";
 import { Asset } from "@redux/models/AccountModels";
 import { IdentityHook } from "@pages/hooks/identityHook";
@@ -60,8 +58,6 @@ const AddAssetManual = ({
   setAssetInfo,
 }: AddAssetManualProps) => {
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
-
   const { authClient } = AccountHook();
   const { getAssetIcon, checkAssetAdded } = GeneralHook();
   const { userAgent } = IdentityHook();
@@ -370,12 +366,14 @@ const AddAssetManual = ({
   }
 
   async function onSave() {
-    if (asset && asset !== undefined && asset !== null) {
+    // INFO: save changes to existing
+    // INFO: add asset manual run this function
+    if (asset) {
+      console.log("edit existing asset");
       if (newToken.shortDecimal === "") {
         serErrShortDec(true);
         return;
       }
-      // Change contacts local and reducer
 
       setTimeout(async () => {
         const affectedContacts: Contact[] = [];
@@ -386,9 +384,7 @@ const AddAssetManual = ({
 
           const newDoc = {
             ...contact,
-
             assets: contact.assets.map((currentAsset) => {
-              // FIXME: the asset must not be undefined at this point
               if (currentAsset.tokenSymbol === asset?.tokenSymbol) {
                 affected = true;
                 return { ...currentAsset, symbol: asset.symbol };
@@ -406,6 +402,7 @@ const AddAssetManual = ({
 
       // List all tokens modifying the one we selected
       const asset = await db().getAsset(newToken.address);
+
       if (asset) {
         const updatedFull: Asset = {
           ...newToken,
@@ -429,8 +426,6 @@ const AddAssetManual = ({
         await db().updateAsset(asset.address, updatedFull);
       }
 
-      // FIXME: the asset must not be null at this point
-      if (asset?.tokenSymbol) dispatch(updateAsset(newToken, asset.tokenSymbol));
       setNewToken({
         address: "",
         symbol: "",

@@ -51,9 +51,12 @@ const DeleteAssetModal = ({ open, setOpen, asset }: DeleteAssetModalPropr) => {
   );
 
   function handleConfirmButton() {
+    // INFO: delete an asset
+    console.log("delete the asset");
     // INFO: this function update the local storage with all the tokens avoiding the deleted one
     // REMOVE: const auxTokens = tokens.filter((tkn) => tkn.symbol !== symbol);
     // REMOVE: saveInLocalStorage(auxTokens);
+    // TODO: remove once the assets observable update the state
     deleteAsset(symbol, address);
     setOpen(false);
   }
