@@ -226,8 +226,6 @@ const AccountElement = ({
   }
 
   async function onConfirm() {
-    console.log("onConfirm - delete a sub account");
-
     const asset = assets[Number(tokenIndex)];
 
     const subAccounts = asset.subAccounts

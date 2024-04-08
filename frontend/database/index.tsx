@@ -56,6 +56,7 @@ export default function DatabaseProvider({ children }: DatabaseProviderProps) {
 
   useEffect(() => {
     const contactsSubscriptionHandler = async (contacts: Contact[]) => {
+      console.log("contactsSubscriptionHandler", contacts);
       const updatedContacts = [];
       if (contacts) {
         for (const contact of contacts) {
@@ -77,6 +78,7 @@ export default function DatabaseProvider({ children }: DatabaseProviderProps) {
 
   useEffect(() => {
     const allowancesSubscriptionHandler = async (allowances: TAllowance[]) => {
+      console.log("contactsSubscriptionHandler", allowances);
       const updatedAllowances: TAllowance[] = [];
 
       for (const allowance of allowances) {

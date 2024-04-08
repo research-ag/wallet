@@ -37,6 +37,7 @@ const TopBarComponent = ({ isLoginPage }: { isLoginPage: boolean }) => {
   const { t } = useTranslation();
   const { onLanguageChange } = LanguageHook();
   const { watchOnlyMode } = useAppSelector((state) => state.auth);
+  const { assets } = useAppSelector((state) => state.asset);
   const { theme, themeOpen, setThemeOpen } = ThemeHook();
   const { authClient } = AccountHook();
   const { getTotalAmountInCurrency, reloadBallance, assetLoading } = AssetHook();
@@ -175,7 +176,7 @@ const TopBarComponent = ({ isLoginPage }: { isLoginPage: boolean }) => {
   );
 
   function handleReloadButton() {
-    reloadBallance();
+    reloadBallance(assets);
   }
 
   function changeLanguage(lang: string) {

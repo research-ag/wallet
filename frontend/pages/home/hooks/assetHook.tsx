@@ -33,6 +33,7 @@ export const AssetHook = () => {
       assets: updatedAssets ? updatedAssets : defaultTokens,
       fromLogin: true,
     });
+
     await allowanceCacheRefresh();
     await contactCacheRefresh();
     dispatch(setLoading(false));
