@@ -116,8 +116,9 @@ const AccountElement = ({
           </div>
         </div>
         <div
-          className={`flex flex-row justify-between items-center gap-2 ${subAccount?.sub_account_id !== "0x0" && Number(subAccount?.amount) === 0 && !newSub ? "" : "pr-6"
-            }`}
+          className={`flex flex-row justify-between items-center gap-2 ${
+            subAccount?.sub_account_id !== "0x0" && Number(subAccount?.amount) === 0 && !newSub ? "" : "pr-6"
+          }`}
         >
           <div className="flex flex-col items-end justify-center">
             <p className="whitespace-nowrap">{`${toFullDecimal(

@@ -46,6 +46,7 @@ export default function DatabaseProvider({ children }: DatabaseProviderProps) {
           myAgent: userAgent,
           assets,
           fromLogin: initLoad,
+          basicSearch: true,
         });
       }
     };

@@ -52,7 +52,6 @@ const assetSlice = createSlice({
     setICPSubaccounts(state, action: PayloadAction<ICPSubAccount[]>) {
       state.ICPSubaccounts = action.payload;
     },
-    // TODO: remove this function and update the sub accounts balance after allowance interaction
     updateSubAccountBalance: {
       reducer(
         state: AssetState,

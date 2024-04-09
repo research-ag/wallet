@@ -19,7 +19,6 @@ export async function getETHRate() {
     const ethRate = await fetch(ethUrl).then((x) => x.json());
 
     return {
-      // FIXME: add a proper id based on the length of the token list
       id: 999,
       name: "Ethereum",
       symbol: "ckETH",
