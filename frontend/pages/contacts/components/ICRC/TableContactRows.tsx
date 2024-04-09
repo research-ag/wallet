@@ -261,7 +261,7 @@ export default function TableContactRows(props: TableContactRowsProps) {
         );
       } else {
         const astFilValid = assetFilter.some((astFil) => {
-          return cntc.assets.find((ast) => ast.tokenSymbol === astFil);
+          return cntc.assets.find((ast) => ast.symbol === astFil);
         });
 
         return (
