@@ -19,11 +19,14 @@ import { clearDataContacts } from "./contacts/ContactsReducer";
 import { Principal } from "@dfinity/principal";
 import { Secp256k1KeyIdentity } from "@dfinity/identity-secp256k1";
 import { DB_Type, db } from "@/database/db";
-import { getSNSTokens } from "./assets/AssetActions";
 import { setTransactions } from "./transaction/TransactionReducer";
+import { getSNSTokens, updateAllBalances } from "./assets/AssetActions";
+import contactCacheRefresh from "@pages/contacts/helpers/contactCacheRefresh";
+import { allowanceCacheRefresh } from "@pages/home/helpers/allowanceCache";
 
-const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${import.meta.env.VITE_APP_LOGO
-  }#authorize`;
+const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${
+  import.meta.env.VITE_APP_LOGO
+}#authorize`;
 
 const NETWORK_AUTHORIZE_PATH = "https://identity.ic0.app/#authorize";
 const HTTP_AGENT_HOST = "https://identity.ic0.app";
@@ -98,44 +101,44 @@ export const handleSiweAuthenticated = async (identity: DelegationIdentity) => {
   handleLoginApp(identity);
 };
 
-// INFO: start the loading process
-// INFO: Initialize the db with the principal selected
-// INFO: get the identity, principal, http agent, and set the authenticated state
-// INFO: load the sns tokens
-// INFO: set the authenticated state
-
 export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean, fixedPrincipal?: Principal) => {
   store.dispatch(setLoading(true));
-
   const opt: AuthNetwork | null = db().getNetworkType();
+
   if (opt === null && !fromSeed && !fixedPrincipal) {
     logout();
     return;
   }
 
   store.dispatch(setAuthLoading(true));
+
   const myAgent = new HttpAgent({
     identity: authIdentity,
     host: HTTP_AGENT_HOST,
   });
 
   const myPrincipal = fixedPrincipal || (await myAgent.getPrincipal());
-  const identityPrincipalStr = fixedPrincipal?.toString() || authIdentity.getPrincipal().toString();
+  const principalString = myPrincipal.toString();
 
-  dispatchAuths(myAgent, myPrincipal);
-  await db().setIdentity(authIdentity, fixedPrincipal);
-
-  const snsTokens = await getSNSTokens(myAgent);
-  store.dispatch(setICRC1SystemAssets(snsTokens));
-  store.dispatch(setAuthenticated(true, false, !!fixedPrincipal, identityPrincipalStr.toLocaleLowerCase()));
-
-  store.dispatch(setLoading(false));
-  store.dispatch(setInitLoad(false));
-};
-
-export const dispatchAuths = (myAgent: HttpAgent, myPrincipal: Principal) => {
   store.dispatch(setUserAgent(myAgent));
   store.dispatch(setUserPrincipal(myPrincipal));
+
+  await db().setIdentity(authIdentity, myPrincipal);
+
+  store.dispatch(setAuthenticated(true, false, !!fixedPrincipal, principalString));
+  store.dispatch(setLoading(false));
+  store.dispatch(setInitLoad(false));
+
+  // const snsTokens = await getSNSTokens(myAgent);
+  // store.dispatch(setICRC1SystemAssets(snsTokens));
+  // PROBLEM: The page will load after all data is loaded
+  // INFO: update the asset sub account balances
+  // const assets = await db().getAssets();
+  // await updateAllBalances({ loading: true, myAgent, assets, fromLogin: true });
+  // // TODO: update the allowances details
+  // await allowanceCacheRefresh();
+  // // TODO: update teh contacts details
+  // await contactCacheRefresh();
 };
 
 export const logout = async () => {

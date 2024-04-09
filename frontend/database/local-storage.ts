@@ -45,7 +45,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
   async setIdentity(identity: Identity | null, fixedPrincipal?: Principal): Promise<void> {
     this.principalId = fixedPrincipal?.toString() || identity?.getPrincipal().toText() || "";
     this._doesRecordByPrincipalExist();
-    // 
+    //
     this.assetStateSync();
     this.contactStateSync();
     this.allowanceStateSync();
@@ -139,7 +139,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
   contactStateSync(newContacts?: Contact[]): void {
     const contacts = newContacts || this._getContacts();
     store.dispatch(setReduxContacts(contacts));
-  };
+  }
 
   /**
    * Find a Contact object by its Principal ID and replace it
@@ -204,7 +204,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
   allowanceStateSync(newAllowances?: TAllowance[]): void {
     const allowances = newAllowances || this._getAllowances();
     store.dispatch(setReduxAllowances(allowances));
-  };
+  }
 
   /**
    * Find a Allowance object and replace it
@@ -302,7 +302,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
   /**
    * Check if the record by principal exist in the local storage.
    * If not, initialize the local storage with default values.
-   * 
+   *
    * @returns void
    */
   private _doesRecordByPrincipalExist() {
