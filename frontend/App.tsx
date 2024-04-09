@@ -10,6 +10,7 @@ import LanguageWrapper from "./wrappers/LanguageWrapper";
 import DebugWrapper from "./wrappers/DebugWrapper";
 import ThemeWrapper from "./wrappers/ThemeWrapper";
 import DatabaseWrapper from "./wrappers/DatabaseWrapper";
+import IdentityWrapper from "./wrappers/IdentityWrapper";
 
 const App: React.FC = () => {
   return (
@@ -23,17 +24,19 @@ export default function AppWrapper() {
   return (
     <EthereumSignInProviderWrapper>
       <Provider store={store}>
-        <QueryClientProvider client={queryClient}>
-          <LanguageWrapper>
-            <DebugWrapper>
-              <ThemeWrapper>
-                <DatabaseWrapper>
-                  <App />
-                </DatabaseWrapper>
-              </ThemeWrapper>
-            </DebugWrapper>
-          </LanguageWrapper>
-        </QueryClientProvider>
+        <IdentityWrapper>
+          <QueryClientProvider client={queryClient}>
+            <LanguageWrapper>
+              <DebugWrapper>
+                <ThemeWrapper>
+                  <DatabaseWrapper>
+                    <App />
+                  </DatabaseWrapper>
+                </ThemeWrapper>
+              </DebugWrapper>
+            </LanguageWrapper>
+          </QueryClientProvider>
+        </IdentityWrapper>
       </Provider>
     </EthereumSignInProviderWrapper>
   );

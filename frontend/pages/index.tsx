@@ -16,7 +16,6 @@ const SwitchRoute = () => {
   const { authLoading, superAdmin, authenticated, blur } = useAppSelector((state) => state.auth);
 
   if (authLoading) return <Loader />;
-
   return (
     <>
       {blur && <div className="fixed w-full h-full bg-black/50 z-[900]"></div>}
