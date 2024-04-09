@@ -39,5 +39,6 @@ export async function allowanceCacheRefresh() {
     }
   }
 
+  // TODO: check why update allowances
   await db().updateAllowances(updatedAllowances);
 }

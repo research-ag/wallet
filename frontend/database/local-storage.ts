@@ -79,10 +79,14 @@ export class LocalStorageDatabase extends IWalletDatabase {
     this._setAssets([...assets, asset]);
   }
 
-  assetStateSync(newAssets?: Asset[]): void {
+  async assetStateSync(newAssets?: Asset[]): Promise<void> {
     const assets = newAssets || this._getAssets();
     store.dispatch(setAssets(assets));
   }
+
+  async replaceAssets(assets: Asset[]): Promise<void> {
+    this._setAssets(assets);
+  };
 
   /**
    * Find a Asset object by its ID and replace it with
@@ -126,6 +130,11 @@ export class LocalStorageDatabase extends IWalletDatabase {
     return this._getContacts();
   }
 
+  async contactStateSync(newContacts?: Contact[]): Promise<void> {
+    const contacts = newContacts || this._getContacts();
+    store.dispatch(setReduxContacts(contacts));
+  }
+
   /**
    * Add a new Contact object to the list of Contact objects
    * current active agent has.
@@ -134,11 +143,6 @@ export class LocalStorageDatabase extends IWalletDatabase {
   async addContact(contact: Contact): Promise<void> {
     const contacts = this._getContacts();
     this._setContacts([...contacts, contact]);
-  }
-
-  contactStateSync(newContacts?: Contact[]): void {
-    const contacts = newContacts || this._getContacts();
-    store.dispatch(setReduxContacts(contacts));
   }
 
   /**
@@ -201,7 +205,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
     this._setAllowances([...allowances, allowance]);
   }
 
-  allowanceStateSync(newAllowances?: TAllowance[]): void {
+  async allowanceStateSync(newAllowances?: TAllowance[]): Promise<void> {
     const allowances = newAllowances || this._getAllowances();
     store.dispatch(setReduxAllowances(allowances));
   }

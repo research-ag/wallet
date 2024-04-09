@@ -105,7 +105,6 @@ export const handleSiweAuthenticated = async (identity: DelegationIdentity) => {
  * - Set the user agent, principal, and authenticated status
  * - Initialize the data for new user of set the last cached for returning user
  * - Refresh the cached data in a background process
- * 
  */
 export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean, fixedPrincipal?: Principal) => {
   const opt: AuthNetwork | null = db().getNetworkType();
@@ -141,14 +140,19 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean,
  * If you added a new module that needs to be refreshed after sign in, add it here
  */
 const refreshCachedData = async () => {
+  // TODO: create a common redux that will show if the app is loading, instead of assetLoading
   store.dispatch(setLoading(true));
   const assets = await db().getAssets();
-  await updateAllBalances({
+
+  const latestAssets = await updateAllBalances({
     loading: true,
     myAgent: store.getState().auth.userAgent,
     assets,
-    fromLogin: true
+    fromLogin: true,
+    basicSearch: true,
   });
+
+  if (latestAssets) await db().replaceAssets(latestAssets);
 
   const snsTokens = await getSNSTokens(store.getState().auth.userAgent);
   store.dispatch(setICRC1SystemAssets(snsTokens));
