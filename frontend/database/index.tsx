@@ -8,6 +8,7 @@ import { TAllowance } from "@/@types/allowance";
 import { getAllowanceDetails, retrieveAssetsWithAllowance } from "@pages/home/helpers/icrc";
 import { Contact } from "@redux/models/ContactsModels";
 import { Asset } from "@redux/models/AccountModels";
+import { setAssets } from "@redux/assets/AssetReducer";
 
 /**
  * Props for the DatabaseProvider component.
@@ -34,8 +35,10 @@ export default function DatabaseProvider({ children }: DatabaseProviderProps) {
 
   useEffect(() => {
     const assetsSubscriptionHandler = async (assets: Asset[]) => {
-      console.log("assetsSubscriptionHandler", assets);
       if (assets.length > 0) {
+        // INFO: Pre-load all assets while the balance is being updated
+        dispatch(setAssets([...assets]));
+
         const {
           asset: { initLoad },
           auth: { userAgent },
@@ -57,7 +60,6 @@ export default function DatabaseProvider({ children }: DatabaseProviderProps) {
 
   useEffect(() => {
     const contactsSubscriptionHandler = async (contacts: Contact[]) => {
-      console.log("contactsSubscriptionHandler", contacts);
       const updatedContacts = [];
       if (contacts) {
         for (const contact of contacts) {
@@ -79,7 +81,6 @@ export default function DatabaseProvider({ children }: DatabaseProviderProps) {
 
   useEffect(() => {
     const allowancesSubscriptionHandler = async (allowances: TAllowance[]) => {
-      console.log("contactsSubscriptionHandler", allowances);
       const updatedAllowances: TAllowance[] = [];
 
       for (const allowance of allowances) {

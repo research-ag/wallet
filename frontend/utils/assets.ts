@@ -104,7 +104,6 @@ async function refreshAsset(asset: Asset, options: RefreshOptions) {
     address: asset.address,
     index: asset.index,
     subAccounts: sortSubAccounts(assetSubAccounts),
-    // INFO: sortIndex: idNum,
     sortIndex: asset.sortIndex,
     decimal: decimals.toFixed(0),
     shortDecimal: asset.shortDecimal || decimals.toFixed(0),
