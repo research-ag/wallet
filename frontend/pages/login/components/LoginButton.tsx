@@ -1,5 +1,5 @@
 import { useSiweIdentity } from "ic-use-siwe-identity";
-import { isChainIdSupported } from "@/config/wagmi.config";
+import { isChainIdSupported } from "@/config/wagmi";
 import { CustomButton } from "@components/button";
 import { useAccount, useNetwork } from "wagmi";
 
