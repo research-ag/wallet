@@ -181,6 +181,8 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, assets, accord
       };
       setAddStatus(AddingAssetsEnum.enum.adding);
       showModal(true);
+      // PROBLEM 2: The asset has not updated balance (checked)
+      console.log(tknSave);
       await db().addAssets(tknSave);
       dispatch(setSelectedAsset(tknSave));
       dispatch(setAccordionAssetIdx([tknSave.symbol]));

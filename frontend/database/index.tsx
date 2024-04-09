@@ -8,7 +8,7 @@ import { TAllowance } from "@/@types/allowance";
 import { getAllowanceDetails, retrieveAssetsWithAllowance } from "@pages/home/helpers/icrc";
 import { Contact } from "@redux/models/ContactsModels";
 import { Asset } from "@redux/models/AccountModels";
-import { setAssets } from "@redux/assets/AssetReducer";
+// import { setAssets } from "@redux/assets/AssetReducer";
 
 /**
  * Props for the DatabaseProvider component.
@@ -37,7 +37,16 @@ export default function DatabaseProvider({ children }: DatabaseProviderProps) {
     const assetsSubscriptionHandler = async (assets: Asset[]) => {
       if (assets.length > 0) {
         // INFO: Pre-load all assets while the balance is being updated
-        dispatch(setAssets([...assets]));
+        // PROBLEM 1: the assets has not updated information
+        // dispatch(setAssets([...assets]));
+
+        // UPDATE 1: on login, update all balances after update refresh storage
+        // UPDATE 2: on add asset automatic or manual, the new must be updated before save into db or must be refreshed after save
+        // UPDATE 3: on add sub account to asset, the new must be updated before save into db or must be refreshed after save
+        // UPDATE 4: on edit sub account to asset, the new must be updated before save into db or must be refreshed after save
+
+        // PROBLEM: if the assetsSubscriptionHandler update the assets,  will it trigger infinite loop?
+        // PROBLEM: if instead of update the db in the assetsSubscriptionHandler, we (add sub, add asset, edit asset, edit sub) is stored up to date. The problems is that in the first load, the assets are not in db, sow it only will be update if an actions for the user is made. Also the refresh balance does not update the database (storage)
 
         const {
           asset: { initLoad },

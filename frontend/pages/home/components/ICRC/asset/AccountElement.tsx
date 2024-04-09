@@ -116,9 +116,8 @@ const AccountElement = ({
           </div>
         </div>
         <div
-          className={`flex flex-row justify-between items-center gap-2 ${
-            subAccount?.sub_account_id !== "0x0" && Number(subAccount?.amount) === 0 && !newSub ? "" : "pr-6"
-          }`}
+          className={`flex flex-row justify-between items-center gap-2 ${subAccount?.sub_account_id !== "0x0" && Number(subAccount?.amount) === 0 && !newSub ? "" : "pr-6"
+            }`}
         >
           <div className="flex flex-col items-end justify-center">
             <p className="whitespace-nowrap">{`${toFullDecimal(
@@ -190,6 +189,7 @@ const AccountElement = ({
           }))
           .sort((a, b) => bigInt(a.numb).compare(bigInt(b.numb)));
 
+        // TODO: update the sub account name and has full information, balance updated
         await db().updateAsset(asset.address, {
           ...asset,
           subAccounts: subAccounts,
@@ -203,6 +203,7 @@ const AccountElement = ({
           sa.sub_account_id === subAccount.sub_account_id ? { ...sa, name: name } : sa,
         );
 
+        // TODO: sub account name is not different, balance updated
         await db().updateAsset(asset.address, {
           ...asset,
           subAccounts: subAccounts,
@@ -226,6 +227,8 @@ const AccountElement = ({
       .map((sa) => (sa.sub_account_id !== subAccount.sub_account_id ? sa : null!))
       .filter((x) => !!x);
 
+    // TODO: delete sub account, no updated balance needed (checked)
+    console.log(subAccounts);
     await db().updateAsset(asset.address, {
       ...asset,
       subAccounts: subAccounts,

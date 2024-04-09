@@ -12,7 +12,7 @@ import { GeneralHook } from "../../../hooks/generalHook";
 import { useAppDispatch } from "@redux/Store";
 import { setAccordionAssetIdx } from "@redux/assets/AssetReducer";
 import bigInt from "big-integer";
-import { ChangeEvent, Fragment, useState } from "react";
+import { ChangeEvent, Fragment, useEffect, useState } from "react";
 import { IcrcLedgerCanister } from "@dfinity/ledger-icrc";
 import { db } from "@/database/db";
 import { LoadingLoader } from "@components/loader";
@@ -54,6 +54,10 @@ const DialogAddAsset = ({
   const { asciiHex, userAgent, userPrincipal, changeSelectedAccount, getAssetIcon } = GeneralHook();
   const [loading, setLoading] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+
+  useEffect(() => {
+    console.log("loaded")
+  }, []);
 
   return (
     <BasicModal
@@ -174,7 +178,7 @@ const DialogAddAsset = ({
     });
   }
 
-  async function onEnter() {
+  async function onEnter() {    
     if (!loading) {
       setLoading(true);
       if (newSub) {
@@ -229,6 +233,8 @@ const DialogAddAsset = ({
               ].sort((a, b) => hexToNumber(a.sub_account_id)?.compare(hexToNumber(b.sub_account_id) || bigInt()) || 0),
             };
 
+            // PROBLEM 3: update the asset, no sub account balance update (checked)
+            console.log("AssetToUpdate: ", assetToUpdate);
             await db().updateAsset(asset.address, assetToUpdate);
 
             const savedSub = {
