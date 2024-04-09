@@ -409,7 +409,6 @@ const AddAssetManual = ({
               ? Number(newAsset.decimal).toFixed(0)
               : Number(newAsset.shortDecimal).toFixed(0),
         };
-        // QUESTION: when this function is executed?
         await db().updateAsset(asset.address, updatedFull);
       }
 

@@ -13,7 +13,6 @@ import { db } from "@/database/db";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { EthereumSignInProvider } from "./config/wagmi.config";
 import { useSiweIdentity } from "ic-use-siwe-identity";
-import DatabaseProvider from "./database";
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -63,9 +62,7 @@ export default function AppWrapper() {
   return (
     <EthereumSignInProvider>
       <Provider store={store}>
-        <DatabaseProvider>
-          <App />
-        </DatabaseProvider>
+        <App />
       </Provider>
     </EthereumSignInProvider>
   );
