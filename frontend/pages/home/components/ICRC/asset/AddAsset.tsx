@@ -187,6 +187,7 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, assets, accord
 
       setAssetOpen(false);
       showModal(false);
+      setManual(false);
       setNewAsset({
         address: "",
         symbol: "",

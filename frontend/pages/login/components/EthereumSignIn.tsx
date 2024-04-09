@@ -1,3 +1,4 @@
+import GoBackIcon from "@/assets/svg/files/go-back-icon.svg";
 import { useAccount, useNetwork } from "wagmi";
 import ConnectButton from "./ConnectButton";
 import AddressPill from "./AddressPill";
@@ -31,7 +32,7 @@ export default function EthereumSignIn() {
         <div className="flex items-center justify-center w-8 h-8 text-lg font-bold rounded-full bg-SecondaryColorLight text-SecondaryColor">
           1
         </div>
-        <div>
+        <div className="flex flex-row justify-start items-center gap-3">
           {!isConnected && <ConnectButton />}
           {isConnected && isChainIdSupported(chain?.id) && (
             <AddressPill address={address} className="justify-center w-36" />
@@ -40,6 +41,15 @@ export default function EthereumSignIn() {
             <CustomButton disabled className="text-sm opacity-50 bg-GrayColor w-36">
               {t("unsupported.network")}
             </CustomButton>
+          )}
+          {isConnected && (
+            <button
+              onClick={() => {
+                prepareLogin();
+              }}
+            >
+              <img src={GoBackIcon} alt="" className="w-4" />
+            </button>
           )}
         </div>
       </div>
