@@ -6,6 +6,10 @@ import { BehaviorSubject, Observable } from "rxjs";
 import { Principal } from "@dfinity/principal";
 import { defaultTokens } from "@/defaultTokens";
 import { Asset } from "@redux/models/AccountModels";
+import store from "@redux/Store";
+import { setAssets } from "@redux/assets/AssetReducer";
+import { setReduxContacts } from "@redux/contacts/ContactsReducer";
+import { setReduxAllowances } from "@redux/allowance/AllowanceReducer";
 
 export class LocalStorageDatabase extends IWalletDatabase {
   // Singleton pattern
@@ -40,10 +44,11 @@ export class LocalStorageDatabase extends IWalletDatabase {
    */
   async setIdentity(identity: Identity | null, fixedPrincipal?: Principal): Promise<void> {
     this.principalId = fixedPrincipal?.toString() || identity?.getPrincipal().toText() || "";
-    this._assets$.next(this._getAssets());
-    this._contacts$.next(this._getContacts());
-    this._allowances$.next(this._getAllowances());
-    !!this.principalId && this._doesRecordByPrincipalExist();
+    this._doesRecordByPrincipalExist();
+    // 
+    this.assetStateSync();
+    this.contactStateSync();
+    this.allowanceStateSync();
   }
 
   /**
@@ -72,6 +77,11 @@ export class LocalStorageDatabase extends IWalletDatabase {
   async addAssets(asset: Asset): Promise<void> {
     const assets = this._getAssets();
     this._setAssets([...assets, asset]);
+  }
+
+  assetStateSync(newAssets?: Asset[]): void {
+    const assets = newAssets || this._getAssets();
+    store.dispatch(setAssets(assets));
   }
 
   /**
@@ -125,6 +135,11 @@ export class LocalStorageDatabase extends IWalletDatabase {
     const contacts = this._getContacts();
     this._setContacts([...contacts, contact]);
   }
+
+  contactStateSync(newContacts?: Contact[]): void {
+    const contacts = newContacts || this._getContacts();
+    store.dispatch(setReduxContacts(contacts));
+  };
 
   /**
    * Find a Contact object by its Principal ID and replace it
@@ -185,6 +200,11 @@ export class LocalStorageDatabase extends IWalletDatabase {
     const allowances = this._getAllowances();
     this._setAllowances([...allowances, allowance]);
   }
+
+  allowanceStateSync(newAllowances?: TAllowance[]): void {
+    const allowances = newAllowances || this._getAllowances();
+    store.dispatch(setReduxAllowances(allowances));
+  };
 
   /**
    * Find a Allowance object and replace it
@@ -280,17 +300,18 @@ export class LocalStorageDatabase extends IWalletDatabase {
   }
 
   /**
-   * Check if a record by principal ID exists.
-   * If not, it will create a new record with default tokens.
+   * Check if the record by principal exist in the local storage.
+   * If not, initialize the local storage with default values.
+   * 
+   * @returns void
    */
   private _doesRecordByPrincipalExist() {
-    // Look for entry record by current prinicpal ID
-    const exist = !!localStorage.getItem(`assets-${this.principalId}`);
+    const assetExist = !!localStorage.getItem(`assets-${this.principalId}`);
+    const contactExist = !!localStorage.getItem(`contacts-${this.principalId}`);
+    const allowanceExist = !!localStorage.getItem(`allowances-${this.principalId}`);
 
-    // If does not exist it means that this is a brand new account
-    if (!exist) {
-      this._setAssets([...defaultTokens]);
-      this._assets$.next(this._getAssets());
-    }
+    if (!assetExist) this._setAssets([...defaultTokens]);
+    if (!contactExist) this._setContacts([]);
+    if (!allowanceExist) this._setAllowances([]);
   }
 }

@@ -22,9 +22,8 @@ import { DB_Type, db } from "@/database/db";
 import { getSNSTokens } from "./assets/AssetActions";
 import { setTransactions } from "./transaction/TransactionReducer";
 
-const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${
-  import.meta.env.VITE_APP_LOGO
-}#authorize`;
+const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${import.meta.env.VITE_APP_LOGO
+  }#authorize`;
 
 const NETWORK_AUTHORIZE_PATH = "https://identity.ic0.app/#authorize";
 const HTTP_AGENT_HOST = "https://identity.ic0.app";
@@ -99,15 +98,21 @@ export const handleSiweAuthenticated = async (identity: DelegationIdentity) => {
   handleLoginApp(identity);
 };
 
+// INFO: start the loading process
+// INFO: Initialize the db with the principal selected
+// INFO: get the identity, principal, http agent, and set the authenticated state
+// INFO: load the sns tokens
+// INFO: set the authenticated state
+
 export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean, fixedPrincipal?: Principal) => {
   store.dispatch(setLoading(true));
+
   const opt: AuthNetwork | null = db().getNetworkType();
   if (opt === null && !fromSeed && !fixedPrincipal) {
     logout();
     return;
   }
 
-  // INFO: setAuthenticated will stop the authLoading
   store.dispatch(setAuthLoading(true));
   const myAgent = new HttpAgent({
     identity: authIdentity,
@@ -116,6 +121,7 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean,
 
   const myPrincipal = fixedPrincipal || (await myAgent.getPrincipal());
   const identityPrincipalStr = fixedPrincipal?.toString() || authIdentity.getPrincipal().toString();
+
   dispatchAuths(myAgent, myPrincipal);
   await db().setIdentity(authIdentity, fixedPrincipal);
 
