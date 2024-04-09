@@ -1,4 +1,4 @@
-import { lazy, useEffect } from "react";
+import { lazy } from "react";
 import { Redirect, Router, Switch } from "react-router-dom";
 import Login from "./login";
 
@@ -7,43 +7,17 @@ import LayoutComponent from "./components/LayoutComponent";
 import history from "./history";
 import PrivateRoute from "./components/privateRoute";
 import { useAppSelector } from "@redux/Store";
-import { ThemeHook } from "./hooks/themeHook";
-import { DbLocationHook } from "./hooks/dbLocationHook";
 import Loader from "./components/Loader";
-import { ThemesEnum } from "@/const";
-import { db, DB_Type } from "@/database/db";
 
 const Home = lazy(() => import("./home"));
 const Contacts = lazy(() => import("./contacts"));
 
 const SwitchRoute = () => {
   const { authLoading, superAdmin, authenticated, blur } = useAppSelector((state) => state.auth);
-  const { changeTheme } = ThemeHook();
-  const { changeDbLocation } = DbLocationHook();
 
-  useEffect(() => {
-    const theme = db().getTheme();
-    if (
-      theme === ThemesEnum.enum.dark ||
-      (theme === null && window.matchMedia("(prefers-color-scheme: dark)").matches)
-    ) {
-      document.documentElement.classList.add(ThemesEnum.enum.dark);
-      db().setTheme(ThemesEnum.enum.dark);
-      changeTheme(ThemesEnum.enum.dark);
-    } else {
-      document.documentElement.classList.remove(ThemesEnum.enum.dark);
-      db().setTheme(ThemesEnum.enum.light);
-      changeTheme(ThemesEnum.enum.light);
-    }
+  if (authLoading) return <Loader />;
 
-    // Default to LOCAL dbLocation if has not been set yet
-    !db().getDbLocation() && db().setDbLocation(DB_Type.LOCAL);
-    changeDbLocation(db().getDbLocation() || DB_Type.LOCAL);
-  }, []);
-
-  return authLoading ? (
-    <Loader></Loader>
-  ) : (
+  return (
     <>
       {blur && <div className="fixed w-full h-full bg-black/50 z-[900]"></div>}
       <Router history={history}>

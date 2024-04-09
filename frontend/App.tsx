@@ -8,11 +8,13 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import EthereumSignInProviderWrapper from "./wrappers/EthereumSignInWrapper";
 import LanguageWrapper from "./wrappers/LanguageWrapper";
 import DebugWrapper from "./wrappers/DebugWrapper";
+import ThemeWrapper from "./wrappers/ThemeWrapper";
+import DatabaseWrapper from "./wrappers/DatabaseWrapper";
 
 const App: React.FC = () => {
   return (
     <div className="App">
-      <SwitchRoute></SwitchRoute>
+      <SwitchRoute />
     </div>
   );
 };
@@ -24,7 +26,11 @@ export default function AppWrapper() {
         <QueryClientProvider client={queryClient}>
           <LanguageWrapper>
             <DebugWrapper>
-              <App />
+              <ThemeWrapper>
+                <DatabaseWrapper>
+                  <App />
+                </DatabaseWrapper>
+              </ThemeWrapper>
             </DebugWrapper>
           </LanguageWrapper>
         </QueryClientProvider>
