@@ -24,9 +24,8 @@ import { getSNSTokens, updateAllBalances } from "./assets/AssetActions";
 import contactCacheRefresh from "@pages/contacts/helpers/contactCacheRefresh";
 import { allowanceCacheRefresh } from "@pages/home/helpers/allowanceCache";
 
-const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${
-  import.meta.env.VITE_APP_LOGO
-}#authorize`;
+const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${import.meta.env.VITE_APP_LOGO
+  }#authorize`;
 
 const NETWORK_AUTHORIZE_PATH = "https://identity.ic0.app/#authorize";
 const HTTP_AGENT_HOST = "https://identity.ic0.app";
@@ -101,8 +100,14 @@ export const handleSiweAuthenticated = async (identity: DelegationIdentity) => {
   handleLoginApp(identity);
 };
 
+/**
+ * Initialize the essential data after successful login
+ * - Set the user agent, principal, and authenticated status
+ * - Initialize the data for new user of set the last cached for returning user
+ * - Refresh the cached data in a background process
+ * 
+ */
 export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean, fixedPrincipal?: Principal) => {
-  store.dispatch(setLoading(true));
   const opt: AuthNetwork | null = db().getNetworkType();
 
   if (opt === null && !fromSeed && !fixedPrincipal) {
@@ -126,19 +131,31 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean,
   await db().setIdentity(authIdentity, myPrincipal);
 
   store.dispatch(setAuthenticated(true, false, !!fixedPrincipal, principalString));
-  store.dispatch(setLoading(false));
   store.dispatch(setInitLoad(false));
 
-  // const snsTokens = await getSNSTokens(myAgent);
-  // store.dispatch(setICRC1SystemAssets(snsTokens));
-  // PROBLEM: The page will load after all data is loaded
-  // INFO: update the asset sub account balances
-  // const assets = await db().getAssets();
-  // await updateAllBalances({ loading: true, myAgent, assets, fromLogin: true });
-  // // TODO: update the allowances details
-  // await allowanceCacheRefresh();
-  // // TODO: update teh contacts details
-  // await contactCacheRefresh();
+  await refreshCachedData();
+};
+
+/**
+ * Refresh the cached data only after success sign in
+ * If you added a new module that needs to be refreshed after sign in, add it here
+ */
+const refreshCachedData = async () => {
+  store.dispatch(setLoading(true));
+  const assets = await db().getAssets();
+  await updateAllBalances({
+    loading: true,
+    myAgent: store.getState().auth.userAgent,
+    assets,
+    fromLogin: true
+  });
+
+  const snsTokens = await getSNSTokens(store.getState().auth.userAgent);
+  store.dispatch(setICRC1SystemAssets(snsTokens));
+
+  await allowanceCacheRefresh();
+  await contactCacheRefresh();
+  store.dispatch(setLoading(false));
 };
 
 export const logout = async () => {
