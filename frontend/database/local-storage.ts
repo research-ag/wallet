@@ -8,7 +8,12 @@ import { defaultTokens } from "@/defaultTokens";
 import { Asset } from "@redux/models/AccountModels";
 import store from "@redux/Store";
 import { setAssets } from "@redux/assets/AssetReducer";
-import { addReduxContact, setReduxContacts, updateReduxContact } from "@redux/contacts/ContactsReducer";
+import {
+  addReduxContact,
+  deleteReduxContact,
+  setReduxContacts,
+  updateReduxContact,
+} from "@redux/contacts/ContactsReducer";
 import { setReduxAllowances } from "@redux/allowance/AllowanceReducer";
 
 export class LocalStorageDatabase extends IWalletDatabase {
@@ -195,8 +200,8 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * @param principal Principal ID
    */
   async deleteContact(principal: string, options?: DatabaseOptions): Promise<void> {
-    this._setContacts(this._getContacts().filter((cnts) => cnts.principal !== principal));
-    if (options?.sync) this._contactStateSync();
+    this._setContacts(this._getContacts().filter((contact) => contact.principal !== principal));
+    if (options?.sync) store.dispatch(deleteReduxContact(principal));
   }
 
   _getStorableContact(contact: Contact): Contact {

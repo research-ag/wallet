@@ -382,7 +382,9 @@ const AddAssetManual = ({
           }
         }
 
-        await Promise.all(affectedContacts.map((contact) => db().updateContact(contact.principal, contact, { sync: true })));
+        await Promise.all(
+          affectedContacts.map((contact) => db().updateContact(contact.principal, contact, { sync: true })),
+        );
       }, 0);
 
       const asset = await db().getAsset(newAsset.address);
