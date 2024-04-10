@@ -229,9 +229,8 @@ const DialogAddAsset = ({
               ].sort((a, b) => hexToNumber(a.sub_account_id)?.compare(hexToNumber(b.sub_account_id) || bigInt()) || 0),
             };
 
-            // PROBLEM 3: update the asset, no sub account balance update (checked)
-            console.log("AssetToUpdate: ", assetToUpdate);
-            await db().updateAsset(asset.address, assetToUpdate);
+            // INFO: add new sub account to asset
+            await db().updateAsset(asset.address, assetToUpdate, { sync: true });
 
             const savedSub = {
               ...newSub,

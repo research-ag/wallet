@@ -403,6 +403,7 @@ const AddAssetManual = ({
       const asset = await db().getAsset(newAsset.address);
 
       if (asset) {
+        // INFO: update an asset
         const updatedFull: Asset = {
           ...newAsset,
           decimal: Number(newAsset.decimal).toFixed(0),
@@ -411,7 +412,7 @@ const AddAssetManual = ({
               ? Number(newAsset.decimal).toFixed(0)
               : Number(newAsset.shortDecimal).toFixed(0),
         };
-        await db().updateAsset(asset.address, updatedFull);
+        await db().updateAsset(asset.address, updatedFull, { sync: true });
       }
 
       setNewAsset({
