@@ -117,7 +117,6 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean,
   }
 
   store.dispatch(setAuthLoading(true));
-  console.log("loading started");
 
   const myAgent = new HttpAgent({
     identity: authIdentity,
@@ -142,7 +141,6 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean,
  * If you added a new module that needs to be refreshed after sign in, add it here
  */
 const refreshCachedData = async () => {
-  // TODO: create a common redux that will show if the app is loading, instead of assetLoading
   store.dispatch(setAppDataRefreshing(true));
   const assets = await db().getAssets();
 

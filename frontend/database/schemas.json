@@ -5,7 +5,7 @@
       "version": 0,
       "primaryKey": "address",
       "properties": {
-        "id_number": { "type": "number" },
+        "sortIndex": { "type": "number" },
         "address": { "type": "string", "maxLength": 100 },
         "symbol": { "type": "string", "maxLength": 100 },
         "name": { "type": "string", "maxLength": 100 },
@@ -38,7 +38,7 @@
         }
       },
       "required": [
-        "id_number",
+        "sortIndex",
         "symbol",
         "name",
         "tokenName",

@@ -1,10 +1,14 @@
 import { TAllowance } from "@/@types/allowance";
 import { getAllowanceDetails } from "@/pages/home/helpers/icrc/";
 import { db } from "@/database/db";
+import store from "@redux/Store";
+import { setReduxAllowances } from "@redux/allowance/AllowanceReducer";
 
 export async function allowanceCacheRefresh() {
   const allowances = await db().getAllowances();
   const updatedAllowances: TAllowance[] = [];
+
+  console.log("stored allowances: ", updatedAllowances);
 
   if (allowances?.length) {
     for (const allowance of allowances) {
@@ -39,6 +43,9 @@ export async function allowanceCacheRefresh() {
     }
   }
 
-  // TODO: check why update allowances
-  await db().updateAllowances(updatedAllowances);
+  console.log("updated allowances: ", updatedAllowances);
+
+  // TODO: check why update allowances if if the (expiration, amount) is only for memory
+  // await db().updateAllowances(updatedAllowances);
+  store.dispatch(setReduxAllowances(updatedAllowances));
 }
