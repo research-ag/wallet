@@ -220,7 +220,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * @returns Allowance object or NULL if not found
    */
   async getAllowance(id: string): Promise<TAllowance | null> {
-    return this._getAllowances().find((x) => x.id === id) || null;
+    return this._getAllowances().find((allowance) => allowance.id === id) || null;
   }
 
   private async _allowanceStateSync(newAllowances?: TAllowance[]): Promise<void> {
@@ -242,7 +242,6 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * current active agent has.
    * @param allowance Allowance object to be added
    */
-  // TODO: check if set full allowances or the created one only
   async addAllowance(allowance: TAllowance, options?: DatabaseOptions): Promise<void> {
     const allowances = this._getAllowances();
     const databaseAllowance = this._getStorableAllowance(allowance);
