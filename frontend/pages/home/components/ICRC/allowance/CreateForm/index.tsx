@@ -119,11 +119,13 @@ export default function CreateForm() {
         ...allowance,
         amount: response?.allowance || "0",
         expiration: response?.expires_at || "",
+        id: db().generateAllowancePrimaryKey(allowance),
       };
 
       const duplicated = await getDuplicatedAllowance(newAllowance);
 
-      if (duplicated) {
+      if (duplicated?.id) {
+        // INFO: exist in ledger and local db
         const isExpirationSame = newAllowance.expiration === duplicated.expiration;
         const isAmountSame = newAllowance.amount === duplicated.amount;
 
@@ -132,7 +134,8 @@ export default function CreateForm() {
         }
       }
 
-      if (!duplicated && newAllowance.amount !== "0") {
+      if (!duplicated?.id && newAllowance.amount !== "0") {
+        // INFO: exist in ledger but not in local db
         const updatedAllowances = [...allowances, newAllowance];
 
         await db().updateAllowances(

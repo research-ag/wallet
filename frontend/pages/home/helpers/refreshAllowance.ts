@@ -9,7 +9,6 @@ export async function refreshAllowance(allowance: TAllowance, isDeleted = false)
       await db().deleteAllowance(primaryKey, { sync: true });
     } else {
       const alreadyExist = await db().getAllowance(primaryKey);
-
       if (alreadyExist) {
         await db().updateAllowance(primaryKey, allowance, { sync: true });
       } else {

@@ -52,7 +52,6 @@ export const updateAllBalances: UpdateAllBalances = async (params) => {
   await db().updateAssets(newAssetsUpload);
 
   if (loading) {
-
     if (fromLogin) {
       newAssetsUpload.length > 0 && store.dispatch(setAccordionAssetIdx([newAssetsUpload[0].tokenSymbol]));
     }
