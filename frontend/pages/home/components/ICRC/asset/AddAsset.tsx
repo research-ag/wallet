@@ -13,6 +13,7 @@ import AddAssetManual from "./AddAssetManual";
 import { setAccordionAssetIdx, setSelectedAsset } from "@redux/assets/AssetReducer";
 import AddAssetAutomatic from "./AddAssetAutomatic";
 import { db } from "@/database/db";
+import { getAssetDetails } from "@pages/home/helpers/icrc/transactions";
 
 interface AddAssetsProps {
   setAssetOpen: Dispatch<SetStateAction<boolean>>;
@@ -163,25 +164,26 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, assets, accord
     } else {
       const idxSorting = assets.length > 0 ? [...assets].sort((a, b) => b.sortIndex - a.sortIndex) : [];
       const idx = (idxSorting.length > 0 ? idxSorting[0]?.sortIndex : 0) + 1;
+
+      const updatedAsset = await getAssetDetails({
+        canisterId: newAsset.address,
+        includeDefault: true,
+        customName: newAsset.name,
+        customSymbol: newAsset.symbol,
+        supportedStandard: newAsset.supportedStandards,
+        sortIndex: idx,
+      });
+
       const tknSave: Asset = {
         ...newAsset,
+        ...updatedAsset,
         sortIndex: idx,
-        subAccounts: [
-          {
-            sub_account_id: "0x0",
-            name: AccountDefaultEnum.Values.Default,
-            amount: "0",
-            currency_amount: "0",
-            address: "",
-            decimal: 0,
-            symbol: "",
-            transaction_fee: "",
-          },
-        ],
       };
+
       setAddStatus(AddingAssetsEnum.enum.adding);
       showModal(true);
-      await db().addAssets(tknSave);
+
+      await db().addAssets(tknSave, { sync: true });
       dispatch(setSelectedAsset(tknSave));
       dispatch(setAccordionAssetIdx([tknSave.symbol]));
 

@@ -320,6 +320,7 @@ const AddAssetManual = ({
         });
 
         const { symbol, decimals, name, logo, fee } = getMetadataInfo(myMetadata);
+
         const supportedStandards = await getICRCSupportedStandards({
           assetAddress: newAsset.address,
           agent: userAgent,
@@ -339,6 +340,7 @@ const AddAssetManual = ({
             supportedStandards,
           };
         });
+
         setValidToken(true);
         validData = true;
       } catch (e) {

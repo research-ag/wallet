@@ -38,6 +38,7 @@ const assetSlice = createSlice({
   name: "asset",
   initialState,
   reducers: {
+    // state helpers
     setInitLoad(state, action: PayloadAction<boolean>) {
       state.initLoad = action.payload;
     },
@@ -47,6 +48,16 @@ const assetSlice = createSlice({
     setICPSubaccounts(state, action: PayloadAction<ICPSubAccount[]>) {
       state.ICPSubaccounts = action.payload;
     },
+    setTokenMarket(state, action: PayloadAction<TokenMarketInfo[]>) {
+      state.tokensMarket = action.payload;
+    },
+    // asset reducers
+    setAssets(state, action) {
+      state.assets = action.payload.sort((a: Asset, b: Asset) => {
+        return a.sortIndex - b.sortIndex;
+      });
+    },
+    // sub accounts reducers
     updateSubAccountBalance: {
       reducer(
         state: AssetState,
@@ -77,14 +88,6 @@ const assetSlice = createSlice({
       prepare(tokenSymbol: string, subAccountId: string, amount: string) {
         return { payload: { tokenSymbol, subAccountId, amount } };
       },
-    },
-    setTokenMarket(state, action: PayloadAction<TokenMarketInfo[]>) {
-      state.tokensMarket = action.payload;
-    },
-    setAssets(state, action) {
-      state.assets = action.payload.sort((a: Asset, b: Asset) => {
-        return a.sortIndex - b.sortIndex;
-      });
     },
     setAccounts(state, action) {
       state.accounts = action.payload;

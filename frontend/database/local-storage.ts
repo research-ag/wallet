@@ -1,4 +1,4 @@
-import { IWalletDatabase } from "@/database/i-wallet-database";
+import { DatabaseOptions, IWalletDatabase } from "@/database/i-wallet-database";
 import { Contact } from "@redux/models/ContactsModels";
 import { TAllowance } from "@/@types/allowance";
 import { Identity } from "@dfinity/agent";
@@ -46,7 +46,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
     this.principalId = fixedPrincipal?.toString() || identity?.getPrincipal().toText() || "";
     this._doesRecordByPrincipalExist();
     //
-    this.assetStateSync();
+    this._assetStateSync();
     this.contactStateSync();
     this.allowanceStateSync();
   }
@@ -58,6 +58,15 @@ export class LocalStorageDatabase extends IWalletDatabase {
    */
   async getAsset(address: string): Promise<Asset | null> {
     return this._getAssets().find((x) => x.address === address) || null;
+  }
+
+  /**
+   * Sync the Asset state with the Redux store.
+   * @param newAssets Array of Asset objects
+   */
+  private async _assetStateSync(newAssets?: Asset[]): Promise<void> {
+    const assets = newAssets || this._getAssets();
+    store.dispatch(setAssets(assets));
   }
 
   /**
@@ -74,18 +83,16 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * current active agent has.
    * @param asset Asset object to be added
    */
-  async addAssets(asset: Asset): Promise<void> {
+  async addAssets(asset: Asset, options?: DatabaseOptions): Promise<void> {
     const assets = this._getAssets();
     this._setAssets([...assets, asset]);
+
+    if (options?.sync) this._assetStateSync();
   }
 
-  async assetStateSync(newAssets?: Asset[]): Promise<void> {
-    const assets = newAssets || this._getAssets();
-    store.dispatch(setAssets(assets));
-  }
-
-  async updateAssets(assets: Asset[]): Promise<void> {
+  async updateAssets(assets: Asset[], options?: DatabaseOptions): Promise<void> {
     this._setAssets(assets);
+    if (options?.sync) this._assetStateSync();
   }
 
   /**
@@ -94,7 +101,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * @param address Address ID of a Asset object
    * @param newDoc Asset object
    */
-  async updateAsset(address: string, newDoc: Asset): Promise<void> {
+  async updateAsset(address: string, newDoc: Asset, options?: DatabaseOptions): Promise<void> {
     this._setAssets(
       this._getAssets().map((tkn) => {
         if (tkn.address === address) {
@@ -102,6 +109,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
         } else return tkn;
       }),
     );
+    if (options?.sync) this._assetStateSync();
   }
 
   /**

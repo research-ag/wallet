@@ -9,6 +9,13 @@ import { LocalStorageKeyEnum } from "@/@types/localstorage";
 import { Themes } from "@/const";
 import { Asset } from "@redux/models/AccountModels";
 
+export interface DatabaseOptions {
+  /**
+   * Sync incoming data with the Redux store.
+   */
+  sync: boolean;
+}
+
 export abstract class IWalletDatabase {
   /**
    * Retrieves the current language setting from local storage.
@@ -157,18 +164,13 @@ export abstract class IWalletDatabase {
    * current active agent has.
    * @param asset Asset object to be added
    */
-  abstract addAssets(asset: Asset): Promise<void>;
-
-  /**
-   * Sync the Asset state with the stored data.
-   */
-  // abstract assetStateSync(newAssets?: Asset[]): Promise<void>;
+  abstract addAssets(asset: Asset, options?: DatabaseOptions): Promise<void>;
 
   /**
    * Replace the storage of Asset objects with a new
    * @param newAssets
    */
-  abstract updateAssets(newAssets: Asset[]): Promise<void>;
+  abstract updateAssets(newAssets: Asset[], options?: DatabaseOptions): Promise<void>;
 
   /**
    * Find a Asset object by its ID and replace it with
@@ -176,7 +178,7 @@ export abstract class IWalletDatabase {
    * @param address Address ID of a Asset object
    * @param newDoc Asset object
    */
-  abstract updateAsset(address: string, newDoc: Asset): Promise<void>;
+  abstract updateAsset(address: string, newDoc: Asset, options?: DatabaseOptions): Promise<void>;
 
   /**
    * Find and remove a Asset object by its ID.
@@ -197,11 +199,6 @@ export abstract class IWalletDatabase {
    * array if no Contact object were found
    */
   abstract getContacts(): Promise<Contact[]>;
-
-  /**
-   * Sync the Contact state with the stored data.
-   */
-  // abstract contactStateSync(newContacts?: Contact[]): Promise<void>;
 
   /**
    * Subscribable Observable that trigger after
@@ -244,8 +241,6 @@ export abstract class IWalletDatabase {
    * @returns Allowance object or NULL if not found
    */
   abstract getAllowance(id: string): Promise<TAllowance | null>;
-
-  // abstract allowanceStateSync(newAllowances?: TAllowance[]): Promise<void>;
 
   /**
    * Get all Allowance objects from active agent.
