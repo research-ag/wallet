@@ -162,6 +162,9 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, assets, accord
       setErrToken(t("adding.asset.already.imported"));
       setValidToken(false);
     } else {
+      setAddStatus(AddingAssetsEnum.enum.adding);
+      showModal(true);
+
       const idxSorting = assets.length > 0 ? [...assets].sort((a, b) => b.sortIndex - a.sortIndex) : [];
       const idx = (idxSorting.length > 0 ? idxSorting[0]?.sortIndex : 0) + 1;
 
@@ -179,9 +182,6 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, assets, accord
         ...updatedAsset,
         sortIndex: idx,
       };
-
-      setAddStatus(AddingAssetsEnum.enum.adding);
-      showModal(true);
 
       await db().addAssets(tknSave, { sync: true });
       dispatch(setSelectedAsset(tknSave));
