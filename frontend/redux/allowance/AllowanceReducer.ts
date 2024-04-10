@@ -65,7 +65,7 @@ const allowanceSlice = createSlice({
     },
     updateReduxAllowance(state: AllowanceState, action: PayloadAction<TAllowance>) {
       state.allowances = state.allowances.map((allowance) =>
-        allowance.id === action.payload.id ? action.payload : allowance
+        allowance.id === action.payload.id ? action.payload : allowance,
       );
     },
     deleteReduxAllowance(state: AllowanceState, action: PayloadAction<string>) {

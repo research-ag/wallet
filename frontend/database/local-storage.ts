@@ -14,7 +14,7 @@ import {
   setReduxContacts,
   updateReduxContact,
 } from "@redux/contacts/ContactsReducer";
-import { addReduxAllowance, deleteReduxAllowance, setReduxAllowances, updateReduxAllowance } from "@redux/allowance/AllowanceReducer";
+import { deleteReduxAllowance, setReduxAllowances, updateReduxAllowance } from "@redux/allowance/AllowanceReducer";
 
 export class LocalStorageDatabase extends IWalletDatabase {
   // Singleton pattern
@@ -247,10 +247,11 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * current active agent has.
    * @param allowance Allowance object to be added
    */
+  // TODO: check if set full allowances or the created one only
   async addAllowance(allowance: TAllowance, options?: DatabaseOptions): Promise<void> {
     const allowances = this._getAllowances();
-    // TODO: remove and expiration from teh allowance for db only
-    this._setAllowances([...allowances, allowance]);
+    const databaseAllowance = this._getStorableAllowance(allowance);
+    this._setAllowances([...allowances, databaseAllowance]);
     if (options?.sync) store.dispatch(setReduxAllowances([...allowances, allowance]));
   }
 
@@ -261,11 +262,12 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * @param newDoc Allowance object
    */
   async updateAllowance(id: string, newDoc: TAllowance, options?: DatabaseOptions): Promise<void> {
-    // TODO: remove amount and expiration from the allowance for db only
+    const databaseAllowance = this._getStorableAllowance(newDoc);
+
     this._setAllowances(
       this._getAllowances().map((allowance) => {
         if (allowance.id === id) {
-          return newDoc;
+          return databaseAllowance;
         } else return allowance;
       }),
     );
@@ -278,8 +280,8 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * @param newDocs Array of Allowance objects
    */
   async updateAllowances(newDocs: TAllowance[], options?: DatabaseOptions): Promise<void> {
-    // TODO: remove amount and expiration from the allowance for db only
-    this._setAllowances(newDocs);
+    const databaseAllowances = newDocs.map((allowance) => this._getStorableAllowance(allowance));
+    this._setAllowances(databaseAllowances);
     if (options?.sync) store.dispatch(setReduxAllowances(newDocs));
   }
 
@@ -336,7 +338,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
   private _setAssets(allAssets: Asset[]) {
     const assets = [...allAssets].sort((a, b) => a.sortIndex - b.sortIndex);
     localStorage.setItem(`assets-${this.principalId}`, JSON.stringify(assets));
-    this._assets$.next(assets);
+    // this._assets$.next(assets);
   }
 
   private _getContacts(): Contact[] {
@@ -346,7 +348,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
 
   private _setContacts(contacts: Contact[]) {
     localStorage.setItem(`contacts-${this.principalId}`, JSON.stringify(contacts));
-    this._contacts$.next(contacts);
+    // this._contacts$.next(contacts);
   }
 
   private _getAllowances(): TAllowance[] {
@@ -354,9 +356,9 @@ export class LocalStorageDatabase extends IWalletDatabase {
     return allowancesData || [];
   }
 
-  private _setAllowances(allowances: TAllowance[]) {
+  private _setAllowances(allowances: Pick<TAllowance, "id" | "asset" | "subAccountId" | "spender">[]) {
     localStorage.setItem(`allowances-${this.principalId}`, JSON.stringify(allowances));
-    this._allowances$.next(allowances);
+    // this._allowances$.next(allowances);
   }
 
   /**

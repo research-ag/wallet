@@ -65,8 +65,6 @@ export const idlFactory = ({ IDL }) => {
       symbol: IDL.Text,
     }),
     updatedAt: IDL.Nat32,
-    expiration: IDL.Text,
-    amount: IDL.Text,
     subAccountId: IDL.Text,
     spender: IDL.Text,
   });

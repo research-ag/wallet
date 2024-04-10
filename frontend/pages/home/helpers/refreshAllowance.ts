@@ -1,7 +1,6 @@
 import { TAllowance } from "@/@types/allowance";
 import { db } from "@/database/db";
 
-// TODO: check if the db query affect the state amount updated
 export async function refreshAllowance(allowance: TAllowance, isDeleted = false) {
   try {
     const primaryKey = db().generateAllowancePrimaryKey(allowance);

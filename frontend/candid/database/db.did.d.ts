@@ -16,8 +16,6 @@ export interface AllowanceDocument {
     symbol: string;
   };
   updatedAt: number;
-  expiration: string;
-  amount: string;
   subAccountId: string;
   spender: string;
 }

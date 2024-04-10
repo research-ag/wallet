@@ -76,9 +76,7 @@ actor class WalletDatabase() {
     };
     id : Text;
     subAccountId : Text;
-    amount : Text;
     spender : Text;
-    expiration : Text;
     updatedAt : Nat32;
     deleted : Bool;
   };

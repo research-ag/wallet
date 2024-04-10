@@ -117,9 +117,7 @@
       "properties": {
         "id": { "type": "string", "maxLength": 100 },
         "subAccountId": { "type": "string", "maxLength": 100 },
-        "amount": { "type": "string", "maxLength": 100 },
         "spender": { "type": "string", "maxLength": 100 },
-        "expiration": { "type": "string", "maxLength": 100 },
         "asset": {
           "type": "record",
           "properties": {
