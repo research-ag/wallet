@@ -184,7 +184,7 @@ export abstract class IWalletDatabase {
    * Find and remove a Asset object by its ID.
    * @param address Address ID of a Asset object
    */
-  abstract deleteAsset(address: string): Promise<void>;
+  abstract deleteAsset(address: string, options?: DatabaseOptions): Promise<void>;
 
   /**
    * Find a Contact object by its Principal ID.
@@ -213,7 +213,7 @@ export abstract class IWalletDatabase {
    * current active agent has.
    * @param contact Contact object to be added
    */
-  abstract addContact(contact: Contact): Promise<void>;
+  abstract addContact(contact: Contact, options?: DatabaseOptions): Promise<void>;
 
   /**
    * Find a Contact object by its Principal ID and replace it
@@ -221,19 +221,19 @@ export abstract class IWalletDatabase {
    * @param principal Principal ID
    * @param newDoc Contact object
    */
-  abstract updateContact(principal: string, newDoc: Contact): Promise<void>;
+  abstract updateContact(principal: string, newDoc: Contact, options?: DatabaseOptions): Promise<void>;
 
   /**
    * Update Contacts in bulk.
    * @param newDocs Array of Allowance objects
    */
-  abstract updateContacts(newDocs: Contact[]): Promise<void>;
+  abstract updateContacts(newDocs: Contact[], options?: DatabaseOptions): Promise<void>;
 
   /**
    * Find and remove a Contact object by its Principal ID.
    * @param principal Principal ID
    */
-  abstract deleteContact(principal: string): Promise<void>;
+  abstract deleteContact(principal: string, options?: DatabaseOptions): Promise<void>;
 
   /**
    * Find a Allowance object.

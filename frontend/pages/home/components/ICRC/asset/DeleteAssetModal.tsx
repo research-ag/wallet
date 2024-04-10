@@ -50,7 +50,7 @@ const DeleteAssetModal = ({ open, setOpen, asset }: DeleteAssetModalPropr) => {
   );
 
   function handleConfirmButton() {
-    db().deleteAsset(address).then();
+    db().deleteAsset(address, { sync: true }).then();
     setOpen(false);
   }
 };

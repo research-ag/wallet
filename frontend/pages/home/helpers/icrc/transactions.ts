@@ -4,7 +4,8 @@ import {
   TransactionFeeParams,
   TransferFromAllowanceParams,
   TransferTokensParams,
- SupportedStandard } from "@/@types/icrc";
+  SupportedStandard,
+} from "@/@types/icrc";
 import { getCanister } from "./getIcrcCanister";
 import {
   getMetadataInfo,

@@ -16,12 +16,15 @@ const contactsSlice = createSlice({
     setReduxContacts(state, action: PayloadAction<Contact[]>) {
       state.contacts = action.payload;
     },
+    addReduxContact(state, action: PayloadAction<Contact>) {
+      state.contacts.push(action.payload);
+    },
     clearDataContacts(state) {
       state.contacts = [];
     },
   },
 });
 
-export const { setReduxContacts, clearDataContacts } = contactsSlice.actions;
+export const { setReduxContacts, addReduxContact, clearDataContacts } = contactsSlice.actions;
 
 export default contactsSlice.reducer;

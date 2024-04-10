@@ -8,7 +8,7 @@ import { defaultTokens } from "@/defaultTokens";
 import { Asset } from "@redux/models/AccountModels";
 import store from "@redux/Store";
 import { setAssets } from "@redux/assets/AssetReducer";
-import { setReduxContacts } from "@redux/contacts/ContactsReducer";
+import { addReduxContact, setReduxContacts } from "@redux/contacts/ContactsReducer";
 import { setReduxAllowances } from "@redux/allowance/AllowanceReducer";
 
 export class LocalStorageDatabase extends IWalletDatabase {
@@ -47,7 +47,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
     this._doesRecordByPrincipalExist();
     //
     this._assetStateSync();
-    this.contactStateSync();
+    this._contactStateSync();
     this.allowanceStateSync();
   }
 
@@ -116,8 +116,9 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * Find and remove a Asset object by its ID.
    * @param address Address ID of a Asset object
    */
-  async deleteAsset(address: string): Promise<void> {
+  async deleteAsset(address: string, options?: DatabaseOptions): Promise<void> {
     this._setAssets(this._getAssets().filter((tkn) => tkn.address !== address));
+    if (options?.sync) this._assetStateSync();
   }
 
   /**
@@ -130,6 +131,15 @@ export class LocalStorageDatabase extends IWalletDatabase {
   }
 
   /**
+   * Sync the Contact state with the Redux store.
+   * @param newContacts Array of Contact objects
+   */
+  async _contactStateSync(newContacts?: Contact[]): Promise<void> {
+    const contacts = newContacts || this._getContacts();
+    store.dispatch(setReduxContacts(contacts));
+  }
+
+  /**
    * Get all Contact objects from active agent.
    * @returns Array of found Contact objects or an empty
    * array if no Contact object were found
@@ -138,19 +148,16 @@ export class LocalStorageDatabase extends IWalletDatabase {
     return this._getContacts();
   }
 
-  async contactStateSync(newContacts?: Contact[]): Promise<void> {
-    const contacts = newContacts || this._getContacts();
-    store.dispatch(setReduxContacts(contacts));
-  }
-
   /**
    * Add a new Contact object to the list of Contact objects
    * current active agent has.
    * @param contact Contact object to be added
    */
-  async addContact(contact: Contact): Promise<void> {
+  async addContact(contact: Contact, options?: DatabaseOptions): Promise<void> {
     const contacts = this._getContacts();
-    this._setContacts([...contacts, contact]);
+    const databaseContact = this._getStorableContact(contact);
+    this._setContacts([...contacts, databaseContact]);
+    if (options?.sync) store.dispatch(addReduxContact(contact));
   }
 
   /**
@@ -159,7 +166,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * @param principal Principal ID
    * @param newDoc Contact object
    */
-  async updateContact(principal: string, newDoc: Contact): Promise<void> {
+  async updateContact(principal: string, newDoc: Contact, options?: DatabaseOptions): Promise<void> {
     this._setContacts(
       this._getContacts().map((cnts) => {
         if (cnts.principal === principal) {
@@ -167,22 +174,40 @@ export class LocalStorageDatabase extends IWalletDatabase {
         } else return cnts;
       }),
     );
+
+    if (options?.sync) this._contactStateSync();
   }
 
   /**
    * Update Contacts in bulk.
    * @param newDocs Array of Allowance objects
    */
-  async updateContacts(newDocs: Contact[]): Promise<void> {
+  async updateContacts(newDocs: Contact[], options?: DatabaseOptions): Promise<void> {
     this._setContacts(newDocs);
+    if (options?.sync) this._contactStateSync();
   }
 
   /**
    * Find and remove a Contact object by its Principal ID.
    * @param principal Principal ID
    */
-  async deleteContact(principal: string): Promise<void> {
+  async deleteContact(principal: string, options?: DatabaseOptions): Promise<void> {
     this._setContacts(this._getContacts().filter((cnts) => cnts.principal !== principal));
+    if (options?.sync) this._contactStateSync();
+  }
+
+  _getStorableContact(contact: Contact): Contact {
+    return {
+      ...contact,
+      assets: contact.assets.map((asset) => ({
+        ...asset,
+        subaccounts: asset.subaccounts.map((subaccount) => {
+          const { allowance, ...rest } = subaccount;
+          console.info("removed from contact: ", allowance);
+          return { ...rest };
+        }),
+      })),
+    };
   }
 
   /**
