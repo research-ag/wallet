@@ -136,7 +136,7 @@
           "required": ["logo", "name", "symbol", "address", "decimal", "tokenName", "tokenSymbol", "supportedStandards"]
         }
       },
-      "required": ["subAccountId", "amount", "asset", "spender"]
+      "required": ["subAccountId", "asset", "spender"]
     }
   }
 }

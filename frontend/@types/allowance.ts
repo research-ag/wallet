@@ -17,7 +17,7 @@ export const allowanceSchema = z.object({
   asset: AllowanceAssetSchema,
   subAccountId: z.string(),
   spender: z.string(),
-  amount: z.string(),
+  amount: z.string().optional(),
   expiration: z.string().optional(),
 });
 

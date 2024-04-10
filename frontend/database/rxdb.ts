@@ -440,7 +440,6 @@ export class RxdbDatabase extends IWalletDatabase {
         await this.allowances
       )?.insert({
         ...allowance,
-        expiration: extractValueFromArray(allowance.expiration),
         asset: {
           ...allowance.asset,
           logo: extractValueFromArray(allowance.asset?.logo),
@@ -464,7 +463,6 @@ export class RxdbDatabase extends IWalletDatabase {
       const document = await (await this.allowances)?.findOne(id).exec();
       document?.patch({
         ...newDoc,
-        expiration: extractValueFromArray(newDoc.expiration),
         asset: {
           ...newDoc.asset,
           logo: extractValueFromArray(newDoc.asset?.logo),
@@ -632,9 +630,7 @@ export class RxdbDatabase extends IWalletDatabase {
     return {
       id: doc.id,
       subAccountId: doc.subAccountId,
-      amount: doc.amount,
       spender: doc.spender,
-      expiration: doc.expiration,
       asset: {
         logo: doc.asset.logo,
         name: doc.asset.name,

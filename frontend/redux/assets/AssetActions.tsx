@@ -5,7 +5,7 @@ import { IcrcAccount, IcrcIndexCanister, IcrcTokenMetadataResponse } from "@dfin
 
 import { formatIcpTransaccion, getMetadataInfo, formatckBTCTransaccion, hexToUint8Array } from "@/utils";
 
-import { setAssets, setTokenMarket, setICPSubaccounts, setAccordionAssetIdx } from "./AssetReducer";
+import { setTokenMarket, setICPSubaccounts, setAccordionAssetIdx } from "./AssetReducer";
 
 import { AccountIdentifier, SubAccount as SubAccountNNS } from "@dfinity/ledger-icp";
 import { Asset, ICPSubAccount } from "@redux/models/AccountModels";
