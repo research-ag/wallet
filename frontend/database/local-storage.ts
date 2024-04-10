@@ -8,7 +8,7 @@ import { defaultTokens } from "@/defaultTokens";
 import { Asset } from "@redux/models/AccountModels";
 import store from "@redux/Store";
 import { setAssets } from "@redux/assets/AssetReducer";
-import { addReduxContact, setReduxContacts } from "@redux/contacts/ContactsReducer";
+import { addReduxContact, setReduxContacts, updateReduxContact } from "@redux/contacts/ContactsReducer";
 import { setReduxAllowances } from "@redux/allowance/AllowanceReducer";
 
 export class LocalStorageDatabase extends IWalletDatabase {
@@ -167,15 +167,17 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * @param newDoc Contact object
    */
   async updateContact(principal: string, newDoc: Contact, options?: DatabaseOptions): Promise<void> {
+    const databaseContact = this._getStorableContact(newDoc);
+
     this._setContacts(
-      this._getContacts().map((cnts) => {
-        if (cnts.principal === principal) {
-          return newDoc;
-        } else return cnts;
+      this._getContacts().map((contact) => {
+        if (contact.principal === principal) {
+          return databaseContact;
+        } else return contact;
       }),
     );
 
-    if (options?.sync) this._contactStateSync();
+    if (options?.sync) store.dispatch(updateReduxContact(newDoc));
   }
 
   /**
@@ -183,8 +185,9 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * @param newDocs Array of Allowance objects
    */
   async updateContacts(newDocs: Contact[], options?: DatabaseOptions): Promise<void> {
-    this._setContacts(newDocs);
-    if (options?.sync) this._contactStateSync();
+    const databaseContacts = newDocs.map((contact) => this._getStorableContact(contact));
+    this._setContacts(databaseContacts);
+    if (options?.sync) store.dispatch(setReduxContacts(newDocs));
   }
 
   /**

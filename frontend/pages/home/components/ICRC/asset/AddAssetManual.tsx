@@ -361,6 +361,7 @@ const AddAssetManual = ({
 
       setTimeout(async () => {
         const affectedContacts: Contact[] = [];
+        // FIXME: if contacts come from db will not include allowance in the state
         const currentContacts = await db().getContacts();
 
         for (const contact of currentContacts) {
@@ -381,7 +382,7 @@ const AddAssetManual = ({
           }
         }
 
-        await Promise.all(affectedContacts.map((c) => db().updateContact(c.principal, c)));
+        await Promise.all(affectedContacts.map((contact) => db().updateContact(contact.principal, contact, { sync: true })));
       }, 0);
 
       const asset = await db().getAsset(newAsset.address);
