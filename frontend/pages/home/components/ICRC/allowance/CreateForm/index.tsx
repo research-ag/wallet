@@ -140,6 +140,7 @@ export default function CreateForm() {
             ...currentAllowance,
             id: db().generateAllowancePrimaryKey(currentAllowance),
           })),
+          { sync: true },
         );
       }
 

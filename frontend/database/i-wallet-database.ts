@@ -262,7 +262,7 @@ export abstract class IWalletDatabase {
    * current active agent has.
    * @param allowance Allowance object to be added
    */
-  abstract addAllowance(allowance: TAllowance): Promise<void>;
+  abstract addAllowance(allowance: TAllowance, options?: DatabaseOptions): Promise<void>;
 
   /**
    * Find a Allowance object and replace it
@@ -270,17 +270,17 @@ export abstract class IWalletDatabase {
    * @param id Primary Key
    * @param newDoc Allowance object
    */
-  abstract updateAllowance(id: string, newDoc: TAllowance): Promise<void>;
+  abstract updateAllowance(id: string, newDoc: TAllowance, options?: DatabaseOptions): Promise<void>;
 
   /**
    * Update Allowances in bulk.
    * @param newDocs Array of Allowance objects
    */
-  abstract updateAllowances(newDocs: TAllowance[]): Promise<void>;
+  abstract updateAllowances(newDocs: TAllowance[], options?: DatabaseOptions): Promise<void>;
 
   /**
    * Find and remove a Allowance object.
    * @param id Primary Key
    */
-  abstract deleteAllowance(id: string): Promise<void>;
+  abstract deleteAllowance(id: string, options?: DatabaseOptions): Promise<void>;
 }

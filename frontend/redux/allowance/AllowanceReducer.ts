@@ -60,6 +60,17 @@ const allowanceSlice = createSlice({
     setReduxAllowances(state: AllowanceState, action: PayloadAction<TAllowance[]>) {
       state.allowances = action.payload;
     },
+    addReduxAllowance(state: AllowanceState, action: PayloadAction<TAllowance>) {
+      state.allowances = [...state.allowances, action.payload];
+    },
+    updateReduxAllowance(state: AllowanceState, action: PayloadAction<TAllowance>) {
+      state.allowances = state.allowances.map((allowance) =>
+        allowance.id === action.payload.id ? action.payload : allowance
+      );
+    },
+    deleteReduxAllowance(state: AllowanceState, action: PayloadAction<string>) {
+      state.allowances = state.allowances.filter((allowance) => allowance.id !== action.payload);
+    },
     setAllowanceError(state: AllowanceState, action: PayloadAction<string>) {
       const currentErrors = [...(state.errors ?? [])];
       state.errors = currentErrors.includes(action.payload) ? currentErrors : [...currentErrors, action.payload];
@@ -82,6 +93,9 @@ export const {
   setIsDeleteAllowance,
   setSelectedAllowance,
   setReduxAllowances,
+  updateReduxAllowance,
+  deleteReduxAllowance,
+  addReduxAllowance,
   setIsLoading,
   setAllowanceError,
   removeAllowanceError,

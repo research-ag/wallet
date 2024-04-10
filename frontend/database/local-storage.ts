@@ -14,7 +14,7 @@ import {
   setReduxContacts,
   updateReduxContact,
 } from "@redux/contacts/ContactsReducer";
-import { setReduxAllowances } from "@redux/allowance/AllowanceReducer";
+import { addReduxAllowance, deleteReduxAllowance, setReduxAllowances, updateReduxAllowance } from "@redux/allowance/AllowanceReducer";
 
 export class LocalStorageDatabase extends IWalletDatabase {
   // Singleton pattern
@@ -53,7 +53,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
     //
     this._assetStateSync();
     this._contactStateSync();
-    this.allowanceStateSync();
+    this._allowanceStateSync();
   }
 
   /**
@@ -137,6 +137,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
 
   /**
    * Sync the Contact state with the Redux store.
+   * This function must not include the Allowance object.
    * @param newContacts Array of Contact objects
    */
   async _contactStateSync(newContacts?: Contact[]): Promise<void> {
@@ -227,6 +228,11 @@ export class LocalStorageDatabase extends IWalletDatabase {
     return this._getAllowances().find((x) => x.id === id) || null;
   }
 
+  private async _allowanceStateSync(newAllowances?: TAllowance[]): Promise<void> {
+    const allowances = newAllowances || this._getAllowances();
+    store.dispatch(setReduxAllowances(allowances));
+  }
+
   /**
    * Get all Allowance objects from active agent.
    * @returns Array of found Allowance objects or an empty
@@ -241,14 +247,11 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * current active agent has.
    * @param allowance Allowance object to be added
    */
-  async addAllowance(allowance: TAllowance): Promise<void> {
+  async addAllowance(allowance: TAllowance, options?: DatabaseOptions): Promise<void> {
     const allowances = this._getAllowances();
+    // TODO: remove and expiration from teh allowance for db only
     this._setAllowances([...allowances, allowance]);
-  }
-
-  async allowanceStateSync(newAllowances?: TAllowance[]): Promise<void> {
-    const allowances = newAllowances || this._getAllowances();
-    store.dispatch(setReduxAllowances(allowances));
+    if (options?.sync) store.dispatch(setReduxAllowances([...allowances, allowance]));
   }
 
   /**
@@ -257,7 +260,8 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * @param id Primary Key
    * @param newDoc Allowance object
    */
-  async updateAllowance(id: string, newDoc: TAllowance): Promise<void> {
+  async updateAllowance(id: string, newDoc: TAllowance, options?: DatabaseOptions): Promise<void> {
+    // TODO: remove amount and expiration from the allowance for db only
     this._setAllowances(
       this._getAllowances().map((allowance) => {
         if (allowance.id === id) {
@@ -265,22 +269,33 @@ export class LocalStorageDatabase extends IWalletDatabase {
         } else return allowance;
       }),
     );
+
+    if (options?.sync) store.dispatch(updateReduxAllowance(newDoc));
   }
 
   /**
    * Update Allowances in bulk.
    * @param newDocs Array of Allowance objects
    */
-  async updateAllowances(newDocs: TAllowance[]): Promise<void> {
+  async updateAllowances(newDocs: TAllowance[], options?: DatabaseOptions): Promise<void> {
+    // TODO: remove amount and expiration from the allowance for db only
     this._setAllowances(newDocs);
+    if (options?.sync) store.dispatch(setReduxAllowances(newDocs));
   }
 
   /**
    * Find and remove a Allowance object.
    * @param id Primary Key
    */
-  async deleteAllowance(id: string): Promise<void> {
+  async deleteAllowance(id: string, options?: DatabaseOptions): Promise<void> {
     this._setAllowances(this._getAllowances().filter((allowance) => allowance.id !== id));
+    if (options?.sync) store.dispatch(deleteReduxAllowance(id));
+  }
+
+  _getStorableAllowance(allowance: TAllowance): Pick<TAllowance, "id" | "asset" | "subAccountId" | "spender"> {
+    const { amount, expiration, ...rest } = allowance;
+    console.log("removed from allowance: ", amount, expiration);
+    return { ...rest };
   }
 
   /**

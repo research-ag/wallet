@@ -33,6 +33,7 @@ const contactsSlice = createSlice({
   },
 });
 
-export const { setReduxContacts, addReduxContact, clearDataContacts, updateReduxContact, deleteReduxContact } = contactsSlice.actions;
+export const { setReduxContacts, addReduxContact, clearDataContacts, updateReduxContact, deleteReduxContact } =
+  contactsSlice.actions;
 
 export default contactsSlice.reducer;

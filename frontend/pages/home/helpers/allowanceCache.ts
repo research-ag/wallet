@@ -8,8 +8,6 @@ export async function allowanceCacheRefresh() {
   const allowances = await db().getAllowances();
   const updatedAllowances: TAllowance[] = [];
 
-  console.log("stored allowances: ", updatedAllowances);
-
   if (allowances?.length) {
     for (const allowance of allowances) {
       try {
@@ -43,9 +41,5 @@ export async function allowanceCacheRefresh() {
     }
   }
 
-  console.log("updated allowances: ", updatedAllowances);
-
-  // TODO: check why update allowances if if the (expiration, amount) is only for memory
-  // await db().updateAllowances(updatedAllowances);
   store.dispatch(setReduxAllowances(updatedAllowances));
 }
