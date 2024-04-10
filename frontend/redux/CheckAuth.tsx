@@ -11,7 +11,7 @@ import {
   setUserPrincipal,
 } from "./auth/AuthReducer";
 import { AuthClient } from "@dfinity/auth-client";
-import { clearDataAsset, setICRC1SystemAssets, setInitLoad, setLoading } from "./assets/AssetReducer";
+import { clearDataAsset, setICRC1SystemAssets, setInitLoad } from "./assets/AssetReducer";
 import { AuthNetwork } from "./models/TokenModels";
 import { AuthNetworkTypeEnum } from "@/const";
 import { Ed25519KeyIdentity, DelegationIdentity } from "@dfinity/identity";
@@ -23,9 +23,11 @@ import { setTransactions } from "./transaction/TransactionReducer";
 import { getSNSTokens, updateAllBalances } from "./assets/AssetActions";
 import contactCacheRefresh from "@pages/contacts/helpers/contactCacheRefresh";
 import { allowanceCacheRefresh } from "@pages/home/helpers/allowanceCache";
+import { setAppDataRefreshing } from "./common/CommonReducer";
 
-const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${import.meta.env.VITE_APP_LOGO
-  }#authorize`;
+const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${
+  import.meta.env.VITE_APP_LOGO
+}#authorize`;
 
 const NETWORK_AUTHORIZE_PATH = "https://identity.ic0.app/#authorize";
 const HTTP_AGENT_HOST = "https://identity.ic0.app";
@@ -115,6 +117,7 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean,
   }
 
   store.dispatch(setAuthLoading(true));
+  console.log("loading started");
 
   const myAgent = new HttpAgent({
     identity: authIdentity,
@@ -131,7 +134,6 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean,
 
   store.dispatch(setAuthenticated(true, false, !!fixedPrincipal, principalString));
   store.dispatch(setInitLoad(false));
-
   await refreshCachedData();
 };
 
@@ -141,7 +143,7 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean,
  */
 const refreshCachedData = async () => {
   // TODO: create a common redux that will show if the app is loading, instead of assetLoading
-  store.dispatch(setLoading(true));
+  store.dispatch(setAppDataRefreshing(true));
   const assets = await db().getAssets();
 
   const latestAssets = await updateAllBalances({
@@ -152,14 +154,14 @@ const refreshCachedData = async () => {
     basicSearch: true,
   });
 
-  if (latestAssets) await db().replaceAssets(latestAssets);
+  if (latestAssets) await db().updateAssets(latestAssets);
 
   const snsTokens = await getSNSTokens(store.getState().auth.userAgent);
   store.dispatch(setICRC1SystemAssets(snsTokens));
 
   await allowanceCacheRefresh();
   await contactCacheRefresh();
-  store.dispatch(setLoading(false));
+  store.dispatch(setAppDataRefreshing(false));
 };
 
 export const logout = async () => {

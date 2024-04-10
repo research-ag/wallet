@@ -4,11 +4,12 @@ import contactCacheRefresh from "@pages/contacts/helpers/contactCacheRefresh";
 import { allowanceCacheRefresh } from "@pages/home/helpers/allowanceCache";
 import store, { useAppDispatch, useAppSelector } from "@redux/Store";
 import { getAllTransactionsICP, getAllTransactionsICRC1, updateAllBalances } from "@redux/assets/AssetActions";
-import { setLoading, setTxWorker } from "@redux/assets/AssetReducer";
+import { setTxWorker } from "@redux/assets/AssetReducer";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { timerWorkerScript } from "@workers/index";
 import { useEffect } from "react";
 import { db } from "@/database/db";
+import { setAppDataRefreshing } from "@redux/common/CommonReducer";
 
 export const WorkerHook = () => {
   const dispatch = useAppDispatch();
@@ -63,7 +64,7 @@ export const WorkerHook = () => {
   };
 
   const getAssetsWorker = async () => {
-    dispatch(setLoading(true));
+    dispatch(setAppDataRefreshing(true));
     const dbAssets = await db().getAssets();
     if (dbAssets) {
       await updateAllBalances({
@@ -81,7 +82,7 @@ export const WorkerHook = () => {
     }
     await contactCacheRefresh();
     await allowanceCacheRefresh();
-    dispatch(setLoading(false));
+    dispatch(setAppDataRefreshing(false));
   };
 
   // TRANSACTION WEB WORKER

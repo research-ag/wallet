@@ -6,7 +6,6 @@ import { ICRC1systemAssets } from "@/defaultTokens";
 
 interface AssetState {
   initLoad: boolean;
-  assetLoading: boolean;
   txLoad: boolean;
   ICPSubaccounts: Array<ICPSubAccount>;
   icr1SystemAssets: Asset[];
@@ -22,7 +21,6 @@ interface AssetState {
 
 const initialState: AssetState = {
   initLoad: true,
-  assetLoading: false,
   ICPSubaccounts: [],
   icr1SystemAssets: ICRC1systemAssets,
   tokensMarket: [],
@@ -42,9 +40,6 @@ const assetSlice = createSlice({
   reducers: {
     setInitLoad(state, action: PayloadAction<boolean>) {
       state.initLoad = action.payload;
-    },
-    setLoading(state, action: PayloadAction<boolean>) {
-      state.assetLoading = action.payload;
     },
     setICRC1SystemAssets(state, action: PayloadAction<Asset[]>) {
       state.icr1SystemAssets = [...ICRC1systemAssets, ...action.payload];
@@ -147,7 +142,6 @@ export const {
   clearDataAsset,
   setICRC1SystemAssets,
   setICPSubaccounts,
-  setLoading,
   setTokenMarket,
   setAssets,
   setAccounts,

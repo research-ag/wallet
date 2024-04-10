@@ -29,7 +29,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
   );
 
   /**
-   * Initialice all necessary external systema and
+   * Initialize all necessary external system and
    * data structure before first use.
    */
   init(): Promise<void> {
@@ -84,9 +84,9 @@ export class LocalStorageDatabase extends IWalletDatabase {
     store.dispatch(setAssets(assets));
   }
 
-  async replaceAssets(assets: Asset[]): Promise<void> {
+  async updateAssets(assets: Asset[]): Promise<void> {
     this._setAssets(assets);
-  };
+  }
 
   /**
    * Find a Asset object by its ID and replace it with

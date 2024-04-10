@@ -162,13 +162,13 @@ export abstract class IWalletDatabase {
   /**
    * Sync the Asset state with the stored data.
    */
-  abstract assetStateSync(newAssets?: Asset[]): Promise<void>;
+  // abstract assetStateSync(newAssets?: Asset[]): Promise<void>;
 
   /**
    * Replace the storage of Asset objects with a new
-   * @param newAssets 
+   * @param newAssets
    */
-  abstract replaceAssets(newAssets: Asset[]): Promise<void>;
+  abstract updateAssets(newAssets: Asset[]): Promise<void>;
 
   /**
    * Find a Asset object by its ID and replace it with
@@ -201,7 +201,7 @@ export abstract class IWalletDatabase {
   /**
    * Sync the Contact state with the stored data.
    */
-  abstract contactStateSync(newContacts?: Contact[]): Promise<void>;
+  // abstract contactStateSync(newContacts?: Contact[]): Promise<void>;
 
   /**
    * Subscribable Observable that trigger after
@@ -245,7 +245,7 @@ export abstract class IWalletDatabase {
    */
   abstract getAllowance(id: string): Promise<TAllowance | null>;
 
-  abstract allowanceStateSync(newAllowances?: TAllowance[]): Promise<void>;
+  // abstract allowanceStateSync(newAllowances?: TAllowance[]): Promise<void>;
 
   /**
    * Get all Allowance objects from active agent.

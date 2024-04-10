@@ -38,9 +38,10 @@ const TopBarComponent = ({ isLoginPage }: { isLoginPage: boolean }) => {
   const { onLanguageChange } = LanguageHook();
   const { watchOnlyMode } = useAppSelector((state) => state.auth);
   const { assets } = useAppSelector((state) => state.asset);
+  const { isAppDataFreshing } = useAppSelector((state) => state.common);
   const { theme, themeOpen, setThemeOpen } = ThemeHook();
   const { authClient } = AccountHook();
-  const { getTotalAmountInCurrency, reloadBallance, assetLoading } = AssetHook();
+  const { getTotalAmountInCurrency, reloadBallance } = AssetHook();
 
   const [langOpen, setLangOpen] = useState(false);
   const [dbLocationOpen, setDbLocationOpen] = useState(false);
@@ -70,7 +71,7 @@ const TopBarComponent = ({ isLoginPage }: { isLoginPage: boolean }) => {
               <CustomCopy size={"small"} copyText={authClient} />
               <RefreshIcon
                 className={`h-4 w-4 cursor-pointer fill-PrimaryTextColorLight dark:fill-PrimaryTextColor ${
-                  assetLoading ? "do-spin" : ""
+                  isAppDataFreshing ? "do-spin" : ""
                 }`}
                 onClick={handleReloadButton}
               />

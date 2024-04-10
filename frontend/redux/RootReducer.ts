@@ -1,16 +1,18 @@
 import { combineReducers } from "redux";
-import authReducer from "./auth/AuthReducer";
-import AssetReducer from "./assets/AssetReducer";
-import ContactsReducer from "./contacts/ContactsReducer";
-import AllowanceReducer from "./allowance/AllowanceReducer";
-import TransactionReducer from "./transaction/TransactionReducer";
+import auth from "./auth/AuthReducer";
+import asset from "./assets/AssetReducer";
+import contacts from "./contacts/ContactsReducer";
+import allowance from "./allowance/AllowanceReducer";
+import transaction from "./transaction/TransactionReducer";
+import common from "./common/CommonReducer";
 
 const appReducer = combineReducers({
-  auth: authReducer,
-  asset: AssetReducer,
-  contacts: ContactsReducer,
-  allowance: AllowanceReducer,
-  transaction: TransactionReducer,
+  common,
+  auth,
+  asset,
+  contacts,
+  allowance,
+  transaction,
 });
 
 const RootReducer = (state: any, action: any) => {

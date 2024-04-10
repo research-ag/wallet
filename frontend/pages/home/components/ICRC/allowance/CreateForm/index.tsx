@@ -24,7 +24,8 @@ import { getDuplicatedAllowance } from "@pages/home/helpers/allowanceValidators"
 export default function CreateForm() {
   const { t } = useTranslation();
   const { contacts } = useAppSelector((state) => state.contacts);
-  const { assets, selectedAsset, assetLoading } = useAppSelector((state) => state.asset);
+  const { isAppDataFreshing } = useAppSelector((state) => state.common);
+  const { assets, selectedAsset } = useAppSelector((state) => state.asset);
   const { errors, allowances } = useAppSelector((state) => state.allowance);
   const { allowance, setAllowanceState, createAllowance, isPending, isLoading, setLoading } = useCreateAllowance();
   const { userPrincipal } = useAppSelector((state) => state.auth);
@@ -75,7 +76,7 @@ export default function CreateForm() {
           </CustomButton>
           <CustomButton
             onClick={onSaveAllowance}
-            disabled={isPending || isLoading || (allowances.length === 0 && assetLoading)}
+            disabled={isPending || isLoading || (allowances.length === 0 && isAppDataFreshing)}
           >
             {t("submit")}
           </CustomButton>

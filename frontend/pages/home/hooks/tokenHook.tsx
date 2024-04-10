@@ -5,7 +5,8 @@ import { Asset } from "@redux/models/AccountModels";
 import { useEffect, useState } from "react";
 
 export const TokenHook = (asset: Asset | undefined) => {
-  const { assetLoading, icr1SystemAssets } = useAppSelector((state) => state.asset);
+  const { isAppDataFreshing } = useAppSelector((state) => state.common);
+  const { icr1SystemAssets } = useAppSelector((state) => state.asset);
   const [manual, setManual] = useState(false);
   const [network, setNetwork] = useState<TokenNetwork>(TokenNetworkEnum.enum["ICRC-1"]);
   const [newAssetList, setNewAssetList] = useState<Array<Asset>>(ICRC1systemAssets);
@@ -75,8 +76,8 @@ export const TokenHook = (asset: Asset | undefined) => {
   }, [asset]);
 
   useEffect(() => {
-    if (!assetLoading) setAddStatus(AddingAssetsEnum.Enum.done);
-  }, [assetLoading]);
+    if (!isAppDataFreshing) setAddStatus(AddingAssetsEnum.Enum.done);
+  }, [isAppDataFreshing]);
 
   useEffect(() => setNewAssetList(icr1SystemAssets), [icr1SystemAssets]);
 

@@ -1,17 +1,19 @@
 import { defaultTokens } from "@/defaultTokens";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { updateAllBalances } from "@redux/assets/AssetActions";
-import { setAccordionAssetIdx, setLoading, setSelectedAccount, setSelectedAsset } from "@redux/assets/AssetReducer";
+import { setAccordionAssetIdx, setSelectedAccount, setSelectedAsset } from "@redux/assets/AssetReducer";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { useEffect, useState } from "react";
 import { allowanceCacheRefresh } from "../helpers/allowanceCache";
 import contactCacheRefresh from "@pages/contacts/helpers/contactCacheRefresh";
+import { setAppDataRefreshing } from "@redux/common/CommonReducer";
 
 export const AssetHook = () => {
   const dispatch = useAppDispatch();
-  const { assets, assetLoading, selectedAsset, selectedAccount, accordionIndex, tokensMarket } = useAppSelector(
+  const { assets, selectedAsset, selectedAccount, accordionIndex, tokensMarket } = useAppSelector(
     (state) => state.asset,
   );
+  const { isAppDataFreshing } = useAppSelector((state) => state.common);
 
   const { userAgent } = useAppSelector((state) => state.auth);
 
@@ -25,7 +27,7 @@ export const AssetHook = () => {
   const [hexChecked, setHexChecked] = useState<boolean>(false);
 
   const reloadBallance = async (updatedAssets?: Asset[]) => {
-    dispatch(setLoading(true));
+    dispatch(setAppDataRefreshing(true));
 
     await updateAllBalances({
       loading: true,
@@ -36,7 +38,7 @@ export const AssetHook = () => {
 
     await allowanceCacheRefresh();
     await contactCacheRefresh();
-    dispatch(setLoading(false));
+    dispatch(setAppDataRefreshing(false));
   };
 
   const getTotalAmountInCurrency = () => {
@@ -82,7 +84,7 @@ export const AssetHook = () => {
 
   return {
     assets,
-    assetLoading,
+    isAppDataFreshing,
     selectedAsset,
     selectedAccount,
     searchKey,

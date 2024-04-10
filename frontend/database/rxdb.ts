@@ -219,6 +219,24 @@ export class RxdbDatabase extends IWalletDatabase {
     }
   }
 
+  async updateAssets(newAssets: Asset[]): Promise<void> {
+    try {
+      await (
+        await this.assets
+      )?.bulkUpsert(
+        newAssets.map((a) => ({
+          ...a,
+          logo: extractValueFromArray(a.logo),
+          index: extractValueFromArray(a.index),
+          deleted: false,
+          updatedAt: Date.now(),
+        })),
+      );
+    } catch (e) {
+      console.error("RxDb UpdateAssets:", e);
+    }
+  }
+
   /**
    * Find a Asset object by its ID and replace it with
    * another Asset object with the date of update.
