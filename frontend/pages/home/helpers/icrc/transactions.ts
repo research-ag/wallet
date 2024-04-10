@@ -4,7 +4,7 @@ import {
   TransactionFeeParams,
   TransferFromAllowanceParams,
   TransferTokensParams,
-} from "@/@types/icrc";
+ SupportedStandard } from "@/@types/icrc";
 import { getCanister } from "./getIcrcCanister";
 import {
   getMetadataInfo,
@@ -19,7 +19,6 @@ import { IcrcLedgerCanister, TransferFromParams } from "@dfinity/ledger-icrc";
 import store from "@redux/Store";
 import { Asset } from "@redux/models/AccountModels";
 import { AccountDefaultEnum } from "@/const";
-import { SupportedStandard } from "../../../../@types/icrc";
 
 export async function getTransactionFeeFromLedger(params: TransactionFeeParams) {
   try {

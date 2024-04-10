@@ -116,8 +116,9 @@ const AccountElement = ({
           </div>
         </div>
         <div
-          className={`flex flex-row justify-between items-center gap-2 ${subAccount?.sub_account_id !== "0x0" && Number(subAccount?.amount) === 0 && !newSub ? "" : "pr-6"
-            }`}
+          className={`flex flex-row justify-between items-center gap-2 ${
+            subAccount?.sub_account_id !== "0x0" && Number(subAccount?.amount) === 0 && !newSub ? "" : "pr-6"
+          }`}
         >
           <div className="flex flex-col items-end justify-center">
             <p className="whitespace-nowrap">{`${toFullDecimal(
@@ -191,10 +192,14 @@ const AccountElement = ({
           }))
           .sort((a, b) => bigInt(a.numb).compare(bigInt(b.numb)));
 
-        await db().updateAsset(asset.address, {
-          ...asset,
-          subAccounts: subAccounts,
-        }, { sync: true });
+        await db().updateAsset(
+          asset.address,
+          {
+            ...asset,
+            subAccounts: subAccounts,
+          },
+          { sync: true },
+        );
 
         setNewSub(undefined);
         setAddOpen(false);
@@ -205,10 +210,14 @@ const AccountElement = ({
           sa.sub_account_id === subAccount.sub_account_id ? { ...sa, name: name } : sa,
         );
 
-        await db().updateAsset(asset.address, {
-          ...asset,
-          subAccounts: subAccounts,
-        }, { sync: true });
+        await db().updateAsset(
+          asset.address,
+          {
+            ...asset,
+            subAccounts: subAccounts,
+          },
+          { sync: true },
+        );
       }
     } else {
       setNameError(true);
@@ -229,10 +238,14 @@ const AccountElement = ({
       .map((sa) => (sa.sub_account_id !== subAccount.sub_account_id ? sa : null!))
       .filter((x) => !!x);
 
-    await db().updateAsset(asset.address, {
-      ...asset,
-      subAccounts: subAccounts,
-    }, { sync: true });
+    await db().updateAsset(
+      asset.address,
+      {
+        ...asset,
+        subAccounts: subAccounts,
+      },
+      { sync: true },
+    );
 
     setTimeout(() => {
       setDeleteModal(false);

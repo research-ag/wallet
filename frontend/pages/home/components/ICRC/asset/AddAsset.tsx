@@ -13,7 +13,7 @@ import AddAssetManual from "./AddAssetManual";
 import { setAccordionAssetIdx, setSelectedAsset } from "@redux/assets/AssetReducer";
 import AddAssetAutomatic from "./AddAssetAutomatic";
 import { db } from "@/database/db";
-import { getAssetDetails } from "@pages/home/helpers/icrc/transactions";
+import { getAssetDetails } from "@pages/home/helpers/icrc";
 
 interface AddAssetsProps {
   setAssetOpen: Dispatch<SetStateAction<boolean>>;

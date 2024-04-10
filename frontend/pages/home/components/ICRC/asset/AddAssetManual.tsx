@@ -2,20 +2,19 @@
 import { ReactComponent as InfoIcon } from "@assets/svg/files/info-icon.svg";
 //
 import { GeneralHook } from "../../../hooks/generalHook";
-import { IcrcIndexCanister, IcrcLedgerCanister } from "@dfinity/ledger-icrc";
-import { getMetadataInfo, toFullDecimal } from "@/utils";
+import { IcrcIndexCanister } from "@dfinity/ledger-icrc";
+import { toFullDecimal } from "@/utils";
 import { CustomInput } from "@components/input";
 import { CustomCopy } from "@components/tooltip";
 import { CustomButton } from "@components/button";
 import { useTranslation } from "react-i18next";
 import { AccountDefaultEnum, IconTypeEnum } from "@/const";
 import { Asset } from "@redux/models/AccountModels";
-import { IdentityHook } from "@pages/hooks/identityHook";
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import { Principal } from "@dfinity/principal";
 import { LoadingLoader } from "@components/loader";
 import { AccountHook } from "@pages/hooks/accountHook";
-import { getICRCSupportedStandards } from "@pages/home/helpers/icrc";
+import { getAssetDetails } from "@pages/home/helpers/icrc";
 import { db } from "@/database/db";
 import { Contact } from "@redux/models/ContactsModels";
 import { defaultSubAccount } from "@/defaultTokens";
@@ -61,7 +60,6 @@ const AddAssetManual = ({
   const { t } = useTranslation();
   const { authClient } = AccountHook();
   const { getAssetIcon, checkAssetAdded } = GeneralHook();
-  const { userAgent } = IdentityHook();
   const [testLoading, setTestLoading] = useState(false);
   const [tested, setTested] = useState(false);
   const [errShortDec, serErrShortDec] = useState(false);
@@ -310,35 +308,21 @@ const AddAssetManual = ({
       validData = false;
     } else {
       try {
-        const { metadata } = IcrcLedgerCanister.create({
-          agent: userAgent,
-          canisterId: newAsset.address as any,
-        });
-
-        const myMetadata = await metadata({
-          certified: false,
-        });
-
-        const { symbol, decimals, name, logo, fee } = getMetadataInfo(myMetadata);
-
-        const supportedStandards = await getICRCSupportedStandards({
-          assetAddress: newAsset.address,
-          agent: userAgent,
+        const newAssetUpdated = await getAssetDetails({
+          canisterId: newAsset.address,
+          includeDefault: true,
+          customName: override ? undefined : newAsset.name,
+          customSymbol: override ? undefined : newAsset.symbol,
+          ledgerIndex: newAsset.index,
+          sortIndex: newAsset.sortIndex,
         });
 
         setNewAsset((prev: Asset) => {
-          return {
+          const newAsset: Asset = {
             ...prev,
-            decimal: decimals.toFixed(0),
-            shortDecimal: decimals.toFixed(0),
-            symbol: override ? symbol : prev.symbol,
-            name: override ? name : prev.name,
-            logo: logo,
-            tokenSymbol: symbol,
-            tokenName: name,
-            fee: fee,
-            supportedStandards,
+            ...newAssetUpdated,
           };
+          return newAsset;
         });
 
         setValidToken(true);
