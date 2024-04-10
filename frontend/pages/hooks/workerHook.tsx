@@ -66,20 +66,13 @@ export const WorkerHook = () => {
   const getAssetsWorker = async () => {
     dispatch(setAppDataRefreshing(true));
     const dbAssets = await db().getAssets();
-    if (dbAssets) {
-      await updateAllBalances({
-        loading: true,
-        myAgent: userAgent,
-        assets: dbAssets,
-      });
-    } else {
-      await updateAllBalances({
-        loading: true,
-        myAgent: userAgent,
-        assets,
-        basicSearch: true,
-      });
-    }
+    await updateAllBalances({
+      loading: true,
+      myAgent: userAgent,
+      assets: dbAssets || assets.length !== 0 ? assets : [],
+      basicSearch: dbAssets.length === 0 || assets.length === 0,
+    });
+
     await contactCacheRefresh();
     await allowanceCacheRefresh();
     dispatch(setAppDataRefreshing(false));

@@ -17,6 +17,7 @@ import bigInt from "big-integer";
 import { AccountHook } from "@pages/hooks/accountHook";
 import DialogAddAsset from "./DialogAddAsset";
 import DeleteAssetModal from "./DeleteAssetModal";
+import { getAssetIcon } from "@/utils/icons";
 
 interface AssetElementProps {
   asset: Asset;
@@ -31,7 +32,7 @@ const AssetElement = ({ asset, idx, accordionIndex, setAssetInfo, setAssetOpen, 
   const { theme } = ThemeHook();
   const { authClient } = AccountHook();
 
-  const { assets, selectedAsset, changeSelectedAsset, changeSelectedAccount, getAssetIcon } = GeneralHook();
+  const { assets, selectedAsset, changeSelectedAsset, changeSelectedAccount } = GeneralHook();
   const { editNameId, setEditNameId, name, setName, newSub, setNewSub, hexChecked, setHexChecked, tokensMarket } =
     AssetHook();
   const [usedIdxs, setUsedIdxs] = useState<string[]>([]);

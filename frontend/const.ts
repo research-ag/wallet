@@ -1,5 +1,7 @@
 // svg
 import IcIcon from "@/assets/img/icp.png";
+import ckETHIcon from "@/assets/svg/files/ckETH.svg";
+import ckBTCIcon from "@/assets/svg/files/ckbtc.svg";
 import EthereumIcon from "@/assets/svg/files/ethereum-icon.svg";
 import BitcoinIcon from "@/assets/svg/files/bitcoin-icon.svg";
 import GoldTokenIcon from "@/assets/svg/files/gldt_icon.svg";
@@ -85,6 +87,8 @@ export const systemAssets: { [key: string]: Array<Asset> } = {
 export const symbolIconDict: { [key: string]: string } = {
   BTC: BitcoinIcon,
   ICP: IcIcon,
+  ckBTC: ckBTCIcon,
+  ckETH: ckETHIcon,
   ETH: EthereumIcon,
   GLDT: GoldTokenIcon,
   OGY: OrigynIcon,
