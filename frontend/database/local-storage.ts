@@ -206,8 +206,8 @@ export class LocalStorageDatabase extends IWalletDatabase {
       assets: contact.assets.map((asset) => ({
         ...asset,
         subaccounts: asset.subaccounts.map((subaccount) => {
+          // eslint-disable-next-line
           const { allowance, ...rest } = subaccount;
-          console.info("removed from contact: ", allowance);
           return { ...rest };
         }),
       })),
@@ -289,8 +289,8 @@ export class LocalStorageDatabase extends IWalletDatabase {
   }
 
   _getStorableAllowance(allowance: TAllowance): Pick<TAllowance, "id" | "asset" | "subAccountId" | "spender"> {
+    // eslint-disable-next-line
     const { amount, expiration, ...rest } = allowance;
-    console.log("removed from allowance: ", amount, expiration);
     return { ...rest };
   }
 
