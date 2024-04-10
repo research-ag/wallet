@@ -27,11 +27,6 @@ export class LocalStorageDatabase extends IWalletDatabase {
   }
 
   private principalId = "";
-  private readonly _assets$: BehaviorSubject<Asset[]> = new BehaviorSubject<Asset[]>(this._getAssets());
-  private readonly _contacts$: BehaviorSubject<Contact[]> = new BehaviorSubject<Contact[]>(this._getContacts());
-  private readonly _allowances$: BehaviorSubject<TAllowance[]> = new BehaviorSubject<TAllowance[]>(
-    this._getAllowances(),
-  );
 
   /**
    * Initialize all necessary external system and
@@ -307,7 +302,8 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * active agent
    */
   subscribeToAllAssets(): Observable<Asset[]> {
-    return this._assets$.asObservable();
+    // TODO: Remove once the interface does not require this method
+    return new BehaviorSubject<Asset[]>([]);
   }
 
   /**
@@ -317,7 +313,8 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * active agent
    */
   subscribeToAllContacts(): Observable<Contact[]> {
-    return this._contacts$.asObservable();
+    // TODO: Remove once the interface does not require this method
+    return new BehaviorSubject<Contact[]>([]);
   }
 
   /**
@@ -327,7 +324,8 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * active agent
    */
   subscribeToAllAllowances(): Observable<TAllowance[]> {
-    return this._allowances$.asObservable();
+    // TODO: Remove once the interface does not require this method
+    return new BehaviorSubject<TAllowance[]>([]);
   }
 
   private _getAssets(): Asset[] {
@@ -338,7 +336,6 @@ export class LocalStorageDatabase extends IWalletDatabase {
   private _setAssets(allAssets: Asset[]) {
     const assets = [...allAssets].sort((a, b) => a.sortIndex - b.sortIndex);
     localStorage.setItem(`assets-${this.principalId}`, JSON.stringify(assets));
-    // this._assets$.next(assets);
   }
 
   private _getContacts(): Contact[] {
@@ -348,7 +345,6 @@ export class LocalStorageDatabase extends IWalletDatabase {
 
   private _setContacts(contacts: Contact[]) {
     localStorage.setItem(`contacts-${this.principalId}`, JSON.stringify(contacts));
-    // this._contacts$.next(contacts);
   }
 
   private _getAllowances(): TAllowance[] {
@@ -358,7 +354,6 @@ export class LocalStorageDatabase extends IWalletDatabase {
 
   private _setAllowances(allowances: Pick<TAllowance, "id" | "asset" | "subAccountId" | "spender">[]) {
     localStorage.setItem(`allowances-${this.principalId}`, JSON.stringify(allowances));
-    // this._allowances$.next(allowances);
   }
 
   /**
