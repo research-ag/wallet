@@ -61,7 +61,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
   }
 
   /**
-   * Sync the Asset state with the Redux store.
+   * Sync the Asset storage with the Redux store.
    * @param newAssets Array of Asset objects
    */
   private async _assetStateSync(newAssets?: Asset[]): Promise<void> {
@@ -131,7 +131,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
   }
 
   /**
-   * Sync the Contact state with the Redux store.
+   * Sync the Contact storage with the Redux store.
    * This function must not include the Allowance object.
    * @param newContacts Array of Contact objects
    */
@@ -223,6 +223,10 @@ export class LocalStorageDatabase extends IWalletDatabase {
     return this._getAllowances().find((allowance) => allowance.id === id) || null;
   }
 
+  /**
+   * Sync the storage with the redux state
+   * This must not not include the last updated expiration or amount
+   */
   private async _allowanceStateSync(newAllowances?: TAllowance[]): Promise<void> {
     const allowances = newAllowances || this._getAllowances();
     store.dispatch(setReduxAllowances(allowances));

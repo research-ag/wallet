@@ -25,12 +25,14 @@ export type ICPSubAccount = z.infer<typeof ICPSubAccount>;
 export const AssetSchema = z.object({
   sortIndex: z.number(),
   logo: z.string().optional(),
+  // INFO: name and symbol are custom from user
   name: z.string(),
   symbol: z.string(),
   address: z.string(),
   decimal: z.string(),
   shortDecimal: z.string(),
   index: z.string().optional(),
+  // INFO: tokenName and tokenSymbol are default
   tokenName: z.string(),
   tokenSymbol: z.string(),
   subAccounts: z.array(SubAccount),

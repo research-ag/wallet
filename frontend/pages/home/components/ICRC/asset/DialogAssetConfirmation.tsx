@@ -42,7 +42,7 @@ const DialogAssetConfirmation = ({
           onClick={onClose}
         />
         <div className="flex flex-col items-center justify-start w-full py-2">
-          {getAssetIcon(IconTypeEnum.Enum.ASSET, newAsset?.symbol, newAsset.logo)}
+          {getAssetIcon(IconTypeEnum.Enum.ASSET, newAsset?.tokenSymbol, newAsset.logo)}
           <p
             className={`text-lg font-semibold mt-3 ${
               addStatus === AddingAssetsEnum.Enum.done ? "text-TextReceiveColor" : "text-TextSendColor"

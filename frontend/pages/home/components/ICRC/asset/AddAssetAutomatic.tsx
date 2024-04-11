@@ -125,7 +125,7 @@ const AddAssetAutomatic = ({
               >
                 {newAsset.tokenSymbol != "" ? (
                   <div className="flex flex-row items-center justify-start">
-                    {getAssetIcon(IconTypeEnum.Enum.ASSET, newAsset.symbol, newAsset.logo)}
+                    {getAssetIcon(IconTypeEnum.Enum.ASSET, newAsset.tokenSymbol, newAsset.logo)}
                     <p className="ml-3">{`${newAsset.tokenName}`}</p>
                   </div>
                 ) : (
