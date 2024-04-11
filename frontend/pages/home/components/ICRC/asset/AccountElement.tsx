@@ -180,7 +180,6 @@ const AccountElement = ({
   async function onSave() {
     if (name.trim() !== "") {
       setEditNameId("");
-      // TODO: what is this validation for?
       if (newSub) {
         // INFO: adding new sub account
         const asset = assets[+tokenIndex];

@@ -25,9 +25,8 @@ import contactCacheRefresh from "@pages/contacts/helpers/contactCacheRefresh";
 import { allowanceCacheRefresh } from "@pages/home/helpers/allowanceCache";
 import { setAppDataRefreshing } from "./common/CommonReducer";
 
-const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${
-  import.meta.env.VITE_APP_LOGO
-}#authorize`;
+const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${import.meta.env.VITE_APP_LOGO
+  }#authorize`;
 
 const NETWORK_AUTHORIZE_PATH = "https://identity.ic0.app/#authorize";
 const HTTP_AGENT_HOST = "https://identity.ic0.app";
@@ -105,8 +104,8 @@ export const handleSiweAuthenticated = async (identity: DelegationIdentity) => {
 /**
  * Initialize the essential data after successful login
  * - Set the user agent, principal, and authenticated status
- * - Initialize the data for new user of set the last cached for returning user
- * - Refresh the cached data in a background process
+ * - Initialize the data for new user or set the last cached data
+ * - Refresh the cached data in a background process after success login
  */
 export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean, fixedPrincipal?: Principal) => {
   const opt: AuthNetwork | null = db().getNetworkType();
@@ -144,7 +143,7 @@ const refreshCachedData = async () => {
   store.dispatch(setAppDataRefreshing(true));
   const assets = await db().getAssets();
 
-  // INFO: sns Tokens should load before the assets to show correctly the asset logo
+  // INFO: sns Tokens should load before the assets to show correctly the asset logo see: utils/icons.getAssetIcon
   const snsTokens = await getSNSTokens(store.getState().auth.userAgent);
   store.dispatch(setICRC1SystemAssets(snsTokens));
 
