@@ -144,6 +144,10 @@ const refreshCachedData = async () => {
   store.dispatch(setAppDataRefreshing(true));
   const assets = await db().getAssets();
 
+  // INFO: sns Tokens should load before the assets to show correctly the asset logo
+  const snsTokens = await getSNSTokens(store.getState().auth.userAgent);
+  store.dispatch(setICRC1SystemAssets(snsTokens));
+
   await updateAllBalances({
     loading: true,
     myAgent: store.getState().auth.userAgent,
@@ -151,9 +155,6 @@ const refreshCachedData = async () => {
     fromLogin: true,
     basicSearch: true,
   });
-
-  const snsTokens = await getSNSTokens(store.getState().auth.userAgent);
-  store.dispatch(setICRC1SystemAssets(snsTokens));
 
   await allowanceCacheRefresh();
   await contactCacheRefresh();

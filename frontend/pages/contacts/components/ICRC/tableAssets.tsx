@@ -13,9 +13,9 @@ import {
   SubAccountContactErr,
 } from "@redux/models/ContactsModels";
 import { DeleteContactTypeEnum, IconTypeEnum } from "@/const";
-import { GeneralHook } from "@pages/home/hooks/generalHook";
 import { Fragment } from "react";
 import TableSubAccounts from "./tableSubAccounts";
+import { getAssetIcon } from "@/utils/icons";
 
 interface TableAssetsProps {
   cntc: Contact;
@@ -57,8 +57,6 @@ const TableAssets = ({
   subaccEditedErr,
 }: TableAssetsProps) => {
   const { t } = useTranslation();
-
-  const { getAssetIcon } = GeneralHook();
 
   return (
     <table className="w-full text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md ">

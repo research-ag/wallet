@@ -18,6 +18,7 @@ import { getAssetDetails } from "@pages/home/helpers/icrc";
 import { db } from "@/database/db";
 import { Contact } from "@redux/models/ContactsModels";
 import { defaultSubAccount } from "@/defaultTokens";
+import { getAssetIcon } from "@/utils/icons";
 
 interface AddAssetManualProps {
   manual: boolean;
@@ -59,7 +60,7 @@ const AddAssetManual = ({
 }: AddAssetManualProps) => {
   const { t } = useTranslation();
   const { authClient } = AccountHook();
-  const { getAssetIcon, checkAssetAdded } = GeneralHook();
+  const { checkAssetAdded } = GeneralHook();
   const [testLoading, setTestLoading] = useState(false);
   const [tested, setTested] = useState(false);
   const [errShortDec, serErrShortDec] = useState(false);

@@ -6,8 +6,8 @@ import { CustomButton } from "@components/button";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { clsx } from "clsx";
 import { useTranslation } from "react-i18next";
-import { GeneralHook } from "../../../hooks/generalHook";
 import { Asset } from "@redux/models/AccountModels";
+import { getAssetIcon } from "@/utils/icons";
 
 interface AddAssetAutomaticProps {
   setNetworkTOpen(value: boolean): void;
@@ -45,8 +45,6 @@ const AddAssetAutomatic = ({
   assets,
 }: AddAssetAutomaticProps) => {
   const { t } = useTranslation();
-
-  const { getAssetIcon } = GeneralHook();
 
   return (
     <div className="flex flex-col items-start justify-start w-full">

@@ -2,8 +2,8 @@
 import PlusIcon from "@assets/svg/files/plus-icon.svg";
 //
 import { AssetContact, SubAccountContact } from "@redux/models/ContactsModels";
-import { GeneralHook } from "@pages/home/hooks/generalHook";
 import { IconTypeEnum } from "@/const";
+import { getAssetIcon } from "@/utils/icons";
 
 interface ContactAssetElementProps {
   contAst: AssetContact;
@@ -24,8 +24,6 @@ const ContactAssetElement = ({
   newSubAccounts,
   setNewSubaccounts,
 }: ContactAssetElementProps) => {
-  const { getAssetIcon } = GeneralHook();
-
   return (
     <button
       key={k}

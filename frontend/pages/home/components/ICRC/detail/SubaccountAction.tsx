@@ -10,9 +10,10 @@ import { useAppSelector } from "@redux/Store";
 import { clsx } from "clsx";
 import { setTransactionDrawerAction } from "@redux/transaction/TransactionActions";
 import { TransactionDrawer } from "@/@types/transactions";
+import { getAssetIcon } from "@/utils/icons";
 
 export default function ICRCSubaccountAction() {
-  const { getAssetIcon, selectedAsset, selectedAccount } = GeneralHook();
+  const { selectedAsset, selectedAccount } = GeneralHook();
   const { watchOnlyMode } = useAppSelector((state) => state.auth);
   const { t } = useTranslation();
 

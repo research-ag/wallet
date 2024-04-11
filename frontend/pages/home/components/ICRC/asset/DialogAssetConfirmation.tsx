@@ -2,10 +2,10 @@
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
 import { BasicModal } from "@components/modal";
-import { GeneralHook } from "../../../hooks/generalHook";
 import { AddingAssetsEnum, TokenNetwork, IconTypeEnum, TokenNetworkEnum, AddingAssets } from "@/const";
 import { useTranslation } from "react-i18next";
 import { Asset } from "@redux/models/AccountModels";
+import { getAssetIcon } from "@/utils/icons";
 interface DialogAssetConfirmationProps {
   modal: boolean;
   showModal(value: boolean): void;
@@ -28,7 +28,6 @@ const DialogAssetConfirmation = ({
   setManual,
 }: DialogAssetConfirmationProps) => {
   const { t } = useTranslation();
-  const { getAssetIcon } = GeneralHook();
 
   return (
     <BasicModal

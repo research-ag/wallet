@@ -17,6 +17,7 @@ import { IcrcLedgerCanister } from "@dfinity/ledger-icrc";
 import { db } from "@/database/db";
 import { LoadingLoader } from "@components/loader";
 import { IconTypeEnum } from "@/const";
+import { getAssetIcon } from "@/utils/icons";
 
 interface DialogAddAssetProps {
   newErr: any;
@@ -51,7 +52,7 @@ const DialogAddAsset = ({
 }: DialogAddAssetProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const { asciiHex, userAgent, userPrincipal, changeSelectedAccount, getAssetIcon } = GeneralHook();
+  const { asciiHex, userAgent, userPrincipal, changeSelectedAccount } = GeneralHook();
   const [loading, setLoading] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
