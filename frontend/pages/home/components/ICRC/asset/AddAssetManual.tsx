@@ -376,7 +376,7 @@ const AddAssetManual = ({
             assets: cnt.assets.map((asst) => {
               if (asst.tokenSymbol === asset.tokenSymbol) {
                 affected = true;
-                return { ...asst, symbol: asset.symbol };
+                return { ...asst, symbol: newToken.symbol };
               } else return asst;
             }),
           };

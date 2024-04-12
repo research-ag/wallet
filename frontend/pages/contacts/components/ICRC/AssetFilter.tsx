@@ -92,7 +92,7 @@ export default function AssetFilter(props: AssetFilterProps) {
     if (assetFilter.length === assets.length) setAssetFilter([]);
     else {
       const symbols = assets.map((currentAsset) => {
-        return currentAsset.tokenSymbol;
+        return currentAsset.symbol;
       });
       setAssetFilter(symbols);
     }
