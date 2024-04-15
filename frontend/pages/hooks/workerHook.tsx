@@ -1,19 +1,19 @@
 import { AssetSymbolEnum, WorkerTaskEnum } from "@/const";
 import { hexToUint8Array } from "@/utils";
-import contactCacheRefresh from "@pages/contacts/helpers/contacts";
+import contactCacheRefresh from "@pages/contacts/helpers/contactCacheRefresh";
 import { allowanceCacheRefresh } from "@pages/home/helpers/allowanceCache";
 import store, { useAppDispatch, useAppSelector } from "@redux/Store";
 import { getAllTransactionsICP, getAllTransactionsICRC1, updateAllBalances } from "@redux/assets/AssetActions";
-import { setLoading, setTxWorker } from "@redux/assets/AssetReducer";
+import { setTxWorker } from "@redux/assets/AssetReducer";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
-import { Token } from "@redux/models/TokenModels";
 import { timerWorkerScript } from "@workers/index";
 import { useEffect } from "react";
 import { db } from "@/database/db";
+import { setAppDataRefreshing } from "@redux/common/CommonReducer";
 
 export const WorkerHook = () => {
   const dispatch = useAppDispatch();
-  const { tokens, assets, txWorker } = useAppSelector((state) => state.asset);
+  const { assets, txWorker } = useAppSelector((state) => state.asset);
   const { userAgent } = useAppSelector((state) => state.auth);
 
   const getTransactionsWorker = async () => {
@@ -36,7 +36,8 @@ export const WorkerHook = () => {
           );
         });
       } else {
-        const selectedToken = tokens.find((tk: Token) => tk.symbol === elementA?.symbol);
+        const selectedToken = assets.find((tk: Asset) => tk.symbol === elementA?.symbol);
+
         if (selectedToken) {
           elementA.subAccounts.map(async (elementS: SubAccount) => {
             const transactionsICRC1 = await getAllTransactionsICRC1(
@@ -63,25 +64,18 @@ export const WorkerHook = () => {
   };
 
   const getAssetsWorker = async () => {
-    dispatch(setLoading(true));
-    const dbTokens = await db().getTokens();
-    if (dbTokens) {
-      await updateAllBalances({
-        loading: true,
-        myAgent: userAgent,
-        tokens: dbTokens,
-      });
-    } else {
-      await updateAllBalances({
-        loading: true,
-        myAgent: userAgent,
-        tokens,
-        basicSearch: true,
-      });
-    }
+    dispatch(setAppDataRefreshing(true));
+    const dbAssets = await db().getAssets();
+    await updateAllBalances({
+      loading: true,
+      myAgent: userAgent,
+      assets: dbAssets || assets.length !== 0 ? assets : [],
+      basicSearch: dbAssets.length === 0 || assets.length === 0,
+    });
+
     await contactCacheRefresh();
     await allowanceCacheRefresh();
-    dispatch(setLoading(false));
+    dispatch(setAppDataRefreshing(false));
   };
 
   // TRANSACTION WEB WORKER

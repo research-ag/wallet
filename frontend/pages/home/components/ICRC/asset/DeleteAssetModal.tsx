@@ -3,11 +3,9 @@ import { ReactComponent as WarningIcon } from "@assets/svg/files/warning.svg";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
 import { BasicModal } from "@components/modal";
-import { AccountHook } from "@pages/hooks/accountHook";
 import { useTranslation } from "react-i18next";
-import { Token } from "@redux/models/TokenModels";
 import { CustomButton } from "@components/button";
-import { AssetHook } from "@pages/home/hooks/assetHook";
+import { db } from "@/database/db";
 
 interface DeleteAssetModalPropr {
   open: boolean;
@@ -17,9 +15,7 @@ interface DeleteAssetModalPropr {
 
 const DeleteAssetModal = ({ open, setOpen, asset }: DeleteAssetModalPropr) => {
   const { t } = useTranslation();
-  const { authClient } = AccountHook();
-  const { tokens, deleteAsset } = AssetHook();
-  const { name, symbol, address } = asset;
+  const { name, address } = asset;
 
   return (
     <BasicModal
@@ -54,22 +50,8 @@ const DeleteAssetModal = ({ open, setOpen, asset }: DeleteAssetModalPropr) => {
   );
 
   function handleConfirmButton() {
-    const auxTokens = tokens.filter((tkn) => tkn.symbol !== symbol);
-    saveInLocalStorage(auxTokens);
-    deleteAsset(symbol, address);
+    db().deleteAsset(address, { sync: true }).then();
     setOpen(false);
-  }
-
-  function saveInLocalStorage(tokens: Token[]) {
-    localStorage.setItem(
-      authClient,
-      JSON.stringify({
-        from: "II",
-        tokens: tokens.sort((a, b) => {
-          return a.id_number - b.id_number;
-        }),
-      }),
-    );
   }
 };
 

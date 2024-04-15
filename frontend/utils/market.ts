@@ -1,6 +1,6 @@
 import { TokenMarketInfo } from "@redux/models/TokenModels";
 
-export async function getTokensFromMarket() {
+export async function getTokensFromMarket(): Promise<TokenMarketInfo[]> {
   const marketUrl = import.meta.env.VITE_APP_TOKEN_MARKET;
 
   try {
@@ -19,7 +19,6 @@ export async function getETHRate() {
     const ethRate = await fetch(ethUrl).then((x) => x.json());
 
     return {
-      // FIXME: add a proper id based on the length of the token list
       id: 999,
       name: "Ethereum",
       symbol: "ckETH",

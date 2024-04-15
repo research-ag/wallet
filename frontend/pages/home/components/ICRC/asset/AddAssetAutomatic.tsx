@@ -6,17 +6,16 @@ import { CustomButton } from "@components/button";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { clsx } from "clsx";
 import { useTranslation } from "react-i18next";
-import { GeneralHook } from "../../../hooks/generalHook";
-import { Token } from "@redux/models/TokenModels";
 import { Asset } from "@redux/models/AccountModels";
+import { getAssetIcon } from "@/utils/icons";
 
 interface AddAssetAutomaticProps {
   setNetworkTOpen(value: boolean): void;
   networkTOpen: boolean;
   setNetwork(value: TokenNetwork): void;
   network: TokenNetwork;
-  setNewToken(value: Token): void;
-  newToken: Token;
+  setNewAsset(value: Asset): void;
+  newAsset: Asset;
   setAssetTOpen(value: boolean): void;
   addAssetToData(): void;
   assetTOpen: boolean;
@@ -24,7 +23,7 @@ interface AddAssetAutomaticProps {
   setErrToken(value: string): void;
   errToken: string;
   setManual(value: boolean): void;
-  newAssetList: Token[];
+  newAssetList: Asset[];
   assets: Asset[];
 }
 
@@ -33,8 +32,8 @@ const AddAssetAutomatic = ({
   networkTOpen,
   setNetwork,
   network,
-  setNewToken,
-  newToken,
+  setNewAsset,
+  newAsset,
   setAssetTOpen,
   addAssetToData,
   assetTOpen,
@@ -46,8 +45,6 @@ const AddAssetAutomatic = ({
   assets,
 }: AddAssetAutomaticProps) => {
   const { t } = useTranslation();
-
-  const { getAssetIcon } = GeneralHook();
 
   return (
     <div className="flex flex-col items-start justify-start w-full">
@@ -126,10 +123,10 @@ const AddAssetAutomatic = ({
                   "pr-0",
                 )}
               >
-                {newToken.tokenSymbol != "" ? (
+                {newAsset.tokenSymbol != "" ? (
                   <div className="flex flex-row items-center justify-start">
-                    {getAssetIcon(IconTypeEnum.Enum.ASSET, newToken.symbol, newToken.logo)}
-                    <p className="ml-3">{`${newToken.tokenName}`}</p>
+                    {getAssetIcon(IconTypeEnum.Enum.ASSET, newAsset.tokenSymbol, newAsset.logo)}
+                    <p className="ml-3">{`${newAsset.tokenName}`}</p>
                   </div>
                 ) : (
                   <p className="opacity-70">{t("adding.select")}</p>
@@ -188,7 +185,7 @@ const AddAssetAutomatic = ({
   function onSelectNetwork(sa: TokenNetwork) {
     setNetwork(sa);
     if (sa !== network)
-      setNewToken({
+      setNewAsset({
         address: "",
         symbol: "",
         name: "",
@@ -196,23 +193,33 @@ const AddAssetAutomatic = ({
         tokenSymbol: "",
         decimal: "",
         shortDecimal: "",
-        fee: "0",
-        subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default, amount: "0", currency_amount: "0" }],
+        subAccounts: [
+          {
+            sub_account_id: "0x0",
+            name: AccountDefaultEnum.Values.Default,
+            amount: "0",
+            currency_amount: "0",
+            address: "",
+            decimal: 0,
+            symbol: "",
+            transaction_fee: "",
+          },
+        ],
         index: "",
-        id_number: 999,
+        sortIndex: 999,
         supportedStandards: [],
       });
   }
 
-  function onSelectToken(newAsset: Token) {
-    setNewToken(newAsset);
+  function onSelectToken(newAsset: Asset) {
+    setNewAsset(newAsset);
     setErrToken("");
     setValidToken(true);
   }
 
   function onAddAssetManually() {
     setManual(true);
-    setNewToken({
+    setNewAsset({
       address: "",
       symbol: "",
       name: "",
@@ -220,15 +227,25 @@ const AddAssetAutomatic = ({
       tokenSymbol: "",
       decimal: "",
       shortDecimal: "",
-      fee: "0",
-      subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default, amount: "0", currency_amount: "0" }],
+      subAccounts: [
+        {
+          sub_account_id: "0x0",
+          name: AccountDefaultEnum.Values.Default,
+          amount: "0",
+          currency_amount: "0",
+          address: "",
+          decimal: 0,
+          symbol: "",
+          transaction_fee: "",
+        },
+      ],
       index: "",
-      id_number: 999,
+      sortIndex: 999,
       supportedStandards: [],
     });
   }
   async function onAdd() {
-    newToken.address.trim() !== "" && addAssetToData();
+    newAsset.address.trim() !== "" && addAssetToData();
   }
 };
 

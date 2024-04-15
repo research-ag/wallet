@@ -6,41 +6,17 @@ type WalletDatabase =
       record {
         principal;
         record {
-          vec opt TokenDocument;
+          vec opt AssetDocument;
           vec opt ContactDocument;
           vec opt AllowanceDocument;
         };
       }) query;
    pullAllowances: (nat32, opt text, nat) -> (vec AllowanceDocument) query;
+   pullAssets: (nat32, opt text, nat) -> (vec AssetDocument) query;
    pullContacts: (nat32, opt text, nat) -> (vec ContactDocument) query;
-   pullTokens: (nat32, opt text, nat) -> (vec TokenDocument) query;
    pushAllowances: (vec AllowanceDocument) -> (vec AllowanceDocument);
+   pushAssets: (vec AssetDocument) -> (vec AssetDocument);
    pushContacts: (vec ContactDocument) -> (vec ContactDocument);
-   pushTokens: (vec TokenDocument) -> (vec TokenDocument);
- };
-type TokenDocument = 
- record {
-   address: text;
-   decimal: text;
-   deleted: bool;
-   fee: text;
-   id_number: nat32;
-   index: text;
-   logo: text;
-   name: text;
-   shortDecimal: text;
-   subAccounts:
-    vec record {
-          amount: text;
-          currency_amount: text;
-          name: text;
-          numb: text;
-        };
-   supportedStandards: vec text;
-   symbol: text;
-   tokenName: text;
-   tokenSymbol: text;
-   updatedAt: nat32;
  };
 type ContactDocument = 
  record {
@@ -67,9 +43,36 @@ type ContactDocument =
    "principal": text;
    updatedAt: nat32;
  };
+type AssetDocument = 
+ record {
+   address: text;
+   decimal: text;
+   deleted: bool;
+   index: text;
+   logo: text;
+   name: text;
+   shortDecimal: text;
+   sortIndex: nat32;
+   subAccounts:
+    vec
+     record {
+       address: text;
+       amount: text;
+       currency_amount: text;
+       decimal: nat32;
+       name: text;
+       sub_account_id: text;
+       symbol: text;
+       transaction_fee: text;
+     };
+   supportedStandards: vec text;
+   symbol: text;
+   tokenName: text;
+   tokenSymbol: text;
+   updatedAt: nat32;
+ };
 type AllowanceDocument = 
  record {
-   amount: text;
    asset:
     record {
       address: text;
@@ -82,7 +85,6 @@ type AllowanceDocument =
       tokenSymbol: text;
     };
    deleted: bool;
-   expiration: text;
    id: text;
    spender: text;
    subAccountId: text;

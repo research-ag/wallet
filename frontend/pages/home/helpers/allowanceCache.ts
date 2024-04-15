@@ -1,6 +1,8 @@
 import { TAllowance } from "@/@types/allowance";
 import { getAllowanceDetails } from "@/pages/home/helpers/icrc/";
 import { db } from "@/database/db";
+import store from "@redux/Store";
+import { setReduxAllowances } from "@redux/allowance/AllowanceReducer";
 
 export async function allowanceCacheRefresh() {
   const allowances = await db().getAllowances();
@@ -39,5 +41,5 @@ export async function allowanceCacheRefresh() {
     }
   }
 
-  await db().updateAllowances(updatedAllowances);
+  store.dispatch(setReduxAllowances(updatedAllowances));
 }

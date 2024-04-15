@@ -14,19 +14,11 @@ import SearchAsset from "./ICRC/asset/SearchAsset";
 const AssetsList = () => {
   WorkerHook();
   UseAsset();
-  const { assetOpen, setAssetOpen } = DrawerHook();
-  const {
-    assets,
-    searchKey,
-    setSearchKey,
-    setAcordeonIdx,
-    acordeonIdx,
-    assetInfo,
-    setAssetInfo,
-    tokens,
-    selectedAsset,
-  } = AssetHook();
   const [addOpen, setAddOpen] = useState(false);
+  const { assetOpen, setAssetOpen } = DrawerHook();
+
+  const { assets, searchKey, setSearchKey, setAcordeonIdx, accordionIndex, assetInfo, setAssetInfo, selectedAsset } =
+    AssetHook();
 
   return (
     <Fragment>
@@ -40,7 +32,9 @@ const AssetsList = () => {
               type="multiple"
               defaultValue={[]}
               value={
-                (addOpen || assetOpen) && selectedAsset ? [...acordeonIdx, selectedAsset.tokenSymbol] : acordeonIdx
+                (addOpen || assetOpen) && selectedAsset
+                  ? [...accordionIndex, selectedAsset.tokenSymbol]
+                  : accordionIndex
               }
               onValueChange={onValueChange}
             >
@@ -62,10 +56,9 @@ const AssetsList = () => {
                       key={idx}
                       asset={asset}
                       idx={idx}
-                      acordeonIdx={acordeonIdx}
+                      accordionIndex={accordionIndex}
                       setAssetInfo={setAssetInfo}
                       setAssetOpen={setAssetOpen}
-                      tokens={tokens}
                       setAddOpen={setAddOpen}
                     />
                   );
@@ -74,22 +67,24 @@ const AssetsList = () => {
           )}
         </div>
       </div>
-      <div
-        id="asset-drower"
-        className={`h-full fixed top-0 w-[28rem] z-[1000] overflow-x-hidden transition-{right} duration-500 ${
-          assetOpen ? "!right-0" : "right-[-30rem]"
-        }`}
-      >
-        <AddAsset
-          setAssetOpen={setAssetOpen}
-          asset={assetInfo}
-          setAssetInfo={setAssetInfo}
-          tokens={tokens}
-          assetOpen={assetOpen}
-          assets={assets}
-          acordeonIdx={acordeonIdx}
-        />
-      </div>
+
+      {assetOpen && (
+        <div
+          id="asset-drower"
+          className={`h-full fixed top-0 w-[28rem] z-[1000] overflow-x-hidden transition-{right} duration-500 ${
+            assetOpen ? "!right-0" : "right-[-30rem]"
+          }`}
+        >
+          <AddAsset
+            setAssetOpen={setAssetOpen}
+            asset={assetInfo}
+            setAssetInfo={setAssetInfo}
+            assetOpen={assetOpen}
+            assets={assets}
+            accordionIndex={accordionIndex}
+          />
+        </div>
+      )}
     </Fragment>
   );
 

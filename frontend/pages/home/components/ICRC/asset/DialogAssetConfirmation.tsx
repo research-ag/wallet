@@ -2,17 +2,16 @@
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
 import { BasicModal } from "@components/modal";
-import { GeneralHook } from "../../../hooks/generalHook";
 import { AddingAssetsEnum, TokenNetwork, IconTypeEnum, TokenNetworkEnum, AddingAssets } from "@/const";
 import { useTranslation } from "react-i18next";
-import { Token } from "@redux/models/TokenModels";
-
+import { Asset } from "@redux/models/AccountModels";
+import { getAssetIcon } from "@/utils/icons";
 interface DialogAssetConfirmationProps {
   modal: boolean;
   showModal(value: boolean): void;
   setAssetOpen(value: boolean): void;
-  newToken: Token;
-  setNewToken(value: Token): void;
+  newAsset: Asset;
+  setNewAsset(value: Asset): void;
   setNetwork(value: TokenNetwork): void;
   addStatus: AddingAssets;
   setManual(value: boolean): void;
@@ -22,14 +21,13 @@ const DialogAssetConfirmation = ({
   modal,
   showModal,
   setAssetOpen,
-  newToken,
-  setNewToken,
+  newAsset,
+  setNewAsset,
   setNetwork,
   addStatus,
   setManual,
 }: DialogAssetConfirmationProps) => {
   const { t } = useTranslation();
-  const { getAssetIcon } = GeneralHook();
 
   return (
     <BasicModal
@@ -44,7 +42,7 @@ const DialogAssetConfirmation = ({
           onClick={onClose}
         />
         <div className="flex flex-col items-center justify-start w-full py-2">
-          {getAssetIcon(IconTypeEnum.Enum.ASSET, newToken?.symbol, newToken.logo)}
+          {getAssetIcon(IconTypeEnum.Enum.ASSET, newAsset?.tokenSymbol, newAsset.logo)}
           <p
             className={`text-lg font-semibold mt-3 ${
               addStatus === AddingAssetsEnum.Enum.done ? "text-TextReceiveColor" : "text-TextSendColor"
@@ -62,7 +60,7 @@ const DialogAssetConfirmation = ({
     showModal(false);
     setAssetOpen(false);
     setNetwork(TokenNetworkEnum.enum["ICRC-1"]);
-    setNewToken({
+    setNewAsset({
       address: "",
       symbol: "",
       decimal: "",
@@ -70,10 +68,20 @@ const DialogAssetConfirmation = ({
       name: "",
       tokenSymbol: "",
       tokenName: "",
-      fee: "",
-      subAccounts: [{ numb: "0x0", name: "Default", amount: "0", currency_amount: "0" }],
+      subAccounts: [
+        {
+          sub_account_id: "0x0",
+          name: "Default",
+          amount: "0",
+          currency_amount: "0",
+          address: "",
+          symbol: "",
+          decimal: 0,
+          transaction_fee: "0",
+        },
+      ],
       index: "",
-      id_number: 999,
+      sortIndex: 999,
       supportedStandards: [],
     });
     setManual(false);

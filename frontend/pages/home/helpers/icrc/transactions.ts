@@ -1,21 +1,31 @@
-import { getIcrcActor } from "@/pages/home/helpers/icrc";
+import { getIcrcActor, getICRCSupportedStandards } from "@/pages/home/helpers/icrc";
 import {
   GetBalanceParams,
   TransactionFeeParams,
   TransferFromAllowanceParams,
   TransferTokensParams,
+  SupportedStandard,
 } from "@/@types/icrc";
 import { getCanister } from "./getIcrcCanister";
-import { hexToUint8Array, hexadecimalToUint8Array, toFullDecimal, toHoleBigInt } from "@/utils";
+import {
+  getMetadataInfo,
+  getUSDfromToken,
+  hexToUint8Array,
+  hexadecimalToUint8Array,
+  toFullDecimal,
+  toHoleBigInt,
+} from "@/utils";
 import { Principal } from "@dfinity/principal";
-import { TransferFromParams } from "@dfinity/ledger-icrc";
+import { IcrcLedgerCanister, TransferFromParams } from "@dfinity/ledger-icrc";
 import store from "@redux/Store";
+import { Asset } from "@redux/models/AccountModels";
+import { AccountDefaultEnum } from "@/const";
 
 export async function getTransactionFeeFromLedger(params: TransactionFeeParams) {
   try {
     const { assetAddress, assetDecimal } = params;
 
-    const canister = getCanister(assetAddress);
+    const canister = getCanister({ assetAddress });
     const result = await canister.transactionFee({});
     return toFullDecimal(result, Number(assetDecimal));
   } catch (error) {
@@ -50,7 +60,7 @@ export async function transferTokensFromAllowance(params: TransferFromAllowanceP
   const { receiverPrincipal, senderPrincipal, assetAddress, transferAmount, decimal, toSubAccount, fromSubAccount } =
     params;
 
-  const canister = getCanister(assetAddress);
+  const canister = getCanister({ assetAddress });
 
   const transferParams: TransferFromParams = {
     from: {
@@ -86,5 +96,86 @@ export async function getSubAccountBalance(params: GetBalanceParams) {
   } catch (error) {
     console.error(error);
     return BigInt(0);
+  }
+}
+
+interface DetailsParams {
+  canisterId: Principal | string;
+  includeDefault: boolean;
+  customSymbol?: string;
+  customName?: string;
+  sortIndex?: number;
+  supportedStandard?: SupportedStandard[];
+  ledgerIndex?: string;
+}
+
+export async function getAssetDetails(params: DetailsParams): Promise<Asset | undefined> {
+  try {
+    const { canisterId, customSymbol, customName, sortIndex, supportedStandard: standard, ledgerIndex } = params;
+
+    const { metadata } = IcrcLedgerCanister.create({
+      agent: store.getState().auth.userAgent,
+      canisterId: typeof canisterId === "string" ? Principal.fromText(canisterId) : canisterId,
+    });
+
+    const myMetadata = await metadata({
+      certified: false,
+    });
+
+    let supportedStandards: SupportedStandard[] = [];
+
+    if (!standard) {
+      supportedStandards = await getICRCSupportedStandards({
+        assetAddress: canisterId.toString(),
+        agent: store.getState().auth.userAgent,
+      });
+    } else {
+      supportedStandards = standard;
+    }
+
+    const { symbol, decimals, name, logo, fee } = getMetadataInfo(myMetadata);
+
+    const balance = await getSubAccountBalance({
+      assetAddress: canisterId.toString(),
+      subAccount: "0x0",
+    });
+
+    const assetMarket = store.getState().asset.tokensMarket.find((token) => token.symbol === symbol);
+
+    let USDAmount = "0";
+
+    if (assetMarket) {
+      USDAmount = getUSDfromToken(balance.toString(), assetMarket.price, decimals);
+    }
+
+    const asset: Asset = {
+      sortIndex: sortIndex || 999,
+      address: canisterId.toString(),
+      index: ledgerIndex || "",
+      tokenSymbol: symbol,
+      tokenName: name,
+      symbol: customSymbol || symbol,
+      name: customName || name,
+      logo,
+      decimal: decimals.toFixed(0),
+      shortDecimal: decimals.toFixed(0),
+      supportedStandards,
+      subAccounts: [
+        {
+          sub_account_id: "0x0",
+          name: AccountDefaultEnum.Values.Default,
+          amount: balance.toString(),
+          currency_amount: USDAmount,
+          address: "",
+          decimal: decimals,
+          symbol,
+          transaction_fee: fee,
+        },
+      ],
+    };
+
+    return asset;
+  } catch (error) {
+    console.error(error);
   }
 }

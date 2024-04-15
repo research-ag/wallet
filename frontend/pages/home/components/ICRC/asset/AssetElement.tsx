@@ -13,35 +13,26 @@ import { ThemeHook } from "@hooks/themeHook";
 import { IconTypeEnum, ThemesEnum } from "@/const";
 import { getFirstNChars, getUSDfromToken, hexToNumber, toFullDecimal } from "@/utils";
 import { AssetHook } from "../../../hooks/assetHook";
-import { Token } from "@redux/models/TokenModels";
 import bigInt from "big-integer";
 import { AccountHook } from "@pages/hooks/accountHook";
 import DialogAddAsset from "./DialogAddAsset";
 import DeleteAssetModal from "./DeleteAssetModal";
+import { getAssetIcon } from "@/utils/icons";
 
 interface AssetElementProps {
   asset: Asset;
   idx: number;
-  acordeonIdx: string[];
+  accordionIndex: string[];
   setAssetInfo(value: Asset | undefined): void;
   setAssetOpen(value: boolean): void;
-  tokens: Token[];
   setAddOpen(value: boolean): void;
 }
 
-const AssetElement = ({
-  asset,
-  idx,
-  acordeonIdx,
-  setAssetInfo,
-  setAssetOpen,
-  tokens,
-  setAddOpen,
-}: AssetElementProps) => {
+const AssetElement = ({ asset, idx, accordionIndex, setAssetInfo, setAssetOpen, setAddOpen }: AssetElementProps) => {
   const { theme } = ThemeHook();
   const { authClient } = AccountHook();
 
-  const { assets, selectedAsset, changeSelectedAsset, changeSelectedAccount, getAssetIcon } = GeneralHook();
+  const { assets, selectedAsset, changeSelectedAsset, changeSelectedAccount } = GeneralHook();
   const { editNameId, setEditNameId, name, setName, newSub, setNewSub, hexChecked, setHexChecked, tokensMarket } =
     AssetHook();
   const [usedIdxs, setUsedIdxs] = useState<string[]>([]);
@@ -94,7 +85,7 @@ const AssetElement = ({
                 </div>
               </div>
               <div className="flex flex-col items-end justify-center">
-                <p>{`${toFullDecimal(getFullTokenAmount().token, Number(asset.decimal), Number(asset.shortDecimal))} ${
+                <p>{`${toFullDecimal(getFullTokenAmount().asset, Number(asset.decimal), Number(asset.shortDecimal))} ${
                   asset.symbol
                 }`}</p>
                 <p
@@ -107,14 +98,14 @@ const AssetElement = ({
                 <img
                   src={theme === ThemesEnum.enum.dark ? ChevronRightIcon : ChevronRightDarkIcon}
                   className={`${
-                    acordeonIdx.includes(asset.tokenSymbol)
+                    accordionIndex.includes(asset.tokenSymbol)
                       ? "-rotate-90 transition-transform"
                       : "rotate-0 transition-transform"
                   } `}
                   alt="chevron-icon"
                 />
               )}
-              {getFullTokenAmount().token === BigInt("0") && (
+              {getFullTokenAmount().asset === BigInt("0") && (
                 <TrashIcon
                   onClick={() => {
                     onDeleteSubAccount();
@@ -150,7 +141,7 @@ const AssetElement = ({
                     newSub={false}
                     setNewSub={setNewSub}
                     setAddOpen={setAddOpen}
-                    tokens={tokens}
+                    assets={assets}
                     subaccountId={subIdx}
                   ></AccountElement>
                 );
@@ -169,10 +160,10 @@ const AssetElement = ({
         getLowestMissing={getLowestMissing}
         hexChecked={hexChecked}
         setHexChecked={setHexChecked}
-        tokens={tokens}
+        assets={assets}
         idx={idx}
         selectedAsset={selectedAsset}
-        acordeonIdx={acordeonIdx}
+        accordionIndex={accordionIndex}
       />
       <DeleteAssetModal open={openDelete} setOpen={setOpenDelete} asset={asset} />
     </Fragment>
@@ -227,7 +218,7 @@ const AssetElement = ({
     const currencyTotal = assetMarket ? getUSDfromToken(total.toString(), assetMarket.price, asset.decimal) : "0.00";
 
     return {
-      token: total,
+      asset: total,
       currency: Number(currencyTotal),
     };
   }

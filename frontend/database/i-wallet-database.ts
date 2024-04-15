@@ -1,4 +1,4 @@
-import { AuthNetwork, Token } from "@redux/models/TokenModels";
+import { AuthNetwork } from "@redux/models/TokenModels";
 import { Contact } from "@redux/models/ContactsModels";
 import { TAllowance } from "@/@types/allowance";
 import { Identity } from "@dfinity/agent";
@@ -7,6 +7,14 @@ import { Principal } from "@dfinity/principal";
 import { DB_Type } from "./db";
 import { LocalStorageKeyEnum } from "@/@types/localstorage";
 import { Themes } from "@/const";
+import { Asset } from "@redux/models/AccountModels";
+
+export interface DatabaseOptions {
+  /**
+   * Sync incoming data with the Redux store.
+   */
+  sync: boolean;
+}
 
 export abstract class IWalletDatabase {
   /**
@@ -130,47 +138,53 @@ export abstract class IWalletDatabase {
   abstract setIdentity(identity: Identity | null, fixedPrincipal?: Principal): Promise<void>;
 
   /**
-   * Get a Token object by its ID.
-   * @param address Address ID of a Token object
-   * @returns Token object or NULL if not found
+   * Get a Asset object by its ID.
+   * @param address Address ID of a Asset object
+   * @returns Asset object or NULL if not found
    */
-  abstract getToken(address: string): Promise<Token | null>;
+  abstract getAsset(address: string): Promise<Asset | null>;
 
   /**
-   * Get all Token objects from the active agent.
-   * @returns Array of found Token objects or an empty
-   * array if no Token objects were found
+   * Get all Asset objects from the active agent.
+   * @returns Array of found Asset objects or an empty
+   * array if no Asset objects were found
    */
-  abstract getTokens(): Promise<Token[]>;
+  abstract getAssets(): Promise<Asset[]>;
 
   /**
    * Subscribable Observable that triggers after
    * a new Identity has been set.
-   * @returns Array of Token objects from current
+   * @returns Array of Asset objects from current
    * active agent
    */
-  abstract subscribeToAllTokens(): Observable<Token[]>;
+  abstract subscribeToAllAssets(): Observable<Asset[]>;
 
   /**
-   * Add a new Token object to the list of Token objects
+   * Add a new Asset object to the list of Asset objects
    * current active agent has.
-   * @param token Token object to be added
+   * @param asset Asset object to be added
    */
-  abstract addToken(token: Token): Promise<void>;
+  abstract addAssets(asset: Asset, options?: DatabaseOptions): Promise<void>;
 
   /**
-   * Find a Token object by its ID and replace it with
-   * another Token object with the date of update.
-   * @param address Address ID of a Token object
-   * @param newDoc Token object
+   * Replace the storage of Asset objects with a new
+   * @param newAssets
    */
-  abstract updateToken(address: string, newDoc: Token): Promise<void>;
+  abstract updateAssets(newAssets: Asset[], options?: DatabaseOptions): Promise<void>;
 
   /**
-   * Find and remove a Token object by its ID.
-   * @param address Address ID of a Token object
+   * Find a Asset object by its ID and replace it with
+   * another Asset object with the date of update.
+   * @param address Address ID of a Asset object
+   * @param newDoc Asset object
    */
-  abstract deleteToken(address: string): Promise<void>;
+  abstract updateAsset(address: string, newDoc: Asset, options?: DatabaseOptions): Promise<void>;
+
+  /**
+   * Find and remove a Asset object by its ID.
+   * @param address Address ID of a Asset object
+   */
+  abstract deleteAsset(address: string, options?: DatabaseOptions): Promise<void>;
 
   /**
    * Find a Contact object by its Principal ID.
@@ -199,7 +213,7 @@ export abstract class IWalletDatabase {
    * current active agent has.
    * @param contact Contact object to be added
    */
-  abstract addContact(contact: Contact): Promise<void>;
+  abstract addContact(contact: Contact, options?: DatabaseOptions): Promise<void>;
 
   /**
    * Find a Contact object by its Principal ID and replace it
@@ -207,19 +221,19 @@ export abstract class IWalletDatabase {
    * @param principal Principal ID
    * @param newDoc Contact object
    */
-  abstract updateContact(principal: string, newDoc: Contact): Promise<void>;
+  abstract updateContact(principal: string, newDoc: Contact, options?: DatabaseOptions): Promise<void>;
 
   /**
    * Update Contacts in bulk.
    * @param newDocs Array of Allowance objects
    */
-  abstract updateContacts(newDocs: Contact[]): Promise<void>;
+  abstract updateContacts(newDocs: Contact[], options?: DatabaseOptions): Promise<void>;
 
   /**
    * Find and remove a Contact object by its Principal ID.
    * @param principal Principal ID
    */
-  abstract deleteContact(principal: string): Promise<void>;
+  abstract deleteContact(principal: string, options?: DatabaseOptions): Promise<void>;
 
   /**
    * Find a Allowance object.
@@ -248,7 +262,7 @@ export abstract class IWalletDatabase {
    * current active agent has.
    * @param allowance Allowance object to be added
    */
-  abstract addAllowance(allowance: TAllowance): Promise<void>;
+  abstract addAllowance(allowance: TAllowance, options?: DatabaseOptions): Promise<void>;
 
   /**
    * Find a Allowance object and replace it
@@ -256,17 +270,17 @@ export abstract class IWalletDatabase {
    * @param id Primary Key
    * @param newDoc Allowance object
    */
-  abstract updateAllowance(id: string, newDoc: TAllowance): Promise<void>;
+  abstract updateAllowance(id: string, newDoc: TAllowance, options?: DatabaseOptions): Promise<void>;
 
   /**
    * Update Allowances in bulk.
    * @param newDocs Array of Allowance objects
    */
-  abstract updateAllowances(newDocs: TAllowance[]): Promise<void>;
+  abstract updateAllowances(newDocs: TAllowance[], options?: DatabaseOptions): Promise<void>;
 
   /**
    * Find and remove a Allowance object.
    * @param id Primary Key
    */
-  abstract deleteAllowance(id: string): Promise<void>;
+  abstract deleteAllowance(id: string, options?: DatabaseOptions): Promise<void>;
 }

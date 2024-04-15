@@ -1,9 +1,9 @@
+import "./style.scss";
 // svgs
 import { ReactComponent as WarningIcon } from "@assets/svg/files/warning.svg";
 //
 import { Fragment } from "react";
 import AssetsList from "./components/AssetsList";
-import "./style.scss";
 import DetailList from "./components/DetailList";
 import { BasicModal } from "@components/modal";
 import { useTranslation } from "react-i18next";

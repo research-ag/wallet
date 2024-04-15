@@ -8,8 +8,9 @@ import { useAppSelector } from "@redux/Store";
 
 const Menu = () => {
   const { contacts } = useAppSelector((state) => state.contacts);
+  const { isAppDataFreshing } = useAppSelector((state) => state.common);
+  const { assets } = AssetHook();
   const { t } = useTranslation();
-  const { assets, assetLoading } = AssetHook();
 
   const menuList = [
     {
@@ -49,7 +50,7 @@ const Menu = () => {
             </p>
           </CustomButton>
         ))}
-        {assetLoading && (
+        {isAppDataFreshing && (
           <div className=" mt-[-1rem] inline-block w-4 h-4 after:block after:w-4 after:h-4 after:rounded-[50%] after:border-[0.2rem] after:border-t-SelectRowColor after:border-b-SelectRowColor after:border-r-transparent after:border-l-transparent lds-dual-ring"></div>
         )}
       </div>

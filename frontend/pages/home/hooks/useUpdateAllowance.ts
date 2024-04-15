@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { useMutation } from "@tanstack/react-query";
 import { useCallback, useState } from "react";
 import useAllowanceDrawer from "./useAllowanceDrawer";
-import { validateUpdateAllowance } from "../validators/allowance";
+import { validateUpdateAllowance } from "../helpers/allowanceValidators";
 import { updateSubAccountBalance } from "@redux/assets/AssetReducer";
 import {
   removeAllowanceErrorAction,

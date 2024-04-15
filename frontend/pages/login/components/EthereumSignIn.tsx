@@ -2,7 +2,7 @@ import GoBackIcon from "@/assets/svg/files/go-back-icon.svg";
 import { useAccount, useNetwork } from "wagmi";
 import ConnectButton from "./ConnectButton";
 import AddressPill from "./AddressPill";
-import { isChainIdSupported } from "@/config/wagmi.config";
+import { isChainIdSupported } from "@/config/wagmi";
 import { CustomButton } from "@components/button";
 import { useTranslation } from "react-i18next";
 import LoginButton from "./LoginButton";
@@ -32,7 +32,7 @@ export default function EthereumSignIn() {
         <div className="flex items-center justify-center w-8 h-8 text-lg font-bold rounded-full bg-SecondaryColorLight text-SecondaryColor">
           1
         </div>
-        <div className="flex flex-row justify-start items-center gap-3">
+        <div className="flex flex-row items-center justify-start gap-3">
           {!isConnected && <ConnectButton />}
           {isConnected && isChainIdSupported(chain?.id) && (
             <AddressPill address={address} className="justify-center w-36" />

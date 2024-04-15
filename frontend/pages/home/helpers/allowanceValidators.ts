@@ -8,13 +8,7 @@ import dayjs from "dayjs";
 import { db } from "@/database/db";
 
 export async function getDuplicatedAllowance(allowance: TAllowance): Promise<TAllowance | undefined> {
-  const allowances = await db().getAllowances();
-  return allowances.find(
-    (currentAllowance) =>
-      currentAllowance.subAccountId === allowance.subAccountId &&
-      currentAllowance.spender === allowance?.spender &&
-      currentAllowance.asset.tokenSymbol === allowance.asset.tokenSymbol,
-  );
+  return (await db().getAllowance(db().generateAllowancePrimaryKey(allowance))) || undefined;
 }
 
 export function validateCreateAllowance(allowance: TAllowance, asset: Asset) {

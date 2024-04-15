@@ -16,15 +16,16 @@ import {
   setAllowanceErrorAction,
   setFullAllowanceErrorsAction,
 } from "@redux/allowance/AllowanceActions";
-import { getDuplicatedAllowance } from "@pages/home/validators/allowance";
 import { db } from "@/database/db";
 import { LoadingLoader } from "@components/loader";
 import { refreshAllowance } from "@pages/home/helpers/refreshAllowance";
+import { getDuplicatedAllowance } from "@pages/home/helpers/allowanceValidators";
 
 export default function CreateForm() {
   const { t } = useTranslation();
   const { contacts } = useAppSelector((state) => state.contacts);
-  const { assets, selectedAsset, assetLoading } = useAppSelector((state) => state.asset);
+  const { isAppDataFreshing } = useAppSelector((state) => state.common);
+  const { assets, selectedAsset } = useAppSelector((state) => state.asset);
   const { errors, allowances } = useAppSelector((state) => state.allowance);
   const { allowance, setAllowanceState, createAllowance, isPending, isLoading, setLoading } = useCreateAllowance();
   const { userPrincipal } = useAppSelector((state) => state.auth);
@@ -75,7 +76,7 @@ export default function CreateForm() {
           </CustomButton>
           <CustomButton
             onClick={onSaveAllowance}
-            disabled={isPending || isLoading || (allowances.length === 0 && assetLoading)}
+            disabled={isPending || isLoading || (allowances.length === 0 && isAppDataFreshing)}
           >
             {t("submit")}
           </CustomButton>
@@ -118,11 +119,13 @@ export default function CreateForm() {
         ...allowance,
         amount: response?.allowance || "0",
         expiration: response?.expires_at || "",
+        id: db().generateAllowancePrimaryKey(allowance),
       };
 
       const duplicated = await getDuplicatedAllowance(newAllowance);
 
-      if (duplicated) {
+      if (duplicated?.id) {
+        // INFO: exist in ledger and local db
         const isExpirationSame = newAllowance.expiration === duplicated.expiration;
         const isAmountSame = newAllowance.amount === duplicated.amount;
 
@@ -131,7 +134,8 @@ export default function CreateForm() {
         }
       }
 
-      if (!duplicated && newAllowance.amount !== "0") {
+      if (!duplicated?.id && newAllowance.amount !== "0") {
+        // INFO: exist in ledger but not in local db
         const updatedAllowances = [...allowances, newAllowance];
 
         await db().updateAllowances(
@@ -139,6 +143,7 @@ export default function CreateForm() {
             ...currentAllowance,
             id: db().generateAllowancePrimaryKey(currentAllowance),
           })),
+          { sync: true },
         );
       }
 

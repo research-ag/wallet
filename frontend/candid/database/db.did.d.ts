@@ -16,10 +16,33 @@ export interface AllowanceDocument {
     symbol: string;
   };
   updatedAt: number;
-  expiration: string;
-  amount: string;
   subAccountId: string;
   spender: string;
+}
+export interface AssetDocument {
+  deleted: boolean;
+  logo: string;
+  name: string;
+  tokenSymbol: string;
+  updatedAt: number;
+  supportedStandards: Array<string>;
+  address: string;
+  tokenName: string;
+  index: string;
+  sortIndex: number;
+  shortDecimal: string;
+  decimal: string;
+  subAccounts: Array<{
+    transaction_fee: string;
+    currency_amount: string;
+    name: string;
+    sub_account_id: string;
+    address: string;
+    amount: string;
+    decimal: number;
+    symbol: string;
+  }>;
+  symbol: string;
 }
 export interface ContactDocument {
   principal: string;
@@ -42,40 +65,18 @@ export interface ContactDocument {
   updatedAt: number;
   accountIdentier: string;
 }
-export interface TokenDocument {
-  fee: string;
-  deleted: boolean;
-  logo: string;
-  name: string;
-  tokenSymbol: string;
-  updatedAt: number;
-  supportedStandards: Array<string>;
-  address: string;
-  tokenName: string;
-  index: string;
-  shortDecimal: string;
-  decimal: string;
-  id_number: number;
-  subAccounts: Array<{
-    currency_amount: string;
-    name: string;
-    numb: string;
-    amount: string;
-  }>;
-  symbol: string;
-}
 export interface WalletDatabase {
   doesStorageExist: ActorMethod<[], boolean>;
   dump: ActorMethod<
     [],
-    Array<[Principal, [Array<[] | [TokenDocument]>, Array<[] | [ContactDocument]>, Array<[] | [AllowanceDocument]>]]>
+    Array<[Principal, [Array<[] | [AssetDocument]>, Array<[] | [ContactDocument]>, Array<[] | [AllowanceDocument]>]]>
   >;
   pullAllowances: ActorMethod<[number, [] | [string], bigint], Array<AllowanceDocument>>;
+  pullAssets: ActorMethod<[number, [] | [string], bigint], Array<AssetDocument>>;
   pullContacts: ActorMethod<[number, [] | [string], bigint], Array<ContactDocument>>;
-  pullTokens: ActorMethod<[number, [] | [string], bigint], Array<TokenDocument>>;
   pushAllowances: ActorMethod<[Array<AllowanceDocument>], Array<AllowanceDocument>>;
+  pushAssets: ActorMethod<[Array<AssetDocument>], Array<AssetDocument>>;
   pushContacts: ActorMethod<[Array<ContactDocument>], Array<ContactDocument>>;
-  pushTokens: ActorMethod<[Array<TokenDocument>], Array<TokenDocument>>;
 }
 export type _SERVICE = WalletDatabase;
 export declare const idlFactory: IDL.InterfaceFactory;

@@ -13,10 +13,7 @@ import { GeneralHook } from "../../../hooks/generalHook";
 import { toFullDecimal } from "@/utils";
 import { CustomInput } from "@components/input";
 import { useTranslation } from "react-i18next";
-import { useAppDispatch } from "@redux/Store";
-import { Token } from "@redux/models/TokenModels";
 import { CustomCopy } from "@components/tooltip";
-import { addSubAccount, setSubAccountName } from "@redux/assets/AssetReducer";
 import { BasicModal } from "@components/modal";
 import { CustomButton } from "@components/button";
 import bigInt from "big-integer";
@@ -35,7 +32,7 @@ interface AccountElementProps {
   setNewSub(value: SubAccount | undefined): void;
   tokenIndex: number;
   newSub: boolean;
-  tokens: Token[];
+  assets: Asset[];
   subaccountId: number;
   setAddOpen(value: boolean): void;
 }
@@ -52,12 +49,10 @@ const AccountElement = ({
   tokenIndex,
   setNewSub,
   newSub,
-  tokens,
-  subaccountId,
+  assets,
   setAddOpen,
 }: AccountElementProps) => {
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
   const { selectedAsset, changeSelectedAsset, selectedAccount, changeSelectedAccount } = GeneralHook();
   const chechEqId = () => {
     return (
@@ -186,8 +181,9 @@ const AccountElement = ({
     if (name.trim() !== "") {
       setEditNameId("");
       if (newSub) {
-        const token = tokens[+tokenIndex];
-        const subAccounts = token.subAccounts
+        // INFO: adding new sub account
+        const asset = assets[+tokenIndex];
+        const subAccounts = asset.subAccounts
           .map((sa) => ({
             ...sa,
             name: name,
@@ -195,26 +191,32 @@ const AccountElement = ({
           }))
           .sort((a, b) => bigInt(a.numb).compare(bigInt(b.numb)));
 
-        await db().updateToken(token.address, {
-          ...token,
-          subAccounts: subAccounts,
-        });
+        await db().updateAsset(
+          asset.address,
+          {
+            ...asset,
+            subAccounts: subAccounts,
+          },
+          { sync: true },
+        );
 
-        dispatch(addSubAccount(tokenIndex, { ...subAccount, name: name.trim() }));
         setNewSub(undefined);
         setAddOpen(false);
       } else {
-        const token = tokens[+tokenIndex];
-        const subAccounts = token.subAccounts.map((sa) =>
-          sa.numb === subAccount.sub_account_id ? { ...sa, name: name } : sa,
+        // INFO: updating the name of the sub account
+        const asset = assets[+tokenIndex];
+        const subAccounts = asset.subAccounts.map((sa) =>
+          sa.sub_account_id === subAccount.sub_account_id ? { ...sa, name: name } : sa,
         );
 
-        await db().updateToken(token.address, {
-          ...token,
-          subAccounts: subAccounts,
-        });
-        // TODO: Verify if is possible to update the state from the db observable for assets
-        dispatch(setSubAccountName(tokenIndex, subaccountId, name));
+        await db().updateAsset(
+          asset.address,
+          {
+            ...asset,
+            subAccounts: subAccounts,
+          },
+          { sync: true },
+        );
       }
     } else {
       setNameError(true);
@@ -228,16 +230,21 @@ const AccountElement = ({
   }
 
   async function onConfirm() {
-    setLoadingDelete(true);
-    const token = tokens[Number(tokenIndex)];
-    const subAccounts = token.subAccounts
-      .map((sa) => (sa.numb !== subAccount.sub_account_id ? sa : null!))
+    // INFO: confirm delete sub account
+    const asset = assets[Number(tokenIndex)];
+
+    const subAccounts = asset.subAccounts
+      .map((sa) => (sa.sub_account_id !== subAccount.sub_account_id ? sa : null!))
       .filter((x) => !!x);
 
-    await db().updateToken(token.address, {
-      ...token,
-      subAccounts: subAccounts,
-    });
+    await db().updateAsset(
+      asset.address,
+      {
+        ...asset,
+        subAccounts: subAccounts,
+      },
+      { sync: true },
+    );
 
     setTimeout(() => {
       setDeleteModal(false);

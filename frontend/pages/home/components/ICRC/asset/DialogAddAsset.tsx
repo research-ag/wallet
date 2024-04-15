@@ -9,15 +9,15 @@ import { useTranslation } from "react-i18next";
 import { checkHexString, getUSDfromToken, hexToNumber, hexToUint8Array, removeLeadingZeros } from "@/utils";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { GeneralHook } from "../../../hooks/generalHook";
-import { Token } from "@redux/models/TokenModels";
 import { useAppDispatch } from "@redux/Store";
-import { setAcordeonAssetIdx } from "@redux/assets/AssetReducer";
+import { setAccordionAssetIdx } from "@redux/assets/AssetReducer";
 import bigInt from "big-integer";
 import { ChangeEvent, Fragment, useState } from "react";
 import { IcrcLedgerCanister } from "@dfinity/ledger-icrc";
 import { db } from "@/database/db";
 import { LoadingLoader } from "@components/loader";
 import { IconTypeEnum } from "@/const";
+import { getAssetIcon } from "@/utils/icons";
 
 interface DialogAddAssetProps {
   newErr: any;
@@ -29,10 +29,10 @@ interface DialogAddAssetProps {
   getLowestMissing(value: string[]): any;
   hexChecked: boolean;
   setHexChecked(value: any): void;
-  tokens: Token[];
+  assets: Asset[];
   idx: number;
   selectedAsset?: Asset;
-  acordeonIdx: string[];
+  accordionIndex: string[];
 }
 
 const DialogAddAsset = ({
@@ -44,15 +44,15 @@ const DialogAddAsset = ({
   getLowestMissing,
   hexChecked,
   setHexChecked,
-  tokens,
+  assets,
   idx,
   selectedAsset,
   setAddOpen,
-  acordeonIdx,
+  accordionIndex,
 }: DialogAddAssetProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const { asciiHex, userAgent, userPrincipal, changeSelectedAccount, getAssetIcon } = GeneralHook();
+  const { asciiHex, userAgent, userPrincipal, changeSelectedAccount } = GeneralHook();
   const [loading, setLoading] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
@@ -115,10 +115,10 @@ const DialogAddAsset = ({
             </div>
           </Fragment>
         ) : (
-          <div className="flex flex-col justify-center items-center w-full gap-3">
-            {getAssetIcon(IconTypeEnum.Enum.ASSET, tokens[Number(idx)].symbol, tokens[Number(idx)].logo)}
+          <div className="flex flex-col items-center justify-center w-full gap-3">
+            {getAssetIcon(IconTypeEnum.Enum.ASSET, assets[Number(idx)].tokenSymbol, assets[Number(idx)].logo)}
             <p className={"text-lg font-semibold text-center"}>
-              {t("new.subacc.added", { name: newSub?.name || "", asset: tokens[Number(idx)].tokenName })}
+              {t("new.subacc.added", { name: newSub?.name || "", asset: assets[Number(idx)].tokenName })}
             </p>
           </div>
         )}
@@ -211,24 +211,27 @@ const DialogAddAsset = ({
               certified: false,
             });
 
-            const token = tokens[Number(idx)];
+            const asset = assets[Number(idx)];
 
-            const tokenToUpdate = {
-              ...token,
+            const assetToUpdate: Asset = {
+              ...asset,
               subAccounts: [
-                ...token.subAccounts,
+                ...asset.subAccounts,
                 {
                   name: newSub.name,
-                  numb: `0x${subClean}`.toLowerCase(),
+                  sub_account_id: `0x${subClean}`.toLowerCase(),
                   amount: myBalance.toString(),
                   currency_amount: assetMrkt ? getUSDfromToken(myBalance.toString(), assetMrkt, decimal) : "0",
+                  transaction_fee: asset.subAccounts[0].transaction_fee,
+                  address: asset.subAccounts[0].address,
+                  decimal: asset.subAccounts[0].decimal,
+                  symbol: asset.subAccounts[0].symbol,
                 },
-              ].sort((a, b) => {
-                return hexToNumber(a.numb)?.compare(hexToNumber(b.numb) || bigInt()) || 0;
-              }),
+              ].sort((a, b) => hexToNumber(a.sub_account_id)?.compare(hexToNumber(b.sub_account_id) || bigInt()) || 0),
             };
 
-            await db().updateToken(token.address, tokenToUpdate);
+            // INFO: add new sub account to asset
+            await db().updateAsset(asset.address, assetToUpdate, { sync: true });
 
             const savedSub = {
               ...newSub,
@@ -261,8 +264,8 @@ const DialogAddAsset = ({
     }
   }
   function addToAcordeonIdx() {
-    if (!acordeonIdx.includes(selectedAsset?.tokenSymbol || "")) {
-      dispatch(setAcordeonAssetIdx([...acordeonIdx, selectedAsset?.tokenSymbol || ""]));
+    if (!accordionIndex.includes(selectedAsset?.tokenSymbol || "")) {
+      dispatch(setAccordionAssetIdx([...accordionIndex, selectedAsset?.tokenSymbol || ""]));
     }
   }
 };

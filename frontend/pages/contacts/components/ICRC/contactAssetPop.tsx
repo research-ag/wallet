@@ -113,9 +113,9 @@ const ContactAssetPop = ({
     </Fragment>
   );
 
-  function setToAdd(assets: AssetToAdd[], tokens: string[]) {
+  function setToAdd(assets: AssetToAdd[], symbols: string[]) {
     setAssetsToAdd(assets);
-    setSymbolsToAdd(tokens);
+    setSymbolsToAdd(symbols);
   }
 
   function handleSelectAll() {

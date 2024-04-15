@@ -11,7 +11,7 @@ import {
   setUserPrincipal,
 } from "./auth/AuthReducer";
 import { AuthClient } from "@dfinity/auth-client";
-import { clearDataAsset, setICRC1SystemAssets, setInitLoad, setLoading } from "./assets/AssetReducer";
+import { clearDataAsset, setICRC1SystemAssets, setInitLoad } from "./assets/AssetReducer";
 import { AuthNetwork } from "./models/TokenModels";
 import { AuthNetworkTypeEnum } from "@/const";
 import { Ed25519KeyIdentity, DelegationIdentity } from "@dfinity/identity";
@@ -19,7 +19,11 @@ import { clearDataContacts } from "./contacts/ContactsReducer";
 import { Principal } from "@dfinity/principal";
 import { Secp256k1KeyIdentity } from "@dfinity/identity-secp256k1";
 import { DB_Type, db } from "@/database/db";
-import { getSNSTokens } from "./assets/AssetActions";
+import { setTransactions } from "./transaction/TransactionReducer";
+import { getSNSTokens, updateAllBalances } from "./assets/AssetActions";
+import contactCacheRefresh from "@pages/contacts/helpers/contactCacheRefresh";
+import { allowanceCacheRefresh } from "@pages/home/helpers/allowanceCache";
+import { setAppDataRefreshing } from "./common/CommonReducer";
 
 const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${
   import.meta.env.VITE_APP_LOGO
@@ -98,37 +102,63 @@ export const handleSiweAuthenticated = async (identity: DelegationIdentity) => {
   handleLoginApp(identity);
 };
 
+/**
+ * Initialize the essential data after successful login
+ * - Set the user agent, principal, and authenticated status
+ * - Initialize the data for new user or set the last cached data
+ * - Refresh the cached data in a background process after success login
+ */
 export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean, fixedPrincipal?: Principal) => {
-  store.dispatch(setLoading(true));
   const opt: AuthNetwork | null = db().getNetworkType();
+
   if (opt === null && !fromSeed && !fixedPrincipal) {
     logout();
     return;
   }
 
-  // INFO: setAuthenticated will stop the authLoading
   store.dispatch(setAuthLoading(true));
+
   const myAgent = new HttpAgent({
     identity: authIdentity,
     host: HTTP_AGENT_HOST,
   });
 
   const myPrincipal = fixedPrincipal || (await myAgent.getPrincipal());
-  const identityPrincipalStr = fixedPrincipal?.toString() || authIdentity.getPrincipal().toString();
-  dispatchAuths(myAgent, myPrincipal);
-  await db().setIdentity(authIdentity, fixedPrincipal);
+  const principalString = myPrincipal.toString();
 
-  const snsTokens = await getSNSTokens(myAgent);
-  store.dispatch(setICRC1SystemAssets(snsTokens));
-  store.dispatch(setAuthenticated(true, false, !!fixedPrincipal, identityPrincipalStr.toLocaleLowerCase()));
-
-  store.dispatch(setLoading(false));
-  store.dispatch(setInitLoad(false));
-};
-
-export const dispatchAuths = (myAgent: HttpAgent, myPrincipal: Principal) => {
   store.dispatch(setUserAgent(myAgent));
   store.dispatch(setUserPrincipal(myPrincipal));
+
+  await db().setIdentity(authIdentity, myPrincipal);
+
+  store.dispatch(setAuthenticated(true, false, !!fixedPrincipal, principalString));
+  store.dispatch(setInitLoad(false));
+  await refreshCachedData();
+};
+
+/**
+ * Refresh the cached data only after success sign in
+ * If you added a new module that needs to be refreshed after sign in, add it here
+ */
+const refreshCachedData = async () => {
+  store.dispatch(setAppDataRefreshing(true));
+  const assets = await db().getAssets();
+
+  // INFO: sns Tokens should load before the assets to show correctly the asset logo see: utils/icons.getAssetIcon
+  const snsTokens = await getSNSTokens(store.getState().auth.userAgent);
+  store.dispatch(setICRC1SystemAssets(snsTokens));
+
+  await updateAllBalances({
+    loading: true,
+    myAgent: store.getState().auth.userAgent,
+    assets,
+    fromLogin: true,
+    basicSearch: true,
+  });
+
+  await allowanceCacheRefresh();
+  await contactCacheRefresh();
+  store.dispatch(setAppDataRefreshing(false));
 };
 
 export const logout = async () => {
@@ -142,4 +172,5 @@ export const logout = async () => {
   store.dispatch(setUnauthenticated());
   store.dispatch(setUserAgent(undefined));
   store.dispatch(setUserPrincipal(undefined));
+  store.dispatch(setTransactions([]));
 };

@@ -19,7 +19,6 @@ import { SupportedStandardEnum } from "@/@types/icrc";
 import { db } from "@/database/db";
 import { getAccountIdentifier } from "@/utils";
 import { retrieveAssetsWithAllowance, retrieveSubAccountsWithAllowance } from "@pages/home/helpers/icrc/";
-import { getStateContact } from "@pages/contacts/helpers/mappers";
 
 interface AddContactProps {
   setAddOpen(value: boolean): void;
@@ -201,8 +200,7 @@ export default function AddContact({ setAddOpen }: AddContactProps) {
           accountIdentier: getAccountIdentifier(auxContact.principal, 0),
         };
 
-        const databaseContact = getStateContact(reduxContact);
-        await db().addContact(databaseContact);
+        await db().addContact(reduxContact, { sync: true });
 
         setIsCreating(false);
         setAddOpen(false);

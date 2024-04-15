@@ -8,7 +8,7 @@ import useAllowanceDrawer from "./useAllowanceDrawer";
 import { throttle } from "lodash";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { initialAllowanceState } from "@redux/allowance/AllowanceReducer";
-import { getDuplicatedAllowance, validateCreateAllowance } from "../validators/allowance";
+import { getDuplicatedAllowance, validateCreateAllowance } from "../helpers/allowanceValidators";
 import { SupportedStandardEnum } from "@/@types/icrc";
 import { updateSubAccountBalance } from "@redux/assets/AssetReducer";
 import {

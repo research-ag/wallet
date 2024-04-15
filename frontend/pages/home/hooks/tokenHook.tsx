@@ -2,19 +2,19 @@ import { AddingAssets, AddingAssetsEnum, TokenNetwork, TokenNetworkEnum, Account
 import { ICRC1systemAssets } from "@/defaultTokens";
 import { useAppSelector } from "@redux/Store";
 import { Asset } from "@redux/models/AccountModels";
-import { Token } from "@redux/models/TokenModels";
 import { useEffect, useState } from "react";
 
 export const TokenHook = (asset: Asset | undefined) => {
-  const { assetLoading, icr1SystemTokens } = useAppSelector((state) => state.asset);
+  const { isAppDataFreshing } = useAppSelector((state) => state.common);
+  const { icr1SystemAssets } = useAppSelector((state) => state.asset);
   const [manual, setManual] = useState(false);
   const [network, setNetwork] = useState<TokenNetwork>(TokenNetworkEnum.enum["ICRC-1"]);
-  const [newAssetList, setNewAssetList] = useState<Array<Token>>(ICRC1systemAssets);
+  const [newAssetList, setNewAssetList] = useState<Array<Asset>>(ICRC1systemAssets);
   const [networkTOpen, setNetworkTOpen] = useState(false);
   const [assetTOpen, setAssetTOpen] = useState(false);
   const [errToken, setErrToken] = useState("");
   const [errIndex, setErrIndex] = useState("");
-  const [newToken, setNewToken] = useState<Token>({
+  const [newAsset, setNewAsset] = useState<Asset>({
     address: "",
     symbol: "",
     name: "",
@@ -22,10 +22,20 @@ export const TokenHook = (asset: Asset | undefined) => {
     tokenName: "",
     decimal: "",
     shortDecimal: "",
-    fee: "",
-    subAccounts: [{ numb: "0x0", name: AccountDefaultEnum.Values.Default, amount: "0", currency_amount: "0" }],
+    subAccounts: [
+      {
+        sub_account_id: "0x0",
+        name: AccountDefaultEnum.Values.Default,
+        amount: "0",
+        currency_amount: "0",
+        address: "",
+        decimal: 0,
+        symbol: "",
+        transaction_fee: "0",
+      },
+    ],
     index: "",
-    id_number: 999,
+    sortIndex: 999,
     supportedStandards: [],
   });
   const [validToken, setValidToken] = useState(false);
@@ -36,7 +46,7 @@ export const TokenHook = (asset: Asset | undefined) => {
 
   useEffect(() => {
     if (asset) {
-      setNewToken({
+      setNewAsset({
         address: asset.address,
         symbol: asset.symbol,
         name: asset.name,
@@ -44,12 +54,20 @@ export const TokenHook = (asset: Asset | undefined) => {
         tokenSymbol: asset.tokenSymbol,
         decimal: asset.decimal,
         shortDecimal: asset.shortDecimal,
-        fee: asset.subAccounts[0]?.transaction_fee || "0",
         subAccounts: asset.subAccounts.map((ast) => {
-          return { name: ast.name, numb: ast.sub_account_id, amount: ast.amount, currency_amount: ast.currency_amount };
+          return {
+            name: ast.name,
+            sub_account_id: ast.sub_account_id,
+            amount: ast.amount,
+            currency_amount: ast.currency_amount,
+            address: ast.address,
+            decimal: ast.decimal,
+            symbol: ast.symbol,
+            transaction_fee: ast.transaction_fee,
+          };
         }),
         index: asset.index,
-        id_number: asset.sort_index,
+        sortIndex: asset.sortIndex,
         supportedStandards: asset.supportedStandards,
       });
       setErrToken("");
@@ -58,10 +76,10 @@ export const TokenHook = (asset: Asset | undefined) => {
   }, [asset]);
 
   useEffect(() => {
-    if (!assetLoading) setAddStatus(AddingAssetsEnum.Enum.done);
-  }, [assetLoading]);
+    if (!isAppDataFreshing) setAddStatus(AddingAssetsEnum.Enum.done);
+  }, [isAppDataFreshing]);
 
-  useEffect(() => setNewAssetList(icr1SystemTokens), [icr1SystemTokens]);
+  useEffect(() => setNewAssetList(icr1SystemAssets), [icr1SystemAssets]);
 
   return {
     manual,
@@ -87,7 +105,7 @@ export const TokenHook = (asset: Asset | undefined) => {
     network,
     setNetwork,
     newAssetList,
-    newToken,
-    setNewToken,
+    newAsset,
+    setNewAsset,
   };
 };

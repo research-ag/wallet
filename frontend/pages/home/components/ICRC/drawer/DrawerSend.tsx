@@ -4,7 +4,7 @@ import DialogSendConfirmation from "../detail/transaction/DialogSendConfirmation
 import SenderInitializer from "../detail/transaction/SendForm/SenderInitializer";
 import SendFormConditionalRender from "../detail/transaction/SendForm/SendFormConditionalRender";
 import { ProtocolTypeEnum } from "@/const";
-import contactCacheRefresh from "@pages/contacts/helpers/contacts";
+import contactCacheRefresh from "@pages/contacts/helpers/contactCacheRefresh";
 
 function DrawerSend() {
   const [modal, showConfirmationModal] = useState(false);

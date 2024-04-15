@@ -31,6 +31,7 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
   const { reloadBallance } = AssetHook();
   const { t } = useTranslation();
   const { sender, errors, isLoading } = useAppSelector((state) => state.transaction);
+  const { assets } = useAppSelector((state) => state.asset);
   const {
     receiverPrincipal,
     receiverSubAccount,
@@ -179,7 +180,7 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
       setSendingStatusAction(SendingStatusEnum.Values.error);
       setEndTxTime(new Date());
     } finally {
-      reloadBallance();
+      reloadBallance(assets);
       setIsLoadingAction(false);
     }
   }

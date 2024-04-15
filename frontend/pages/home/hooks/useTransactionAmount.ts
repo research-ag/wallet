@@ -21,7 +21,6 @@ const maxAmountInitialState: MaxAmount = {
   transactionAmountWithoutFee: "0",
   transactionFee: "0",
   showAvailable: false,
-  // available amount less fee
   allowanceSubAccountBalance: "0",
   isLoading: false,
   isAmountFromMax: false,

@@ -15,6 +15,7 @@ const SubAccount = z.object({
 });
 
 export type SubAccount = z.infer<typeof SubAccount>;
+
 const ICPSubAccount = z.object({
   legacy: z.string(),
   sub_account_id: z.string(),
@@ -22,17 +23,19 @@ const ICPSubAccount = z.object({
 
 export type ICPSubAccount = z.infer<typeof ICPSubAccount>;
 export const AssetSchema = z.object({
+  sortIndex: z.number(),
   logo: z.string().optional(),
+  // INFO: name and symbol are custom from user
   name: z.string(),
   symbol: z.string(),
-  subAccounts: z.array(SubAccount),
   address: z.string(),
   decimal: z.string(),
   shortDecimal: z.string(),
-  sort_index: z.number(),
   index: z.string().optional(),
+  // INFO: tokenName and tokenSymbol are default
   tokenName: z.string(),
   tokenSymbol: z.string(),
+  subAccounts: z.array(SubAccount),
   supportedStandards: z.array(SupportedStandardEnum),
 });
 

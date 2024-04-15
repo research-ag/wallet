@@ -8,6 +8,7 @@ import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 import { DrawerOptionEnum } from "@/const";
 import DrawerSend from "../../drawer/DrawerSend";
 import DrawerReceive from "../../drawer/DrawerReceive";
+// eslint-disable-next-line
 import clsx from "clsx";
 import { useMemo } from "react";
 

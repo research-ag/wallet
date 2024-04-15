@@ -1,11 +1,20 @@
-import { IWalletDatabase } from "@/database/i-wallet-database";
-import { Token } from "@redux/models/TokenModels";
+import { DatabaseOptions, IWalletDatabase } from "@/database/i-wallet-database";
 import { Contact } from "@redux/models/ContactsModels";
 import { TAllowance } from "@/@types/allowance";
 import { Identity } from "@dfinity/agent";
 import { BehaviorSubject, Observable } from "rxjs";
 import { Principal } from "@dfinity/principal";
 import { defaultTokens } from "@/defaultTokens";
+import { Asset } from "@redux/models/AccountModels";
+import store from "@redux/Store";
+import { setAssets } from "@redux/assets/AssetReducer";
+import {
+  addReduxContact,
+  deleteReduxContact,
+  setReduxContacts,
+  updateReduxContact,
+} from "@redux/contacts/ContactsReducer";
+import { deleteReduxAllowance, setReduxAllowances, updateReduxAllowance } from "@redux/allowance/AllowanceReducer";
 
 export class LocalStorageDatabase extends IWalletDatabase {
   // Singleton pattern
@@ -18,14 +27,9 @@ export class LocalStorageDatabase extends IWalletDatabase {
   }
 
   private principalId = "";
-  private readonly _tokens$: BehaviorSubject<Token[]> = new BehaviorSubject<Token[]>(this._getTokens());
-  private readonly _contacts$: BehaviorSubject<Contact[]> = new BehaviorSubject<Contact[]>(this._getContacts());
-  private readonly _allowances$: BehaviorSubject<TAllowance[]> = new BehaviorSubject<TAllowance[]>(
-    this._getAllowances(),
-  );
 
   /**
-   * Initialice all necessary external systema and
+   * Initialize all necessary external system and
    * data structure before first use.
    */
   init(): Promise<void> {
@@ -40,62 +44,81 @@ export class LocalStorageDatabase extends IWalletDatabase {
    */
   async setIdentity(identity: Identity | null, fixedPrincipal?: Principal): Promise<void> {
     this.principalId = fixedPrincipal?.toString() || identity?.getPrincipal().toText() || "";
-    this._tokens$.next(this._getTokens());
-    this._contacts$.next(this._getContacts());
-    this._allowances$.next(this._getAllowances());
-    !!this.principalId && this._doesRecordByPrincipalExist();
+    this._doesRecordByPrincipalExist();
+    //
+    this._assetStateSync();
+    this._contactStateSync();
+    this._allowanceStateSync();
   }
 
   /**
-   * Get a Token object by its ID.
-   * @param address Address ID of a Token object
-   * @returns Token object or NULL if not found
+   * Get a Asset object by its ID.
+   * @param address Address ID of a Asset object
+   * @returns Asset object or NULL if not found
    */
-  async getToken(address: string): Promise<Token | null> {
-    return this._getTokens().find((x) => x.address === address) || null;
+  async getAsset(address: string): Promise<Asset | null> {
+    return this._getAssets().find((x) => x.address === address) || null;
   }
 
   /**
-   * Get all Token objects from the active agent.
-   * @returns Array of found Token objects or an empty
-   * array if no Token objects were found
+   * Sync the Asset storage with the Redux store.
+   * @param newAssets Array of Asset objects
    */
-  async getTokens(): Promise<Token[]> {
-    return this._getTokens();
+  private async _assetStateSync(newAssets?: Asset[]): Promise<void> {
+    const assets = newAssets || this._getAssets();
+    store.dispatch(setAssets(assets));
   }
 
   /**
-   * Add a new Token object to the list of Token objects
+   * Get all Asset objects from the active agent.
+   * @returns Array of found Asset objects or an empty
+   * array if no Asset objects were found
+   */
+  async getAssets(): Promise<Asset[]> {
+    return this._getAssets();
+  }
+
+  /**
+   * Add a new Asset object to the list of Asset objects
    * current active agent has.
-   * @param token Token object to be added
+   * @param asset Asset object to be added
    */
-  async addToken(token: Token): Promise<void> {
-    const tokens = this._getTokens();
-    this._setTokens([...tokens, token]);
+  async addAssets(asset: Asset, options?: DatabaseOptions): Promise<void> {
+    const assets = this._getAssets();
+    this._setAssets([...assets, asset]);
+
+    if (options?.sync) this._assetStateSync();
+  }
+
+  async updateAssets(assets: Asset[], options?: DatabaseOptions): Promise<void> {
+    this._setAssets(assets);
+    if (options?.sync) this._assetStateSync();
   }
 
   /**
-   * Find a Token object by its ID and replace it with
-   * another Token object with the date of update.
-   * @param address Address ID of a Token object
-   * @param newDoc Token object
+   * Find a Asset object by its ID and replace it with
+   * another Asset object with the date of update.
+   * @param address Address ID of a Asset object
+   * @param newDoc Asset object
    */
-  async updateToken(address: string, newDoc: Token): Promise<void> {
-    this._setTokens(
-      this._getTokens().map((tkn) => {
+  async updateAsset(address: string, newDoc: Asset, options?: DatabaseOptions): Promise<void> {
+    this._setAssets(
+      this._getAssets().map((tkn) => {
         if (tkn.address === address) {
           return newDoc;
         } else return tkn;
       }),
     );
+    if (options?.sync) this._assetStateSync();
   }
 
   /**
-   * Find and remove a Token object by its ID.
-   * @param address Address ID of a Token object
+   * Find and remove a Asset object by its ID.
+   * @param address Address ID of a Asset object
    */
-  async deleteToken(address: string): Promise<void> {
-    this._setTokens(this._getTokens().filter((tkn) => tkn.address !== address));
+  async deleteAsset(address: string, options?: DatabaseOptions): Promise<void> {
+    this._setAssets(this._getAssets().filter((tkn) => tkn.address !== address));
+    if (options?.sync) this._assetStateSync();
   }
 
   /**
@@ -105,6 +128,16 @@ export class LocalStorageDatabase extends IWalletDatabase {
    */
   async getContact(principal: string): Promise<Contact | null> {
     return this._getContacts().find((x) => x.principal === principal) || null;
+  }
+
+  /**
+   * Sync the Contact storage with the Redux store.
+   * This function must not include the Allowance object.
+   * @param newContacts Array of Contact objects
+   */
+  async _contactStateSync(newContacts?: Contact[]): Promise<void> {
+    const contacts = newContacts || this._getContacts();
+    store.dispatch(setReduxContacts(contacts));
   }
 
   /**
@@ -121,9 +154,11 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * current active agent has.
    * @param contact Contact object to be added
    */
-  async addContact(contact: Contact): Promise<void> {
+  async addContact(contact: Contact, options?: DatabaseOptions): Promise<void> {
     const contacts = this._getContacts();
-    this._setContacts([...contacts, contact]);
+    const databaseContact = this._getStorableContact(contact);
+    this._setContacts([...contacts, databaseContact]);
+    if (options?.sync) store.dispatch(addReduxContact(contact));
   }
 
   /**
@@ -132,30 +167,51 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * @param principal Principal ID
    * @param newDoc Contact object
    */
-  async updateContact(principal: string, newDoc: Contact): Promise<void> {
+  async updateContact(principal: string, newDoc: Contact, options?: DatabaseOptions): Promise<void> {
+    const databaseContact = this._getStorableContact(newDoc);
+
     this._setContacts(
-      this._getContacts().map((cnts) => {
-        if (cnts.principal === principal) {
-          return newDoc;
-        } else return cnts;
+      this._getContacts().map((contact) => {
+        if (contact.principal === principal) {
+          return databaseContact;
+        } else return contact;
       }),
     );
+
+    if (options?.sync) store.dispatch(updateReduxContact(newDoc));
   }
 
   /**
    * Update Contacts in bulk.
    * @param newDocs Array of Allowance objects
    */
-  async updateContacts(newDocs: Contact[]): Promise<void> {
-    this._setContacts(newDocs);
+  async updateContacts(newDocs: Contact[], options?: DatabaseOptions): Promise<void> {
+    const databaseContacts = newDocs.map((contact) => this._getStorableContact(contact));
+    this._setContacts(databaseContacts);
+    if (options?.sync) store.dispatch(setReduxContacts(newDocs));
   }
 
   /**
    * Find and remove a Contact object by its Principal ID.
    * @param principal Principal ID
    */
-  async deleteContact(principal: string): Promise<void> {
-    this._setContacts(this._getContacts().filter((cnts) => cnts.principal !== principal));
+  async deleteContact(principal: string, options?: DatabaseOptions): Promise<void> {
+    this._setContacts(this._getContacts().filter((contact) => contact.principal !== principal));
+    if (options?.sync) store.dispatch(deleteReduxContact(principal));
+  }
+
+  _getStorableContact(contact: Contact): Contact {
+    return {
+      ...contact,
+      assets: contact.assets.map((asset) => ({
+        ...asset,
+        subaccounts: asset.subaccounts.map((subaccount) => {
+          // eslint-disable-next-line
+          const { allowance, ...rest } = subaccount;
+          return { ...rest };
+        }),
+      })),
+    };
   }
 
   /**
@@ -164,7 +220,16 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * @returns Allowance object or NULL if not found
    */
   async getAllowance(id: string): Promise<TAllowance | null> {
-    return this._getAllowances().find((x) => x.id === id) || null;
+    return this._getAllowances().find((allowance) => allowance.id === id) || null;
+  }
+
+  /**
+   * Sync the storage with the redux state
+   * This must not not include the last updated expiration or amount
+   */
+  private async _allowanceStateSync(newAllowances?: TAllowance[]): Promise<void> {
+    const allowances = newAllowances || this._getAllowances();
+    store.dispatch(setReduxAllowances(allowances));
   }
 
   /**
@@ -181,9 +246,11 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * current active agent has.
    * @param allowance Allowance object to be added
    */
-  async addAllowance(allowance: TAllowance): Promise<void> {
+  async addAllowance(allowance: TAllowance, options?: DatabaseOptions): Promise<void> {
     const allowances = this._getAllowances();
-    this._setAllowances([...allowances, allowance]);
+    const databaseAllowance = this._getStorableAllowance(allowance);
+    this._setAllowances([...allowances, databaseAllowance]);
+    if (options?.sync) store.dispatch(setReduxAllowances([...allowances, allowance]));
   }
 
   /**
@@ -192,40 +259,54 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * @param id Primary Key
    * @param newDoc Allowance object
    */
-  async updateAllowance(id: string, newDoc: TAllowance): Promise<void> {
+  async updateAllowance(id: string, newDoc: TAllowance, options?: DatabaseOptions): Promise<void> {
+    const databaseAllowance = this._getStorableAllowance(newDoc);
+
     this._setAllowances(
       this._getAllowances().map((allowance) => {
         if (allowance.id === id) {
-          return newDoc;
+          return databaseAllowance;
         } else return allowance;
       }),
     );
+
+    if (options?.sync) store.dispatch(updateReduxAllowance(newDoc));
   }
 
   /**
    * Update Allowances in bulk.
    * @param newDocs Array of Allowance objects
    */
-  async updateAllowances(newDocs: TAllowance[]): Promise<void> {
-    this._setAllowances(newDocs);
+  async updateAllowances(newDocs: TAllowance[], options?: DatabaseOptions): Promise<void> {
+    const databaseAllowances = newDocs.map((allowance) => this._getStorableAllowance(allowance));
+    this._setAllowances(databaseAllowances);
+    if (options?.sync) store.dispatch(setReduxAllowances(newDocs));
   }
 
   /**
    * Find and remove a Allowance object.
    * @param id Primary Key
    */
-  async deleteAllowance(id: string): Promise<void> {
+  async deleteAllowance(id: string, options?: DatabaseOptions): Promise<void> {
     this._setAllowances(this._getAllowances().filter((allowance) => allowance.id !== id));
+    if (options?.sync) store.dispatch(deleteReduxAllowance(id));
+  }
+
+  _getStorableAllowance(allowance: TAllowance): Pick<TAllowance, "id" | "asset" | "subAccountId" | "spender"> {
+    // eslint-disable-next-line
+    const { amount, expiration, ...rest } = allowance;
+    return { ...rest };
   }
 
   /**
    * Subscribable Observable that triggers after
    * a new Identity has been set.
-   * @returns Array of Token objects from current
+   * @returns Array of Asset objects from current
    * active agent
    */
-  subscribeToAllTokens(): Observable<Token[]> {
-    return this._tokens$.asObservable();
+  subscribeToAllAssets(): Observable<Asset[]> {
+    // TODO: Remove once the interface does not require this method
+    return new BehaviorSubject<Asset[]>([]);
   }
 
   /**
@@ -235,7 +316,8 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * active agent
    */
   subscribeToAllContacts(): Observable<Contact[]> {
-    return this._contacts$.asObservable();
+    // TODO: Remove once the interface does not require this method
+    return new BehaviorSubject<Contact[]>([]);
   }
 
   /**
@@ -245,18 +327,18 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * active agent
    */
   subscribeToAllAllowances(): Observable<TAllowance[]> {
-    return this._allowances$.asObservable();
+    // TODO: Remove once the interface does not require this method
+    return new BehaviorSubject<TAllowance[]>([]);
   }
 
-  private _getTokens(): Token[] {
-    const tokensData = JSON.parse(localStorage.getItem(`tokens-${this.principalId}`) || "null");
-    return tokensData || [];
+  private _getAssets(): Asset[] {
+    const assetsData = JSON.parse(localStorage.getItem(`assets-${this.principalId}`) || "null");
+    return assetsData || [];
   }
 
-  private _setTokens(allTokens: Token[]) {
-    const tokens = [...allTokens].sort((a, b) => a.id_number - b.id_number);
-    localStorage.setItem(`tokens-${this.principalId}`, JSON.stringify(tokens));
-    this._tokens$.next(tokens);
+  private _setAssets(allAssets: Asset[]) {
+    const assets = [...allAssets].sort((a, b) => a.sortIndex - b.sortIndex);
+    localStorage.setItem(`assets-${this.principalId}`, JSON.stringify(assets));
   }
 
   private _getContacts(): Contact[] {
@@ -266,7 +348,6 @@ export class LocalStorageDatabase extends IWalletDatabase {
 
   private _setContacts(contacts: Contact[]) {
     localStorage.setItem(`contacts-${this.principalId}`, JSON.stringify(contacts));
-    this._contacts$.next(contacts);
   }
 
   private _getAllowances(): TAllowance[] {
@@ -274,19 +355,23 @@ export class LocalStorageDatabase extends IWalletDatabase {
     return allowancesData || [];
   }
 
-  private _setAllowances(allowances: TAllowance[]) {
+  private _setAllowances(allowances: Pick<TAllowance, "id" | "asset" | "subAccountId" | "spender">[]) {
     localStorage.setItem(`allowances-${this.principalId}`, JSON.stringify(allowances));
-    this._allowances$.next(allowances);
   }
 
+  /**
+   * Check if the record by principal exist in the local storage.
+   * If not, initialize the local storage with default values.
+   *
+   * @returns void
+   */
   private _doesRecordByPrincipalExist() {
-    // Look for entry record by current prinicpal ID
-    const exist = !!localStorage.getItem(`tokens-${this.principalId}`);
+    const assetExist = !!localStorage.getItem(`assets-${this.principalId}`);
+    const contactExist = !!localStorage.getItem(`contacts-${this.principalId}`);
+    const allowanceExist = !!localStorage.getItem(`allowances-${this.principalId}`);
 
-    // If does not exist it means that this is a brand new account
-    if (!exist) {
-      this._setTokens([...defaultTokens]);
-      this._tokens$.next(this._getTokens());
-    }
+    if (!assetExist) this._setAssets([...defaultTokens]);
+    if (!contactExist) this._setContacts([]);
+    if (!allowanceExist) this._setAllowances([]);
   }
 }

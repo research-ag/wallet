@@ -15,4 +15,5 @@ export {
   getTransactionFeeFromLedger,
   transferTokens,
   transferTokensFromAllowance,
+  getAssetDetails,
 } from "./transactions";

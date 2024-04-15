@@ -1,36 +1,24 @@
 import { defaultTokens } from "@/defaultTokens";
-import contactCacheRefresh from "@pages/contacts/helpers/contacts";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { updateAllBalances } from "@redux/assets/AssetActions";
-import {
-  removeToken,
-  setAcordeonAssetIdx,
-  setLoading,
-  setReduxTokens,
-  setSelectedAccount,
-  setSelectedAsset,
-} from "@redux/assets/AssetReducer";
+import { setAccordionAssetIdx, setSelectedAccount, setSelectedAsset } from "@redux/assets/AssetReducer";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
-import { Token } from "@redux/models/TokenModels";
 import { useEffect, useState } from "react";
 import { allowanceCacheRefresh } from "../helpers/allowanceCache";
-import { db } from "@/database/db";
+import contactCacheRefresh from "@pages/contacts/helpers/contactCacheRefresh";
+import { setAppDataRefreshing } from "@redux/common/CommonReducer";
 
 export const AssetHook = () => {
   const dispatch = useAppDispatch();
-  const { tokens, assets, assetLoading, selectedAsset, selectedAccount, acordeonIdx, tokensMarket } = useAppSelector(
+  const { assets, selectedAsset, selectedAccount, accordionIndex, tokensMarket } = useAppSelector(
     (state) => state.asset,
   );
+  const { isAppDataFreshing } = useAppSelector((state) => state.common);
 
   const { userAgent } = useAppSelector((state) => state.auth);
 
-  const deleteAsset = (symb: string, address: string) => {
-    dispatch(removeToken(symb));
-    db().deleteToken(address).then();
-  };
-
   const [searchKey, setSearchKey] = useState("");
-  const setAcordeonIdx = (assetIdx: string[]) => dispatch(setAcordeonAssetIdx(assetIdx));
+  const setAcordeonIdx = (assetIdx: string[]) => dispatch(setAccordionAssetIdx(assetIdx));
   const [assetInfo, setAssetInfo] = useState<Asset | undefined>();
 
   const [editNameId, setEditNameId] = useState("");
@@ -38,21 +26,19 @@ export const AssetHook = () => {
   const [newSub, setNewSub] = useState<SubAccount | undefined>();
   const [hexChecked, setHexChecked] = useState<boolean>(false);
 
-  const reloadBallance = async (updatedTokens?: Token[]) => {
-    dispatch(setLoading(true));
+  const reloadBallance = async (updatedAssets?: Asset[]) => {
+    dispatch(setAppDataRefreshing(true));
 
-    const updatedAssets = await updateAllBalances({
+    await updateAllBalances({
       loading: true,
       myAgent: userAgent,
-      tokens: updatedTokens ? updatedTokens : tokens.length > 0 ? tokens : defaultTokens,
-      basicSearch: false,
+      assets: updatedAssets ? updatedAssets : defaultTokens,
       fromLogin: true,
     });
+
     await allowanceCacheRefresh();
     await contactCacheRefresh();
-
-    if (updatedAssets?.tokens) dispatch(setReduxTokens(updatedAssets.tokens));
-    dispatch(setLoading(false));
+    dispatch(setAppDataRefreshing(false));
   };
 
   const getTotalAmountInCurrency = () => {
@@ -82,7 +68,7 @@ export const AssetHook = () => {
     if (auxAssets.length > 0) {
       const auxAccordion: string[] = [];
       auxAssets.map((ast) => {
-        if (acordeonIdx.includes(ast.tokenSymbol)) auxAccordion.push(ast.tokenSymbol);
+        if (accordionIndex.includes(ast.tokenSymbol)) auxAccordion.push(ast.tokenSymbol);
       });
       setAcordeonIdx(auxAccordion);
 
@@ -97,15 +83,13 @@ export const AssetHook = () => {
   }, [searchKey]);
 
   return {
-    tokens,
     assets,
-    assetLoading,
+    isAppDataFreshing,
     selectedAsset,
     selectedAccount,
-    deleteAsset,
     searchKey,
     setSearchKey,
-    acordeonIdx,
+    accordionIndex,
     setAcordeonIdx,
     assetInfo,
     setAssetInfo,
@@ -118,7 +102,6 @@ export const AssetHook = () => {
     setNewSub,
     hexChecked,
     setHexChecked,
-
     reloadBallance,
     getTotalAmountInCurrency,
   };

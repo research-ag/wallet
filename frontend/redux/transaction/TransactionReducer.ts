@@ -144,6 +144,9 @@ const transactionSlice = createSlice({
       state.scannerActiveOption = initialTransactionState?.scannerActiveOption;
       state.isInspectTransference = initialTransactionState?.isInspectTransference;
     },
+    setTransactions(state, action) {
+      state.transactions = action.payload;
+    },
   },
 });
 
@@ -168,6 +171,7 @@ export const {
   setReceiverNewContact,
   setReceiverContact,
   clearSender,
+  setTransactions,
   clearReceiver,
   resetSendState,
   setInitTime,

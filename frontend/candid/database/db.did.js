@@ -1,6 +1,5 @@
 export const idlFactory = ({ IDL }) => {
-  const TokenDocument = IDL.Record({
-    fee: IDL.Text,
+  const AssetDocument = IDL.Record({
     deleted: IDL.Bool,
     logo: IDL.Text,
     name: IDL.Text,
@@ -10,15 +9,19 @@ export const idlFactory = ({ IDL }) => {
     address: IDL.Text,
     tokenName: IDL.Text,
     index: IDL.Text,
+    sortIndex: IDL.Nat32,
     shortDecimal: IDL.Text,
     decimal: IDL.Text,
-    id_number: IDL.Nat32,
     subAccounts: IDL.Vec(
       IDL.Record({
+        transaction_fee: IDL.Text,
         currency_amount: IDL.Text,
         name: IDL.Text,
-        numb: IDL.Text,
+        sub_account_id: IDL.Text,
+        address: IDL.Text,
         amount: IDL.Text,
+        decimal: IDL.Nat32,
+        symbol: IDL.Text,
       }),
     ),
     symbol: IDL.Text,
@@ -62,8 +65,6 @@ export const idlFactory = ({ IDL }) => {
       symbol: IDL.Text,
     }),
     updatedAt: IDL.Nat32,
-    expiration: IDL.Text,
-    amount: IDL.Text,
     subAccountId: IDL.Text,
     spender: IDL.Text,
   });
@@ -76,7 +77,7 @@ export const idlFactory = ({ IDL }) => {
           IDL.Tuple(
             IDL.Principal,
             IDL.Tuple(
-              IDL.Vec(IDL.Opt(TokenDocument)),
+              IDL.Vec(IDL.Opt(AssetDocument)),
               IDL.Vec(IDL.Opt(ContactDocument)),
               IDL.Vec(IDL.Opt(AllowanceDocument)),
             ),
@@ -86,11 +87,11 @@ export const idlFactory = ({ IDL }) => {
       ["query"],
     ),
     pullAllowances: IDL.Func([IDL.Nat32, IDL.Opt(IDL.Text), IDL.Nat], [IDL.Vec(AllowanceDocument)], ["query"]),
+    pullAssets: IDL.Func([IDL.Nat32, IDL.Opt(IDL.Text), IDL.Nat], [IDL.Vec(AssetDocument)], ["query"]),
     pullContacts: IDL.Func([IDL.Nat32, IDL.Opt(IDL.Text), IDL.Nat], [IDL.Vec(ContactDocument)], ["query"]),
-    pullTokens: IDL.Func([IDL.Nat32, IDL.Opt(IDL.Text), IDL.Nat], [IDL.Vec(TokenDocument)], ["query"]),
     pushAllowances: IDL.Func([IDL.Vec(AllowanceDocument)], [IDL.Vec(AllowanceDocument)], []),
+    pushAssets: IDL.Func([IDL.Vec(AssetDocument)], [IDL.Vec(AssetDocument)], []),
     pushContacts: IDL.Func([IDL.Vec(ContactDocument)], [IDL.Vec(ContactDocument)], []),
-    pushTokens: IDL.Func([IDL.Vec(TokenDocument)], [IDL.Vec(TokenDocument)], []),
   });
   return WalletDatabase;
 };
