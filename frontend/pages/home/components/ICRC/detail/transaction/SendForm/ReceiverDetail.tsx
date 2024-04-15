@@ -44,6 +44,10 @@ export default function ReceiverDetail() {
     [receiver],
   );
 
+  const assetSymbol = useMemo(() => {
+    return assets.find((asset) => asset.tokenSymbol === sender?.asset?.tokenSymbol)?.symbol;
+  }, [assets]);
+
   return (
     <>
       <p className="font-bold opacity-50 text-md text-start">{t("to")}</p>
@@ -53,6 +57,7 @@ export default function ReceiverDetail() {
           balance={balance || getReceiverBalance() || "0"}
           assetLogo={sender?.asset?.logo || ""}
           assetSymbol={sender?.asset?.tokenSymbol || ""}
+          symbol={assetSymbol || ""}
         />
       ) : (
         <ReceiverThirdPartyCard title={title} subTitle={subTitle} />

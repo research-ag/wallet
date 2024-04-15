@@ -373,7 +373,7 @@ const AddAssetManual = ({
             assets: contact.assets.map((currentAsset) => {
               if (currentAsset.tokenSymbol === asset?.tokenSymbol) {
                 affected = true;
-                return { ...currentAsset, symbol: asset.symbol };
+                return { ...currentAsset, symbol: newAsset.symbol };
               } else return currentAsset;
             }),
           };

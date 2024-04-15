@@ -25,7 +25,7 @@ export default function TransactionAmount() {
         <input
           type="text"
           className="w-full px-4 py-2 ml-1 bg-transparent outline-none h-14"
-          placeholder={`0 ${sender?.asset?.tokenSymbol}`}
+          placeholder={`0 ${sender?.asset?.symbol || "-"}`}
           onChange={onChangeAmount}
           value={amount || ""}
         />

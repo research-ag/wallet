@@ -69,7 +69,7 @@ export default function useAllowanceTable() {
       cell: (info) => {
         const allowance = info.row.original;
         const hidden = !allowance?.expiration && allowance.amount === "0";
-        const assetSymbol = info.row.original.asset.tokenSymbol;
+        const assetSymbol = assets.find((asset) => asset.tokenSymbol === info.row.original.asset.symbol)?.symbol;
 
         return (
           <p className={getCellStyles()}>

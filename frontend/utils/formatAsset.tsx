@@ -4,8 +4,8 @@ import { Asset } from "@redux/models/AccountModels";
 
 export default function formatAsset(asset: Asset) {
   return {
-    value: asset?.tokenName,
-    label: `${asset?.tokenName} / ${asset?.tokenSymbol}`,
+    value: asset?.tokenSymbol,
+    label: `${asset?.name} / ${asset?.symbol}`,
     icon: getAssetIcon(IconTypeEnum.Enum.ASSET, asset?.tokenSymbol, asset?.logo),
   };
 }

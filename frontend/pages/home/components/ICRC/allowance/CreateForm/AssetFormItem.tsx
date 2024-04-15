@@ -37,8 +37,8 @@ export default function AssetFormItem(props: AssetFormItemProps) {
     return filteredAssets
       .filter((currentAsset) => {
         return (
-          currentAsset.tokenName.toLowerCase().includes(searchLower) ||
-          currentAsset.tokenSymbol.toLowerCase().includes(searchLower)
+          currentAsset.name.toLowerCase().includes(searchLower) ||
+          currentAsset.symbol.toLowerCase().includes(searchLower)
         );
       })
       .map(formatAsset);
@@ -70,7 +70,7 @@ export default function AssetFormItem(props: AssetFormItemProps) {
   function formatAsset(asset: Asset) {
     return {
       value: asset?.tokenSymbol,
-      label: `${asset?.tokenName} / ${asset?.tokenSymbol}`,
+      label: `${asset?.name} / ${asset?.symbol}`,
       icon: getAssetIcon(IconTypeEnum.Enum.ASSET, asset?.tokenSymbol, asset?.logo),
     };
   }

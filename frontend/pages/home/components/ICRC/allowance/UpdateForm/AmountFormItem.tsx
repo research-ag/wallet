@@ -20,6 +20,7 @@ export default function AmountFormItem(props: IAmountFormItemProps) {
   const { t } = useTranslation();
   const { errors } = useAppSelector((state) => state.allowance);
   const { allowance, selectedAsset, isLoading, setAllowanceState } = props;
+  const { assets } = useAppSelector((state) => state.asset);
   const { asset } = allowance;
 
   const { icon, symbol } = useMemo(() => {
@@ -31,6 +32,10 @@ export default function AmountFormItem(props: IAmountFormItemProps) {
     };
   }, [allowance, selectedAsset]);
 
+  const assetSymbol = useMemo(() => {
+    return assets.find((asset) => asset.tokenSymbol === allowance?.asset?.tokenSymbol)?.symbol;
+  }, [allowance, assets]);
+
   return (
     <div className="mt-4">
       <label htmlFor="Amount" className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
@@ -38,7 +43,7 @@ export default function AmountFormItem(props: IAmountFormItemProps) {
       </label>
       <CurrencyInput
         onCurrencyChange={onAmountChange}
-        currency={symbol}
+        currency={assetSymbol || symbol}
         icon={icon}
         className="mt-2"
         isLoading={isLoading}
