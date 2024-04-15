@@ -117,7 +117,10 @@ export function AllowanceContactBook() {
           </DropdownMenu.Group>
           <DropdownMenu.Group>
             {options.map((contact) => {
-              const { contactName, assetLogo, assetSymbol, subAccountAllowance, subAccountName } = contact;
+              const { contactName, assetLogo, assetSymbol, subAccountAllowance, subAccountName, assetTokenSymbol } =
+                contact;
+
+              console.log(contact);
 
               return (
                 <DropdownMenu.Item
@@ -132,7 +135,11 @@ export function AllowanceContactBook() {
                         {contactName} {`[${subAccountName}]`}
                       </p>
                       <span className="flex">
-                        <img className="w-5 h-5 mr-2" src={getIconSrc(assetLogo, assetSymbol)} alt={assetSymbol} />
+                        <img
+                          className="w-5 h-5 mr-2"
+                          src={getIconSrc(assetLogo, assetTokenSymbol)}
+                          alt={assetTokenSymbol}
+                        />
                         <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
                           {subAccountAllowance?.allowance} {assetSymbol}
                         </p>

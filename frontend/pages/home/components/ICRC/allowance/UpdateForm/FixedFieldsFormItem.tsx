@@ -15,11 +15,16 @@ interface FixedFieldsProps {
 export default function FixedFieldsFormItem({ allowance }: FixedFieldsProps) {
   const { t } = useTranslation();
   const { contacts } = useAppSelector((state) => state.contacts);
+  const { assets } = useAppSelector((state) => state.asset);
 
   const spenderName = useMemo(() => {
     const contact = contacts.find((contact) => contact.principal === allowance?.spender);
     return contact?.name ? contact.name : "-";
   }, [allowance, contacts]);
+
+  const assetSymbol = useMemo(() => {
+    return assets.find((asset) => asset.tokenSymbol === allowance?.asset?.tokenSymbol)?.symbol;
+  }, [allowance, assets]);
 
   return (
     <div className="w-full p-4 rounded-md bg-secondary-color-1-light dark:bg-ThemeColorBack">
@@ -27,7 +32,7 @@ export default function FixedFieldsFormItem({ allowance }: FixedFieldsProps) {
       <div className="flex items-center mt-4">
         <div className="flex flex-col items-start justify-center mr-4">
           {getAssetIcon(IconTypeEnum.Enum.ASSET, allowance.asset?.tokenSymbol, allowance.asset?.logo)}
-          <p className="mt-2 text-PrimaryTextColorLight dark:text-PrimaryTextColor">{allowance.asset?.tokenSymbol}</p>
+          <p className="mt-2 text-PrimaryTextColorLight dark:text-PrimaryTextColor">{assetSymbol}</p>
         </div>
 
         <div className="flex items-center justify-start">

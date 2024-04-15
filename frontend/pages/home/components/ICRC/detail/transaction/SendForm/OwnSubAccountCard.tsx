@@ -6,10 +6,11 @@ interface OwnSubAccountCardProps {
   balance: string;
   assetLogo: string;
   assetSymbol: string;
+  symbol: string;
 }
 
 export default function OwnSubAccountCard(props: OwnSubAccountCardProps) {
-  const { subAccountName, balance, assetLogo, assetSymbol } = props;
+  const { subAccountName, balance, assetLogo, assetSymbol, symbol } = props;
   return (
     <div className="flex justify-start w-full p-2 border rounded-md border-gray-color-2 dark:bg-secondary-color-2 bg-secondary-color-1-light">
       <div className="flex items-center justify-center">
@@ -20,7 +21,7 @@ export default function OwnSubAccountCard(props: OwnSubAccountCardProps) {
         <div className="flex">
           <img src={getIconSrc(assetLogo, assetSymbol)} className="w-4 h-4 mr-2" alt="" />
           <p className="opacity-50 text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
-            {balance} {assetSymbol}
+            {balance} {symbol}
           </p>
         </div>
       </div>

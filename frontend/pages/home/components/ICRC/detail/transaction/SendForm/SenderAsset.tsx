@@ -18,9 +18,7 @@ export default function SenderAsset() {
 
     return assets
       .filter((asset) => {
-        return (
-          asset.tokenName.toLowerCase().includes(searchLower) || asset.tokenSymbol.toLowerCase().includes(searchLower)
-        );
+        return asset.name.toLowerCase().includes(searchLower) || asset.symbol.toLowerCase().includes(searchLower);
       })
       .map(formatAsset);
   }, [searchAsset, assets]);
@@ -31,8 +29,8 @@ export default function SenderAsset() {
       <BasicSelect
         onSelect={onAssetChange}
         options={options}
-        initialValue={sender?.asset?.tokenName}
-        currentValue={sender?.asset?.tokenName}
+        initialValue={sender?.asset?.tokenSymbol}
+        currentValue={sender?.asset?.tokenSymbol}
         disabled={false}
         onSearch={onSearchChange}
         onOpenChange={onOpenChange}
@@ -43,7 +41,7 @@ export default function SenderAsset() {
 
   function onAssetChange(option: SelectOption) {
     setSearchAsset(null);
-    const asset = assets.find((asset) => asset.tokenName === option.value);
+    const asset = assets.find((asset) => asset.tokenSymbol === option.value);
     if (!asset) return;
     setSenderAssetAction(asset);
   }

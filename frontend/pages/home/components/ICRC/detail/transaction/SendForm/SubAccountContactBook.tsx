@@ -1,11 +1,12 @@
 import { useAppSelector } from "@redux/Store";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import useSend from "@pages/home/hooks/useSend";
 import OwnSubAccountCard from "./OwnSubAccountCard";
 
 export default function SubAccountContactBook() {
   const [balance, setBalance] = useState("");
   const { sender } = useAppSelector((state) => state.transaction);
+  const { assets } = useAppSelector((state) => state.asset);
   const { getSenderMaxAmount } = useSend();
 
   const subAccountName =
@@ -16,12 +17,17 @@ export default function SubAccountContactBook() {
     getAmount();
   }, []);
 
+  const assetSymbol = useMemo(() => {
+    return assets.find((asset) => asset.tokenSymbol === sender?.asset?.tokenSymbol)?.symbol;
+  }, [assets]);
+
   return (
     <OwnSubAccountCard
       subAccountName={subAccountName}
       balance={balance}
       assetLogo={sender?.asset?.logo || ""}
       assetSymbol={sender?.asset?.tokenSymbol || ""}
+      symbol={assetSymbol || ""}
     />
   );
 
