@@ -83,29 +83,6 @@ actor class WalletDatabase() {
 
   stable var storage_v0 : StableStorage<AssetDocument_v0, ContactDocument_v0, AllowanceDocument_v0> = null;
 
-  /**
-    example how to migrate schema to next version.Uncomment;
-    implement cast functions;
-    replace types below and use new stable var storage_vX everywhere instead of old storage_v0.after initial upgrade v0 stable variable can be deleted Note that it was written before refactoring primary keys;
-    so should be updated accordingly
-  */
-
-  /**
-    stable var storage_v1 : StableStorage<AssetDocument_v1, ContactDocument_v1> = (
-    func migrateV1() : StableStorage<AssetDocument_v1, ContactDocument_v1> {
-      let castAsset = func(item : AssetDocument_v0) : AssetDocument_v1 = item;
-      let castContact = func(item : ContactDocument_v0) : ContactDocument_v1 = item;
-      let res = List.map<(Principal, (DB.DbInit<AssetDocument_v1>, DB.DbInit<ContactDocument_v1>)), (Principal, (DB.DbInit<AssetDocument_v1>, DB.DbInit<ContactDocument_v1>))>(
-        storage_v0,
-        func((p, (x, y))) = (p, (DB.migrate(x, castAsset), DB.migrate(y, castContact))),
-      );
-      storage_v0 := null;
-      res;
-    }
-  )();
-  */
-
-  // INFO: update these when migrating database
   type AssetDocument = AssetDocument_v0;
   type ContactDocument = ContactDocument_v0;
   type AllowanceDocument = AllowanceDocument_v0;
