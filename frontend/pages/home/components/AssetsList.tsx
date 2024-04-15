@@ -6,13 +6,13 @@ import * as Accordion from "@radix-ui/react-accordion";
 import AddAsset from "./ICRC/asset/AddAsset";
 import { DrawerHook } from "../hooks/drawerHook";
 import Menu from "@pages/components/Menu";
-import { WorkerHook } from "@pages/hooks/workerHook";
 import { AssetHook } from "../hooks/assetHook";
 import { UseAsset } from "../hooks/useAsset";
 import SearchAsset from "./ICRC/asset/SearchAsset";
 
 const AssetsList = () => {
-  WorkerHook();
+  // TODO: remove worker hook once the worker is implemented
+  // WorkerHook();
   UseAsset();
   const [addOpen, setAddOpen] = useState(false);
   const { assetOpen, setAssetOpen } = DrawerHook();
@@ -71,9 +71,8 @@ const AssetsList = () => {
       {assetOpen && (
         <div
           id="asset-drower"
-          className={`h-full fixed top-0 w-[28rem] z-[1000] overflow-x-hidden transition-{right} duration-500 ${
-            assetOpen ? "!right-0" : "right-[-30rem]"
-          }`}
+          className={`h-full fixed top-0 w-[28rem] z-[1000] overflow-x-hidden transition-{right} duration-500 ${assetOpen ? "!right-0" : "right-[-30rem]"
+            }`}
         >
           <AddAsset
             setAssetOpen={setAssetOpen}

@@ -8,6 +8,7 @@ import history from "./history";
 import PrivateRoute from "./components/privateRoute";
 import { useAppSelector } from "@redux/Store";
 import Loader from "./components/Loader";
+import WorkersWrapper from "@/wrappers/WorkersWrapper";
 
 const Home = lazy(() => import("./home"));
 const Contacts = lazy(() => import("./contacts"));
@@ -23,19 +24,21 @@ const SwitchRoute = () => {
         {/* NORMAL USERS */}
         {!superAdmin && authenticated && (
           // eslint-disable-next-line jsx-a11y/aria-role
-          <LayoutComponent role={1} history={history} isLoginPage={false}>
-            <Switch>
-              <PrivateRoute exact path={HOME} authenticated={authenticated} allowByRole={true} Component={Home} />
-              <PrivateRoute
-                exact
-                path={CONTACTS}
-                authenticated={authenticated}
-                allowByRole={true}
-                Component={Contacts}
-              />
-              <Redirect to={HOME} />
-            </Switch>
-          </LayoutComponent>
+          <WorkersWrapper>
+            <LayoutComponent role={1} history={history} isLoginPage={false}>
+              <Switch>
+                <PrivateRoute exact path={HOME} authenticated={authenticated} allowByRole={true} Component={Home} />
+                <PrivateRoute
+                  exact
+                  path={CONTACTS}
+                  authenticated={authenticated}
+                  allowByRole={true}
+                  Component={Contacts}
+                />
+                <Redirect to={HOME} />
+              </Switch>
+            </LayoutComponent>
+          </WorkersWrapper>
         )}
 
         {/*  LOGINS NO AUTH */}
