@@ -10,12 +10,11 @@ import { SpecialTxTypeEnum, TransactionTypeEnum } from "@/const";
 import { Fragment, useState } from "react";
 import { useAppSelector } from "@redux/Store";
 import CodeElement from "@components/TableCodeElement";
-import { AssetHook } from "@pages/home/hooks/assetHook";
 
 // WARNING: this component is not used, duplicated from @/pages/hooks/tableHook
 export const TableHook = () => {
   const { t } = useTranslation();
-  const { assets } = AssetHook();
+  const { assets } = useAppSelector((state) => state.asset);
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const { selectedAccount, selectedTransaction } = useAppSelector((state) => state.asset);
@@ -72,7 +71,7 @@ export const TableHook = () => {
       header: () => (
         <div className="flex flex-row items-center justify-center w-full gap-1 cursor-pointer opacity-60">
           <p className="flex justify-center my-2 font-normal">{t("date")}</p>
-          <SortIcon className="w-3 h-3  fill-PrimaryTextColorLight dark:fill-PrimaryTextColor" />
+          <SortIcon className="w-3 h-3 fill-PrimaryTextColorLight dark:fill-PrimaryTextColor" />
         </div>
       ),
     }),

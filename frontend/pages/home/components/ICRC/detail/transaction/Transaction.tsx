@@ -9,14 +9,14 @@ import { Principal } from "@dfinity/principal";
 import { AccountHook } from "@pages/hooks/accountHook";
 import { IcrcAccount } from "@dfinity/ledger-icrc";
 import { CustomCopy } from "@components/tooltip";
-import { AssetHook } from "@pages/home/hooks/assetHook";
 import { GeneralHook } from "@pages/home/hooks/generalHook";
+import { useAppSelector } from "@redux/Store";
 
 const DrawerTransaction = () => {
   const { t } = useTranslation();
 
   const { authClient } = AccountHook();
-  const { assets } = AssetHook();
+  const { assets } = useAppSelector((state) => state.asset);
   const { ICPSubaccounts, selectedTransaction, selectedAccount } = GeneralHook();
 
   const assetSymbol = getAssetSymbol(selectedTransaction?.symbol || "", assets);

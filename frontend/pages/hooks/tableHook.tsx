@@ -10,11 +10,10 @@ import { SpecialTxTypeEnum, TransactionTypeEnum } from "@/const";
 import { Fragment, useState } from "react";
 import { useAppSelector } from "@redux/Store";
 import CodeElement from "@components/TableCodeElement";
-import { AssetHook } from "@pages/home/hooks/assetHook";
 
 export const TableHook = () => {
   const { t } = useTranslation();
-  const { assets } = AssetHook();
+  const { assets } = useAppSelector((state) => state.asset);
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const { selectedAccount, selectedTransaction } = useAppSelector((state) => state.asset);

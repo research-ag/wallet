@@ -3,13 +3,12 @@ import { useTranslation } from "react-i18next";
 import { CustomButton } from "@components/button";
 import history from "@pages/history";
 import { CONTACTS, HOME } from "@pages/paths";
-import { AssetHook } from "@pages/home/hooks/assetHook";
 import { useAppSelector } from "@redux/Store";
 
 const Menu = () => {
   const { contacts } = useAppSelector((state) => state.contacts);
   const { isAppDataFreshing } = useAppSelector((state) => state.common);
-  const { assets } = AssetHook();
+  const { assets } = useAppSelector((state) => state.asset);
   const { t } = useTranslation();
 
   const menuList = [
