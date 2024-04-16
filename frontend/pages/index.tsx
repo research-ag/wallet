@@ -23,8 +23,8 @@ const SwitchRoute = () => {
       <Router history={history}>
         {/* NORMAL USERS */}
         {!superAdmin && authenticated && (
-          // eslint-disable-next-line jsx-a11y/aria-role
           <WorkersWrapper>
+            {/* eslint-disable-next-line jsx-a11y/aria-role */}
             <LayoutComponent role={1} history={history} isLoginPage={false}>
               <Switch>
                 <PrivateRoute exact path={HOME} authenticated={authenticated} allowByRole={true} Component={Home} />
