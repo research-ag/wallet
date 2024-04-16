@@ -1,13 +1,7 @@
-import { defaultTokens } from "@/defaultTokens";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
-import { updateAllBalances } from "@redux/assets/AssetActions";
 import { setAccordionAssetIdx, setSelectedAccount, setSelectedAsset } from "@redux/assets/AssetReducer";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { useEffect, useState } from "react";
-import { allowanceCacheRefresh } from "../helpers/allowanceCache";
-import contactCacheRefresh from "@pages/contacts/helpers/contactCacheRefresh";
-import { setAppDataRefreshing, setLastDataRefresh } from "@redux/common/CommonReducer";
-import dayjs from "dayjs";
 
 export const AssetHook = () => {
   const dispatch = useAppDispatch();
@@ -15,8 +9,6 @@ export const AssetHook = () => {
     (state) => state.asset,
   );
   const { isAppDataFreshing } = useAppSelector((state) => state.common);
-
-  const { userAgent } = useAppSelector((state) => state.auth);
 
   const [searchKey, setSearchKey] = useState("");
   const setAcordeonIdx = (assetIdx: string[]) => dispatch(setAccordionAssetIdx(assetIdx));
@@ -26,37 +18,6 @@ export const AssetHook = () => {
   const [name, setName] = useState("");
   const [newSub, setNewSub] = useState<SubAccount | undefined>();
   const [hexChecked, setHexChecked] = useState<boolean>(false);
-
-  const reloadBallance = async (updatedAssets?: Asset[]) => {
-    dispatch(setAppDataRefreshing(true));
-
-    await updateAllBalances({
-      loading: true,
-      myAgent: userAgent,
-      assets: updatedAssets ? updatedAssets : defaultTokens,
-      fromLogin: true,
-    });
-
-    await allowanceCacheRefresh();
-    await contactCacheRefresh();
-
-    dispatch(setLastDataRefresh(dayjs().toISOString()));
-    dispatch(setAppDataRefreshing(false));
-  };
-
-  const getTotalAmountInCurrency = () => {
-    let amount = 0;
-    assets.map((tk) => {
-      const market = tokensMarket.find((tm) => tm.symbol === tk.tokenSymbol);
-      let assetTotal = BigInt(0);
-      tk.subAccounts.map((sa) => {
-        assetTotal = assetTotal + BigInt(sa.amount);
-      });
-      amount =
-        amount + (market ? (Number(assetTotal.toString()) * market.price) / Math.pow(10, Number(tk.decimal)) : 0);
-    });
-    return Math.round(amount * 100) / 100;
-  };
 
   useEffect(() => {
     const auxAssets = assets.filter((asset) => {
@@ -105,7 +66,5 @@ export const AssetHook = () => {
     setNewSub,
     hexChecked,
     setHexChecked,
-    reloadBallance,
-    getTotalAmountInCurrency,
   };
 };

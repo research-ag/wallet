@@ -124,7 +124,7 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, assets, accord
         ></DialogAssetConfirmation>
       )}
     </BasicDrawer>
-  )
+  );
 
   function onClose() {
     addToAcordeonIdx();

@@ -18,17 +18,16 @@ import {
 import { useTranslation } from "react-i18next";
 import { TransactionValidationErrorsEnum } from "@/@types/transactions";
 import { SendingStatusEnum } from "@/const";
-import { AssetHook } from "@pages/home/hooks/assetHook";
 import { getSubAccountBalance, transferTokens, transferTokensFromAllowance } from "@pages/home/helpers/icrc";
 import { LoadingLoader } from "@components/loader";
 import { toHoleBigInt } from "@/utils";
+import reloadBallance from "@pages/helpers/reloadBalance";
 
 interface ConfirmDetailProps {
   showConfirmationModal: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailProps) {
-  const { reloadBallance } = AssetHook();
   const { t } = useTranslation();
   const { sender, errors, isLoading } = useAppSelector((state) => state.transaction);
   const { assets } = useAppSelector((state) => state.asset);

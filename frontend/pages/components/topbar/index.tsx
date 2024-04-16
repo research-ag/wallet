@@ -25,13 +25,14 @@ import { BasicModal } from "@components/modal";
 import ThemeModal from "./themeModal";
 import { ThemesEnum } from "@/const";
 import { CustomCopy } from "@components/tooltip";
-import { AssetHook } from "@pages/home/hooks/assetHook";
 import { useAppSelector } from "@redux/Store";
 import { db } from "@/database/db";
 import DbLocationModal from "./dbLocationModal";
 import { useSiweIdentity } from "ic-use-siwe-identity";
 import { useAccount } from "wagmi";
 import Pill from "./Pill";
+import getTotalAmountInCurrency from "@pages/helpers/getTotalAmountInCurrency";
+import reloadBallance from "@pages/helpers/reloadBalance";
 
 const TopBarComponent = ({ isLoginPage }: { isLoginPage: boolean }) => {
   const { t } = useTranslation();
@@ -41,7 +42,6 @@ const TopBarComponent = ({ isLoginPage }: { isLoginPage: boolean }) => {
   const { isAppDataFreshing } = useAppSelector((state) => state.common);
   const { theme, themeOpen, setThemeOpen } = ThemeHook();
   const { authClient } = AccountHook();
-  const { getTotalAmountInCurrency, reloadBallance } = AssetHook();
 
   const [langOpen, setLangOpen] = useState(false);
   const [dbLocationOpen, setDbLocationOpen] = useState(false);
