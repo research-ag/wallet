@@ -11,8 +11,6 @@ import { UseAsset } from "../hooks/useAsset";
 import SearchAsset from "./ICRC/asset/SearchAsset";
 
 const AssetsList = () => {
-  // TODO: remove worker hook once the worker is implemented
-  // WorkerHook();
   UseAsset();
   const [addOpen, setAddOpen] = useState(false);
   const { assetOpen, setAssetOpen } = DrawerHook();
@@ -71,8 +69,9 @@ const AssetsList = () => {
       {assetOpen && (
         <div
           id="asset-drower"
-          className={`h-full fixed top-0 w-[28rem] z-[1000] overflow-x-hidden transition-{right} duration-500 ${assetOpen ? "!right-0" : "right-[-30rem]"
-            }`}
+          className={`h-full fixed top-0 w-[28rem] z-[1000] overflow-x-hidden transition-{right} duration-500 ${
+            assetOpen ? "!right-0" : "right-[-30rem]"
+          }`}
         >
           <AddAsset
             setAssetOpen={setAssetOpen}

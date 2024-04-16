@@ -1,14 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import dayjs from "dayjs";
 
 interface CommonState {
   isAppDataFreshing: boolean;
   lastDataRefresh: string;
-
 }
 
 const initialState: CommonState = {
   isAppDataFreshing: false,
-  lastDataRefresh: new Date().toISOString(),
+  lastDataRefresh: dayjs().toISOString(),
 };
 
 const commonSlice = createSlice({
