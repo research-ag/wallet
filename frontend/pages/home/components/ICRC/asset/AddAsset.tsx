@@ -1,7 +1,7 @@
 // svgs
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
-import { Dispatch, Fragment, SetStateAction, useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { GeneralHook } from "../../../hooks/generalHook";
 import { AccountDefaultEnum, AddingAssetsEnum, TokenNetworkEnum } from "@/const";
@@ -14,6 +14,7 @@ import { setAccordionAssetIdx, setSelectedAsset } from "@redux/assets/AssetReduc
 import AddAssetAutomatic from "./AddAssetAutomatic";
 import { db } from "@/database/db";
 import { getAssetDetails } from "@pages/home/helpers/icrc";
+import { BasicDrawer } from "@components/drawer";
 
 interface AddAssetsProps {
   setAssetOpen: Dispatch<SetStateAction<boolean>>;
@@ -61,8 +62,8 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, assets, accord
   }, [assetOpen]);
 
   return (
-    <Fragment>
-      <div className="flex flex-col items-center justify-start w-full h-full px-6 pt-8 bg-PrimaryColorLight dark:bg-PrimaryColor text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md">
+    <BasicDrawer isDrawerOpen={assetOpen}>
+      <div className="px-8 mt-4 overflow-y-auto text-left">
         <div className="flex flex-row items-center justify-between w-full mb-5">
           <p className="text-lg font-bold">{asset ? t("edit.asset") : t("add.asset")}</p>
           <CloseIcon
@@ -122,8 +123,8 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, assets, accord
           setManual={setManual}
         ></DialogAssetConfirmation>
       )}
-    </Fragment>
-  );
+    </BasicDrawer>
+  )
 
   function onClose() {
     addToAcordeonIdx();
