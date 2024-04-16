@@ -35,7 +35,7 @@ export default function AssetFilter(props: AssetFilterProps) {
               <div className="flex items-center justify-start gap-2 flex-start">
                 {getAssetIcon(
                   IconTypeEnum.Enum.FILTER,
-                  assetFilter[0],
+                  assets.find((ast) => ast.symbol === assetFilter[0])?.tokenSymbol,
                   assets.find((ast) => ast.symbol === assetFilter[0])?.logo,
                 )}
                 <p className="text-PrimaryTextColorLight dark:text-PrimaryTextColor">{assetFilter[0]}</p>
