@@ -9,6 +9,7 @@ import { Asset } from "@redux/models/AccountModels";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import dayjs from "dayjs";
 import { useEffect } from "react";
+import { db } from "@/database/db";
 
 const WORKER_INTERVAL = 10 * 60 * 1000; // 10 minutes
 const DATA_STALE_THRESHOLD = 9; // 9 minutes
@@ -78,11 +79,12 @@ export default function WorkersWrapper({ children }: { children: React.ReactNode
   }
 
   async function dataRefresh() {
+    const auxAsset = await db().getAssets();
     try {
       await updateAllBalances({
         loading: true,
         myAgent: userAgent,
-        assets: assets.length !== 0 ? assets : [],
+        assets: auxAsset.length !== 0 ? auxAsset : [],
         basicSearch: false,
       });
       await transactionCacheRefresh();
