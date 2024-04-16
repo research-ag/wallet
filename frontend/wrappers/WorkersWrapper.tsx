@@ -5,13 +5,13 @@ import { allowanceCacheRefresh } from "@pages/home/helpers/allowanceCache";
 import { getAllTransactionsICP, getAllTransactionsICRC1, updateAllBalances } from "@redux/assets/AssetActions";
 import { setTxWorker } from "@redux/assets/AssetReducer";
 import { setAppDataRefreshing, setLastDataRefresh } from "@redux/common/CommonReducer";
-import { Asset, SubAccount } from "@redux/models/AccountModels";
+import { Asset } from "@redux/models/AccountModels";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import dayjs from "dayjs";
 import { useEffect } from "react";
 
-const WORKER_INTERVAL = 1 * 60 * 1000; // 10 minutes
-const DATA_STALE_THRESHOLD = 50; // 9 minutes 
+const WORKER_INTERVAL = 10 * 60 * 1000; // 10 minutes
+const DATA_STALE_THRESHOLD = 9; // 9 minutes
 
 export default function WorkersWrapper({ children }: { children: React.ReactNode }) {
   const { assets } = useAppSelector((state) => state.asset);
@@ -19,52 +19,59 @@ export default function WorkersWrapper({ children }: { children: React.ReactNode
   const { isAppDataFreshing, lastDataRefresh } = useAppSelector((state) => state.common);
   const dispatch = useAppDispatch();
 
+  async function fetchICPTransactions(asset: Asset) {
+    for (const subAccount of asset.subAccounts) {
+      const transactions = await getAllTransactionsICP({
+        subaccount_index: subAccount.sub_account_id,
+        loading: false,
+        isOGY: asset.tokenSymbol === AssetSymbolEnum.Enum.OGY,
+      });
+
+      dispatch(
+        setTxWorker({
+          tx: transactions,
+          symbol: asset.symbol,
+          tokenSymbol: asset.tokenSymbol,
+          subaccount: subAccount.sub_account_id,
+        }),
+      );
+    }
+  }
+
+  async function fetchICRC1Transactions(asset: Asset, selectedToken: Asset) {
+    for (const subAccount of asset.subAccounts) {
+      const transactions = await getAllTransactionsICRC1(
+        selectedToken.index || "",
+        hexToUint8Array(subAccount.sub_account_id || "0x0"),
+        false,
+        asset.tokenSymbol,
+        selectedToken.address,
+        subAccount.sub_account_id,
+      );
+
+      dispatch(
+        setTxWorker({
+          tx: transactions,
+          symbol: asset.symbol,
+          tokenSymbol: asset.tokenSymbol,
+          subaccount: subAccount.sub_account_id,
+        }),
+      );
+    }
+  }
+
   async function transactionCacheRefresh() {
     try {
-      assets.map((elementA: Asset) => {
-        if (elementA.tokenSymbol === AssetSymbolEnum.Enum.ICP || elementA.tokenSymbol === AssetSymbolEnum.Enum.OGY) {
-          elementA.subAccounts.map(async (elementS: SubAccount) => {
-            const transactionsICP = await getAllTransactionsICP({
-              subaccount_index: elementS.sub_account_id,
-              loading: false,
-              isOGY: elementA.tokenSymbol === AssetSymbolEnum.Enum.OGY,
-            });
-
-            dispatch(
-              setTxWorker({
-                tx: transactionsICP,
-                symbol: elementA.symbol,
-                tokenSymbol: elementA.tokenSymbol,
-                subaccount: elementS.sub_account_id,
-              }),
-            );
-          });
+      for (const asset of assets) {
+        if (asset.tokenSymbol === AssetSymbolEnum.Enum.ICP || asset.tokenSymbol === AssetSymbolEnum.Enum.OGY) {
+          await fetchICPTransactions(asset);
         } else {
-          const selectedToken = assets.find((tk: Asset) => tk.symbol === elementA?.symbol);
-
-          if (selectedToken) {
-            elementA.subAccounts.map(async (elementS: SubAccount) => {
-              const transactionsICRC1 = await getAllTransactionsICRC1(
-                selectedToken?.index || "",
-                hexToUint8Array(elementS?.sub_account_id || "0x0"),
-                false,
-                elementA.tokenSymbol,
-                selectedToken.address,
-                elementS?.sub_account_id,
-              );
-
-              dispatch(
-                setTxWorker({
-                  tx: transactionsICRC1,
-                  symbol: elementA.symbol,
-                  tokenSymbol: elementA.tokenSymbol,
-                  subaccount: elementS.sub_account_id,
-                }),
-              );
-            });
+          const selectedAsset = assets.find((currentAsset) => currentAsset.symbol === asset.symbol);
+          if (selectedAsset) {
+            await fetchICRC1Transactions(asset, selectedAsset);
           }
         }
-      });
+      }
     } catch (error) {
       console.error("Error in transactionCacheRefresh worker", error);
     }
@@ -72,15 +79,12 @@ export default function WorkersWrapper({ children }: { children: React.ReactNode
 
   async function dataRefresh() {
     try {
-      console.log("Data Refreshed");
       await updateAllBalances({
         loading: true,
         myAgent: userAgent,
         assets: assets.length !== 0 ? assets : [],
         basicSearch: false,
       });
-
-      
       await transactionCacheRefresh();
       await allowanceCacheRefresh();
       await contactCacheRefresh();
@@ -91,10 +95,7 @@ export default function WorkersWrapper({ children }: { children: React.ReactNode
 
   useEffect(() => {
     const timer = setInterval(() => {
-      const isDataStale = dayjs().diff(dayjs(lastDataRefresh), "seconds") >= DATA_STALE_THRESHOLD;
-
-      console.log("isDataStale", isDataStale);
-      
+      const isDataStale = dayjs().diff(dayjs(lastDataRefresh), "minutes") >= DATA_STALE_THRESHOLD;
 
       if (isDataStale && !isAppDataFreshing) {
         dispatch(setAppDataRefreshing(true));

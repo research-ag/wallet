@@ -120,8 +120,6 @@ export function AllowanceContactBook() {
               const { contactName, assetLogo, assetSymbol, subAccountAllowance, subAccountName, assetTokenSymbol } =
                 contact;
 
-              console.log(contact);
-
               return (
                 <DropdownMenu.Item
                   onSelect={() => onSelect(contact)}

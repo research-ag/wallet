@@ -6,7 +6,6 @@ import { ICRC1systemAssets } from "@/defaultTokens";
 
 interface AssetState {
   initLoad: boolean;
-  txLoad: boolean;
   ICPSubaccounts: Array<ICPSubAccount>;
   icr1SystemAssets: Asset[];
   tokensMarket: TokenMarketInfo[];
@@ -15,7 +14,9 @@ interface AssetState {
   accordionIndex: string[];
   selectedAsset: Asset | undefined;
   selectedAccount: SubAccount | undefined;
+  // --- transactions
   selectedTransaction: Transaction | undefined;
+  txLoad: boolean;
   txWorker: Array<TransactionList>;
 }
 
@@ -98,9 +99,6 @@ const assetSlice = createSlice({
     setSelectedAccount(state, action) {
       state.selectedAccount = action.payload;
     },
-    setSelectedTransaction(state, action) {
-      state.selectedTransaction = action.payload;
-    },
     setAccordionAssetIdx(state, action: PayloadAction<string[]>) {
       state.accordionIndex = action.payload;
     },
@@ -115,6 +113,10 @@ const assetSlice = createSlice({
       state.selectedTransaction = undefined;
       state.accordionIndex = [];
       state.icr1SystemAssets = ICRC1systemAssets;
+    },
+    // transactions
+    setSelectedTransaction(state, action) {
+      state.selectedTransaction = action.payload;
     },
     setTxWorker(state, action) {
       const txList = [...state.txWorker];

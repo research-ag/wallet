@@ -6,7 +6,8 @@ import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { useEffect, useState } from "react";
 import { allowanceCacheRefresh } from "../helpers/allowanceCache";
 import contactCacheRefresh from "@pages/contacts/helpers/contactCacheRefresh";
-import { setAppDataRefreshing } from "@redux/common/CommonReducer";
+import { setAppDataRefreshing, setLastDataRefresh } from "@redux/common/CommonReducer";
+import dayjs from "dayjs";
 
 export const AssetHook = () => {
   const dispatch = useAppDispatch();
@@ -38,6 +39,8 @@ export const AssetHook = () => {
 
     await allowanceCacheRefresh();
     await contactCacheRefresh();
+
+    dispatch(setLastDataRefresh(dayjs().toISOString()));
     dispatch(setAppDataRefreshing(false));
   };
 

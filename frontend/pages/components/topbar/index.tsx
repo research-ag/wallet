@@ -176,8 +176,8 @@ const TopBarComponent = ({ isLoginPage }: { isLoginPage: boolean }) => {
     </Fragment>
   );
 
-  function handleReloadButton() {
-    reloadBallance(assets);
+  async function handleReloadButton() {
+    await reloadBallance(assets);
   }
 
   function changeLanguage(lang: string) {
