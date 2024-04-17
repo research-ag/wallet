@@ -63,7 +63,7 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, assets, accord
 
   return (
     <BasicDrawer isDrawerOpen={assetOpen}>
-      <div className="px-8 mt-4 overflow-y-auto text-left">
+      <div className="px-8 mt-4 overflow-y-auto text-left text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md">
         <div className="flex flex-row items-center justify-between w-full mb-5">
           <p className="text-lg font-bold">{asset ? t("edit.asset") : t("add.asset")}</p>
           <CloseIcon
