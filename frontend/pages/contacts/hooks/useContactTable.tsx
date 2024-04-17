@@ -35,7 +35,7 @@ export default function useContactTable() {
       ));
   };
 
-  const removeCntct = async (principal: string) => await db().deleteContact(principal);
+  const removeCntct = async (principal: string) => await db().deleteContact(principal, { sync: true });
 
   const removeAsset = async (principal: string, tokenSymbol: string) => {
     const contact = contacts.find((contact) => contact.principal === principal);
