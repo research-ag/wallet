@@ -2,16 +2,17 @@ import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { useEffect } from "react";
 import { getAllTransactionsICRC1, getAllTransactionsICP } from "@redux/assets/AssetActions";
 import { Asset, SubAccount, Transaction } from "@redux/models/AccountModels";
-import { addTxWorker, setSelectedTransaction } from "@redux/assets/AssetReducer";
 import { AssetSymbolEnum } from "@/const";
 import { hexToUint8Array } from "@/utils";
-import { setTransactions } from "@redux/transaction/TransactionReducer";
+import { addTxWorker, setSelectedTransaction, setTransactions } from "@redux/transaction/TransactionReducer";
 export const UseTransaction = () => {
   const dispatch = useAppDispatch();
 
-  const { assets, selectedAsset, selectedAccount, selectedTransaction, txWorker } = useAppSelector(
+  const { assets, selectedAsset, selectedAccount } = useAppSelector(
     (state) => state.asset,
   );
+
+  const { selectedTransaction, txWorker } = useAppSelector((state) => state.transaction);
 
   const changeSelectedTransaction = (value: Transaction) => dispatch(setSelectedTransaction(value));
 

@@ -1,5 +1,5 @@
 import { SendingStatus } from "@/const";
-import { Asset, SubAccount, Transaction } from "@redux/models/AccountModels";
+import { Asset, SubAccount, Transaction, TransactionList } from "@redux/models/AccountModels";
 import { z } from "zod";
 
 export const ContactSubAccountSchema = z.object({
@@ -151,6 +151,9 @@ export interface TransactionState {
   initTime: Date;
   endTime: Date;
   transactionDrawer: TransactionDrawer;
+  selectedTransaction: Transaction | undefined;
+  txLoad: boolean;
+  txWorker: Array<TransactionList>;
 }
 
 export interface KeyValidationErrors {

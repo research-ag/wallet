@@ -5,7 +5,6 @@ import DownAmountIcon from "@assets/svg/files/down-amount-icon.svg";
 import { TransactionDrawer } from "@/@types/transactions";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 import { BasicDrawer } from "@components/drawer";
-import { setSelectedTransaction } from "@redux/assets/AssetReducer";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { setTransactionDrawerAction } from "@redux/transaction/TransactionActions";
 import { useMemo } from "react";
@@ -14,12 +13,12 @@ import { SpecialTxTypeEnum, TransactionTypeEnum } from "@/const";
 import { useTranslation } from "react-i18next";
 import { GeneralHook } from "@pages/home/hooks/generalHook";
 import { getAddress } from "@/utils";
+import { setSelectedTransaction } from "@redux/transaction/TransactionReducer";
 
 export default function TransactionInspectDrawer() {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
-  const { transactionDrawer } = useAppSelector((state) => state.transaction);
-  const { selectedTransaction } = useAppSelector((state) => state.asset);
+  const { transactionDrawer, selectedTransaction } = useAppSelector((state) => state.transaction);
   const { selectedAccount } = GeneralHook();
 
   const isDrawerOpen = useMemo(() => {

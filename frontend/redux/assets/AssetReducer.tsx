@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { TokenMarketInfo } from "@redux/models/TokenModels";
-import { Asset, ICPSubAccount, SubAccount, Transaction, TransactionList } from "@redux/models/AccountModels";
+import { Asset, ICPSubAccount, SubAccount } from "@redux/models/AccountModels";
 import { getUSDfromToken } from "@/utils";
 import { ICRC1systemAssets } from "@/defaultTokens";
 
@@ -14,10 +14,6 @@ interface AssetState {
   accordionIndex: string[];
   selectedAsset: Asset | undefined;
   selectedAccount: SubAccount | undefined;
-  // --- transactions
-  selectedTransaction: Transaction | undefined;
-  txLoad: boolean;
-  txWorker: Array<TransactionList>;
 }
 
 const initialState: AssetState = {
@@ -30,9 +26,6 @@ const initialState: AssetState = {
   accordionIndex: [],
   selectedAsset: undefined,
   selectedAccount: undefined,
-  selectedTransaction: undefined,
-  txWorker: [],
-  txLoad: false,
 };
 
 const assetSlice = createSlice({
@@ -107,37 +100,10 @@ const assetSlice = createSlice({
       state.tokensMarket = [];
       state.accounts = [];
       state.assets = [];
-      state.txWorker = [];
       state.selectedAccount = undefined;
       state.selectedAsset = undefined;
-      state.selectedTransaction = undefined;
       state.accordionIndex = [];
       state.icr1SystemAssets = ICRC1systemAssets;
-    },
-    // transactions
-    setSelectedTransaction(state, action) {
-      state.selectedTransaction = action.payload;
-    },
-    setTxWorker(state, action) {
-      const txList = [...state.txWorker];
-
-      const idx = txList.findIndex((tx: TransactionList) => {
-        return tx.symbol === action.payload.symbol && tx.subaccount === action.payload.subaccount;
-      });
-      const auxTx = txList.find((tx: TransactionList) => {
-        return tx.symbol === action.payload.symbol && tx.subaccount === action.payload.subaccount;
-      });
-
-      if (!auxTx) {
-        txList.push(action.payload);
-      } else {
-        txList[idx] = action.payload;
-      }
-
-      state.txWorker = txList;
-    },
-    addTxWorker(state, action: PayloadAction<TransactionList>) {
-      state.txWorker = [...state.txWorker, action.payload];
     },
   },
 });
@@ -152,9 +118,6 @@ export const {
   setAccounts,
   setSelectedAsset,
   setSelectedAccount,
-  setSelectedTransaction,
-  setTxWorker,
-  addTxWorker,
   setAccordionAssetIdx,
   updateSubAccountBalance,
 } = assetSlice.actions;

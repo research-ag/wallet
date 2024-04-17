@@ -7,15 +7,14 @@ import {
   setAssets,
   setSelectedAccount,
   setSelectedAsset,
-  setSelectedTransaction,
 } from "@redux/assets/AssetReducer";
-import { setTransactions } from "@redux/transaction/TransactionReducer";
+import { setSelectedTransaction, setTransactions } from "@redux/transaction/TransactionReducer";
 
 export const GeneralHook = () => {
   const dispatch = useAppDispatch();
-  const { transactions } = useAppSelector((state) => state.transaction);
+  const { transactions, selectedTransaction } = useAppSelector((state) => state.transaction);
 
-  const { ICPSubaccounts, assets, accounts, selectedAsset, selectedAccount, selectedTransaction } = useAppSelector(
+  const { ICPSubaccounts, assets, accounts, selectedAsset, selectedAccount } = useAppSelector(
     (state) => state.asset,
   );
 
