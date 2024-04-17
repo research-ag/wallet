@@ -14,7 +14,7 @@ import {
   setReduxContacts,
   updateReduxContact,
 } from "@redux/contacts/ContactsReducer";
-import { deleteReduxAllowance, setReduxAllowances, updateReduxAllowance } from "@redux/allowance/AllowanceReducer";
+import { addReduxAllowance, deleteReduxAllowance, setReduxAllowances, updateReduxAllowance } from "@redux/allowance/AllowanceReducer";
 
 export class LocalStorageDatabase extends IWalletDatabase {
   // Singleton pattern
@@ -250,7 +250,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
     const allowances = this._getAllowances();
     const databaseAllowance = this._getStorableAllowance(allowance);
     this._setAllowances([...allowances, databaseAllowance]);
-    if (options?.sync) store.dispatch(setReduxAllowances([...allowances, allowance]));
+    if (options?.sync) store.dispatch(addReduxAllowance(allowance));
   }
 
   /**

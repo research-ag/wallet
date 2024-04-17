@@ -20,6 +20,7 @@ import {
 import { Asset } from "@redux/models/AccountModels";
 import { getAllowanceAsset } from "../helpers/allowanceMappers";
 import { refreshAllowance } from "../helpers/refreshAllowance";
+import { db } from "@/database/db";
 
 export default function useCreateAllowance() {
   const dispatch = useAppDispatch();
@@ -55,22 +56,28 @@ export default function useCreateAllowance() {
     setFullAllowanceErrorsAction([]);
 
     const asset = assets.find((asset) => asset.tokenSymbol === allowance.asset.tokenSymbol) as Asset;
-    validateCreateAllowance(allowance, asset);
-    const duplicated = await getDuplicatedAllowance(allowance);
+
+    const fullAllowances = {
+      ...allowance,
+      id: db().generateAllowancePrimaryKey(allowance),
+    };
+
+    validateCreateAllowance(fullAllowances, asset);
+    const duplicated = await getDuplicatedAllowance(fullAllowances);
 
     if (duplicated) {
-      const isExpirationSame = allowance.expiration === duplicated.expiration;
-      const isAmountSame = allowance.amount === duplicated.amount;
+      const isExpirationSame = fullAllowances.expiration === duplicated.expiration;
+      const isAmountSame = fullAllowances.amount === duplicated.amount;
 
       if (!isExpirationSame || !isAmountSame) {
-        const params = createApproveAllowanceParams(allowance);
-        await submitAllowanceApproval(params, allowance.asset.address);
-        await refreshAllowance(allowance);
+        const params = createApproveAllowanceParams(fullAllowances);
+        await submitAllowanceApproval(params, fullAllowances.asset.address);
+        await refreshAllowance(fullAllowances);
       }
     } else {
-      const params = createApproveAllowanceParams(allowance);
-      await submitAllowanceApproval(params, allowance.asset.address);
-      await refreshAllowance(allowance);
+      const params = createApproveAllowanceParams(fullAllowances);
+      await submitAllowanceApproval(params, fullAllowances.asset.address);
+      await refreshAllowance(fullAllowances);
     }
   }, [allowance]);
 
