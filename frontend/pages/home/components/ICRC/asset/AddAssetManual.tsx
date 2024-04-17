@@ -238,7 +238,7 @@ const AddAssetManual = ({
   }
 
   function onChangeSymbol(e: ChangeEvent<HTMLInputElement>) {
-    if (e.target.value.length <= 8)
+    if (e.target.value.length <= 12)
       setNewAsset((prev: Asset) => {
         return { ...prev, symbol: e.target.value };
       });
