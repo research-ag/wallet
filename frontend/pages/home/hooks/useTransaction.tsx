@@ -8,9 +8,7 @@ import { addTxWorker, setSelectedTransaction, setTransactions } from "@redux/tra
 export const UseTransaction = () => {
   const dispatch = useAppDispatch();
 
-  const { assets, selectedAsset, selectedAccount } = useAppSelector(
-    (state) => state.asset,
-  );
+  const { assets, selectedAsset, selectedAccount } = useAppSelector((state) => state.asset);
 
   const { selectedTransaction, txWorker } = useAppSelector((state) => state.transaction);
 

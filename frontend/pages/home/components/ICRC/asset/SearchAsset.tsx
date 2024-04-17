@@ -1,10 +1,11 @@
 // svgs
 import PlusIcon from "@assets/svg/files/plus-icon.svg";
+import { Dispatch, SetStateAction } from "react";
 import { useTranslation } from "react-i18next";
 
 interface SearchAssetProps {
   searchKey: string;
-  setSearchKey(value: string): void;
+  setSearchKey: Dispatch<SetStateAction<string>>;
   onAddAsset(): void;
 }
 

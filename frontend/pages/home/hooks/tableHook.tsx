@@ -27,8 +27,8 @@ export const TableHook = () => {
         <Fragment>
           {((selectedTransaction?.hash && selectedTransaction?.hash === info.getValue().hash) ||
             (selectedTransaction?.idx && selectedTransaction?.idx === info.getValue().idx)) && (
-              <div className="absolute w-2 h-[4.05rem] left-5 bg-SelectRowColor"></div>
-            )}
+            <div className="absolute w-2 h-[4.05rem] left-5 bg-SelectRowColor"></div>
+          )}
           <div className="flex justify-center w-full h-12 my-2">
             <div className="flex items-center justify-center p-2 border rounded-md border-BorderColorTwoLight dark:border-BorderColorTwo">
               <img
@@ -36,16 +36,16 @@ export const TableHook = () => {
                   info.getValue().kind === SpecialTxTypeEnum.Enum.burn
                     ? UpAmountIcon
                     : info.getValue().kind === SpecialTxTypeEnum.Enum.mint
-                      ? DownAmountIcon
-                      : getAddress(
+                    ? DownAmountIcon
+                    : getAddress(
                         info.getValue().type,
                         info.getValue().from || "",
                         info.getValue().fromSub || "",
                         selectedAccount?.address || "",
                         selectedAccount?.sub_account_id || "",
                       )
-                        ? UpAmountIcon
-                        : DownAmountIcon
+                    ? UpAmountIcon
+                    : DownAmountIcon
                 }
                 alt=""
               />
@@ -91,14 +91,16 @@ export const TableHook = () => {
 
         return (
           <div className="flex flex-col items-end justify-center w-full pr-5 my-2">
-            <p className={`text-right whitespace-nowrap ${isTo ? "text-TextSendColor" : "text-TextReceiveColor"}`}>{`${isTo ? "-" : ""
-              }${info.getValue()?.type === TransactionTypeEnum.Enum.SEND
+            <p className={`text-right whitespace-nowrap ${isTo ? "text-TextSendColor" : "text-TextReceiveColor"}`}>{`${
+              isTo ? "-" : ""
+            }${
+              info.getValue()?.type === TransactionTypeEnum.Enum.SEND
                 ? toFullDecimal(
-                  BigInt(info.getValue()?.amount) + BigInt(selectedAccount?.transaction_fee || "0"),
-                  selectedAccount?.decimal || 8,
-                )
+                    BigInt(info.getValue()?.amount) + BigInt(selectedAccount?.transaction_fee || "0"),
+                    selectedAccount?.decimal || 8,
+                  )
                 : toFullDecimal(BigInt(info.getValue()?.amount), selectedAccount?.decimal || 8)
-              } ${getAssetSymbol(info.getValue()?.symbol || "", assets)}`}</p>
+            } ${getAssetSymbol(info.getValue()?.symbol || "", assets)}`}</p>
           </div>
         );
       },
