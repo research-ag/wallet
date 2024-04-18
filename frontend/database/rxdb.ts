@@ -25,6 +25,7 @@ import {
 import { Asset } from "@redux/models/AccountModels";
 import store from "@redux/Store";
 import { setAssets } from "@redux/assets/AssetReducer";
+import { addReduxContact, setReduxContacts } from "@redux/contacts/ContactsReducer";
 
 // Enables data updates, deletions, and replacements within collections
 addRxPlugin(RxDBUpdatePlugin);
@@ -166,6 +167,7 @@ export class RxdbDatabase extends IWalletDatabase {
       await this.init();
       await this._doesRecordByPrincipalExist();
       await this._assetStateSync();
+      await this._contactStateSync();
     }
 
     // INFO: run the observable
@@ -307,6 +309,13 @@ export class RxdbDatabase extends IWalletDatabase {
     }
   }
 
+  async _contactStateSync(newContacts?: Contact[]): Promise<void> {
+    const documents = await (await this.contacts)?.find().exec();
+    const result = (documents && documents.map(this._mapContactDoc)) || [];
+    const contacts = newContacts || result || [];
+    store.dispatch(setReduxContacts(contacts));
+  };
+
   /**
    * Get all Contact objects from active agent.
    * @returns Array of found Contact objects or an empty
@@ -327,14 +336,16 @@ export class RxdbDatabase extends IWalletDatabase {
    * current active agent has.
    * @param contact Contact object to be added
    */
-  async addContact(contact: Contact): Promise<void> {
+  async addContact(contact: Contact, options?: DatabaseOptions): Promise<void> {
     try {
+      const databaseContact = this._getStorableContact(contact);
+
       await (
         await this.contacts
       )?.insert({
-        ...contact,
-        accountIdentier: extractValueFromArray(contact.accountIdentier),
-        assets: contact.assets.map((a) => ({
+        ...databaseContact,
+        accountIdentier: extractValueFromArray(databaseContact.accountIdentier),
+        assets: databaseContact.assets.map((a) => ({
           ...a,
           logo: extractValueFromArray(a.logo),
           subaccounts: a.subaccounts.map((sa) => ({
@@ -345,6 +356,8 @@ export class RxdbDatabase extends IWalletDatabase {
         deleted: false,
         updatedAt: Date.now(),
       });
+
+      if (options?.sync) store.dispatch(addReduxContact(contact));
     } catch (e) {
       console.error("RxDb AddContact", e);
     }
@@ -418,6 +431,20 @@ export class RxdbDatabase extends IWalletDatabase {
     } catch (e) {
       console.error("RxDb DeleteContact", e);
     }
+  }
+
+  private _getStorableContact(contact: Contact): Contact {
+    return {
+      ...contact,
+      assets: contact.assets.map((asset) => ({
+        ...asset,
+        subaccounts: asset.subaccounts.map((subaccount) => {
+          // eslint-disable-next-line
+          const { allowance, ...rest } = subaccount;
+          return { ...rest };
+        }),
+      })),
+    };
   }
 
   /**
@@ -698,13 +725,13 @@ export class RxdbDatabase extends IWalletDatabase {
   private async _assetsPushHandler(items: any[]): Promise<AssetRxdbDocument[]> {
     const arg = items.map(
       (x) =>
-        ({
-          ...x,
-          sortIndex: x.sortIndex,
-          updatedAt: Math.floor(Date.now() / 1000),
-          logo: extractValueFromArray(x.logo),
-          index: extractValueFromArray(x.index),
-        } as AssetRxdbDocument),
+      ({
+        ...x,
+        sortIndex: x.sortIndex,
+        updatedAt: Math.floor(Date.now() / 1000),
+        logo: extractValueFromArray(x.logo),
+        index: extractValueFromArray(x.index),
+      } as AssetRxdbDocument),
     );
 
     await this.replicaCanister?.pushAssets(arg);
@@ -742,11 +769,11 @@ export class RxdbDatabase extends IWalletDatabase {
           allowance:
             !!s.allowance && !!s.allowance.allowance
               ? [
-                  {
-                    allowance: [s.allowance.allowance],
-                    expires_at: [s.allowance.expires_at],
-                  },
-                ]
+                {
+                  allowance: [s.allowance.allowance],
+                  expires_at: [s.allowance.expires_at],
+                },
+              ]
               : [],
         })),
       })),

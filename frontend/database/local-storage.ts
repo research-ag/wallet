@@ -207,7 +207,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
     if (options?.sync) store.dispatch(deleteReduxContact(principal));
   }
 
-  _getStorableContact(contact: Contact): Contact {
+  private _getStorableContact(contact: Contact): Contact {
     return {
       ...contact,
       assets: contact.assets.map((asset) => ({
