@@ -31,7 +31,12 @@ import {
   setReduxContacts,
   updateReduxContact,
 } from "@redux/contacts/ContactsReducer";
-import { addReduxAllowance, setReduxAllowances } from "@redux/allowance/AllowanceReducer";
+import {
+  addReduxAllowance,
+  deleteReduxAllowance,
+  setReduxAllowances,
+  updateReduxAllowance,
+} from "@redux/allowance/AllowanceReducer";
 
 // Enables data updates, deletions, and replacements within collections
 addRxPlugin(RxDBUpdatePlugin);
@@ -533,18 +538,22 @@ export class RxdbDatabase extends IWalletDatabase {
    * @param id Primary Key
    * @param newDoc Allowance object
    */
-  async updateAllowance(id: string, newDoc: TAllowance): Promise<void> {
+  async updateAllowance(id: string, newDoc: TAllowance, options?: DatabaseOptions): Promise<void> {
     try {
+      const databaseAllowance = this._getStorableAllowance(newDoc);
       const document = await (await this.allowances)?.findOne(id).exec();
+
       document?.patch({
-        ...newDoc,
+        ...databaseAllowance,
         asset: {
-          ...newDoc.asset,
-          logo: extractValueFromArray(newDoc.asset?.logo),
+          ...databaseAllowance.asset,
+          logo: extractValueFromArray(databaseAllowance.asset?.logo),
         },
         deleted: false,
         updatedAt: Date.now(),
       });
+
+      if (options?.sync) store.dispatch(updateReduxAllowance(newDoc));
     } catch (e) {
       console.error("RxDb UpdateAllowance", e);
     }
@@ -554,14 +563,15 @@ export class RxdbDatabase extends IWalletDatabase {
    * Update Allowances in bulk.
    * @param newDocs Array of Allowance objects
    */
-  async updateAllowances(newDocs: TAllowance[]): Promise<void> {
+  async updateAllowances(newDocs: TAllowance[], options?: DatabaseOptions): Promise<void> {
     try {
+      const databaseAllowances = newDocs.map((allowance) => this._getStorableAllowance(allowance));
+
       await (
         await this.allowances
       )?.bulkUpsert(
-        newDocs.map((doc) => ({
+        databaseAllowances.map((doc) => ({
           ...doc,
-          expiration: extractValueFromArray(doc.expiration),
           asset: {
             ...doc.asset,
             logo: extractValueFromArray(doc.asset?.logo),
@@ -570,6 +580,8 @@ export class RxdbDatabase extends IWalletDatabase {
           updatedAt: Date.now(),
         })),
       );
+
+      if (options?.sync) store.dispatch(setReduxAllowances(newDocs));
     } catch (e) {
       console.error("RxDb UpdateAllowances", e);
     }
@@ -579,10 +591,12 @@ export class RxdbDatabase extends IWalletDatabase {
    * Find and remove a Allowance object.
    * @param id Primary Key
    */
-  async deleteAllowance(id: string): Promise<void> {
+  async deleteAllowance(id: string, options?: DatabaseOptions): Promise<void> {
     try {
       const document = await (await this.allowances)?.findOne(id).exec();
-      document?.remove();
+      await document?.remove();
+
+      if (options?.sync) store.dispatch(deleteReduxAllowance(id));
     } catch (e) {
       console.error("RxDb DeleteAllowance", e);
     }
