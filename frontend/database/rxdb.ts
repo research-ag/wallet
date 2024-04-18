@@ -25,7 +25,7 @@ import {
 import { Asset } from "@redux/models/AccountModels";
 import store from "@redux/Store";
 import { setAssets } from "@redux/assets/AssetReducer";
-import { addReduxContact, setReduxContacts } from "@redux/contacts/ContactsReducer";
+import { addReduxContact, setReduxContacts, updateReduxContact } from "@redux/contacts/ContactsReducer";
 
 // Enables data updates, deletions, and replacements within collections
 addRxPlugin(RxDBUpdatePlugin);
@@ -369,13 +369,15 @@ export class RxdbDatabase extends IWalletDatabase {
    * @param principal Principal ID
    * @param newDoc Contact object
    */
-  async updateContact(principal: string, newDoc: Contact): Promise<void> {
+  async updateContact(principal: string, newDoc: Contact, options?: DatabaseOptions): Promise<void> {
     try {
+      const databaseContact = this._getStorableContact(newDoc);
       const document = await (await this.contacts)?.findOne(principal).exec();
+
       document?.patch({
-        ...newDoc,
-        accountIdentier: extractValueFromArray(newDoc.accountIdentier),
-        assets: newDoc.assets.map((a) => ({
+        ...databaseContact,
+        accountIdentier: extractValueFromArray(databaseContact.accountIdentier),
+        assets: databaseContact.assets.map((a) => ({
           ...a,
           logo: extractValueFromArray(a.logo),
           subaccounts: a.subaccounts.map((sa) => ({
@@ -386,6 +388,8 @@ export class RxdbDatabase extends IWalletDatabase {
         deleted: false,
         updatedAt: Date.now(),
       });
+
+      if (options?.sync) store.dispatch(updateReduxContact(newDoc));
     } catch (e) {
       console.error("RxDb UpdateContact", e);
     }
