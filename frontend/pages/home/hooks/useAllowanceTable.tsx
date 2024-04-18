@@ -74,7 +74,7 @@ export default function useAllowanceTable() {
         return (
           <p className={getCellStyles()}>
             {hidden && "-"}
-            {(!hidden && info.getValue())} {!hidden && assetSymbol}
+            {!hidden && info.getValue()} {!hidden && assetSymbol}
           </p>
         );
       },

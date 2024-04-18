@@ -8,13 +8,20 @@ import { defaultTokens } from "@/defaultTokens";
 import { Asset } from "@redux/models/AccountModels";
 import store from "@redux/Store";
 import { setAssets } from "@redux/assets/AssetReducer";
+
 import {
   addReduxContact,
   deleteReduxContact,
   setReduxContacts,
   updateReduxContact,
 } from "@redux/contacts/ContactsReducer";
-import { addReduxAllowance, deleteReduxAllowance, setReduxAllowances, updateReduxAllowance } from "@redux/allowance/AllowanceReducer";
+
+import {
+  addReduxAllowance,
+  deleteReduxAllowance,
+  setReduxAllowances,
+  updateReduxAllowance,
+} from "@redux/allowance/AllowanceReducer";
 
 export class LocalStorageDatabase extends IWalletDatabase {
   // Singleton pattern

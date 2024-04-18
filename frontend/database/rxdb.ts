@@ -1,4 +1,4 @@
-import { IWalletDatabase } from "@/database/i-wallet-database";
+import { DatabaseOptions, IWalletDatabase } from "@/database/i-wallet-database";
 import { createRxDatabase, RxCollection, RxDocument, RxDatabase, addRxPlugin } from "rxdb";
 import DBSchemas from "./schemas.json";
 import { BehaviorSubject, combineLatest, distinctUntilChanged, from, map, Observable, Subject, switchMap } from "rxjs";
@@ -23,6 +23,8 @@ import {
   AllowanceDocument as AllowanceRxdbDocument,
 } from "@/candid/database/db.did";
 import { Asset } from "@redux/models/AccountModels";
+import store from "@redux/Store";
+import { setAssets } from "@redux/assets/AssetReducer";
 
 // Enables data updates, deletions, and replacements within collections
 addRxPlugin(RxDBUpdatePlugin);
@@ -163,9 +165,11 @@ export class RxdbDatabase extends IWalletDatabase {
       });
       await this.init();
       await this._doesRecordByPrincipalExist();
+      await this._assetStateSync();
     }
 
-    this.identityChanged$.next();
+    // INFO: run the observable
+    // this.identityChanged$.next();
   }
 
   /**
@@ -197,6 +201,16 @@ export class RxdbDatabase extends IWalletDatabase {
       return [];
     }
   }
+  /**
+   * Sync the Asset state with the Redux store.
+   * @param newAssets Array of Asset objects
+   */
+  private async _assetStateSync(newAssets?: Asset[]): Promise<void> {
+    const documents = await (await this.assets)?.find().exec();
+    const result = (documents && documents.map(this._mapAssetDoc)) || [];
+    const assets = newAssets || result || [];
+    store.dispatch(setAssets(assets));
+  }
 
   /**
    * Add a new Asset object to the list of Asset objects
@@ -219,7 +233,7 @@ export class RxdbDatabase extends IWalletDatabase {
     }
   }
 
-  async updateAssets(newAssets: Asset[]): Promise<void> {
+  async updateAssets(newAssets: Asset[], options?: DatabaseOptions): Promise<void> {
     try {
       await (
         await this.assets
@@ -232,6 +246,7 @@ export class RxdbDatabase extends IWalletDatabase {
           updatedAt: Date.now(),
         })),
       );
+      if (options?.sync) this._assetStateSync();
     } catch (e) {
       console.error("RxDb UpdateAssets:", e);
     }
@@ -781,7 +796,7 @@ export class RxdbDatabase extends IWalletDatabase {
   }
 
   private async _doesRecordByPrincipalExist() {
-    // Look for entry record by current prinicpal ID
+    // Look for entry record by current principal ID
     const exist: boolean = await this.replicaCanister?.doesStorageExist();
 
     // If does not exist it means that this is a brand new account
