@@ -6,6 +6,7 @@ import { BasicModal } from "@components/modal";
 import { useTranslation } from "react-i18next";
 import { CustomButton } from "@components/button";
 import { db } from "@/database/db";
+import { useAppSelector } from "@redux/Store";
 
 interface DeleteAssetModalPropr {
   open: boolean;
@@ -15,7 +16,9 @@ interface DeleteAssetModalPropr {
 
 const DeleteAssetModal = ({ open, setOpen, asset }: DeleteAssetModalPropr) => {
   const { t } = useTranslation();
-  const { name, address } = asset;
+  const { name, address, tokenSymbol } = asset;
+
+  const { contacts } = useAppSelector((state) => state.contacts);
 
   return (
     <BasicModal
@@ -50,7 +53,12 @@ const DeleteAssetModal = ({ open, setOpen, asset }: DeleteAssetModalPropr) => {
   );
 
   async function handleConfirmButton() {
-    await db().deleteAsset(address, { sync: true });
+    await db().deleteAsset(address, { sync: true }).then();
+    const updatedContacts = contacts.map((cntc) => {
+      const updatedAssets = cntc.assets.filter((ast) => ast.tokenSymbol !== tokenSymbol);
+      return { ...cntc, assets: updatedAssets };
+    });
+    await db().updateContacts(updatedContacts, { sync: true }).then();
     setOpen(false);
   }
 };
