@@ -49,8 +49,8 @@ const DeleteAssetModal = ({ open, setOpen, asset }: DeleteAssetModalPropr) => {
     </BasicModal>
   );
 
-  function handleConfirmButton() {
-    db().deleteAsset(address, { sync: true }).then();
+  async function handleConfirmButton() {
+    await db().deleteAsset(address, { sync: true });
     setOpen(false);
   }
 };

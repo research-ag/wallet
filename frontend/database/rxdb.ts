@@ -281,10 +281,12 @@ export class RxdbDatabase extends IWalletDatabase {
    * Find and remove a Asset object by its ID.
    * @param address Address ID of a Asset object
    */
-  async deleteAsset(address: string): Promise<void> {
+  async deleteAsset(address: string, options?: DatabaseOptions): Promise<void> {
     try {
       const document = await (await this.assets)?.findOne(address).exec();
-      document?.remove();
+      await document?.remove();
+
+      if (options?.sync) await this._assetStateSync();
     } catch (e) {
       console.error("RxDb DeleteAsset", e);
     }
