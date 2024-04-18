@@ -164,7 +164,7 @@ export abstract class IWalletDatabase {
    * current active agent has.
    * @param asset Asset object to be added
    */
-  abstract addAssets(asset: Asset, options?: DatabaseOptions): Promise<void>;
+  abstract addAsset(asset: Asset, options?: DatabaseOptions): Promise<void>;
 
   /**
    * Replace the storage of Asset objects with a new

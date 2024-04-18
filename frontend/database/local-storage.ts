@@ -90,7 +90,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * current active agent has.
    * @param asset Asset object to be added
    */
-  async addAssets(asset: Asset, options?: DatabaseOptions): Promise<void> {
+  async addAsset(asset: Asset, options?: DatabaseOptions): Promise<void> {
     const assets = this._getAssets();
     this._setAssets([...assets, asset]);
 

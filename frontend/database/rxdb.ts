@@ -217,7 +217,7 @@ export class RxdbDatabase extends IWalletDatabase {
    * current active agent has.
    * @param asset Asset object to be added
    */
-  async addAssets(asset: Asset): Promise<void> {
+  async addAsset(asset: Asset, options?: DatabaseOptions): Promise<void> {
     try {
       await (
         await this.assets
@@ -228,6 +228,8 @@ export class RxdbDatabase extends IWalletDatabase {
         deleted: false,
         updatedAt: Date.now(),
       });
+
+      if (options?.sync) await this._assetStateSync();
     } catch (e) {
       console.error("RxDb AddAsset:", e);
     }
@@ -246,7 +248,7 @@ export class RxdbDatabase extends IWalletDatabase {
           updatedAt: Date.now(),
         })),
       );
-      if (options?.sync) this._assetStateSync();
+      if (options?.sync) await this._assetStateSync();
     } catch (e) {
       console.error("RxDb UpdateAssets:", e);
     }
