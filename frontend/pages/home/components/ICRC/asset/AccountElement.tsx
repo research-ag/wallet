@@ -181,7 +181,7 @@ const AccountElement = ({
     if (name.trim() !== "") {
       setEditNameId("");
       if (newSub) {
-        // INFO: adding new sub account
+        // INFO: adding new sub account ?
         const asset = assets[+tokenIndex];
         const subAccounts = asset.subAccounts
           .map((sa) => ({

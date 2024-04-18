@@ -260,7 +260,7 @@ export class RxdbDatabase extends IWalletDatabase {
    * @param address Address ID of a Asset object
    * @param newDoc Asset object
    */
-  async updateAsset(address: string, newDoc: Asset): Promise<void> {
+  async updateAsset(address: string, newDoc: Asset, options?: DatabaseOptions): Promise<void> {
     try {
       const document = await (await this.assets)?.findOne(address).exec();
       await document?.patch({
@@ -270,6 +270,8 @@ export class RxdbDatabase extends IWalletDatabase {
         deleted: false,
         updatedAt: Date.now(),
       });
+
+      if (options?.sync) await this._assetStateSync();
     } catch (e) {
       console.error("RxDb UpdateAsset:", e);
     }
