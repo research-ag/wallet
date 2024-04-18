@@ -25,7 +25,13 @@ import {
 import { Asset } from "@redux/models/AccountModels";
 import store from "@redux/Store";
 import { setAssets } from "@redux/assets/AssetReducer";
-import { addReduxContact, deleteReduxContact, setReduxContacts, updateReduxContact } from "@redux/contacts/ContactsReducer";
+import {
+  addReduxContact,
+  deleteReduxContact,
+  setReduxContacts,
+  updateReduxContact,
+} from "@redux/contacts/ContactsReducer";
+import { addReduxAllowance, setReduxAllowances } from "@redux/allowance/AllowanceReducer";
 
 // Enables data updates, deletions, and replacements within collections
 addRxPlugin(RxDBUpdatePlugin);
@@ -168,6 +174,7 @@ export class RxdbDatabase extends IWalletDatabase {
       await this._doesRecordByPrincipalExist();
       await this._assetStateSync();
       await this._contactStateSync();
+      await this._allowanceStateSync();
     }
 
     // INFO: run the observable
@@ -314,7 +321,7 @@ export class RxdbDatabase extends IWalletDatabase {
     const result = (documents && documents.map(this._mapContactDoc)) || [];
     const contacts = newContacts || result || [];
     store.dispatch(setReduxContacts(contacts));
-  };
+  }
 
   /**
    * Get all Contact objects from active agent.
@@ -471,6 +478,13 @@ export class RxdbDatabase extends IWalletDatabase {
     }
   }
 
+  private async _allowanceStateSync(newAllowances?: TAllowance[]): Promise<void> {
+    const documents = await (await this.allowances)?.find().exec();
+    const result = (documents && documents.map(this._mapAllowanceDoc)) || [];
+    const allowances = newAllowances || result || [];
+    store.dispatch(setReduxAllowances(allowances));
+  }
+
   /**
    * Get all Allowance objects from active agent.
    * @returns Array of found Allowance objects or an empty
@@ -491,19 +505,23 @@ export class RxdbDatabase extends IWalletDatabase {
    * current active agent has.
    * @param allowance Allowance object to be added
    */
-  async addAllowance(allowance: TAllowance): Promise<void> {
+  async addAllowance(allowance: TAllowance, options?: DatabaseOptions): Promise<void> {
+    const databaseAllowance = this._getStorableAllowance(allowance);
+
     try {
       await (
         await this.allowances
       )?.insert({
-        ...allowance,
+        ...databaseAllowance,
         asset: {
-          ...allowance.asset,
-          logo: extractValueFromArray(allowance.asset?.logo),
+          ...databaseAllowance.asset,
+          logo: extractValueFromArray(databaseAllowance.asset?.logo),
         },
         deleted: false,
         updatedAt: Date.now(),
       });
+
+      if (options?.sync) store.dispatch(addReduxAllowance(allowance));
     } catch (e) {
       console.error("RxDb AddAllowance", e);
     }
@@ -568,6 +586,12 @@ export class RxdbDatabase extends IWalletDatabase {
     } catch (e) {
       console.error("RxDb DeleteAllowance", e);
     }
+  }
+
+  private _getStorableAllowance(allowance: TAllowance): Pick<TAllowance, "id" | "asset" | "subAccountId" | "spender"> {
+    // eslint-disable-next-line
+    const { amount, expiration, ...rest } = allowance;
+    return { ...rest };
   }
 
   /**
@@ -734,13 +758,13 @@ export class RxdbDatabase extends IWalletDatabase {
   private async _assetsPushHandler(items: any[]): Promise<AssetRxdbDocument[]> {
     const arg = items.map(
       (x) =>
-      ({
-        ...x,
-        sortIndex: x.sortIndex,
-        updatedAt: Math.floor(Date.now() / 1000),
-        logo: extractValueFromArray(x.logo),
-        index: extractValueFromArray(x.index),
-      } as AssetRxdbDocument),
+        ({
+          ...x,
+          sortIndex: x.sortIndex,
+          updatedAt: Math.floor(Date.now() / 1000),
+          logo: extractValueFromArray(x.logo),
+          index: extractValueFromArray(x.index),
+        } as AssetRxdbDocument),
     );
 
     await this.replicaCanister?.pushAssets(arg);
@@ -778,11 +802,11 @@ export class RxdbDatabase extends IWalletDatabase {
           allowance:
             !!s.allowance && !!s.allowance.allowance
               ? [
-                {
-                  allowance: [s.allowance.allowance],
-                  expires_at: [s.allowance.expires_at],
-                },
-              ]
+                  {
+                    allowance: [s.allowance.allowance],
+                    expires_at: [s.allowance.expires_at],
+                  },
+                ]
               : [],
         })),
       })),
