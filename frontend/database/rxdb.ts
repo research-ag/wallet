@@ -25,7 +25,7 @@ import {
 import { Asset } from "@redux/models/AccountModels";
 import store from "@redux/Store";
 import { setAssets } from "@redux/assets/AssetReducer";
-import { addReduxContact, setReduxContacts, updateReduxContact } from "@redux/contacts/ContactsReducer";
+import { addReduxContact, deleteReduxContact, setReduxContacts, updateReduxContact } from "@redux/contacts/ContactsReducer";
 
 // Enables data updates, deletions, and replacements within collections
 addRxPlugin(RxDBUpdatePlugin);
@@ -401,10 +401,12 @@ export class RxdbDatabase extends IWalletDatabase {
    */
   async updateContacts(newDocs: Contact[]): Promise<void> {
     try {
+      const databaseContacts = newDocs.map((contact) => this._getStorableContact(contact));
+
       await (
         await this.contacts
       )?.bulkUpsert(
-        newDocs.map((doc) => ({
+        databaseContacts.map((doc) => ({
           ...doc,
           accountIdentier: extractValueFromArray(doc.accountIdentier),
           assets: doc.assets.map((a) => ({
@@ -419,6 +421,8 @@ export class RxdbDatabase extends IWalletDatabase {
           updatedAt: Date.now(),
         })),
       );
+
+      store.dispatch(setReduxContacts(newDocs));
     } catch (e) {
       console.error("RxDb UpdateContacts", e);
     }
@@ -428,10 +432,11 @@ export class RxdbDatabase extends IWalletDatabase {
    * Find and remove a Contact object by its Principal ID.
    * @param principal Principal ID
    */
-  async deleteContact(principal: string): Promise<void> {
+  async deleteContact(principal: string, options?: DatabaseOptions): Promise<void> {
     try {
       const document = await (await this.contacts)?.findOne(principal).exec();
-      document?.remove();
+      await document?.remove();
+      if (options?.sync) store.dispatch(deleteReduxContact(principal));
     } catch (e) {
       console.error("RxDb DeleteContact", e);
     }
