@@ -178,8 +178,6 @@ export class RxdbDatabase extends IWalletDatabase {
       await this._allowanceStateSync();
     }
 
-    // INFO: run the observable
-    // this.identityChanged$.next();
   }
 
   /**
