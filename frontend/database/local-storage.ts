@@ -2,7 +2,6 @@ import { DatabaseOptions, IWalletDatabase } from "@/database/i-wallet-database";
 import { Contact } from "@redux/models/ContactsModels";
 import { TAllowance } from "@/@types/allowance";
 import { Identity } from "@dfinity/agent";
-import { BehaviorSubject, Observable } from "rxjs";
 import { Principal } from "@dfinity/principal";
 import { defaultTokens } from "@/defaultTokens";
 import { Asset } from "@redux/models/AccountModels";
@@ -299,43 +298,10 @@ export class LocalStorageDatabase extends IWalletDatabase {
     if (options?.sync) store.dispatch(deleteReduxAllowance(id));
   }
 
-  _getStorableAllowance(allowance: TAllowance): Pick<TAllowance, "id" | "asset" | "subAccountId" | "spender"> {
+  private _getStorableAllowance(allowance: TAllowance): Pick<TAllowance, "id" | "asset" | "subAccountId" | "spender"> {
     // eslint-disable-next-line
     const { amount, expiration, ...rest } = allowance;
     return { ...rest };
-  }
-
-  /**
-   * Subscribable Observable that triggers after
-   * a new Identity has been set.
-   * @returns Array of Asset objects from current
-   * active agent
-   */
-  subscribeToAllAssets(): Observable<Asset[]> {
-    // TODO: Remove once the interface does not require this method
-    return new BehaviorSubject<Asset[]>([]);
-  }
-
-  /**
-   * Subscribable Observable that trigger after
-   * a new Identity has been set.
-   * @returns Array of Contact objects from current
-   * active agent
-   */
-  subscribeToAllContacts(): Observable<Contact[]> {
-    // TODO: Remove once the interface does not require this method
-    return new BehaviorSubject<Contact[]>([]);
-  }
-
-  /**
-   * Subscribable Observable that trigger after
-   * a new Identity has been set.
-   * @returns Array of Allowances objects from current
-   * active agent
-   */
-  subscribeToAllAllowances(): Observable<TAllowance[]> {
-    // TODO: Remove once the interface does not require this method
-    return new BehaviorSubject<TAllowance[]>([]);
   }
 
   private _getAssets(): Asset[] {

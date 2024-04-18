@@ -1,7 +1,7 @@
 import { DatabaseOptions, IWalletDatabase } from "@/database/i-wallet-database";
 import { createRxDatabase, RxCollection, RxDocument, RxDatabase, addRxPlugin } from "rxdb";
 import DBSchemas from "./schemas.json";
-import { BehaviorSubject, combineLatest, distinctUntilChanged, from, map, Observable, Subject, switchMap } from "rxjs";
+import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable } from "rxjs";
 import { extractValueFromArray, setupReplication } from "./helpers";
 import { defaultTokens } from "@/defaultTokens";
 // rxdb plugins
@@ -38,11 +38,8 @@ import {
   updateReduxAllowance,
 } from "@redux/allowance/AllowanceReducer";
 
-// Enables data updates, deletions, and replacements within collections
 addRxPlugin(RxDBUpdatePlugin);
-// Facilitates schema evolution for future-proof databases
 addRxPlugin(RxDBMigrationPlugin);
-// Might be useful for debugging and development (disable for production)
 addRxPlugin(RxDBDevModePlugin);
 
 export class RxdbDatabase extends IWalletDatabase {
@@ -57,7 +54,6 @@ export class RxdbDatabase extends IWalletDatabase {
 
   private principalId = "";
   private identity: Identity = new AnonymousIdentity();
-  private identityChanged$: Subject<void> = new Subject<void>();
   private readonly agent = new HttpAgent({ identity: this.identity, host: import.meta.env.VITE_DB_CANISTER_HOST });
   private replicaCanister: any;
 
@@ -609,47 +605,6 @@ export class RxdbDatabase extends IWalletDatabase {
   }
 
   /**
-   * Observable that trigger after
-   * a new Identity has been set.
-   * @returns Array of Contact objects from current
-   * active agent
-   */
-  subscribeToAllContacts(): Observable<Contact[]> {
-    return this.identityChanged$.pipe(
-      switchMap(() => from(this.contacts)),
-      switchMap((collection) => collection?.find().$ || []),
-      map((x: any) => x.map(this._mapContactDoc)),
-    );
-  }
-
-  /**
-   * Observable that triggers after a new Identity has been set.
-   * @returns Array of Asset objects from current
-   * active agent
-   */
-  subscribeToAllAssets(): Observable<Asset[]> {
-    return this.identityChanged$.pipe(
-      switchMap(() => from(this.assets)),
-      switchMap((collection) => collection?.find().$ || []),
-      map((x: any) => x.map(this._mapAssetDoc)),
-    );
-  }
-
-  /**
-   * Subscribable Observable that trigger after
-   * a new Identity has been set.
-   * @returns Array of Allowances objects from current
-   * active agent
-   */
-  subscribeToAllAllowances(): Observable<TAllowance[]> {
-    return this.identityChanged$.pipe(
-      switchMap(() => from(this.allowances)),
-      switchMap((collection) => collection?.find().$ || []),
-      map((x: any) => x.map(this._mapAllowanceDoc)),
-    );
-  }
-
-  /**
    * Obserbable that triggers after documents were pulled from the DB.
    * @returns Array of Assets and Contacts objects pulled from the DB
    */
@@ -772,13 +727,13 @@ export class RxdbDatabase extends IWalletDatabase {
   private async _assetsPushHandler(items: any[]): Promise<AssetRxdbDocument[]> {
     const arg = items.map(
       (x) =>
-        ({
-          ...x,
-          sortIndex: x.sortIndex,
-          updatedAt: Math.floor(Date.now() / 1000),
-          logo: extractValueFromArray(x.logo),
-          index: extractValueFromArray(x.index),
-        } as AssetRxdbDocument),
+      ({
+        ...x,
+        sortIndex: x.sortIndex,
+        updatedAt: Math.floor(Date.now() / 1000),
+        logo: extractValueFromArray(x.logo),
+        index: extractValueFromArray(x.index),
+      } as AssetRxdbDocument),
     );
 
     await this.replicaCanister?.pushAssets(arg);
@@ -816,11 +771,11 @@ export class RxdbDatabase extends IWalletDatabase {
           allowance:
             !!s.allowance && !!s.allowance.allowance
               ? [
-                  {
-                    allowance: [s.allowance.allowance],
-                    expires_at: [s.allowance.expires_at],
-                  },
-                ]
+                {
+                  allowance: [s.allowance.allowance],
+                  expires_at: [s.allowance.expires_at],
+                },
+              ]
               : [],
         })),
       })),
