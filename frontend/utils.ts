@@ -539,3 +539,26 @@ export const getAssetSymbol = (symbol: string, assets: Array<Asset>) => {
     return a.tokenSymbol === symbol;
   })?.symbol;
 };
+
+/**
+ * Remove leading and trailing zeroes from a string representing an amount.
+ * 000000.23 -> 0.23
+ * 000000.2300 -> 0.23
+ * 0.230000000 -> 0.23
+ *
+ * @param amount
+ * @returns
+ */
+export function removeZeroesFromAmount(amount: string) {
+  if (amount === "0") return "0";
+  if (amount === "0.") return "0";
+
+  const parts = amount.split(".");
+  const whole = parts[0].replace(/^0+/, "");
+  const decimals = parts[1].replace(/0+$/, "");
+
+  if (whole === "" && decimals === "") return "0";
+  else if (whole === "") return `0.${decimals}`;
+  else if (decimals === "") return whole;
+  else return `${whole}.${decimals}`;
+}

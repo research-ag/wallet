@@ -21,6 +21,7 @@ import { Asset } from "@redux/models/AccountModels";
 import { getAllowanceAsset } from "../helpers/allowanceMappers";
 import { refreshAllowance } from "../helpers/refreshAllowance";
 import { db } from "@/database/db";
+import { removeZeroesFromAmount } from "@/utils";
 
 export default function useCreateAllowance() {
   const dispatch = useAppDispatch();
@@ -60,6 +61,7 @@ export default function useCreateAllowance() {
     const fullAllowances = {
       ...allowance,
       id: db().generateAllowancePrimaryKey(allowance),
+      amount: removeZeroesFromAmount(allowance.amount || "0"),
     };
 
     validateCreateAllowance(fullAllowances, asset);
