@@ -141,7 +141,7 @@ const TopBarComponent = ({ isLoginPage }: { isLoginPage: boolean }) => {
                 >
                   <p>{t("themes")}</p>
                 </DropdownMenu.Item>
-                {/* {isLoginPage && (
+                {isLoginPage && (
                   <DropdownMenu.Item
                     className={clsx(gearPopItem, "!justify-between", "rounded-b-lg")}
                     onSelect={() => {
@@ -150,7 +150,7 @@ const TopBarComponent = ({ isLoginPage }: { isLoginPage: boolean }) => {
                   >
                     <p>{t("database.location")}</p>
                   </DropdownMenu.Item>
-                )} */}
+                )}
                 {!isLoginPage && (
                   <DropdownMenu.Item
                     className={clsx(gearPopItem, "!justify-between", "rounded-b-lg")}

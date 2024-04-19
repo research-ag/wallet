@@ -125,7 +125,7 @@ export default function CreateForm() {
       const duplicated = await getDuplicatedAllowance(newAllowance);
 
       if (duplicated?.id) {
-        // INFO: exist in ledger and local db
+        // INFO: exist in ledger and local db        
         const isExpirationSame = newAllowance.expiration === duplicated.expiration;
         const isAmountSame = newAllowance.amount === duplicated.amount;
 

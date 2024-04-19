@@ -184,7 +184,7 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, assets, accord
         sortIndex: idx,
       };
 
-      await db().addAssets(tknSave, { sync: true });
+      await db().addAsset(tknSave, { sync: true });
       dispatch(setSelectedAsset(tknSave));
       dispatch(setAccordionAssetIdx([tknSave.symbol]));
 

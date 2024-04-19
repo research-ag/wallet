@@ -2,7 +2,6 @@ import { AuthNetwork } from "@redux/models/TokenModels";
 import { Contact } from "@redux/models/ContactsModels";
 import { TAllowance } from "@/@types/allowance";
 import { Identity } from "@dfinity/agent";
-import { Observable } from "rxjs";
 import { Principal } from "@dfinity/principal";
 import { DB_Type } from "./db";
 import { LocalStorageKeyEnum } from "@/@types/localstorage";
@@ -152,19 +151,11 @@ export abstract class IWalletDatabase {
   abstract getAssets(): Promise<Asset[]>;
 
   /**
-   * Subscribable Observable that triggers after
-   * a new Identity has been set.
-   * @returns Array of Asset objects from current
-   * active agent
-   */
-  abstract subscribeToAllAssets(): Observable<Asset[]>;
-
-  /**
    * Add a new Asset object to the list of Asset objects
    * current active agent has.
    * @param asset Asset object to be added
    */
-  abstract addAssets(asset: Asset, options?: DatabaseOptions): Promise<void>;
+  abstract addAsset(asset: Asset, options?: DatabaseOptions): Promise<void>;
 
   /**
    * Replace the storage of Asset objects with a new
@@ -199,14 +190,6 @@ export abstract class IWalletDatabase {
    * array if no Contact object were found
    */
   abstract getContacts(): Promise<Contact[]>;
-
-  /**
-   * Subscribable Observable that trigger after
-   * a new Identity has been set.
-   * @returns Array of Contact objects from current
-   * active agent
-   */
-  abstract subscribeToAllContacts(): Observable<Contact[]>;
 
   /**
    * Add a new Contact object to the list of Contact objects
@@ -248,14 +231,6 @@ export abstract class IWalletDatabase {
    * array if no Allowance object were found
    */
   abstract getAllowances(): Promise<TAllowance[]>;
-
-  /**
-   * Subscribable Observable that trigger after
-   * a new Identity has been set.
-   * @returns Array of Allowances objects from current
-   * active agent
-   */
-  abstract subscribeToAllAllowances(): Observable<TAllowance[]>;
 
   /**
    * Add a new Allowance object to the list of Allowance objects
