@@ -17,6 +17,7 @@ export default async function reloadBallance() {
       myAgent: store.getState().auth.userAgent,
       assets: dbAssets,
       fromLogin: true,
+      basicSearch: true,
     });
 
     await allowanceCacheRefresh();
