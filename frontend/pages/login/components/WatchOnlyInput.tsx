@@ -17,14 +17,21 @@ export default function WatchOnlyInput(props: WatchOnlyInputProps) {
   const [watchOnlyLoginErr, setWatchOnlyLoginErr] = useState(false);
 
   const [historicalOpen, setHistoricalOpen] = useState(false);
-  const [historicalFocus, setHistoricalFocus] = useState(false);
+
+  console.log({
+    historicalOpen,
+  });
 
   function onOpenChangeHandler(open: boolean) {
     console.log('Popover open:', open);
   };
 
-  function onFofucChangeHandler(focus: boolean) {
-    console.log('Focus:', focus);
+  function onFocusChangeHandler() {
+    if (!historicalOpen) setHistoricalOpen((prev) => !prev);
+  };
+
+  function onHistoricalSelectHandler(principal: string) {
+    console.log('Selected principal:', principal);
   };
 
   return (
@@ -36,7 +43,8 @@ export default function WatchOnlyInput(props: WatchOnlyInputProps) {
         value={principalAddress}
         onChange={onPrincipalChange}
         border={watchOnlyLoginErr ? "error" : undefined}
-        onFocus={() => console.log("focus")}
+        onFocus={onFocusChangeHandler}
+        onBlur={() => setHistoricalOpen(false)}
         // eslint-disable-next-line jsx-a11y/no-autofocus
         autoFocus
         sufix={<CheckIcon className={getCheckIconStyles(principalAddress, watchOnlyLoginErr)} />}
@@ -44,11 +52,21 @@ export default function WatchOnlyInput(props: WatchOnlyInputProps) {
           if (e.key === "Enter") handlePrincipalAuthenticated(principalAddress);
         }}
       />
-      <div className="absolute z-10 w-full mt-1 bg-red-300">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <p key={i}>Historical options</p>
-        ))}
-      </div>
+      {historicalOpen && (
+        <div className="absolute z-10 w-full mt-1">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className="bg-green-600 cursor-pointer hover:bg-green-700" onClick={() => onHistoricalSelectHandler(`0x1234...567${i}`)}>
+              <div className="flex items-center justify-between p-2">
+                <div className="text-sm">
+                  <span className="mr-2">Icon</span>
+                  Principal {i}
+                </div>
+                <div className="text-sm">0x1234...5678</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 
