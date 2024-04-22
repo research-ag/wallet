@@ -27,10 +27,7 @@ export default function WatchOnlyInput(props: WatchOnlyInputProps) {
         onChange={onPrincipalChange}
         border={watchOnlyLoginErr ? "error" : undefined}
         onFocus={onFocusChangeHandler}
-        onBlur={() => setHistoricalOpen(false)}
-        // eslint-disable-next-line jsx-a11y/no-autofocus
-        autoFocus
-        sufix={<CheckIcon className={getCheckIconStyles(principalAddress, watchOnlyLoginErr)} />}
+        sufix={<CheckIcon className={getCheckIconStyles(principalAddress, watchOnlyLoginErr)} onClick={() => handlePrincipalAuthenticated(principalAddress)} />}
         onKeyDown={(e) => {
           if (e.key === "Enter") handlePrincipalAuthenticated(principalAddress);
         }}
@@ -61,8 +58,9 @@ export default function WatchOnlyInput(props: WatchOnlyInputProps) {
   };
 
   function onHistoricalSelectHandler(principal: string) {
-    // FIXME: onBlur close before the state changes
+    setHistoricalOpen(false);
     setPrincipalAddress(principal);
+    onPrincipalChange(principal);
   };
 }
 
@@ -106,7 +104,7 @@ const historicalItems: HistoricalItem[] = [
 
 function getCheckIconStyles(principalAddress: string, watchOnlyLoginErr: boolean) {
   return clsx(
-    "w-4 h-4 opacity-50 mr-2",
+    "w-4 h-4 opacity-50 mr-2 cursor-pointer",
     principalAddress.length > 0 && !watchOnlyLoginErr
       ? "stroke-BorderSuccessColor"
       : "stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor",
