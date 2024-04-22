@@ -17,7 +17,6 @@ import { getICRCSupportedStandards } from "@pages/home/helpers/icrc";
 import { HttpAgent } from "@dfinity/agent";
 import { refreshAssetBalances } from "@/utils/assets";
 import { setTransactions } from "@redux/transaction/TransactionReducer";
-import { db } from "@/database/db";
 
 /**
  * This function updates the balances for all provided assets and their subaccounts, based on the market price and the account balance.
