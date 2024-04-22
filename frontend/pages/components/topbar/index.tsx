@@ -38,7 +38,6 @@ const TopBarComponent = ({ isLoginPage }: { isLoginPage: boolean }) => {
   const { t } = useTranslation();
   const { onLanguageChange } = LanguageHook();
   const { watchOnlyMode } = useAppSelector((state) => state.auth);
-  const { assets } = useAppSelector((state) => state.asset);
   const { isAppDataFreshing } = useAppSelector((state) => state.common);
   const { theme, themeOpen, setThemeOpen } = ThemeHook();
   const { authClient } = AccountHook();
@@ -177,7 +176,7 @@ const TopBarComponent = ({ isLoginPage }: { isLoginPage: boolean }) => {
   );
 
   async function handleReloadButton() {
-    await reloadBallance(assets);
+    await reloadBallance();
   }
 
   function changeLanguage(lang: string) {
