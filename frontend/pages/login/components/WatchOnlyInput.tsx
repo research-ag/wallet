@@ -88,7 +88,7 @@ function HistoricalItem(props: HistoricalItemProps) {
 
 interface HistoricalItem { principal: string; alias?: string; };
 
-const historicalItems: HistoricalItem[] = [
+export const historicalItems: HistoricalItem[] = [
   { principal: "gjcgk-x4xlt-6dzvd-q3mrr-pvgj5-5bjoe-beege-n4b7d-7hna5-pa5uq-5qe", alias: "Will" },
   { principal: "r4jkc-ykktj-k5y7l-fqule-ypybt-h2m5n-nzvlk-xov2a-ipgn7-wb5hx-yae", alias: "Alex" },
   { principal: "fu2m3-wba2s-but7a-nh2mf-w6suf-f5wgs-66ypw-lk3sq-wmtwi-mulho-eqe", alias: "Marcus" },
