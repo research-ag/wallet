@@ -553,6 +553,11 @@ export function removeZeroesFromAmount(amount: string) {
   if (amount === "0") return "0";
   if (amount === "0.") return "0";
 
+  if (!amount.includes(".")) {
+    if (!amount.startsWith("0")) return amount;
+    return amount.replace(/^0+/, "");
+  };
+
   const parts = amount.split(".");
   const whole = parts[0].replace(/^0+/, "");
   const decimals = parts[1].replace(/0+$/, "");
