@@ -8,6 +8,7 @@ import DeleteWatchOnlyRecordModal from "./DeleteWatchOnlyRecordModal";
 import { EditWatchOnlyItem } from "./WatchOnlyRecords";
 import { WatchOnlyItem } from "@pages/login/components/WatchOnlyInput";
 import { getWatchOnlySessionsFromLocal, updateWatchOnlySessionFromLocal } from "@pages/helpers/watchOnlyStorage";
+import { handlePrincipalAuthenticated } from "@redux/CheckAuth";
 
 interface WatchOnlyRecordProps {
   watchOnlyItem: EditWatchOnlyItem | null;
@@ -25,7 +26,7 @@ export default function WatchOnlyRecord(props: WatchOnlyRecordProps) {
   return (
     <div
       key={data.principal}
-      className="flex items-center justify-between p-1 cursor-pointer dark:hover:bg-secondary-color-2 hover:bg-secondary-color-2-light"
+      className="flex items-center justify-between p-1 cursor-pointer dark:hover:bg-secondary-color-1 hover:bg-secondary-color-1-light"
     >
       {isBeingEdited && !watchOnlyItem.isDelete ? (
         <CustomInput
@@ -103,8 +104,7 @@ export default function WatchOnlyRecord(props: WatchOnlyRecordProps) {
     setWatchOnlyItem({ ...data, isValid: true, isDelete: false });
   }
 
-  function onChangeSession() {
-    console.log("onChangeSession");
-    setWatchOnlyItem(null);
+  async function onChangeSession() {
+    await handlePrincipalAuthenticated(data.principal);
   }
 }

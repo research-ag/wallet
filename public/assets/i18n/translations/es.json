@@ -169,6 +169,7 @@
   "allowance.permanently.deleted": "Esta Asignación se eliminará permanentemente.",
   "allowance.edit.allowance": "Editar Asignación",
   "watchOnlyMode.title": "Modo Solo-Mirar",
+  "watchOnlyMode.delete.message": "¿Estás seguro de que deseas eliminar la cuenta?",
 
   "error.asset.empty": "El activo está vacío",
   "error.sender.empty": "El remitente está vacío",

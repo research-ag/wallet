@@ -29,8 +29,8 @@ export default function DeleteWatchOnlyRecordModal({ record, onClose }: DeleteWa
         <Cross1Icon className="self-end mt-1 mr-2 cursor-pointer" onClick={onClose} />
       </div>
 
-      <div className="px-1 my-4">
-        <p className="my-2 text-lg text-left">Are you sure you want to delete this record?</p>
+      <div className="px-2">
+        <p className="my-2 text-lg text-left">{t("watchOnlyMode.delete.message")}</p>
 
         <span className="font-bold text-left">
           {record?.alias ? record?.alias : "-"} ({shortAddress(record?.principal, 10, 10)})
