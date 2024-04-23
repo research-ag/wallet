@@ -15,6 +15,9 @@ export default function Pill({ text, start, end, icon }: PillProps) {
   const { watchOnlyMode } = useAppSelector((state) => state.auth);
   const [historicalOpen, setHistoricalOpen] = useState(false);
 
+  console.log("re-render");
+  
+
   return (
     <div className="relative">
       <div className="px-3 py-1 rounded-full bg-GrayColor/50">
@@ -23,18 +26,23 @@ export default function Pill({ text, start, end, icon }: PillProps) {
           {shortAddress(text, start, end)}
           {watchOnlyMode &&
             (historicalOpen ? (
-              <ChevronDownIcon className="w-4 h-4 cursor-pointer" onClick={onOpenHistorical} />
+              <ChevronDownIcon className="w-4 h-4 cursor-pointer" onClick={onOpenChange} />
             ) : (
-              <ChevronLeftIcon className="w-4 h-4 cursor-pointer" onClick={onOpenHistorical} />
+              <ChevronLeftIcon className="w-4 h-4 cursor-pointer" onClick={onOpenChange} />
             ))}
         </div>
       </div>
 
-      {watchOnlyMode && historicalOpen && <WatchOnlyRecords start={start} end={end} />}
+      {watchOnlyMode && historicalOpen && (
+        <>
+          <div className="fixed inset-0 z-10" onClick={onOpenChange}></div>
+          <WatchOnlyRecords start={start} end={end} />
+        </>
+      )}
     </div>
   );
 
-  function onOpenHistorical() {
+  function onOpenChange() {
     setHistoricalOpen((prev) => !prev);
   }
 }
