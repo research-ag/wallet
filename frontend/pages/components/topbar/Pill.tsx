@@ -1,9 +1,9 @@
 import { shortAddress } from "@/utils";
-import { Principal } from "@dfinity/principal";
-import { HistoricalItem, historicalItems } from "@pages/login/components/WatchOnlyInput";
-import { ChevronDownIcon, ChevronLeftIcon, Cross1Icon, Pencil1Icon } from "@radix-ui/react-icons";
+import { CustomInput } from "@components/input";
+import { historicalItems, WatchOnlyItem } from "@pages/login/components/WatchOnlyInput";
+import { CheckIcon, ChevronDownIcon, ChevronLeftIcon, Cross1Icon, Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
 import { useAppSelector } from "@redux/Store";
-import { useState } from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 
 interface PillProps {
   text: string;
@@ -34,12 +34,7 @@ export default function Pill({ text, start, end, icon }: PillProps) {
       </div>
 
       {(watchOnlyMode && historicalOpen) && (
-        <div className="absolute z-10 w-full max-h-[10rem] overflow-y-auto  scroll-y-light bg-white dark:bg-level-1-color text-left mt-1 rounded-lg shadow-lg">
-
-          {historicalItems.map((data) =>
-            <Element key={data.principal} data={data} start={start} end={end} />)}
-
-        </div>
+        <SessionList start={start} end={end} />
       )}
 
     </div>
@@ -51,24 +46,64 @@ export default function Pill({ text, start, end, icon }: PillProps) {
 
 }
 
-function Element({ data, start, end }: { data: HistoricalItem, start: number, end: number }) {
-  const [aliasPrincipal, setAliasPrincipal] = useState<Principal | null>(null);
+// -------------------------------------- COMPONENT ---------------------------------------- //
+
+interface SessionListProps {
+  start: number;
+  end: number;
+};
+
+interface EditWatchOnlyItem extends Pick<WatchOnlyItem, "principal" | "alias"> {
+  isValid: boolean;
+};
+
+function SessionList({ start, end }: SessionListProps) {
+  const [watchOnlyItem, setWatchOnlyItem] = useState<EditWatchOnlyItem | null>(null);
+
+  console.log(watchOnlyItem?.alias);
 
 
   return (
-    <div key={data.principal} className="flex items-center justify-between p-1 cursor-pointer dark:hover:bg-secondary-color-2 hover:bg-secondary-color-2-light" onClick={() => onChangeSession(data.principal)}>
+    <div className="absolute z-10 w-full max-h-[10rem] overflow-y-auto  scroll-y-light bg-white dark:bg-level-1-color text-left mt-1 rounded-lg shadow-lg">
 
-      {aliasPrincipal ?
+      {historicalItems.map((data) =>
+        <Element key={data.principal} data={data} start={start} end={end} watchOnlyItem={watchOnlyItem} setWatchOnlyItem={setWatchOnlyItem} />
+      )}
+
+    </div>
+  )
+}
+
+// ------------------------------------ COMPONENT --------------------------------------- //
+
+interface ElementProps {
+  watchOnlyItem: EditWatchOnlyItem | null;
+  setWatchOnlyItem: Dispatch<SetStateAction<EditWatchOnlyItem | null>>;
+  data: WatchOnlyItem;
+  start: number;
+  end: number;
+};
+
+function Element({ data, start, end, watchOnlyItem, setWatchOnlyItem }: ElementProps) {
+
+  const isBeingEdited = watchOnlyItem?.principal?.toString() === data.principal;
+
+  return (
+    <div key={data.principal} className="flex items-center justify-between p-1 cursor-pointer dark:hover:bg-secondary-color-2 hover:bg-secondary-color-2-light" onClick={onChangeSession}>
+
+      {isBeingEdited ?
         (
-          <div>
-            <input
-              type="text"
-              className="w-full"
-              value={data.alias}
-              onChange={(e) => console.log(e.target.value)}
-              autoFocus
-            />
-          </div>
+          <CustomInput
+            intent="primary"
+            placeholder="Alias"
+            value={watchOnlyItem?.alias || ""}
+            border={watchOnlyItem.isValid ? undefined : "error"}
+            sizeComp="small"
+            sizeInput="small"
+            inputClass="h-6"
+            autoFocus
+            onChange={onEditInputChanged}
+          />
         )
         : (
           <p>
@@ -80,19 +115,55 @@ function Element({ data, start, end }: { data: HistoricalItem, start: number, en
         )
       }
 
-      {aliasPrincipal
-        ? <Cross1Icon className="w-3 h-3" onClick={() => console.log("Delete alias")} />
-        : <Pencil1Icon className="w-3 h-3" onClick={() => onEditAlias(data.principal)} />
+      {isBeingEdited
+        ? (
+          <div className="flex">
+            <Cross1Icon className="w-3 h-3 ml-1" onClick={onCancelEdit} />
+            <CheckIcon className="w-3 h-3 ml-1" onClick={onSaveEdit} />
+          </div>
+        )
+        : (
+          <div className="flex">
+            <Pencil1Icon className="w-3 h-3 ml-1" onClick={onEditAlias} />
+            <TrashIcon className="w-3 h-3 ml-1" onClick={onDelete} />
+          </div>
+        )
       }
 
     </div>
   )
 
-  function onEditAlias(principal: string) {
-    setAliasPrincipal(Principal.fromText(principal));
+  function onEditInputChanged(event: ChangeEvent<HTMLInputElement>) {
+    event.preventDefault();
+
+    // INFO: only allow alphanumeric characters and spaces
+    const regexAliasValidation = /^[a-zA-Z0-9]+( [a-zA-Z0-9]+)*$/;
+    const alias = event.target.value;
+    const isValid = regexAliasValidation.test(alias) && alias.length <= 20;
+
+    setWatchOnlyItem((prev) => {
+      return { ...prev, alias, principal: data.principal, isValid };
+    });
   };
 
-  function onChangeSession(principal: string) {
-    console.log("Change session to: ", principal);
+  function onSaveEdit() {
+    console.log("save edit");
+
+  };
+
+  function onDelete() {
+    console.log("delete");
+  };
+
+  function onCancelEdit() {
+    setWatchOnlyItem(null);
+  };
+
+  function onEditAlias() {
+    setWatchOnlyItem({ ...data, isValid: true });
+  };
+
+  function onChangeSession() {
+    console.log("change session");
   };
 };
