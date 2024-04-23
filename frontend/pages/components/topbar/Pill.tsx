@@ -13,7 +13,6 @@ interface PillProps {
 };
 
 export default function Pill({ text, start, end, icon }: PillProps) {
-  console.log("Pill rendered");
   const { watchOnlyMode } = useAppSelector(state => state.auth);
   const [historicalOpen, setHistoricalOpen] = useState(false);
 
@@ -59,8 +58,9 @@ interface EditWatchOnlyItem extends Pick<WatchOnlyItem, "principal" | "alias"> {
 };
 
 function SessionList({ start, end }: SessionListProps) {
-  console.log("SessionList rendered");
   const [watchOnlyItem, setWatchOnlyItem] = useState<EditWatchOnlyItem | null>(null);
+  console.log("watchOnlyItem", watchOnlyItem);
+
 
   return (
     <div className="absolute z-10 w-full max-h-[10rem] overflow-y-auto  scroll-y-light bg-white dark:bg-level-1-color text-left mt-1 rounded-lg shadow-lg">
@@ -84,12 +84,10 @@ interface ElementProps {
 };
 
 function Element({ data, start, end, watchOnlyItem, setWatchOnlyItem }: ElementProps) {
-  console.log("Element rendered");
-
   const isBeingEdited = watchOnlyItem?.principal?.toString() === data.principal;
 
   return (
-    <div key={data.principal} className="flex items-center justify-between p-1 cursor-pointer dark:hover:bg-secondary-color-2 hover:bg-secondary-color-2-light" onClick={onChangeSession}>
+    <div key={data.principal} className="flex items-center justify-between p-1 cursor-pointer dark:hover:bg-secondary-color-2 hover:bg-secondary-color-2-light">
 
       {isBeingEdited ?
         (
@@ -106,12 +104,12 @@ function Element({ data, start, end, watchOnlyItem, setWatchOnlyItem }: ElementP
           />
         )
         : (
-          <p>
+          <div className="text-md" onClick={onChangeSession}>
             {data.alias ? data.alias : "-"}
             <span className="text-gray-400"> ({
               shortAddress(data.principal, start, end - (data?.alias?.length || 0))
             })</span>
-          </p>
+          </div>
         )
       }
 
@@ -147,22 +145,27 @@ function Element({ data, start, end, watchOnlyItem, setWatchOnlyItem }: ElementP
   };
 
   function onSaveEdit() {
+    console.log("onSaveEdit");
     setWatchOnlyItem(null);
   };
 
   function onDelete() {
+    console.log("onDelete");
     setWatchOnlyItem(null);
   };
 
   function onCancelEdit() {
+    console.log("onCancelEdit");
     setWatchOnlyItem(null);
   };
 
   function onEditAlias() {
+    console.log("onEditAlias");
     setWatchOnlyItem({ ...data, isValid: true });
   };
 
   function onChangeSession() {
+    console.log("onChangeSession");
     setWatchOnlyItem(null);
   };
 };
