@@ -2,9 +2,12 @@ import { shortAddress } from "@/utils";
 import { CustomInput } from "@components/input";
 import { WatchOnlyItem } from "@pages/login/components/WatchOnlyInput";
 import { CheckIcon, ChevronDownIcon, ChevronLeftIcon, Cross1Icon, Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
+import { ReactComponent as WarningIcon } from "@assets/svg/files/warning.svg";
 import { setWatchOnlyHistory } from "@redux/common/CommonReducer";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
+import { BasicModal } from "@components/modal";
+import { useTranslation } from "react-i18next";
 
 interface PillProps {
   text: string;
@@ -50,12 +53,12 @@ interface SessionListProps {
 
 interface EditWatchOnlyItem extends Pick<WatchOnlyItem, "principal" | "alias"> {
   isValid: boolean;
+  isDelete: boolean;
 }
 
 function SessionList({ start, end }: SessionListProps) {
   const { watchOnlyHistory } = useAppSelector((state) => state.common);
   const [watchOnlyItem, setWatchOnlyItem] = useState<EditWatchOnlyItem | null>(null);
-  console.log("watchOnlyItem", watchOnlyItem);
 
   return (
     <div className="absolute z-10 w-full max-h-[10rem] overflow-y-auto  scroll-y-light bg-white dark:bg-level-1-color text-left mt-1 rounded-lg shadow-lg">
@@ -92,7 +95,7 @@ function Element({ data, start, end, watchOnlyItem, setWatchOnlyItem }: ElementP
       key={data.principal}
       className="flex items-center justify-between p-1 cursor-pointer dark:hover:bg-secondary-color-2 hover:bg-secondary-color-2-light"
     >
-      {isBeingEdited ? (
+      {isBeingEdited && !watchOnlyItem.isDelete ? (
         <CustomInput
           intent="primary"
           placeholder="Alias"
@@ -109,12 +112,14 @@ function Element({ data, start, end, watchOnlyItem, setWatchOnlyItem }: ElementP
           {data.alias ? data.alias : "-"}
           <span className="text-gray-400">
             {" "}
-            ({shortAddress(data.principal, start, end - (data?.alias?.length || 0))})
+            (
+            {shortAddress(data.principal, start - (data?.alias?.length || 0) / 2, end - (data?.alias?.length || 0) / 2)}
+            )
           </span>
         </div>
       )}
 
-      {isBeingEdited ? (
+      {isBeingEdited && !watchOnlyItem.isDelete ? (
         <div className="flex">
           <Cross1Icon className="w-3 h-3 ml-1" onClick={onCancelEdit} />
           <CheckIcon className="w-3 h-3 ml-1" onClick={onSaveEdit} />
@@ -124,6 +129,10 @@ function Element({ data, start, end, watchOnlyItem, setWatchOnlyItem }: ElementP
           <Pencil1Icon className="w-3 h-3 ml-1" onClick={onEditAlias} />
           <TrashIcon className="w-3 h-3 ml-1" onClick={onDelete} />
         </div>
+      )}
+
+      {watchOnlyItem?.isDelete && (
+        <DeleteWatchOnlyRecordModal record={watchOnlyItem} onClose={() => setWatchOnlyItem(null)} />
       )}
     </div>
   );
@@ -137,7 +146,7 @@ function Element({ data, start, end, watchOnlyItem, setWatchOnlyItem }: ElementP
     const isValid = regexAliasValidation.test(alias) && alias.length <= 20;
 
     setWatchOnlyItem((prev) => {
-      return { ...prev, alias, principal: data.principal, isValid };
+      return { ...prev, alias, principal: data.principal, isValid, isDelete: false };
     });
   }
 
@@ -152,18 +161,15 @@ function Element({ data, start, end, watchOnlyItem, setWatchOnlyItem }: ElementP
   }
 
   function onDelete() {
-    console.log("onDelete");
-    setWatchOnlyItem(null);
+    setWatchOnlyItem({ ...data, isValid: true, isDelete: true });
   }
 
   function onCancelEdit() {
-    console.log("onCancelEdit");
     setWatchOnlyItem(null);
   }
 
   function onEditAlias() {
-    console.log("onEditAlias");
-    setWatchOnlyItem({ ...data, isValid: true });
+    setWatchOnlyItem({ ...data, isValid: true, isDelete: false });
   }
 
   function onChangeSession() {
@@ -172,15 +178,68 @@ function Element({ data, start, end, watchOnlyItem, setWatchOnlyItem }: ElementP
   }
 }
 
+// -------------------------------------- COMPONENT ---------------------------------------- //
+
+interface DeleteWatchOnlyRecordModalProps {
+  record: WatchOnlyItem;
+  onClose: () => void;
+}
+
+function DeleteWatchOnlyRecordModal({ record, onClose }: DeleteWatchOnlyRecordModalProps) {
+  const dispatch = useAppDispatch();
+  const { t } = useTranslation();
+
+  return (
+    <BasicModal
+      open={true}
+      width="w-[20rem]"
+      padding="py-3 px-1"
+      border="border border-BorderColorTwoLight dark:border-BorderColorTwo"
+    >
+      <div className="flex justify-between w-full px-2">
+        <WarningIcon className="w-6 h-6" />
+        <Cross1Icon className="self-end mt-1 mr-2 cursor-pointer" onClick={onClose} />
+      </div>
+
+      <div className="px-1 my-4">
+        <p className="my-2 text-lg text-left">Are you sure you want to delete this record?</p>
+
+        <span className="font-bold text-left">
+          {record?.alias ? record?.alias : "-"} ({shortAddress(record?.principal, 10, 10)})
+        </span>
+      </div>
+
+      <div className="flex justify-between w-full px-4 mt-2">
+        <span></span>
+        <button
+          className="flex justify-center items-center ml-2 p-0.5 bg-slate-color-error rounded cursor-pointer"
+          onClick={onDelete}
+        >
+          <p className="px-2 py-1 font-bold text-md">{t("delete")}</p>
+        </button>
+      </div>
+    </BasicModal>
+  );
+
+  function onDelete() {
+    deleteWatchOnlySessionFromLocal(record?.principal);
+    const updated = getWatchOnlySessionsFromLocal();
+    dispatch(setWatchOnlyHistory(updated));
+    onClose();
+  }
+}
+
 // ------------------------------------ UTILS --------------------------------------- //
 
+const WATCH_ONLY_SESSIONS = "watch-only-sessions";
+
 export function getWatchOnlySessionsFromLocal(): WatchOnlyItem[] {
-  const watchOnlyItems = localStorage.getItem("watch-only-sessions");
+  const watchOnlyItems = localStorage.getItem(WATCH_ONLY_SESSIONS);
   return watchOnlyItems ? JSON.parse(watchOnlyItems) : [];
 }
 
 export function setWatchOnlySessionsToLocal(watchOnlyItems: WatchOnlyItem[]) {
-  localStorage.setItem("watch-only-sessions", JSON.stringify(watchOnlyItems));
+  localStorage.setItem(WATCH_ONLY_SESSIONS, JSON.stringify(watchOnlyItems));
 }
 
 export function addWatchOnlySessionToLocal(newWatchOnlyItem: WatchOnlyItem) {

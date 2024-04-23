@@ -30,10 +30,6 @@ const commonSlice = createSlice({
   },
 });
 
-export const {
-  setAppDataRefreshing,
-  setLastDataRefresh,
-  setWatchOnlyHistory
-} = commonSlice.actions;
+export const { setAppDataRefreshing, setLastDataRefresh, setWatchOnlyHistory } = commonSlice.actions;
 
 export default commonSlice.reducer;
