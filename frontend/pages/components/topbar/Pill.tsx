@@ -140,7 +140,8 @@ function Element({ data, start, end, watchOnlyItem, setWatchOnlyItem }: ElementP
   }
 
   function onSaveEdit() {
-    console.log("onSaveEdit");
+    if (!watchOnlyItem || !watchOnlyItem?.isValid) return;
+    updateWatchOnlySessionFromLocal(watchOnlyItem);
     setWatchOnlyItem(null);
   }
 

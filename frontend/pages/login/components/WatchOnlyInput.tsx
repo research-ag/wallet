@@ -4,9 +4,11 @@ import { CustomInput } from "@components/input";
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { handlePrincipalAuthenticated } from "@redux/CheckAuth";
 import { clsx } from "clsx";
-import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from "react";
 import { CounterClockwiseClockIcon } from "@radix-ui/react-icons";
 import { getWatchOnlySessionsFromLocal } from "@pages/components/topbar/Pill";
+import { setWatchOnlyHistory } from "@redux/common/CommonReducer";
+import { useAppDispatch, useAppSelector } from "@redux/Store";
 
 interface WatchOnlyInputProps {
   principalAddress: string;
@@ -14,10 +16,16 @@ interface WatchOnlyInputProps {
 }
 
 export default function WatchOnlyInput(props: WatchOnlyInputProps) {
-  const [watchOnlyItems] = useState<WatchOnlyItem[]>(getWatchOnlySessionsFromLocal());
   const { principalAddress, setPrincipalAddress } = props;
+  const { watchOnlyHistory } = useAppSelector((state) => state.common);
   const [watchOnlyLoginErr, setWatchOnlyLoginErr] = useState(false);
   const [historicalOpen, setHistoricalOpen] = useState(false);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const watchOnlyItems = getWatchOnlySessionsFromLocal();
+    dispatch(setWatchOnlyHistory(watchOnlyItems));
+  }, []);
 
   return (
     <div className="relative w-full">
@@ -39,9 +47,9 @@ export default function WatchOnlyInput(props: WatchOnlyInputProps) {
           if (e.key === "Enter") handlePrincipalAuthenticated(principalAddress);
         }}
       />
-      {historicalOpen && watchOnlyItems.length > 0 && (
+      {historicalOpen && watchOnlyHistory.length > 0 && (
         <div className={itemsRootStyles}>
-          {watchOnlyItems.map((data) => (
+          {watchOnlyHistory.map((data) => (
             <HistoricalItem key={data.principal} onHistoricalSelectHandler={onHistoricalSelectHandler} data={data} />
           ))}
         </div>
