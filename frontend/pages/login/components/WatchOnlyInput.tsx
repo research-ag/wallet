@@ -5,7 +5,7 @@ import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { handlePrincipalAuthenticated } from "@redux/CheckAuth";
 import { clsx } from "clsx";
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
-import { CounterClockwiseClockIcon } from "@radix-ui/react-icons"
+import { CounterClockwiseClockIcon } from "@radix-ui/react-icons";
 
 interface WatchOnlyInputProps {
   principalAddress: string;
@@ -27,16 +27,21 @@ export default function WatchOnlyInput(props: WatchOnlyInputProps) {
         onChange={onPrincipalChange}
         border={watchOnlyLoginErr ? "error" : undefined}
         onFocus={onFocusChangeHandler}
-        sufix={<CheckIcon className={getCheckIconStyles(principalAddress, watchOnlyLoginErr)} onClick={() => handlePrincipalAuthenticated(principalAddress)} />}
+        sufix={
+          <CheckIcon
+            className={getCheckIconStyles(principalAddress, watchOnlyLoginErr)}
+            onClick={() => handlePrincipalAuthenticated(principalAddress)}
+          />
+        }
         onKeyDown={(e) => {
           if (e.key === "Enter") handlePrincipalAuthenticated(principalAddress);
         }}
       />
-      {(historicalOpen && historicalItems.length) && (
+      {historicalOpen && historicalItems.length > 0 && (
         <div className={itemsRootStyles}>
-          {historicalItems.map((data) =>
+          {historicalItems.map((data) => (
             <HistoricalItem key={data.principal} onHistoricalSelectHandler={onHistoricalSelectHandler} data={data} />
-          )}
+          ))}
         </div>
       )}
     </div>
@@ -55,20 +60,20 @@ export default function WatchOnlyInput(props: WatchOnlyInputProps) {
 
   function onFocusChangeHandler() {
     if (!historicalOpen) setHistoricalOpen((prev) => !prev);
-  };
+  }
 
   function onHistoricalSelectHandler(principal: string) {
     setHistoricalOpen(false);
     setPrincipalAddress(principal);
     onPrincipalChange(principal);
-  };
+  }
 }
 
 interface HistoricalItemProps {
   onHistoricalSelectHandler: (principal: string) => void;
   data: WatchOnlyItem;
   isLast?: boolean;
-};
+}
 
 function HistoricalItem(props: HistoricalItemProps) {
   const { onHistoricalSelectHandler, data } = props;
@@ -78,29 +83,20 @@ function HistoricalItem(props: HistoricalItemProps) {
       <div className="flex items-center justify-between">
         <CounterClockwiseClockIcon className="w-4 h-4 mr-2" />
         <div className="text-left">
-          <div className="text-sm">{(!data?.alias || data?.alias?.length > 0) ? data.alias : "-"}</div>
+          <div className="text-sm">{!data?.alias || data?.alias?.length > 0 ? data.alias : "-"}</div>
           <div className="text-sm">{data.principal}</div>
         </div>
       </div>
     </div>
   );
-};
+}
 
-export interface WatchOnlyItem { principal: string; alias?: string; };
+export interface WatchOnlyItem {
+  principal: string;
+  alias?: string;
+}
 
-export const historicalItems: WatchOnlyItem[] = [
-  { principal: "gjcgk-x4xlt-6dzvd-q3mrr-pvgj5-5bjoe-beege-n4b7d-7hna5-pa5uq-5qe", alias: "Will" },
-  { principal: "r4jkc-ykktj-k5y7l-fqule-ypybt-h2m5n-nzvlk-xov2a-ipgn7-wb5hx-yae", alias: "Alex" },
-  { principal: "fu2m3-wba2s-but7a-nh2mf-w6suf-f5wgs-66ypw-lk3sq-wmtwi-mulho-eqe", alias: "Marcus" },
-  { principal: "7gits-op7kf-cwpag-qpxem-ii76c-4a354-rssxw-m577x-xwngm-ofizz-gae", alias: "Daniel" },
-  { principal: "7hqk2-23ch6-eh6aw-qlvfl-qcjj5-xuzqr-lhofr-bei27-hhzx7-55smf-gqe", alias: "Michael" },
-  { principal: "4byn6-vtzez-5snfu-ehawo-yowuh-rzvrg-6ipvm-iybnd-x5my2-4my4v-eqe", alias: "Luis" },
-  { principal: "gcaux-pumlo-me3jn-amyhs-r23a3-ki6zt-rhu7z-u6vaz-ionv3-kvsvw-2ae", alias: "Jackson" },
-  { principal: "v6nsf-f45ft-d2rrq-bhwey-4ua3n-5p6oh-vxnhc-vsehj-nx346-d3l2k-bqe", alias: "Allen" },
-  { principal: "xouds-7gntn-y4phg-nyclq-bruoh-bjkft-lfkmx-yzber-ngxmx-45hul-jqe", alias: "Alba" },
-  { principal: "26qgg-pi4c6-j5ebh-6s77s-j5blv-c3gvt-lbu3q-gucki-clsm2-mdidp-eae", alias: "Anderson" },
-  { principal: "a5qju-4vogb-ioqpe-4tmoe-fsc46-qtahz-7u77z-lt42a-6qb6b-ajf6c-oae", alias: "Anthony" },
-];
+export const historicalItems: WatchOnlyItem[] = [];
 
 function getCheckIconStyles(principalAddress: string, watchOnlyLoginErr: boolean) {
   return clsx(
