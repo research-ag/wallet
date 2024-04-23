@@ -21,12 +21,12 @@ export default function Pill({ text, start, end, icon }: PillProps) {
         <div className="flex items-center justify-center w-full gap-2 whitespace-nowrap">
           <img src={icon} alt="icon" className="w-5" />
           {shortAddress(text, start, end)}
-          {watchOnlyMode &&
-            (historicalOpen ? (
-              <ChevronDownIcon className="w-4 h-4 cursor-pointer" onClick={onOpenChange} />
-            ) : (
-              <ChevronLeftIcon className="w-4 h-4 cursor-pointer" onClick={onOpenChange} />
-            ))}
+          {watchOnlyMode && (
+            <>
+              {historicalOpen ? <ChevronDownIcon className="w-4 h-4 cursor-pointer" onClick={onOpenChange} /> : null}
+              {!historicalOpen ? <ChevronLeftIcon className="w-4 h-4 cursor-pointer" onClick={onOpenChange} /> : null}
+            </>
+          )}
         </div>
       </div>
 
