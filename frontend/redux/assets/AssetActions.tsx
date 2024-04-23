@@ -5,7 +5,7 @@ import { IcrcAccount, IcrcIndexCanister, IcrcTokenMetadataResponse } from "@dfin
 
 import { formatIcpTransaccion, getMetadataInfo, formatckBTCTransaccion, hexToUint8Array } from "@/utils";
 
-import { setTokenMarket, setICPSubaccounts, setAccordionAssetIdx } from "./AssetReducer";
+import { setTokenMarket, setICPSubaccounts, setAccordionAssetIdx, setAssets } from "./AssetReducer";
 
 import { AccountIdentifier, SubAccount as SubAccountNNS } from "@dfinity/ledger-icp";
 import { Asset, ICPSubAccount } from "@redux/models/AccountModels";
@@ -17,7 +17,6 @@ import { getICRCSupportedStandards } from "@pages/home/helpers/icrc";
 import { HttpAgent } from "@dfinity/agent";
 import { refreshAssetBalances } from "@/utils/assets";
 import { setTransactions } from "@redux/transaction/TransactionReducer";
-import { db } from "@/database/db";
 
 /**
  * This function updates the balances for all provided assets and their subaccounts, based on the market price and the account balance.
@@ -49,7 +48,7 @@ export const updateAllBalances: UpdateAllBalances = async (params) => {
   });
 
   const newAssetsUpload = updateAssets.sort((a, b) => a.sortIndex - b.sortIndex);
-  await db().updateAssets(newAssetsUpload, { sync: true });
+  store.dispatch(setAssets(newAssetsUpload));
 
   if (loading) {
     if (fromLogin) {

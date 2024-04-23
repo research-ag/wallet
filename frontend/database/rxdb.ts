@@ -177,7 +177,6 @@ export class RxdbDatabase extends IWalletDatabase {
       await this._contactStateSync();
       await this._allowanceStateSync();
     }
-
   }
 
   /**
@@ -725,13 +724,13 @@ export class RxdbDatabase extends IWalletDatabase {
   private async _assetsPushHandler(items: any[]): Promise<AssetRxdbDocument[]> {
     const arg = items.map(
       (x) =>
-      ({
-        ...x,
-        sortIndex: x.sortIndex,
-        updatedAt: Math.floor(Date.now() / 1000),
-        logo: extractValueFromArray(x.logo),
-        index: extractValueFromArray(x.index),
-      } as AssetRxdbDocument),
+        ({
+          ...x,
+          sortIndex: x.sortIndex,
+          updatedAt: Math.floor(Date.now() / 1000),
+          logo: extractValueFromArray(x.logo),
+          index: extractValueFromArray(x.index),
+        } as AssetRxdbDocument),
     );
 
     await this.replicaCanister?.pushAssets(arg);
@@ -769,11 +768,11 @@ export class RxdbDatabase extends IWalletDatabase {
           allowance:
             !!s.allowance && !!s.allowance.allowance
               ? [
-                {
-                  allowance: [s.allowance.allowance],
-                  expires_at: [s.allowance.expires_at],
-                },
-              ]
+                  {
+                    allowance: [s.allowance.allowance],
+                    expires_at: [s.allowance.expires_at],
+                  },
+                ]
               : [],
         })),
       })),

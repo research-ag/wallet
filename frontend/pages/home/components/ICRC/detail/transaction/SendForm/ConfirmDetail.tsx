@@ -30,7 +30,6 @@ interface ConfirmDetailProps {
 export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailProps) {
   const { t } = useTranslation();
   const { sender, errors, isLoading } = useAppSelector((state) => state.transaction);
-  const { assets } = useAppSelector((state) => state.asset);
   const {
     receiverPrincipal,
     receiverSubAccount,
@@ -179,7 +178,7 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
       setSendingStatusAction(SendingStatusEnum.Values.error);
       setEndTxTime(new Date());
     } finally {
-      reloadBallance(assets);
+      reloadBallance();
       setIsLoadingAction(false);
     }
   }
