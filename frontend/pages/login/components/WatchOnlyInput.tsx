@@ -6,6 +6,7 @@ import { handlePrincipalAuthenticated } from "@redux/CheckAuth";
 import { clsx } from "clsx";
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import { CounterClockwiseClockIcon } from "@radix-ui/react-icons";
+import { getWatchOnlySessionsFromLocal } from "@pages/components/topbar/Pill";
 
 interface WatchOnlyInputProps {
   principalAddress: string;
@@ -13,6 +14,7 @@ interface WatchOnlyInputProps {
 }
 
 export default function WatchOnlyInput(props: WatchOnlyInputProps) {
+  const [watchOnlyItems] = useState<WatchOnlyItem[]>(getWatchOnlySessionsFromLocal());
   const { principalAddress, setPrincipalAddress } = props;
   const [watchOnlyLoginErr, setWatchOnlyLoginErr] = useState(false);
   const [historicalOpen, setHistoricalOpen] = useState(false);
@@ -37,9 +39,9 @@ export default function WatchOnlyInput(props: WatchOnlyInputProps) {
           if (e.key === "Enter") handlePrincipalAuthenticated(principalAddress);
         }}
       />
-      {historicalOpen && historicalItems.length > 0 && (
+      {historicalOpen && watchOnlyItems.length > 0 && (
         <div className={itemsRootStyles}>
-          {historicalItems.map((data) => (
+          {watchOnlyItems.map((data) => (
             <HistoricalItem key={data.principal} onHistoricalSelectHandler={onHistoricalSelectHandler} data={data} />
           ))}
         </div>
@@ -95,8 +97,6 @@ export interface WatchOnlyItem {
   principal: string;
   alias?: string;
 }
-
-export const historicalItems: WatchOnlyItem[] = [];
 
 function getCheckIconStyles(principalAddress: string, watchOnlyLoginErr: boolean) {
   return clsx(

@@ -1,6 +1,6 @@
 import { shortAddress } from "@/utils";
 import { CustomInput } from "@components/input";
-import { historicalItems, WatchOnlyItem } from "@pages/login/components/WatchOnlyInput";
+import { WatchOnlyItem } from "@pages/login/components/WatchOnlyInput";
 import { CheckIcon, ChevronDownIcon, ChevronLeftIcon, Cross1Icon, Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
 import { useAppSelector } from "@redux/Store";
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
@@ -52,12 +52,13 @@ interface EditWatchOnlyItem extends Pick<WatchOnlyItem, "principal" | "alias"> {
 }
 
 function SessionList({ start, end }: SessionListProps) {
+  const [watchOnlyItems] = useState<WatchOnlyItem[]>(getWatchOnlySessionsFromLocal());
   const [watchOnlyItem, setWatchOnlyItem] = useState<EditWatchOnlyItem | null>(null);
   console.log("watchOnlyItem", watchOnlyItem);
 
   return (
     <div className="absolute z-10 w-full max-h-[10rem] overflow-y-auto  scroll-y-light bg-white dark:bg-level-1-color text-left mt-1 rounded-lg shadow-lg">
-      {historicalItems.map((data) => (
+      {watchOnlyItems.map((data) => (
         <Element
           key={data.principal}
           data={data}
@@ -201,3 +202,4 @@ export function updateWatchOnlySessionFromLocal(updatedWatchOnlyItem: WatchOnlyI
 
   setWatchOnlySessionsToLocal(updatedWatchOnlyItems);
 }
+
