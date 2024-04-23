@@ -24,7 +24,9 @@ export default function WatchOnlyInput(props: WatchOnlyInputProps) {
 
   useEffect(() => {
     const watchOnlyItems = getWatchOnlySessionsFromLocal();
-    dispatch(setWatchOnlyHistory(watchOnlyItems));
+    if (watchOnlyItems.length !== watchOnlyHistory.length) {
+      dispatch(setWatchOnlyHistory(watchOnlyItems));
+    }
   }, []);
 
   return (
