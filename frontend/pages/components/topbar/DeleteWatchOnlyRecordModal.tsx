@@ -43,7 +43,7 @@ export default function DeleteWatchOnlyRecordModal({ record, onClose }: DeleteWa
           className="flex justify-center items-center ml-2 p-0.5 bg-slate-color-error rounded cursor-pointer"
           onClick={onDelete}
         >
-          <p className="px-2 py-1 font-bold text-md">{t("delete")}</p>
+          <p className="px-2 py-1 font-bold text-md text-secondary-color-1-light">{t("delete")}</p>
         </button>
       </div>
     </BasicModal>

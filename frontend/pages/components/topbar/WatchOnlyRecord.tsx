@@ -42,7 +42,7 @@ export default function WatchOnlyRecord(props: WatchOnlyRecordProps) {
       ) : (
         <div className="text-md" onClick={onChangeSession}>
           {data.alias ? data.alias : "-"}
-          <span className="text-gray-400">
+          <span className="text-sm text-gray-400">
             {" "}
             (
             {shortAddress(data.principal, start - (data?.alias?.length || 0) / 2, end - (data?.alias?.length || 0) / 2)}
@@ -71,7 +71,6 @@ export default function WatchOnlyRecord(props: WatchOnlyRecordProps) {
 
   function onEditInputChanged(event: ChangeEvent<HTMLInputElement>) {
     event.preventDefault();
-
     // INFO: only allow alphanumeric characters and spaces
     const regexAliasValidation = /^[a-zA-Z0-9]+( [a-zA-Z0-9]+)*$/;
     const alias = event.target.value;

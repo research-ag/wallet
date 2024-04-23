@@ -15,9 +15,6 @@ export default function Pill({ text, start, end, icon }: PillProps) {
   const { watchOnlyMode } = useAppSelector((state) => state.auth);
   const [historicalOpen, setHistoricalOpen] = useState(false);
 
-  console.log("re-render");
-  
-
   return (
     <div className="relative">
       <div className="px-3 py-1 rounded-full bg-GrayColor/50">

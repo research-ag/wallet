@@ -18,7 +18,7 @@ export default function WatchOnlyRecords({ start, end }: WatchOnlyRecordsProps) 
   const [watchOnlyItem, setWatchOnlyItem] = useState<EditWatchOnlyItem | null>(null);
 
   return (
-    <div className="absolute z-10 w-full max-h-[10rem] overflow-y-auto  scroll-y-light bg-white dark:bg-level-1-color text-left mt-1 rounded-lg shadow-lg">
+    <div className="absolute z-10 w-full max-h-[10rem] overflow-y-auto  scroll-y-light bg-white dark:bg-level-1-color text-left mt-1 rounded-lg shadow-lg p-2">
       {watchOnlyHistory.map((data) => (
         <WatchOnlyRecord
           key={data.principal}

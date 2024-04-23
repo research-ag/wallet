@@ -25,6 +25,7 @@ import contactCacheRefresh from "@pages/contacts/helpers/contactCacheRefresh";
 import { allowanceCacheRefresh } from "@pages/home/helpers/allowanceCache";
 import { setAppDataRefreshing } from "./common/CommonReducer";
 import { addWatchOnlySessionToLocal } from "@pages/helpers/watchOnlyStorage";
+import refreshWatchOnlyRecords from "@pages/helpers/refreshWatchOnlyRecords";
 
 const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${
   import.meta.env.VITE_APP_LOGO
@@ -85,8 +86,8 @@ export const handlePrincipalAuthenticated = async (principalAddress: string) => 
     db().setDbLocation(DB_Type.LOCAL);
     const authClient = await AuthClient.create();
     const principal = Principal.fromText(principalAddress);
-    handleLoginApp(authClient.getIdentity(), false, principal);
     addWatchOnlySessionToLocal({ alias: "-", principal: principalAddress });
+    handleLoginApp(authClient.getIdentity(), false, principal);
   } catch {
     return;
   }
@@ -145,6 +146,8 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean,
 const refreshCachedData = async () => {
   store.dispatch(setAppDataRefreshing(true));
   const assets = await db().getAssets();
+
+  refreshWatchOnlyRecords();
 
   // INFO: sns Tokens should load before the assets to show correctly the asset logo see: utils/icons.getAssetIcon
   const snsTokens = await getSNSTokens(store.getState().auth.userAgent);
