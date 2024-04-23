@@ -2,7 +2,7 @@ import { shortAddress } from "@/utils";
 import { CustomInput } from "@components/input";
 import { historicalItems, WatchOnlyItem } from "@pages/login/components/WatchOnlyInput";
 import { CheckIcon, ChevronDownIcon, ChevronLeftIcon, Cross1Icon, Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
-import { useAppSelector } from "@redux/Store";
+import store, { useAppSelector } from "@redux/Store";
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 
 interface PillProps {
@@ -13,6 +13,7 @@ interface PillProps {
 };
 
 export default function Pill({ text, start, end, icon }: PillProps) {
+  console.log("Pill rendered");
   const { watchOnlyMode } = useAppSelector(state => state.auth);
   const [historicalOpen, setHistoricalOpen] = useState(false);
 
@@ -58,10 +59,8 @@ interface EditWatchOnlyItem extends Pick<WatchOnlyItem, "principal" | "alias"> {
 };
 
 function SessionList({ start, end }: SessionListProps) {
+  console.log("SessionList rendered");
   const [watchOnlyItem, setWatchOnlyItem] = useState<EditWatchOnlyItem | null>(null);
-
-  console.log(watchOnlyItem?.alias);
-
 
   return (
     <div className="absolute z-10 w-full max-h-[10rem] overflow-y-auto  scroll-y-light bg-white dark:bg-level-1-color text-left mt-1 rounded-lg shadow-lg">
@@ -85,6 +84,7 @@ interface ElementProps {
 };
 
 function Element({ data, start, end, watchOnlyItem, setWatchOnlyItem }: ElementProps) {
+  console.log("Element rendered");
 
   const isBeingEdited = watchOnlyItem?.principal?.toString() === data.principal;
 
@@ -147,12 +147,11 @@ function Element({ data, start, end, watchOnlyItem, setWatchOnlyItem }: ElementP
   };
 
   function onSaveEdit() {
-    console.log("save edit");
-
+    setWatchOnlyItem(null);
   };
 
   function onDelete() {
-    console.log("delete");
+    setWatchOnlyItem(null);
   };
 
   function onCancelEdit() {
@@ -164,6 +163,39 @@ function Element({ data, start, end, watchOnlyItem, setWatchOnlyItem }: ElementP
   };
 
   function onChangeSession() {
-    console.log("change session");
+    setWatchOnlyItem(null);
   };
 };
+
+// ------------------------------------ UTILS --------------------------------------- //
+
+function getWatchOnlySessionsFromLocal(): WatchOnlyItem[] {
+  const principal = store.getState().auth.userPrincipal;
+  const watchOnlyItems = localStorage.getItem(`watch-only-sessions-${principal}`);
+  return watchOnlyItems ? JSON.parse(watchOnlyItems) : [];
+};
+
+function setWatchOnlySessionsToLocal(watchOnlyItems: WatchOnlyItem[]) {
+  const principal = store.getState().auth.userPrincipal;
+  localStorage.setItem(`watch-only-sessions-${principal}`, JSON.stringify(watchOnlyItems));
+};
+
+function deleteWatchOnlySessionFromLocal(principal: string) {
+  const watchOnlyItems = getWatchOnlySessionsFromLocal();
+  const updatedWatchOnlyItems = watchOnlyItems.filter((item) => item.principal !== principal);
+  setWatchOnlySessionsToLocal(updatedWatchOnlyItems);
+}
+
+function updateWatchOnlySessionFromLocal(updatedWatchOnlyItem: WatchOnlyItem) {
+
+  const watchOnlyItems = getWatchOnlySessionsFromLocal();
+  const updatedWatchOnlyItems = watchOnlyItems.map((item) => {
+    if (item.principal === updatedWatchOnlyItem.principal) {
+      return updatedWatchOnlyItem;
+    }
+    return item;
+  });
+
+  setWatchOnlySessionsToLocal(updatedWatchOnlyItems);
+}
+
