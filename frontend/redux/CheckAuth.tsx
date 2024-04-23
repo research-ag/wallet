@@ -24,7 +24,7 @@ import { getSNSTokens, updateAllBalances } from "./assets/AssetActions";
 import contactCacheRefresh from "@pages/contacts/helpers/contactCacheRefresh";
 import { allowanceCacheRefresh } from "@pages/home/helpers/allowanceCache";
 import { setAppDataRefreshing } from "./common/CommonReducer";
-import { addWatchOnlySessionToLocal } from "@pages/components/topbar/Pill";
+import { addWatchOnlySessionToLocal } from "@pages/helpers/watchOnlyStorage";
 
 const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${
   import.meta.env.VITE_APP_LOGO

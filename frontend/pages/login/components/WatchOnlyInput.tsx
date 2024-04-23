@@ -6,9 +6,9 @@ import { handlePrincipalAuthenticated } from "@redux/CheckAuth";
 import { clsx } from "clsx";
 import { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from "react";
 import { CounterClockwiseClockIcon } from "@radix-ui/react-icons";
-import { getWatchOnlySessionsFromLocal } from "@pages/components/topbar/Pill";
 import { setWatchOnlyHistory } from "@redux/common/CommonReducer";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
+import { getWatchOnlySessionsFromLocal } from "@pages/helpers/watchOnlyStorage";
 
 interface WatchOnlyInputProps {
   principalAddress: string;
