@@ -39,7 +39,9 @@ export default function WatchOnlyRecord(props: WatchOnlyRecordProps) {
           inputClass="h-6"
           autoFocus
           onChange={onEditInputChanged}
-          onKeyDown={(e) => { if (e.key === "Enter") onSaveEdit(); }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") onSaveEdit();
+          }}
         />
       ) : (
         <div className="text-md" onClick={onChangeSession} onDoubleClick={onEditAlias}>

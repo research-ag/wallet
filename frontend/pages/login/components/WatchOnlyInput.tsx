@@ -28,7 +28,8 @@ export default function WatchOnlyInput(props: WatchOnlyInputProps) {
           <WatchOnlyInputSuffix
             principalAddress={principalAddress}
             watchOnlyLoginErr={!validatePrincipal(principalAddress)}
-            historicalOpen={historicalOpen} onChevronClick={() => setHistoricalOpen((prev) => !prev)}
+            historicalOpen={historicalOpen}
+            onChevronClick={() => setHistoricalOpen((prev) => !prev)}
           />
         }
         onKeyDown={(e) => {
