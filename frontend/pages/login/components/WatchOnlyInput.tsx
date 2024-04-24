@@ -1,7 +1,6 @@
 import { ReactComponent as CheckIcon } from "@assets/svg/files/edit-check.svg";
 //
 import { CustomInput } from "@components/input";
-import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { handlePrincipalAuthenticated } from "@redux/CheckAuth";
 import { clsx } from "clsx";
 import { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from "react";
@@ -9,40 +8,20 @@ import { ChevronDownIcon, ChevronLeftIcon, CounterClockwiseClockIcon } from "@ra
 import { setWatchOnlyHistory } from "@redux/common/CommonReducer";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { getWatchOnlySessionsFromLocal } from "@pages/helpers/watchOnlyStorage";
+import { validatePrincipal } from "@/utils/identity";
 
 interface WatchOnlyInputProps {
   principalAddress: string;
   setPrincipalAddress: Dispatch<SetStateAction<string>>;
 }
 
-interface WatchOnlyInputSuffixProps {
-  principalAddress: string;
-  watchOnlyLoginErr: boolean;
-  historicalOpen: boolean;
-  onChevronClick: () => void;
-};
-
-function WatchOnlyInputSuffix(props: WatchOnlyInputSuffixProps) {
-  const { principalAddress, watchOnlyLoginErr, historicalOpen, onChevronClick } = props;
-
-  return (
-    <div className="flex">
-      {principalAddress.length > 0
-        ? (<CheckIcon className={getCheckIconStyles(principalAddress, watchOnlyLoginErr)} onClick={() => handlePrincipalAuthenticated(principalAddress)} />)
-        : null
-      }
-
-      {historicalOpen ? <ChevronDownIcon className="w-4 h-4 opacity-50 cursor-pointer" onClick={onChevronClick} /> : <ChevronLeftIcon className="w-4 h-4 opacity-50 cursor-pointer" onClick={onChevronClick} />}
-    </div>
-  );
-}
-
 export default function WatchOnlyInput(props: WatchOnlyInputProps) {
   const { principalAddress, setPrincipalAddress } = props;
   const { watchOnlyHistory } = useAppSelector((state) => state.common);
-  const [watchOnlyLoginErr, setWatchOnlyLoginErr] = useState(false);
   const [historicalOpen, setHistoricalOpen] = useState(false);
   const dispatch = useAppDispatch();
+
+
 
   useEffect(() => {
     const watchOnlyItems = getWatchOnlySessionsFromLocal();
@@ -59,11 +38,13 @@ export default function WatchOnlyInput(props: WatchOnlyInputProps) {
         compOutClass=""
         value={principalAddress}
         onChange={onPrincipalChange}
-        border={watchOnlyLoginErr ? "error" : undefined}
+        onFocus={onFocushandler}
+        autoFocus
+        border={validatePrincipal(principalAddress) ? undefined : "error"}
         sufix={
           <WatchOnlyInputSuffix
             principalAddress={principalAddress}
-            watchOnlyLoginErr={watchOnlyLoginErr}
+            watchOnlyLoginErr={!validatePrincipal(principalAddress)}
             historicalOpen={historicalOpen} onChevronClick={() => setHistoricalOpen((prev) => !prev)}
           />
         }
@@ -84,12 +65,10 @@ export default function WatchOnlyInput(props: WatchOnlyInputProps) {
   function onPrincipalChange(e: ChangeEvent<HTMLInputElement> | string) {
     const value = typeof e === "string" ? e : e.target.value;
     setPrincipalAddress(value);
-    try {
-      decodeIcrcAccount(value);
-      setWatchOnlyLoginErr(false);
-    } catch {
-      setWatchOnlyLoginErr(true);
-    }
+  }
+
+  function onFocushandler() {
+    if (!historicalOpen) setHistoricalOpen(true);
   }
 
   function onHistoricalSelectHandler(principal: string) {
@@ -121,18 +100,44 @@ function HistoricalItem(props: HistoricalItemProps) {
   );
 }
 
+// ------------------------------ COMPONENT ------------------------------
+
+interface WatchOnlyInputSuffixProps {
+  principalAddress: string;
+  watchOnlyLoginErr: boolean;
+  historicalOpen: boolean;
+  onChevronClick: () => void;
+};
+
+function WatchOnlyInputSuffix(props: WatchOnlyInputSuffixProps) {
+  const { principalAddress, watchOnlyLoginErr, historicalOpen, onChevronClick } = props;
+
+  return (
+    <div className="flex">
+      {principalAddress.length > 0
+        ? (<CheckIcon className={getCheckIconStyles(principalAddress, watchOnlyLoginErr)} onClick={() => handlePrincipalAuthenticated(principalAddress)} />)
+        : null
+      }
+
+      {historicalOpen ? <ChevronDownIcon className="w-4 h-4 opacity-50 cursor-pointer" onClick={onChevronClick} /> : null}
+      {!historicalOpen ? <ChevronLeftIcon className="w-4 h-4 opacity-50 cursor-pointer" onClick={onChevronClick} /> : null}
+    </div>
+  );
+}
+
+// ------------------------------ STYLES ------------------------------
+
 export interface WatchOnlyItem {
   principal: string;
   alias?: string;
 }
 
 function getCheckIconStyles(principalAddress: string, watchOnlyLoginErr: boolean) {
-  return clsx(
-    "w-4 h-4 opacity-50 mr-2 cursor-pointer",
-    principalAddress.length > 0 && !watchOnlyLoginErr
-      ? "stroke-BorderSuccessColor"
-      : "stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor",
-  );
+  return clsx({
+    "w-4 h-4 opacity-50 mr-2 cursor-pointer": true,
+    "stroke-BorderSuccessColor": principalAddress.length > 0 && !watchOnlyLoginErr,
+    "stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor": !principalAddress.length || watchOnlyLoginErr,
+  })
 }
 
 const itemsRootStyles = clsx(
