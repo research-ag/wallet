@@ -60,7 +60,10 @@ export default function WatchOnlyRecordsPopover({ onHistoricalSelectHandler }: W
     if (!searchValue) return setWatchOnlyHistoryFiltered(watchOnlyHistory);
 
     const filtered = watchOnlyHistory.filter((item) => {
-      return item?.alias?.includes(searchValue) || item?.principal.includes(searchValue);
+      return (
+        item?.alias?.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()) ||
+        item?.principal.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())
+      );
     });
 
     setWatchOnlyHistoryFiltered(filtered);

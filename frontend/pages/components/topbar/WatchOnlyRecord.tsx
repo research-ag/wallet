@@ -9,6 +9,7 @@ import { EditWatchOnlyItem } from "./WatchOnlyRecords";
 import { WatchOnlyItem } from "@pages/login/components/WatchOnlyInput";
 import { getWatchOnlySessionsFromLocal, updateWatchOnlySessionFromLocal } from "@pages/helpers/watchOnlyStorage";
 import { handlePrincipalAuthenticated } from "@redux/CheckAuth";
+import clsx from "clsx";
 
 interface WatchOnlyRecordProps {
   watchOnlyItem: EditWatchOnlyItem | null;
@@ -19,15 +20,12 @@ interface WatchOnlyRecordProps {
 }
 
 export default function WatchOnlyRecord(props: WatchOnlyRecordProps) {
-  const { data, start, end, watchOnlyItem, setWatchOnlyItem } = props;
+  const { data, watchOnlyItem, setWatchOnlyItem } = props;
   const dispatch = useAppDispatch();
   const isBeingEdited = watchOnlyItem?.principal?.toString() === data.principal;
 
   return (
-    <div
-      key={data.principal}
-      className="flex items-center justify-between p-1 cursor-pointer dark:hover:bg-secondary-color-1 hover:bg-secondary-color-1-light"
-    >
+    <div key={data.principal} className={getItemStyles(data.principal === watchOnlyItem?.principal)}>
       {isBeingEdited && !watchOnlyItem.isDelete ? (
         <CustomInput
           intent="primary"
@@ -37,6 +35,7 @@ export default function WatchOnlyRecord(props: WatchOnlyRecordProps) {
           sizeComp="small"
           sizeInput="small"
           inputClass="h-6"
+          compOutClass="w-[11rem]"
           autoFocus
           onChange={onEditInputChanged}
           onKeyDown={(e) => {
@@ -44,26 +43,32 @@ export default function WatchOnlyRecord(props: WatchOnlyRecordProps) {
           }}
         />
       ) : (
-        <div className="text-md" onClick={onChangeSession} onDoubleClick={onEditAlias}>
-          {data.alias ? data.alias : "-"}
-          <span className="text-sm text-gray-400">
-            {" "}
-            (
-            {shortAddress(data.principal, start - (data?.alias?.length || 0) / 2, end - (data?.alias?.length || 0) / 2)}
-            )
-          </span>
+        <div className="w-full" onClick={onChangeSession}>
+          <div className="flex items-center justify-between w-fit">
+            {data?.alias && <div className="font-bold text-md">{data?.alias}</div>}
+            {data?.alias && <span className="mx-1 text-md"> | </span>}
+            <div className="text-md">{shortAddress(data.principal, 5, 5)}</div>
+          </div>
         </div>
       )}
 
       {isBeingEdited && !watchOnlyItem.isDelete ? (
         <div className="flex">
-          <Cross1Icon className="w-3 h-3 ml-1" onClick={onCancelEdit} />
-          <CheckIcon className="w-3 h-3 ml-1" onClick={onSaveEdit} />
+          <div className="grid w-5 h-5 mr-1 rounded-sm cursor-pointer bg-black-color place-items-center">
+            <CheckIcon onClick={onSaveEdit} className="w-3 h-3 text-white" />
+          </div>
+          <div className="grid w-5 h-5 rounded-sm cursor-pointer bg-black-color place-items-center">
+            <Cross1Icon onClick={onCancelEdit} className="w-3 h-3 text-white" />
+          </div>
         </div>
       ) : (
         <div className="flex">
-          <Pencil1Icon className="w-3 h-3 ml-1" onClick={onEditAlias} />
-          <TrashIcon className="w-3 h-3 ml-1" onClick={onDelete} />
+          <div className="grid w-5 h-5 mr-1 rounded-sm cursor-pointer bg-black-color place-items-center">
+            <Pencil1Icon onClick={onEditAlias} className="w-3 h-3 text-white" />
+          </div>
+          <div className="grid w-5 h-5 rounded-sm cursor-pointer bg-slate-color-error place-items-center">
+            <TrashIcon onClick={onDelete} className="w-3 h-3 text-white" />
+          </div>
         </div>
       )}
 
@@ -111,3 +116,13 @@ export default function WatchOnlyRecord(props: WatchOnlyRecordProps) {
     await handlePrincipalAuthenticated(data.principal);
   }
 }
+
+const getItemStyles = (isActive = false) =>
+  clsx(
+    "cursor-pointer border-b-2 dark:border-black-color",
+    "flex items-center justify-between p-2",
+    "text-black-color dark:text-white",
+    "transition-all duration-100 ease-in-out",
+    !isActive ? "hover:bg-gray-color-8/30" : null,
+    isActive ? "bg-primary-color" : null,
+  );

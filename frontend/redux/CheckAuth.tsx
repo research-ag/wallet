@@ -86,7 +86,7 @@ export const handlePrincipalAuthenticated = async (principalAddress: string) => 
     db().setDbLocation(DB_Type.LOCAL);
     const authClient = await AuthClient.create();
     const principal = Principal.fromText(principalAddress);
-    addWatchOnlySessionToLocal({ alias: "-", principal: principalAddress });
+    addWatchOnlySessionToLocal({ alias: "", principal: principalAddress });
     handleLoginApp(authClient.getIdentity(), false, principal);
   } catch {
     return;

@@ -44,8 +44,8 @@ export default function HistoricalItem(props: HistoricalItemProps) {
       ) : (
         <div className="w-full" onClick={() => onHistoricalSelectHandler(data.principal)}>
           <div className="flex items-center justify-between w-fit">
-            <div className="font-bold text-md">{data?.alias}</div>
-            <span className="mx-1 text-md"> | </span>
+            {data?.alias && <div className="font-bold text-md">{data?.alias}</div>}
+            {data?.alias && <span className="mx-1 text-md"> | </span>}
             <div className="text-md">{shortAddress(data.principal, 10, 10)}</div>
           </div>
         </div>

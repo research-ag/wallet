@@ -65,7 +65,10 @@ export default function WatchOnlyRecords({ start, end }: WatchOnlyRecordsProps) 
     if (!searchValue) return setWatchOnlyHistoryFiltered(watchOnlyHistory);
 
     const filtered = watchOnlyHistory.filter((item) => {
-      return item?.alias?.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()) || item?.principal.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase());
+      return (
+        item?.alias?.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()) ||
+        item?.principal.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())
+      );
     });
 
     setWatchOnlyHistoryFiltered(filtered);
