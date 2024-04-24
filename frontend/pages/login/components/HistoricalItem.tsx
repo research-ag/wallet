@@ -8,6 +8,7 @@ import { setWatchOnlyHistory } from "@redux/common/CommonReducer";
 import { CustomInput } from "@components/input";
 import { shortAddress } from "@/utils";
 import { EditWatchOnlyItem } from "@pages/components/topbar/WatchOnlyRecords";
+import DeleteWatchOnlyRecordModal from "@pages/components/topbar/DeleteWatchOnlyRecordModal";
 
 interface HistoricalItemProps {
   onHistoricalSelectHandler: (principal: string) => void;
@@ -23,8 +24,7 @@ export default function HistoricalItem(props: HistoricalItemProps) {
   const isBeingEdited = watchOnlyItem?.principal?.toString() === data.principal;
 
   return (
-    // <div className={getItemStyles(data.principal === watchOnlyItem?.principal)}>
-    <div className={getItemStyles()}>
+    <div className={getItemStyles(data.principal === watchOnlyItem?.principal)}>
       {isBeingEdited && !watchOnlyItem.isDelete ? (
         <CustomInput
           intent="primary"
@@ -53,22 +53,26 @@ export default function HistoricalItem(props: HistoricalItemProps) {
 
       {isBeingEdited && !watchOnlyItem.isDelete ? (
         <div className="flex">
-          <div className="grid w-5 h-5 mr-1 rounded-sm cursor-pointer bg-slate-color-success place-items-center">
+          <div className="grid w-5 h-5 mr-1 rounded-sm cursor-pointer bg-black-color place-items-center">
             <CheckIcon onClick={onSaveEdit} />
           </div>
-          <div className="grid w-5 h-5 rounded-sm cursor-pointer bg-primary-color place-items-center">
+          <div className="grid w-5 h-5 rounded-sm cursor-pointer bg-black-color place-items-center">
             <Cross1Icon onClick={onCancelEdit} />
           </div>
         </div>
       ) : (
         <div className="flex">
-          <div className="grid w-5 h-5 mr-1 rounded-sm cursor-pointer bg-primary-color place-items-center">
+          <div className="grid w-5 h-5 mr-1 rounded-sm cursor-pointer bg-black-color place-items-center">
             <Pencil1Icon onClick={onEditAlias} />
           </div>
           <div className="grid w-5 h-5 rounded-sm cursor-pointer bg-slate-color-error place-items-center">
             <TrashIcon onClick={onDelete} />
           </div>
         </div>
+      )}
+
+      {watchOnlyItem?.isDelete && (
+        <DeleteWatchOnlyRecordModal record={watchOnlyItem} onClose={() => setWatchOnlyItem(null)} />
       )}
     </div>
   );

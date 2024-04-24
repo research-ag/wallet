@@ -26,7 +26,7 @@ export default function WatchOnlyRecordsPopover({ onHistoricalSelectHandler }: W
       dispatch(setWatchOnlyHistory(watchOnlyItems));
     }
     setWatchOnlyHistoryFiltered(watchOnlyItems);
-  }, []);
+  }, [watchOnlyHistory]);
 
   if (watchOnlyHistory.length === 0) return null;
 
