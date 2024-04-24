@@ -24,10 +24,10 @@ export default function WatchOnlyInputSuffix(props: WatchOnlyInputSuffixProps) {
       ) : null}
 
       {historicalOpen ? (
-        <ChevronDownIcon className="w-4 h-4 opacity-50 cursor-pointer" onClick={onChevronClick} />
+        <ChevronDownIcon className="w-4 h-4 cursor-pointer text-black-color dark:text-white" onClick={onChevronClick} />
       ) : null}
       {!historicalOpen ? (
-        <ChevronLeftIcon className="w-4 h-4 opacity-50 cursor-pointer" onClick={onChevronClick} />
+        <ChevronLeftIcon className="w-4 h-4 cursor-pointer text-black-color dark:text-white" onClick={onChevronClick} />
       ) : null}
     </div>
   );

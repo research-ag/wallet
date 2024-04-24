@@ -54,19 +54,19 @@ export default function HistoricalItem(props: HistoricalItemProps) {
       {isBeingEdited && !watchOnlyItem.isDelete ? (
         <div className="flex">
           <div className="grid w-5 h-5 mr-1 rounded-sm cursor-pointer bg-black-color place-items-center">
-            <CheckIcon onClick={onSaveEdit} />
+            <CheckIcon onClick={onSaveEdit} className="w-3 h-3 text-white" />
           </div>
           <div className="grid w-5 h-5 rounded-sm cursor-pointer bg-black-color place-items-center">
-            <Cross1Icon onClick={onCancelEdit} />
+            <Cross1Icon onClick={onCancelEdit} className="w-3 h-3 text-white" />
           </div>
         </div>
       ) : (
         <div className="flex">
           <div className="grid w-5 h-5 mr-1 rounded-sm cursor-pointer bg-black-color place-items-center">
-            <Pencil1Icon onClick={onEditAlias} />
+            <Pencil1Icon onClick={onEditAlias} className="w-3 h-3 text-white" />
           </div>
           <div className="grid w-5 h-5 rounded-sm cursor-pointer bg-slate-color-error place-items-center">
-            <TrashIcon onClick={onDelete} />
+            <TrashIcon onClick={onDelete} className="w-3 h-3 text-white" />
           </div>
         </div>
       )}
@@ -114,7 +114,7 @@ export default function HistoricalItem(props: HistoricalItemProps) {
 
 const getItemStyles = (isActive = false) =>
   clsx(
-    "cursor-pointer",
+    "cursor-pointer border-b-2 dark:border-black-color",
     "flex items-center justify-between p-2",
     "text-black-color dark:text-white",
     "transition-all duration-100 ease-in-out",
