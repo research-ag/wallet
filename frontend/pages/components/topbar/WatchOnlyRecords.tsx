@@ -1,11 +1,8 @@
 import { WatchOnlyItem } from "@pages/login/components/WatchOnlyInput";
-import { useAppDispatch, useAppSelector } from "@redux/Store";
-import { useEffect, useState } from "react";
 import WatchOnlyRecord from "./WatchOnlyRecord";
 import { CustomInput } from "@components/input";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
-import { getWatchOnlySessionsFromLocal } from "@pages/helpers/watchOnlyStorage";
-import { setWatchOnlyHistory } from "@redux/common/CommonReducer";
+import useWatchOnly from "@pages/hooks/useWatchOnly";
 
 interface WatchOnlyRecordsProps {
   start: number;
@@ -18,21 +15,7 @@ export interface EditWatchOnlyItem extends Pick<WatchOnlyItem, "principal" | "al
 }
 
 export default function WatchOnlyRecords({ start, end }: WatchOnlyRecordsProps) {
-  const { watchOnlyHistory } = useAppSelector((state) => state.common);
-  const [watchOnlyItem, setWatchOnlyItem] = useState<EditWatchOnlyItem | null>(null);
-  const [watchOnlyHistoryFiltered, setWatchOnlyHistoryFiltered] = useState<WatchOnlyItem[]>([]);
-
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    const watchOnlyItems = getWatchOnlySessionsFromLocal();
-    if (watchOnlyItems.length !== watchOnlyHistory.length) {
-      dispatch(setWatchOnlyHistory(watchOnlyItems));
-    }
-    setWatchOnlyHistoryFiltered(watchOnlyItems);
-  }, [watchOnlyHistory]);
-
-  if (watchOnlyHistory.length === 0) return null;
+  const { watchOnlyItem, setWatchOnlyItem, watchOnlyHistoryFiltered, onSearchChange } = useWatchOnly();
 
   return (
     <div className="absolute z-10 w-full mt-1 text-left bg-white border border-gray-200 rounded-md shadow-lg dark:border-gray-800 dark:bg-secondary-color-2">
@@ -58,19 +41,4 @@ export default function WatchOnlyRecords({ start, end }: WatchOnlyRecordsProps) 
       </div>
     </div>
   );
-
-  function onSearchChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const searchValue = e.target.value.trim();
-
-    if (!searchValue) return setWatchOnlyHistoryFiltered(watchOnlyHistory);
-
-    const filtered = watchOnlyHistory.filter((item) => {
-      return (
-        item?.alias?.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()) ||
-        item?.principal.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())
-      );
-    });
-
-    setWatchOnlyHistoryFiltered(filtered);
-  }
 }

@@ -1,12 +1,10 @@
 import { BasicModal } from "@components/modal";
 import { ReactComponent as WarningIcon } from "@assets/svg/files/warning.svg";
 import { WatchOnlyItem } from "@pages/login/components/WatchOnlyInput";
-import { useAppDispatch } from "@redux/Store";
 import { useTranslation } from "react-i18next";
 import { Cross1Icon } from "@radix-ui/react-icons";
 import { shortAddress } from "@/utils";
-import { setWatchOnlyHistory } from "@redux/common/CommonReducer";
-import { deleteWatchOnlySessionFromLocal, getWatchOnlySessionsFromLocal } from "@pages/helpers/watchOnlyStorage";
+import { deleteWatchOnlySessionFromLocal } from "@pages/helpers/watchOnlyStorage";
 
 interface DeleteWatchOnlyRecordModalProps {
   record: WatchOnlyItem;
@@ -14,7 +12,6 @@ interface DeleteWatchOnlyRecordModalProps {
 }
 
 export default function DeleteWatchOnlyRecordModal({ record, onClose }: DeleteWatchOnlyRecordModalProps) {
-  const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
   return (
@@ -51,8 +48,9 @@ export default function DeleteWatchOnlyRecordModal({ record, onClose }: DeleteWa
 
   function onDelete() {
     deleteWatchOnlySessionFromLocal(record?.principal);
-    const updated = getWatchOnlySessionsFromLocal();
-    dispatch(setWatchOnlyHistory(updated));
+    // const updated = getWatchOnlySessionsFromLocal();
+    // TODO: on delete reset the useWatchOnly hook
+    // dispatch(setWatchOnlyHistory(updated));
     onClose();
   }
 }

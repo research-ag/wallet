@@ -1,14 +1,12 @@
 import { CheckIcon, Cross1Icon, Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
-import { getWatchOnlySessionsFromLocal, updateWatchOnlySessionFromLocal } from "@pages/helpers/watchOnlyStorage";
 import { Dispatch, SetStateAction } from "react";
 import { WatchOnlyItem } from "./WatchOnlyInput";
 import clsx from "clsx";
-import { useAppDispatch } from "@redux/Store";
-import { setWatchOnlyHistory } from "@redux/common/CommonReducer";
 import { CustomInput } from "@components/input";
 import { shortAddress } from "@/utils";
 import { EditWatchOnlyItem } from "@pages/components/topbar/WatchOnlyRecords";
 import DeleteWatchOnlyRecordModal from "@pages/components/topbar/DeleteWatchOnlyRecordModal";
+import useWatchOnlyMutation from "@pages/components/topbar/useWatchOnlyMutation";
 
 interface HistoricalItemProps {
   onHistoricalSelectHandler: (principal: string) => void;
@@ -19,8 +17,14 @@ interface HistoricalItemProps {
 }
 
 export default function HistoricalItem(props: HistoricalItemProps) {
-  const dispatch = useAppDispatch();
   const { onHistoricalSelectHandler, data, setWatchOnlyItem, watchOnlyItem } = props;
+
+  const { onEditInputChanged, onSaveEdit, onDelete, onCancelEdit, onEditAlias } = useWatchOnlyMutation({
+    setWatchOnlyItem,
+    watchOnlyItem,
+    data,
+  });
+
   const isBeingEdited = watchOnlyItem?.principal?.toString() === data.principal;
 
   return (
@@ -76,40 +80,6 @@ export default function HistoricalItem(props: HistoricalItemProps) {
       )}
     </div>
   );
-
-  function onSaveEdit() {
-    if (!watchOnlyItem || !watchOnlyItem?.isValid) return;
-    updateWatchOnlySessionFromLocal(watchOnlyItem);
-
-    const updated = getWatchOnlySessionsFromLocal();
-    dispatch(setWatchOnlyHistory(updated));
-
-    setWatchOnlyItem(null);
-  }
-
-  function onEditAlias() {
-    setWatchOnlyItem({ ...data, isValid: true, isDelete: false });
-  }
-
-  function onDelete() {
-    setWatchOnlyItem({ ...data, isValid: true, isDelete: true });
-  }
-
-  function onCancelEdit() {
-    setWatchOnlyItem(null);
-  }
-
-  function onEditInputChanged(event: React.ChangeEvent<HTMLInputElement>) {
-    event.preventDefault();
-    // INFO: only allow alphanumeric characters and spaces
-    const regexAliasValidation = /^[a-zA-Z0-9]+( [a-zA-Z0-9]+)*$/;
-    const alias = event.target.value;
-    const isValid = regexAliasValidation.test(alias) && alias.length <= 20;
-
-    setWatchOnlyItem((prev) => {
-      return { ...prev, alias, principal: data.principal, isValid, isDelete: false };
-    });
-  }
 }
 
 const getItemStyles = (isActive = false) =>

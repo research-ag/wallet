@@ -1,15 +1,15 @@
 import { CustomInput } from "@components/input";
-import { SetStateAction, Dispatch, ChangeEvent } from "react";
-import { useAppDispatch } from "@redux/Store";
+import { SetStateAction, Dispatch } from "react";
 import { shortAddress } from "@/utils";
-import { CheckIcon, Cross1Icon, Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
-import { setWatchOnlyHistory } from "@redux/common/CommonReducer";
 import DeleteWatchOnlyRecordModal from "./DeleteWatchOnlyRecordModal";
 import { EditWatchOnlyItem } from "./WatchOnlyRecords";
 import { WatchOnlyItem } from "@pages/login/components/WatchOnlyInput";
-import { getWatchOnlySessionsFromLocal, updateWatchOnlySessionFromLocal } from "@pages/helpers/watchOnlyStorage";
 import { handlePrincipalAuthenticated } from "@redux/CheckAuth";
 import clsx from "clsx";
+import useWatchOnlyMutation from "./useWatchOnlyMutation";
+import { useAppSelector } from "@redux/Store";
+import ActionIcons from "./ActionIcons";
+import { useTranslation } from "react-i18next";
 
 interface WatchOnlyRecordProps {
   watchOnlyItem: EditWatchOnlyItem | null;
@@ -20,9 +20,18 @@ interface WatchOnlyRecordProps {
 }
 
 export default function WatchOnlyRecord(props: WatchOnlyRecordProps) {
+  const { t } = useTranslation();
+  const { userPrincipal } = useAppSelector((state) => state.auth);
   const { data, watchOnlyItem, setWatchOnlyItem } = props;
-  const dispatch = useAppDispatch();
+
+  const { onEditInputChanged, onSaveEdit, onDelete, onCancelEdit, onEditAlias } = useWatchOnlyMutation({
+    setWatchOnlyItem,
+    watchOnlyItem,
+    data,
+  });
+
   const isBeingEdited = watchOnlyItem?.principal?.toString() === data.principal;
+  const isCurrentUser = data.principal === userPrincipal.toString();
 
   return (
     <div key={data.principal} className={getItemStyles(data.principal === watchOnlyItem?.principal)}>
@@ -35,7 +44,7 @@ export default function WatchOnlyRecord(props: WatchOnlyRecordProps) {
           sizeComp="small"
           sizeInput="small"
           inputClass="h-6"
-          compOutClass="w-[11rem]"
+          compOutClass="w-[7rem]"
           autoFocus
           onChange={onEditInputChanged}
           onKeyDown={(e) => {
@@ -52,24 +61,17 @@ export default function WatchOnlyRecord(props: WatchOnlyRecordProps) {
         </div>
       )}
 
-      {isBeingEdited && !watchOnlyItem.isDelete ? (
-        <div className="flex">
-          <div className="grid w-5 h-5 mr-1 rounded-sm cursor-pointer bg-black-color place-items-center">
-            <CheckIcon onClick={onSaveEdit} className="w-3 h-3 text-white" />
-          </div>
-          <div className="grid w-5 h-5 rounded-sm cursor-pointer bg-black-color place-items-center">
-            <Cross1Icon onClick={onCancelEdit} className="w-3 h-3 text-white" />
-          </div>
-        </div>
-      ) : (
-        <div className="flex">
-          <div className="grid w-5 h-5 mr-1 rounded-sm cursor-pointer bg-black-color place-items-center">
-            <Pencil1Icon onClick={onEditAlias} className="w-3 h-3 text-white" />
-          </div>
-          <div className="grid w-5 h-5 rounded-sm cursor-pointer bg-slate-color-error place-items-center">
-            <TrashIcon onClick={onDelete} className="w-3 h-3 text-white" />
-          </div>
-        </div>
+      {isCurrentUser && <p className="text-sm text-primary-color">({t("current")})</p>}
+
+      {!isCurrentUser && (
+        <ActionIcons
+          isBeingEdited={isBeingEdited}
+          watchOnlyItem={watchOnlyItem}
+          onSaveEdit={onSaveEdit}
+          onCancelEdit={onCancelEdit}
+          onEditAlias={onEditAlias}
+          onDelete={onDelete}
+        />
       )}
 
       {watchOnlyItem?.isDelete && (
@@ -78,42 +80,8 @@ export default function WatchOnlyRecord(props: WatchOnlyRecordProps) {
     </div>
   );
 
-  function onEditInputChanged(event: ChangeEvent<HTMLInputElement>) {
-    event.preventDefault();
-    // INFO: only allow alphanumeric characters and spaces
-    const regexAliasValidation = /^[a-zA-Z0-9]+( [a-zA-Z0-9]+)*$/;
-    const alias = event.target.value;
-    const isValid = regexAliasValidation.test(alias) && alias.length <= 20;
-
-    setWatchOnlyItem((prev) => {
-      return { ...prev, alias, principal: data.principal, isValid, isDelete: false };
-    });
-  }
-
-  function onSaveEdit() {
-    if (!watchOnlyItem || !watchOnlyItem?.isValid) return;
-    updateWatchOnlySessionFromLocal(watchOnlyItem);
-
-    const updated = getWatchOnlySessionsFromLocal();
-    dispatch(setWatchOnlyHistory(updated));
-
-    setWatchOnlyItem(null);
-  }
-
-  function onDelete() {
-    setWatchOnlyItem({ ...data, isValid: true, isDelete: true });
-  }
-
-  function onCancelEdit() {
-    setWatchOnlyItem(null);
-  }
-
-  function onEditAlias() {
-    setWatchOnlyItem({ ...data, isValid: true, isDelete: false });
-  }
-
   async function onChangeSession() {
-    await handlePrincipalAuthenticated(data.principal);
+    if (!isCurrentUser) await handlePrincipalAuthenticated(data.principal);
   }
 }
 

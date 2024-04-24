@@ -1,34 +1,15 @@
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
-import { getWatchOnlySessionsFromLocal } from "@pages/helpers/watchOnlyStorage";
-import { useEffect, useState } from "react";
-import { WatchOnlyItem } from "./WatchOnlyInput";
 import clsx from "clsx";
-import { useAppDispatch, useAppSelector } from "@redux/Store";
-import { setWatchOnlyHistory } from "@redux/common/CommonReducer";
 import { CustomInput } from "@components/input";
-import { EditWatchOnlyItem } from "@pages/components/topbar/WatchOnlyRecords";
 import HistoricalItem from "./HistoricalItem";
+import useWatchOnly from "@pages/hooks/useWatchOnly";
 
 interface WatchOnlyRecordsPopoverProps {
   onHistoricalSelectHandler: (principal: string) => void;
 }
 
 export default function WatchOnlyRecordsPopover({ onHistoricalSelectHandler }: WatchOnlyRecordsPopoverProps) {
-  const [watchOnlyItem, setWatchOnlyItem] = useState<EditWatchOnlyItem | null>(null);
-  const { watchOnlyHistory } = useAppSelector((state) => state.common);
-  const [watchOnlyHistoryFiltered, setWatchOnlyHistoryFiltered] = useState<WatchOnlyItem[]>([]);
-
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    const watchOnlyItems = getWatchOnlySessionsFromLocal();
-    if (watchOnlyItems.length !== watchOnlyHistory.length) {
-      dispatch(setWatchOnlyHistory(watchOnlyItems));
-    }
-    setWatchOnlyHistoryFiltered(watchOnlyItems);
-  }, [watchOnlyHistory]);
-
-  if (watchOnlyHistory.length === 0) return null;
+  const { watchOnlyItem, setWatchOnlyItem, watchOnlyHistoryFiltered, onSearchChange } = useWatchOnly();
 
   return (
     <div className={itemsRootStyles}>
@@ -53,21 +34,6 @@ export default function WatchOnlyRecordsPopover({ onHistoricalSelectHandler }: W
       </div>
     </div>
   );
-
-  function onSearchChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const searchValue = e.target.value.trim();
-
-    if (!searchValue) return setWatchOnlyHistoryFiltered(watchOnlyHistory);
-
-    const filtered = watchOnlyHistory.filter((item) => {
-      return (
-        item?.alias?.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()) ||
-        item?.principal.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())
-      );
-    });
-
-    setWatchOnlyHistoryFiltered(filtered);
-  }
 }
 
 const itemsRootStyles = clsx(
