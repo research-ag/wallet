@@ -30,21 +30,25 @@ export default function HistoricalItem(props: HistoricalItemProps) {
   return (
     <div className={getItemStyles(data.principal === watchOnlyItem?.principal)}>
       {isBeingEdited && !watchOnlyItem.isDelete ? (
-        <CustomInput
-          intent="primary"
-          placeholder="Alias"
-          value={watchOnlyItem?.alias || ""}
-          border={watchOnlyItem.isValid ? undefined : "error"}
-          sizeComp="small"
-          sizeInput="small"
-          inputClass="h-6"
-          compOutClass="w-[11rem]"
-          autoFocus
-          onChange={onEditInputChanged}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") onSaveEdit();
-          }}
-        />
+        <div className="flex items-center w-full">
+          <CustomInput
+            intent="primary"
+            placeholder="Alias"
+            value={watchOnlyItem?.alias || ""}
+            border={watchOnlyItem.isValid ? undefined : "error"}
+            sizeComp="small"
+            sizeInput="small"
+            inputClass="h-6"
+            compOutClass="w-[6rem]"
+            autoFocus
+            onChange={onEditInputChanged}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") onSaveEdit();
+            }}
+          />
+          {data?.alias && <span className="mx-1 text-md"> | </span>}
+          <div className="text-md">{shortAddress(data.principal, 10, 10)}</div>
+        </div>
       ) : (
         <div className="w-full" onClick={() => onHistoricalSelectHandler(data.principal)}>
           <div className="flex items-center justify-between w-fit">

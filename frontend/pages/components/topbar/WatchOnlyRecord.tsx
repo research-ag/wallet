@@ -36,21 +36,25 @@ export default function WatchOnlyRecord(props: WatchOnlyRecordProps) {
   return (
     <div key={data.principal} className={getItemStyles(data.principal === watchOnlyItem?.principal)}>
       {isBeingEdited && !watchOnlyItem.isDelete ? (
-        <CustomInput
-          intent="primary"
-          placeholder="Alias"
-          value={watchOnlyItem?.alias || ""}
-          border={watchOnlyItem.isValid ? undefined : "error"}
-          sizeComp="small"
-          sizeInput="small"
-          inputClass="h-6"
-          compOutClass="w-[7rem]"
-          autoFocus
-          onChange={onEditInputChanged}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") onSaveEdit();
-          }}
-        />
+        <div className="flex items-center w-full">
+          <CustomInput
+            intent="primary"
+            placeholder="Alias"
+            value={watchOnlyItem?.alias || ""}
+            border={watchOnlyItem.isValid ? undefined : "error"}
+            sizeComp="small"
+            sizeInput="small"
+            inputClass="h-6"
+            compOutClass="w-[6rem]"
+            autoFocus
+            onChange={onEditInputChanged}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") onSaveEdit();
+            }}
+          />
+          {data?.alias && <span className="mx-1 text-md"> | </span>}
+          <div className="text-md">{shortAddress(data.principal, 3, 3)}</div>
+        </div>
       ) : (
         <div className="w-full" onClick={onChangeSession}>
           <div className="flex items-center justify-between w-fit">
