@@ -5,13 +5,20 @@ import { useTranslation } from "react-i18next";
 import { Cross1Icon } from "@radix-ui/react-icons";
 import { shortAddress } from "@/utils";
 import { deleteWatchOnlySessionFromLocal } from "@pages/helpers/watchOnlyStorage";
+import { Dispatch, SetStateAction } from "react";
+import { EditWatchOnlyItem } from "./WatchOnlyRecords";
 
 interface DeleteWatchOnlyRecordModalProps {
   record: WatchOnlyItem;
   onClose: () => void;
+  setWatchOnlyItem: Dispatch<SetStateAction<EditWatchOnlyItem | null>>;
 }
 
-export default function DeleteWatchOnlyRecordModal({ record, onClose }: DeleteWatchOnlyRecordModalProps) {
+export default function DeleteWatchOnlyRecordModal({
+  record,
+  onClose,
+  setWatchOnlyItem,
+}: DeleteWatchOnlyRecordModalProps) {
   const { t } = useTranslation();
 
   return (
@@ -48,9 +55,7 @@ export default function DeleteWatchOnlyRecordModal({ record, onClose }: DeleteWa
 
   function onDelete() {
     deleteWatchOnlySessionFromLocal(record?.principal);
-    // const updated = getWatchOnlySessionsFromLocal();
-    // TODO: on delete reset the useWatchOnly hook
-    // dispatch(setWatchOnlyHistory(updated));
+    setWatchOnlyItem(null);
     onClose();
   }
 }

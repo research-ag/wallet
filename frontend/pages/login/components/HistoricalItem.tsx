@@ -80,7 +80,11 @@ export default function HistoricalItem(props: HistoricalItemProps) {
       )}
 
       {watchOnlyItem?.isDelete && (
-        <DeleteWatchOnlyRecordModal record={watchOnlyItem} onClose={() => setWatchOnlyItem(null)} />
+        <DeleteWatchOnlyRecordModal
+          setWatchOnlyItem={setWatchOnlyItem}
+          record={watchOnlyItem}
+          onClose={() => setWatchOnlyItem(null)}
+        />
       )}
     </div>
   );
