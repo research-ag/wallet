@@ -39,7 +39,7 @@ export default function HistoricalItem(props: HistoricalItemProps) {
             sizeComp="small"
             sizeInput="small"
             inputClass="h-6"
-            compOutClass="w-[6rem]"
+            compOutClass="!w-[6rem]"
             autoFocus
             onChange={onEditInputChanged}
             onKeyDown={(e) => {
