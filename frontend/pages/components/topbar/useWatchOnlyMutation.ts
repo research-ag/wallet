@@ -9,6 +9,9 @@ interface Options {
   data: WatchOnlyItem;
 }
 
+export const MAX_ALIAS_LENGTH = 10;
+export const MAX_ALIAS_ADDRESS_LENGTH = 24;
+
 /**
  * Hook to handle the mutation of watch-only items, it depends on the useWatchOnly hook.
  */
@@ -18,7 +21,7 @@ export default function useWatchOnlyMutation({ setWatchOnlyItem, watchOnlyItem, 
     // INFO: only allow alphanumeric characters and spaces
     const regexAliasValidation = /^[a-zA-Z0-9]+( [a-zA-Z0-9]+)*$/;
     const alias = event.target.value;
-    const isValid = regexAliasValidation.test(alias) && alias.length <= 20;
+    const isValid = regexAliasValidation.test(alias) && alias.length <= MAX_ALIAS_LENGTH;
 
     setWatchOnlyItem((prev) => {
       return { ...prev, alias, principal: data.principal, isValid, isDelete: false };

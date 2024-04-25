@@ -6,7 +6,7 @@ import { EditWatchOnlyItem } from "./WatchOnlyRecords";
 import { WatchOnlyItem } from "@pages/login/components/WatchOnlyInput";
 import { handlePrincipalAuthenticated } from "@redux/CheckAuth";
 import clsx from "clsx";
-import useWatchOnlyMutation from "./useWatchOnlyMutation";
+import useWatchOnlyMutation, { MAX_ALIAS_ADDRESS_LENGTH } from "./useWatchOnlyMutation";
 import { useAppSelector } from "@redux/Store";
 import ActionIcons from "./ActionIcons";
 import { useTranslation } from "react-i18next";
@@ -32,6 +32,7 @@ export default function WatchOnlyRecord(props: WatchOnlyRecordProps) {
 
   const isBeingEdited = watchOnlyItem?.principal?.toString() === data.principal;
   const isCurrentUser = data.principal === userPrincipal.toString();
+  const spaces = Math.floor((MAX_ALIAS_ADDRESS_LENGTH - (data?.alias?.length || 0)) / 2);
 
   return (
     <div key={data.principal} className={getItemStyles(data.principal === watchOnlyItem?.principal)}>
@@ -53,7 +54,7 @@ export default function WatchOnlyRecord(props: WatchOnlyRecordProps) {
             }}
           />
           {data?.alias && <span className="mx-1 text-md"> | </span>}
-          <div className="text-md">{shortAddress(data.principal, 3, 3)}</div>
+          <div className="text-md">{shortAddress(data.principal, spaces, spaces)}</div>
         </div>
       ) : (
         <div className="w-full" onClick={onChangeSession}>

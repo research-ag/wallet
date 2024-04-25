@@ -4,6 +4,7 @@ import { ChevronDownIcon, ChevronLeftIcon } from "@radix-ui/react-icons";
 import { useEffect, useState } from "react";
 import { shortAddress } from "@/utils";
 import { getWatchOnlySessionsFromLocal } from "@pages/helpers/watchOnlyStorage";
+import { MAX_ALIAS_ADDRESS_LENGTH } from "./useWatchOnlyMutation";
 
 interface WatchOnlyPillProps {
   text: string;
@@ -17,12 +18,11 @@ export default function WatchOnlyPill({ text, icon }: WatchOnlyPillProps) {
 
   useEffect(() => {
     const aliases = getWatchOnlySessionsFromLocal();
-    const alias = aliases.find((session) => session.principal === userPrincipal.toString())?.alias
+    const alias = aliases.find((session) => session.principal === userPrincipal.toString())?.alias;
     setCurrentAlias(alias || "");
-
   }, [userPrincipal]);
 
-  const spaces = Math.floor((24 - currentAlias.length) / 2);
+  const spaces = Math.floor((MAX_ALIAS_ADDRESS_LENGTH - currentAlias.length) / 2);
 
   return (
     <div className="relative w-[16rem]">

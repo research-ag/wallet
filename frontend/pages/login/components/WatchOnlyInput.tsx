@@ -12,15 +12,20 @@ interface WatchOnlyInputProps {
 }
 
 export default function WatchOnlyInput(props: WatchOnlyInputProps) {
-  const [currentAlias, setCurrentAlias] = useState<string>("");
+  const [currentAlias, setCurrentAlias] = useState<string | null>(null);
   const { principalAddress, setPrincipalAddress } = props;
   const [historicalOpen, setHistoricalOpen] = useState(false);
 
   useEffect(() => {
     const aliases = getWatchOnlySessionsFromLocal();
-    const alias = aliases.find((session) => session.principal === principalAddress)?.alias
-    setCurrentAlias(alias || "");
+    const alias = aliases.find((session) => session.principal === principalAddress)?.alias;
+    setCurrentAlias(alias || null);
   }, [principalAddress]);
+
+  const value = (() => {
+    if (!currentAlias) return principalAddress;
+    return `${currentAlias} | ${principalAddress}`;
+  })();
 
   return (
     <div className="relative w-full">
@@ -28,10 +33,10 @@ export default function WatchOnlyInput(props: WatchOnlyInputProps) {
         sizeInput={"medium"}
         intent={"secondary"}
         compOutClass=""
-        value={`${currentAlias} ${currentAlias && currentAlias ? "|" : ""} ${principalAddress}`}
+        value={value}
         onChange={onPrincipalChange}
         autoFocus
-        border={validatePrincipal(principalAddress) ? undefined : "error"}
+        border={validatePrincipal(principalAddress) || principalAddress.length == 0 ? undefined : "error"}
         sufix={
           <WatchOnlyInputSuffix
             principalAddress={principalAddress}
@@ -50,6 +55,8 @@ export default function WatchOnlyInput(props: WatchOnlyInputProps) {
 
   function onPrincipalChange(e: ChangeEvent<HTMLInputElement> | string) {
     const value = typeof e === "string" ? e : e.target.value;
+    console.log(value);
+
     setPrincipalAddress(value);
   }
 
