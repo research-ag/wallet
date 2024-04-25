@@ -7,9 +7,12 @@ import { WatchOnlyItem } from "@pages/login/components/WatchOnlyInput";
 import { handlePrincipalAuthenticated } from "@redux/CheckAuth";
 import clsx from "clsx";
 import useWatchOnlyMutation, { MAX_ALIAS_ADDRESS_LENGTH } from "./useWatchOnlyMutation";
-import { useAppSelector } from "@redux/Store";
+import { useAppDispatch, useAppSelector } from "@redux/Store";
 import ActionIcons from "./ActionIcons";
 import { useTranslation } from "react-i18next";
+import { clearDataContacts } from "@redux/contacts/ContactsReducer";
+import { setTransactions } from "@redux/transaction/TransactionReducer";
+import { setReduxAllowances } from "@redux/allowance/AllowanceReducer";
 
 interface WatchOnlyRecordProps {
   watchOnlyItem: EditWatchOnlyItem | null;
@@ -23,6 +26,7 @@ export default function WatchOnlyRecord(props: WatchOnlyRecordProps) {
   const { t } = useTranslation();
   const { userPrincipal } = useAppSelector((state) => state.auth);
   const { data, watchOnlyItem, setWatchOnlyItem } = props;
+  const dispatch = useAppDispatch();
 
   const { onEditInputChanged, onSaveEdit, onDelete, onCancelEdit, onEditAlias } = useWatchOnlyMutation({
     setWatchOnlyItem,
@@ -86,6 +90,9 @@ export default function WatchOnlyRecord(props: WatchOnlyRecordProps) {
   );
 
   async function onChangeSession() {
+    dispatch(setTransactions([]));
+    dispatch(clearDataContacts());
+    dispatch(setReduxAllowances([]));
     if (!isCurrentUser) await handlePrincipalAuthenticated(data.principal);
   }
 }
