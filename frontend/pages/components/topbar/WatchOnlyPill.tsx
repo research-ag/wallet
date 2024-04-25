@@ -1,8 +1,9 @@
 import { useAppSelector } from "@redux/Store";
 import WatchOnlyRecords from "./WatchOnlyRecords";
 import { ChevronDownIcon, ChevronLeftIcon } from "@radix-ui/react-icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { shortAddress } from "@/utils";
+import { getWatchOnlySessionsFromLocal } from "@pages/helpers/watchOnlyStorage";
 
 interface WatchOnlyPillProps {
   text: string;
@@ -10,8 +11,18 @@ interface WatchOnlyPillProps {
 }
 
 export default function WatchOnlyPill({ text, icon }: WatchOnlyPillProps) {
-  const { watchOnlyMode } = useAppSelector((state) => state.auth);
+  const [currentAlias, setCurrentAlias] = useState<string>("");
+  const { watchOnlyMode, userPrincipal } = useAppSelector((state) => state.auth);
   const [historicalOpen, setHistoricalOpen] = useState(false);
+
+  useEffect(() => {
+    const aliases = getWatchOnlySessionsFromLocal();
+    const alias = aliases.find((session) => session.principal === userPrincipal.toString())?.alias
+    setCurrentAlias(alias || "");
+
+  }, [userPrincipal]);
+
+  const spaces = Math.floor((24 - currentAlias.length) / 2);
 
   return (
     <div className="relative w-[16rem]">
@@ -19,7 +30,7 @@ export default function WatchOnlyPill({ text, icon }: WatchOnlyPillProps) {
         <div className="flex items-center justify-between w-full gap-2 whitespace-nowrap">
           <img src={icon} alt="icon" className="w-5" />
           <p className="text-md">
-            <span className="font-bold">Julio</span> | {shortAddress(text, 10, 10)}
+            <span className="font-bold">{currentAlias}</span> | {shortAddress(text, spaces, spaces)}
           </p>
 
           <div className="flex">
