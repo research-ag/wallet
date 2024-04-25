@@ -20,7 +20,6 @@ export default function IdentityWrapper({ children }: { children: JSX.Element })
     };
     getIdentity().catch(console.error);
     watchOnlyRefresh();
-    console.log("IdentityWrapper");
   }, []);
 
   return <>{children}</>;

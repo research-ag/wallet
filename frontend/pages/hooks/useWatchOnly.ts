@@ -12,7 +12,6 @@ export default function useWatchOnly() {
   const [watchOnlyHistoryFiltered, setWatchOnlyHistoryFiltered] = useState<WatchOnlyItem[]>([]);
 
   useEffect(() => {
-    console.log("reset filtering");
     setWatchOnlyHistoryFiltered(watchOnlyHistory);
   }, [watchOnlyHistory]);
 
