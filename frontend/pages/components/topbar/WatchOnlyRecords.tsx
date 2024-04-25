@@ -4,17 +4,12 @@ import { CustomInput } from "@components/input";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import useWatchOnly from "@pages/hooks/useWatchOnly";
 
-interface WatchOnlyRecordsProps {
-  start: number;
-  end: number;
-}
-
 export interface EditWatchOnlyItem extends Pick<WatchOnlyItem, "principal" | "alias"> {
   isValid: boolean;
   isDelete: boolean;
 }
 
-export default function WatchOnlyRecords({ start, end }: WatchOnlyRecordsProps) {
+export default function WatchOnlyRecords() {
   const { watchOnlyItem, setWatchOnlyItem, watchOnlyHistoryFiltered, onSearchChange } = useWatchOnly();
 
   return (
@@ -32,8 +27,6 @@ export default function WatchOnlyRecords({ start, end }: WatchOnlyRecordsProps) 
           <WatchOnlyRecord
             key={data.principal}
             data={data}
-            start={start}
-            end={end}
             watchOnlyItem={watchOnlyItem}
             setWatchOnlyItem={setWatchOnlyItem}
           />

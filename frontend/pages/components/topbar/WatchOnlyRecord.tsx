@@ -9,7 +9,6 @@ import clsx from "clsx";
 import useWatchOnlyMutation, { MAX_ALIAS_ADDRESS_LENGTH } from "./useWatchOnlyMutation";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import ActionIcons from "./ActionIcons";
-import { useTranslation } from "react-i18next";
 import { clearDataContacts } from "@redux/contacts/ContactsReducer";
 import { setTransactions } from "@redux/transaction/TransactionReducer";
 import { setReduxAllowances } from "@redux/allowance/AllowanceReducer";
@@ -18,12 +17,9 @@ interface WatchOnlyRecordProps {
   watchOnlyItem: EditWatchOnlyItem | null;
   setWatchOnlyItem: Dispatch<SetStateAction<EditWatchOnlyItem | null>>;
   data: WatchOnlyItem;
-  start: number;
-  end: number;
 }
 
 export default function WatchOnlyRecord(props: WatchOnlyRecordProps) {
-  const { t } = useTranslation();
   const { userPrincipal } = useAppSelector((state) => state.auth);
   const { data, watchOnlyItem, setWatchOnlyItem } = props;
   const dispatch = useAppDispatch();
@@ -36,7 +32,7 @@ export default function WatchOnlyRecord(props: WatchOnlyRecordProps) {
 
   const isBeingEdited = watchOnlyItem?.principal?.toString() === data.principal;
   const isCurrentUser = data.principal === userPrincipal.toString();
-  const spaces = Math.floor((MAX_ALIAS_ADDRESS_LENGTH - (data?.alias?.length || 0)) / 2);
+  const spaces = Math.floor((MAX_ALIAS_ADDRESS_LENGTH - (data?.alias?.length || 0)) / 3);
 
   return (
     <div key={data.principal} className={getItemStyles(data.principal === watchOnlyItem?.principal)}>
@@ -50,7 +46,7 @@ export default function WatchOnlyRecord(props: WatchOnlyRecordProps) {
             sizeComp="small"
             sizeInput="small"
             inputClass="h-6"
-            compOutClass="w-[6rem]"
+            compOutClass="!max-w-[4rem]"
             autoFocus
             onChange={onEditInputChanged}
             onKeyDown={(e) => {

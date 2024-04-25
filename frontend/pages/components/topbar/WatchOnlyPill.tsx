@@ -43,7 +43,7 @@ export default function WatchOnlyPill({ text, icon }: WatchOnlyPillProps) {
       {watchOnlyMode && historicalOpen && (
         <>
           <div className="fixed inset-0 z-10" onClick={onOpenChange}></div>
-          <WatchOnlyRecords start={3} end={3} />
+          <WatchOnlyRecords />
         </>
       )}
     </div>
