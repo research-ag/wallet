@@ -70,18 +70,17 @@ export default function WatchOnlyRecord(props: WatchOnlyRecordProps) {
         </div>
       )}
 
-      {isCurrentUser && <p className="text-sm text-primary-color">({t("current")})</p>}
+      {isCurrentUser && !isBeingEdited && <span className="w-2 h-2 mr-3 bg-slate-color-success rounded-full"></span>}
 
-      {!isCurrentUser && (
-        <ActionIcons
-          isBeingEdited={isBeingEdited}
-          watchOnlyItem={watchOnlyItem}
-          onSaveEdit={onSaveEdit}
-          onCancelEdit={onCancelEdit}
-          onEditAlias={onEditAlias}
-          onDelete={onDelete}
-        />
-      )}
+      <ActionIcons
+        isBeingEdited={isBeingEdited}
+        watchOnlyItem={watchOnlyItem}
+        onSaveEdit={onSaveEdit}
+        onCancelEdit={onCancelEdit}
+        onEditAlias={onEditAlias}
+        onDelete={onDelete}
+        isCurrentUser={isCurrentUser}
+      />
 
       {watchOnlyItem?.isDelete && (
         <DeleteWatchOnlyRecordModal record={watchOnlyItem} onClose={() => setWatchOnlyItem(null)} />
