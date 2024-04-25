@@ -16,12 +16,10 @@ export default function WatchOnlyInputSuffix(props: WatchOnlyInputSuffixProps) {
 
   return (
     <div className="flex">
-      {principalAddress.length > 0 ? (
-        <CheckIcon
-          className={getCheckIconStyles(principalAddress, watchOnlyLoginErr)}
-          onClick={() => handlePrincipalAuthenticated(principalAddress)}
-        />
-      ) : null}
+      <CheckIcon
+        className={getCheckIconStyles(principalAddress, watchOnlyLoginErr)}
+        onClick={() => handlePrincipalAuthenticated(principalAddress)}
+      />
 
       {historicalOpen ? (
         <ChevronDownIcon className="w-4 h-4 cursor-pointer text-black-color dark:text-white" onClick={onChevronClick} />

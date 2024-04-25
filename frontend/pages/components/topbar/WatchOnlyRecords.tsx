@@ -23,12 +23,13 @@ export default function WatchOnlyRecords() {
       />
 
       <div className="max-h-[10rem] overflow-y-auto scroll-y-light">
-        {watchOnlyHistoryFiltered.map((data) => (
+        {watchOnlyHistoryFiltered.map((data, index) => (
           <WatchOnlyRecord
             key={data.principal}
             data={data}
             watchOnlyItem={watchOnlyItem}
             setWatchOnlyItem={setWatchOnlyItem}
+            isLast={index === watchOnlyHistoryFiltered.length - 1}
           />
         ))}
       </div>

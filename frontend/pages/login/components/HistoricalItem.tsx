@@ -17,9 +17,9 @@ interface HistoricalItemProps {
 }
 
 export default function HistoricalItem(props: HistoricalItemProps) {
-  const { onHistoricalSelectHandler, data, setWatchOnlyItem, watchOnlyItem } = props;
+  const { onHistoricalSelectHandler, data, setWatchOnlyItem, watchOnlyItem, isLast } = props;
 
-  const { onEditInputChanged, onSaveEdit, onDelete, onCancelEdit, onEditAlias } = useWatchOnlyMutation({
+  const { onEditInputChanged, onSaveEdit, onActivateDelete, onCancelEdit, onEditAlias } = useWatchOnlyMutation({
     setWatchOnlyItem,
     watchOnlyItem,
     data,
@@ -28,7 +28,7 @@ export default function HistoricalItem(props: HistoricalItemProps) {
   const isBeingEdited = watchOnlyItem?.principal?.toString() === data.principal;
 
   return (
-    <div className={getItemStyles(data.principal === watchOnlyItem?.principal)}>
+    <div className={getItemStyles(data.principal === watchOnlyItem?.principal, isLast)}>
       {isBeingEdited && !watchOnlyItem.isDelete ? (
         <div className="flex items-center w-full">
           <CustomInput
@@ -74,7 +74,7 @@ export default function HistoricalItem(props: HistoricalItemProps) {
             <Pencil1Icon onClick={onEditAlias} className="w-3 h-3 text-white" />
           </div>
           <div className="grid w-5 h-5 rounded-sm cursor-pointer bg-slate-color-error place-items-center">
-            <TrashIcon onClick={onDelete} className="w-3 h-3 text-white" />
+            <TrashIcon onClick={onActivateDelete} className="w-3 h-3 text-white" />
           </div>
         </div>
       )}
@@ -90,9 +90,10 @@ export default function HistoricalItem(props: HistoricalItemProps) {
   );
 }
 
-const getItemStyles = (isActive = false) =>
+const getItemStyles = (isActive = false, isLast = false) =>
   clsx(
-    "cursor-pointer border-b-2 dark:border-black-color",
+    "cursor-pointer",
+    isLast ? null : "border-b-2 dark:border-black-color",
     "flex items-center justify-between p-2",
     "text-black-color dark:text-white",
     "transition-all duration-100 ease-in-out",

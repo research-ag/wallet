@@ -1,4 +1,5 @@
 import { AuthClient } from "@dfinity/auth-client";
+import watchOnlyRefresh from "@pages/helpers/watchOnlyRefresh";
 import { handleLoginApp } from "@redux/CheckAuth";
 import { useAppDispatch } from "@redux/Store";
 import { setAuth } from "@redux/auth/AuthReducer";
@@ -18,6 +19,8 @@ export default function IdentityWrapper({ children }: { children: JSX.Element })
       }
     };
     getIdentity().catch(console.error);
+    watchOnlyRefresh();
+    console.log("IdentityWrapper");
   }, []);
 
   return <>{children}</>;

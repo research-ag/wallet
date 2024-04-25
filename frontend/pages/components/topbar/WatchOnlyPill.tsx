@@ -1,10 +1,9 @@
 import { useAppSelector } from "@redux/Store";
 import WatchOnlyRecords from "./WatchOnlyRecords";
 import { ChevronDownIcon, ChevronLeftIcon } from "@radix-ui/react-icons";
-import { useEffect, useState } from "react";
 import { shortAddress } from "@/utils";
-import { getWatchOnlySessionsFromLocal } from "@pages/helpers/watchOnlyStorage";
 import { MAX_ALIAS_ADDRESS_LENGTH } from "./useWatchOnlyMutation";
+import { useState } from "react";
 
 interface WatchOnlyPillProps {
   text: string;
@@ -12,15 +11,16 @@ interface WatchOnlyPillProps {
 }
 
 export default function WatchOnlyPill({ text, icon }: WatchOnlyPillProps) {
-  const [currentAlias, setCurrentAlias] = useState<string>("");
-  const { watchOnlyMode, userPrincipal } = useAppSelector((state) => state.auth);
   const [historicalOpen, setHistoricalOpen] = useState(false);
+  const { watchOnlyHistory } = useAppSelector((state) => state.auth);
+  const { watchOnlyMode, userPrincipal } = useAppSelector((state) => state.auth);
 
-  useEffect(() => {
-    const aliases = getWatchOnlySessionsFromLocal();
-    const alias = aliases.find((session) => session.principal === userPrincipal.toString())?.alias;
-    setCurrentAlias(alias || "");
-  }, [userPrincipal]);
+  const currentAlias = (() => {
+    const alias = watchOnlyHistory.find((session) => session.principal === userPrincipal.toString())?.alias;
+
+    if (alias) return `${alias} |`;
+    return "";
+  })();
 
   const spaces = Math.floor((MAX_ALIAS_ADDRESS_LENGTH - currentAlias.length) / 2);
 
@@ -30,7 +30,7 @@ export default function WatchOnlyPill({ text, icon }: WatchOnlyPillProps) {
         <div className="flex items-center justify-between w-full gap-2 whitespace-nowrap">
           <img src={icon} alt="icon" className="w-5" />
           <p className="text-md">
-            <span className="font-bold">{currentAlias}</span> | {shortAddress(text, spaces, spaces)}
+            <span className="font-bold">{currentAlias}</span> {shortAddress(text, spaces, spaces)}
           </p>
 
           <div className="flex">

@@ -1,7 +1,9 @@
-import { updateWatchOnlySessionFromLocal } from "@pages/helpers/watchOnlyStorage";
+import { getWatchOnlySessionsFromLocal, updateWatchOnlySessionFromLocal } from "@pages/helpers/watchOnlyStorage";
 import { Dispatch, SetStateAction } from "react";
 import { EditWatchOnlyItem } from "./WatchOnlyRecords";
 import { WatchOnlyItem } from "@pages/login/components/WatchOnlyInput";
+import { setReduxWatchOnlyHistory } from "@redux/auth/AuthReducer";
+import { useAppDispatch } from "@redux/Store";
 
 interface Options {
   setWatchOnlyItem: Dispatch<SetStateAction<EditWatchOnlyItem | null>>;
@@ -16,6 +18,8 @@ export const MAX_ALIAS_ADDRESS_LENGTH = 24;
  * Hook to handle the mutation of watch-only items, it depends on the useWatchOnly hook.
  */
 export default function useWatchOnlyMutation({ setWatchOnlyItem, watchOnlyItem, data }: Options) {
+  const dispatch = useAppDispatch();
+
   function onEditInputChanged(event: React.ChangeEvent<HTMLInputElement>) {
     event.preventDefault();
     // INFO: only allow alphanumeric characters and spaces
@@ -30,11 +34,18 @@ export default function useWatchOnlyMutation({ setWatchOnlyItem, watchOnlyItem, 
 
   function onSaveEdit() {
     if (!watchOnlyItem || !watchOnlyItem?.isValid) return;
-    updateWatchOnlySessionFromLocal(watchOnlyItem);
+
+    updateWatchOnlySessionFromLocal({
+      alias: watchOnlyItem.alias,
+      principal: watchOnlyItem.principal,
+    });
+
+    const updated = getWatchOnlySessionsFromLocal();
+    dispatch(setReduxWatchOnlyHistory(updated));
     setWatchOnlyItem(null);
   }
 
-  function onDelete() {
+  function onActivateDelete() {
     setWatchOnlyItem({ ...data, isValid: true, isDelete: true });
   }
 
@@ -49,7 +60,7 @@ export default function useWatchOnlyMutation({ setWatchOnlyItem, watchOnlyItem, 
   return {
     onEditInputChanged,
     onSaveEdit,
-    onDelete,
+    onActivateDelete,
     onCancelEdit,
     onEditAlias,
   };

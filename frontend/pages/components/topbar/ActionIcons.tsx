@@ -7,12 +7,13 @@ interface ActionIconsProps {
   onSaveEdit: () => void;
   onCancelEdit: () => void;
   onEditAlias: () => void;
-  onDelete: () => void;
+  onActivateDelete: () => void;
   isCurrentUser: boolean;
 }
 
 export default function ActionIcons(props: ActionIconsProps) {
-  const { isBeingEdited, watchOnlyItem, onSaveEdit, onCancelEdit, onEditAlias, onDelete, isCurrentUser } = props;
+  const { isBeingEdited, watchOnlyItem, onSaveEdit, onCancelEdit, onEditAlias, onActivateDelete, isCurrentUser } =
+    props;
 
   return (
     <>
@@ -33,7 +34,7 @@ export default function ActionIcons(props: ActionIconsProps) {
 
           {!isCurrentUser && (
             <div className="grid w-5 h-5 rounded-sm cursor-pointer bg-slate-color-error place-items-center">
-              <TrashIcon onClick={onDelete} className="w-3 h-3 text-white" />
+              <TrashIcon onClick={onActivateDelete} className="w-3 h-3 text-white" />
             </div>
           )}
         </div>

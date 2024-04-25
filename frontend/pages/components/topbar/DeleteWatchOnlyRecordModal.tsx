@@ -4,9 +4,11 @@ import { WatchOnlyItem } from "@pages/login/components/WatchOnlyInput";
 import { useTranslation } from "react-i18next";
 import { Cross1Icon } from "@radix-ui/react-icons";
 import { shortAddress } from "@/utils";
-import { deleteWatchOnlySessionFromLocal } from "@pages/helpers/watchOnlyStorage";
+import { deleteWatchOnlySessionFromLocal, getWatchOnlySessionsFromLocal } from "@pages/helpers/watchOnlyStorage";
 import { Dispatch, SetStateAction } from "react";
 import { EditWatchOnlyItem } from "./WatchOnlyRecords";
+import { setReduxWatchOnlyHistory } from "@redux/auth/AuthReducer";
+import { useAppDispatch } from "@redux/Store";
 
 interface DeleteWatchOnlyRecordModalProps {
   record: WatchOnlyItem;
@@ -19,6 +21,7 @@ export default function DeleteWatchOnlyRecordModal({
   onClose,
   setWatchOnlyItem,
 }: DeleteWatchOnlyRecordModalProps) {
+  const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
   return (
@@ -56,6 +59,8 @@ export default function DeleteWatchOnlyRecordModal({
   function onDelete() {
     deleteWatchOnlySessionFromLocal(record?.principal);
     setWatchOnlyItem(null);
+    const updated = getWatchOnlySessionsFromLocal();
+    dispatch(setReduxWatchOnlyHistory(updated));
     onClose();
   }
 }

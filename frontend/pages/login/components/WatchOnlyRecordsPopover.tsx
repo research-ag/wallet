@@ -15,20 +15,21 @@ export default function WatchOnlyRecordsPopover({ onHistoricalSelectHandler }: W
     <div className={itemsRootStyles}>
       <CustomInput
         className="h-8"
-        prefix={<MagnifyingGlassIcon className="w-6 h-6 mr-2" />}
+        prefix={<MagnifyingGlassIcon className="w-6 h-6 mr-2 text-black-color dark:text-white" />}
         placeholder="Search"
         onChange={onSearchChange}
         compOutClass="p-2"
       />
 
       <div className="overflow-y-auto scroll-y-light max-h-[7rem]">
-        {watchOnlyHistoryFiltered.map((data) => (
+        {watchOnlyHistoryFiltered.map((data, index) => (
           <HistoricalItem
             key={data.principal}
             onHistoricalSelectHandler={onHistoricalSelectHandler}
             data={data}
             setWatchOnlyItem={setWatchOnlyItem}
             watchOnlyItem={watchOnlyItem}
+            isLast={index === watchOnlyHistoryFiltered.length - 1}
           />
         ))}
       </div>

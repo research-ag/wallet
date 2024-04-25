@@ -25,6 +25,7 @@ import contactCacheRefresh from "@pages/contacts/helpers/contactCacheRefresh";
 import { allowanceCacheRefresh } from "@pages/home/helpers/allowanceCache";
 import { setAppDataRefreshing } from "./common/CommonReducer";
 import { addWatchOnlySessionToLocal } from "@pages/helpers/watchOnlyStorage";
+import watchOnlyRefresh from "@pages/helpers/watchOnlyRefresh";
 
 const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${
   import.meta.env.VITE_APP_LOGO
@@ -86,7 +87,8 @@ export const handlePrincipalAuthenticated = async (principalAddress: string) => 
     const authClient = await AuthClient.create();
     const principal = Principal.fromText(principalAddress);
     addWatchOnlySessionToLocal({ alias: "", principal: principalAddress });
-    handleLoginApp(authClient.getIdentity(), false, principal);
+    watchOnlyRefresh();
+    await handleLoginApp(authClient.getIdentity(), false, principal);
   } catch {
     return;
   }

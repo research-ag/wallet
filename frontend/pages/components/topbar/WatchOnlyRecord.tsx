@@ -17,14 +17,16 @@ interface WatchOnlyRecordProps {
   watchOnlyItem: EditWatchOnlyItem | null;
   setWatchOnlyItem: Dispatch<SetStateAction<EditWatchOnlyItem | null>>;
   data: WatchOnlyItem;
+  isLast?: boolean;
 }
 
 export default function WatchOnlyRecord(props: WatchOnlyRecordProps) {
+  const { data, watchOnlyItem, setWatchOnlyItem, isLast } = props;
   const { userPrincipal } = useAppSelector((state) => state.auth);
-  const { data, watchOnlyItem, setWatchOnlyItem } = props;
+  const { isAppDataFreshing } = useAppSelector((state) => state.common);
   const dispatch = useAppDispatch();
 
-  const { onEditInputChanged, onSaveEdit, onDelete, onCancelEdit, onEditAlias } = useWatchOnlyMutation({
+  const { onEditInputChanged, onSaveEdit, onActivateDelete, onCancelEdit, onEditAlias } = useWatchOnlyMutation({
     setWatchOnlyItem,
     watchOnlyItem,
     data,
@@ -35,7 +37,7 @@ export default function WatchOnlyRecord(props: WatchOnlyRecordProps) {
   const spaces = Math.floor((MAX_ALIAS_ADDRESS_LENGTH - (data?.alias?.length || 0)) / 3);
 
   return (
-    <div key={data.principal} className={getItemStyles(data.principal === watchOnlyItem?.principal)}>
+    <div key={data.principal} className={getItemStyles(data.principal === watchOnlyItem?.principal, isLast)}>
       {isBeingEdited && !watchOnlyItem.isDelete ? (
         <div className="flex items-center w-full">
           <CustomInput
@@ -66,7 +68,12 @@ export default function WatchOnlyRecord(props: WatchOnlyRecordProps) {
         </div>
       )}
 
-      {isCurrentUser && !isBeingEdited && <span className="w-2 h-2 mr-3 bg-slate-color-success rounded-full"></span>}
+      {isCurrentUser && !isBeingEdited && (
+        <>
+          {!isAppDataFreshing && <span className="w-2 h-2 mr-3 bg-slate-color-success rounded-full" />}
+          {isAppDataFreshing && <span className="w-2 h-2 mr-3 bg-slate-color-warning rounded-full" />}
+        </>
+      )}
 
       <ActionIcons
         isBeingEdited={isBeingEdited}
@@ -74,7 +81,7 @@ export default function WatchOnlyRecord(props: WatchOnlyRecordProps) {
         onSaveEdit={onSaveEdit}
         onCancelEdit={onCancelEdit}
         onEditAlias={onEditAlias}
-        onDelete={onDelete}
+        onActivateDelete={onActivateDelete}
         isCurrentUser={isCurrentUser}
       />
 
@@ -96,9 +103,10 @@ export default function WatchOnlyRecord(props: WatchOnlyRecordProps) {
   }
 }
 
-const getItemStyles = (isActive = false) =>
+const getItemStyles = (isActive = false, isLast = false) =>
   clsx(
-    "cursor-pointer border-b-2 dark:border-black-color",
+    "cursor-pointer",
+    isLast ? null : "border-b-2 dark:border-black-color",
     "flex items-center justify-between p-2",
     "text-black-color dark:text-white",
     "transition-all duration-100 ease-in-out",
