@@ -18,6 +18,11 @@ const Menu = () => {
       label: `${assets?.length !== 1 ? t("assets") : t("asset")} (${assets?.length})`,
     },
     {
+      name: "Allowances",
+      path: "/allowances",
+      label: t("allowances"),
+    },
+    {
       name: "Contacts",
       path: CONTACTS,
       label: `${assets?.length !== 1 ? t("contacts") : t("contact")} (${contacts?.length})`,
@@ -39,11 +44,10 @@ const Menu = () => {
             }}
           >
             <p
-              className={`!font-normal  mr-2 ${
-                window.location.pathname !== menu.path
+              className={`!font-normal  mr-2 ${window.location.pathname !== menu.path
                   ? " text-PrimaryTextColorLight/60 dark:text-PrimaryTextColor/60"
                   : "border-b border-SelectRowColor"
-              }`}
+                }`}
             >
               {menu.label}
             </p>
