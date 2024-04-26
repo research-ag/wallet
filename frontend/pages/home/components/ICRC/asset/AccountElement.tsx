@@ -140,35 +140,38 @@ const AccountElement = ({
           )}
         </div>
       </div>
-      <BasicModal
-        width="w-[18rem]"
-        padding="py-5 px-4"
-        border="border border-BorderColorTwoLight dark:border-BorderColorTwo"
-        open={deleteModal}
-      >
-        <div className="flex flex-col items-start justify-start w-full gap-4 reative text-md">
-          <CloseIcon
-            className="absolute cursor-pointer top-5 right-5 stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
-            onClick={() => {
-              setDeleteModal(false);
-            }}
-          />
-          <WarningIcon className="w-6 h-6" />
-          <p className="w-full break-words">
-            {t("delete.subacc.msg")}
-            <span className="ml-1 font-semibold">
-              {subAccount.name === "-" ? `${t("subacc")}-${subAccount.sub_account_id}` : subAccount.name}
-            </span>
-            ?
-          </p>
+      {deleteModal && (
+        <BasicModal
+          width="w-[18rem]"
+          padding="py-5 px-4"
+          border="border border-BorderColorTwoLight dark:border-BorderColorTwo"
+          open={deleteModal}
+        >
+          <div className="flex flex-col items-start justify-start w-full gap-4 reative text-md">
+            <CloseIcon
+              className="absolute cursor-pointer top-5 right-5 stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
+              onClick={() => {
+                setDeleteModal(false);
+              }}
+            />
+            <WarningIcon className="w-6 h-6" />
 
-          <div className="flex flex-row items-start justify-end w-full ">
-            <CustomButton className="min-w-[5rem]" onClick={onConfirm} size={"small"}>
-              {loadingDelete ? <LoadingLoader /> : <p>{t("yes")}</p>}
-            </CustomButton>
+            <p className="w-full break-words">
+              {t("delete.subacc.msg")}
+              <span className="ml-1 font-semibold">
+                {subAccount.name === "-" ? `${t("subacc")}-${subAccount.sub_account_id}` : subAccount.name}
+              </span>
+              ?
+            </p>
+
+            <div className="flex flex-row items-start justify-end w-full ">
+              <CustomButton className="min-w-[5rem]" onClick={onConfirm} size={"small"}>
+                {loadingDelete ? <LoadingLoader /> : <p>{t("yes")}</p>}
+              </CustomButton>
+            </div>
           </div>
-        </div>
-      </BasicModal>
+        </BasicModal>
+      )}
     </Fragment>
   );
 
@@ -246,10 +249,8 @@ const AccountElement = ({
       { sync: true },
     );
 
-    setTimeout(() => {
-      setDeleteModal(false);
-      setLoadingDelete(false);
-    }, 2500);
+    setDeleteModal(false);
+    setLoadingDelete(false);
   }
 
   function onDoubleClick() {

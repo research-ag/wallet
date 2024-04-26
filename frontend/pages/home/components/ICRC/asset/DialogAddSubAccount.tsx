@@ -19,7 +19,7 @@ import { LoadingLoader } from "@components/loader";
 import { IconTypeEnum } from "@/const";
 import { getAssetIcon } from "@/utils/icons";
 
-interface DialogAddAssetProps {
+interface DialogAddSubAccountProps {
   newErr: any;
   setNewErr(value: any): void;
   newSub: SubAccount | undefined;
@@ -35,7 +35,7 @@ interface DialogAddAssetProps {
   accordionIndex: string[];
 }
 
-const DialogAddAsset = ({
+const DialogAddSubAccount = ({
   newErr,
   setNewErr,
   newSub,
@@ -49,7 +49,7 @@ const DialogAddAsset = ({
   selectedAsset,
   setAddOpen,
   accordionIndex,
-}: DialogAddAssetProps) => {
+}: DialogAddSubAccountProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { asciiHex, userAgent, userPrincipal, changeSelectedAccount } = GeneralHook();
@@ -270,4 +270,4 @@ const DialogAddAsset = ({
   }
 };
 
-export default DialogAddAsset;
+export default DialogAddSubAccount;

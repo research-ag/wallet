@@ -15,7 +15,7 @@ import { getFirstNChars, getUSDfromToken, hexToNumber, toFullDecimal } from "@/u
 import { AssetHook } from "../../../hooks/assetHook";
 import bigInt from "big-integer";
 import { AccountHook } from "@pages/hooks/accountHook";
-import DialogAddAsset from "./DialogAddAsset";
+import DialogAddSubAccount from "./DialogAddSubAccount";
 import DeleteAssetModal from "./DeleteAssetModal";
 import { getAssetIcon } from "@/utils/icons";
 
@@ -150,21 +150,23 @@ const AssetElement = ({ asset, idx, accordionIndex, setAssetInfo, setAssetOpen, 
           </Accordion.Content>
         )}
       </Accordion.Item>
-      <DialogAddAsset
-        newErr={newErr}
-        setNewErr={setNewErr}
-        newSub={newSub}
-        setNewSub={setNewSub}
-        setAddOpen={setAddOpen}
-        usedIdxs={usedIdxs}
-        getLowestMissing={getLowestMissing}
-        hexChecked={hexChecked}
-        setHexChecked={setHexChecked}
-        assets={assets}
-        idx={idx}
-        selectedAsset={selectedAsset}
-        accordionIndex={accordionIndex}
-      />
+      {newSub && (
+        <DialogAddSubAccount
+          newErr={newErr}
+          setNewErr={setNewErr}
+          newSub={newSub}
+          setNewSub={setNewSub}
+          setAddOpen={setAddOpen}
+          usedIdxs={usedIdxs}
+          getLowestMissing={getLowestMissing}
+          hexChecked={hexChecked}
+          setHexChecked={setHexChecked}
+          assets={assets}
+          idx={idx}
+          selectedAsset={selectedAsset}
+          accordionIndex={accordionIndex}
+        />
+      )}
       <DeleteAssetModal open={openDelete} setOpen={setOpenDelete} asset={asset} />
     </Fragment>
   );
