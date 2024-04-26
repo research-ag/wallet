@@ -1,16 +1,10 @@
-import { Fragment, useState } from "react";
-import { ICRCSubaccountInfo, ICRCSubaccountInfoEnum } from "@/const";
+import { Fragment } from "react";
 import ICRCSubaccountAction from "./ICRC/detail/SubaccountAction";
 import ICRCTransactionsTable from "./ICRC/detail/transaction/TransactionsTable";
-import ICRCSubInfo from "./ICRC/detail/subaccountTableInfo";
-import AllowanceList from "./ICRC/allowance/AllowanceList";
-import AddAllowanceDrawer from "./ICRC/allowance/AddAllowanceDrawer";
 import SendReceiveDrawer from "./ICRC/detail/transaction/SendReceiveDrawer";
 import TransactionInspectDrawer from "./ICRC/detail/transaction/TransactionInpectDrawer";
 
 const DetailList = () => {
-  const [subInfoType, setSubInfoType] = useState<ICRCSubaccountInfo>(ICRCSubaccountInfoEnum.Enum.TRANSACTIONS);
-
   return (
     <Fragment>
       <div
@@ -19,18 +13,8 @@ const DetailList = () => {
         }
       >
         <ICRCSubaccountAction />
-        <ICRCSubInfo subInfoType={subInfoType} setSubInfoType={setSubInfoType}>
-          {subInfoType === ICRCSubaccountInfoEnum.Enum.TRANSACTIONS && <ICRCTransactionsTable />}
-
-          {subInfoType === ICRCSubaccountInfoEnum.Enum.ALLOWANCES && (
-            <>
-              <AddAllowanceDrawer />
-              <AllowanceList />
-            </>
-          )}
-        </ICRCSubInfo>
+        <ICRCTransactionsTable />
       </div>
-
       <SendReceiveDrawer />
       <TransactionInspectDrawer />
     </Fragment>

@@ -1,7 +1,6 @@
 import { ICRCSubaccountInfo, ICRCSubaccountInfoEnum } from "@/const";
 import { useTranslation } from "react-i18next";
 import { Dispatch, PropsWithChildren, SetStateAction, useEffect, useMemo } from "react";
-import AddAllowanceButton from "../allowance/AddAllowanceButton";
 import { Tab } from "@components/tabs";
 import { clsx } from "clsx";
 import { useAppSelector } from "@redux/Store";
@@ -13,7 +12,6 @@ interface ICRCSubInfoProps extends PropsWithChildren {
 }
 
 export default function ICRCSubInfo({ subInfoType, setSubInfoType, children }: ICRCSubInfoProps) {
-  const { watchOnlyMode } = useAppSelector((state) => state.auth);
   const { selectedAsset } = useAppSelector((state) => state.asset);
   const { t } = useTranslation();
 
@@ -42,22 +40,10 @@ export default function ICRCSubInfo({ subInfoType, setSubInfoType, children }: I
                 </p>
               ),
             },
-            {
-              tabName: ICRCSubaccountInfoEnum.Enum.ALLOWANCES,
-              content: (
-                <p className={getTabStyles(subInfoType === ICRCSubaccountInfoEnum.Enum.ALLOWANCES)}>
-                  {t("allowance.allowances")}
-                </p>
-              ),
-              disabled: !allowanceEnabled,
-            },
           ]}
           activeTab={subInfoType}
           onTabChange={(tab) => setSubInfoType(tab as ICRCSubaccountInfo)}
         />
-        {!watchOnlyMode && subInfoType === ICRCSubaccountInfoEnum.Enum.ALLOWANCES && allowanceEnabled && (
-          <AddAllowanceButton />
-        )}
       </div>
 
       <div className="flex w-full">{children}</div>

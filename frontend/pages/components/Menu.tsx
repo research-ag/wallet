@@ -44,10 +44,11 @@ const Menu = () => {
             }}
           >
             <p
-              className={`!font-normal  mr-2 ${window.location.pathname !== menu.path
+              className={`!font-normal  mr-2 ${
+                window.location.pathname !== menu.path
                   ? " text-PrimaryTextColorLight/60 dark:text-PrimaryTextColor/60"
                   : "border-b border-SelectRowColor"
-                }`}
+              }`}
             >
               {menu.label}
             </p>

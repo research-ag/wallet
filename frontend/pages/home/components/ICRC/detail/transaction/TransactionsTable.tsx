@@ -22,7 +22,7 @@ const ICRCTransactionsTable = () => {
   });
 
   return (
-    <div className="w-full max-h-[calc(100vh-18rem)] scroll-y-light">
+    <div className="w-full max-h-[calc(100vh-13rem)] scroll-y-light mt-4">
       <table className="w-full text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md">
         <thead className="sticky top-0 border-b border-BorderColorTwoLight dark:border-BorderColorTwo bg-SecondaryColorLight dark:bg-SecondaryColor">
           {table.getHeaderGroups().map((headerGroup, idxTR) => (
