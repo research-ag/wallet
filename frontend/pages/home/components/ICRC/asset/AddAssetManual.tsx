@@ -70,7 +70,7 @@ const AddAssetManual = ({
       {asset ? (
         <div className="flex flex-col items-center justify-start w-full p-2">
           {getAssetIcon(IconTypeEnum.Enum.ASSET, asset.tokenSymbol, asset.logo)}
-          <p className="mt-2 text-lg font-bold">{`${asset.tokenName} - ${asset.tokenSymbol}`}</p>
+          <p className="mt-2 text-lg font-bold">{`${asset.name} - ${asset.symbol}`}</p>
         </div>
       ) : (
         <div className="flex flex-row items-start justify-start w-full p-2 border rounded-lg border-SelectRowColor bg-SelectRowColor/10">
