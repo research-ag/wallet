@@ -1,10 +1,10 @@
-import { ReactComponent as CheckIcon } from "@assets/svg/files/edit-check.svg";
-//
 import { CustomInput } from "@components/input";
-import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { handlePrincipalAuthenticated } from "@redux/CheckAuth";
-import { clsx } from "clsx";
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
+import { validatePrincipal } from "@/utils/identity";
+import WatchOnlyInputSuffix from "./WatchOnlyInputSuffix";
+import WatchOnlyRecordsPopover from "./WatchOnlyRecordsPopover";
+import { useAppSelector } from "@redux/Store";
 
 interface WatchOnlyInputProps {
   principalAddress: string;
@@ -12,42 +12,55 @@ interface WatchOnlyInputProps {
 }
 
 export default function WatchOnlyInput(props: WatchOnlyInputProps) {
+  const { watchOnlyHistory } = useAppSelector((state) => state.auth);
   const { principalAddress, setPrincipalAddress } = props;
-  const [watchOnlyLoginErr, setWatchOnlyLoginErr] = useState(false);
+  const [historicalOpen, setHistoricalOpen] = useState(false);
+
+  const value = (() => {
+    const principal = watchOnlyHistory.find((session) => session.principal === principalAddress);
+    if (principal && principal.alias) return `${principal.alias} | ${principalAddress}`;
+    return principalAddress;
+  })();
 
   return (
-    <CustomInput
-      sizeInput={"medium"}
-      intent={"secondary"}
-      compOutClass=""
-      value={principalAddress}
-      onChange={onPrincipalChange}
-      border={watchOnlyLoginErr ? "error" : undefined}
-      // eslint-disable-next-line jsx-a11y/no-autofocus
-      autoFocus
-      sufix={<CheckIcon className={getCheckIconStyles(principalAddress, watchOnlyLoginErr)} />}
-      onKeyDown={(e) => {
-        if (e.key === "Enter") handlePrincipalAuthenticated(principalAddress);
-      }}
-    />
+    <div className="relative w-full">
+      <CustomInput
+        sizeInput={"medium"}
+        intent={"secondary"}
+        compOutClass=""
+        value={value}
+        onChange={onPrincipalChange}
+        autoFocus
+        border={validatePrincipal(principalAddress) || principalAddress.length == 0 ? undefined : "error"}
+        sufix={
+          <WatchOnlyInputSuffix
+            principalAddress={principalAddress}
+            watchOnlyLoginErr={!validatePrincipal(principalAddress)}
+            historicalOpen={historicalOpen}
+            onChevronClick={() => setHistoricalOpen((prev) => !prev)}
+          />
+        }
+        onKeyDown={(e) => {
+          if (e.key === "Enter") handlePrincipalAuthenticated(principalAddress);
+        }}
+      />
+      {historicalOpen && <WatchOnlyRecordsPopover onHistoricalSelectHandler={onHistoricalSelectHandler} />}
+    </div>
   );
 
-  function onPrincipalChange(e: ChangeEvent<HTMLInputElement>) {
-    setPrincipalAddress(e.target.value);
-    try {
-      decodeIcrcAccount(e.target.value);
-      setWatchOnlyLoginErr(false);
-    } catch {
-      setWatchOnlyLoginErr(true);
-    }
+  function onPrincipalChange(e: ChangeEvent<HTMLInputElement> | string) {
+    const value = typeof e === "string" ? e : e.target.value;
+    setPrincipalAddress(value);
+  }
+
+  function onHistoricalSelectHandler(principal: string) {
+    setHistoricalOpen(false);
+    setPrincipalAddress(principal);
+    onPrincipalChange(principal);
   }
 }
 
-function getCheckIconStyles(principalAddress: string, watchOnlyLoginErr: boolean) {
-  return clsx(
-    "w-4 h-4 opacity-50 mr-2",
-    principalAddress.length > 0 && !watchOnlyLoginErr
-      ? "stroke-BorderSuccessColor"
-      : "stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor",
-  );
+export interface WatchOnlyItem {
+  principal: string;
+  alias?: string;
 }

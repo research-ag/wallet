@@ -15,6 +15,7 @@
   "manual": "Manual",
   "search": "Search",
   "max": "MAX",
+  "current": "Current",
   "next": "Next",
   "cancel": "Cancel",
   "back": "Back",
@@ -167,6 +168,7 @@
   "allowance.permanently.deleted": "This Allowance will be permanently deleted.",
   "allowance.edit.allowance": "Edit Allowance",
   "watchOnlyMode.title": "Watch-Only Mode",
+  "watchOnlyMode.delete.message": "Are you sure you want to delete this record?",
 
   "error.asset.empty": "Asset is empty",
   "error.sender.empty": "From is empty",

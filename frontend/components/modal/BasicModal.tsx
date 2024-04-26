@@ -35,7 +35,7 @@ const Modal = ({
       <Dialog.Root open={open}>
         <Dialog.Portal>
           <Dialog.Overlay
-            className={`bg-black/50 data-[state=open]:animate-overlayShow fixed inset-0 z-[${overlayZIndex}]`}
+            className={`bg-black/10 data-[state=open]:animate-overlayShow fixed inset-0 z-[${overlayZIndex}]`}
           />
           <Dialog.Content className={`fixed ${top} left-[50%] outline-none shadow-md z-[${contentZIndex}]`}>
             <div

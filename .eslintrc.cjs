@@ -78,7 +78,7 @@ module.exports = {
     quotes: ["warn", "double"],
     "no-duplicate-imports": "error",
     "react/jsx-key": "warn",
-    "jsx-a11y/no-autofocus": "warn",
+    "jsx-a11y/no-autofocus": "off",
     "@typescript-eslint/no-empty-interface": "warn",
     "no-self-assign": "warn",
     "no-var": "warn",

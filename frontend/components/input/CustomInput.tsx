@@ -31,7 +31,7 @@ export default function CustomInput({
   ...props
 }: InputProps) {
   return (
-    <div className={`realtive roun flex flex-row justify-start items-center w-full gap-1 ${compOutClass}`}>
+    <div className={`relative rounded flex flex-row justify-start items-center w-full gap-1 ${compOutClass}`}>
       {prefix && prefixPosition === "out" && prefix}
       <div
         lang="en-US"
