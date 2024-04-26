@@ -1,4 +1,4 @@
-// svgs
+// svg
 import { ReactComponent as WarningIcon } from "@assets/svg/files/warning.svg";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
@@ -8,16 +8,15 @@ import { CustomButton } from "@components/button";
 import { db } from "@/database/db";
 import { useAppSelector } from "@redux/Store";
 
-interface DeleteAssetModalPropr {
+interface DeleteAssetModalProps {
   open: boolean;
   setOpen(value: boolean): void;
   asset: any;
 }
 
-const DeleteAssetModal = ({ open, setOpen, asset }: DeleteAssetModalPropr) => {
+const DeleteAssetModal = ({ open, setOpen, asset }: DeleteAssetModalProps) => {
   const { t } = useTranslation();
   const { name, address, tokenSymbol } = asset;
-
   const { contacts } = useAppSelector((state) => state.contacts);
 
   return (
