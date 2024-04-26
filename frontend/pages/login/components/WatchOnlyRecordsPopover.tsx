@@ -3,12 +3,14 @@ import clsx from "clsx";
 import { CustomInput } from "@components/input";
 import HistoricalItem from "./HistoricalItem";
 import useWatchOnly from "@pages/hooks/useWatchOnly";
+import { useTranslation } from "react-i18next";
 
 interface WatchOnlyRecordsPopoverProps {
   onHistoricalSelectHandler: (principal: string) => void;
 }
 
 export default function WatchOnlyRecordsPopover({ onHistoricalSelectHandler }: WatchOnlyRecordsPopoverProps) {
+  const {t} = useTranslation();
   const { watchOnlyItem, setWatchOnlyItem, watchOnlyHistoryFiltered, onSearchChange } = useWatchOnly();
 
   return (
@@ -16,7 +18,7 @@ export default function WatchOnlyRecordsPopover({ onHistoricalSelectHandler }: W
       <CustomInput
         className="h-8"
         prefix={<MagnifyingGlassIcon className="w-6 h-6 mr-2 text-black-color dark:text-white" />}
-        placeholder="Search"
+        placeholder={t("search")}
         onChange={onSearchChange}
         compOutClass="p-2"
       />

@@ -3,6 +3,7 @@ import WatchOnlyRecord from "./WatchOnlyRecord";
 import { CustomInput } from "@components/input";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import useWatchOnly from "@pages/hooks/useWatchOnly";
+import { useTranslation } from "react-i18next";
 
 export interface EditWatchOnlyItem extends Pick<WatchOnlyItem, "principal" | "alias"> {
   isValid: boolean;
@@ -10,6 +11,7 @@ export interface EditWatchOnlyItem extends Pick<WatchOnlyItem, "principal" | "al
 }
 
 export default function WatchOnlyRecords() {
+  const {t} = useTranslation();
   const { watchOnlyItem, setWatchOnlyItem, watchOnlyHistoryFiltered, onSearchChange } = useWatchOnly();
 
   return (
@@ -17,7 +19,7 @@ export default function WatchOnlyRecords() {
       <CustomInput
         className="h-8"
         prefix={<MagnifyingGlassIcon className="w-6 h-6 mr-2" />}
-        placeholder="Search"
+        placeholder={t("search")}
         onChange={onSearchChange}
         compOutClass="p-2"
       />
