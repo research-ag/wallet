@@ -9,6 +9,7 @@ const Menu = () => {
   const { contacts } = useAppSelector((state) => state.contacts);
   const { isAppDataFreshing } = useAppSelector((state) => state.common);
   const { assets } = useAppSelector((state) => state.asset);
+  const { allowances } = useAppSelector((state) => state.allowance);
   const { t } = useTranslation();
 
   const menuList = [
@@ -20,7 +21,9 @@ const Menu = () => {
     {
       name: "Allowances",
       path: "/allowances",
-      label: t("allowances"),
+      label: `${allowances?.length !== 1 ? t("allowance.allowances") : t("allowance.allowances")} (${
+        allowances?.length
+      })`,
     },
     {
       name: "Contacts",

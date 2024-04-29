@@ -168,6 +168,7 @@
   "allowance.sure.remove": "Sei sicuro di voler Eliminare?",
   "allowance.permanently.deleted": "Questa Allocazione verrà eliminata definitivamente.",
   "allowance.edit.allowance": "Modifica Allocazione",
+  "allowance.search": "Cerca per conto secondario o spendente",
   "watchOnlyMode.title": "Modalità Solo-Orologio",
 
   "error.asset.empty": "L'asset è vuoto",
