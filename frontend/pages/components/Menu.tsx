@@ -31,7 +31,7 @@ const Menu = () => {
 
   return (
     <Fragment>
-      <div className="flex flex-row items-center justify-start w-full gap-3">
+      <div className="flex flex-row items-center justify-start gap-3">
         {menuList.map((menu, k) => (
           <CustomButton
             key={k}
