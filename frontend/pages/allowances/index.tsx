@@ -1,6 +1,8 @@
 import Menu from "@pages/components/Menu";
 import AllowanceFilter from "./components/AllowanceFilter";
 import AllowanceList from "./components/AllowanceList";
+import AddAllowanceDrawer from "./components/AddAllowanceDrawer";
+import UpdateAllowanceDrawer from "./components/UpdateAllowanceDrawer";
 
 export default function Allowances() {
   return (
@@ -10,6 +12,8 @@ export default function Allowances() {
         <AllowanceFilter />
       </div>
       <AllowanceList />
+      <AddAllowanceDrawer />
+      <UpdateAllowanceDrawer />
     </div>
   );
 }

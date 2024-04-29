@@ -6,9 +6,11 @@ import AssetFilter from "./AssetFilter";
 import { CustomInput } from "@components/input";
 import { useTranslation } from "react-i18next";
 import { IconButton } from "@components/button";
+import useAllowanceDrawer from "../hooks/useAllowanceDrawer";
 
 export default function AllowanceFilter() {
   const { t } = useTranslation();
+  const { onOpenCreateAllowanceDrawer } = useAllowanceDrawer();
   const [searchKey, setSearchKey] = useState("");
   const [assetSelectOpen, setAssetSelectOpen] = useState(false);
   const [selectedAssets, setSelectedAssets] = useState<string[]>([]);
@@ -37,7 +39,12 @@ export default function AllowanceFilter() {
           }}
         />
 
-        <IconButton icon={<PlusIcon className="w-6 h-6" />} size="medium" className="ml-2" onClick={() => {}} />
+        <IconButton
+          icon={<PlusIcon className="w-6 h-6" />}
+          size="medium"
+          className="ml-2"
+          onClick={onOpenCreateAllowanceDrawer}
+        />
       </div>
     </div>
   );
