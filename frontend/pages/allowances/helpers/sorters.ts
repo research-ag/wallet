@@ -1,27 +1,53 @@
 import { TAllowance } from "@/@types/allowance";
 import { SortOrder, SortOrderEnum } from "@/@types/common";
+import { excludeNamesFromAllowance, includeNamesToAllowances } from "./mappers";
 
-export function sortBySubAccount(order: SortOrder, filteredData: TAllowance[]): TAllowance[] {
-  const orderedAllowances = filteredData?.sort((a, b) => {
+export function sortBySubAccount(order: SortOrder, filteredData: TAllowance[]) {
+  const includedNames = includeNamesToAllowances(filteredData);
+
+  const sorted = includedNames.sort((a, b) => {
+    const aSubAccountName = a.subAccountName || "";
+    const bSubAccountName = b.subAccountName || "";
     const aSubAccountId = a.subAccountId || "";
     const bSubAccountId = b.subAccountId || "";
-    const comparisonResult = aSubAccountId.localeCompare(bSubAccountId);
+    const comparisonResult =
+      aSubAccountName.localeCompare(bSubAccountName) || aSubAccountId.localeCompare(bSubAccountId);
     return order === SortOrderEnum.Values.ASC ? comparisonResult : -comparisonResult;
   });
-  return orderedAllowances;
+
+  return excludeNamesFromAllowance(sorted);
 }
 
 export function sortBySpender(order: SortOrder, filteredData: TAllowance[]): TAllowance[] {
-  const noSpenderNamed = filteredData.filter((allowance) => !allowance.spender);
-  const spenderNamed = filteredData.filter((allowance) => allowance.spender);
+  const includedNames = includeNamesToAllowances(filteredData);
 
-  const mergedAllowances = [...noSpenderNamed, ...spenderNamed];
-  const orderedAllowances = mergedAllowances.sort((a, b) => {
+  const noSpenderNamed = filteredData.filter((allowance) => !allowance.spender);
+  const spenderNamed = includedNames.filter((allowance) => allowance.spender);
+
+  const sorted = spenderNamed.sort((a, b) => {
     const aSpenderPrincipal = a.spender || "";
     const bSpenderPrincipal = b.spender || "";
-    const comparisonResult = aSpenderPrincipal.localeCompare(bSpenderPrincipal);
+
+    const aSpenderName = a.spenderName || "";
+    const bSpenderName = b.spenderName || "";
+
+    const comparisonResult =
+      aSpenderName.localeCompare(bSpenderName) || aSpenderPrincipal.localeCompare(bSpenderPrincipal);
+
     return order === SortOrderEnum.Values.ASC ? comparisonResult : -comparisonResult;
   });
+
+  return [...noSpenderNamed, ...excludeNamesFromAllowance(sorted)];
+}
+
+export function sortByAmount(order: SortOrder, filteredData: TAllowance[]): TAllowance[] {
+  const orderedAllowances = filteredData.sort((a, b) => {
+    const aAmount = Number(a.amount || 0);
+    const bAmount = Number(b.amount || 0);
+    const comparisonResult = aAmount - bAmount;
+    return order === SortOrderEnum.Values.ASC ? comparisonResult : -comparisonResult;
+  });
+
   return orderedAllowances;
 }
 
@@ -41,15 +67,4 @@ export function sortByExpiration(order: SortOrder, filteredData: TAllowance[]): 
       : [...orderedAllowances, ...noExpirationAllowances];
 
   return mergedAllowances;
-}
-
-export function sortByAmount(order: SortOrder, filteredData: TAllowance[]): TAllowance[] {
-  const orderedAllowances = filteredData.sort((a, b) => {
-    const aAmount = Number(a.amount || 0);
-    const bAmount = Number(b.amount || 0);
-    const comparisonResult = aAmount - bAmount;
-    return order === SortOrderEnum.Values.ASC ? comparisonResult : -comparisonResult;
-  });
-
-  return orderedAllowances;
 }

@@ -37,12 +37,12 @@ export default function useAllowances() {
       return sortBySpender(sorting, filtered || []);
     }
 
-    if (column === AllowancesTableColumnsEnum.Values.expiration) {
-      return sortByExpiration(sorting, filtered || []);
-    }
-
     if (column === AllowancesTableColumnsEnum.Values.amount) {
       return sortByAmount(sorting, filtered || []);
+    }
+
+    if (column === AllowancesTableColumnsEnum.Values.expiration) {
+      return sortByExpiration(sorting, filtered || []);
     }
 
     return filtered;
