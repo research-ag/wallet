@@ -1,19 +1,25 @@
 import { ReactComponent as PlusIcon } from "@assets/svg/files/plus-icon.svg";
 import SearchIcon from "@assets/svg/files/icon-search.svg";
 //
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import AssetFilter from "./AssetFilter";
 import { CustomInput } from "@components/input";
 import { useTranslation } from "react-i18next";
 import { IconButton } from "@components/button";
 import useAllowanceDrawer from "../hooks/useAllowanceDrawer";
 
-export default function AllowanceFilter() {
+interface AllowanceFilterProps {
+  searchKey: string;
+  setSearchKey: Dispatch<SetStateAction<string>>;
+  selectedAssets: string[];
+  setSelectedAssets: Dispatch<SetStateAction<string[]>>;
+}
+
+export default function AllowanceFilter(props: AllowanceFilterProps) {
+  const { searchKey, setSearchKey, selectedAssets, setSelectedAssets } = props;
   const { t } = useTranslation();
   const { onOpenCreateAllowanceDrawer } = useAllowanceDrawer();
-  const [searchKey, setSearchKey] = useState("");
   const [assetSelectOpen, setAssetSelectOpen] = useState(false);
-  const [selectedAssets, setSelectedAssets] = useState<string[]>([]);
 
   return (
     <div className="flex items-center justify-between w-2/3 ">

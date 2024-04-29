@@ -2,20 +2,14 @@ import { AllowancesTableColumns, AllowancesTableColumnsEnum } from "@/@types/all
 import { SortOrder, SortOrderEnum } from "@/@types/common";
 import { useAppSelector } from "@redux/Store";
 import { useMemo, useState } from "react";
-import {
-  filterByAmount,
-  filterByAsset,
-  filterBySpender,
-  sortByExpiration,
-  sortBySubAccount,
-} from "../helpers/allowanceSorters";
+import { filterByAsset } from "../helpers/allowanceSorters";
 
 export default function useAllowances() {
   const { allowances: rawAllowances } = useAppSelector((state) => state.allowance);
+  const [searchKey, setSearchKey] = useState("");
+  const [selectedAssets, setSelectedAssets] = useState<string[]>([]);
   const [sorting, setSorting] = useState<SortOrder>(SortOrderEnum.Values.ASC);
   const [column, setColumn] = useState<AllowancesTableColumns>(AllowancesTableColumnsEnum.Values.subAccountId);
-
-  const { selectedAsset } = useAppSelector((state) => state.asset);
 
   const onSort = async (orderColumn: AllowancesTableColumns) => {
     if (orderColumn === column) {
@@ -29,28 +23,30 @@ export default function useAllowances() {
   };
 
   const allowances = useMemo(() => {
-    const filtered = selectedAsset?.tokenSymbol
-      ? filterByAsset(selectedAsset?.tokenSymbol, rawAllowances)
+    const filtered = selectedAssets.length > 0
+      ? filterByAsset(selectedAssets, rawAllowances)
       : rawAllowances;
 
-    if (column === AllowancesTableColumnsEnum.Values.subAccountId) {
-      return sortBySubAccount(sorting, filtered || []);
-    }
+    return filtered || [];
 
-    if (column === AllowancesTableColumnsEnum.Values.spender) {
-      return filterBySpender(sorting, filtered || []);
-    }
+    // if (column === AllowancesTableColumnsEnum.Values.subAccountId) {
+    //   return sortBySubAccount(sorting, filtered || []);
+    // }
 
-    if (column === AllowancesTableColumnsEnum.Values.expiration) {
-      return sortByExpiration(sorting, filtered || []);
-    }
+    // if (column === AllowancesTableColumnsEnum.Values.spender) {
+    //   return filterBySpender(sorting, filtered || []);
+    // }
 
-    if (column === AllowancesTableColumnsEnum.Values.amount) {
-      return filterByAmount(sorting, filtered || []);
-    }
+    // if (column === AllowancesTableColumnsEnum.Values.expiration) {
+    //   return sortByExpiration(sorting, filtered || []);
+    // }
 
-    return [];
-  }, [rawAllowances, sorting, column, selectedAsset?.tokenSymbol]);
+    // if (column === AllowancesTableColumnsEnum.Values.amount) {
+    //   return filterByAmount(sorting, filtered || []);
+    // }
+
+    // return [];
+  }, [rawAllowances, sorting, column, selectedAssets]);
 
   return {
     allowances,
@@ -58,5 +54,9 @@ export default function useAllowances() {
     column,
     setSorting,
     handleSortChange: onSort,
+    searchKey,
+    setSearchKey,
+    selectedAssets,
+    setSelectedAssets,
   };
 }

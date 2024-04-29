@@ -1,13 +1,13 @@
 import { TAllowance } from "@/@types/allowance";
 import { SortOrder, SortOrderEnum } from "@/@types/common";
 
-export function filterByAsset(tokenSymbol: string, grossData: TAllowance[]): TAllowance[] {
-  const filteredData = grossData.filter((allowance) => allowance.asset?.tokenSymbol === tokenSymbol);
+export function filterByAsset(assetSymbols: string[], grossData: TAllowance[]): TAllowance[] {
+  const filteredData = grossData.filter((allowance) => assetSymbols.includes(allowance?.asset?.tokenSymbol || ""));
   return filteredData;
 }
 
 export function sortBySubAccount(order: SortOrder, filteredData: TAllowance[]): TAllowance[] {
-  const orderedAllowances = filteredData.sort((a, b) => {
+  const orderedAllowances = filteredData?.sort((a, b) => {
     const aSubAccountId = a.subAccountId || "";
     const bSubAccountId = b.subAccountId || "";
     const comparisonResult = aSubAccountId.localeCompare(bSubAccountId);
