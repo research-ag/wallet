@@ -15,6 +15,7 @@
   "manual": "Manuale",
   "search": "Ricerca",
   "max": "MASS",
+  "current": "Corrente",
   "next": "Seguente",
   "cancel": "Annulla",
   "back": "Indietro",
@@ -170,6 +171,7 @@
   "allowance.edit.allowance": "Modifica Allocazione",
   "allowance.search": "Cerca per conto secondario o spendente",
   "watchOnlyMode.title": "Modalità Solo-Orologio",
+  "watchOnlyMode.delete.message": "Sei sicuro di voler eliminare questo account?",
 
   "error.asset.empty": "L'asset è vuoto",
   "error.sender.empty": "Mittente vuoto",

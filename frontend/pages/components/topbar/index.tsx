@@ -33,6 +33,7 @@ import { useAccount } from "wagmi";
 import Pill from "./Pill";
 import getTotalAmountInCurrency from "@pages/helpers/getTotalAmountInCurrency";
 import reloadBallance from "@pages/helpers/reloadBalance";
+import WatchOnlyPill from "./WatchOnlyPill";
 
 const TopBarComponent = ({ isLoginPage }: { isLoginPage: boolean }) => {
   const { t } = useTranslation();
@@ -66,7 +67,8 @@ const TopBarComponent = ({ isLoginPage }: { isLoginPage: boolean }) => {
           {!isLoginPage && (
             <div className="flex flex-row items-center justify-start gap-3">
               {identity && <Pill text={address as string} start={6} end={4} icon={ethUrl} />}
-              <Pill text={authClient} start={12} end={10} icon={icUrl} />
+              {!watchOnlyMode && <Pill text={authClient} start={12} end={10} icon={icUrl} />}
+              {watchOnlyMode && <WatchOnlyPill text={authClient} icon={icUrl} />}
               <CustomCopy size={"small"} copyText={authClient} />
               <RefreshIcon
                 className={`h-4 w-4 cursor-pointer fill-PrimaryTextColorLight dark:fill-PrimaryTextColor ${

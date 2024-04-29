@@ -15,6 +15,7 @@
   "manual": "Manual",
   "search": "Procurar",
   "max": "MAX",
+  "current": "Atual",
   "next": "Siguiente",
   "cancel": "Voltar",
   "back": "Back",
@@ -170,6 +171,7 @@
   "allowance.edit.allowance": "Editar Mesada",
   "allowance.search": "Pesquise por subconta ou gastador",
   "watchOnlyMode.title": "Modo Assistir-Apenas",
+  "watchOnlyMode.delete.message": "Você está no modo de observação. Não é possível excluir contatos, subcontas ou ativos.",
 
   "error.asset.empty": "O ativo está vazio",
   "error.sender.empty": "O remetente está vazio",

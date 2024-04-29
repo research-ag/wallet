@@ -25,4 +25,5 @@ const commonSlice = createSlice({
 });
 
 export const { setAppDataRefreshing, setLastDataRefresh } = commonSlice.actions;
+
 export default commonSlice.reducer;
