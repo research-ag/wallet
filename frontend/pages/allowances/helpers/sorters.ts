@@ -1,11 +1,6 @@
 import { TAllowance } from "@/@types/allowance";
 import { SortOrder, SortOrderEnum } from "@/@types/common";
 
-export function filterByAsset(assetSymbols: string[], grossData: TAllowance[]): TAllowance[] {
-  const filteredData = grossData.filter((allowance) => assetSymbols.includes(allowance?.asset?.tokenSymbol || ""));
-  return filteredData;
-}
-
 export function sortBySubAccount(order: SortOrder, filteredData: TAllowance[]): TAllowance[] {
   const orderedAllowances = filteredData?.sort((a, b) => {
     const aSubAccountId = a.subAccountId || "";
@@ -16,7 +11,7 @@ export function sortBySubAccount(order: SortOrder, filteredData: TAllowance[]): 
   return orderedAllowances;
 }
 
-export function filterBySpender(order: SortOrder, filteredData: TAllowance[]): TAllowance[] {
+export function sortBySpender(order: SortOrder, filteredData: TAllowance[]): TAllowance[] {
   const noSpenderNamed = filteredData.filter((allowance) => !allowance.spender);
   const spenderNamed = filteredData.filter((allowance) => allowance.spender);
 
@@ -48,7 +43,7 @@ export function sortByExpiration(order: SortOrder, filteredData: TAllowance[]): 
   return mergedAllowances;
 }
 
-export function filterByAmount(order: SortOrder, filteredData: TAllowance[]): TAllowance[] {
+export function sortByAmount(order: SortOrder, filteredData: TAllowance[]): TAllowance[] {
   const orderedAllowances = filteredData.sort((a, b) => {
     const aAmount = Number(a.amount || 0);
     const bAmount = Number(b.amount || 0);

@@ -6,14 +6,7 @@ import UpdateAllowanceDrawer from "./components/UpdateAllowanceDrawer";
 import useAllowances from "./hooks/useAllowances";
 
 export default function Allowances() {
-  const {
-    allowances,
-    handleSortChange,
-    searchKey,
-    setSearchKey,
-    selectedAssets,
-    setSelectedAssets
-  } = useAllowances();
+  const { allowances, handleSortChange, searchKey, setSearchKey, selectedAssets, setSelectedAssets } = useAllowances();
 
   return (
     <div className="px-[2rem]">
@@ -23,7 +16,8 @@ export default function Allowances() {
           searchKey={searchKey}
           setSearchKey={setSearchKey}
           selectedAssets={selectedAssets}
-          setSelectedAssets={setSelectedAssets} />
+          setSelectedAssets={setSelectedAssets}
+        />
       </div>
       <AllowanceList
         allowances={allowances}
@@ -31,7 +25,8 @@ export default function Allowances() {
         searchKey={searchKey}
         setSearchKey={setSearchKey}
         selectedAssets={selectedAssets}
-        setSelectedAssets={setSelectedAssets} />
+        setSelectedAssets={setSelectedAssets}
+      />
       <AddAllowanceDrawer />
       <UpdateAllowanceDrawer />
     </div>

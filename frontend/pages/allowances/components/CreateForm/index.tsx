@@ -17,8 +17,8 @@ import {
 } from "@redux/allowance/AllowanceActions";
 import { db } from "@/database/db";
 import { LoadingLoader } from "@components/loader";
-import { refreshAllowance } from "@pages/allowances/helpers/refreshAllowance";
-import { getDuplicatedAllowance } from "@pages/allowances/helpers/allowanceValidators";
+import { refreshAllowance } from "@pages/allowances/helpers/refresh";
+import { getDuplicatedAllowance } from "@pages/allowances/helpers/validators";
 import { getAllowanceDetails } from "@pages/home/helpers/icrc";
 
 export default function CreateForm() {

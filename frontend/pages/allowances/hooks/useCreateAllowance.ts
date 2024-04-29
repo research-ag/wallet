@@ -8,7 +8,7 @@ import useAllowanceDrawer from "./useAllowanceDrawer";
 import { throttle } from "lodash";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { initialAllowanceState } from "@redux/allowance/AllowanceReducer";
-import { getDuplicatedAllowance, validateCreateAllowance } from "../helpers/allowanceValidators";
+import { getDuplicatedAllowance, validateCreateAllowance } from "../helpers/validators";
 import { SupportedStandardEnum } from "@/@types/icrc";
 import { updateSubAccountBalance } from "@redux/assets/AssetReducer";
 import {
@@ -18,8 +18,8 @@ import {
   setIsLoadingAllowanceAction,
 } from "@redux/allowance/AllowanceActions";
 import { Asset } from "@redux/models/AccountModels";
-import { getAllowanceAsset } from "../helpers/allowanceMappers";
-import { refreshAllowance } from "../helpers/refreshAllowance";
+import { getAllowanceAsset } from "../helpers/mappers";
+import { refreshAllowance } from "../helpers/refresh";
 import { db } from "@/database/db";
 import { removeZeroesFromAmount } from "@/utils";
 

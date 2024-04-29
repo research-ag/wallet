@@ -1,6 +1,6 @@
 import { db } from "@/database/db";
 import contactCacheRefresh from "@pages/contacts/helpers/contactCacheRefresh";
-import { allowanceCacheRefresh } from "@pages/allowances/helpers/allowanceCache";
+import { allowanceCacheRefresh } from "@pages/allowances/helpers/cache";
 import { updateAllBalances } from "@redux/assets/AssetActions";
 import { setAppDataRefreshing, setLastDataRefresh } from "@redux/common/CommonReducer";
 import store from "@redux/Store";

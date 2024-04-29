@@ -2,11 +2,12 @@ import { AllowancesTableColumns, AllowancesTableColumnsEnum } from "@/@types/all
 import { SortOrder, SortOrderEnum } from "@/@types/common";
 import { useAppSelector } from "@redux/Store";
 import { useMemo, useState } from "react";
-import { filterByAsset } from "../helpers/allowanceSorters";
+import { filterByAsset, filterBySpenderAndSubAccount } from "../helpers/filters";
+import { sortByAmount, sortByExpiration, sortBySpender, sortBySubAccount } from "../helpers/sorters";
 
 export default function useAllowances() {
   const { allowances: rawAllowances } = useAppSelector((state) => state.allowance);
-  const [searchKey, setSearchKey] = useState("");
+  const [searchKey, setSearchKey] = useState<string>("");
   const [selectedAssets, setSelectedAssets] = useState<string[]>([]);
   const [sorting, setSorting] = useState<SortOrder>(SortOrderEnum.Values.ASC);
   const [column, setColumn] = useState<AllowancesTableColumns>(AllowancesTableColumnsEnum.Values.subAccountId);
@@ -23,30 +24,29 @@ export default function useAllowances() {
   };
 
   const allowances = useMemo(() => {
-    const filtered = selectedAssets.length > 0
-      ? filterByAsset(selectedAssets, rawAllowances)
-      : rawAllowances;
+    const filteredByAssets = selectedAssets.length > 0 ? filterByAsset(selectedAssets, rawAllowances) : rawAllowances;
 
-    return filtered || [];
+    const filteredBySpender = filterBySpenderAndSubAccount(searchKey, filteredByAssets);
+    const filtered = filteredBySpender;
 
-    // if (column === AllowancesTableColumnsEnum.Values.subAccountId) {
-    //   return sortBySubAccount(sorting, filtered || []);
-    // }
+    if (column === AllowancesTableColumnsEnum.Values.subAccountId) {
+      return sortBySubAccount(sorting, filtered || []);
+    }
 
-    // if (column === AllowancesTableColumnsEnum.Values.spender) {
-    //   return filterBySpender(sorting, filtered || []);
-    // }
+    if (column === AllowancesTableColumnsEnum.Values.spender) {
+      return sortBySpender(sorting, filtered || []);
+    }
 
-    // if (column === AllowancesTableColumnsEnum.Values.expiration) {
-    //   return sortByExpiration(sorting, filtered || []);
-    // }
+    if (column === AllowancesTableColumnsEnum.Values.expiration) {
+      return sortByExpiration(sorting, filtered || []);
+    }
 
-    // if (column === AllowancesTableColumnsEnum.Values.amount) {
-    //   return filterByAmount(sorting, filtered || []);
-    // }
+    if (column === AllowancesTableColumnsEnum.Values.amount) {
+      return sortByAmount(sorting, filtered || []);
+    }
 
-    // return [];
-  }, [rawAllowances, sorting, column, selectedAssets]);
+    return filtered;
+  }, [selectedAssets, searchKey, sorting, column, rawAllowances]);
 
   return {
     allowances,
