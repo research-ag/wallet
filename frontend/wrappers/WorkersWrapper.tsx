@@ -1,7 +1,7 @@
 import { AssetSymbolEnum } from "@/const";
 import { hexToUint8Array } from "@/utils";
 import contactCacheRefresh from "@pages/contacts/helpers/contactCacheRefresh";
-import { allowanceCacheRefresh } from "@pages/home/helpers/allowanceCache";
+import { allowanceCacheRefresh } from "@pages/allowances/helpers/allowanceCache";
 import { getAllTransactionsICP, getAllTransactionsICRC1, updateAllBalances } from "@redux/assets/AssetActions";
 import { setAppDataRefreshing, setLastDataRefresh } from "@redux/common/CommonReducer";
 import { Asset } from "@redux/models/AccountModels";

@@ -1,7 +1,7 @@
 import { t } from "i18next";
 import { BasicDrawer } from "@components/drawer";
-import useAllowanceDrawer from "@pages/home/hooks/useAllowanceDrawer";
 import CreateForm from "./CreateForm";
+import useAllowanceDrawer from "@pages/allowances/hooks/useAllowanceDrawer";
 
 export default function AddAllowanceDrawer() {
   const { isCreateAllowance, onCloseCreateAllowanceDrawer, isLoading } = useAllowanceDrawer();

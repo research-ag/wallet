@@ -19,9 +19,7 @@ export function Table({ children, className }: CommonProps) {
 
 export function TableHead({ children, className }: CommonProps) {
   return (
-    <thead
-      className={`sticky top-0 border-b border-BorderColorTwoLight dark:border-BorderColorTwo bg-SecondaryColorLight dark:bg-SecondaryColor ${className}`}
-    >
+    <thead className={`sticky top-0 border-b border-BorderColorTwoLight dark:border-BorderColorTwo ${className}`}>
       {children}
     </thead>
   );
@@ -36,7 +34,7 @@ export function TableRow({ children, className }: CommonProps) {
 }
 
 export function TableHeaderCell({ children, className }: CommonProps) {
-  return <th className={`${className} py-2 text-md text-left`}>{children}</th>;
+  return <th className={`${className} p-2 text-md text-left`}>{children}</th>;
 }
 
 export function TableBodyCell({ children, className, disabled }: CommonProps) {

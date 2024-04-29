@@ -22,7 +22,7 @@ import { DB_Type, db } from "@/database/db";
 import { setTransactions } from "./transaction/TransactionReducer";
 import { getSNSTokens, updateAllBalances } from "./assets/AssetActions";
 import contactCacheRefresh from "@pages/contacts/helpers/contactCacheRefresh";
-import { allowanceCacheRefresh } from "@pages/home/helpers/allowanceCache";
+import { allowanceCacheRefresh } from "@pages/allowances/helpers/allowanceCache";
 import { setAppDataRefreshing } from "./common/CommonReducer";
 
 const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${

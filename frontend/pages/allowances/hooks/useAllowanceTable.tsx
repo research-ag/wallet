@@ -5,7 +5,7 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { TAllowance, AllowancesTableColumnsEnum } from "@/@types/allowance";
 import { clsx } from "clsx";
 import { useTranslation } from "react-i18next";
-import ActionCard from "../../allowances/components/ActionCard";
+import ActionCard from "../components/ActionCard";
 import { useMemo } from "react";
 import { useAppSelector } from "@redux/Store";
 import { CustomCopy } from "@components/tooltip";

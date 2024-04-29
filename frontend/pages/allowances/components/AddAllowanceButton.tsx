@@ -1,7 +1,7 @@
 import IconButton from "@components/button/IconButton";
 import { ReactComponent as PlusIcon } from "@assets/svg/files/plus-icon.svg";
 import { t } from "i18next";
-import useAllowanceDrawer from "@pages/home/hooks/useAllowanceDrawer";
+import useAllowanceDrawer from "@pages/allowances/hooks/useAllowanceDrawer";
 
 export default function AddAllowanceButton() {
   const { onOpenCreateAllowanceDrawer } = useAllowanceDrawer();
