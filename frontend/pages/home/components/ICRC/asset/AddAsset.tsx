@@ -1,13 +1,13 @@
 // svgs
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { GeneralHook } from "../../../hooks/generalHook";
 import { AccountDefaultEnum, AddingAssetsEnum, TokenNetworkEnum } from "@/const";
 import { TokenHook } from "../../../hooks/tokenHook";
 import { Asset } from "@redux/models/AccountModels";
-import { useAppDispatch } from "@redux/Store";
+import { useAppDispatch, useAppSelector } from "@redux/Store";
 import DialogAssetConfirmation from "./DialogAssetConfirmation";
 import AddAssetManual from "./AddAssetManual";
 import { setAccordionAssetIdx, setSelectedAsset } from "@redux/assets/AssetReducer";
@@ -19,13 +19,13 @@ import { BasicDrawer } from "@components/drawer";
 interface AddAssetsProps {
   setAssetOpen: Dispatch<SetStateAction<boolean>>;
   assetOpen: boolean;
-  asset: Asset | undefined;
-  setAssetInfo(value: Asset | undefined): void;
-  assets: Asset[];
   accordionIndex: string[];
 }
 
-const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, assets, accordionIndex }: AddAssetsProps) => {
+const AddAsset = ({ setAssetOpen, assetOpen, accordionIndex }: AddAssetsProps) => {
+  const { assets } = useAppSelector((state) => state.asset);
+  const [assetInfo, setAssetInfo] = useState<Asset | undefined>(undefined);
+
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { checkAssetAdded } = GeneralHook();
@@ -53,7 +53,7 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, assets, accord
     network,
     setNetwork,
     newAssetList,
-  } = TokenHook(asset);
+  } = TokenHook(assetInfo);
 
   useEffect(() => {
     setErrToken("");
@@ -65,13 +65,13 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, assets, accord
     <BasicDrawer isDrawerOpen={assetOpen}>
       <div className="px-8 mt-4 overflow-y-auto text-left text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md">
         <div className="flex flex-row items-center justify-between w-full mb-5">
-          <p className="text-lg font-bold">{asset ? t("edit.asset") : t("add.asset")}</p>
+          <p className="text-lg font-bold">{assetInfo ? t("edit.asset") : t("add.asset")}</p>
           <CloseIcon
             className="cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
             onClick={onClose}
           />
         </div>
-        {manual || asset ? (
+        {manual || assetInfo ? (
           <AddAssetManual
             manual={manual}
             setManual={setManual}
@@ -85,7 +85,7 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, assets, accord
             setValidIndex={setValidIndex}
             newAsset={newAsset}
             setNewAsset={setNewAsset}
-            asset={asset}
+            asset={assetInfo}
             setAssetOpen={setAssetOpen}
             assets={assets}
             addAssetToData={addAssetToData}
@@ -219,8 +219,8 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, assets, accord
   }
 
   function addToAcordeonIdx() {
-    if (!accordionIndex.includes(asset?.tokenSymbol || "")) {
-      dispatch(setAccordionAssetIdx([...accordionIndex, asset?.tokenSymbol || ""]));
+    if (!accordionIndex.includes(assetInfo?.tokenSymbol || "")) {
+      dispatch(setAccordionAssetIdx([...accordionIndex, assetInfo?.tokenSymbol || ""]));
     }
   }
 };

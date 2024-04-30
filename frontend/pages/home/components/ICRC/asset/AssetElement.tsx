@@ -8,17 +8,16 @@ import { SubAccount, Asset } from "@redux/models/AccountModels";
 import AccountElement from "./AccountElement";
 import { Fragment, useState } from "react";
 import * as Accordion from "@radix-ui/react-accordion";
-import { GeneralHook } from "../../../hooks/generalHook";
-import { ThemeHook } from "@hooks/themeHook";
 import { IconTypeEnum, ThemesEnum } from "@/const";
 import { getFirstNChars, getUSDfromToken, hexToNumber, toFullDecimal } from "@/utils";
 import { AssetHook } from "../../../hooks/assetHook";
 import bigInt from "big-integer";
-import { AccountHook } from "@pages/hooks/accountHook";
 import DialogAddSubAccount from "./DialogAddSubAccount";
 import DeleteAssetModal from "./DeleteAssetModal";
 import { getAssetIcon } from "@/utils/icons";
 import clsx from "clsx";
+import { useAppDispatch, useAppSelector } from "@redux/Store";
+import { setSelectedAccount, setSelectedAsset } from "@redux/assets/AssetReducer";
 
 interface AssetElementProps {
   asset: Asset;
@@ -30,12 +29,11 @@ interface AssetElementProps {
 }
 
 const AssetElement = ({ asset, idx, accordionIndex, setAssetInfo, setAssetOpen, setAddOpen }: AssetElementProps) => {
-  const { theme } = ThemeHook();
-  const { authClient } = AccountHook();
+  const dispatch = useAppDispatch();
+  const { authClient, theme } = useAppSelector((state) => state.auth);
+  const { tokensMarket, assets, selectedAsset } = useAppSelector((state) => state.asset);
 
-  const { assets, selectedAsset, changeSelectedAsset, changeSelectedAccount } = GeneralHook();
-  const { editNameId, setEditNameId, name, setName, newSub, setNewSub, hexChecked, setHexChecked, tokensMarket } =
-    AssetHook();
+  const { editNameId, setEditNameId, name, setName, newSub, setNewSub, hexChecked, setHexChecked } = AssetHook();
   const [usedIdxs, setUsedIdxs] = useState<string[]>([]);
   const [openDelete, setOpenDelete] = useState(false);
   const [newErr, setNewErr] = useState<{ name: boolean; idx: boolean }>({ name: false, idx: false });
@@ -57,8 +55,9 @@ const AssetElement = ({ asset, idx, accordionIndex, setAssetInfo, setAssetOpen, 
                 <div className="flex flex-col items-start justify-start">
                   <p>{`${getFirstNChars(asset?.name ? asset.name : asset.tokenName, 18)}`}</p>
                   <div className="flex flex-row items-center justify-start">
-                    <p className={`${asset?.tokenSymbol !== selectedAsset?.tokenSymbol ? "opacity-60" : ""}`}>{`${asset.symbol ? asset.symbol : asset.tokenSymbol
-                      }`}</p>{" "}
+                    <p className={`${asset?.tokenSymbol !== selectedAsset?.tokenSymbol ? "opacity-60" : ""}`}>{`${
+                      asset.symbol ? asset.symbol : asset.tokenSymbol
+                    }`}</p>{" "}
                     <div className="p-0" onClick={onInfoClic}>
                       <img src={InfoIcon} className="ml-1" alt="info-icon" />
                     </div>
@@ -81,8 +80,9 @@ const AssetElement = ({ asset, idx, accordionIndex, setAssetInfo, setAssetOpen, 
                 </div>
               </div>
               <div className="flex flex-col items-end justify-center">
-                <p>{`${toFullDecimal(getFullTokenAmount().asset, Number(asset.decimal), Number(asset.shortDecimal))} ${asset.symbol
-                  }`}</p>
+                <p>{`${toFullDecimal(getFullTokenAmount().asset, Number(asset.decimal), Number(asset.shortDecimal))} ${
+                  asset.symbol
+                }`}</p>
                 <p
                   className={`${asset?.tokenSymbol !== selectedAsset?.tokenSymbol ? "opacity-60" : ""}`}
                 >{`≈ $${getFullTokenAmount().currency.toFixed(2)}`}</p>
@@ -92,10 +92,11 @@ const AssetElement = ({ asset, idx, accordionIndex, setAssetInfo, setAssetOpen, 
               {asset?.subAccounts && (
                 <img
                   src={theme === ThemesEnum.enum.dark ? ChevronRightIcon : ChevronRightDarkIcon}
-                  className={`${accordionIndex.includes(asset.tokenSymbol)
+                  className={`${
+                    accordionIndex.includes(asset.tokenSymbol)
                       ? "-rotate-90 transition-transform"
                       : "rotate-0 transition-transform"
-                    } `}
+                  } `}
                   alt="chevron-icon"
                 />
               )}
@@ -110,13 +111,15 @@ const AssetElement = ({ asset, idx, accordionIndex, setAssetInfo, setAssetOpen, 
             </div>
           </Accordion.Trigger>
         </div>
+
         {(asset?.subAccounts || newSub) && (
           <Accordion.Content>
             <div
-              className={`flex flex-col justify-start items-end ${idx < assets?.length
+              className={`flex flex-col justify-start items-end ${
+                idx < assets?.length
                   ? "border-b-[0.1rem] dark:border-BorderColorThree border-BorderColorThreeLight"
                   : ""
-                }`}
+              }`}
             >
               {asset?.subAccounts.map((subAccount: SubAccount, subIdx: number) => {
                 return (
@@ -165,11 +168,11 @@ const AssetElement = ({ asset, idx, accordionIndex, setAssetInfo, setAssetOpen, 
   );
 
   function onSelectAsset() {
-    changeSelectedAsset(asset);
+    dispatch(setSelectedAsset(asset));
     if (asset?.tokenSymbol !== selectedAsset?.tokenSymbol) {
       setNewSub(undefined);
       setAddOpen(false);
-      asset.subAccounts.length > 0 && changeSelectedAccount(asset.subAccounts[0]);
+      asset.subAccounts.length > 0 && dispatch(setSelectedAccount(asset.subAccounts[0]));
     }
     setName("");
     setEditNameId("");

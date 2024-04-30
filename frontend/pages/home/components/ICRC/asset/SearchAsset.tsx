@@ -1,17 +1,55 @@
 // svgs
 import PlusIcon from "@assets/svg/files/plus-icon.svg";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import AddAsset from "./AddAsset";
+import { useAppDispatch, useAppSelector } from "@redux/Store";
+import { BasicDrawer } from "@components/drawer";
+import { setAccordionAssetIdx, setSelectedAccount, setSelectedAsset } from "@redux/assets/AssetReducer";
 
 interface SearchAssetProps {
   searchKey: string;
   setSearchKey: Dispatch<SetStateAction<string>>;
-  onAddAsset(): void;
 }
 
 export default function SearchAsset(props: SearchAssetProps) {
+  const dispatch = useAppDispatch();
+  const { searchKey, setSearchKey } = props;
+  const { accordionIndex, assets, selectedAsset } = useAppSelector((state) => state.asset);
+  const [assetOpen, setAssetOpen] = useState(false);
   const { t } = useTranslation();
-  const { searchKey, setSearchKey, onAddAsset } = props;
+
+  useEffect(() => {
+    const auxAssets = assets.filter((asset) => {
+      let includeInSub = false;
+      asset.subAccounts?.map((sa) => {
+        if (sa.name.toLowerCase().includes(searchKey.toLowerCase())) includeInSub = true;
+      });
+
+      return asset.name?.toLowerCase().includes(searchKey.toLowerCase()) || includeInSub || searchKey === "";
+    });
+
+    // -----------------
+    if (auxAssets.length > 0) {
+      const auxAccordion: string[] = [];
+
+      auxAssets.map((ast) => {
+        if (accordionIndex.includes(ast.tokenSymbol)) auxAccordion.push(ast.tokenSymbol);
+      });
+
+      dispatch(setAccordionAssetIdx(auxAccordion));
+
+      const isSelected = auxAssets.find((ast) => ast.tokenSymbol === selectedAsset?.tokenSymbol);
+      if (selectedAsset && !isSelected) {
+        dispatch(setSelectedAsset(auxAssets[0]));
+        auxAssets[0].subAccounts.length > 0 && dispatch(setSelectedAccount(auxAssets[0].subAccounts[0]));
+      }
+    } else {
+      dispatch(setAccordionAssetIdx([]));
+    }
+  }, [searchKey]);
+
+  // TODO: add debounce to setSearchKey
 
   return (
     <div className="flex flex-row items-center justify-start w-full gap-3 pr-5 mb-4">
@@ -32,6 +70,16 @@ export default function SearchAsset(props: SearchAssetProps) {
       >
         <img src={PlusIcon} alt="plus-icon" />
       </div>
+
+      {assetOpen && (
+        <BasicDrawer isDrawerOpen={assetOpen}>
+          <AddAsset setAssetOpen={setAssetOpen} assetOpen={assetOpen} accordionIndex={accordionIndex} />
+        </BasicDrawer>
+      )}
     </div>
   );
+
+  function onAddAsset() {
+    setAssetOpen(true);
+  }
 }
