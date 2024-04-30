@@ -43,10 +43,13 @@ export default function AllowanceList({ allowances, handleSortChange }: Allowanc
                   {currentColumn !== columns[columns.length - 1] && (
                     <SortIcon
                       className="w-3 h-3 ml-1 cursor-pointer dark:fill-gray-color-6 fill-black-color"
-                      onClick={() => handleSortChange(
-                        currentColumn === "subAccount"
-                          ? "subAccountId" as AllowancesTableColumns
-                          : currentColumn as AllowancesTableColumns)}
+                      onClick={() =>
+                        handleSortChange(
+                          currentColumn === "subAccount"
+                            ? ("subAccountId" as AllowancesTableColumns)
+                            : (currentColumn as AllowancesTableColumns),
+                        )
+                      }
                     />
                   )}
                 </div>
@@ -91,7 +94,9 @@ export default function AllowanceList({ allowances, handleSortChange }: Allowanc
                   {spenderName && <p>{spenderName}</p>}
                   {principal && (
                     <div className="flex">
-                      <p className="mr-2 dark:text-gray-color-2 text-gray-color-5">{middleTruncation(principal, 10, 10)}</p>
+                      <p className="mr-2 dark:text-gray-color-2 text-gray-color-5">
+                        {middleTruncation(principal, 10, 10)}
+                      </p>
                       <CustomCopy size={"xSmall"} copyText={principal} />
                     </div>
                   )}
@@ -112,10 +117,9 @@ export default function AllowanceList({ allowances, handleSortChange }: Allowanc
             );
           })}
         </tbody>
-
       </table>
     </div>
-  )
+  );
 }
 
 function justifyCell(index: number) {

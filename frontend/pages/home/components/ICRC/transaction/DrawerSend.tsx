@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import SendForm from "../detail/transaction/SendForm";
-import DialogSendConfirmation from "../detail/transaction/DialogSendConfirmation";
-import SenderInitializer from "../detail/transaction/SendForm/SenderInitializer";
-import SendFormConditionalRender from "../detail/transaction/SendForm/SendFormConditionalRender";
+import SendForm from "@/pages/home/components/ICRC/transaction/SendForm";
+import DialogSendConfirmation from "@/pages/home/components/ICRC/transaction/DialogSendConfirmation";
+import SenderInitializer from "@/pages/home/components/ICRC/transaction/SendForm/SenderInitializer";
+import SendFormConditionalRender from "@/pages/home/components/ICRC/transaction/SendForm/SendFormConditionalRender";
 import { ProtocolTypeEnum } from "@/const";
 import contactCacheRefresh from "@pages/contacts/helpers/contactCacheRefresh";
 

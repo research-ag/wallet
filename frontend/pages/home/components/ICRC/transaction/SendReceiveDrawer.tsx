@@ -6,8 +6,8 @@ import { resetSendStateAction, setTransactionDrawerAction } from "@redux/transac
 import { useTranslation } from "react-i18next";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 import { DrawerOptionEnum } from "@/const";
-import DrawerSend from "../../drawer/DrawerSend";
-import DrawerReceive from "../../drawer/DrawerReceive";
+import DrawerSend from "@/pages/home/components/ICRC/transaction/DrawerSend";
+import DrawerReceive from "@/pages/home/components/ICRC/transaction/DrawerReceive";
 // eslint-disable-next-line
 import clsx from "clsx";
 import { useMemo } from "react";

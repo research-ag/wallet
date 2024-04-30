@@ -3,8 +3,8 @@ import "./style.scss";
 import { ReactComponent as WarningIcon } from "@assets/svg/files/warning.svg";
 //
 import { Fragment } from "react";
-import AssetsList from "./components/AssetsList";
-import DetailList from "./components/DetailList";
+import AssetsList from "./components/ICRC/asset";
+import DetailList from "./components/ICRC/transaction";
 import { BasicModal } from "@components/modal";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
