@@ -10,7 +10,7 @@ import {
 } from "@redux/allowance/AllowanceActions";
 import { AllowanceValidationErrorsEnum } from "@/@types/allowance";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
-import { refreshAllowance } from "../helpers/refreshAllowance";
+import { refreshAllowance } from "../helpers/refresh";
 import { initialAllowanceState } from "@redux/allowance/AllowanceReducer";
 
 export default function useDeleteAllowance() {

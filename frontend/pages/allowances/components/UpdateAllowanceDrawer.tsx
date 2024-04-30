@@ -1,5 +1,5 @@
 import { BasicDrawer } from "@components/drawer";
-import useAllowanceDrawer from "@pages/home/hooks/useAllowanceDrawer";
+import useAllowanceDrawer from "@pages/allowances/hooks/useAllowanceDrawer";
 import { useTranslation } from "react-i18next";
 import UpdateForm from "./UpdateForm";
 

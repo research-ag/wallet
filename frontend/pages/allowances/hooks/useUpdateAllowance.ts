@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { useMutation } from "@tanstack/react-query";
 import { useCallback, useState } from "react";
 import useAllowanceDrawer from "./useAllowanceDrawer";
-import { validateUpdateAllowance } from "../helpers/allowanceValidators";
+import { validateUpdateAllowance } from "../helpers/validators";
 import { updateSubAccountBalance } from "@redux/assets/AssetReducer";
 import {
   removeAllowanceErrorAction,
@@ -14,7 +14,7 @@ import {
 } from "@redux/allowance/AllowanceActions";
 import { Asset } from "@redux/models/AccountModels";
 import dayjs from "dayjs";
-import { refreshAllowance } from "../helpers/refreshAllowance";
+import { refreshAllowance } from "../helpers/refresh";
 // eslint-disable-next-line import/named
 import { throttle } from "lodash";
 import { removeZeroesFromAmount } from "@/utils";

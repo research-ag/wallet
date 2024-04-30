@@ -1,4 +1,4 @@
-import useCreateAllowance from "@pages/home/hooks/useCreateAllowance";
+import useCreateAllowance from "@pages/allowances/hooks/useCreateAllowance";
 import { useAppSelector } from "@redux/Store";
 import AssetFormItem from "./AssetFormItem";
 import SubAccountFormItem from "./SubAccountFormItem";
@@ -8,7 +8,6 @@ import ExpirationFormItem from "./ExpirationFormItem";
 import { AllowanceValidationErrorsEnum } from "@/@types/allowance";
 import { useTranslation } from "react-i18next";
 import { CustomButton } from "@components/button";
-import { getAllowanceDetails } from "@pages/home/helpers/icrc/";
 import { validatePrincipal } from "@/utils/identity";
 import { isHexadecimalValid } from "@/utils/checkers";
 import {
@@ -18,8 +17,9 @@ import {
 } from "@redux/allowance/AllowanceActions";
 import { db } from "@/database/db";
 import { LoadingLoader } from "@components/loader";
-import { refreshAllowance } from "@pages/home/helpers/refreshAllowance";
-import { getDuplicatedAllowance } from "@pages/home/helpers/allowanceValidators";
+import { refreshAllowance } from "@pages/allowances/helpers/refresh";
+import { getDuplicatedAllowance } from "@pages/allowances/helpers/validators";
+import { getAllowanceDetails } from "@pages/home/helpers/icrc";
 
 export default function CreateForm() {
   const { t } = useTranslation();

@@ -2,20 +2,15 @@ import { AllowancesTableColumns, AllowancesTableColumnsEnum } from "@/@types/all
 import { SortOrder, SortOrderEnum } from "@/@types/common";
 import { useAppSelector } from "@redux/Store";
 import { useMemo, useState } from "react";
-import {
-  filterByAmount,
-  filterByAsset,
-  filterBySpender,
-  sortByExpiration,
-  sortBySubAccount,
-} from "@/pages/home/helpers/allowanceSorters";
+import { filterByAsset, filterBySpenderAndSubAccount } from "../helpers/filters";
+import { sortByAmount, sortByExpiration, sortBySpender, sortBySubAccount } from "../helpers/sorters";
 
 export default function useAllowances() {
   const { allowances: rawAllowances } = useAppSelector((state) => state.allowance);
+  const [searchKey, setSearchKey] = useState<string>("");
+  const [selectedAssets, setSelectedAssets] = useState<string[]>([]);
   const [sorting, setSorting] = useState<SortOrder>(SortOrderEnum.Values.ASC);
   const [column, setColumn] = useState<AllowancesTableColumns>(AllowancesTableColumnsEnum.Values.subAccountId);
-
-  const { selectedAsset } = useAppSelector((state) => state.asset);
 
   const onSort = async (orderColumn: AllowancesTableColumns) => {
     if (orderColumn === column) {
@@ -29,28 +24,29 @@ export default function useAllowances() {
   };
 
   const allowances = useMemo(() => {
-    const filtered = selectedAsset?.tokenSymbol
-      ? filterByAsset(selectedAsset?.tokenSymbol, rawAllowances)
-      : rawAllowances;
+    const filteredByAssets = selectedAssets.length > 0 ? filterByAsset(selectedAssets, rawAllowances) : rawAllowances;
+
+    const filteredBySpender = filterBySpenderAndSubAccount(searchKey, filteredByAssets);
+    const filtered = filteredBySpender;
 
     if (column === AllowancesTableColumnsEnum.Values.subAccountId) {
       return sortBySubAccount(sorting, filtered || []);
     }
 
     if (column === AllowancesTableColumnsEnum.Values.spender) {
-      return filterBySpender(sorting, filtered || []);
+      return sortBySpender(sorting, filtered || []);
+    }
+
+    if (column === AllowancesTableColumnsEnum.Values.amount) {
+      return sortByAmount(sorting, filtered || []);
     }
 
     if (column === AllowancesTableColumnsEnum.Values.expiration) {
       return sortByExpiration(sorting, filtered || []);
     }
 
-    if (column === AllowancesTableColumnsEnum.Values.amount) {
-      return filterByAmount(sorting, filtered || []);
-    }
-
-    return [];
-  }, [rawAllowances, sorting, column, selectedAsset?.tokenSymbol]);
+    return filtered;
+  }, [selectedAssets, searchKey, sorting, column, rawAllowances]);
 
   return {
     allowances,
@@ -58,5 +54,9 @@ export default function useAllowances() {
     column,
     setSorting,
     handleSortChange: onSort,
+    searchKey,
+    setSearchKey,
+    selectedAssets,
+    setSelectedAssets,
   };
 }

@@ -4,7 +4,7 @@ import { SupportedStandardEnum } from "@/@types/icrc";
 import { IconTypeEnum } from "@/const";
 import { getAssetIcon } from "@/utils/icons";
 import { BasicSelect } from "@components/select";
-import { getAllowanceAsset } from "@pages/home/helpers/allowanceMappers";
+import { getAllowanceAsset } from "@pages/allowances/helpers/mappers";
 import { useAppSelector } from "@redux/Store";
 import { initialAllowanceState } from "@redux/allowance/AllowanceReducer";
 import { Asset } from "@redux/models/AccountModels";

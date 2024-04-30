@@ -5,7 +5,7 @@ import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 import { LoadingLoader } from "@components/loader";
 import { BasicModal } from "@components/modal";
 import { BasicButton } from "@components/button";
-import useDeleteAllowance from "@pages/home/hooks/useDeleteAllowance";
+import useDeleteAllowance from "@pages/allowances/hooks/useDeleteAllowance";
 import { useAppSelector } from "@redux/Store";
 import {
   setFullAllowanceErrorsAction,

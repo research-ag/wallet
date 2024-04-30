@@ -107,6 +107,7 @@ module.exports = {
 
       // BACKGROUND
       "level-1-color": "#141331",
+      "level-2-color": "#1b183f",
       // GRAY COLORS
       "black-color": "#201D47",
       "gray-color-1": "#363459",

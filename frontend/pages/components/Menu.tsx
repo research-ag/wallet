@@ -9,6 +9,7 @@ const Menu = () => {
   const { contacts } = useAppSelector((state) => state.contacts);
   const { isAppDataFreshing } = useAppSelector((state) => state.common);
   const { assets } = useAppSelector((state) => state.asset);
+  const { allowances } = useAppSelector((state) => state.allowance);
   const { t } = useTranslation();
 
   const menuList = [
@@ -16,6 +17,13 @@ const Menu = () => {
       name: "Assets",
       path: HOME,
       label: `${assets?.length !== 1 ? t("assets") : t("asset")} (${assets?.length})`,
+    },
+    {
+      name: "Allowances",
+      path: "/allowances",
+      label: `${allowances?.length !== 1 ? t("allowance.allowances") : t("allowance.allowances")} (${
+        allowances?.length
+      })`,
     },
     {
       name: "Contacts",
@@ -26,7 +34,7 @@ const Menu = () => {
 
   return (
     <Fragment>
-      <div className="flex flex-row items-center justify-start w-full gap-3">
+      <div className="flex flex-row items-center justify-start gap-3">
         {menuList.map((menu, k) => (
           <CustomButton
             key={k}

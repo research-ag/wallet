@@ -1,14 +1,14 @@
 //
-import AssetElement from "./ICRC/asset/AssetElement";
+import AssetElement from "@/pages/home/components/ICRC/asset/AssetElement";
 import { Asset } from "@redux/models/AccountModels";
 import { Fragment, useState } from "react";
 import * as Accordion from "@radix-ui/react-accordion";
-import AddAsset from "./ICRC/asset/AddAsset";
-import { DrawerHook } from "../hooks/drawerHook";
+import AddAsset from "@/pages/home/components/ICRC/asset/AddAsset";
+import { DrawerHook } from "@/pages/home//hooks/drawerHook";
 import Menu from "@pages/components/Menu";
-import { AssetHook } from "../hooks/assetHook";
-import { UseAsset } from "../hooks/useAsset";
-import SearchAsset from "./ICRC/asset/SearchAsset";
+import { AssetHook } from "@/pages/home/hooks/assetHook";
+import { UseAsset } from "@/pages/home//hooks/useAsset";
+import SearchAsset from "@/pages/home/components/ICRC/asset/SearchAsset";
 
 const AssetsList = () => {
   UseAsset();

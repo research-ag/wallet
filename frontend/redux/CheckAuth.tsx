@@ -22,7 +22,7 @@ import { DB_Type, db } from "@/database/db";
 import { setTransactions } from "./transaction/TransactionReducer";
 import { getSNSTokens, updateAllBalances } from "./assets/AssetActions";
 import contactCacheRefresh from "@pages/contacts/helpers/contactCacheRefresh";
-import { allowanceCacheRefresh } from "@pages/home/helpers/allowanceCache";
+import { allowanceCacheRefresh } from "@pages/allowances/helpers/cache";
 import { setAppDataRefreshing } from "./common/CommonReducer";
 import { addWatchOnlySessionToLocal } from "@pages/helpers/watchOnlyStorage";
 import watchOnlyRefresh from "@pages/helpers/watchOnlyRefresh";

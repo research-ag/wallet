@@ -169,6 +169,7 @@
   "allowance.sure.remove": "Tem certeza de que deseja Remover?",
   "allowance.permanently.deleted": "Esta Mesada será excluída permanentemente.",
   "allowance.edit.allowance": "Editar Mesada",
+  "allowance.search": "Pesquise por subconta ou gastador",
   "watchOnlyMode.title": "Modo Assistir-Apenas",
   "watchOnlyMode.delete.message": "Você está no modo de observação. Não é possível excluir contatos, subcontas ou ativos.",
 

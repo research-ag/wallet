@@ -1,8 +1,9 @@
 import { Route, Redirect, RouteProps } from "react-router-dom";
 import { HOME } from "../paths";
+import { LazyExoticComponent } from "react";
 
 interface MyRouteProps extends RouteProps {
-  Component: any;
+  Component: LazyExoticComponent<() => JSX.Element>;
   authenticated: boolean;
   allowByRole: boolean;
   rest?: any;

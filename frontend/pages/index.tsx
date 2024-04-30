@@ -1,8 +1,7 @@
 import { lazy } from "react";
 import { Redirect, Router, Switch } from "react-router-dom";
-import Login from "./login";
 
-import { CONTACTS, HOME, LOGIN } from "./paths";
+import { ALLOWANCES, CONTACTS, HOME, LOGIN } from "./paths";
 import LayoutComponent from "./components/LayoutComponent";
 import history from "./history";
 import PrivateRoute from "./components/privateRoute";
@@ -10,8 +9,10 @@ import { useAppSelector } from "@redux/Store";
 import Loader from "./components/Loader";
 import WorkersWrapper from "@/wrappers/WorkersWrapper";
 
+const Login = lazy(() => import("./login"));
 const Home = lazy(() => import("./home"));
 const Contacts = lazy(() => import("./contacts"));
+const Allowances = lazy(() => import("./allowances"));
 
 const SwitchRoute = () => {
   const { authLoading, superAdmin, authenticated, blur } = useAppSelector((state) => state.auth);
@@ -34,6 +35,13 @@ const SwitchRoute = () => {
                   authenticated={authenticated}
                   allowByRole={true}
                   Component={Contacts}
+                />
+                <PrivateRoute
+                  exact
+                  path={ALLOWANCES}
+                  authenticated={authenticated}
+                  allowByRole={true}
+                  Component={Allowances}
                 />
                 <Redirect to={HOME} />
               </Switch>
