@@ -87,14 +87,14 @@ export default function AllowanceList({ allowances, handleSortChange }: Allowanc
                   </div>
                   <div className="ml-2">
                     {subAccountName && <p>{subAccountName || subAccountName}</p>}
-                    {subAccountId && <p className="dark:text-gray-color-2 text-gray-color-5">{subAccountId}</p>}
+                    {subAccountId && <p className="dark:text-gray-color-4 text-gray-color-5">{subAccountId}</p>}
                   </div>
                 </td>
                 <td className="py-1">
                   {spenderName && <p>{spenderName}</p>}
                   {principal && (
                     <div className="flex">
-                      <p className="mr-2 dark:text-gray-color-2 text-gray-color-5">
+                      <p className="mr-2 dark:text-gray-color-4 text-gray-color-5">
                         {middleTruncation(principal, 10, 10)}
                       </p>
                       <CustomCopy size={"xSmall"} copyText={principal} />
