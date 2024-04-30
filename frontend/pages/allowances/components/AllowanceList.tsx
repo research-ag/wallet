@@ -74,7 +74,7 @@ export default function AllowanceList({ allowances, handleSortChange }: Allowanc
 
             return (
               <tr key={allowance.id}>
-                <td className="flex items-center justify-start py-2">
+                <td className="flex items-center justify-start py-1">
                   <div>
                     {getAssetIcon(IconTypeEnum.Enum.ASSET, asset?.tokenSymbol, asset?.logo)}
                     <p className="mt-1 text-center">{asset?.symbol || "-"}</p>
@@ -84,7 +84,7 @@ export default function AllowanceList({ allowances, handleSortChange }: Allowanc
                     {subAccountId && <p>{subAccountId}</p>}
                   </div>
                 </td>
-                <td className="py-2">
+                <td className="py-1">
                   {spenderName && <p>{spenderName}</p>}
                   {principal && (
                     <div className="flex">
@@ -93,16 +93,16 @@ export default function AllowanceList({ allowances, handleSortChange }: Allowanc
                     </div>
                   )}
                 </td>
-                <td className="py-2">
+                <td className="py-1">
                   <p>
                     {hidden && "-"}
                     {!hidden && allowance.amount} {!hidden && assetSymbol}
                   </p>
                 </td>
-                <td className="py-2">
+                <td className="py-1">
                   <p>{hidden ? "-" : userDate}</p>
                 </td>
-                <td className="flex justify-end py-2 pr-3">
+                <td className="flex items-center justify-end">
                   <ActionCard allowance={allowance} />
                 </td>
               </tr>

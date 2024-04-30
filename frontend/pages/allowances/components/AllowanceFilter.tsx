@@ -7,6 +7,7 @@ import { CustomInput } from "@components/input";
 import { useTranslation } from "react-i18next";
 import { IconButton } from "@components/button";
 import useAllowanceDrawer from "../hooks/useAllowanceDrawer";
+import { useAppSelector } from "@redux/Store";
 
 interface AllowanceFilterProps {
   searchKey: string;
@@ -16,6 +17,7 @@ interface AllowanceFilterProps {
 }
 
 export default function AllowanceFilter(props: AllowanceFilterProps) {
+  const { watchOnlyMode } = useAppSelector((state) => state.auth);
   const { searchKey, setSearchKey, selectedAssets, setSelectedAssets } = props;
   const { t } = useTranslation();
   const { onOpenCreateAllowanceDrawer } = useAllowanceDrawer();
@@ -45,13 +47,14 @@ export default function AllowanceFilter(props: AllowanceFilterProps) {
           }}
         />
 
-        {/* TODO: disable on watch only mode  */}
-        <IconButton
-          icon={<PlusIcon className="w-6 h-6" />}
-          size="medium"
-          className="ml-2"
-          onClick={onOpenCreateAllowanceDrawer}
-        />
+        {!watchOnlyMode && (
+          <IconButton
+            icon={<PlusIcon className="w-6 h-6" />}
+            size="medium"
+            className="ml-2"
+            onClick={onOpenCreateAllowanceDrawer}
+          />
+        )}
       </div>
     </div>
   );
