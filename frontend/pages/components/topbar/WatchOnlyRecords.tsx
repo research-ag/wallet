@@ -11,7 +11,7 @@ export interface EditWatchOnlyItem extends Pick<WatchOnlyItem, "principal" | "al
 }
 
 export default function WatchOnlyRecords() {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const { watchOnlyItem, setWatchOnlyItem, watchOnlyHistoryFiltered, onSearchChange } = useWatchOnly();
 
   return (

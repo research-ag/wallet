@@ -69,8 +69,9 @@ const AssetsList = () => {
       {assetOpen && (
         <div
           id="asset-drower"
-          className={`h-full fixed top-0 w-[28rem] z-[1000] overflow-x-hidden transition-{right} duration-500 ${assetOpen ? "!right-0" : "right-[-30rem]"
-            }`}
+          className={`h-full fixed top-0 w-[28rem] z-[1000] overflow-x-hidden transition-{right} duration-500 ${
+            assetOpen ? "!right-0" : "right-[-30rem]"
+          }`}
         >
           <AddAsset
             setAssetOpen={setAssetOpen}

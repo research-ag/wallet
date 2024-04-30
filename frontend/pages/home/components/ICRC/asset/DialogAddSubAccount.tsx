@@ -240,18 +240,13 @@ const DialogAddSubAccount = ({
               currency_amount: assetMrkt ? getUSDfromToken(myBalance.toString(), assetMrkt, decimal) : "0",
             };
 
-            setTimeout(() => {
-              setShowConfirm(true);
-            }, 2500);
-
-            setTimeout(() => {
-              setAddOpen(false);
-              setHexChecked(false);
-              changeSelectedAccount(savedSub);
-              setNewSub(undefined);
-              setLoading(false);
-              setShowConfirm(false);
-            }, 6000);
+            setShowConfirm(true);
+            setAddOpen(false);
+            setHexChecked(false);
+            changeSelectedAccount(savedSub);
+            setNewSub(undefined);
+            setLoading(false);
+            setShowConfirm(false);
           } catch (e) {
             console.log("AddErr: ", e);
             setLoading(false);
