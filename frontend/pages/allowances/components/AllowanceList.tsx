@@ -22,7 +22,7 @@ interface AllowanceListProps {
   setSelectedAssets: Dispatch<SetStateAction<string[]>>;
 }
 
-const columns = ["subAccountId", "spender", "amount", "expiration", "action"];
+const columns = ["subAccount", "spender", "amount", "expiration", "action"];
 
 export default function AllowanceList({ allowances, handleSortChange }: AllowanceListProps) {
   const { t } = useTranslation();
@@ -39,11 +39,14 @@ export default function AllowanceList({ allowances, handleSortChange }: Allowanc
             {columns.map((currentColumn, index) => (
               <th key={currentColumn}>
                 <div className={`flex items-center px-1 py-2 ${justifyCell(index)}`}>
-                  <p>{currentColumn === "subAccountId" ? t("subAccount") : t(currentColumn)}</p>
+                  <p>{t(currentColumn)}</p>
                   {currentColumn !== columns[columns.length - 1] && (
                     <SortIcon
                       className="w-3 h-3 ml-1 cursor-pointer dark:fill-gray-color-6 fill-black-color"
-                      onClick={() => handleSortChange(currentColumn as AllowancesTableColumns)}
+                      onClick={() => handleSortChange(
+                        currentColumn === "subAccount"
+                          ? "subAccountId" as AllowancesTableColumns
+                          : currentColumn as AllowancesTableColumns)}
                     />
                   )}
                 </div>
