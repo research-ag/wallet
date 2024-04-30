@@ -74,21 +74,21 @@ export default function AllowanceList({ allowances, handleSortChange }: Allowanc
 
             return (
               <tr key={allowance.id}>
-                <td className="flex items-center justify-start py-1">
+                <td className="flex items-center justify-start p-1">
                   <div>
-                    {getAssetIcon(IconTypeEnum.Enum.ASSET, asset?.tokenSymbol, asset?.logo)}
+                    {getAssetIcon(IconTypeEnum.Enum.ALLOWANCE, asset?.tokenSymbol, asset?.logo)}
                     <p className="mt-1 text-center">{asset?.symbol || "-"}</p>
                   </div>
                   <div className="ml-2">
                     {subAccountName && <p>{subAccountName || subAccountName}</p>}
-                    {subAccountId && <p>{subAccountId}</p>}
+                    {subAccountId && <p className="dark:text-gray-color-2 text-gray-color-5">{subAccountId}</p>}
                   </div>
                 </td>
                 <td className="py-1">
                   {spenderName && <p>{spenderName}</p>}
                   {principal && (
                     <div className="flex">
-                      <p className="mr-2">{middleTruncation(principal, 10, 10)}</p>
+                      <p className="mr-2 dark:text-gray-color-2 text-gray-color-5">{middleTruncation(principal, 10, 10)}</p>
                       <CustomCopy size={"xSmall"} copyText={principal} />
                     </div>
                   )}
@@ -102,7 +102,7 @@ export default function AllowanceList({ allowances, handleSortChange }: Allowanc
                 <td className="py-1">
                   <p>{hidden ? "-" : userDate}</p>
                 </td>
-                <td className="flex items-center justify-end">
+                <td className="flex justify-end mr-4">
                   <ActionCard allowance={allowance} />
                 </td>
               </tr>
