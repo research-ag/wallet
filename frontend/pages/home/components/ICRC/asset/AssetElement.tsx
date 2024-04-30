@@ -18,6 +18,7 @@ import { AccountHook } from "@pages/hooks/accountHook";
 import DialogAddSubAccount from "./DialogAddSubAccount";
 import DeleteAssetModal from "./DeleteAssetModal";
 import { getAssetIcon } from "@/utils/icons";
+import clsx from "clsx";
 
 interface AssetElementProps {
   asset: Asset;
@@ -43,11 +44,7 @@ const AssetElement = ({ asset, idx, accordionIndex, setAssetInfo, setAssetOpen, 
     <Fragment>
       <Accordion.Item value={asset.tokenSymbol}>
         <div
-          className={`relative flex flex-row items-center w-full h-16 text-PrimaryColor dark:text-PrimaryColorLight cursor-pointer hover:bg-SecondaryColorLight dark:hover:bg-SecondaryColor ${
-            asset?.tokenSymbol === selectedAsset?.tokenSymbol ? "bg-SecondaryColorLight dark:bg-SecondaryColor" : ""
-          } ${
-            idx < assets?.length ? "border-b-[0.1rem] dark:border-BorderColorThree border-BorderColorThreeLight" : ""
-          }`}
+          className={getAssetElementStyles(asset?.tokenSymbol === selectedAsset?.tokenSymbol, idx < assets?.length)}
           onClick={onSelectAsset}
         >
           {asset?.tokenSymbol === selectedAsset?.tokenSymbol && (
@@ -239,5 +236,12 @@ const AssetElement = ({ asset, idx, accordionIndex, setAssetInfo, setAssetOpen, 
     setOpenDelete(true);
   }
 };
+
+const getAssetElementStyles = (isSelected: boolean, isNotLast: boolean) =>
+  clsx(
+    "relative flex flex-row items-center w-full h-16 text-PrimaryColor dark:text-PrimaryColorLight cursor-pointer hover:bg-SecondaryColorLight dark:hover:bg-SecondaryColor",
+    isSelected ? "bg-SecondaryColorLight dark:bg-SecondaryColor" : "",
+    isNotLast ? "border-b-[0.1rem] dark:border-BorderColorThree border-BorderColorThreeLight" : "",
+  );
 
 export default AssetElement;
