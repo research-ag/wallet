@@ -10,7 +10,7 @@ interface WatchOnlyRecordsPopoverProps {
 }
 
 export default function WatchOnlyRecordsPopover({ onHistoricalSelectHandler }: WatchOnlyRecordsPopoverProps) {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const { watchOnlyItem, setWatchOnlyItem, watchOnlyHistoryFiltered, onSearchChange } = useWatchOnly();
 
   return (

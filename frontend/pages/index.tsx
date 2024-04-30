@@ -1,6 +1,5 @@
 import { lazy } from "react";
 import { Redirect, Router, Switch } from "react-router-dom";
-import Login from "./login";
 
 import { ALLOWANCES, CONTACTS, HOME, LOGIN } from "./paths";
 import LayoutComponent from "./components/LayoutComponent";
@@ -10,6 +9,7 @@ import { useAppSelector } from "@redux/Store";
 import Loader from "./components/Loader";
 import WorkersWrapper from "@/wrappers/WorkersWrapper";
 
+const Login = lazy(() => import("./login"));
 const Home = lazy(() => import("./home"));
 const Contacts = lazy(() => import("./contacts"));
 const Allowances = lazy(() => import("./allowances"));

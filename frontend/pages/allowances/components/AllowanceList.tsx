@@ -11,6 +11,7 @@ import ActionCard from "./ActionCard";
 import { ReactComponent as SortIcon } from "@assets/svg/files/sort.svg";
 import { getAssetIcon } from "@/utils/icons";
 import { IconTypeEnum } from "@/const";
+import clsx from "clsx";
 
 interface AllowanceListProps {
   allowances: TAllowance[];
@@ -29,23 +30,29 @@ export default function AllowanceList({ allowances, handleSortChange }: Allowanc
   const { contacts } = useAppSelector((state) => state.contacts);
 
   return (
-    <>
-      <DeleteAllowanceModal />
+    <div className="w-full max-h-[calc(100vh-13rem)] scroll-y-light mt-4">
       <UpdateAllowanceDrawer />
-      <div className="dark:text-gray-color-6 text-black-color">
-        <div className="flex border-b-2 dark:border-gray-color-1 border-gray-color-6">
-          {columns.map((currentColumn, index) => (
-            <div key={currentColumn} className={`flex items-center p-2 ${getCellWidth(index)}`}>
-              <p className="text-left">{currentColumn === "subAccountId" ? t("subAccount") : t(currentColumn)}</p>
-              <SortIcon
-                className="w-3 h-3 ml-1 cursor-pointer dark:fill-gray-color-6 fill-black-color"
-                onClick={() => handleSortChange(currentColumn as AllowancesTableColumns)}
-              />
-            </div>
-          ))}
-        </div>
+      <DeleteAllowanceModal />
+      <table className="relative w-full text-black-color dark:text-gray-color-9">
+        <thead className={headerStyles}>
+          <tr>
+            {columns.map((currentColumn, index) => (
+              <th key={currentColumn}>
+                <div className={`flex items-center px-1 py-2 ${justifyCell(index)}`}>
+                  <p>{currentColumn === "subAccountId" ? t("subAccount") : t(currentColumn)}</p>
+                  {currentColumn !== columns[columns.length - 1] && (
+                    <SortIcon
+                      className="w-3 h-3 ml-1 cursor-pointer dark:fill-gray-color-6 fill-black-color"
+                      onClick={() => handleSortChange(currentColumn as AllowancesTableColumns)}
+                    />
+                  )}
+                </div>
+              </th>
+            ))}
+          </tr>
+        </thead>
 
-        <div className="flex flex-col max-h-[calc(100vh-14rem)] scroll-y-light text-left ">
+        <tbody className={bodyStyles}>
           {allowances.map((allowance) => {
             // Sub account
             const subAccountId = allowance.subAccountId;
@@ -66,57 +73,74 @@ export default function AllowanceList({ allowances, handleSortChange }: Allowanc
             const userDate = allowance?.expiration ? formatDateTime(allowance.expiration) : t("no.expiration");
 
             return (
-              <div key={allowance.id} className="flex p-1 border-b dark:border-gray-color-1 border-gray-color-6">
-                <div className={`${getCellWidth(0)} flex justify-start items-center`}>
-                  {getAssetIcon(IconTypeEnum.Enum.ASSET, asset?.tokenSymbol, asset?.logo)}
-                  <div className="ml-2">
-                    {subAccountName && <p className="text-md">{subAccountName || subAccountName}</p>}
-                    {subAccountId && <p className="text-md">{subAccountId}</p>}
+              <tr key={allowance.id}>
+                <td className="flex items-center justify-start py-2">
+                  <div>
+                    {getAssetIcon(IconTypeEnum.Enum.ASSET, asset?.tokenSymbol, asset?.logo)}
+                    <p className="mt-1 text-center">{asset?.symbol || "-"}</p>
                   </div>
-                </div>
-                <div className={getCellWidth(1)}>
-                  {spenderName && <p className="text-md">{spenderName}</p>}
+                  <div className="ml-2">
+                    {subAccountName && <p>{subAccountName || subAccountName}</p>}
+                    {subAccountId && <p>{subAccountId}</p>}
+                  </div>
+                </td>
+                <td className="py-2">
+                  {spenderName && <p>{spenderName}</p>}
                   {principal && (
                     <div className="flex">
-                      <p className="text-md">{middleTruncation(principal, 10, 10)}</p>
-                      <CustomCopy size={"xSmall"} className="p-0 ml-1" copyText={principal} />
+                      <p className="mr-2">{middleTruncation(principal, 10, 10)}</p>
+                      <CustomCopy size={"xSmall"} copyText={principal} />
                     </div>
                   )}
-                </div>
-                <div className={getCellWidth(2)}>
-                  <p className="text-md">
+                </td>
+                <td className="py-2">
+                  <p>
                     {hidden && "-"}
                     {!hidden && allowance.amount} {!hidden && assetSymbol}
                   </p>
-                </div>
-                <div className={getCellWidth(3)}>
-                  <p className="text-md">{hidden ? "-" : userDate}</p>
-                </div>
-                <div className="flex items-center justify-center w-56">
+                </td>
+                <td className="py-2">
+                  <p>{hidden ? "-" : userDate}</p>
+                </td>
+                <td className="flex justify-end py-2 pr-3">
                   <ActionCard allowance={allowance} />
-                </div>
-              </div>
+                </td>
+              </tr>
             );
           })}
-        </div>
-      </div>
-    </>
-  );
+        </tbody>
+
+      </table>
+    </div>
+  )
 }
 
-function getCellWidth(index: number) {
+function justifyCell(index: number) {
   switch (index) {
     case 0:
-      return "w-full";
+      return "justify-start";
     case 1:
-      return "w-full";
+      return "justify-start";
     case 2:
-      return "w-full";
+      return "justify-start";
     case 3:
-      return "w-full";
+      return "justify-start";
     case 4:
-      return "";
+      return "justify-end";
     default:
       return "";
   }
 }
+
+const headerStyles = clsx(
+  "sticky top-0",
+  "border-b dark:border-gray-color-1 dark:bg-level-2-color",
+  "font-bold text-left text-md text-black-color dark:text-gray-color-6 bg-white dark:bg-level-2-color",
+  "divide-y dark:divide-gray-color-1 divide-gray-color-6",
+);
+
+const bodyStyles = clsx(
+  "text-md text-left text-black-color dark:text-gray-color-6",
+  "bg-white dark:bg-level-2-color",
+  "divide-y dark:divide-gray-color-1 divide-gray-color-6",
+);

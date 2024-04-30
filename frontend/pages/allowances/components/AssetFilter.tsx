@@ -30,7 +30,7 @@ export default function AssetFilter(props: AssetFilterProps) {
         <div className={triggerContainerStyles}>
           <div className="flex flex-row items-center justify-between w-full">
             {selectedAssets.length === 0 || selectedAssets.length === assets.length ? (
-              <p className="text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("all")}</p>
+              <p className="text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md">{t("all")}</p>
             ) : selectedAssets.length === 1 ? (
               <div className="flex items-center justify-start gap-2 flex-start">
                 {getAssetIcon(

@@ -45,6 +45,7 @@ export default function AllowanceFilter(props: AllowanceFilterProps) {
           }}
         />
 
+        {/* TODO: disable on watch only mode  */}
         <IconButton
           icon={<PlusIcon className="w-6 h-6" />}
           size="medium"
