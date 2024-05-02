@@ -1,31 +1,18 @@
 import { useTranslation } from "react-i18next";
-import { LoginHook } from "../hooks/loginhook";
 import { AuthNetwork } from "@redux/models/TokenModels";
-import { AuthNetworkTypeEnum } from "@/const";
+import { AuthNetworkType, AuthNetworkTypeEnum } from "@/const";
 import { handleAuthenticated } from "@redux/CheckAuth";
 import SeedInput from "./SeedInput";
 import WatchOnlyInput from "./WatchOnlyInput";
 import MnemonicInput from "./MnemonicInput";
 import { db } from "@/database/db";
 import EthereumSignIn from "./EthereumSignIn";
+import { useState } from "react";
+import loginOpts from "./loginOptions";
 
 export default function AuthMethodRender() {
   const { t } = useTranslation();
-  const {
-    loginOpts,
-    seedOpen,
-    seed,
-    ethereumOpen,
-    watchOnlyOpen,
-    principalAddress,
-    mnemonicOpen,
-    phrase,
-    setPrincipalAddress,
-    setSeed,
-    setPhrase,
-    handleMethodChange,
-    resetMethods,
-  } = LoginHook();
+  const [currentMethod, setCurrentMethod] = useState<AuthNetworkType>(AuthNetworkTypeEnum.Values.NONE);
 
   return (
     <div className="flex flex-col justify-start items-start w-[70%] mt-8">
@@ -33,70 +20,44 @@ export default function AuthMethodRender() {
         {t("login.choose.msg")}
       </p>
 
-      {loginOpts.map((opt, index) => {
-        return <OptionItem key={`${opt.name}-${index}`} opt={opt} />;
-      })}
+      {loginOpts.map((option, index) => (
+        <div className="flex flex-col items-start justify-start w-full" key={`login-option-${option.type}-${index}`}>
+          <div
+            className="flex flex-row justify-between items-center w-full mt-4 p-3 rounded-[5%] cursor-pointer bg-SecondaryColorLight dark:bg-SecondaryColor"
+            onClick={() => handleClickSwitch(option)}
+          >
+            <h3 className="font-medium text-PrimaryTextColorLight dark:text-PrimaryTextColor">
+              {option.name} <span className="text-md opacity-60">{option.extra ? `(${t(option.extra)})` : ""}</span>
+            </h3>
+            {option.icon}
+          </div>
+
+          {currentMethod === AuthNetworkTypeEnum.Values.ETH && AuthNetworkTypeEnum.Values.ETH === option.type && (
+            <EthereumSignIn />
+          )}
+
+          {currentMethod === AuthNetworkTypeEnum.Values.S && AuthNetworkTypeEnum.Values.S === option.type && (
+            <SeedInput />
+          )}
+
+          {currentMethod === AuthNetworkTypeEnum.Values.WO && AuthNetworkTypeEnum.Values.WO === option.type && (
+            <WatchOnlyInput />
+          )}
+
+          {currentMethod === AuthNetworkTypeEnum.Values.MNEMONIC &&
+            AuthNetworkTypeEnum.Values.MNEMONIC === option.type && <MnemonicInput />}
+        </div>
+      ))}
     </div>
   );
 
-  function OptionItem({ opt }: { opt: AuthNetwork }) {
-    return (
-      <div className="flex flex-col items-start justify-start w-full">
-        <div
-          className="flex flex-row justify-between items-center w-full mt-4 p-3 rounded-[5%] cursor-pointer bg-SecondaryColorLight dark:bg-SecondaryColor"
-          onClick={async () => {
-            handleLogin(opt);
-          }}
-        >
-          <h3 className="font-medium text-PrimaryTextColorLight dark:text-PrimaryTextColor">
-            {opt.name} <span className="text-md opacity-60">{opt.extra ? `(${t(opt.extra)})` : ""}</span>
-          </h3>
-          {opt.icon}
-        </div>
+  function handleClickSwitch(option: AuthNetwork) {
+    if (!option) return;
+    db().setNetworkType(option);
+    setCurrentMethod(option.type);
 
-        {ethereumOpen && opt.type === AuthNetworkTypeEnum.Enum.ETH && <EthereumSignIn />}
-
-        {seedOpen && opt.type === AuthNetworkTypeEnum.Enum.S && <SeedInput seed={seed} setSeed={setSeed} />}
-
-        {watchOnlyOpen && opt.type === AuthNetworkTypeEnum.Enum.WO && (
-          <WatchOnlyInput principalAddress={principalAddress} setPrincipalAddress={setPrincipalAddress} />
-        )}
-
-        {mnemonicOpen && opt.type === AuthNetworkTypeEnum.Enum.MNEMONIC && (
-          <MnemonicInput phrase={phrase} setPhrase={setPhrase} />
-        )}
-      </div>
-    );
-  }
-
-  async function handleLogin(opt: AuthNetwork) {
-    if (opt.type === AuthNetworkTypeEnum.Values.IC || opt.type === AuthNetworkTypeEnum.Values.NFID) {
-      resetMethods();
-      localStorage.setItem("network_type", JSON.stringify({ type: opt.type, network: opt.network, name: opt.name }));
-      db().setNetworkType(opt);
-      handleAuthenticated(opt);
-      return;
-    }
-
-    if (opt.type === AuthNetworkTypeEnum.Values.ETH) {
-      localStorage.setItem("network_type", JSON.stringify({ type: opt.type, network: opt.network, name: opt.name }));
-      db().setNetworkType(opt);
-      handleMethodChange(AuthNetworkTypeEnum.Values.ETH);
-      return;
-    }
-
-    if (opt.type === AuthNetworkTypeEnum.Enum.S) {
-      handleMethodChange(AuthNetworkTypeEnum.Values.S);
-      return;
-    }
-
-    if (opt.type === AuthNetworkTypeEnum.Enum.WO) {
-      handleMethodChange(AuthNetworkTypeEnum.Values.WO);
-      return;
-    }
-
-    if (opt.type === AuthNetworkTypeEnum.Enum.MNEMONIC) {
-      handleMethodChange(AuthNetworkTypeEnum.Values.MNEMONIC);
+    if (option.type === AuthNetworkTypeEnum.Values.IC || option.type === AuthNetworkTypeEnum.Values.NFID) {
+      handleAuthenticated(option);
       return;
     }
   }

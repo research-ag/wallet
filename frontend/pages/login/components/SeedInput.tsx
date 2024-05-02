@@ -1,16 +1,12 @@
-import { ChangeEvent, Dispatch, SetStateAction } from "react";
+import { ChangeEvent, useState } from "react";
 import { ReactComponent as CheckIcon } from "@assets/svg/files/edit-check.svg";
 import { CustomInput } from "@components/input";
 import { handleSeedAuthenticated } from "@redux/CheckAuth";
 import { clsx } from "clsx";
 import { useTranslation } from "react-i18next";
 
-interface SeedMethodInputProps {
-  seed: string;
-  setSeed: Dispatch<SetStateAction<string>>;
-}
-
-export default function SeedInput({ seed, setSeed }: SeedMethodInputProps) {
+export default function SeedInput() {
+  const [seed, setSeed] = useState("");
   const { t } = useTranslation();
 
   return (

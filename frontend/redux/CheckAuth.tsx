@@ -58,6 +58,10 @@ export const handleAuthenticated = async (opt: AuthNetwork) => {
   });
 };
 
+export const handleSiweAuthenticated = async (identity: DelegationIdentity) => {
+  handleLoginApp(identity);
+};
+
 export const handleSeedAuthenticated = async (seed: string) => {
   if (seed.length > 32) return;
 
@@ -100,10 +104,6 @@ export const handleMnemonicAuthenticated = (phrase: string[]) => {
   };
   const secpIdentity = phraseToIdentity(phrase) as Identity;
   handleLoginApp(secpIdentity, true);
-};
-
-export const handleSiweAuthenticated = async (identity: DelegationIdentity) => {
-  handleLoginApp(identity);
 };
 
 /**
