@@ -7,7 +7,6 @@ import { setSelectedTransaction, setTransactions } from "@redux/transaction/Tran
 
 export const GeneralHook = () => {
   const dispatch = useAppDispatch();
-  const { transactions, selectedTransaction } = useAppSelector((state) => state.transaction);
 
   const { ICPSubaccounts, assets, accounts, selectedAsset, selectedAccount } = useAppSelector((state) => state.asset);
 
@@ -76,10 +75,8 @@ export const GeneralHook = () => {
     ICPSubaccounts,
     assets,
     accounts,
-    transactions,
     selectedAsset,
     selectedAccount,
-    selectedTransaction,
     changeAssets,
     changeAccounts,
     changeTransactions,

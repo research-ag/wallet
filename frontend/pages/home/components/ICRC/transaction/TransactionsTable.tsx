@@ -1,15 +1,16 @@
 import { TransactionDrawer } from "@/@types/transactions";
-import { GeneralHook } from "@pages/home/hooks/generalHook";
-import { UseTransaction } from "@pages/home/hooks/useTransaction";
 import { TableHook } from "@pages/hooks/tableHook";
+import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { setTransactionDrawerAction } from "@redux/transaction/TransactionActions";
+import { setSelectedTransaction } from "@redux/transaction/TransactionReducer";
 import { flexRender, getCoreRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 import { clsx } from "clsx";
 
 const ICRCTransactionsTable = () => {
-  const { transactions } = GeneralHook();
-  const { selectedTransaction, changeSelectedTransaction } = UseTransaction();
+  const dispatch = useAppDispatch();
+  const { transactions, selectedTransaction } = useAppSelector((state) => state.transaction);
   const { columns, sorting, setSorting } = TableHook();
+
   const table = useReactTable({
     data: transactions || [],
     columns,
@@ -45,15 +46,14 @@ const ICRCTransactionsTable = () => {
         <tbody>
           {table.getRowModel().rows.map((row, idxTR) => (
             <tr
-              className={`border-b border-b-BorderColorTwoLight dark:border-b-BorderColorTwo cursor-pointer ${
-                (selectedTransaction?.hash && selectedTransaction?.hash === row.original.hash) ||
+              className={`border-b border-b-BorderColorTwoLight dark:border-b-BorderColorTwo cursor-pointer ${(selectedTransaction?.hash && selectedTransaction?.hash === row.original.hash) ||
                 (selectedTransaction?.idx && selectedTransaction?.idx === row.original.idx)
-                  ? "bg-SelectRowColor/10"
-                  : ""
-              }`}
+                ? "bg-SelectRowColor/10"
+                : ""
+                }`}
               key={`tr-transac-${idxTR}`}
               onClick={() => {
-                changeSelectedTransaction(row.original);
+                dispatch(setSelectedTransaction(row.original));
                 setTransactionDrawerAction(TransactionDrawer.INSPECT);
               }}
             >

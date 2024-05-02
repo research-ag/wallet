@@ -28,6 +28,8 @@ export const UseAsset = () => {
 
   useEffect(() => {
     if (selectedAsset) {
+      console.log("running");
+      
       let actualSub: SubAccount | undefined = undefined;
       selectedAsset.subAccounts.map((currentSubAccount: SubAccount) => {
         if (currentSubAccount.sub_account_id === (selectedAccount?.sub_account_id || "")) {
