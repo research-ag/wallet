@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import { IconButton } from "@components/button";
 import useAllowanceDrawer from "../hooks/useAllowanceDrawer";
 import { useAppSelector } from "@redux/Store";
+import { cleanAlphanumeric } from "@/utils/strings";
 
 interface AllowanceFilterProps {
   searchKey: string;
@@ -17,9 +18,9 @@ interface AllowanceFilterProps {
 }
 
 export default function AllowanceFilter(props: AllowanceFilterProps) {
+  const { t } = useTranslation();
   const { watchOnlyMode } = useAppSelector((state) => state.auth);
   const { searchKey, setSearchKey, selectedAssets, setSelectedAssets } = props;
-  const { t } = useTranslation();
   const { onOpenCreateAllowanceDrawer } = useAllowanceDrawer();
   const [assetSelectOpen, setAssetSelectOpen] = useState(false);
 
@@ -43,7 +44,7 @@ export default function AllowanceFilter(props: AllowanceFilterProps) {
           placeholder={t("allowance.search")}
           value={searchKey}
           onChange={(e) => {
-            setSearchKey(e.target.value);
+            setSearchKey(cleanAlphanumeric(e.target.value));
           }}
         />
 
