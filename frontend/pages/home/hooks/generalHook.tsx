@@ -18,7 +18,6 @@ export const GeneralHook = () => {
   const changeSelectedAsset = (value: Asset) => dispatch(setSelectedAsset(value));
   const changeSelectedAccount = (value: SubAccount | undefined) => dispatch(setSelectedAccount(value));
   const changeSelectedTransaction = (value: Transaction | undefined) => dispatch(setSelectedTransaction(value));
-
   const getTotalAsset = (asset: Asset) => {
     let total = 0;
     let total_currency = 0;

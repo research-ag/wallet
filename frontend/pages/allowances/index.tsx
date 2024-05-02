@@ -7,6 +7,7 @@ import useAllowances from "./hooks/useAllowances";
 
 export default function Allowances() {
   const { allowances, handleSortChange, searchKey, setSearchKey, selectedAssets, setSelectedAssets } = useAllowances();
+  console.log({ selectedAssets });
 
   return (
     <div className="px-[2rem]">
