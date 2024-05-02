@@ -49,6 +49,7 @@ export default function WatchOnlyInput() {
     setHistoricalOpen(false);
     setPrincipalAddress(principal);
     onPrincipalChange(principal);
+    if (watchOnlyInputRef.current) watchOnlyInputRef.current.value = principal;
   }
 }
 

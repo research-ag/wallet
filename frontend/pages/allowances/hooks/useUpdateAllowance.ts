@@ -17,7 +17,7 @@ import dayjs from "dayjs";
 import { refreshAllowance } from "../helpers/refresh";
 // eslint-disable-next-line import/named
 import { throttle } from "lodash";
-import { removeZeroesFromAmount } from "@/utils";
+import { removeZeroesFromAmount, toFullDecimal, toHoleBigInt } from "@/utils";
 
 export function useUpdateAllowance() {
   const dispatch = useAppDispatch();
@@ -37,12 +37,12 @@ export function useUpdateAllowance() {
     setIsLoadingAllowanceAction(true);
     setFullAllowanceErrorsAction([]);
 
+    const asset = assets.find((asset) => asset.tokenSymbol === allowance.asset.tokenSymbol) as Asset;
+
     const fullAllowance: TAllowance = {
       ...allowance,
       amount: removeZeroesFromAmount(allowance.amount || "0"),
     };
-
-    const asset = assets.find((asset) => asset.tokenSymbol === fullAllowance.asset.tokenSymbol) as Asset;
 
     const existingAllowance = allowances.find(
       (currentAllowance) =>
@@ -57,9 +57,16 @@ export function useUpdateAllowance() {
         fullAllowance.amount !== existingAllowance.amount
       ) {
         validateUpdateAllowance(fullAllowance, asset);
-        const params = createApproveAllowanceParams(fullAllowance);
-        await submitAllowanceApproval(params, fullAllowance.asset.address);
-        await refreshAllowance(fullAllowance);
+
+        const amountWithoutZeros = removeZeroesFromAmount(allowance.amount || "0");
+        const amountBigint = toHoleBigInt(amountWithoutZeros, Number(asset.decimal));
+        const formattedAmount = toFullDecimal(amountBigint, Number(asset.decimal));
+
+        const formatted = { ...fullAllowance, amount: formattedAmount };
+
+        const params = createApproveAllowanceParams(formatted);
+        await submitAllowanceApproval(params, formatted.asset.address);
+        await refreshAllowance(formatted);
       }
     }
   }, [allowance]);

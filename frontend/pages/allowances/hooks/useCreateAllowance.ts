@@ -21,7 +21,7 @@ import { Asset } from "@redux/models/AccountModels";
 import { getAllowanceAsset } from "../helpers/mappers";
 import { refreshAllowance } from "../helpers/refresh";
 import { db } from "@/database/db";
-import { removeZeroesFromAmount } from "@/utils";
+import { removeZeroesFromAmount, toFullDecimal, toHoleBigInt } from "@/utils";
 
 export default function useCreateAllowance() {
   const dispatch = useAppDispatch();
@@ -58,28 +58,39 @@ export default function useCreateAllowance() {
 
     const asset = assets.find((asset) => asset.tokenSymbol === allowance.asset.tokenSymbol) as Asset;
 
-    const fullAllowances = {
+    const fullAllowance = {
       ...allowance,
       id: db().generateAllowancePrimaryKey(allowance),
       amount: removeZeroesFromAmount(allowance.amount || "0"),
     };
 
-    validateCreateAllowance(fullAllowances, asset);
-    const duplicated = await getDuplicatedAllowance(fullAllowances);
+    validateCreateAllowance(fullAllowance, asset);
+
+    const amountWithoutZeros = removeZeroesFromAmount(allowance.amount || "0");
+    const amountBigint = toHoleBigInt(amountWithoutZeros, Number(asset.decimal));
+    const formattedAmount = toFullDecimal(amountBigint, Number(asset.decimal));
+
+    const formatted = { ...fullAllowance, amount: formattedAmount };
+
+    const params = createApproveAllowanceParams(formatted);
+    await submitAllowanceApproval(params, formatted.asset.address);
+    await refreshAllowance(formatted);
+
+    const duplicated = await getDuplicatedAllowance(formatted);
 
     if (duplicated) {
-      const isExpirationSame = fullAllowances.expiration === duplicated.expiration;
-      const isAmountSame = fullAllowances.amount === duplicated.amount;
+      const isExpirationSame = formatted.expiration === duplicated.expiration;
+      const isAmountSame = formatted.amount === duplicated.amount;
 
       if (!isExpirationSame || !isAmountSame) {
-        const params = createApproveAllowanceParams(fullAllowances);
-        await submitAllowanceApproval(params, fullAllowances.asset.address);
-        await refreshAllowance(fullAllowances);
+        const params = createApproveAllowanceParams(formatted);
+        await submitAllowanceApproval(params, formatted.asset.address);
+        await refreshAllowance(formatted);
       }
     } else {
-      const params = createApproveAllowanceParams(fullAllowances);
-      await submitAllowanceApproval(params, fullAllowances.asset.address);
-      await refreshAllowance(fullAllowances);
+      const params = createApproveAllowanceParams(formatted);
+      await submitAllowanceApproval(params, formatted.asset.address);
+      await refreshAllowance(formatted);
     }
   }, [allowance]);
 

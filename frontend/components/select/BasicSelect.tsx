@@ -7,6 +7,7 @@ import { SelectOption } from "@/@types/components";
 import { clsx } from "clsx";
 import { useTranslation } from "react-i18next";
 import * as Popover from "@radix-ui/react-popover";
+import { cleanAlphanumeric } from "@/utils/strings";
 
 interface TSelectProps extends VariantProps<typeof selectTriggerCVA>, VariantProps<typeof selectContentCVA> {
   options: SelectOption[];
@@ -105,7 +106,7 @@ export default function Select(props: TSelectProps) {
   }
 
   function handleSearchChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const newSearchValue = event.target.value.replace(/\s/g, "");
+    const newSearchValue = cleanAlphanumeric(event.target.value);
     if (onSearch) {
       clearTimeout(searchTimeoutRef.current);
       searchTimeoutRef.current = setTimeout(() => onSearch(newSearchValue), 100);
