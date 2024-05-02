@@ -49,6 +49,7 @@ export function sortByAmount(order: SortOrder, filteredData: TAllowance[]): TAll
 export function sortByExpiration(order: SortOrder, filteredData: TAllowance[]): TAllowance[] {
   const noExpirationAllowances = filteredData.filter((allowance) => !allowance.expiration);
   const expirationAllowances = filteredData.filter((allowance) => allowance.expiration);
+
   const orderedAllowances = expirationAllowances.sort((a, b) => {
     const aExpiration = a.expiration || "";
     const bExpiration = b.expiration || "";
@@ -58,8 +59,8 @@ export function sortByExpiration(order: SortOrder, filteredData: TAllowance[]): 
 
   const mergedAllowances =
     order === SortOrderEnum.Values.ASC
-      ? [...noExpirationAllowances, ...orderedAllowances]
-      : [...orderedAllowances, ...noExpirationAllowances];
+      ? [...orderedAllowances, ...noExpirationAllowances]
+      : [...noExpirationAllowances, ...orderedAllowances];
 
   return mergedAllowances;
 }
