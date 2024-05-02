@@ -35,8 +35,8 @@ export default function AssetFilter(props: AssetFilterProps) {
               <div className="flex items-center justify-start gap-2 flex-start">
                 {getAssetIcon(
                   IconTypeEnum.Enum.FILTER,
-                  assets.find((ast) => ast.symbol === selectedAssets[0])?.tokenSymbol,
-                  assets.find((ast) => ast.symbol === selectedAssets[0])?.logo,
+                  assets.find((currentAsset) => currentAsset.tokenSymbol === selectedAssets[0])?.tokenSymbol,
+                  assets.find((currentAsset) => currentAsset.logo === selectedAssets[0])?.logo,
                 )}
                 <p className="text-PrimaryTextColorLight dark:text-PrimaryTextColor">{selectedAssets[0]}</p>
               </div>
@@ -78,7 +78,7 @@ export default function AssetFilter(props: AssetFilterProps) {
 
                 <CustomCheck
                   className="border-BorderColorLight dark:border-BorderColor"
-                  checked={selectedAssets.includes(asset.symbol)}
+                  checked={selectedAssets.includes(asset.tokenSymbol)}
                 />
               </div>
             );
@@ -92,17 +92,17 @@ export default function AssetFilter(props: AssetFilterProps) {
     if (selectedAssets.length === assets.length) setSelectedAssets([]);
     else {
       const symbols = assets.map((currentAsset) => {
-        return currentAsset.symbol;
+        return currentAsset.tokenSymbol;
       });
       setSelectedAssets(symbols);
     }
   }
 
   function handleSelectAsset(asset: Asset) {
-    if (selectedAssets.includes(asset.symbol)) {
-      const auxSymbols = selectedAssets.filter((currentAsset) => currentAsset !== asset.symbol);
+    if (selectedAssets.includes(asset.tokenSymbol)) {
+      const auxSymbols = selectedAssets.filter((currentAsset) => currentAsset !== asset.tokenSymbol);
       setSelectedAssets(auxSymbols);
-    } else setSelectedAssets([...selectedAssets, asset.symbol]);
+    } else setSelectedAssets([...selectedAssets, asset.tokenSymbol]);
   }
 }
 

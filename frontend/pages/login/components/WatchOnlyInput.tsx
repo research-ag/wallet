@@ -1,56 +1,48 @@
-import { CustomInput } from "@components/input";
 import { handlePrincipalAuthenticated } from "@redux/CheckAuth";
-import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
+import { ChangeEvent, useRef, useState } from "react";
 import { validatePrincipal } from "@/utils/identity";
 import WatchOnlyInputSuffix from "./WatchOnlyInputSuffix";
 import WatchOnlyRecordsPopover from "./WatchOnlyRecordsPopover";
 import { useAppSelector } from "@redux/Store";
 
-interface WatchOnlyInputProps {
-  principalAddress: string;
-  setPrincipalAddress: Dispatch<SetStateAction<string>>;
-}
-
-export default function WatchOnlyInput(props: WatchOnlyInputProps) {
+export default function WatchOnlyInput() {
   const { watchOnlyHistory } = useAppSelector((state) => state.auth);
-  const { principalAddress, setPrincipalAddress } = props;
+  const [principalAddress, setPrincipalAddress] = useState("");
+  const watchOnlyInputRef = useRef<HTMLInputElement>(null);
   const [historicalOpen, setHistoricalOpen] = useState(false);
 
-  const value = (() => {
-    const principal = watchOnlyHistory.find((session) => session.principal === principalAddress);
-    if (principal && principal.alias) return `${principal.alias} | ${principalAddress}`;
-    return principalAddress;
-  })();
+  const alias = watchOnlyHistory.find((session) => session.principal === principalAddress)?.alias;
 
   return (
     <div className="relative w-full">
-      <CustomInput
-        sizeInput={"medium"}
-        intent={"secondary"}
-        compOutClass=""
-        value={value}
-        onChange={onPrincipalChange}
-        autoFocus
-        border={validatePrincipal(principalAddress) || principalAddress.length == 0 ? undefined : "error"}
-        sufix={
-          <WatchOnlyInputSuffix
-            principalAddress={principalAddress}
-            watchOnlyLoginErr={!validatePrincipal(principalAddress)}
-            historicalOpen={historicalOpen}
-            onChevronClick={() => setHistoricalOpen((prev) => !prev)}
-          />
-        }
-        onKeyDown={(e) => {
-          if (e.key === "Enter") handlePrincipalAuthenticated(principalAddress);
-        }}
-      />
+      <div className="flex items-center justify-start border rounded bg-inherit border-gray-color-2 dark:border-gray-color-6">
+        {alias ? (
+          <p className="px-2 font-bold border-r-2 text-md border-gray-color-2 dark:border-gray-color-6">{alias}</p>
+        ) : null}
+
+        <input
+          type="text"
+          className="w-full p-2 outline-none bg-inherit"
+          onChange={onPrincipalChange}
+          ref={watchOnlyInputRef}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") handlePrincipalAuthenticated(principalAddress);
+          }}
+        />
+        <WatchOnlyInputSuffix
+          principalAddress={principalAddress}
+          watchOnlyLoginErr={!validatePrincipal(principalAddress)}
+          historicalOpen={historicalOpen}
+          onChevronClick={() => setHistoricalOpen((prev) => !prev)}
+        />
+      </div>
       {historicalOpen && <WatchOnlyRecordsPopover onHistoricalSelectHandler={onHistoricalSelectHandler} />}
     </div>
   );
 
   function onPrincipalChange(e: ChangeEvent<HTMLInputElement> | string) {
-    const value = typeof e === "string" ? e : e.target.value;
-    setPrincipalAddress(value);
+    const principal = typeof e === "string" ? e.trim() : e.target.value.trim();
+    setPrincipalAddress(principal);
   }
 
   function onHistoricalSelectHandler(principal: string) {

@@ -2,16 +2,13 @@ import { clsx } from "clsx";
 import { ReactComponent as CheckIcon } from "@assets/svg/files/edit-check.svg";
 import { CustomInput } from "@components/input";
 import { handleMnemonicAuthenticated } from "@redux/CheckAuth";
-import { ChangeEvent, Dispatch, SetStateAction, useMemo, useState } from "react";
+import { ChangeEvent, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import * as bip39 from "bip39";
 
-interface MnemonicInputProps {
-  phrase: string;
-  setPhrase: Dispatch<SetStateAction<string>>;
-}
+export default function MnemonicInput() {
+  const [phrase, setPhrase] = useState("");
 
-export default function MnemonicInput({ phrase, setPhrase }: MnemonicInputProps) {
   const { t } = useTranslation();
   const [isError, setIsError] = useState(false);
 

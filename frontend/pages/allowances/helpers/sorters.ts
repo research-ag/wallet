@@ -41,19 +41,15 @@ export function sortBySpender(order: SortOrder, filteredData: TAllowance[]): TAl
 }
 
 export function sortByAmount(order: SortOrder, filteredData: TAllowance[]): TAllowance[] {
-  const orderedAllowances = filteredData.sort((a, b) => {
-    const aAmount = Number(a.amount || 0);
-    const bAmount = Number(b.amount || 0);
-    const comparisonResult = aAmount - bAmount;
-    return order === SortOrderEnum.Values.ASC ? comparisonResult : -comparisonResult;
-  });
-
-  return orderedAllowances;
+  return order === SortOrderEnum.Values.ASC
+    ? [...filteredData].sort((a, b) => parseFloat(a.amount || "0") - parseFloat(b.amount || "0"))
+    : [...filteredData].sort((a, b) => parseFloat(b.amount || "0") - parseFloat(a.amount || "0"));
 }
 
 export function sortByExpiration(order: SortOrder, filteredData: TAllowance[]): TAllowance[] {
   const noExpirationAllowances = filteredData.filter((allowance) => !allowance.expiration);
   const expirationAllowances = filteredData.filter((allowance) => allowance.expiration);
+
   const orderedAllowances = expirationAllowances.sort((a, b) => {
     const aExpiration = a.expiration || "";
     const bExpiration = b.expiration || "";
@@ -63,8 +59,8 @@ export function sortByExpiration(order: SortOrder, filteredData: TAllowance[]): 
 
   const mergedAllowances =
     order === SortOrderEnum.Values.ASC
-      ? [...noExpirationAllowances, ...orderedAllowances]
-      : [...orderedAllowances, ...noExpirationAllowances];
+      ? [...orderedAllowances, ...noExpirationAllowances]
+      : [...noExpirationAllowances, ...orderedAllowances];
 
   return mergedAllowances;
 }
