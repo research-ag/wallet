@@ -23,7 +23,7 @@ export function middleTruncation(text: string | undefined, startSize: number, en
  * - cleanAlphanumericString("   text    text    text   ") => "text text text"
  * - cleanAlphanumericString("   text    text    text") => "text text text"
  * - cleanAlphanumericString(" ") => ""
- * - cleanAlphanumericString("text ") => "text" 
+ * - cleanAlphanumericString("text ") => "text"
  *
  * @param text
  * @returns string
