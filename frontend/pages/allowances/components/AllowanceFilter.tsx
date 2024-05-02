@@ -27,7 +27,7 @@ export default function AllowanceFilter(props: AllowanceFilterProps) {
   return (
     <div className="flex items-center justify-between w-2/3 ">
       <div className="flex items-center justify-center w-1/3">
-        <p className="mr-4 text-md">Asset</p>
+        <p className="mr-4 text-md dark:text-gray-color-9 text-black-color">Asset</p>
         <AssetFilter
           assetSelectOpen={assetSelectOpen}
           setAssetSelectOpen={setAssetSelectOpen}
