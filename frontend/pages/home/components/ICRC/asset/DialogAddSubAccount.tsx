@@ -6,7 +6,7 @@ import { CustomInput } from "@components/input";
 import { CustomCheck } from "@components/checkbox";
 import { CustomButton } from "@components/button";
 import { useTranslation } from "react-i18next";
-import { checkHexString, getUSDfromToken, hexToNumber, hexToUint8Array, removeLeadingZeros } from "@/utils";
+import { checkHexString, getUSDFromToken, hexToNumber, hexToUint8Array, removeLeadingZeros } from "@/utils";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { GeneralHook } from "../../../hooks/generalHook";
 import { useAppDispatch } from "@redux/Store";
@@ -221,7 +221,7 @@ const DialogAddSubAccount = ({
                   name: newSub.name,
                   sub_account_id: `0x${subClean}`.toLowerCase(),
                   amount: myBalance.toString(),
-                  currency_amount: assetMrkt ? getUSDfromToken(myBalance.toString(), assetMrkt, decimal) : "0",
+                  currency_amount: assetMrkt ? getUSDFromToken(myBalance.toString(), assetMrkt, decimal) : "0",
                   transaction_fee: asset.subAccounts[0].transaction_fee,
                   address: asset.subAccounts[0].address,
                   decimal: asset.subAccounts[0].decimal,
@@ -237,7 +237,7 @@ const DialogAddSubAccount = ({
               ...newSub,
               sub_account_id: `0x${subClean}`.toLowerCase(),
               amount: myBalance.toString(),
-              currency_amount: assetMrkt ? getUSDfromToken(myBalance.toString(), assetMrkt, decimal) : "0",
+              currency_amount: assetMrkt ? getUSDFromToken(myBalance.toString(), assetMrkt, decimal) : "0",
             };
 
             setShowConfirm(true);

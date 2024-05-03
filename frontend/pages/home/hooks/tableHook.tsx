@@ -16,7 +16,7 @@ export const TableHook = () => {
   const { assets } = useAppSelector((state) => state.asset);
 
   const [sorting, setSorting] = useState<SortingState>([]);
-  const { selectedAccount } = useAppSelector((state) => state.asset);
+  const { selectedAccount } = useAppSelector((state) => state.asset.helper);
   const { selectedTransaction } = useAppSelector((state) => state.transaction);
 
   const columnHelper = createColumnHelper<Transaction>();

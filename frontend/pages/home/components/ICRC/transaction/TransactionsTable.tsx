@@ -46,11 +46,12 @@ const ICRCTransactionsTable = () => {
         <tbody>
           {table.getRowModel().rows.map((row, idxTR) => (
             <tr
-              className={`border-b border-b-BorderColorTwoLight dark:border-b-BorderColorTwo cursor-pointer ${(selectedTransaction?.hash && selectedTransaction?.hash === row.original.hash) ||
+              className={`border-b border-b-BorderColorTwoLight dark:border-b-BorderColorTwo cursor-pointer ${
+                (selectedTransaction?.hash && selectedTransaction?.hash === row.original.hash) ||
                 (selectedTransaction?.idx && selectedTransaction?.idx === row.original.idx)
-                ? "bg-SelectRowColor/10"
-                : ""
-                }`}
+                  ? "bg-SelectRowColor/10"
+                  : ""
+              }`}
               key={`tr-transac-${idxTR}`}
               onClick={() => {
                 dispatch(setSelectedTransaction(row.original));

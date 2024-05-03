@@ -3,12 +3,16 @@ import * as Accordion from "@radix-ui/react-accordion";
 import { Asset } from "@redux/models/AccountModels";
 import AssetAccordionItem from "./AssetAccordionItem";
 import { setAccordionAssetIdx } from "@redux/assets/AssetReducer";
+import { UseAsset } from "@pages/home/hooks/useAsset";
 
 interface AssetAccordionProps {
   searchKey: string;
 }
 
 export default function AssetAccordion(props: AssetAccordionProps) {
+  UseAsset();
+  console.log("rendering");
+
   const { searchKey } = props;
   const dispatch = useAppDispatch();
   const { assets } = useAppSelector((state) => state.asset);

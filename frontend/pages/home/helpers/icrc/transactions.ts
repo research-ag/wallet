@@ -9,7 +9,7 @@ import {
 import { getCanister } from "./getIcrcCanister";
 import {
   getMetadataInfo,
-  getUSDfromToken,
+  getUSDFromToken,
   hexToUint8Array,
   hexadecimalToUint8Array,
   toFullDecimal,
@@ -145,7 +145,7 @@ export async function getAssetDetails(params: DetailsParams): Promise<Asset | un
     let USDAmount = "0";
 
     if (assetMarket) {
-      USDAmount = getUSDfromToken(balance.toString(), assetMarket.price, decimals);
+      USDAmount = getUSDFromToken(balance.toString(), assetMarket.price, decimals);
     }
 
     const asset: Asset = {

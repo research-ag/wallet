@@ -158,7 +158,7 @@ export const validateAmount = (amnt: string, dec: number): boolean => {
   return true;
 };
 
-export const getUSDfromToken = (
+export const getUSDFromToken = (
   tokenAmount: string | number,
   marketPrice: string | number,
   decimal: string | number,

@@ -15,7 +15,8 @@ interface SearchAssetProps {
 export default function SearchAsset(props: SearchAssetProps) {
   const dispatch = useAppDispatch();
   const { searchKey, setSearchKey } = props;
-  const { accordionIndex, assets, selectedAsset } = useAppSelector((state) => state.asset);
+  const { assets } = useAppSelector((state) => state.asset);
+  const { selectedAsset, accordionIndex } = useAppSelector((state) => state.asset.helper);
   const [assetOpen, setAssetOpen] = useState(false);
   const { t } = useTranslation();
 

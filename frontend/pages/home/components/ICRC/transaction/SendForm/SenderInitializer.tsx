@@ -9,7 +9,7 @@ interface SenderInitializerProps {
 
 export default function SenderInitializer(props: SenderInitializerProps) {
   const { children } = props;
-  const { selectedAsset, selectedAccount } = useAppSelector((state) => state.asset);
+  const { selectedAsset, selectedAccount } = useAppSelector((state) => state.asset.helper);
   const { sender } = useAppSelector((state) => state.transaction);
 
   useEffect(() => {

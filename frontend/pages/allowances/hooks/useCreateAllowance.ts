@@ -27,7 +27,8 @@ export default function useCreateAllowance() {
   const dispatch = useAppDispatch();
   const [isLoading, setLoading] = useState(false);
   const { onCloseCreateAllowanceDrawer } = useAllowanceDrawer();
-  const { assets, selectedAsset, selectedAccount } = useAppSelector(({ asset }) => asset);
+  const { assets } = useAppSelector(({ asset }) => asset);
+  const { selectedAsset, selectedAccount } = useAppSelector((state) => state.asset.helper);
 
   const initial = useMemo(() => {
     const supported = selectedAsset?.supportedStandards?.includes(SupportedStandardEnum.Values["ICRC-2"]);

@@ -170,8 +170,8 @@ export const getAllTransactionsICRC1 = async (
 
     if (
       loading &&
-      store.getState().asset.selectedAccount?.sub_account_id === subNumber &&
-      assetSymbol === store.getState().asset.selectedAsset?.tokenSymbol
+      store.getState().asset.helper.selectedAccount?.sub_account_id === subNumber &&
+      assetSymbol === store.getState().asset.helper.selectedAsset?.tokenSymbol
     ) {
       store.dispatch(setTransactions(transactionsInfo));
       return transactionsInfo;

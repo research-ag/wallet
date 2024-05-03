@@ -9,7 +9,7 @@ import AccountElement from "./AccountElement";
 import { Fragment, useState } from "react";
 import * as Accordion from "@radix-ui/react-accordion";
 import { IconTypeEnum, ThemesEnum } from "@/const";
-import { getFirstNChars, getUSDfromToken, hexToNumber, toFullDecimal } from "@/utils";
+import { getFirstNChars, getUSDFromToken, hexToNumber, toFullDecimal } from "@/utils";
 import { AssetHook } from "../../../hooks/assetHook";
 import bigInt from "big-integer";
 import DialogAddSubAccount from "./DialogAddSubAccount";
@@ -31,7 +31,8 @@ interface AssetElementProps {
 const AssetElement = ({ asset, idx, accordionIndex, setAssetInfo, setAssetOpen, setAddOpen }: AssetElementProps) => {
   const dispatch = useAppDispatch();
   const { authClient, theme } = useAppSelector((state) => state.auth);
-  const { tokensMarket, assets, selectedAsset } = useAppSelector((state) => state.asset);
+  const { tokensMarket, assets } = useAppSelector((state) => state.asset);
+  const { selectedAsset } = useAppSelector((state) => state.asset.helper);
 
   const { editNameId, setEditNameId, name, setName, newSub, setNewSub, hexChecked, setHexChecked } = AssetHook();
   const [usedIdxs, setUsedIdxs] = useState<string[]>([]);
@@ -213,7 +214,7 @@ const AssetElement = ({ asset, idx, accordionIndex, setAssetInfo, setAssetOpen, 
     asset.subAccounts.map((sa) => {
       total = total + BigInt(sa.amount);
     }, 0);
-    const currencyTotal = assetMarket ? getUSDfromToken(total.toString(), assetMarket.price, asset.decimal) : "0.00";
+    const currencyTotal = assetMarket ? getUSDFromToken(total.toString(), assetMarket.price, asset.decimal) : "0.00";
 
     return {
       asset: total,

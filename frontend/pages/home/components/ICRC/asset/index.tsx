@@ -1,12 +1,10 @@
 //
 import { Fragment, useState } from "react";
 import Menu from "@pages/components/Menu";
-import { UseAsset } from "@/pages/home//hooks/useAsset";
 import SearchAsset from "@/pages/home/components/ICRC/asset/SearchAsset";
 import AssetAccordion from "./AssetAccordion";
 
 export default function AssetsList() {
-  UseAsset();
   const [searchKey, setSearchKey] = useState("");
 
   return (
