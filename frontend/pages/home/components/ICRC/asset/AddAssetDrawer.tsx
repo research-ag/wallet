@@ -18,6 +18,7 @@ import { db } from "@/database/db";
 import { getAssetDetails } from "@pages/home/helpers/icrc";
 import { BasicDrawer } from "@components/drawer";
 import { useEffect, useMemo } from "react";
+import DialogAssetConfirmation from "./DialogAssetConfirmation";
 
 export default function AddAssetDrawer() {
   const dispatch = useAppDispatch();
@@ -33,6 +34,7 @@ export default function AddAssetDrawer() {
     [assetAction],
   );
   const isManual = useMemo(() => assetAction === AssetMutationAction.ADD_MANUAL, [assetAction]);
+  const isUpdate = useMemo(() => assetAction === AssetMutationAction.UPDATE, [assetAction]);
 
   const {
     newAsset,
@@ -58,7 +60,7 @@ export default function AddAssetDrawer() {
       <div className="px-8 mt-4 overflow-y-auto text-left text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md">
         <CloseAddAssetDrawer onClose={onClose} isEdit={asset ? true : false} />
 
-        {isManual ? (
+        {isManual || isUpdate ? (
           <AddAssetManual
             errToken={errToken}
             setErrToken={setErrToken}
@@ -86,17 +88,11 @@ export default function AddAssetDrawer() {
           ></AddAssetAutomatic>
         )}
       </div>
-      {/* {modal && (
-        <DialogAssetConfirmation
-          modal={modal}
-          showModal={showModal}
-          newAsset={newAsset}
-          setNewAsset={setNewAsset}
-          setNetwork={setNetwork}
-          addStatus={addStatus}
-          setManual={setManual}
-        ></DialogAssetConfirmation>
-      )} */}
+      <DialogAssetConfirmation
+        newAsset={newAsset}
+        setNewAsset={setNewAsset}
+        setNetwork={setNetwork}
+      />
     </BasicDrawer>
   );
 

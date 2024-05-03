@@ -2,35 +2,32 @@
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
 import { BasicModal } from "@components/modal";
-import { AddingAssetsEnum, TokenNetwork, IconTypeEnum, TokenNetworkEnum, AddingAssets } from "@/const";
+import { AddingAssetsEnum, TokenNetwork, IconTypeEnum, TokenNetworkEnum } from "@/const";
 import { useTranslation } from "react-i18next";
 import { Asset } from "@redux/models/AccountModels";
 import { getAssetIcon } from "@/utils/icons";
+import { useAppSelector } from "@redux/Store";
+import { AssetMutationResult } from "@redux/assets/AssetReducer";
+
 interface DialogAssetConfirmationProps {
-  modal: boolean;
-  showModal(value: boolean): void;
   newAsset: Asset;
   setNewAsset(value: Asset): void;
   setNetwork(value: TokenNetwork): void;
-  addStatus: AddingAssets;
-  setManual(value: boolean): void;
 }
 
-// TODO: controls the confirmation modal from the redux state
 const DialogAssetConfirmation = ({
-  modal,
-  showModal,
   newAsset,
   setNewAsset,
   setNetwork,
-  addStatus,
-  setManual,
 }: DialogAssetConfirmationProps) => {
+  const { assetResult } = useAppSelector((state) => state.asset.mutation);
   const { t } = useTranslation();
+  const isModalOpen = assetResult !== AssetMutationResult.NONE;
+  const addStatus = "";
 
   return (
     <BasicModal
-      open={modal}
+      open={isModalOpen}
       width="w-[18rem]"
       padding="py-3 px-1"
       border="border border-BorderColorTwoLight dark:border-BorderColorTwo"
@@ -43,9 +40,8 @@ const DialogAssetConfirmation = ({
         <div className="flex flex-col items-center justify-start w-full py-2">
           {getAssetIcon(IconTypeEnum.Enum.ASSET, newAsset?.tokenSymbol, newAsset.logo)}
           <p
-            className={`text-lg font-semibold mt-3 ${
-              addStatus === AddingAssetsEnum.Enum.done ? "text-TextReceiveColor" : "text-TextSendColor"
-            }`}
+            className={`text-lg font-semibold mt-3 ${assetResult === AssetMutationResult.ADDED ? "text-TextReceiveColor" : "text-TextSendColor"
+              }`}
           >
             {getMessage(addStatus).top}
           </p>
@@ -56,7 +52,7 @@ const DialogAssetConfirmation = ({
   );
 
   function onClose() {
-    showModal(false);
+    // showModal(false);
     // TODO: it should now close the add update asset drawer
     // dispatch(setAssetMutationAction(AssetMutationAction.NONE));
     setNetwork(TokenNetworkEnum.enum["ICRC-1"]);
@@ -84,7 +80,7 @@ const DialogAssetConfirmation = ({
       sortIndex: 999,
       supportedStandards: [],
     });
-    setManual(false);
+    // setManual(false);
   }
 
   function getMessage(status: string) {

@@ -23,9 +23,9 @@ interface AssetAccordionItemProps {
 
 export default function AssetAccordionItem(props: AssetAccordionItemProps) {
   const { currentAsset, isCurrentAssetLast } = props;
-  const dispatch = useAppDispatch();
   const { selectedAsset, accordionIndex } = useAppSelector((state) => state.asset.helper);
   const { tokensMarket } = useAppSelector((state) => state.asset);
+  const dispatch = useAppDispatch();
 
   const isCurrentAssetSelected = currentAsset?.tokenSymbol === selectedAsset?.tokenSymbol;
   const hasMoreThanOneSubAccounts = currentAsset.subAccounts.length > 1;
@@ -50,7 +50,7 @@ export default function AssetAccordionItem(props: AssetAccordionItemProps) {
                   <p className={`text-md ${isCurrentAssetSelected ? "opacity-60" : ""}`}>
                     {currentAsset.symbol ? currentAsset.symbol : currentAsset.tokenSymbol}
                   </p>
-                  <div className="p-0 mr-1" onClick={onAssetInfoClick}>
+                  <div className="p-0 mr-1" onClick={onAssetUpdate}>
                     <img src={InfoIcon} className="ml-1" alt="info-icon" />
                   </div>
                   {isCurrentAssetSelected ? (
@@ -117,9 +117,12 @@ export default function AssetAccordionItem(props: AssetAccordionItemProps) {
     // setEditNameId("");
   }
 
-  function onAssetInfoClick() {}
+  function onAssetUpdate() {
+    dispatch(setAssetMutation(currentAsset));
+    dispatch(setAssetMutationAction(AssetMutationAction.UPDATE));
+  };
 
-  function onAddNewSubAccount() {}
+  function onAddNewSubAccount() { }
 
   function getFullTokenAmount() {
     const assetMarket = tokensMarket.find((tm) => tm.symbol === currentAsset.tokenSymbol);

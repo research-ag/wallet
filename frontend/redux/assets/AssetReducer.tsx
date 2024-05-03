@@ -11,6 +11,21 @@ interface AssetStateHelper {
   selectedAccount: SubAccount | undefined;
 }
 
+export enum AssetMutationAction {
+  ADD_AUTOMATIC = "ADD_AUTOMATIC",
+  ADD_MANUAL = "ADD_MANUAL",
+  UPDATE = "UPDATE",
+  DELETE = "DELETE",
+  NONE = "NONE",
+}
+
+export enum AssetMutationResult {
+  ADDING = "ADDING",
+  ADDED = "ADDED",
+  FAILED = "FAILED",
+  NONE = "NONE",
+};
+
 interface AssetState {
   helper: AssetStateHelper;
   ICPSubaccounts: Array<ICPSubAccount>;
@@ -18,15 +33,7 @@ interface AssetState {
   icr1SystemAssets: Asset[];
   tokensMarket: TokenMarketInfo[];
   assets: Array<Asset>;
-  mutation: { asset?: Asset; assetAction: AssetMutationAction };
-}
-
-export enum AssetMutationAction {
-  ADD_AUTOMATIC = "ADD_AUTOMATIC",
-  ADD_MANUAL = "ADD_MANUAL",
-  UPDATE = "UPDATE",
-  DELETE = "DELETE",
-  NONE = "NONE",
+  mutation: { asset?: Asset; assetAction: AssetMutationAction, assetResult: AssetMutationResult };
 }
 
 const initialState: AssetState = {
@@ -39,6 +46,7 @@ const initialState: AssetState = {
   mutation: {
     asset: undefined,
     assetAction: AssetMutationAction.NONE,
+    assetResult: AssetMutationResult.NONE,
   },
   ICPSubaccounts: [],
   icr1SystemAssets: ICRC1systemAssets,
@@ -54,6 +62,9 @@ const assetSlice = createSlice({
     // state helpers
     setInitLoad(state, action: PayloadAction<boolean>) {
       state.helper.initLoad = action.payload;
+    },
+    setAssetMutationResult(state, action: PayloadAction<AssetMutationResult>) {
+      state.mutation.assetResult = action.payload;
     },
     setAssetMutation(state, action: PayloadAction<Asset | undefined>) {
       state.mutation.asset = action.payload;
@@ -147,6 +158,7 @@ export const {
   setAccordionAssetIdx,
   updateSubAccountBalance,
   setAssetMutation,
+  setAssetMutationResult,
 } = assetSlice.actions;
 
 export default assetSlice.reducer;
