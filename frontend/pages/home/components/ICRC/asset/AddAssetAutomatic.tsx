@@ -9,6 +9,8 @@ import { useTranslation } from "react-i18next";
 import { Asset } from "@redux/models/AccountModels";
 import { getAssetIcon } from "@/utils/icons";
 import useCreateUpdateAsset from "@pages/home/hooks/useCreateUpdateAsset";
+import { AssetMutationAction, setAssetMutationAction } from "@redux/assets/AssetReducer";
+import { useAppDispatch } from "@redux/Store";
 
 interface AddAssetAutomaticProps {
   setNetwork(value: TokenNetwork): void;
@@ -19,7 +21,6 @@ interface AddAssetAutomaticProps {
   setValidToken(value: boolean): void;
   setErrToken(value: string): void;
   errToken: string;
-  setManual(value: boolean): void;
   assets: Asset[];
 }
 
@@ -32,12 +33,11 @@ const AddAssetAutomatic = ({
   setValidToken,
   setErrToken,
   errToken,
-  setManual,
   assets,
 }: AddAssetAutomaticProps) => {
   const { t } = useTranslation();
-
   const { newAssetList, assetTOpen, setAssetTOpen, networkTOpen, setNetworkTOpen } = useCreateUpdateAsset();
+  const dispatch = useAppDispatch();
 
   return (
     <div className="flex flex-col items-start justify-start w-full">
@@ -211,7 +211,7 @@ const AddAssetAutomatic = ({
   }
 
   function onAddAssetManually() {
-    setManual(true);
+    dispatch(setAssetMutationAction(AssetMutationAction.ADD_MANUAL));
     setNewAsset({
       address: "",
       symbol: "",

@@ -1,7 +1,7 @@
 // svgs
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import AddAssetDrawer from "@/pages/home/components/ICRC/asset/AddAssetDrawer";
+import AddAsset from "@/pages/home/components/ICRC/asset/AddAsset";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { setAccordionAssetIdx, setSelectedAccount, setSelectedAsset } from "@redux/assets/AssetReducer";
 
@@ -62,8 +62,7 @@ export default function SearchAsset(props: SearchAssetProps) {
         autoComplete="false"
         spellCheck={false}
       />
-
-      <AddAssetDrawer />
+      <AddAsset />
     </div>
   );
 }

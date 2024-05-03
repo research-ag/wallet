@@ -1,8 +1,4 @@
-// svgs
-import PlusIcon from "@assets/svg/files/plus-icon.svg";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
-//
-import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { GeneralHook } from "../../../hooks/generalHook";
 import { AccountDefaultEnum, AddingAssetsEnum, TokenNetworkEnum } from "@/const";
@@ -11,21 +7,35 @@ import { Asset } from "@redux/models/AccountModels";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import DialogAssetConfirmation from "./DialogAssetConfirmation";
 import AddAssetManual from "./AddAssetManual";
-import { setAccordionAssetIdx, setAssetMutation, setSelectedAsset } from "@redux/assets/AssetReducer";
+import {
+  AssetMutationAction,
+  setAccordionAssetIdx,
+  setAssetMutation,
+  setAssetMutationAction,
+  setSelectedAsset,
+} from "@redux/assets/AssetReducer";
 import AddAssetAutomatic from "./AddAssetAutomatic";
 import { db } from "@/database/db";
 import { getAssetDetails } from "@pages/home/helpers/icrc";
 import { BasicDrawer } from "@components/drawer";
+import { useEffect, useMemo } from "react";
 
-const AddAsset = () => {
-  const [assetOpen, setAssetOpen] = useState(false);
-  const { assets } = useAppSelector((state) => state.asset);
-  const { accordionIndex } = useAppSelector((state) => state.asset.helper);
-  const { asset } = useAppSelector((state) => state.asset.mutation);
-
-  const { t } = useTranslation();
+export default function AddAssetDrawer() {
   const dispatch = useAppDispatch();
   const { checkAssetAdded } = GeneralHook();
+  const { t } = useTranslation();
+
+  const { assets } = useAppSelector((state) => state.asset);
+  const { accordionIndex } = useAppSelector((state) => state.asset.helper);
+  const { asset, assetAction } = useAppSelector((state) => state.asset.mutation);
+
+  const isDrawerOpen = useMemo(() => assetAction !== AssetMutationAction.NONE, [assetAction]);
+  const isManual = useMemo(() => assetAction === AssetMutationAction.ADD_MANUAL, [assetAction]);
+  console.log({
+    assetAction,
+    isDrawerOpen,
+    isManual,
+  });
 
   const {
     newAsset,
@@ -42,7 +52,6 @@ const AddAsset = () => {
     addStatus,
     setAddStatus,
     errIndex,
-    manual,
     setManual,
   } = TokenHook();
 
@@ -50,74 +59,58 @@ const AddAsset = () => {
     setErrToken("");
     setErrIndex("");
     setValidToken(false);
-  }, [assetOpen]);
-
-  if (!assetOpen) return null;
+  }, [isDrawerOpen]);
 
   return (
-    <>
-      <div
-        className="flex flex-row items-center justify-center w-8 h-8 rounded-md cursor-pointer bg-SelectRowColor"
-        onClick={onAddAsset}
-      >
-        <img src={PlusIcon} alt="plus-icon" />
-      </div>
+    <BasicDrawer isDrawerOpen={isDrawerOpen}>
+      <div className="px-8 mt-4 overflow-y-auto text-left text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md">
+        <CloseAddAssetDrawer onClose={onClose} isEdit={asset ? true : false} />
 
-      <BasicDrawer isDrawerOpen={assetOpen}>
-        <div className="px-8 mt-4 overflow-y-auto text-left text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md">
-          <CloseAddAssetDrawer onClose={onClose} isEdit={asset ? true : false} />
-
-          {manual || asset ? (
-            <AddAssetManual
-              manual={manual}
-              setManual={setManual}
-              errToken={errToken}
-              setErrToken={setErrToken}
-              errIndex={errIndex}
-              setErrIndex={setErrIndex}
-              validToken={validToken}
-              setValidToken={setValidToken}
-              newAsset={newAsset}
-              setNewAsset={setNewAsset}
-              asset={asset}
-              setAssetOpen={setAssetOpen}
-              assets={assets}
-              addAssetToData={addAssetToData}
-            ></AddAssetManual>
-          ) : (
-            <AddAssetAutomatic
-              setNetwork={setNetwork}
-              network={network}
-              setNewAsset={setNewAsset}
-              newAsset={newAsset}
-              addAssetToData={addAssetToData}
-              setValidToken={setValidToken}
-              setErrToken={setErrToken}
-              errToken={errToken}
-              setManual={setManual}
-              assets={assets}
-            ></AddAssetAutomatic>
-          )}
-        </div>
-        {modal && (
-          <DialogAssetConfirmation
-            modal={modal}
-            showModal={showModal}
-            setAssetOpen={setAssetOpen}
+        {isManual ? (
+          <AddAssetManual
+            errToken={errToken}
+            setErrToken={setErrToken}
+            errIndex={errIndex}
+            setErrIndex={setErrIndex}
+            validToken={validToken}
+            setValidToken={setValidToken}
             newAsset={newAsset}
             setNewAsset={setNewAsset}
+            asset={asset}
+            assets={assets}
+            addAssetToData={addAssetToData}
+          ></AddAssetManual>
+        ) : (
+          <AddAssetAutomatic
             setNetwork={setNetwork}
-            addStatus={addStatus}
-            setManual={setManual}
-          ></DialogAssetConfirmation>
+            network={network}
+            setNewAsset={setNewAsset}
+            newAsset={newAsset}
+            addAssetToData={addAssetToData}
+            setValidToken={setValidToken}
+            setErrToken={setErrToken}
+            errToken={errToken}
+            assets={assets}
+          ></AddAssetAutomatic>
         )}
-      </BasicDrawer>
-    </>
+      </div>
+      {modal && (
+        <DialogAssetConfirmation
+          modal={modal}
+          showModal={showModal}
+          newAsset={newAsset}
+          setNewAsset={setNewAsset}
+          setNetwork={setNetwork}
+          addStatus={addStatus}
+          setManual={setManual}
+        ></DialogAssetConfirmation>
+      )}
+    </BasicDrawer>
   );
 
   function onClose() {
     addToAcordeonIdx();
-    setAssetOpen(false);
+    dispatch(setAssetMutationAction(AssetMutationAction.NONE));
     setNetwork(TokenNetworkEnum.enum["ICRC-1"]);
     setNewAsset({
       address: "",
@@ -146,7 +139,6 @@ const AddAsset = () => {
     setManual(false);
     dispatch(setAssetMutation(undefined));
   }
-
   async function addAssetToData() {
     if (checkAssetAdded(newAsset.address)) {
       setErrToken(t("adding.asset.already.imported"));
@@ -177,7 +169,7 @@ const AddAsset = () => {
       dispatch(setSelectedAsset(tknSave));
       dispatch(setAccordionAssetIdx([tknSave.symbol]));
 
-      setAssetOpen(false);
+      dispatch(setAssetMutationAction(AssetMutationAction.NONE));
       showModal(false);
       setManual(false);
       setNewAsset({
@@ -212,11 +204,7 @@ const AddAsset = () => {
       dispatch(setAccordionAssetIdx([...accordionIndex, asset?.tokenSymbol || ""]));
     }
   }
-
-  function onAddAsset() {
-    setAssetOpen(true);
-  }
-};
+}
 
 interface CloseAddAssetDrawerProps {
   isEdit: boolean;
@@ -236,5 +224,3 @@ function CloseAddAssetDrawer({ isEdit, onClose }: CloseAddAssetDrawerProps) {
     </div>
   );
 }
-
-export default AddAsset;

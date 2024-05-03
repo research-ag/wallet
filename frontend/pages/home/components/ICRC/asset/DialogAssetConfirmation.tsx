@@ -9,7 +9,6 @@ import { getAssetIcon } from "@/utils/icons";
 interface DialogAssetConfirmationProps {
   modal: boolean;
   showModal(value: boolean): void;
-  setAssetOpen(value: boolean): void;
   newAsset: Asset;
   setNewAsset(value: Asset): void;
   setNetwork(value: TokenNetwork): void;
@@ -20,7 +19,6 @@ interface DialogAssetConfirmationProps {
 const DialogAssetConfirmation = ({
   modal,
   showModal,
-  setAssetOpen,
   newAsset,
   setNewAsset,
   setNetwork,
@@ -58,7 +56,8 @@ const DialogAssetConfirmation = ({
 
   function onClose() {
     showModal(false);
-    setAssetOpen(false);
+    // TODO: it should now close the add update asset drawer
+    // dispatch(setAssetMutationAction(AssetMutationAction.NONE));
     setNetwork(TokenNetworkEnum.enum["ICRC-1"]);
     setNewAsset({
       address: "",

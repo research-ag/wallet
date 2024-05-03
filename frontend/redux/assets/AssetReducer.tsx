@@ -18,7 +18,14 @@ interface AssetState {
   icr1SystemAssets: Asset[];
   tokensMarket: TokenMarketInfo[];
   assets: Array<Asset>;
-  mutation: { asset?: Asset };
+  mutation: { asset?: Asset; assetAction: AssetMutationAction };
+}
+
+export enum AssetMutationAction {
+  ADD_AUTOMATIC = "ADD_AUTOMATIC",
+  ADD_MANUAL = "ADD_MANUAL",
+  UPDATE = "UPDATE",
+  NONE = "NONE",
 }
 
 const initialState: AssetState = {
@@ -30,6 +37,7 @@ const initialState: AssetState = {
   },
   mutation: {
     asset: undefined,
+    assetAction: AssetMutationAction.NONE,
   },
   ICPSubaccounts: [],
   icr1SystemAssets: ICRC1systemAssets,
@@ -48,6 +56,9 @@ const assetSlice = createSlice({
     },
     setAssetMutation(state, action: PayloadAction<Asset | undefined>) {
       state.mutation.asset = action.payload;
+    },
+    setAssetMutationAction(state, action: PayloadAction<AssetMutationAction>) {
+      state.mutation.assetAction = action.payload;
     },
     setICRC1SystemAssets(state, action: PayloadAction<Asset[]>) {
       state.icr1SystemAssets = [...ICRC1systemAssets, ...action.payload];
@@ -124,6 +135,7 @@ const assetSlice = createSlice({
 export const {
   setInitLoad,
   clearDataAsset,
+  setAssetMutationAction,
   setICRC1SystemAssets,
   setICPSubaccounts,
   setTokenMarket,

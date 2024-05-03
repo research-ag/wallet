@@ -19,12 +19,10 @@ import { db } from "@/database/db";
 import { Contact } from "@redux/models/ContactsModels";
 import { defaultSubAccount } from "@/defaultTokens";
 import { getAssetIcon } from "@/utils/icons";
-import { setAssetMutation } from "@redux/assets/AssetReducer";
-import { useAppDispatch } from "@redux/Store";
+import { AssetMutationAction, setAssetMutation, setAssetMutationAction } from "@redux/assets/AssetReducer";
+import { useAppDispatch, useAppSelector } from "@redux/Store";
 
 interface AddAssetManualProps {
-  manual: boolean;
-  setManual: Dispatch<SetStateAction<boolean>>;
   errToken: string;
   setErrToken: Dispatch<SetStateAction<string>>;
   errIndex: string;
@@ -34,15 +32,13 @@ interface AddAssetManualProps {
   newAsset: Asset;
   setNewAsset: Dispatch<SetStateAction<Asset>>;
   asset: Asset | undefined;
-  setAssetOpen: Dispatch<SetStateAction<boolean>>;
   assets: Asset[];
   addAssetToData(): void;
 }
 
 const AddAssetManual = (props: AddAssetManualProps) => {
+  const { assetAction } = useAppSelector((state) => state.asset.mutation)
   const {
-    manual,
-    setManual,
     errToken,
     setErrToken,
     errIndex,
@@ -52,7 +48,6 @@ const AddAssetManual = (props: AddAssetManualProps) => {
     newAsset,
     setNewAsset,
     asset,
-    setAssetOpen,
     addAssetToData,
   } = props;
 
@@ -190,7 +185,7 @@ const AddAssetManual = (props: AddAssetManualProps) => {
       </div>
 
       <div className="flex flex-row justify-between w-full gap-4">
-        {manual && (
+        {assetAction !== AssetMutationAction.UPDATE && (
           <CustomButton intent="deny" className="mr-3 min-w-[5rem]" onClick={onBack}>
             <p>{t("back")}</p>
           </CustomButton>
@@ -269,7 +264,7 @@ const AddAssetManual = (props: AddAssetManualProps) => {
   }
 
   function onBack() {
-    setManual(false);
+    dispatch(setAssetMutationAction(AssetMutationAction.ADD_AUTOMATIC));
     setNewAsset({
       address: "",
       symbol: "",
@@ -418,8 +413,7 @@ const AddAssetManual = (props: AddAssetManualProps) => {
       });
 
       dispatch(setAssetMutation(undefined));
-      setAssetOpen(false);
-      setManual(false);
+      dispatch(setAssetMutationAction(AssetMutationAction.NONE));
     } else if (await onTest(false)) addAssetToData();
   }
 };
