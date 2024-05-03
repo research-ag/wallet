@@ -8,9 +8,9 @@ import { clsx } from "clsx";
 import { useTranslation } from "react-i18next";
 import { Asset } from "@redux/models/AccountModels";
 import { getAssetIcon } from "@/utils/icons";
-import useCreateUpdateAsset from "@pages/home/hooks/useCreateUpdateAsset";
 import { AssetMutationAction, setAssetMutationAction } from "@redux/assets/AssetReducer";
 import { useAppDispatch } from "@redux/Store";
+import useCreateUpdateAsset from "@pages/home/hooks/useCreateUpdateAsset";
 
 interface AddAssetAutomaticProps {
   setNetwork(value: TokenNetwork): void;

@@ -37,7 +37,7 @@ interface AddAssetManualProps {
 }
 
 const AddAssetManual = (props: AddAssetManualProps) => {
-  const { assetAction } = useAppSelector((state) => state.asset.mutation)
+  const { assetAction } = useAppSelector((state) => state.asset.mutation);
   const {
     errToken,
     setErrToken,

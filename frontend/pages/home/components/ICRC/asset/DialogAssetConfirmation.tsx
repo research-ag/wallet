@@ -16,6 +16,7 @@ interface DialogAssetConfirmationProps {
   setManual(value: boolean): void;
 }
 
+// TODO: controls the confirmation modal from the redux state
 const DialogAssetConfirmation = ({
   modal,
   showModal,

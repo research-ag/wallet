@@ -1,11 +1,10 @@
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 import { useTranslation } from "react-i18next";
 import { GeneralHook } from "../../../hooks/generalHook";
-import { AccountDefaultEnum, AddingAssetsEnum, TokenNetworkEnum } from "@/const";
+import { AccountDefaultEnum, TokenNetworkEnum } from "@/const";
 import { TokenHook } from "../../../hooks/tokenHook";
 import { Asset } from "@redux/models/AccountModels";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
-import DialogAssetConfirmation from "./DialogAssetConfirmation";
 import AddAssetManual from "./AddAssetManual";
 import {
   AssetMutationAction,
@@ -29,13 +28,11 @@ export default function AddAssetDrawer() {
   const { accordionIndex } = useAppSelector((state) => state.asset.helper);
   const { asset, assetAction } = useAppSelector((state) => state.asset.mutation);
 
-  const isDrawerOpen = useMemo(() => assetAction !== AssetMutationAction.NONE, [assetAction]);
+  const isDrawerOpen = useMemo(
+    () => assetAction !== AssetMutationAction.NONE && assetAction !== AssetMutationAction.DELETE,
+    [assetAction],
+  );
   const isManual = useMemo(() => assetAction === AssetMutationAction.ADD_MANUAL, [assetAction]);
-  console.log({
-    assetAction,
-    isDrawerOpen,
-    isManual,
-  });
 
   const {
     newAsset,
@@ -44,15 +41,10 @@ export default function AddAssetDrawer() {
     setValidToken,
     setErrIndex,
     setErrToken,
+    errIndex,
     errToken,
     validToken,
-    showModal,
     network,
-    modal,
-    addStatus,
-    setAddStatus,
-    errIndex,
-    setManual,
   } = TokenHook();
 
   useEffect(() => {
@@ -94,7 +86,7 @@ export default function AddAssetDrawer() {
           ></AddAssetAutomatic>
         )}
       </div>
-      {modal && (
+      {/* {modal && (
         <DialogAssetConfirmation
           modal={modal}
           showModal={showModal}
@@ -104,7 +96,7 @@ export default function AddAssetDrawer() {
           addStatus={addStatus}
           setManual={setManual}
         ></DialogAssetConfirmation>
-      )}
+      )} */}
     </BasicDrawer>
   );
 
@@ -136,7 +128,7 @@ export default function AddAssetDrawer() {
       sortIndex: 999,
       supportedStandards: [],
     });
-    setManual(false);
+    // setManual(false);
     dispatch(setAssetMutation(undefined));
   }
   async function addAssetToData() {
@@ -144,8 +136,9 @@ export default function AddAssetDrawer() {
       setErrToken(t("adding.asset.already.imported"));
       setValidToken(false);
     } else {
-      setAddStatus(AddingAssetsEnum.enum.adding);
-      showModal(true);
+      // TODO: set to redux status adding asset
+      // setAddStatus(AddingAssetsEnum.enum.adding);
+      // showModal(true);
 
       const idxSorting = assets.length > 0 ? [...assets].sort((a, b) => b.sortIndex - a.sortIndex) : [];
       const idx = (idxSorting.length > 0 ? idxSorting[0]?.sortIndex : 0) + 1;
@@ -170,8 +163,10 @@ export default function AddAssetDrawer() {
       dispatch(setAccordionAssetIdx([tknSave.symbol]));
 
       dispatch(setAssetMutationAction(AssetMutationAction.NONE));
-      showModal(false);
-      setManual(false);
+      // TODO: close modal to the redux state
+      // showModal(false);
+      // TODO: set dispatch as NONE or ADD_MANUAL
+      // setManual(false);
       setNewAsset({
         address: "",
         symbol: "",

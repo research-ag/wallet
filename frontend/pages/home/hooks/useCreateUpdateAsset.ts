@@ -3,7 +3,7 @@ import { Asset } from "@redux/models/AccountModels";
 import { useAppSelector } from "@redux/Store";
 import { useEffect, useState } from "react";
 
-export default function useCreateAsset() {
+export default function useCreateUpdateAsset() {
   const { icr1SystemAssets } = useAppSelector((state) => state.asset);
 
   const [newAssetList, setNewAssetList] = useState<Array<Asset>>(ICRC1systemAssets);

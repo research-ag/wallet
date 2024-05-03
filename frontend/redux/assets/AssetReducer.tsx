@@ -25,6 +25,7 @@ export enum AssetMutationAction {
   ADD_AUTOMATIC = "ADD_AUTOMATIC",
   ADD_MANUAL = "ADD_MANUAL",
   UPDATE = "UPDATE",
+  DELETE = "DELETE",
   NONE = "NONE",
 }
 

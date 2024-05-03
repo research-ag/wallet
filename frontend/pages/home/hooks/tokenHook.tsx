@@ -1,4 +1,4 @@
-import { AddingAssets, AddingAssetsEnum, TokenNetwork, TokenNetworkEnum, AccountDefaultEnum } from "@/const";
+import { TokenNetwork, TokenNetworkEnum, AccountDefaultEnum } from "@/const";
 import { useAppSelector } from "@redux/Store";
 import { Asset } from "@redux/models/AccountModels";
 import { useEffect, useState } from "react";
@@ -6,14 +6,10 @@ import { useEffect, useState } from "react";
 export const TokenHook = () => {
   const { isAppDataFreshing } = useAppSelector((state) => state.common);
   const { asset } = useAppSelector((state) => state.asset.mutation);
-
-  const [manual, setManual] = useState(false);
   const [errIndex, setErrIndex] = useState("");
   const [network, setNetwork] = useState<TokenNetwork>(TokenNetworkEnum.enum["ICRC-1"]);
   const [errToken, setErrToken] = useState("");
   const [validToken, setValidToken] = useState(false);
-  const [modal, showModal] = useState(false);
-  const [addStatus, setAddStatus] = useState<AddingAssets>(AddingAssetsEnum.Enum.none);
 
   const [newAsset, setNewAsset] = useState<Asset>({
     address: "",
@@ -72,18 +68,13 @@ export const TokenHook = () => {
   }, [asset]);
 
   useEffect(() => {
-    if (!isAppDataFreshing) setAddStatus(AddingAssetsEnum.Enum.done);
+    // TODO: set to redux status adding asset
+    // if (!isAppDataFreshing) setAddStatus(AddingAssetsEnum.Enum.done);
   }, [isAppDataFreshing]);
 
   return {
     errIndex,
     setErrIndex,
-    manual,
-    setManual,
-    modal,
-    showModal,
-    addStatus,
-    setAddStatus,
     newAsset,
     setNewAsset,
     validToken,

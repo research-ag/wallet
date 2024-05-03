@@ -5,7 +5,12 @@ import { Asset } from "@redux/models/AccountModels";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import * as Accordion from "@radix-ui/react-accordion";
 import clsx from "clsx";
-import { setSelectedAsset } from "@redux/assets/AssetReducer";
+import {
+  AssetMutationAction,
+  setAssetMutation,
+  setAssetMutationAction,
+  setSelectedAsset,
+} from "@redux/assets/AssetReducer";
 import { getAssetIcon } from "@/utils/icons";
 import { IconTypeEnum } from "@/const";
 import { getFirstNChars, getUSDFromToken, toFullDecimal } from "@/utils";
@@ -133,7 +138,10 @@ export default function AssetAccordionItem(props: AssetAccordionItemProps) {
     };
   }
 
-  function onDeleteAsset() {}
+  function onDeleteAsset() {
+    dispatch(setAssetMutation(currentAsset));
+    dispatch(setAssetMutationAction(AssetMutationAction.DELETE));
+  }
 }
 
 const getAssetElementStyles = (isSelected: boolean, isNotLast: boolean) =>

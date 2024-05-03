@@ -4,6 +4,7 @@ import { Asset } from "@redux/models/AccountModels";
 import AssetAccordionItem from "./AssetAccordionItem";
 import { setAccordionAssetIdx } from "@redux/assets/AssetReducer";
 import { UseAsset } from "@pages/home/hooks/useAsset";
+import DeleteAssetModal from "./DeleteAssetModal";
 
 interface AssetAccordionProps {
   searchKey: string;
@@ -56,6 +57,7 @@ export default function AssetAccordion(props: AssetAccordionProps) {
             );
         })}
       </Accordion.Root>
+      <DeleteAssetModal />
     </div>
   );
 

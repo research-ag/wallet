@@ -13,7 +13,6 @@ import { getFirstNChars, getUSDFromToken, hexToNumber, toFullDecimal } from "@/u
 import { AssetHook } from "../../../hooks/assetHook";
 import bigInt from "big-integer";
 import DialogAddSubAccount from "./DialogAddSubAccount";
-import DeleteAssetModal from "./DeleteAssetModal";
 import { getAssetIcon } from "@/utils/icons";
 import clsx from "clsx";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
@@ -35,7 +34,6 @@ const AssetElement = ({ asset, idx, accordionIndex, setAssetOpen, setAddOpen }: 
 
   const { editNameId, setEditNameId, name, setName, newSub, setNewSub, hexChecked, setHexChecked } = AssetHook();
   const [usedIdxs, setUsedIdxs] = useState<string[]>([]);
-  const [openDelete, setOpenDelete] = useState(false);
   const [newErr, setNewErr] = useState<{ name: boolean; idx: boolean }>({ name: false, idx: false });
 
   return (
@@ -163,7 +161,7 @@ const AssetElement = ({ asset, idx, accordionIndex, setAssetOpen, setAddOpen }: 
           accordionIndex={accordionIndex}
         />
       )}
-      {openDelete && <DeleteAssetModal open={openDelete} setOpen={setOpenDelete} asset={asset} />}
+      {/* {openDelete && <DeleteAssetModal open={openDelete} setOpen={setOpenDelete} asset={asset} />} */}
     </Fragment>
   );
 
@@ -232,7 +230,7 @@ const AssetElement = ({ asset, idx, accordionIndex, setAssetOpen, setAddOpen }: 
   }
 
   function onDeleteSubAccount() {
-    setOpenDelete(true);
+    // setOpenDelete(true);
   }
 };
 
