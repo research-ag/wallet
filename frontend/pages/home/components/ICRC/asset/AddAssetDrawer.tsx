@@ -1,7 +1,8 @@
 // svgs
+import PlusIcon from "@assets/svg/files/plus-icon.svg";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { GeneralHook } from "../../../hooks/generalHook";
 import { AccountDefaultEnum, AddingAssetsEnum, TokenNetworkEnum } from "@/const";
@@ -10,50 +11,40 @@ import { Asset } from "@redux/models/AccountModels";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import DialogAssetConfirmation from "./DialogAssetConfirmation";
 import AddAssetManual from "./AddAssetManual";
-import { setAccordionAssetIdx, setSelectedAsset } from "@redux/assets/AssetReducer";
+import { setAccordionAssetIdx, setAssetMutation, setSelectedAsset } from "@redux/assets/AssetReducer";
 import AddAssetAutomatic from "./AddAssetAutomatic";
 import { db } from "@/database/db";
 import { getAssetDetails } from "@pages/home/helpers/icrc";
 import { BasicDrawer } from "@components/drawer";
 
-interface AddAssetsProps {
-  setAssetOpen: Dispatch<SetStateAction<boolean>>;
-  assetOpen: boolean;
-  accordionIndex: string[];
-}
-
-const AddAsset = ({ setAssetOpen, assetOpen, accordionIndex }: AddAssetsProps) => {
+const AddAsset = () => {
+  const [assetOpen, setAssetOpen] = useState(false);
   const { assets } = useAppSelector((state) => state.asset);
-  const [assetInfo, setAssetInfo] = useState<Asset | undefined>(undefined);
+  const { accordionIndex } = useAppSelector((state) => state.asset.helper);
+  const { asset } = useAppSelector((state) => state.asset.mutation);
 
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { checkAssetAdded } = GeneralHook();
+
   const {
     newAsset,
     setNewAsset,
-    validToken,
+    setNetwork,
     setValidToken,
-    validIndex,
-    setValidIndex,
-    errToken,
-    setErrToken,
-    errIndex,
     setErrIndex,
-    modal,
+    setErrToken,
+    errToken,
+    validToken,
     showModal,
+    network,
+    modal,
     addStatus,
     setAddStatus,
+    errIndex,
     manual,
     setManual,
-    networkTOpen,
-    setNetworkTOpen,
-    assetTOpen,
-    setAssetTOpen,
-    network,
-    setNetwork,
-    newAssetList,
-  } = TokenHook(assetInfo);
+  } = TokenHook();
 
   useEffect(() => {
     setErrToken("");
@@ -61,69 +52,67 @@ const AddAsset = ({ setAssetOpen, assetOpen, accordionIndex }: AddAssetsProps) =
     setValidToken(false);
   }, [assetOpen]);
 
+  if (!assetOpen) return null;
+
   return (
-    <BasicDrawer isDrawerOpen={assetOpen}>
-      <div className="px-8 mt-4 overflow-y-auto text-left text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md">
-        <div className="flex flex-row items-center justify-between w-full mb-5">
-          <p className="text-lg font-bold">{assetInfo ? t("edit.asset") : t("add.asset")}</p>
-          <CloseIcon
-            className="cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
-            onClick={onClose}
-          />
-        </div>
-        {manual || assetInfo ? (
-          <AddAssetManual
-            manual={manual}
-            setManual={setManual}
-            errToken={errToken}
-            setErrToken={setErrToken}
-            errIndex={errIndex}
-            setErrIndex={setErrIndex}
-            validToken={validToken}
-            setValidToken={setValidToken}
-            validIndex={validIndex}
-            setValidIndex={setValidIndex}
-            newAsset={newAsset}
-            setNewAsset={setNewAsset}
-            asset={assetInfo}
-            setAssetOpen={setAssetOpen}
-            assets={assets}
-            addAssetToData={addAssetToData}
-            setAssetInfo={setAssetInfo}
-          ></AddAssetManual>
-        ) : (
-          <AddAssetAutomatic
-            setNetworkTOpen={setNetworkTOpen}
-            networkTOpen={networkTOpen}
-            setNetwork={setNetwork}
-            network={network}
-            setNewAsset={setNewAsset}
-            newAsset={newAsset}
-            setAssetTOpen={setAssetTOpen}
-            addAssetToData={addAssetToData}
-            assetTOpen={assetTOpen}
-            setValidToken={setValidToken}
-            setErrToken={setErrToken}
-            errToken={errToken}
-            setManual={setManual}
-            newAssetList={newAssetList}
-            assets={assets}
-          ></AddAssetAutomatic>
-        )}
+    <>
+      <div
+        className="flex flex-row items-center justify-center w-8 h-8 rounded-md cursor-pointer bg-SelectRowColor"
+        onClick={onAddAsset}
+      >
+        <img src={PlusIcon} alt="plus-icon" />
       </div>
-      {modal && (
-        <DialogAssetConfirmation
-          modal={modal}
-          showModal={showModal}
-          setAssetOpen={setAssetOpen}
-          newAsset={newAsset}
-          setNewAsset={setNewAsset}
-          setNetwork={setNetwork}
-          addStatus={addStatus}
-          setManual={setManual}
-        ></DialogAssetConfirmation>
-      )}
-    </BasicDrawer>
+
+      <BasicDrawer isDrawerOpen={assetOpen}>
+        <div className="px-8 mt-4 overflow-y-auto text-left text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md">
+          <CloseAddAssetDrawer onClose={onClose} isEdit={asset ? true : false} />
+
+          {manual || asset ? (
+            <AddAssetManual
+              manual={manual}
+              setManual={setManual}
+              errToken={errToken}
+              setErrToken={setErrToken}
+              errIndex={errIndex}
+              setErrIndex={setErrIndex}
+              validToken={validToken}
+              setValidToken={setValidToken}
+              newAsset={newAsset}
+              setNewAsset={setNewAsset}
+              asset={asset}
+              setAssetOpen={setAssetOpen}
+              assets={assets}
+              addAssetToData={addAssetToData}
+            ></AddAssetManual>
+          ) : (
+            <AddAssetAutomatic
+              setNetwork={setNetwork}
+              network={network}
+              setNewAsset={setNewAsset}
+              newAsset={newAsset}
+              addAssetToData={addAssetToData}
+              setValidToken={setValidToken}
+              setErrToken={setErrToken}
+              errToken={errToken}
+              setManual={setManual}
+              assets={assets}
+            ></AddAssetAutomatic>
+          )}
+        </div>
+        {modal && (
+          <DialogAssetConfirmation
+            modal={modal}
+            showModal={showModal}
+            setAssetOpen={setAssetOpen}
+            newAsset={newAsset}
+            setNewAsset={setNewAsset}
+            setNetwork={setNetwork}
+            addStatus={addStatus}
+            setManual={setManual}
+          ></DialogAssetConfirmation>
+        )}
+      </BasicDrawer>
+    </>
   );
 
   function onClose() {
@@ -155,7 +144,7 @@ const AddAsset = ({ setAssetOpen, assetOpen, accordionIndex }: AddAssetsProps) =
       supportedStandards: [],
     });
     setManual(false);
-    setAssetInfo(undefined);
+    dispatch(setAssetMutation(undefined));
   }
 
   async function addAssetToData() {
@@ -219,10 +208,33 @@ const AddAsset = ({ setAssetOpen, assetOpen, accordionIndex }: AddAssetsProps) =
   }
 
   function addToAcordeonIdx() {
-    if (!accordionIndex.includes(assetInfo?.tokenSymbol || "")) {
-      dispatch(setAccordionAssetIdx([...accordionIndex, assetInfo?.tokenSymbol || ""]));
+    if (!accordionIndex.includes(asset?.tokenSymbol || "")) {
+      dispatch(setAccordionAssetIdx([...accordionIndex, asset?.tokenSymbol || ""]));
     }
   }
+
+  function onAddAsset() {
+    setAssetOpen(true);
+  }
 };
+
+interface CloseAddAssetDrawerProps {
+  isEdit: boolean;
+  onClose: () => void;
+}
+
+function CloseAddAssetDrawer({ isEdit, onClose }: CloseAddAssetDrawerProps) {
+  const { t } = useTranslation();
+
+  return (
+    <div className="flex flex-row items-center justify-between w-full mb-5">
+      <p className="text-lg font-bold">{isEdit ? t("edit.asset") : t("add.asset")}</p>
+      <CloseIcon
+        className="cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
+        onClick={onClose}
+      />
+    </div>
+  );
+}
 
 export default AddAsset;

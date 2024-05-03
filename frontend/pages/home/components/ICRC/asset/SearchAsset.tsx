@@ -1,10 +1,8 @@
 // svgs
-import PlusIcon from "@assets/svg/files/plus-icon.svg";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import AddAsset from "./AddAsset";
+import AddAssetDrawer from "@/pages/home/components/ICRC/asset/AddAssetDrawer";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
-import { BasicDrawer } from "@components/drawer";
 import { setAccordionAssetIdx, setSelectedAccount, setSelectedAsset } from "@redux/assets/AssetReducer";
 
 interface SearchAssetProps {
@@ -17,7 +15,6 @@ export default function SearchAsset(props: SearchAssetProps) {
   const { searchKey, setSearchKey } = props;
   const { assets } = useAppSelector((state) => state.asset);
   const { selectedAsset, accordionIndex } = useAppSelector((state) => state.asset.helper);
-  const [assetOpen, setAssetOpen] = useState(false);
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -65,22 +62,8 @@ export default function SearchAsset(props: SearchAssetProps) {
         autoComplete="false"
         spellCheck={false}
       />
-      <div
-        className="flex flex-row items-center justify-center w-8 h-8 rounded-md cursor-pointer bg-SelectRowColor"
-        onClick={onAddAsset}
-      >
-        <img src={PlusIcon} alt="plus-icon" />
-      </div>
 
-      {assetOpen && (
-        <BasicDrawer isDrawerOpen={assetOpen}>
-          <AddAsset setAssetOpen={setAssetOpen} assetOpen={assetOpen} accordionIndex={accordionIndex} />
-        </BasicDrawer>
-      )}
+      <AddAssetDrawer />
     </div>
   );
-
-  function onAddAsset() {
-    setAssetOpen(true);
-  }
 }

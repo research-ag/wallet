@@ -8,43 +8,36 @@ import { clsx } from "clsx";
 import { useTranslation } from "react-i18next";
 import { Asset } from "@redux/models/AccountModels";
 import { getAssetIcon } from "@/utils/icons";
+import useCreateUpdateAsset from "@pages/home/hooks/useCreateUpdateAsset";
 
 interface AddAssetAutomaticProps {
-  setNetworkTOpen(value: boolean): void;
-  networkTOpen: boolean;
   setNetwork(value: TokenNetwork): void;
   network: TokenNetwork;
   setNewAsset(value: Asset): void;
   newAsset: Asset;
-  setAssetTOpen(value: boolean): void;
   addAssetToData(): void;
-  assetTOpen: boolean;
   setValidToken(value: boolean): void;
   setErrToken(value: string): void;
   errToken: string;
   setManual(value: boolean): void;
-  newAssetList: Asset[];
   assets: Asset[];
 }
 
 const AddAssetAutomatic = ({
-  setNetworkTOpen,
-  networkTOpen,
   setNetwork,
   network,
   setNewAsset,
   newAsset,
-  setAssetTOpen,
   addAssetToData,
-  assetTOpen,
   setValidToken,
   setErrToken,
   errToken,
   setManual,
-  newAssetList,
   assets,
 }: AddAssetAutomaticProps) => {
   const { t } = useTranslation();
+
+  const { newAssetList, assetTOpen, setAssetTOpen, networkTOpen, setNetworkTOpen } = useCreateUpdateAsset();
 
   return (
     <div className="flex flex-col items-start justify-start w-full">

@@ -19,6 +19,8 @@ import { db } from "@/database/db";
 import { Contact } from "@redux/models/ContactsModels";
 import { defaultSubAccount } from "@/defaultTokens";
 import { getAssetIcon } from "@/utils/icons";
+import { setAssetMutation } from "@redux/assets/AssetReducer";
+import { useAppDispatch } from "@redux/Store";
 
 interface AddAssetManualProps {
   manual: boolean;
@@ -29,41 +31,39 @@ interface AddAssetManualProps {
   setErrIndex: Dispatch<SetStateAction<string>>;
   validToken: boolean;
   setValidToken: Dispatch<SetStateAction<boolean>>;
-  validIndex: boolean;
-  setValidIndex: Dispatch<SetStateAction<boolean>>;
   newAsset: Asset;
   setNewAsset: Dispatch<SetStateAction<Asset>>;
   asset: Asset | undefined;
   setAssetOpen: Dispatch<SetStateAction<boolean>>;
   assets: Asset[];
   addAssetToData(): void;
-  setAssetInfo(value: Asset | undefined): void;
 }
 
-const AddAssetManual = ({
-  manual,
-  setManual,
-  errToken,
-  setErrToken,
-  errIndex,
-  setErrIndex,
-  validToken,
-  setValidToken,
-  validIndex,
-  setValidIndex,
-  newAsset,
-  setNewAsset,
-  asset,
-  setAssetOpen,
-  addAssetToData,
-  setAssetInfo,
-}: AddAssetManualProps) => {
+const AddAssetManual = (props: AddAssetManualProps) => {
+  const {
+    manual,
+    setManual,
+    errToken,
+    setErrToken,
+    errIndex,
+    setErrIndex,
+    validToken,
+    setValidToken,
+    newAsset,
+    setNewAsset,
+    asset,
+    setAssetOpen,
+    addAssetToData,
+  } = props;
+
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
   const { authClient } = AccountHook();
   const { checkAssetAdded } = GeneralHook();
   const [testLoading, setTestLoading] = useState(false);
   const [tested, setTested] = useState(false);
   const [errShortDec, serErrShortDec] = useState(false);
+  const [validIndex, setValidIndex] = useState(false);
 
   return (
     <div className="flex flex-col items-start justify-start w-full">
@@ -416,7 +416,8 @@ const AddAssetManual = ({
         sortIndex: 999,
         supportedStandards: [],
       });
-      setAssetInfo(undefined);
+
+      dispatch(setAssetMutation(undefined));
       setAssetOpen(false);
       setManual(false);
     } else if (await onTest(false)) addAssetToData();

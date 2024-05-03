@@ -1,0 +1,22 @@
+import { ICRC1systemAssets } from "@/defaultTokens";
+import { Asset } from "@redux/models/AccountModels";
+import { useAppSelector } from "@redux/Store";
+import { useEffect, useState } from "react";
+
+export default function useCreateAsset() {
+  const { icr1SystemAssets } = useAppSelector((state) => state.asset);
+
+  const [newAssetList, setNewAssetList] = useState<Array<Asset>>(ICRC1systemAssets);
+  const [assetTOpen, setAssetTOpen] = useState(false);
+  const [networkTOpen, setNetworkTOpen] = useState(false);
+
+  useEffect(() => setNewAssetList(icr1SystemAssets), [icr1SystemAssets]);
+
+  return {
+    newAssetList,
+    assetTOpen,
+    setAssetTOpen,
+    networkTOpen,
+    setNetworkTOpen,
+  };
+};

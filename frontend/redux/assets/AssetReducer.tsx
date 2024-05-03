@@ -18,6 +18,7 @@ interface AssetState {
   icr1SystemAssets: Asset[];
   tokensMarket: TokenMarketInfo[];
   assets: Array<Asset>;
+  mutation: { asset?: Asset };
 }
 
 const initialState: AssetState = {
@@ -26,6 +27,9 @@ const initialState: AssetState = {
     selectedAsset: undefined,
     selectedAccount: undefined,
     initLoad: true,
+  },
+  mutation: {
+    asset: undefined,
   },
   ICPSubaccounts: [],
   icr1SystemAssets: ICRC1systemAssets,
@@ -41,6 +45,9 @@ const assetSlice = createSlice({
     // state helpers
     setInitLoad(state, action: PayloadAction<boolean>) {
       state.helper.initLoad = action.payload;
+    },
+    setAssetMutation(state, action: PayloadAction<Asset | undefined>) {
+      state.mutation.asset = action.payload;
     },
     setICRC1SystemAssets(state, action: PayloadAction<Asset[]>) {
       state.icr1SystemAssets = [...ICRC1systemAssets, ...action.payload];
@@ -126,6 +133,7 @@ export const {
   setSelectedAccount,
   setAccordionAssetIdx,
   updateSubAccountBalance,
+  setAssetMutation,
 } = assetSlice.actions;
 
 export default assetSlice.reducer;

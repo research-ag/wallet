@@ -11,11 +11,10 @@ interface AssetAccordionProps {
 
 export default function AssetAccordion(props: AssetAccordionProps) {
   UseAsset();
-  console.log("rendering");
-
   const { searchKey } = props;
   const dispatch = useAppDispatch();
   const { assets } = useAppSelector((state) => state.asset);
+  const { accordionIndex } = useAppSelector((state) => state.asset.helper);
 
   return (
     <div className="w-full max-h-[calc(100vh-13rem)] scroll-y-light">
@@ -33,23 +32,18 @@ export default function AssetAccordion(props: AssetAccordionProps) {
       <Accordion.Root type="multiple" defaultValue={[]} onValueChange={onValueChange}>
         {assets.map((currentAsset: Asset, index) => {
           const cleanSearchKey = searchKey.toLocaleLowerCase().trim();
-
           const isNameIncluded = currentAsset?.name?.toLocaleLowerCase().includes(cleanSearchKey);
-
           const isSymbolIncluded = currentAsset?.symbol?.toLocaleLowerCase().includes(cleanSearchKey);
 
           const isSubAccountIncluded = currentAsset.subAccounts
             .map((subAccount) => {
               const isSubAccountNameIncluded = subAccount?.name?.toLocaleLowerCase().includes(cleanSearchKey);
-
               const isSubAccountIdIncluded = subAccount?.sub_account_id?.toLocaleLowerCase().includes(cleanSearchKey);
-
               return isSubAccountNameIncluded || isSubAccountIdIncluded;
             })
             .includes(true);
 
           const isSearchKeyEmpty = cleanSearchKey === "";
-
           const renderAsset = isNameIncluded || isSymbolIncluded || isSubAccountIncluded || isSearchKeyEmpty;
 
           if (renderAsset)
@@ -66,6 +60,7 @@ export default function AssetAccordion(props: AssetAccordionProps) {
   );
 
   function onValueChange(tokenSymbols: string[]) {
-    dispatch(setAccordionAssetIdx(tokenSymbols));
+    const differ = accordionIndex.map((index) => tokenSymbols.includes(index));
+    if (differ.includes(true)) dispatch(setAccordionAssetIdx(tokenSymbols));
   }
 }

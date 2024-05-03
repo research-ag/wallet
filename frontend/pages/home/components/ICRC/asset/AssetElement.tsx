@@ -17,18 +17,17 @@ import DeleteAssetModal from "./DeleteAssetModal";
 import { getAssetIcon } from "@/utils/icons";
 import clsx from "clsx";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
-import { setSelectedAccount, setSelectedAsset } from "@redux/assets/AssetReducer";
+import { setAssetMutation, setSelectedAccount, setSelectedAsset } from "@redux/assets/AssetReducer";
 
 interface AssetElementProps {
   asset: Asset;
   idx: number;
   accordionIndex: string[];
-  setAssetInfo(value: Asset | undefined): void;
   setAssetOpen(value: boolean): void;
   setAddOpen(value: boolean): void;
 }
 
-const AssetElement = ({ asset, idx, accordionIndex, setAssetInfo, setAssetOpen, setAddOpen }: AssetElementProps) => {
+const AssetElement = ({ asset, idx, accordionIndex, setAssetOpen, setAddOpen }: AssetElementProps) => {
   const dispatch = useAppDispatch();
   const { authClient, theme } = useAppSelector((state) => state.auth);
   const { tokensMarket, assets } = useAppSelector((state) => state.asset);
@@ -180,7 +179,7 @@ const AssetElement = ({ asset, idx, accordionIndex, setAssetInfo, setAssetOpen, 
   }
 
   function onInfoClic() {
-    setAssetInfo(asset);
+    dispatch(setAssetMutation(asset));
     setAssetOpen(true);
   }
 
