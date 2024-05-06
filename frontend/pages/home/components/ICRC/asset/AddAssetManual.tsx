@@ -54,6 +54,7 @@ const AddAssetManual = (props: AddAssetManualProps) => {
   const dispatch = useAppDispatch();
   const { authClient } = AccountHook();
   const { checkAssetAdded } = GeneralHook();
+
   const [testLoading, setTestLoading] = useState(false);
   const [tested, setTested] = useState(false);
   const [errShortDec, serErrShortDec] = useState(false);

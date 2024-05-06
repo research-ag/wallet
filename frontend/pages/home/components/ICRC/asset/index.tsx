@@ -2,7 +2,7 @@ import { Fragment, useState } from "react";
 import Menu from "@pages/components/Menu";
 import SearchAsset from "@/pages/home/components/ICRC/asset/SearchAsset";
 import AssetAccordion from "./AssetAccordion";
-import AssetDrawerMutate from "./AssetDrawerMutate";
+import AssetMutate from "./AssetMutate";
 
 export default function AssetsList() {
   const [searchKey, setSearchKey] = useState("");
@@ -13,7 +13,7 @@ export default function AssetsList() {
         <Menu />
         <div className="flex flex-row items-center justify-start w-full gap-3 pr-5 mb-4">
           <SearchAsset searchKey={searchKey} setSearchKey={setSearchKey} />
-          <AssetDrawerMutate />
+          <AssetMutate />
         </div>
         <AssetAccordion searchKey={searchKey} />
       </div>

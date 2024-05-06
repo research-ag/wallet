@@ -24,14 +24,7 @@ interface AddAssetAutomaticProps {
 }
 
 const AddAssetAutomatic = (props: AddAssetAutomaticProps) => {
-  const {
-    setNewAsset,
-    newAsset,
-    addAssetToData,
-    setValidToken,
-    setErrToken,
-    errToken,
-  } = props;
+  const { setNewAsset, newAsset, addAssetToData, setValidToken, setErrToken, errToken } = props;
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { assets } = useAppSelector((state) => state.asset);
@@ -80,8 +73,9 @@ const AddAssetAutomatic = (props: AddAssetAutomaticProps) => {
                   return (
                     <DropdownMenu.Item
                       key={`net-${idx}`}
-                      className={`flex flex-row text-md justify-start items-center p-3 cursor-pointer ${idx > 0 ? "border-t border-BorderColorLight dark:border-BorderColor" : ""
-                        }`}
+                      className={`flex flex-row text-md justify-start items-center p-3 cursor-pointer ${
+                        idx > 0 ? "border-t border-BorderColorLight dark:border-BorderColor" : ""
+                      }`}
                       onSelect={() => {
                         onSelectNetwork(networkOption);
                       }}
@@ -142,8 +136,9 @@ const AddAssetAutomatic = (props: AddAssetAutomaticProps) => {
                     return (
                       <DropdownMenu.Item
                         key={`net-${idx}`}
-                        className={`flex flex-row text-md justify-start items-center p-3 cursor-pointer ${idx > 0 ? "border-t border-BorderColorLight dark:border-BorderColor" : ""
-                          }`}
+                        className={`flex flex-row text-md justify-start items-center p-3 cursor-pointer ${
+                          idx > 0 ? "border-t border-BorderColorLight dark:border-BorderColor" : ""
+                        }`}
                         onSelect={() => {
                           onSelectToken(newAsset);
                         }}

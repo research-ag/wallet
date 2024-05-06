@@ -15,6 +15,7 @@ const WORKER_INTERVAL = 10 * 60 * 1000; // 10 minutes
 const DATA_STALE_THRESHOLD = 9; // 9 minutes
 
 export default function WorkersWrapper({ children }: { children: React.ReactNode }) {
+  // TODO: fix multiple re-renders on selected asset or account change
   const { assets } = useAppSelector((state) => state.asset);
   const { userAgent } = useAppSelector((state) => state.auth);
   const { isAppDataFreshing, lastDataRefresh } = useAppSelector((state) => state.common);
