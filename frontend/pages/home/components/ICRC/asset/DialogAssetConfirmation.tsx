@@ -17,14 +17,10 @@ import {
 import { useEffect, useRef } from "react";
 import clsx from "clsx";
 
-interface DialogAssetConfirmationProps {
-  newAsset: Asset;
-}
-
-const DialogAssetConfirmation = ({ newAsset }: DialogAssetConfirmationProps) => {
+const DialogAssetConfirmation = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
-  const { assetResult, assetAction } = useAppSelector((state) => state.asset.mutation);
+  const { assetResult, assetAction, assetMutated } = useAppSelector((state) => state.asset.mutation);
   const newAssetCached = useRef<Asset | undefined>(undefined);
 
   const isModalOpen = assetResult !== AssetMutationResult.NONE;
@@ -32,12 +28,16 @@ const DialogAssetConfirmation = ({ newAsset }: DialogAssetConfirmationProps) => 
   useEffect(() => {
     const isActionAllowed = assetAction !== AssetMutationAction.NONE && assetAction !== AssetMutationAction.DELETE;
 
-    const isNewAssetValid = newAsset && newAsset.name.trim().length > 0;
+    const isNewAssetValid = assetMutated && assetMutated.name.trim().length > 0;
 
     if (isActionAllowed && isNewAssetValid) {
-      newAssetCached.current = newAsset;
+      newAssetCached.current = assetMutated;
     }
-  }, [assetAction, newAsset]);
+
+    return () => {
+      dispatch(setAssetMutation(undefined));
+    };
+  }, [assetAction, assetMutated]);
 
   return (
     <BasicModal

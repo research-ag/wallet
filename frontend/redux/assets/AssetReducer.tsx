@@ -15,12 +15,12 @@ interface AssetStateMutation {
   assetMutated?: Asset;
   assetAction: AssetMutationAction;
   assetResult: AssetMutationResult;
-};
+}
 
 interface AssetStateUtilData {
   icr1SystemAssets: Asset[];
   tokensMarket: TokenMarketInfo[];
-};
+}
 
 export enum AssetMutationAction {
   ADD_AUTOMATIC = "ADD_AUTOMATIC",
@@ -108,7 +108,8 @@ const assetSlice = createSlice({
         const { tokenSymbol, subAccountId, amount } = payload;
         const assetIndex = state.assets.findIndex((asset) => asset.tokenSymbol === tokenSymbol);
 
-        const marketPrince = state.utilData.tokensMarket.find((tokenMarket) => tokenMarket.symbol === tokenSymbol)?.price || "0";
+        const marketPrince =
+          state.utilData.tokensMarket.find((tokenMarket) => tokenMarket.symbol === tokenSymbol)?.price || "0";
         const decimals = state.assets.find((asset) => asset.tokenSymbol === tokenSymbol)?.decimal;
         const USDAmount = marketPrince ? getUSDFromToken(amount, marketPrince, Number(decimals)) : "0";
 
