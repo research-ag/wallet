@@ -11,6 +11,8 @@ import {
   setAssetMutationAction,
   setSelectedAccount,
   setSelectedAsset,
+  setSubAccountMutationAction,
+  SubAccountMutationAction,
 } from "@redux/assets/AssetReducer";
 import { getAssetIcon } from "@/utils/icons";
 import { IconTypeEnum } from "@/const";
@@ -124,7 +126,29 @@ export default function AssetAccordionItem(props: AssetAccordionItemProps) {
   }
 
   function onAddNewSubAccount() {
-    //
+    dispatch(setSubAccountMutationAction(SubAccountMutationAction.ADD));
+
+    // setAddOpen(true);
+    // let newIdx = "0";
+    // const idxs = asset.subAccounts.map((sa) => {
+    //   return sa.sub_account_id.toLowerCase();
+    // });
+    // newIdx = getLowestMissing(idxs).toString(16);
+    // setUsedIdxs(idxs);
+
+    // setNewErr({ name: false, idx: false });
+    // setNewSub({
+    //   name: "",
+    //   sub_account_id: newIdx,
+    //   address: authClient,
+    //   amount: "0",
+    //   currency_amount: "0",
+    //   transaction_fee: asset.subAccounts[0].transaction_fee,
+    //   decimal: Number(asset.decimal),
+    //   symbol: asset.tokenSymbol,
+    // });
+    // setEditNameId(asset.subAccounts.length.toFixed());
+    // setName("");
   }
 
   function getFullTokenAmount() {
