@@ -74,9 +74,8 @@ const AddAssetAutomatic = () => {
                   return (
                     <DropdownMenu.Item
                       key={`net-${idx}`}
-                      className={`flex flex-row text-md justify-start items-center p-3 cursor-pointer ${
-                        idx > 0 ? "border-t border-BorderColorLight dark:border-BorderColor" : ""
-                      }`}
+                      className={`flex flex-row text-md justify-start items-center p-3 cursor-pointer ${idx > 0 ? "border-t border-BorderColorLight dark:border-BorderColor" : ""
+                        }`}
                       onSelect={() => {
                         onSelectNetwork(networkOption);
                       }}
@@ -137,9 +136,8 @@ const AddAssetAutomatic = () => {
                     return (
                       <DropdownMenu.Item
                         key={`net-${idx}`}
-                        className={`flex flex-row text-md justify-start items-center p-3 cursor-pointer ${
-                          idx > 0 ? "border-t border-BorderColorLight dark:border-BorderColor" : ""
-                        }`}
+                        className={`flex flex-row text-md justify-start items-center p-3 cursor-pointer ${idx > 0 ? "border-t border-BorderColorLight dark:border-BorderColor" : ""
+                          }`}
                         onSelect={() => {
                           onSelectToken(newAsset);
                         }}
@@ -196,6 +194,7 @@ const AddAssetAutomatic = () => {
     }
 
     try {
+      dispatch(setAssetMutation(newAsset));
       dispatch(setAssetMutationResult(AssetMutationResult.ADDING));
 
       const idxSorting = assets.length > 0 ? [...assets].sort((a, b) => b.sortIndex - a.sortIndex) : [];
@@ -211,20 +210,17 @@ const AddAssetAutomatic = () => {
       });
 
       const assetToSave: Asset = { ...newAsset, ...updatedAsset, sortIndex };
+
       await db().addAsset(assetToSave, { sync: true });
 
       dispatch(setAssetMutationResult(AssetMutationResult.ADDED));
       dispatch(setSelectedAsset(assetToSave));
       dispatch(setAccordionAssetIdx([assetToSave.symbol]));
-      dispatch(setAssetMutation(assetToSave));
     } catch (error) {
       console.error("Error adding asset", error);
       dispatch(setAssetMutationResult(AssetMutationResult.FAILED));
     } finally {
-      setTimeout(() => {
-        dispatch(setAssetMutationResult(AssetMutationResult.NONE));
-        dispatch(setAssetMutationAction(AssetMutationAction.NONE));
-      }, 3000);
+      dispatch(setAssetMutationAction(AssetMutationAction.NONE));
     }
   }
 

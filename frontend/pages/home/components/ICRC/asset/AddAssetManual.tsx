@@ -415,6 +415,7 @@ const AddAssetManual = () => {
     }
 
     try {
+      dispatch(setAssetMutation(newAsset));
       dispatch(setAssetMutationResult(AssetMutationResult.ADDING));
 
       const idxSorting = assets.length > 0 ? [...assets].sort((a, b) => b.sortIndex - a.sortIndex) : [];
@@ -433,17 +434,12 @@ const AddAssetManual = () => {
       await db().addAsset(assetToSave, { sync: true });
 
       dispatch(setAssetMutationResult(AssetMutationResult.ADDED));
-      dispatch(setSelectedAsset(assetToSave));
       dispatch(setAccordionAssetIdx([assetToSave.symbol]));
     } catch (error) {
       console.error("Error adding asset", error);
       dispatch(setAssetMutationResult(AssetMutationResult.FAILED));
     } finally {
-      setTimeout(() => {
-        dispatch(setAssetMutationResult(AssetMutationResult.NONE));
-        dispatch(setAssetMutationAction(AssetMutationAction.NONE));
-        dispatch(setAssetMutation(undefined));
-      }, 3000);
+      dispatch(setAssetMutationAction(AssetMutationAction.NONE));
     }
   }
 

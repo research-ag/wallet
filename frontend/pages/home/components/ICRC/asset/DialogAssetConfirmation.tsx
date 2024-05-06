@@ -4,40 +4,34 @@ import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 import { BasicModal } from "@components/modal";
 import { IconTypeEnum } from "@/const";
 import { useTranslation } from "react-i18next";
-import { Asset } from "@redux/models/AccountModels";
 import { getAssetIcon } from "@/utils/icons";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import {
-  AssetMutationAction,
   AssetMutationResult,
   setAssetMutation,
-  setAssetMutationAction,
   setAssetMutationResult,
 } from "@redux/assets/AssetReducer";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import clsx from "clsx";
 
 const DialogAssetConfirmation = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const { assetResult, assetAction, assetMutated } = useAppSelector((state) => state.asset.mutation);
-  const newAssetCached = useRef<Asset | undefined>(undefined);
-
   const isModalOpen = assetResult !== AssetMutationResult.NONE;
 
   useEffect(() => {
-    const isActionAllowed = assetAction !== AssetMutationAction.NONE && assetAction !== AssetMutationAction.DELETE;
-
-    const isNewAssetValid = assetMutated && assetMutated.name.trim().length > 0;
-
-    if (isActionAllowed && isNewAssetValid) {
-      newAssetCached.current = assetMutated;
-    }
+    const closeTimer = setTimeout(() => {
+      dispatch(setAssetMutation(undefined));
+      dispatch(setAssetMutationResult(AssetMutationResult.NONE));
+    }, 5000);
 
     return () => {
-      dispatch(setAssetMutation(undefined));
+      clearTimeout(closeTimer);
     };
+
   }, [assetAction, assetMutated]);
+
 
   return (
     <BasicModal
@@ -52,7 +46,7 @@ const DialogAssetConfirmation = () => {
           onClick={onClose}
         />
         <div className="flex flex-col items-center justify-start w-full py-2">
-          {getAssetIcon(IconTypeEnum.Enum.ASSET, newAssetCached?.current?.tokenSymbol, newAssetCached?.current?.logo)}
+          {getAssetIcon(IconTypeEnum.Enum.ASSET, assetMutated?.tokenSymbol, assetMutated?.logo)}
           <p className={getMessageTextStyles(assetResult)}> {getMessage(assetResult)} </p>
         </div>
       </div>
@@ -60,9 +54,8 @@ const DialogAssetConfirmation = () => {
   );
 
   function onClose() {
-    dispatch(setAssetMutationResult(AssetMutationResult.NONE));
-    dispatch(setAssetMutationAction(AssetMutationAction.NONE));
     dispatch(setAssetMutation(undefined));
+    dispatch(setAssetMutationResult(AssetMutationResult.NONE));
   }
 
   function getMessageTextStyles(status: AssetMutationResult) {

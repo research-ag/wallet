@@ -10,7 +10,6 @@ import {
   setAssetMutationAction,
 } from "@redux/assets/AssetReducer";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
-import DialogAssetConfirmation from "./DialogAssetConfirmation";
 
 export default function AssetDrawerMutate({ isDrawerOpen }: { isDrawerOpen: boolean }) {
   const dispatch = useAppDispatch();
@@ -25,7 +24,6 @@ export default function AssetDrawerMutate({ isDrawerOpen }: { isDrawerOpen: bool
       <div className={formContainerStyles}>
         <CloseAssetDrawer onClose={onClose} isEdit={assetMutated ? true : false} />
         {isManual || isUpdate ? <AddAssetManual /> : <AddAssetAutomatic />}
-        <DialogAssetConfirmation />
       </div>
     </BasicDrawer>
   );

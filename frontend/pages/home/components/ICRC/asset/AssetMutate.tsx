@@ -3,6 +3,7 @@ import PlusIcon from "@assets/svg/files/plus-icon.svg";
 import { AssetMutationAction, setAssetMutationAction } from "@redux/assets/AssetReducer";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import AssetDrawerMutate from "./AssetDrawerMutate";
+import DialogAssetConfirmation from "./DialogAssetConfirmation";
 
 export default function AssetMutate() {
   const dispatch = useAppDispatch();
@@ -16,6 +17,7 @@ export default function AssetMutate() {
         <img src={PlusIcon} alt="plus-icon" />
       </div>
       {isDrawerOpen ? <AssetDrawerMutate isDrawerOpen={isDrawerOpen} /> : null}
+      <DialogAssetConfirmation />
     </>
   );
 
