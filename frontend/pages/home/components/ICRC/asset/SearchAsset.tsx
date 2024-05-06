@@ -27,7 +27,6 @@ export default function SearchAsset(props: SearchAssetProps) {
       return asset.name?.toLowerCase().includes(searchKey.toLowerCase()) || includeInSub || searchKey === "";
     });
 
-    // -----------------
     if (auxAssets.length > 0) {
       const auxAccordion: string[] = [];
 

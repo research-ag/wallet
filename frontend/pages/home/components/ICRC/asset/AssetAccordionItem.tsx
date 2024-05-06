@@ -120,9 +120,11 @@ export default function AssetAccordionItem(props: AssetAccordionItemProps) {
   function onAssetUpdate() {
     dispatch(setAssetMutation(currentAsset));
     dispatch(setAssetMutationAction(AssetMutationAction.UPDATE));
-  };
+  }
 
-  function onAddNewSubAccount() { }
+  function onAddNewSubAccount() {
+    // 
+  };
 
   function getFullTokenAmount() {
     const assetMarket = tokensMarket.find((tm) => tm.symbol === currentAsset.tokenSymbol);

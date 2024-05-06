@@ -62,7 +62,8 @@ const AddAssetManual = (props: AddAssetManualProps) => {
 
   return (
     <div className="flex flex-col items-start justify-start w-full">
-      {asset ? (
+
+      {assetAction === AssetMutationAction.UPDATE && asset ? (
         <div className="flex flex-col items-center justify-start w-full p-2">
           {getAssetIcon(IconTypeEnum.Enum.ASSET, asset.tokenSymbol, asset.logo)}
           <p className="mt-2 text-lg font-bold">{`${asset.name} - ${asset.symbol}`}</p>
@@ -75,6 +76,7 @@ const AddAssetManual = (props: AddAssetManualProps) => {
           </p>
         </div>
       )}
+
       <div className="flex flex-col items-start w-full mt-3 mb-3">
         <p className="opacity-60">{t("token.contract.address")}</p>
         <CustomInput
@@ -92,6 +94,7 @@ const AddAssetManual = (props: AddAssetManualProps) => {
         {errToken !== "" && errToken !== "non" && <p className="text-sm text-left text-LockColor">{errToken}</p>}
         {validToken && <p className="text-sm text-left text-slate-color-info">{t("token.validation.msg")}</p>}
       </div>
+
       <div className="flex flex-col items-start w-full mb-3">
         <p className="opacity-60">{t("token.index.address")}</p>
         <CustomInput
@@ -107,6 +110,7 @@ const AddAssetManual = (props: AddAssetManualProps) => {
         {errIndex !== "" && errIndex !== "non" && <p className="text-sm text-left text-LockColor">{errIndex}</p>}
         {validIndex && <p className="text-sm text-left text-slate-color-info">{t("index.validation.msg")}</p>}
       </div>
+
       {!asset && (
         <div className="flex justify-end w-full">
           <CustomButton
@@ -118,6 +122,7 @@ const AddAssetManual = (props: AddAssetManualProps) => {
           </CustomButton>
         </div>
       )}
+
       <div className="flex flex-col items-start w-full mb-3">
         <p className="opacity-60">{t("token.symbol")}</p>
         <CustomInput
@@ -130,6 +135,7 @@ const AddAssetManual = (props: AddAssetManualProps) => {
           disabled={!asset && !tested}
         />
       </div>
+
       <div className="flex flex-col items-start w-full mb-3">
         <p className="opacity-60">{t("token.name")}</p>
         <CustomInput
@@ -142,6 +148,7 @@ const AddAssetManual = (props: AddAssetManualProps) => {
           disabled={!asset && !tested}
         />
       </div>
+
       <div className="flex flex-col items-start w-full mb-3">
         <p className="opacity-60 ">{t("fee")}</p>
         <CustomInput
@@ -153,6 +160,7 @@ const AddAssetManual = (props: AddAssetManualProps) => {
           disabled
         />
       </div>
+
       <div className={`flex flex-row justify-start items-center ${asset ? "w-[85%]" : "w-full"} gap-2`}>
         <div className="flex flex-col items-start w-full mb-3">
           <p className="opacity-60">{t("token.decimal")}</p>

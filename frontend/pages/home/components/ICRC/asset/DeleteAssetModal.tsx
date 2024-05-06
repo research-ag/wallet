@@ -12,7 +12,7 @@ import { AssetMutationAction, setAssetMutation, setAssetMutationAction } from "@
 const DeleteAssetModal = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const { asset, assetAction } = useAppSelector((state) => state.asset.mutation);
+  const { assetMutated, assetAction } = useAppSelector((state) => state.asset.mutation);
   const { contacts } = useAppSelector((state) => state.contacts);
 
   const isModalOpen = assetAction === AssetMutationAction.DELETE;
@@ -35,7 +35,7 @@ const DeleteAssetModal = () => {
         <div className="flex flex-col items-start justify-start w-full px-8">
           <p className="font-light text-left">
             {`${t("delete.asset.msg")}`}
-            <span className="ml-1 font-semibold break-all">{asset?.name}</span>?
+            <span className="ml-1 font-semibold break-all">{assetMutated?.name}</span>?
           </p>
         </div>
       </div>
@@ -48,11 +48,11 @@ const DeleteAssetModal = () => {
   );
 
   async function handleConfirmButton() {
-    if (!asset) return;
+    if (!assetMutated) return;
 
-    await db().deleteAsset(asset?.address, { sync: true }).then();
+    await db().deleteAsset(assetMutated?.address, { sync: true }).then();
     const updatedContacts = contacts.map((cntc) => {
-      const updatedAssets = cntc.assets.filter((ast) => ast.tokenSymbol !== asset?.tokenSymbol);
+      const updatedAssets = cntc.assets.filter((ast) => ast.tokenSymbol !== assetMutated?.tokenSymbol);
       return { ...cntc, assets: updatedAssets };
     });
 

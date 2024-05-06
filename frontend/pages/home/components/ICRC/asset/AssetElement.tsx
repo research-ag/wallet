@@ -53,9 +53,8 @@ const AssetElement = ({ asset, idx, accordionIndex, setAssetOpen, setAddOpen }: 
                 <div className="flex flex-col items-start justify-start">
                   <p>{`${getFirstNChars(asset?.name ? asset.name : asset.tokenName, 18)}`}</p>
                   <div className="flex flex-row items-center justify-start">
-                    <p className={`${asset?.tokenSymbol !== selectedAsset?.tokenSymbol ? "opacity-60" : ""}`}>{`${
-                      asset.symbol ? asset.symbol : asset.tokenSymbol
-                    }`}</p>{" "}
+                    <p className={`${asset?.tokenSymbol !== selectedAsset?.tokenSymbol ? "opacity-60" : ""}`}>{`${asset.symbol ? asset.symbol : asset.tokenSymbol
+                      }`}</p>{" "}
                     <div className="p-0" onClick={onInfoClic}>
                       <img src={InfoIcon} className="ml-1" alt="info-icon" />
                     </div>
@@ -78,9 +77,8 @@ const AssetElement = ({ asset, idx, accordionIndex, setAssetOpen, setAddOpen }: 
                 </div>
               </div>
               <div className="flex flex-col items-end justify-center">
-                <p>{`${toFullDecimal(getFullTokenAmount().asset, Number(asset.decimal), Number(asset.shortDecimal))} ${
-                  asset.symbol
-                }`}</p>
+                <p>{`${toFullDecimal(getFullTokenAmount().asset, Number(asset.decimal), Number(asset.shortDecimal))} ${asset.symbol
+                  }`}</p>
                 <p
                   className={`${asset?.tokenSymbol !== selectedAsset?.tokenSymbol ? "opacity-60" : ""}`}
                 >{`≈ $${getFullTokenAmount().currency.toFixed(2)}`}</p>
@@ -90,11 +88,10 @@ const AssetElement = ({ asset, idx, accordionIndex, setAssetOpen, setAddOpen }: 
               {asset?.subAccounts && (
                 <img
                   src={theme === ThemesEnum.enum.dark ? ChevronRightIcon : ChevronRightDarkIcon}
-                  className={`${
-                    accordionIndex.includes(asset.tokenSymbol)
-                      ? "-rotate-90 transition-transform"
-                      : "rotate-0 transition-transform"
-                  } `}
+                  className={`${accordionIndex.includes(asset.tokenSymbol)
+                    ? "-rotate-90 transition-transform"
+                    : "rotate-0 transition-transform"
+                    } `}
                   alt="chevron-icon"
                 />
               )}
@@ -113,11 +110,10 @@ const AssetElement = ({ asset, idx, accordionIndex, setAssetOpen, setAddOpen }: 
         {(asset?.subAccounts || newSub) && (
           <Accordion.Content>
             <div
-              className={`flex flex-col justify-start items-end ${
-                idx < assets?.length
-                  ? "border-b-[0.1rem] dark:border-BorderColorThree border-BorderColorThreeLight"
-                  : ""
-              }`}
+              className={`flex flex-col justify-start items-end ${idx < assets?.length
+                ? "border-b-[0.1rem] dark:border-BorderColorThree border-BorderColorThreeLight"
+                : ""
+                }`}
             >
               {asset?.subAccounts.map((subAccount: SubAccount, subIdx: number) => {
                 return (

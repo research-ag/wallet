@@ -27,12 +27,13 @@ export default function AddAssetDrawer() {
 
   const { assets } = useAppSelector((state) => state.asset);
   const { accordionIndex } = useAppSelector((state) => state.asset.helper);
-  const { asset, assetAction } = useAppSelector((state) => state.asset.mutation);
+  const { assetMutated, assetAction } = useAppSelector((state) => state.asset.mutation);
 
   const isDrawerOpen = useMemo(
     () => assetAction !== AssetMutationAction.NONE && assetAction !== AssetMutationAction.DELETE,
     [assetAction],
   );
+
   const isManual = useMemo(() => assetAction === AssetMutationAction.ADD_MANUAL, [assetAction]);
   const isUpdate = useMemo(() => assetAction === AssetMutationAction.UPDATE, [assetAction]);
 
@@ -58,7 +59,7 @@ export default function AddAssetDrawer() {
   return (
     <BasicDrawer isDrawerOpen={isDrawerOpen}>
       <div className="px-8 mt-4 overflow-y-auto text-left text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md">
-        <CloseAddAssetDrawer onClose={onClose} isEdit={asset ? true : false} />
+        <CloseAddAssetDrawer onClose={onClose} isEdit={assetMutated ? true : false} />
 
         {isManual || isUpdate ? (
           <AddAssetManual
@@ -70,7 +71,7 @@ export default function AddAssetDrawer() {
             setValidToken={setValidToken}
             newAsset={newAsset}
             setNewAsset={setNewAsset}
-            asset={asset}
+            asset={assetMutated}
             assets={assets}
             addAssetToData={addAssetToData}
           ></AddAssetManual>
@@ -191,8 +192,8 @@ export default function AddAssetDrawer() {
   }
 
   function addToAcordeonIdx() {
-    if (!accordionIndex.includes(asset?.tokenSymbol || "")) {
-      dispatch(setAccordionAssetIdx([...accordionIndex, asset?.tokenSymbol || ""]));
+    if (!accordionIndex.includes(assetMutated?.tokenSymbol || "")) {
+      dispatch(setAccordionAssetIdx([...accordionIndex, assetMutated?.tokenSymbol || ""]));
     }
   }
 }

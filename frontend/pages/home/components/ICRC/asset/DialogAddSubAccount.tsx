@@ -258,6 +258,7 @@ const DialogAddSubAccount = ({
       }
     }
   }
+
   function addToAcordeonIdx() {
     if (!accordionIndex.includes(selectedAsset?.tokenSymbol || "")) {
       dispatch(setAccordionAssetIdx([...accordionIndex, selectedAsset?.tokenSymbol || ""]));

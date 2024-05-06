@@ -24,7 +24,7 @@ export enum AssetMutationResult {
   ADDED = "ADDED",
   FAILED = "FAILED",
   NONE = "NONE",
-};
+}
 
 interface AssetState {
   helper: AssetStateHelper;
@@ -33,7 +33,11 @@ interface AssetState {
   icr1SystemAssets: Asset[];
   tokensMarket: TokenMarketInfo[];
   assets: Array<Asset>;
-  mutation: { asset?: Asset; assetAction: AssetMutationAction, assetResult: AssetMutationResult };
+  mutation: {
+    assetMutated?: Asset;
+    assetAction: AssetMutationAction;
+    assetResult: AssetMutationResult;
+  };
 }
 
 const initialState: AssetState = {
@@ -44,7 +48,7 @@ const initialState: AssetState = {
     initLoad: true,
   },
   mutation: {
-    asset: undefined,
+    assetMutated: undefined,
     assetAction: AssetMutationAction.NONE,
     assetResult: AssetMutationResult.NONE,
   },
@@ -67,7 +71,7 @@ const assetSlice = createSlice({
       state.mutation.assetResult = action.payload;
     },
     setAssetMutation(state, action: PayloadAction<Asset | undefined>) {
-      state.mutation.asset = action.payload;
+      state.mutation.assetMutated = action.payload;
     },
     setAssetMutationAction(state, action: PayloadAction<AssetMutationAction>) {
       state.mutation.assetAction = action.payload;

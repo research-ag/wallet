@@ -15,11 +15,7 @@ interface DialogAssetConfirmationProps {
   setNetwork(value: TokenNetwork): void;
 }
 
-const DialogAssetConfirmation = ({
-  newAsset,
-  setNewAsset,
-  setNetwork,
-}: DialogAssetConfirmationProps) => {
+const DialogAssetConfirmation = ({ newAsset, setNewAsset, setNetwork }: DialogAssetConfirmationProps) => {
   const { assetResult } = useAppSelector((state) => state.asset.mutation);
   const { t } = useTranslation();
   const isModalOpen = assetResult !== AssetMutationResult.NONE;
@@ -40,8 +36,9 @@ const DialogAssetConfirmation = ({
         <div className="flex flex-col items-center justify-start w-full py-2">
           {getAssetIcon(IconTypeEnum.Enum.ASSET, newAsset?.tokenSymbol, newAsset.logo)}
           <p
-            className={`text-lg font-semibold mt-3 ${assetResult === AssetMutationResult.ADDED ? "text-TextReceiveColor" : "text-TextSendColor"
-              }`}
+            className={`text-lg font-semibold mt-3 ${
+              assetResult === AssetMutationResult.ADDED ? "text-TextReceiveColor" : "text-TextSendColor"
+            }`}
           >
             {getMessage(addStatus).top}
           </p>

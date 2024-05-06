@@ -1,11 +1,11 @@
-import { TokenNetwork, TokenNetworkEnum, AccountDefaultEnum } from "@/const";
-import { useAppSelector } from "@redux/Store";
+import { AccountDefaultEnum, TokenNetwork, TokenNetworkEnum } from "@/const";
 import { Asset } from "@redux/models/AccountModels";
+import { useAppSelector } from "@redux/Store";
 import { useEffect, useState } from "react";
 
 export const TokenHook = () => {
+  const { assetMutated } = useAppSelector((state) => state.asset.mutation);
   const { isAppDataFreshing } = useAppSelector((state) => state.common);
-  const { asset } = useAppSelector((state) => state.asset.mutation);
   const [errIndex, setErrIndex] = useState("");
   const [network, setNetwork] = useState<TokenNetwork>(TokenNetworkEnum.enum["ICRC-1"]);
   const [errToken, setErrToken] = useState("");
@@ -37,16 +37,16 @@ export const TokenHook = () => {
   });
 
   useEffect(() => {
-    if (asset) {
+    if (assetMutated) {
       setNewAsset({
-        address: asset.address,
-        symbol: asset.symbol,
-        name: asset.name,
-        tokenName: asset.tokenName,
-        tokenSymbol: asset.tokenSymbol,
-        decimal: asset.decimal,
-        shortDecimal: asset.shortDecimal,
-        subAccounts: asset.subAccounts.map((ast) => {
+        address: assetMutated.address,
+        symbol: assetMutated.symbol,
+        name: assetMutated.name,
+        tokenName: assetMutated.tokenName,
+        tokenSymbol: assetMutated.tokenSymbol,
+        decimal: assetMutated.decimal,
+        shortDecimal: assetMutated.shortDecimal,
+        subAccounts: assetMutated.subAccounts.map((ast) => {
           return {
             name: ast.name,
             sub_account_id: ast.sub_account_id,
@@ -58,14 +58,14 @@ export const TokenHook = () => {
             transaction_fee: ast.transaction_fee,
           };
         }),
-        index: asset.index,
-        sortIndex: asset.sortIndex,
-        supportedStandards: asset.supportedStandards,
+        index: assetMutated.index,
+        sortIndex: assetMutated.sortIndex,
+        supportedStandards: assetMutated.supportedStandards,
       });
       setErrToken("");
       setValidToken(false);
     }
-  }, [asset]);
+  }, [assetMutated]);
 
   useEffect(() => {
     // TODO: set to redux status adding asset
@@ -73,10 +73,10 @@ export const TokenHook = () => {
   }, [isAppDataFreshing]);
 
   return {
-    errIndex,
-    setErrIndex,
     newAsset,
     setNewAsset,
+    errIndex,
+    setErrIndex,
     validToken,
     setValidToken,
     network,
