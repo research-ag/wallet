@@ -8,28 +8,29 @@ import { clsx } from "clsx";
 import { useTranslation } from "react-i18next";
 import { Asset } from "@redux/models/AccountModels";
 import { getAssetIcon } from "@/utils/icons";
-import { AssetMutationAction, setAssetMutationAction } from "@redux/assets/AssetReducer";
+import {
+  AssetMutationAction,
+  AssetMutationResult,
+  setAccordionAssetIdx,
+  setAssetMutation,
+  setAssetMutationAction,
+  setAssetMutationResult,
+  setSelectedAsset,
+} from "@redux/assets/AssetReducer";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import useCreateUpdateAsset from "@pages/home/hooks/useCreateUpdateAsset";
 import { useState } from "react";
-import { assetMutateInitialState } from "@pages/home/hooks/useAssetMutate";
+import useAssetMutate, { assetMutateInitialState } from "@pages/home/hooks/useAssetMutate";
+import { getAssetDetails } from "@pages/home/helpers/icrc";
+import { db } from "@/database/db";
 
-interface AddAssetAutomaticProps {
-  setNewAsset(value: Asset): void;
-  newAsset: Asset;
-  addAssetToData(): void;
-  setValidToken(value: boolean): void;
-  setErrToken(value: string): void;
-  errToken: string;
-}
-
-const AddAssetAutomatic = (props: AddAssetAutomaticProps) => {
-  const { setNewAsset, newAsset, addAssetToData, setValidToken, setErrToken, errToken } = props;
+const AddAssetAutomatic = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { assets } = useAppSelector((state) => state.asset);
   const [network, setNetwork] = useState<TokenNetwork>(TokenNetworkEnum.enum["ICRC-1"]);
   const { newAssetList, assetTOpen, setAssetTOpen, networkTOpen, setNetworkTOpen } = useCreateUpdateAsset();
+  const { newAsset, setNewAsset, setErrToken, errToken } = useAssetMutate();
 
   return (
     <div className="flex flex-col items-start justify-start w-full">
@@ -177,7 +178,6 @@ const AddAssetAutomatic = (props: AddAssetAutomaticProps) => {
   function onSelectToken(newAsset: Asset) {
     setNewAsset(newAsset);
     setErrToken("");
-    setValidToken(true);
   }
 
   function onAddAssetManually() {
@@ -187,6 +187,49 @@ const AddAssetAutomatic = (props: AddAssetAutomaticProps) => {
 
   async function onAdd() {
     newAsset.address.trim() !== "" && addAssetToData();
+  }
+
+  async function addAssetToData() {
+    if (isAssetAdded(newAsset.address)) {
+      setErrToken(t("adding.asset.already.imported"));
+      return;
+    }
+
+    try {
+      dispatch(setAssetMutationResult(AssetMutationResult.ADDING));
+
+      const idxSorting = assets.length > 0 ? [...assets].sort((a, b) => b.sortIndex - a.sortIndex) : [];
+      const sortIndex = (idxSorting.length > 0 ? idxSorting[0]?.sortIndex : 0) + 1;
+
+      const updatedAsset = await getAssetDetails({
+        canisterId: newAsset.address,
+        includeDefault: true,
+        customName: newAsset.name,
+        customSymbol: newAsset.symbol,
+        supportedStandard: newAsset.supportedStandards,
+        sortIndex,
+      });
+
+      const assetToSave: Asset = { ...newAsset, ...updatedAsset, sortIndex };
+      await db().addAsset(assetToSave, { sync: true });
+
+      dispatch(setAssetMutationResult(AssetMutationResult.ADDED));
+      dispatch(setSelectedAsset(assetToSave));
+      dispatch(setAccordionAssetIdx([assetToSave.symbol]));
+    } catch (error) {
+      console.error("Error adding asset", error);
+      dispatch(setAssetMutationResult(AssetMutationResult.FAILED));
+    } finally {
+      setTimeout(() => {
+        dispatch(setAssetMutationResult(AssetMutationResult.NONE));
+        dispatch(setAssetMutationAction(AssetMutationAction.NONE));
+        dispatch(setAssetMutation(undefined));
+      }, 3000);
+    }
+  }
+
+  function isAssetAdded(address: string) {
+    return assets.find((asst: Asset) => asst.address === address) ? true : false;
   }
 };
 

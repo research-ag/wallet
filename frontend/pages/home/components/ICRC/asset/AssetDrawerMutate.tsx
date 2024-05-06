@@ -2,33 +2,19 @@ import { BasicDrawer } from "@components/drawer";
 import CloseAssetDrawer from "./CloseAssetDrawer";
 import AddAssetAutomatic from "./AddAssetAutomatic";
 import AddAssetManual from "./AddAssetManual";
-import useAssetMutate from "@pages/home/hooks/useAssetMutate";
-import DialogAssetConfirmation from "./DialogAssetConfirmation";
-import { Asset } from "@redux/models/AccountModels";
-import { getAssetDetails } from "@pages/home/helpers/icrc";
-import { db } from "@/database/db";
-import { useTranslation } from "react-i18next";
 import { useMemo } from "react";
 import {
   AssetMutationAction,
-  AssetMutationResult,
   setAccordionAssetIdx,
   setAssetMutation,
   setAssetMutationAction,
-  setAssetMutationResult,
-  setSelectedAsset,
 } from "@redux/assets/AssetReducer";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 
 export default function AssetDrawerMutate({ isDrawerOpen }: { isDrawerOpen: boolean }) {
   const dispatch = useAppDispatch();
-  const { t } = useTranslation();
-  const { assets } = useAppSelector((state) => state.asset);
   const { assetMutated, assetAction } = useAppSelector((state) => state.asset.mutation);
   const { accordionIndex } = useAppSelector((state) => state.asset.helper);
-
-  const { newAsset, setNewAsset, setValidToken, setErrIndex, setErrToken, errIndex, errToken, validToken } =
-    useAssetMutate();
 
   const isManual = useMemo(() => assetAction === AssetMutationAction.ADD_MANUAL, [assetAction]);
   const isUpdate = useMemo(() => assetAction === AssetMutationAction.UPDATE, [assetAction]);
@@ -37,39 +23,11 @@ export default function AssetDrawerMutate({ isDrawerOpen }: { isDrawerOpen: bool
     <BasicDrawer isDrawerOpen={isDrawerOpen}>
       <div className={formContainerStyles}>
         <CloseAssetDrawer onClose={onClose} isEdit={assetMutated ? true : false} />
-
-        {isManual || isUpdate ? (
-          <AddAssetManual
-            errToken={errToken}
-            setErrToken={setErrToken}
-            errIndex={errIndex}
-            setErrIndex={setErrIndex}
-            validToken={validToken}
-            setValidToken={setValidToken}
-            newAsset={newAsset}
-            setNewAsset={setNewAsset}
-            asset={assetMutated}
-            addAssetToData={addAssetToData}
-          ></AddAssetManual>
-        ) : (
-          <AddAssetAutomatic
-            setNewAsset={setNewAsset}
-            newAsset={newAsset}
-            addAssetToData={addAssetToData}
-            setValidToken={setValidToken}
-            setErrToken={setErrToken}
-            errToken={errToken}
-          ></AddAssetAutomatic>
-        )}
-
-        <DialogAssetConfirmation newAsset={newAsset} />
+        {isManual || isUpdate ? <AddAssetManual /> : <AddAssetAutomatic />}
+        {/* <DialogAssetConfirmation newAsset={newAsset} /> */}
       </div>
     </BasicDrawer>
   );
-
-  function isAssetAdded(address: string) {
-    return assets.find((asst: Asset) => asst.address === address) ? true : false;
-  }
 
   function onClose() {
     if (!accordionIndex.includes(assetMutated?.tokenSymbol || "")) {
@@ -78,45 +36,6 @@ export default function AssetDrawerMutate({ isDrawerOpen }: { isDrawerOpen: bool
 
     dispatch(setAssetMutation(undefined));
     dispatch(setAssetMutationAction(AssetMutationAction.NONE));
-  }
-
-  async function addAssetToData() {
-    if (isAssetAdded(newAsset.address)) {
-      setErrToken(t("adding.asset.already.imported"));
-      setValidToken(false);
-    } else {
-      try {
-        dispatch(setAssetMutationResult(AssetMutationResult.ADDING));
-
-        const idxSorting = assets.length > 0 ? [...assets].sort((a, b) => b.sortIndex - a.sortIndex) : [];
-        const sortIndex = (idxSorting.length > 0 ? idxSorting[0]?.sortIndex : 0) + 1;
-
-        const updatedAsset = await getAssetDetails({
-          canisterId: newAsset.address,
-          includeDefault: true,
-          customName: newAsset.name,
-          customSymbol: newAsset.symbol,
-          supportedStandard: newAsset.supportedStandards,
-          sortIndex,
-        });
-
-        const assetToSave: Asset = { ...newAsset, ...updatedAsset, sortIndex };
-        await db().addAsset(assetToSave, { sync: true });
-
-        dispatch(setAssetMutationResult(AssetMutationResult.ADDED));
-        dispatch(setSelectedAsset(assetToSave));
-        dispatch(setAccordionAssetIdx([assetToSave.symbol]));
-      } catch (error) {
-        console.error("Error adding asset", error);
-        dispatch(setAssetMutationResult(AssetMutationResult.FAILED));
-      } finally {
-        setTimeout(() => {
-          dispatch(setAssetMutationResult(AssetMutationResult.NONE));
-          dispatch(setAssetMutationAction(AssetMutationAction.NONE));
-          dispatch(setAssetMutation(undefined));
-        }, 3000);
-      }
-    }
   }
 }
 

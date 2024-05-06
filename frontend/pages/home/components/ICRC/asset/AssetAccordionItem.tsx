@@ -107,12 +107,12 @@ export default function AssetAccordionItem(props: AssetAccordionItemProps) {
   );
 
   function onSelectAsset() {
-    if (selectedAsset?.tokenSymbol !== currentAsset.tokenSymbol) dispatch(setSelectedAsset(currentAsset));
-    // if (asset?.tokenSymbol !== selectedAsset?.tokenSymbol) {
-    //   setNewSub(undefined);
-    //   setAddOpen(false);
-    //   asset.subAccounts.length > 0 && changeSelectedAccount(asset.subAccounts[0]);
-    // }
+    if (selectedAsset?.tokenSymbol !== currentAsset.tokenSymbol) {
+      dispatch(setSelectedAsset(currentAsset));
+      //   setNewSub(undefined);
+      //   setAddOpen(false);
+      //   asset.subAccounts.length > 0 && changeSelectedAccount(asset.subAccounts[0]);
+    }
     // setName("");
     // setEditNameId("");
   }
