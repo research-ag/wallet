@@ -1,5 +1,5 @@
 // svgs
-import { AccountDefaultEnum, IconTypeEnum, TokenNetwork, TokenNetworkEnum } from "@/const";
+import { IconTypeEnum, TokenNetwork, TokenNetworkEnum } from "@/const";
 import ChevIcon from "@assets/svg/files/chev-icon.svg";
 //
 import { CustomButton } from "@components/button";
@@ -12,6 +12,7 @@ import { AssetMutationAction, setAssetMutationAction } from "@redux/assets/Asset
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import useCreateUpdateAsset from "@pages/home/hooks/useCreateUpdateAsset";
 import { useState } from "react";
+import { assetMutateInitialState } from "@pages/home/hooks/useAssetMutate";
 
 interface AddAssetAutomaticProps {
   setNewAsset(value: Asset): void;
@@ -178,30 +179,7 @@ const AddAssetAutomatic = ({
     if (networkOption === network) return;
 
     setNetwork(networkOption);
-    setNewAsset({
-      address: "",
-      symbol: "",
-      name: "",
-      tokenName: "",
-      tokenSymbol: "",
-      decimal: "",
-      shortDecimal: "",
-      subAccounts: [
-        {
-          sub_account_id: "0x0",
-          name: AccountDefaultEnum.Values.Default,
-          amount: "0",
-          currency_amount: "0",
-          address: "",
-          decimal: 0,
-          symbol: "",
-          transaction_fee: "",
-        },
-      ],
-      index: "",
-      sortIndex: 999,
-      supportedStandards: [],
-    });
+    setNewAsset(assetMutateInitialState);
   }
 
   function onSelectToken(newAsset: Asset) {
@@ -212,30 +190,7 @@ const AddAssetAutomatic = ({
 
   function onAddAssetManually() {
     dispatch(setAssetMutationAction(AssetMutationAction.ADD_MANUAL));
-    setNewAsset({
-      address: "",
-      symbol: "",
-      name: "",
-      tokenName: "",
-      tokenSymbol: "",
-      decimal: "",
-      shortDecimal: "",
-      subAccounts: [
-        {
-          sub_account_id: "0x0",
-          name: AccountDefaultEnum.Values.Default,
-          amount: "0",
-          currency_amount: "0",
-          address: "",
-          decimal: 0,
-          symbol: "",
-          transaction_fee: "",
-        },
-      ],
-      index: "",
-      sortIndex: 999,
-      supportedStandards: [],
-    });
+    setNewAsset(assetMutateInitialState);
   }
 
   async function onAdd() {

@@ -2,22 +2,42 @@
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
 import { BasicModal } from "@components/modal";
-import { AddingAssetsEnum, IconTypeEnum } from "@/const";
+import { IconTypeEnum } from "@/const";
 import { useTranslation } from "react-i18next";
 import { Asset } from "@redux/models/AccountModels";
 import { getAssetIcon } from "@/utils/icons";
-import { useAppSelector } from "@redux/Store";
-import { AssetMutationResult } from "@redux/assets/AssetReducer";
+import { useAppDispatch, useAppSelector } from "@redux/Store";
+import {
+  AssetMutationAction,
+  AssetMutationResult,
+  setAssetMutation,
+  setAssetMutationAction,
+  setAssetMutationResult,
+} from "@redux/assets/AssetReducer";
+import { useEffect, useRef } from "react";
+import clsx from "clsx";
 
 interface DialogAssetConfirmationProps {
   newAsset: Asset;
 }
 
 const DialogAssetConfirmation = ({ newAsset }: DialogAssetConfirmationProps) => {
-  const { assetResult } = useAppSelector((state) => state.asset.mutation);
+  const dispatch = useAppDispatch();
   const { t } = useTranslation();
+  const { assetResult, assetAction } = useAppSelector((state) => state.asset.mutation);
+  const newAssetCached = useRef<Asset | undefined>(undefined);
+
   const isModalOpen = assetResult !== AssetMutationResult.NONE;
-  const addStatus = "";
+
+  useEffect(() => {
+    const isActionAllowed = assetAction !== AssetMutationAction.NONE && assetAction !== AssetMutationAction.DELETE;
+
+    const isNewAssetValid = newAsset && newAsset.name.length > 0;
+
+    if (isActionAllowed && isNewAssetValid) {
+      newAssetCached.current = newAsset;
+    }
+  }, [assetAction, newAsset]);
 
   return (
     <BasicModal
@@ -32,63 +52,46 @@ const DialogAssetConfirmation = ({ newAsset }: DialogAssetConfirmationProps) => 
           onClick={onClose}
         />
         <div className="flex flex-col items-center justify-start w-full py-2">
-          {getAssetIcon(IconTypeEnum.Enum.ASSET, newAsset?.tokenSymbol, newAsset.logo)}
-          <p
-            className={`text-lg font-semibold mt-3 ${
-              assetResult === AssetMutationResult.ADDED ? "text-TextReceiveColor" : "text-TextSendColor"
-            }`}
-          >
-            {getMessage(addStatus).top}
-          </p>
-          <p className="mt-3 text-lg font-semibold">{getMessage(addStatus).botton}</p>
+          {getAssetIcon(IconTypeEnum.Enum.ASSET, newAssetCached?.current?.tokenSymbol, newAssetCached?.current?.logo)}
+          <p className={getMessageTextStyles(assetResult)}> {getMessage(assetResult)} </p>
         </div>
       </div>
     </BasicModal>
   );
 
   function onClose() {
-    // showModal(false);
-    // TODO: it should now close the add update asset drawer
-    // dispatch(setAssetMutationAction(AssetMutationAction.NONE));
-    // setNetwork(TokenNetworkEnum.enum["ICRC-1"]);
-    // setNewAsset({
-    //   address: "",
-    //   symbol: "",
-    //   decimal: "",
-    //   shortDecimal: "",
-    //   name: "",
-    //   tokenSymbol: "",
-    //   tokenName: "",
-    //   subAccounts: [
-    //     {
-    //       sub_account_id: "0x0",
-    //       name: "Default",
-    //       amount: "0",
-    //       currency_amount: "0",
-    //       address: "",
-    //       symbol: "",
-    //       decimal: 0,
-    //       transaction_fee: "0",
-    //     },
-    //   ],
-    //   index: "",
-    //   sortIndex: 999,
-    //   supportedStandards: [],
-    // });
-    // setManual(false);
+    dispatch(setAssetMutationResult(AssetMutationResult.NONE));
+    dispatch(setAssetMutationAction(AssetMutationAction.NONE));
+    dispatch(setAssetMutation(undefined));
   }
 
-  function getMessage(status: string) {
-    switch (status) {
-      case AddingAssetsEnum.Enum.adding:
-        return { top: "", botton: t("adding.asset") };
-      case AddingAssetsEnum.Enum.done:
-        return { top: t("congrats"), botton: t("adding.asset.successful") };
-      case AddingAssetsEnum.Enum.error:
-        return { top: t("error"), botton: t("adding.asset.failed") };
+  function getMessageTextStyles(status: AssetMutationResult) {
+    const resultTextStyles = clsx("text-lg font-semibold mt-3");
 
+    switch (status) {
+      case AssetMutationResult.ADDING:
+        return clsx(resultTextStyles, "text-black-color dark:text-gray-color-9");
+      case AssetMutationResult.ADDED:
+        return clsx(resultTextStyles, "text-slate-color-success");
+      case AssetMutationResult.FAILED:
+        return clsx(resultTextStyles, "text-slate-color-error");
       default:
-        return { top: t("adding.asset"), botton: "" };
+        return resultTextStyles;
+    }
+  }
+
+  function getMessage(status: AssetMutationResult) {
+    switch (status) {
+      case AssetMutationResult.ADDING:
+        return t("adding.asset");
+
+      case AssetMutationResult.ADDED:
+        return t("adding.asset.successful");
+
+      case AssetMutationResult.FAILED:
+        return t("adding.asset.failed");
+      default:
+        return "";
     }
   }
 };

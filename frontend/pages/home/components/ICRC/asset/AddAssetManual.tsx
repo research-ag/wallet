@@ -8,7 +8,7 @@ import { CustomInput } from "@components/input";
 import { CustomCopy } from "@components/tooltip";
 import { CustomButton } from "@components/button";
 import { useTranslation } from "react-i18next";
-import { AccountDefaultEnum, IconTypeEnum } from "@/const";
+import { IconTypeEnum } from "@/const";
 import { Asset } from "@redux/models/AccountModels";
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import { Principal } from "@dfinity/principal";
@@ -17,10 +17,10 @@ import { AccountHook } from "@pages/hooks/accountHook";
 import { getAssetDetails } from "@pages/home/helpers/icrc";
 import { db } from "@/database/db";
 import { Contact } from "@redux/models/ContactsModels";
-import { defaultSubAccount } from "@/defaultTokens";
 import { getAssetIcon } from "@/utils/icons";
 import { AssetMutationAction, setAssetMutation, setAssetMutationAction } from "@redux/assets/AssetReducer";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
+import { assetMutateInitialState } from "@pages/home/hooks/useAssetMutate";
 
 interface AddAssetManualProps {
   errToken: string;
@@ -271,30 +271,7 @@ const AddAssetManual = (props: AddAssetManualProps) => {
 
   function onBack() {
     dispatch(setAssetMutationAction(AssetMutationAction.ADD_AUTOMATIC));
-    setNewAsset({
-      address: "",
-      symbol: "",
-      name: "",
-      decimal: "",
-      shortDecimal: "",
-      tokenSymbol: "",
-      tokenName: "",
-      subAccounts: [
-        {
-          sub_account_id: "0x0",
-          name: AccountDefaultEnum.Values.Default,
-          amount: "0",
-          currency_amount: "0",
-          address: "",
-          decimal: 0,
-          symbol: "",
-          transaction_fee: "0",
-        },
-      ],
-      supportedStandards: [],
-      index: "",
-      sortIndex: 999,
-    });
+    setNewAsset(assetMutateInitialState);
     setErrToken("");
     setErrIndex("");
     setValidToken(false);
@@ -404,19 +381,7 @@ const AddAssetManual = (props: AddAssetManualProps) => {
         await db().updateAsset(asset.address, updatedFull, { sync: true });
       }
 
-      setNewAsset({
-        address: "",
-        symbol: "",
-        name: "",
-        tokenSymbol: "",
-        tokenName: "",
-        decimal: "",
-        shortDecimal: "",
-        subAccounts: [defaultSubAccount],
-        index: "",
-        sortIndex: 999,
-        supportedStandards: [],
-      });
+      setNewAsset(assetMutateInitialState);
 
       dispatch(setAssetMutation(undefined));
       dispatch(setAssetMutationAction(AssetMutationAction.NONE));

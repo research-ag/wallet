@@ -3,7 +3,6 @@ import { Dispatch, SetStateAction, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { setAccordionAssetIdx, setSelectedAccount, setSelectedAsset } from "@redux/assets/AssetReducer";
-import AssetMutate from "./AssetMutate";
 
 interface SearchAssetProps {
   searchKey: string;
@@ -11,10 +10,10 @@ interface SearchAssetProps {
 }
 
 export default function SearchAsset(props: SearchAssetProps) {
-  const dispatch = useAppDispatch();
   const { searchKey, setSearchKey } = props;
-  const { assets } = useAppSelector((state) => state.asset);
+  const dispatch = useAppDispatch();
   const { selectedAsset, accordionIndex } = useAppSelector((state) => state.asset.helper);
+  const { assets } = useAppSelector((state) => state.asset);
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -49,17 +48,14 @@ export default function SearchAsset(props: SearchAssetProps) {
   // TODO: add debounce to setSearchKey
 
   return (
-    <div className="flex flex-row items-center justify-start w-full gap-3 pr-5 mb-4">
-      <input
-        className="dark:bg-PrimaryColor bg-PrimaryColorLight text-PrimaryTextColorLight dark:text-PrimaryTextColor border-SearchInputBorderLight dark:border-SearchInputBorder w-full h-8 rounded-lg border-[1px] outline-none px-3 text-md"
-        type="text"
-        placeholder={t("search")}
-        value={searchKey}
-        onChange={(e) => setSearchKey(e.target.value)}
-        autoComplete="false"
-        spellCheck={false}
-      />
-      <AssetMutate />
-    </div>
+    <input
+      className="dark:bg-PrimaryColor bg-PrimaryColorLight text-PrimaryTextColorLight dark:text-PrimaryTextColor border-SearchInputBorderLight dark:border-SearchInputBorder w-full h-8 rounded-lg border-[1px] outline-none px-3 text-md"
+      type="text"
+      placeholder={t("search")}
+      value={searchKey}
+      onChange={(e) => setSearchKey(e.target.value)}
+      autoComplete="false"
+      spellCheck={false}
+    />
   );
 }
