@@ -3,8 +3,10 @@ import Menu from "@pages/components/Menu";
 import SearchAsset from "@/pages/home/components/ICRC/asset/SearchAsset";
 import AssetAccordion from "./AssetAccordion";
 import AssetMutate from "./AssetMutate";
+import { UseAsset } from "@pages/home/hooks/useAsset";
 
 export default function AssetsList() {
+  UseAsset();
   const [searchKey, setSearchKey] = useState("");
 
   return (

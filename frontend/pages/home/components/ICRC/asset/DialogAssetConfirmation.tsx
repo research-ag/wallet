@@ -6,11 +6,7 @@ import { IconTypeEnum } from "@/const";
 import { useTranslation } from "react-i18next";
 import { getAssetIcon } from "@/utils/icons";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
-import {
-  AssetMutationResult,
-  setAssetMutation,
-  setAssetMutationResult,
-} from "@redux/assets/AssetReducer";
+import { AssetMutationResult, setAssetMutation, setAssetMutationResult } from "@redux/assets/AssetReducer";
 import { useEffect } from "react";
 import clsx from "clsx";
 
@@ -29,9 +25,7 @@ const DialogAssetConfirmation = () => {
     return () => {
       clearTimeout(closeTimer);
     };
-
   }, [assetAction, assetMutated]);
-
 
   return (
     <BasicModal

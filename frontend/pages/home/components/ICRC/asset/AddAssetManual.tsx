@@ -25,7 +25,6 @@ import {
   setAssetMutation,
   setAssetMutationAction,
   setAssetMutationResult,
-  setSelectedAsset,
 } from "@redux/assets/AssetReducer";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import useAssetMutate, { assetMutateInitialState } from "@pages/home/hooks/useAssetMutate";

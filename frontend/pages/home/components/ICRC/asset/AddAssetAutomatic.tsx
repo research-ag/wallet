@@ -74,8 +74,9 @@ const AddAssetAutomatic = () => {
                   return (
                     <DropdownMenu.Item
                       key={`net-${idx}`}
-                      className={`flex flex-row text-md justify-start items-center p-3 cursor-pointer ${idx > 0 ? "border-t border-BorderColorLight dark:border-BorderColor" : ""
-                        }`}
+                      className={`flex flex-row text-md justify-start items-center p-3 cursor-pointer ${
+                        idx > 0 ? "border-t border-BorderColorLight dark:border-BorderColor" : ""
+                      }`}
                       onSelect={() => {
                         onSelectNetwork(networkOption);
                       }}
@@ -136,8 +137,9 @@ const AddAssetAutomatic = () => {
                     return (
                       <DropdownMenu.Item
                         key={`net-${idx}`}
-                        className={`flex flex-row text-md justify-start items-center p-3 cursor-pointer ${idx > 0 ? "border-t border-BorderColorLight dark:border-BorderColor" : ""
-                          }`}
+                        className={`flex flex-row text-md justify-start items-center p-3 cursor-pointer ${
+                          idx > 0 ? "border-t border-BorderColorLight dark:border-BorderColor" : ""
+                        }`}
                         onSelect={() => {
                           onSelectToken(newAsset);
                         }}

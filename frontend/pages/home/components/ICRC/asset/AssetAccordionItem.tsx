@@ -9,6 +9,7 @@ import {
   AssetMutationAction,
   setAssetMutation,
   setAssetMutationAction,
+  setSelectedAccount,
   setSelectedAsset,
 } from "@redux/assets/AssetReducer";
 import { getAssetIcon } from "@/utils/icons";
@@ -111,7 +112,7 @@ export default function AssetAccordionItem(props: AssetAccordionItemProps) {
       dispatch(setSelectedAsset(currentAsset));
       //   setNewSub(undefined);
       //   setAddOpen(false);
-      //   asset.subAccounts.length > 0 && changeSelectedAccount(asset.subAccounts[0]);
+      currentAsset.subAccounts.length > 0 && dispatch(setSelectedAccount(currentAsset.subAccounts[0]));
     }
     // setName("");
     // setEditNameId("");
