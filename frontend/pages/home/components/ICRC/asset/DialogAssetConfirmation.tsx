@@ -32,7 +32,7 @@ const DialogAssetConfirmation = ({ newAsset }: DialogAssetConfirmationProps) => 
   useEffect(() => {
     const isActionAllowed = assetAction !== AssetMutationAction.NONE && assetAction !== AssetMutationAction.DELETE;
 
-    const isNewAssetValid = newAsset && newAsset.name.length > 0;
+    const isNewAssetValid = newAsset && newAsset.name.trim().length > 0;
 
     if (isActionAllowed && isNewAssetValid) {
       newAssetCached.current = newAsset;

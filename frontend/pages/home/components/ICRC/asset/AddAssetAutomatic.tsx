@@ -23,21 +23,20 @@ interface AddAssetAutomaticProps {
   errToken: string;
 }
 
-const AddAssetAutomatic = ({
-  setNewAsset,
-  newAsset,
-  addAssetToData,
-  setValidToken,
-  setErrToken,
-  errToken,
-}: AddAssetAutomaticProps) => {
+const AddAssetAutomatic = (props: AddAssetAutomaticProps) => {
+  const {
+    setNewAsset,
+    newAsset,
+    addAssetToData,
+    setValidToken,
+    setErrToken,
+    errToken,
+  } = props;
+  const { t } = useTranslation();
+  const dispatch = useAppDispatch();
   const { assets } = useAppSelector((state) => state.asset);
   const [network, setNetwork] = useState<TokenNetwork>(TokenNetworkEnum.enum["ICRC-1"]);
-  const { t } = useTranslation();
-
   const { newAssetList, assetTOpen, setAssetTOpen, networkTOpen, setNetworkTOpen } = useCreateUpdateAsset();
-
-  const dispatch = useAppDispatch();
 
   return (
     <div className="flex flex-col items-start justify-start w-full">
@@ -81,9 +80,8 @@ const AddAssetAutomatic = ({
                   return (
                     <DropdownMenu.Item
                       key={`net-${idx}`}
-                      className={`flex flex-row text-md justify-start items-center p-3 cursor-pointer ${
-                        idx > 0 ? "border-t border-BorderColorLight dark:border-BorderColor" : ""
-                      }`}
+                      className={`flex flex-row text-md justify-start items-center p-3 cursor-pointer ${idx > 0 ? "border-t border-BorderColorLight dark:border-BorderColor" : ""
+                        }`}
                       onSelect={() => {
                         onSelectNetwork(networkOption);
                       }}
@@ -144,9 +142,8 @@ const AddAssetAutomatic = ({
                     return (
                       <DropdownMenu.Item
                         key={`net-${idx}`}
-                        className={`flex flex-row text-md justify-start items-center p-3 cursor-pointer ${
-                          idx > 0 ? "border-t border-BorderColorLight dark:border-BorderColor" : ""
-                        }`}
+                        className={`flex flex-row text-md justify-start items-center p-3 cursor-pointer ${idx > 0 ? "border-t border-BorderColorLight dark:border-BorderColor" : ""
+                          }`}
                         onSelect={() => {
                           onSelectToken(newAsset);
                         }}
