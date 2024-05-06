@@ -29,8 +29,9 @@ interface AssetElementProps {
 const AssetElement = ({ asset, idx, accordionIndex, setAssetOpen, setAddOpen }: AssetElementProps) => {
   const dispatch = useAppDispatch();
   const { authClient, theme } = useAppSelector((state) => state.auth);
-  const { tokensMarket, assets } = useAppSelector((state) => state.asset);
+  const { tokensMarket } = useAppSelector((state) => state.asset.utilData);
   const { selectedAsset } = useAppSelector((state) => state.asset.helper);
+  const { assets } = useAppSelector((state) => state.asset);
 
   const { editNameId, setEditNameId, name, setName, newSub, setNewSub, hexChecked, setHexChecked } = AssetHook();
   const [usedIdxs, setUsedIdxs] = useState<string[]>([]);

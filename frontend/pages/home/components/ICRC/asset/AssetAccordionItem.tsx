@@ -24,7 +24,7 @@ interface AssetAccordionItemProps {
 export default function AssetAccordionItem(props: AssetAccordionItemProps) {
   const { currentAsset, isCurrentAssetLast } = props;
   const { selectedAsset, accordionIndex } = useAppSelector((state) => state.asset.helper);
-  const { tokensMarket } = useAppSelector((state) => state.asset);
+  const { tokensMarket } = useAppSelector((state) => state.asset.utilData);
   const dispatch = useAppDispatch();
 
   const isCurrentAssetSelected = currentAsset?.tokenSymbol === selectedAsset?.tokenSymbol;

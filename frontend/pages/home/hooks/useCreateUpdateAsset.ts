@@ -4,7 +4,7 @@ import { useAppSelector } from "@redux/Store";
 import { useEffect, useState } from "react";
 
 export default function useCreateUpdateAsset() {
-  const { icr1SystemAssets } = useAppSelector((state) => state.asset);
+  const { icr1SystemAssets } = useAppSelector((state) => state.asset.utilData);
 
   const [newAssetList, setNewAssetList] = useState<Array<Asset>>(ICRC1systemAssets);
   const [assetTOpen, setAssetTOpen] = useState(false);

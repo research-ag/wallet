@@ -33,6 +33,6 @@ export const getIconSrc = (logo?: string, symbol?: string): string => {
 };
 
 const getLogoFromICRC = (symbol: string) => {
-  const logo = store.getState().asset.icr1SystemAssets.find((asset) => asset.tokenSymbol === symbol)?.logo;
+  const logo = store.getState().asset.utilData.icr1SystemAssets.find((asset) => asset.tokenSymbol === symbol)?.logo;
   return logo;
 };

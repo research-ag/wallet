@@ -142,7 +142,7 @@ export async function getAssetDetails(params: DetailsParams): Promise<Asset | un
       subAccount: "0x0",
     });
 
-    const assetMarket = store.getState().asset.tokensMarket.find((token) => token.symbol === symbol);
+    const assetMarket = store.getState().asset.utilData.tokensMarket.find((token) => token.symbol === symbol);
 
     let USDAmount = "0";
 

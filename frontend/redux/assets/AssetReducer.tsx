@@ -11,6 +11,17 @@ interface AssetStateHelper {
   selectedAccount: SubAccount | undefined;
 }
 
+interface AssetStateMutation {
+  assetMutated?: Asset;
+  assetAction: AssetMutationAction;
+  assetResult: AssetMutationResult;
+};
+
+interface AssetStateUtilData {
+  icr1SystemAssets: Asset[];
+  tokensMarket: TokenMarketInfo[];
+};
+
 export enum AssetMutationAction {
   ADD_AUTOMATIC = "ADD_AUTOMATIC",
   ADD_MANUAL = "ADD_MANUAL",
@@ -30,14 +41,9 @@ interface AssetState {
   helper: AssetStateHelper;
   ICPSubaccounts: Array<ICPSubAccount>;
   accounts: Array<SubAccount>;
-  icr1SystemAssets: Asset[];
-  tokensMarket: TokenMarketInfo[];
+  utilData: AssetStateUtilData;
   assets: Array<Asset>;
-  mutation: {
-    assetMutated?: Asset;
-    assetAction: AssetMutationAction;
-    assetResult: AssetMutationResult;
-  };
+  mutation: AssetStateMutation;
 }
 
 const initialState: AssetState = {
@@ -53,10 +59,12 @@ const initialState: AssetState = {
     assetResult: AssetMutationResult.NONE,
   },
   ICPSubaccounts: [],
-  icr1SystemAssets: ICRC1systemAssets,
-  tokensMarket: [],
-  assets: [],
   accounts: [],
+  utilData: {
+    tokensMarket: [],
+    icr1SystemAssets: ICRC1systemAssets,
+  },
+  assets: [],
 };
 
 const assetSlice = createSlice({
@@ -77,13 +85,13 @@ const assetSlice = createSlice({
       state.mutation.assetAction = action.payload;
     },
     setICRC1SystemAssets(state, action: PayloadAction<Asset[]>) {
-      state.icr1SystemAssets = [...ICRC1systemAssets, ...action.payload];
+      state.utilData.icr1SystemAssets = [...ICRC1systemAssets, ...action.payload];
     },
     setICPSubaccounts(state, action: PayloadAction<ICPSubAccount[]>) {
       state.ICPSubaccounts = action.payload;
     },
     setTokenMarket(state, action: PayloadAction<TokenMarketInfo[]>) {
-      state.tokensMarket = action.payload;
+      state.utilData.tokensMarket = action.payload;
     },
     // asset reducers
     setAssets(state, action) {
@@ -100,7 +108,7 @@ const assetSlice = createSlice({
         const { tokenSymbol, subAccountId, amount } = payload;
         const assetIndex = state.assets.findIndex((asset) => asset.tokenSymbol === tokenSymbol);
 
-        const marketPrince = state.tokensMarket.find((tokenMarket) => tokenMarket.symbol === tokenSymbol)?.price || "0";
+        const marketPrince = state.utilData.tokensMarket.find((tokenMarket) => tokenMarket.symbol === tokenSymbol)?.price || "0";
         const decimals = state.assets.find((asset) => asset.tokenSymbol === tokenSymbol)?.decimal;
         const USDAmount = marketPrince ? getUSDFromToken(amount, marketPrince, Number(decimals)) : "0";
 
@@ -137,13 +145,13 @@ const assetSlice = createSlice({
     },
     clearDataAsset(state) {
       (state.helper.initLoad = true), (state.ICPSubaccounts = []);
-      state.tokensMarket = [];
+      state.utilData.tokensMarket = [];
       state.accounts = [];
       state.assets = [];
       state.helper.selectedAccount = undefined;
       state.helper.selectedAsset = undefined;
       state.helper.accordionIndex = [];
-      state.icr1SystemAssets = ICRC1systemAssets;
+      state.utilData.icr1SystemAssets = ICRC1systemAssets;
     },
   },
 });
