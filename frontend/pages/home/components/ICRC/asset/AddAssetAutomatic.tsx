@@ -9,34 +9,33 @@ import { useTranslation } from "react-i18next";
 import { Asset } from "@redux/models/AccountModels";
 import { getAssetIcon } from "@/utils/icons";
 import { AssetMutationAction, setAssetMutationAction } from "@redux/assets/AssetReducer";
-import { useAppDispatch } from "@redux/Store";
+import { useAppDispatch, useAppSelector } from "@redux/Store";
 import useCreateUpdateAsset from "@pages/home/hooks/useCreateUpdateAsset";
+import { useState } from "react";
 
 interface AddAssetAutomaticProps {
-  setNetwork(value: TokenNetwork): void;
-  network: TokenNetwork;
   setNewAsset(value: Asset): void;
   newAsset: Asset;
   addAssetToData(): void;
   setValidToken(value: boolean): void;
   setErrToken(value: string): void;
   errToken: string;
-  assets: Asset[];
 }
 
 const AddAssetAutomatic = ({
-  setNetwork,
-  network,
   setNewAsset,
   newAsset,
   addAssetToData,
   setValidToken,
   setErrToken,
   errToken,
-  assets,
 }: AddAssetAutomaticProps) => {
+  const { assets } = useAppSelector((state) => state.asset);
+  const [network, setNetwork] = useState<TokenNetwork>(TokenNetworkEnum.enum["ICRC-1"]);
   const { t } = useTranslation();
+
   const { newAssetList, assetTOpen, setAssetTOpen, networkTOpen, setNetworkTOpen } = useCreateUpdateAsset();
+
   const dispatch = useAppDispatch();
 
   return (
@@ -77,7 +76,7 @@ const AddAssetAutomatic = ({
                 sideOffset={2}
                 align="end"
               >
-                {TokenNetworkEnum.options.map((sa, idx) => {
+                {TokenNetworkEnum.options.map((networkOption, idx) => {
                   return (
                     <DropdownMenu.Item
                       key={`net-${idx}`}
@@ -85,11 +84,11 @@ const AddAssetAutomatic = ({
                         idx > 0 ? "border-t border-BorderColorLight dark:border-BorderColor" : ""
                       }`}
                       onSelect={() => {
-                        onSelectNetwork(sa);
+                        onSelectNetwork(networkOption);
                       }}
                     >
                       <div className="flex flex-col items-start justify-center">
-                        <p>{`${sa}`}</p>
+                        <p>{`${networkOption}`}</p>
                       </div>
                     </DropdownMenu.Item>
                   );
@@ -175,33 +174,34 @@ const AddAssetAutomatic = ({
     </div>
   );
 
-  function onSelectNetwork(sa: TokenNetwork) {
-    setNetwork(sa);
-    if (sa !== network)
-      setNewAsset({
-        address: "",
-        symbol: "",
-        name: "",
-        tokenName: "",
-        tokenSymbol: "",
-        decimal: "",
-        shortDecimal: "",
-        subAccounts: [
-          {
-            sub_account_id: "0x0",
-            name: AccountDefaultEnum.Values.Default,
-            amount: "0",
-            currency_amount: "0",
-            address: "",
-            decimal: 0,
-            symbol: "",
-            transaction_fee: "",
-          },
-        ],
-        index: "",
-        sortIndex: 999,
-        supportedStandards: [],
-      });
+  function onSelectNetwork(networkOption: TokenNetwork) {
+    if (networkOption === network) return;
+
+    setNetwork(networkOption);
+    setNewAsset({
+      address: "",
+      symbol: "",
+      name: "",
+      tokenName: "",
+      tokenSymbol: "",
+      decimal: "",
+      shortDecimal: "",
+      subAccounts: [
+        {
+          sub_account_id: "0x0",
+          name: AccountDefaultEnum.Values.Default,
+          amount: "0",
+          currency_amount: "0",
+          address: "",
+          decimal: 0,
+          symbol: "",
+          transaction_fee: "",
+        },
+      ],
+      index: "",
+      sortIndex: 999,
+      supportedStandards: [],
+    });
   }
 
   function onSelectToken(newAsset: Asset) {
@@ -237,6 +237,7 @@ const AddAssetAutomatic = ({
       supportedStandards: [],
     });
   }
+
   async function onAdd() {
     newAsset.address.trim() !== "" && addAssetToData();
   }

@@ -1,9 +1,9 @@
 // svgs
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import AddAsset from "@/pages/home/components/ICRC/asset/AddAsset";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { setAccordionAssetIdx, setSelectedAccount, setSelectedAsset } from "@redux/assets/AssetReducer";
+import AssetMutate from "./AssetMutate";
 
 interface SearchAssetProps {
   searchKey: string;
@@ -55,13 +55,11 @@ export default function SearchAsset(props: SearchAssetProps) {
         type="text"
         placeholder={t("search")}
         value={searchKey}
-        onChange={(e) => {
-          setSearchKey(e.target.value);
-        }}
+        onChange={(e) => setSearchKey(e.target.value)}
         autoComplete="false"
         spellCheck={false}
       />
-      <AddAsset />
+      <AssetMutate />
     </div>
   );
 }

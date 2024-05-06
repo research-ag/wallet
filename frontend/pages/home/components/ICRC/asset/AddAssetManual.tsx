@@ -32,7 +32,6 @@ interface AddAssetManualProps {
   newAsset: Asset;
   setNewAsset: Dispatch<SetStateAction<Asset>>;
   asset: Asset | undefined;
-  assets: Asset[];
   addAssetToData(): void;
 }
 
@@ -62,7 +61,6 @@ const AddAssetManual = (props: AddAssetManualProps) => {
 
   return (
     <div className="flex flex-col items-start justify-start w-full">
-
       {assetAction === AssetMutationAction.UPDATE && asset ? (
         <div className="flex flex-col items-center justify-start w-full p-2">
           {getAssetIcon(IconTypeEnum.Enum.ASSET, asset.tokenSymbol, asset.logo)}

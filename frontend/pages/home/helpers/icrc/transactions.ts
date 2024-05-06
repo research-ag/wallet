@@ -108,7 +108,9 @@ interface DetailsParams {
   supportedStandard?: SupportedStandard[];
   ledgerIndex?: string;
 }
-
+/**
+ * Get asset details from the ledger (supported standards, symbol, name, logo, balance and usd amount)
+ */
 export async function getAssetDetails(params: DetailsParams): Promise<Asset | undefined> {
   try {
     const { canisterId, customSymbol, customName, sortIndex, supportedStandard: standard, ledgerIndex } = params;

@@ -2,7 +2,7 @@
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
 import { BasicModal } from "@components/modal";
-import { AddingAssetsEnum, TokenNetwork, IconTypeEnum, TokenNetworkEnum } from "@/const";
+import { AddingAssetsEnum, IconTypeEnum } from "@/const";
 import { useTranslation } from "react-i18next";
 import { Asset } from "@redux/models/AccountModels";
 import { getAssetIcon } from "@/utils/icons";
@@ -11,11 +11,9 @@ import { AssetMutationResult } from "@redux/assets/AssetReducer";
 
 interface DialogAssetConfirmationProps {
   newAsset: Asset;
-  setNewAsset(value: Asset): void;
-  setNetwork(value: TokenNetwork): void;
 }
 
-const DialogAssetConfirmation = ({ newAsset, setNewAsset, setNetwork }: DialogAssetConfirmationProps) => {
+const DialogAssetConfirmation = ({ newAsset }: DialogAssetConfirmationProps) => {
   const { assetResult } = useAppSelector((state) => state.asset.mutation);
   const { t } = useTranslation();
   const isModalOpen = assetResult !== AssetMutationResult.NONE;
@@ -52,31 +50,31 @@ const DialogAssetConfirmation = ({ newAsset, setNewAsset, setNetwork }: DialogAs
     // showModal(false);
     // TODO: it should now close the add update asset drawer
     // dispatch(setAssetMutationAction(AssetMutationAction.NONE));
-    setNetwork(TokenNetworkEnum.enum["ICRC-1"]);
-    setNewAsset({
-      address: "",
-      symbol: "",
-      decimal: "",
-      shortDecimal: "",
-      name: "",
-      tokenSymbol: "",
-      tokenName: "",
-      subAccounts: [
-        {
-          sub_account_id: "0x0",
-          name: "Default",
-          amount: "0",
-          currency_amount: "0",
-          address: "",
-          symbol: "",
-          decimal: 0,
-          transaction_fee: "0",
-        },
-      ],
-      index: "",
-      sortIndex: 999,
-      supportedStandards: [],
-    });
+    // setNetwork(TokenNetworkEnum.enum["ICRC-1"]);
+    // setNewAsset({
+    //   address: "",
+    //   symbol: "",
+    //   decimal: "",
+    //   shortDecimal: "",
+    //   name: "",
+    //   tokenSymbol: "",
+    //   tokenName: "",
+    //   subAccounts: [
+    //     {
+    //       sub_account_id: "0x0",
+    //       name: "Default",
+    //       amount: "0",
+    //       currency_amount: "0",
+    //       address: "",
+    //       symbol: "",
+    //       decimal: 0,
+    //       transaction_fee: "0",
+    //     },
+    //   ],
+    //   index: "",
+    //   sortIndex: 999,
+    //   supportedStandards: [],
+    // });
     // setManual(false);
   }
 

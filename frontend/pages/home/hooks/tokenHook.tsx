@@ -1,4 +1,4 @@
-import { AccountDefaultEnum, TokenNetwork, TokenNetworkEnum } from "@/const";
+import { AccountDefaultEnum } from "@/const";
 import { Asset } from "@redux/models/AccountModels";
 import { useAppSelector } from "@redux/Store";
 import { useEffect, useState } from "react";
@@ -7,7 +7,6 @@ export const TokenHook = () => {
   const { assetMutated } = useAppSelector((state) => state.asset.mutation);
   const { isAppDataFreshing } = useAppSelector((state) => state.common);
   const [errIndex, setErrIndex] = useState("");
-  const [network, setNetwork] = useState<TokenNetwork>(TokenNetworkEnum.enum["ICRC-1"]);
   const [errToken, setErrToken] = useState("");
   const [validToken, setValidToken] = useState(false);
 
@@ -79,8 +78,6 @@ export const TokenHook = () => {
     setErrIndex,
     validToken,
     setValidToken,
-    network,
-    setNetwork,
     setErrToken,
     errToken,
   };

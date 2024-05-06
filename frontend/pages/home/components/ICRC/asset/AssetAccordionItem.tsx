@@ -123,8 +123,8 @@ export default function AssetAccordionItem(props: AssetAccordionItemProps) {
   }
 
   function onAddNewSubAccount() {
-    // 
-  };
+    //
+  }
 
   function getFullTokenAmount() {
     const assetMarket = tokensMarket.find((tm) => tm.symbol === currentAsset.tokenSymbol);
