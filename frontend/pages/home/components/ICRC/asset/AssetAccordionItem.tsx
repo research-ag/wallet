@@ -109,7 +109,6 @@ export default function AssetAccordionItem(props: AssetAccordionItemProps) {
           </Accordion.Trigger>
         </div>
 
-        {/* {(asset?.subAccounts || newSub) && ( */}
         {hasSubAccounts && (
           <Accordion.Content>
             <div className={getContainerStyles(isCurrentAssetLast)}>

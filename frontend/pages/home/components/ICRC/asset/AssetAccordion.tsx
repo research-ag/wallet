@@ -17,17 +17,6 @@ export default function AssetAccordion(props: AssetAccordionProps) {
 
   return (
     <div className="w-full max-h-[calc(100vh-13rem)] scroll-y-light">
-      {/* <Accordion.Root
-        type="multiple"
-        defaultValue={[]}
-        value={
-          (addOpen || assetOpen) && selectedAsset
-            ? [...accordionIndex, selectedAsset.tokenSymbol]
-            : accordionIndex
-        }
-        onValueChange={onValueChange}
-      >
-      </Accordion.Root> */}
       <Accordion.Root type="multiple" defaultValue={[]} onValueChange={onValueChange}>
         {assets.map((currentAsset: Asset, index) => {
           const cleanSearchKey = searchKey.toLocaleLowerCase().trim();
