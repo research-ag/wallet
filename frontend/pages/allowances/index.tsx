@@ -12,7 +12,6 @@ export default function Allowances() {
       <div className="flex items-center justify-between mb-[2rem] mt-[2rem]">
         <Menu />
         <AllowanceFilter
-          searchKey={searchKey}
           setSearchKey={setSearchKey}
           selectedAssets={selectedAssets}
           setSelectedAssets={setSelectedAssets}

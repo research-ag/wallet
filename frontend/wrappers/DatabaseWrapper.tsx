@@ -3,8 +3,6 @@ import { DbLocationHook } from "@pages/hooks/dbLocationHook";
 import { useEffect } from "react";
 
 export default function DatabaseWrapper({ children }: { children: JSX.Element }) {
-  console.log("data base wrapper");
-
   const { changeDbLocation } = DbLocationHook();
 
   useEffect(() => {

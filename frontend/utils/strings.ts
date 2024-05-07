@@ -30,5 +30,5 @@ export function middleTruncation(text: string | undefined, startSize: number, en
  */
 export function cleanAlphanumeric(text: string): string {
   if (text === " ") return "";
-  return text.replace(/\s+/g, " ");
+  return text.replace(/\s+/g, " ").trim();
 }
