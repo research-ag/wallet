@@ -21,6 +21,7 @@ export default function WatchOnlyInput() {
         ) : null}
 
         <input
+          autoFocus
           type="text"
           className="w-full p-2 outline-none bg-inherit"
           onChange={onPrincipalChange}

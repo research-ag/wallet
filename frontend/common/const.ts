@@ -14,7 +14,7 @@ import { SupportedStandardEnum } from "../@types/icrc";
 export const ProtocolTypeEnum = z.enum(["ICRC1", "HPL"]);
 export type ProtocolType = z.infer<typeof ProtocolTypeEnum>;
 
-export const TransactionTypeEnum = z.enum(["RECEIVE", "SEND", "NONE"]);
+export const TransactionTypeEnum = z.enum(["RECEIVE", "SEND", "NONE", "APPROVE"]);
 export type TransactionType = z.infer<typeof TransactionTypeEnum>;
 
 export const OperationStatusEnum = z.enum(["COMPLETED", "REVERTED", "PENDING"]);
