@@ -1,4 +1,5 @@
 import { TransactionDrawer } from "@/@types/transactions";
+import { UseTransaction } from "@pages/home/hooks/useTransaction";
 import { TableHook } from "@pages/hooks/tableHook";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { setTransactionDrawerAction } from "@redux/transaction/TransactionActions";
@@ -8,6 +9,7 @@ import { clsx } from "clsx";
 
 const ICRCTransactionsTable = () => {
   const dispatch = useAppDispatch();
+  UseTransaction();
   const { transactions, selectedTransaction } = useAppSelector((state) => state.transaction);
   const { columns, sorting, setSorting } = TableHook();
 

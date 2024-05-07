@@ -11,6 +11,7 @@ import { LoadingLoader } from "@components/loader";
 //
 import { BasicModal } from "@components/modal";
 import { IcrcLedgerCanister } from "@dfinity/ledger-icrc";
+import { Principal } from "@dfinity/principal";
 import { asciiHex } from "@pages/contacts/constants/asciiHex";
 import { setAccordionAssetIdx, setSelectedAccount } from "@redux/assets/AssetReducer";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
@@ -34,6 +35,7 @@ export default function AddSubAccountModal({
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { assets } = useAppSelector((state) => state.asset);
+  const { tokensMarket } = useAppSelector((state) => state.asset.utilData);
   const { selectedAsset, accordionIndex } = useAppSelector((state) => state.asset.helper);
   const { userAgent, userPrincipal, authClient } = useAppSelector((state) => state.auth);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -128,7 +130,7 @@ export default function AddSubAccountModal({
               assets[currentAssetIndex].logo,
             )}
             <p className={"text-lg font-semibold text-center"}>
-              {/* {t("new.subacc.added", { name: newSub?.name || "", asset: assets[currentAssetIndex].tokenName })} */}
+              {t("new.subacc.added", { name: newSub?.name || "", asset: assets[currentAssetIndex].tokenName })}
             </p>
           </div>
         )}
@@ -205,6 +207,7 @@ export default function AddSubAccountModal({
             ? newSub.sub_account_id.substring(2)
             : newSub.sub_account_id,
         );
+
         let errName = false;
         let errIdx = false;
         if (newSub.name.trim() === "") errName = true;
@@ -218,13 +221,13 @@ export default function AddSubAccountModal({
 
           // Look for balance and add sub Account
           try {
-            const tknAddress = selectedAsset?.address || "";
-            const decimal = 8;
-            const assetMrkt = 0;
+            const tokenMarket = tokensMarket.find((token) => token.symbol === currentAsset?.tokenSymbol)?.price || 0;
+
             const { balance } = IcrcLedgerCanister.create({
               agent: userAgent,
-              canisterId: tknAddress as any,
+              canisterId: Principal.fromText(currentAsset.address),
             });
+
             const myBalance = await balance({
               owner: userPrincipal,
               subaccount: hexToUint8Array(`0x${subClean}`),
@@ -241,7 +244,9 @@ export default function AddSubAccountModal({
                   name: newSub.name,
                   sub_account_id: `0x${subClean}`.toLowerCase(),
                   amount: myBalance.toString(),
-                  currency_amount: assetMrkt ? getUSDFromToken(myBalance.toString(), assetMrkt, decimal) : "0",
+                  currency_amount: tokenMarket
+                    ? getUSDFromToken(myBalance.toString(), tokenMarket, Number(currentAsset.decimal))
+                    : "0",
                   transaction_fee: asset.subAccounts[0].transaction_fee,
                   address: asset.subAccounts[0].address,
                   decimal: asset.subAccounts[0].decimal,
@@ -257,7 +262,9 @@ export default function AddSubAccountModal({
               ...newSub,
               sub_account_id: `0x${subClean}`.toLowerCase(),
               amount: myBalance.toString(),
-              currency_amount: assetMrkt ? getUSDFromToken(myBalance.toString(), assetMrkt, decimal) : "0",
+              currency_amount: tokenMarket
+                ? getUSDFromToken(myBalance.toString(), tokenMarket, Number(currentAsset.decimal))
+                : "0",
             };
 
             setShowConfirm(true);
