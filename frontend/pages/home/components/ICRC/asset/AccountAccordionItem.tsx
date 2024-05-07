@@ -9,8 +9,9 @@ import { useTranslation } from "react-i18next";
 import { CustomCopy } from "@components/tooltip";
 import { toFullDecimal } from "@/utils";
 import DeleteSubAccountModal from "./DeleteSubAccountModal";
-import { useAppSelector } from "@redux/Store";
+import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { db } from "@/database/db";
+import { setSelectedAccount, setSelectedAsset } from "@redux/assets/AssetReducer";
 
 interface AccountAccordionItemProps {
   currentSubAccount: SubAccount;
@@ -24,22 +25,18 @@ export default function AccountAccordionItem({
   currentAsset,
 }: AccountAccordionItemProps) {
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
   const { assets } = useAppSelector((state) => state.asset);
+  const { selectedAccount, selectedAsset } = useAppSelector((state) => state.asset.helper);
 
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [editingSubAccountId, setEditingSubAccountId] = useState("");
   const [subAccountName, setSubAccountName] = useState("");
-  const [isNameInvalid, setNameValid] = useState(false);
-
-  console.log({
-    subAccountName,
-    editingSubAccountId,
-    isNameInvalid,
-  });
+  const [isNameInvalid, setNameInvalid] = useState(false);
 
   return (
     <>
-      <div aria-haspopup="true" className={getAccountStyles()}>
+      <div aria-haspopup="true" className={getAccountStyles()} onClick={onSelectSubAccount}>
         <div className="flex flex-col items-start justify-center">
           {editingSubAccountId === currentSubAccount.sub_account_id ? (
             <div className="flex flex-row items-center justify-start">
@@ -117,26 +114,35 @@ export default function AccountAccordionItem({
     </>
   );
 
+  function onSelectSubAccount() {
+    setEditingSubAccountId("");
+    setSubAccountName("");
+    setNameInvalid(false);
+    if (selectedAsset?.address !== currentAsset.address) dispatch(setSelectedAsset(currentAsset));
+    if (selectedAccount?.sub_account_id !== currentSubAccount.sub_account_id)
+      dispatch(setSelectedAccount(currentSubAccount));
+  }
+
   function onEditSubAccount() {
     setEditingSubAccountId(currentSubAccount.sub_account_id);
     setSubAccountName(currentSubAccount.name);
-    setNameValid(false);
+    setNameInvalid(false);
   }
 
   function onNameChange(e: ChangeEvent<HTMLInputElement>) {
     // TODO: implement validation needed.
     setSubAccountName(e.target.value);
-    setNameValid(false);
+    setNameInvalid(false);
   }
 
   function onCancelEdit() {
     setEditingSubAccountId("");
-    setNameValid(false);
+    setNameInvalid(false);
     setSubAccountName("");
   }
 
   async function onSave() {
-    if (subAccountName.trim() === "") return setNameValid(true);
+    if (subAccountName.trim() === "") return setNameInvalid(true);
 
     const assetIndex = assets.findIndex((a) => a.address === currentAsset.address);
     if (assetIndex === -1) return;
@@ -148,7 +154,7 @@ export default function AccountAccordionItem({
     await db().updateAsset(asset.address, { ...asset, subAccounts: subAccounts }, { sync: true });
 
     setEditingSubAccountId("");
-    setNameValid(false);
+    setNameInvalid(false);
   }
 
   function getAccountStyles() {
