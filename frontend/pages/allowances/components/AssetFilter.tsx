@@ -1,4 +1,4 @@
-import { IconTypeEnum } from "@/const";
+import { IconTypeEnum } from "@/common/const";
 import { getAssetIcon } from "@/common/utils/icons";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { useAppSelector } from "@redux/Store";

@@ -1,4 +1,4 @@
-import { defaultSubAccount } from "@/defaultTokens";
+import { defaultSubAccount } from "@/common/defaultTokens";
 import { Asset } from "@redux/models/AccountModels";
 import { useState } from "react";
 

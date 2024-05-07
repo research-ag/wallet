@@ -17,7 +17,7 @@ import dayjs from "dayjs";
 import { refreshAllowance } from "../helpers/refresh";
 // eslint-disable-next-line import/named
 import { throttle } from "lodash";
-import { removeZeroesFromAmount, toFullDecimal, toHoleBigInt } from "@/utils";
+import { removeZeroesFromAmount, toFullDecimal, toHoleBigInt } from "@common/utils/amount";
 
 export function useUpdateAllowance() {
   const dispatch = useAppDispatch();

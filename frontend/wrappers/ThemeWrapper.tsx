@@ -1,4 +1,4 @@
-import { ThemesEnum } from "@/const";
+import { ThemesEnum } from "@/common/const";
 import { db } from "@/database/db";
 import { ThemeHook } from "@pages/hooks/themeHook";
 import { useEffect } from "react";

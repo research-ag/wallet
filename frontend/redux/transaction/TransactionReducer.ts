@@ -11,7 +11,7 @@ import {
   TransactionState,
   TransactionValidationErrorsType,
 } from "@/@types/transactions";
-import { SendingStatusEnum, SendingStatus } from "@/const";
+import { SendingStatusEnum, SendingStatus } from "@/common/const";
 import { Asset, SubAccount, TransactionList } from "@redux/models/AccountModels";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 

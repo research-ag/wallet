@@ -1,6 +1,5 @@
 import { CustomInput } from "@components/input";
 import { SetStateAction, Dispatch } from "react";
-import { shortAddress } from "@/utils";
 import DeleteWatchOnlyRecordModal from "./DeleteWatchOnlyRecordModal";
 import { EditWatchOnlyItem } from "./WatchOnlyRecords";
 import { WatchOnlyItem } from "@pages/login/components/WatchOnlyInput";
@@ -12,6 +11,7 @@ import ActionIcons from "./ActionIcons";
 import { clearDataContacts } from "@redux/contacts/ContactsReducer";
 import { setTransactions } from "@redux/transaction/TransactionReducer";
 import { setReduxAllowances } from "@redux/allowance/AllowanceReducer";
+import { shortAddress } from "@common/utils/icrc";
 
 interface WatchOnlyRecordProps {
   watchOnlyItem: EditWatchOnlyItem | null;
@@ -70,8 +70,8 @@ export default function WatchOnlyRecord(props: WatchOnlyRecordProps) {
 
       {isCurrentUser && !isBeingEdited && (
         <>
-          {!isAppDataFreshing && <span className="w-2 h-2 mr-3 bg-slate-color-success rounded-full" />}
-          {isAppDataFreshing && <span className="w-2 h-2 mr-3 bg-slate-color-warning rounded-full" />}
+          {!isAppDataFreshing && <span className="w-2 h-2 mr-3 rounded-full bg-slate-color-success" />}
+          {isAppDataFreshing && <span className="w-2 h-2 mr-3 rounded-full bg-slate-color-warning" />}
         </>
       )}
 

@@ -1,6 +1,5 @@
 import { AllowanceValidationErrorsEnum, TAllowance } from "@/@types/allowance";
-import { IconTypeEnum } from "@/const";
-import { validateAmount } from "@/utils";
+import { IconTypeEnum } from "@/common/const";
 import { getAssetIcon } from "@/common/utils/icons";
 import CurrencyInput from "@components/input/CurrencyInput";
 import { useAppSelector } from "@redux/Store";
@@ -8,6 +7,7 @@ import { removeAllowanceErrorAction, setAllowanceErrorAction } from "@redux/allo
 import { Asset } from "@redux/models/AccountModels";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { validateAmount } from "@common/utils/amount";
 
 interface IAmountFormItemProps {
   allowance: TAllowance;

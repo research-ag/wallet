@@ -3,7 +3,7 @@ import SendForm from "@/pages/home/components/ICRC/transaction/SendForm";
 import DialogSendConfirmation from "@/pages/home/components/ICRC/transaction/DialogSendConfirmation";
 import SenderInitializer from "@/pages/home/components/ICRC/transaction/SendForm/SenderInitializer";
 import SendFormConditionalRender from "@/pages/home/components/ICRC/transaction/SendForm/SendFormConditionalRender";
-import { ProtocolTypeEnum } from "@/const";
+import { ProtocolTypeEnum } from "@/common/const";
 import contactCacheRefresh from "@pages/contacts/helpers/contactCacheRefresh";
 
 function DrawerSend() {

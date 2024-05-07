@@ -8,8 +8,7 @@ import { SubAccount, Asset } from "@redux/models/AccountModels";
 import AccountElement from "./AccountElement";
 import { Fragment, useState } from "react";
 import * as Accordion from "@radix-ui/react-accordion";
-import { IconTypeEnum, ThemesEnum } from "@/const";
-import { getFirstNChars, getUSDFromToken, hexToNumber, toFullDecimal } from "@/utils";
+import { IconTypeEnum, ThemesEnum } from "@/common/const";
 import { AssetHook } from "../../../hooks/assetHook";
 import bigInt from "big-integer";
 import DialogAddSubAccount from "./DialogAddSubAccount";
@@ -17,6 +16,9 @@ import { getAssetIcon } from "@/common/utils/icons";
 import clsx from "clsx";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { setAssetMutation, setSelectedAccount, setSelectedAsset } from "@redux/assets/AssetReducer";
+import { hexToNumber } from "@common/utils/hexadecimal";
+import { getFirstNChars } from "@common/utils/strings";
+import { getUSDFromToken, toFullDecimal } from "@common/utils/amount";
 
 interface AssetElementProps {
   asset: Asset;

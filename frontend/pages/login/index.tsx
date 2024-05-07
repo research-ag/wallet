@@ -5,7 +5,7 @@ import { ReactComponent as LoginLogoIcon } from "@/assets/svg/files/login-logo.s
 //
 import { ThemeHook } from "@hooks/themeHook";
 import { Fragment } from "react";
-import { ThemesEnum } from "@/const";
+import { ThemesEnum } from "@/common/const";
 import AuthMethods from "./components/AuthMethods";
 
 const Login = () => {

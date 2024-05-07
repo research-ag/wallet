@@ -3,8 +3,8 @@ import { AssetContact, Contact, SubAccountContact } from "@redux/models/Contacts
 import ContactAssetPop from "../contactAssetPop";
 import { getAssetIcon } from "@/common/utils/icons";
 import ContactAssetElement from "../contactAssetElement";
-import { removeLeadingZeros } from "@/utils";
 import { useTranslation } from "react-i18next";
+import { removeLeadingZeros } from "@common/utils/strings";
 
 interface AddAssetOnCreateProps {
   assets: Array<Asset>;

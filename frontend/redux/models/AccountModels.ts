@@ -1,5 +1,5 @@
 import { SupportedStandardEnum } from "@/@types/icrc";
-import { OperationStatusEnum, OperationTypeEnum, TransactionTypeEnum } from "@/const";
+import { OperationStatusEnum, OperationTypeEnum, TransactionTypeEnum } from "@/common/const";
 import { z } from "zod";
 
 // Models

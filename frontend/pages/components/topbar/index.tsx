@@ -23,7 +23,7 @@ import { AccountHook } from "@hooks/accountHook";
 import { logout } from "@redux/CheckAuth";
 import { BasicModal } from "@components/modal";
 import ThemeModal from "./themeModal";
-import { ThemesEnum } from "@/const";
+import { ThemesEnum } from "@/common/const";
 import { CustomCopy } from "@components/tooltip";
 import { useAppSelector } from "@redux/Store";
 import { db } from "@/database/db";

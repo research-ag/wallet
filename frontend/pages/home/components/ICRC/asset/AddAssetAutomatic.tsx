@@ -1,5 +1,5 @@
 // svgs
-import { IconTypeEnum, TokenNetwork, TokenNetworkEnum } from "@/const";
+import { IconTypeEnum, TokenNetwork, TokenNetworkEnum } from "@/common/const";
 import ChevIcon from "@assets/svg/files/chev-icon.svg";
 //
 import { CustomButton } from "@components/button";

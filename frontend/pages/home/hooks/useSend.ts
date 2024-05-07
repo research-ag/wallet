@@ -1,4 +1,3 @@
-import { toFullDecimal } from "@/utils";
 import { useAppSelector } from "@redux/Store";
 import { useEffect, useMemo, useState } from "react";
 import { TransactionSenderOptionEnum } from "@/@types/transactions";
@@ -6,6 +5,7 @@ import { validatePrincipal } from "@/common/utils/definityIdentity";
 import { Asset } from "@redux/models/AccountModels";
 import { getAllowanceDetails, getTransactionFeeFromLedger } from "@common/libs/icrc";
 import { isHexadecimalValid } from "../helpers/checkers";
+import { toFullDecimal } from "@common/utils/amount";
 
 export default function useSend() {
   const [transactionFee, setTransactionFee] = useState<string>("0");

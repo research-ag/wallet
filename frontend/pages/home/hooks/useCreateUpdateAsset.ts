@@ -1,4 +1,4 @@
-import { ICRC1systemAssets } from "@/defaultTokens";
+import { ICRC1systemAssets } from "@/common/defaultTokens";
 import { Asset } from "@redux/models/AccountModels";
 import { useAppSelector } from "@redux/Store";
 import { useEffect, useState } from "react";

@@ -1,5 +1,4 @@
-import { AssetSymbolEnum } from "@/const";
-import { hexToUint8Array } from "@/utils";
+import { AssetSymbolEnum } from "@/common/const";
 import contactCacheRefresh from "@pages/contacts/helpers/contactCacheRefresh";
 import { allowanceCacheRefresh } from "@pages/allowances/helpers/cache";
 import { getAllTransactionsICP, getAllTransactionsICRC1, updateAllBalances } from "@redux/assets/AssetActions";
@@ -10,6 +9,7 @@ import { setTxWorker } from "@redux/transaction/TransactionReducer";
 import dayjs from "dayjs";
 import { useEffect } from "react";
 import { db } from "@/database/db";
+import { hexToUint8Array } from "@common/utils/hexadecimal";
 
 const WORKER_INTERVAL = 10 * 60 * 1000; // 10 minutes
 const DATA_STALE_THRESHOLD = 9; // 9 minutes

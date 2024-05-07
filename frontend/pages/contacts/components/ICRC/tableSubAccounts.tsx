@@ -5,7 +5,7 @@ import {
   SubAccountContact,
   SubAccountContactErr,
 } from "@redux/models/ContactsModels";
-import { DeleteContactTypeEnum } from "@/const";
+import { DeleteContactTypeEnum } from "@/common/const";
 import SubAccountBody from "./SubAccountBody";
 import SubAccountHeader from "./subAccountHeader";
 import { useState } from "react";

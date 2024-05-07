@@ -1,10 +1,10 @@
 import { TransactionValidationErrorsEnum } from "@/@types/transactions";
-import { toFullDecimal, toHoleBigInt, validateAmount } from "@/utils";
 import { getSubAccountBalance } from "@/common/libs/icrc";
 import useSend from "@pages/home/hooks/useSend";
 import { useAppSelector } from "@redux/Store";
 import { removeErrorAction, setAmountAction, setErrorAction } from "@redux/transaction/TransactionActions";
 import { ChangeEvent, useState } from "react";
+import { toFullDecimal, toHoleBigInt, validateAmount } from "@common/utils/amount";
 
 interface MaxAmount {
   transactionAmount: string;

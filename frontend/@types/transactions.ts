@@ -1,4 +1,4 @@
-import { SendingStatus } from "@/const";
+import { SendingStatus } from "@/common/const";
 import { Asset, SubAccount, Transaction, TransactionList } from "@redux/models/AccountModels";
 import { z } from "zod";
 

@@ -12,7 +12,6 @@ import { CustomCopy } from "@components/tooltip";
 import { CustomInput } from "@components/input";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
-import { getInitialFromName, hexToUint8Array, removeLeadingZeros, shortAddress } from "@/utils";
 import AllowanceTooltip from "./AllowanceTooltip";
 import {
   AssetContact,
@@ -22,7 +21,7 @@ import {
   SubAccountContactErr,
 } from "@redux/models/ContactsModels";
 import { getAllowanceDetails } from "@/common/libs/icrc/";
-import { DeleteContactTypeEnum } from "@/const";
+import { DeleteContactTypeEnum } from "@/common/const";
 import useContactTable from "../../hooks/useContactTable";
 import { LoadingLoader } from "@components/loader";
 import store from "@redux/Store";
@@ -31,6 +30,9 @@ import { CustomButton } from "@components/button";
 import { ChangeEvent, useState } from "react";
 import { asciiHex } from "@pages/contacts/constants/asciiHex";
 import { getNormalizedHex, isHexadecimalValid } from "@pages/home/helpers/checkers";
+import { hexToUint8Array } from "@common/utils/hexadecimal";
+import { getInitialFromName, removeLeadingZeros } from "@common/utils/strings";
+import { shortAddress } from "@common/utils/icrc";
 
 interface SubAccountBodyProps {
   asst: AssetContact;

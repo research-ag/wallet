@@ -3,10 +3,10 @@ import { Dispatch, SetStateAction } from "react";
 import { WatchOnlyItem } from "./WatchOnlyInput";
 import clsx from "clsx";
 import { CustomInput } from "@components/input";
-import { shortAddress } from "@/utils";
 import { EditWatchOnlyItem } from "@pages/components/topbar/WatchOnlyRecords";
 import DeleteWatchOnlyRecordModal from "@pages/components/topbar/DeleteWatchOnlyRecordModal";
 import useWatchOnlyMutation from "@pages/components/topbar/useWatchOnlyMutation";
+import { shortAddress } from "@common/utils/icrc";
 
 interface HistoricalItemProps {
   onHistoricalSelectHandler: (principal: string) => void;

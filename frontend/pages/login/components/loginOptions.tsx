@@ -4,7 +4,7 @@ import icUrl from "@/assets/img/icp-logo.png";
 import nfidUrl from "@/assets/img/nfid-logo.png";
 import ethereumUrl from "@/assets/svg/files/ethereum-icon.svg";
 //
-import { AuthNetworkNameEnum, AuthNetworkTypeEnum } from "@/const";
+import { AuthNetworkNameEnum, AuthNetworkTypeEnum } from "@/common/const";
 import { AuthNetwork } from "@redux/models/TokenModels";
 
 const loginOpts: AuthNetwork[] = [

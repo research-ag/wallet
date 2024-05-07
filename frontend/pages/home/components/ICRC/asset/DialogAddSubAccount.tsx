@@ -6,7 +6,6 @@ import { CustomInput } from "@components/input";
 import { CustomCheck } from "@components/checkbox";
 import { CustomButton } from "@components/button";
 import { useTranslation } from "react-i18next";
-import { checkHexString, getUSDFromToken, hexToNumber, hexToUint8Array, removeLeadingZeros } from "@/utils";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { GeneralHook } from "../../../hooks/generalHook";
 import { useAppDispatch } from "@redux/Store";
@@ -16,9 +15,12 @@ import { ChangeEvent, Fragment, useState } from "react";
 import { IcrcLedgerCanister } from "@dfinity/ledger-icrc";
 import { db } from "@/database/db";
 import { LoadingLoader } from "@components/loader";
-import { IconTypeEnum } from "@/const";
+import { IconTypeEnum } from "@/common/const";
 import { getAssetIcon } from "@/common/utils/icons";
 import { asciiHex } from "@pages/contacts/constants/asciiHex";
+import { checkHexString, hexToNumber, hexToUint8Array } from "@common/utils/hexadecimal";
+import { removeLeadingZeros } from "@common/utils/strings";
+import { getUSDFromToken } from "@common/utils/amount";
 
 interface DialogAddSubAccountProps {
   newErr: any;

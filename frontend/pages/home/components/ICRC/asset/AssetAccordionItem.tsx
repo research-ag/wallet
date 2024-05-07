@@ -13,12 +13,13 @@ import {
   setSelectedAsset,
 } from "@redux/assets/AssetReducer";
 import { getAssetIcon } from "@/common/utils/icons";
-import { IconTypeEnum } from "@/const";
-import { getFirstNChars, getUSDFromToken, toFullDecimal } from "@/utils";
+import { IconTypeEnum } from "@/common/const";
 import { ChevronDownIcon, ChevronLeftIcon } from "@radix-ui/react-icons";
 import { useState } from "react";
 import AddSubAccountModal from "./AddSubAccountModal";
 import AccountAccordionItem from "./AccountAccordionItem";
+import { getFirstNChars } from "@common/utils/strings";
+import { getUSDFromToken, toFullDecimal } from "@common/utils/amount";
 
 interface AssetAccordionItemProps {
   currentAsset: Asset;

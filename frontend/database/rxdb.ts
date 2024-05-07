@@ -3,7 +3,7 @@ import { createRxDatabase, RxCollection, RxDocument, RxDatabase, addRxPlugin } f
 import DBSchemas from "./schemas.json";
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable } from "rxjs";
 import { extractValueFromArray, setupReplication } from "./helpers";
-import { defaultTokens } from "@/defaultTokens";
+import { defaultTokens } from "@/common/defaultTokens";
 // rxdb plugins
 import { getRxStorageDexie } from "rxdb/plugins/storage-dexie";
 import { RxDBMigrationPlugin } from "rxdb/plugins/migration";

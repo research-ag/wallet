@@ -13,7 +13,7 @@ import {
 import { AuthClient } from "@dfinity/auth-client";
 import { clearDataAsset, setICRC1SystemAssets, setInitLoad } from "./assets/AssetReducer";
 import { AuthNetwork } from "./models/TokenModels";
-import { AuthNetworkTypeEnum } from "@/const";
+import { AuthNetworkTypeEnum } from "@/common/const";
 import { Ed25519KeyIdentity, DelegationIdentity } from "@dfinity/identity";
 import { clearDataContacts } from "./contacts/ContactsReducer";
 import { Principal } from "@dfinity/principal";

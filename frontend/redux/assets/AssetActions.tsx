@@ -1,15 +1,9 @@
 import store from "@redux/Store";
 import { SnsToken } from "@redux/models/TokenModels";
-
 import { IcrcAccount, IcrcIndexCanister, IcrcTokenMetadataResponse } from "@dfinity/ledger-icrc";
-
-import { formatIcpTransaccion, getMetadataInfo, formatckBTCTransaccion, hexToUint8Array } from "@/utils";
-
 import { setTokenMarket, setICPSubaccounts, setAccordionAssetIdx, setAssets } from "./AssetReducer";
-
 import { AccountIdentifier, SubAccount as SubAccountNNS } from "@dfinity/ledger-icp";
 import { Asset, ICPSubAccount } from "@redux/models/AccountModels";
-
 import { Principal } from "@dfinity/principal";
 import { GetAllTransactionsICPParams, UpdateAllBalances } from "@/@types/assets";
 import { getICRCSupportedStandards } from "@/common/libs/icrc";
@@ -17,6 +11,9 @@ import { HttpAgent } from "@dfinity/agent";
 import { setTransactions } from "@redux/transaction/TransactionReducer";
 import { getETHRate, getTokensFromMarket } from "@/common/utils/market";
 import { refreshAssetBalances } from "@pages/home/helpers/assets";
+import { hexToUint8Array } from "@common/utils/hexadecimal";
+import { formatckBTCTransaccion, formatIcpTransaccion } from "@pages/home/helpers/transactions";
+import { getMetadataInfo } from "@common/utils/icrc";
 
 /**
  * This function updates the balances for all provided assets and their subaccounts, based on the market price and the account balance.

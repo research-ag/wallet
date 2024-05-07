@@ -4,7 +4,6 @@ import {
   HasSubAccountsParams,
   SupportedStandardEnum,
 } from "@/@types/icrc";
-import { hexToUint8Array, toFullDecimal, toHoleBigInt } from "@/utils";
 import { Actor } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import store from "@redux/Store";
@@ -16,6 +15,8 @@ import dayjs from "dayjs";
 import { ApproveParams } from "@dfinity/ledger-icrc";
 import { getCanister } from "./getIcrcCanister";
 import { TAllowance } from "@/@types/allowance";
+import { hexToUint8Array } from "@common/utils/hexadecimal";
+import { toFullDecimal, toHoleBigInt } from "@common/utils/amount";
 
 function calculateExpirationAsBigInt(
   expirationString: string | undefined,

@@ -7,7 +7,7 @@ import OrigynIcon from "@/assets/svg/files/ogy_icon.svg";
 import { z } from "zod";
 import { ICRC1systemAssets } from "./defaultTokens";
 import { Asset } from "@redux/models/AccountModels";
-import { SupportedStandardEnum } from "./@types/icrc";
+import { SupportedStandardEnum } from "../@types/icrc";
 
 // Enums
 

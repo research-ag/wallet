@@ -1,7 +1,6 @@
 // svgs
-import { IconTypeEnum } from "@/const";
+import { IconTypeEnum } from "@/common/const";
 import { db } from "@/database/db";
-import { checkHexString, getUSDFromToken, hexToNumber, hexToUint8Array, removeLeadingZeros } from "@/utils";
 import { getAssetIcon } from "@/common/utils/icons";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 import { CustomButton } from "@components/button";
@@ -19,6 +18,9 @@ import { useAppDispatch, useAppSelector } from "@redux/Store";
 import bigInt from "big-integer";
 import { ChangeEvent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { checkHexString, hexToNumber, hexToUint8Array } from "@common/utils/hexadecimal";
+import { removeLeadingZeros } from "@common/utils/strings";
+import { getUSDFromToken } from "@common/utils/amount";
 interface AddSubAccountModalProps {
   isAddSubAccountOpen: boolean;
   onClose: () => void;

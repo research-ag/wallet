@@ -7,19 +7,14 @@ import {
   SupportedStandard,
 } from "@/@types/icrc";
 import { getCanister } from "./getIcrcCanister";
-import {
-  getMetadataInfo,
-  getUSDFromToken,
-  hexToUint8Array,
-  hexadecimalToUint8Array,
-  toFullDecimal,
-  toHoleBigInt,
-} from "@/utils";
 import { Principal } from "@dfinity/principal";
 import { IcrcLedgerCanister, TransferFromParams } from "@dfinity/ledger-icrc";
 import store from "@redux/Store";
 import { Asset } from "@redux/models/AccountModels";
-import { AccountDefaultEnum } from "@/const";
+import { AccountDefaultEnum } from "@/common/const";
+import { hexadecimalToUint8Array, hexToUint8Array } from "@common/utils/hexadecimal";
+import { getUSDFromToken, toFullDecimal, toHoleBigInt } from "@common/utils/amount";
+import { getMetadataInfo } from "@common/utils/icrc";
 
 export async function getTransactionFeeFromLedger(params: TransactionFeeParams) {
   try {

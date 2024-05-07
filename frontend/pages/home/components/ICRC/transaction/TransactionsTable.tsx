@@ -1,6 +1,6 @@
 import { TransactionDrawer } from "@/@types/transactions";
-import { AssetSymbolEnum } from "@/const";
-import { hexToUint8Array } from "@/utils";
+import { AssetSymbolEnum } from "@/common/const";
+import { hexToUint8Array } from "@common/utils/hexadecimal";
 import { TableHook } from "@pages/hooks/tableHook";
 import { getAllTransactionsICP, getAllTransactionsICRC1 } from "@redux/assets/AssetActions";
 import { Asset, SubAccount, Transaction } from "@redux/models/AccountModels";

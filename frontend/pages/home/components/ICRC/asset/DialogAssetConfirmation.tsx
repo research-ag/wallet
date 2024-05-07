@@ -2,7 +2,7 @@
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
 import { BasicModal } from "@components/modal";
-import { IconTypeEnum } from "@/const";
+import { IconTypeEnum } from "@/common/const";
 import { useTranslation } from "react-i18next";
 import { getAssetIcon } from "@/common/utils/icons";
 import { useAppDispatch, useAppSelector } from "@redux/Store";

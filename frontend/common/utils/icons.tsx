@@ -1,5 +1,5 @@
 import GenericTokenIcon from "@/assets/svg/files/generic-token.svg";
-import { IconType, IconTypeEnum, symbolIconDict } from "@/const";
+import { IconType, IconTypeEnum, symbolIconDict } from "@/common/const";
 import store from "@redux/Store";
 
 export const getAssetIcon = (type: IconType, symbol?: string, logo?: string) => {

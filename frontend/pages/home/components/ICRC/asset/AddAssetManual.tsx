@@ -3,12 +3,11 @@ import { ReactComponent as InfoIcon } from "@assets/svg/files/info-icon.svg";
 //
 import { GeneralHook } from "../../../hooks/generalHook";
 import { IcrcIndexCanister } from "@dfinity/ledger-icrc";
-import { toFullDecimal } from "@/utils";
 import { CustomInput } from "@components/input";
 import { CustomCopy } from "@components/tooltip";
 import { CustomButton } from "@components/button";
 import { useTranslation } from "react-i18next";
-import { IconTypeEnum } from "@/const";
+import { IconTypeEnum } from "@/common/const";
 import { Asset } from "@redux/models/AccountModels";
 import { ChangeEvent, useEffect, useState } from "react";
 import { Principal } from "@dfinity/principal";
@@ -28,6 +27,7 @@ import {
 } from "@redux/assets/AssetReducer";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import useAssetMutate, { assetMutateInitialState } from "@pages/home/hooks/useAssetMutate";
+import { toFullDecimal } from "@common/utils/amount";
 
 const AddAssetManual = () => {
   const { assetAction, assetMutated } = useAppSelector((state) => state.asset.mutation);

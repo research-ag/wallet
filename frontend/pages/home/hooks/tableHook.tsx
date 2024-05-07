@@ -4,12 +4,13 @@ import DownAmountIcon from "@assets/svg/files/down-amount-icon.svg";
 import { SortingState, createColumnHelper } from "@tanstack/react-table";
 import { Transaction } from "@redux/models/AccountModels";
 import moment from "moment";
-import { getAddress, getAssetSymbol, toFullDecimal } from "@/utils";
 import { useTranslation } from "react-i18next";
-import { SpecialTxTypeEnum, TransactionTypeEnum } from "@/const";
+import { SpecialTxTypeEnum, TransactionTypeEnum } from "@/common/const";
 import { Fragment, useState } from "react";
 import { useAppSelector } from "@redux/Store";
 import CodeElement from "@components/TableCodeElement";
+import { getAddress, getAssetSymbol } from "@common/utils/icrc";
+import { toFullDecimal } from "@common/utils/amount";
 
 export const TableHook = () => {
   const { t } = useTranslation();

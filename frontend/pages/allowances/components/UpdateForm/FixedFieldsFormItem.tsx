@@ -1,5 +1,5 @@
 import { TAllowance } from "@/@types/allowance";
-import { IconTypeEnum } from "@/const";
+import { IconTypeEnum } from "@/common/const";
 import { getAssetIcon } from "@/common/utils/icons";
 import { middleTruncation } from "@/common/utils/strings";
 import { BasicChip } from "@components/chip";

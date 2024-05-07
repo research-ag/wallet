@@ -21,7 +21,7 @@ import { Asset } from "@redux/models/AccountModels";
 import { getAllowanceAsset } from "../helpers/mappers";
 import { refreshAllowance } from "../helpers/refresh";
 import { db } from "@/database/db";
-import { removeZeroesFromAmount, toFullDecimal, toHoleBigInt } from "@/utils";
+import { removeZeroesFromAmount, toFullDecimal, toHoleBigInt } from "@common/utils/amount";
 
 export default function useCreateAllowance() {
   const dispatch = useAppDispatch();

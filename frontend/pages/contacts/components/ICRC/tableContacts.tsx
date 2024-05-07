@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { NewContactSubAccount, SubAccountContact, SubAccountContactErr } from "@redux/models/ContactsModels";
-import { DeleteContactTypeEnum } from "@/const";
+import { DeleteContactTypeEnum } from "@/common/const";
 import TableContactRows from "./TableContactRows";
 
 interface TableContactsProps {

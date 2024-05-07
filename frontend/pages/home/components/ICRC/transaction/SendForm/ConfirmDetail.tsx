@@ -17,11 +17,11 @@ import {
 } from "@redux/transaction/TransactionActions";
 import { useTranslation } from "react-i18next";
 import { TransactionValidationErrorsEnum } from "@/@types/transactions";
-import { SendingStatusEnum } from "@/const";
+import { SendingStatusEnum } from "@/common/const";
 import { getSubAccountBalance, transferTokens, transferTokensFromAllowance } from "@/common/libs/icrc";
 import { LoadingLoader } from "@components/loader";
-import { toHoleBigInt } from "@/utils";
 import reloadBallance from "@pages/helpers/reloadBalance";
+import { toHoleBigInt } from "@common/utils/amount";
 
 interface ConfirmDetailProps {
   showConfirmationModal: Dispatch<SetStateAction<boolean>>;

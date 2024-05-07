@@ -1,5 +1,5 @@
-import { AssetSymbolEnum, SpecialTxTypeEnum } from "@/const";
-import { getAddress, shortAddress } from "@/utils";
+import { AssetSymbolEnum, SpecialTxTypeEnum } from "@/common/const";
+import { getAddress, shortAddress } from "@common/utils/icrc";
 import { AccountHook } from "@pages/hooks/accountHook";
 import { useAppSelector } from "@redux/Store";
 import { Transaction } from "@redux/models/AccountModels";

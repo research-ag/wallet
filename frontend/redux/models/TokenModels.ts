@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { AuthNetworkNameEnum, AuthNetworkTypeEnum } from "@/const";
+import { AuthNetworkNameEnum, AuthNetworkTypeEnum } from "@/common/const";
 
 const TokenMarketInfo = z.object({
   id: z.number(),

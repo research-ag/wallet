@@ -1,6 +1,8 @@
 import { RefreshOptions } from "@/@types/assets";
-import { AccountDefaultEnum } from "@/const";
-import { getMetadataInfo, getSubAccountArray, getUSDFromToken, hexToNumber, hexToUint8Array } from "@/utils";
+import { AccountDefaultEnum } from "@/common/const";
+import { getUSDFromToken } from "@common/utils/amount";
+import { hexToNumber, hexToUint8Array } from "@common/utils/hexadecimal";
+import { getMetadataInfo, getSubAccountArray } from "@common/utils/icrc";
 import { IcrcLedgerCanister } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
 import { Asset, SubAccount } from "@redux/models/AccountModels";

@@ -1,10 +1,10 @@
 import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
-import { checkHexString } from "@/utils";
-import { DeleteContactTypeEnum } from "@/const";
+import { DeleteContactTypeEnum } from "@/common/const";
 import RemoveModal from "./removeModal";
 import TableContacts from "./ICRC/tableContacts";
 import useContactTable from "../hooks/useContactTable";
+import { checkHexString } from "@common/utils/hexadecimal";
 
 interface ContactListProps {
   searchKey: string;

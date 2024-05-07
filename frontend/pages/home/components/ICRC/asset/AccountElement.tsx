@@ -10,7 +10,6 @@ import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { clsx } from "clsx";
 import { ChangeEvent, Fragment, useState } from "react";
 import { GeneralHook } from "../../../hooks/generalHook";
-import { toFullDecimal } from "@/utils";
 import { CustomInput } from "@components/input";
 import { useTranslation } from "react-i18next";
 import { CustomCopy } from "@components/tooltip";
@@ -19,6 +18,7 @@ import { CustomButton } from "@components/button";
 import bigInt from "big-integer";
 import { db } from "@/database/db";
 import { LoadingLoader } from "@components/loader";
+import { toFullDecimal } from "@common/utils/amount";
 
 interface AccountElementProps {
   asset: Asset;

@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 import ActionCard from "./ActionCard";
 import { ReactComponent as SortIcon } from "@assets/svg/files/sort.svg";
 import { getAssetIcon } from "@/common/utils/icons";
-import { IconTypeEnum } from "@/const";
+import { IconTypeEnum } from "@/common/const";
 import clsx from "clsx";
 
 interface AllowanceListProps {

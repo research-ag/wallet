@@ -7,11 +7,11 @@ import clsx from "clsx";
 import { ChangeEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { CustomCopy } from "@components/tooltip";
-import { toFullDecimal } from "@/utils";
 import DeleteSubAccountModal from "./DeleteSubAccountModal";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { db } from "@/database/db";
 import { setSelectedAccount, setSelectedAsset } from "@redux/assets/AssetReducer";
+import { toFullDecimal } from "@common/utils/amount";
 
 interface AccountAccordionItemProps {
   currentSubAccount: SubAccount;

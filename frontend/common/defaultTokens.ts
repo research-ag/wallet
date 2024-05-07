@@ -1,4 +1,4 @@
-import { SupportedStandardEnum } from "./@types/icrc";
+import { SupportedStandardEnum } from "../@types/icrc";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 
 const supportedStandards = [SupportedStandardEnum.Values["ICRC-1"], SupportedStandardEnum.Values["ICRC-2"]];

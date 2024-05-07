@@ -13,6 +13,30 @@ export function middleTruncation(text: string | undefined, startSize: number, en
   return `${startText}...${endText}`;
 }
 
+export const getFirstNFrom = (address: string, digits: number) => {
+  return `${address.slice(0, digits).toUpperCase()}`;
+};
+
+export const getFirstNChars = (str: string, digits: number) => {
+  if (str?.length > digits) return `${str.slice(0, digits)}...`;
+  else return str;
+};
+
+export const getInitialFromName = (name: string, length: number) => {
+  if (name.length === 0) {
+    return "";
+  } else {
+    const names = name.split(" ");
+    let initials = "";
+    names.map((nm) => {
+      if (nm.trim().length > 0) initials = initials + nm.trim()[0];
+    });
+    return initials.toUpperCase().slice(0, length);
+  }
+};
+
+export const removeLeadingZeros = (text: string): string => text.replace(/^0+/, "");
+
 /**
  * This function is used to clean the text by removing extra spaces and new lines.
  *

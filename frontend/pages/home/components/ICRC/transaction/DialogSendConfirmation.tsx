@@ -4,14 +4,14 @@ import UpAmountIcon from "@assets/svg/files/up-amount-icon.svg";
 //
 import { BasicModal } from "@components/modal";
 import { CustomCopy } from "@components/tooltip";
-import { shortAddress } from "@/utils";
-import { ProtocolType, SendingStatusEnum } from "@/const";
+import { ProtocolType, SendingStatusEnum } from "@/common/const";
 import { useTranslation } from "react-i18next";
 import useSend from "@pages/home/hooks/useSend";
 import { resetSendStateAction, setTransactionDrawerAction } from "@redux/transaction/TransactionActions";
 import { TransactionDrawer, TransactionValidationErrorsEnum } from "@/@types/transactions";
 import { getElapsedSecond } from "@/common/utils/datetimeFormaters";
 import { middleTruncation } from "@/common/utils/strings";
+import { shortAddress } from "@common/utils/icrc";
 
 interface DialogSendConfirmationProps {
   showConfirmationModal(value: boolean): void;
