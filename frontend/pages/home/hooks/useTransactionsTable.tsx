@@ -12,12 +12,12 @@ import CodeElement from "@components/TableCodeElement";
 import { getAddress, getAssetSymbol } from "@common/utils/icrc";
 import { toFullDecimal } from "@common/utils/amount";
 
-export const TableHook = () => {
+export const useTransactionsTable = () => {
   const { t } = useTranslation();
   const { assets } = useAppSelector((state) => state.asset);
 
   const [sorting, setSorting] = useState<SortingState>([]);
-  const { selectedAccount } = useAppSelector((state) => state.asset.helper);
+  const { selectedAccount, selectedAsset } = useAppSelector((state) => state.asset.helper);
   const { selectedTransaction } = useAppSelector((state) => state.transaction);
 
   const columnHelper = createColumnHelper<Transaction>();
@@ -28,7 +28,7 @@ export const TableHook = () => {
         <Fragment>
           {((selectedTransaction?.hash && selectedTransaction?.hash === info.getValue().hash) ||
             (selectedTransaction?.idx && selectedTransaction?.idx === info.getValue().idx)) && (
-            <div className="absolute w-2 h-[4.05rem] left-5 bg-SelectRowColor"></div>
+            <div className="absolute w-2 h-[4.05rem] left-0 bg-SelectRowColor"></div>
           )}
           <div className="flex justify-center w-full h-12 my-2">
             <div className="flex items-center justify-center p-2 border rounded-md border-BorderColorTwoLight dark:border-BorderColorTwo">
@@ -90,18 +90,21 @@ export const TableHook = () => {
             selectedAccount?.sub_account_id || "",
           );
 
+        const isApprove = info.getValue().kind?.toUpperCase() === TransactionTypeEnum.Enum.APPROVE;
+        const isTypeSend = info.getValue()?.type === TransactionTypeEnum.Enum.SEND;
+
         return (
           <div className="flex flex-col items-end justify-center w-full pr-5 my-2">
             <p className={`text-right whitespace-nowrap ${isTo ? "text-TextSendColor" : "text-TextReceiveColor"}`}>{`${
-              isTo ? "-" : ""
+              isTo && !isApprove ? "-" : ""
             }${
-              info.getValue()?.type === TransactionTypeEnum.Enum.SEND
+              isTypeSend
                 ? toFullDecimal(
-                    BigInt(info.getValue()?.amount) + BigInt(selectedAccount?.transaction_fee || "0"),
+                    BigInt(info.getValue()?.amount || "0") + BigInt(selectedAccount?.transaction_fee || "0"),
                     selectedAccount?.decimal || 8,
                   )
-                : toFullDecimal(BigInt(info.getValue()?.amount), selectedAccount?.decimal || 8)
-            } ${getAssetSymbol(info.getValue()?.symbol || "", assets)}`}</p>
+                : toFullDecimal(BigInt(info.getValue()?.amount || "0"), selectedAccount?.decimal || 8)
+            } ${getAssetSymbol(info.getValue()?.symbol || selectedAsset?.symbol || "", assets)}`}</p>
           </div>
         );
       },

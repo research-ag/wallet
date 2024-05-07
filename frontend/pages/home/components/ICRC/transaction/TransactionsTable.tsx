@@ -1,7 +1,7 @@
 import { TransactionDrawer } from "@/@types/transactions";
 import { AssetSymbolEnum } from "@/common/const";
 import { hexToUint8Array } from "@common/utils/hexadecimal";
-import { TableHook } from "@pages/hooks/tableHook";
+import { useTransactionsTable } from "@pages/home/hooks/useTransactionsTable";
 import { getAllTransactionsICP, getAllTransactionsICRC1 } from "@redux/assets/AssetActions";
 import { Asset, SubAccount, Transaction } from "@redux/models/AccountModels";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
@@ -14,7 +14,7 @@ import { useEffect } from "react";
 const ICRCTransactionsTable = () => {
   const dispatch = useAppDispatch();
   const { transactions, selectedTransaction } = useAppSelector((state) => state.transaction);
-  const { columns, sorting, setSorting } = TableHook();
+  const { columns, sorting, setSorting } = useTransactionsTable();
 
   const table = useReactTable({
     data: transactions || [],
