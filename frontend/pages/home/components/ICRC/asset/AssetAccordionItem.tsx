@@ -18,16 +18,18 @@ import { getFirstNChars, getUSDFromToken, toFullDecimal } from "@/utils";
 import { ChevronDownIcon, ChevronLeftIcon } from "@radix-ui/react-icons";
 import { useState } from "react";
 import AddSubAccountModal from "./AddSubAccountModal";
+import AccountAccordionItem from "./AccountAccordionItem";
 
 interface AssetAccordionItemProps {
   currentAsset: Asset;
   isCurrentAssetLast: boolean;
+  assetIterationIndex: number;
 }
 
 export default function AssetAccordionItem(props: AssetAccordionItemProps) {
   const { currentAsset, isCurrentAssetLast } = props;
   const [isAddSubAccountOpen, setAddSubAccountOpen] = useState(false);
-  const { selectedAsset, accordionIndex } = useAppSelector((state) => state.asset.helper);
+  const { selectedAsset, accordionIndex, selectedAccount } = useAppSelector((state) => state.asset.helper);
   const { tokensMarket } = useAppSelector((state) => state.asset.utilData);
   const [usedIdxs, setUsedIdxs] = useState<string[]>([]);
   const dispatch = useAppDispatch();
@@ -108,7 +110,26 @@ export default function AssetAccordionItem(props: AssetAccordionItemProps) {
         </div>
 
         {/* {(asset?.subAccounts || newSub) && ( */}
-        {hasSubAccounts && <Accordion.Content className={getContentStyles(isCurrentAssetLast)}></Accordion.Content>}
+        {hasSubAccounts && (
+          <Accordion.Content>
+            <div className={getContainerStyles(isCurrentAssetLast)}>
+              {currentAsset.subAccounts.map((subAccount, index) => {
+                const isCurrentSubAccountSelected =
+                  subAccount.sub_account_id === selectedAccount?.sub_account_id &&
+                  subAccount.symbol === selectedAccount?.symbol;
+
+                return (
+                  <AccountAccordionItem
+                    subAccount={subAccount}
+                    key={`${subAccount.sub_account_id}-${index}`}
+                    isCurrentSubAccountSelected={isCurrentSubAccountSelected}
+                    currentAsset={currentAsset}
+                  />
+                );
+              })}
+            </div>
+          </Accordion.Content>
+        )}
       </Accordion.Item>
 
       {isAddSubAccountOpen ? (
@@ -176,8 +197,8 @@ const getAssetElementStyles = (isSelected: boolean, isNotLast: boolean) =>
     isNotLast ? "border-b-[0.1rem] dark:border-BorderColorThree border-BorderColorThreeLight" : "",
   );
 
-const getContentStyles = (isCurrentAssetLast: boolean) =>
+const getContainerStyles = (isCurrentAssetLast: boolean) =>
   clsx(
-    "flex flex-col justify-start items-end",
+    "flex flex-col justify-start items-end w-full",
     !isCurrentAssetLast ? "border-b-[0.1rem] dark:border-BorderColorThree border-BorderColorThreeLight" : "",
   );

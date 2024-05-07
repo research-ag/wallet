@@ -49,6 +49,7 @@ export default function AssetAccordion(props: AssetAccordionProps) {
             return (
               <AssetAccordionItem
                 isCurrentAssetLast={index === assets.length - 1}
+                assetIterationIndex={index}
                 key={currentAsset.tokenSymbol}
                 currentAsset={currentAsset}
               />
