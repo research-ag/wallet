@@ -10,7 +10,7 @@ import { useAppSelector } from "@redux/Store";
 import { clsx } from "clsx";
 import { setTransactionDrawerAction } from "@redux/transaction/TransactionActions";
 import { TransactionDrawer } from "@/@types/transactions";
-import { getAssetIcon } from "@/utils/icons";
+import { getAssetIcon } from "@/common/utils/icons";
 
 export default function ICRCSubaccountAction() {
   const { selectedAsset, selectedAccount } = GeneralHook();

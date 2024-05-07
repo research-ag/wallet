@@ -1,4 +1,4 @@
-import { formatDateTime } from "@/utils/formatTime";
+import { formatDateTime } from "@/common/utils/datetimeFormaters";
 import { ReactComponent as MoneyHandIcon } from "@assets/svg/files/money-hand.svg";
 import { BasicToolTip } from "@components/tooltip";
 import { useTranslation } from "react-i18next";

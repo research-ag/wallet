@@ -1,4 +1,4 @@
-import { getIcrcActor } from "@/pages/home/helpers/icrc";
+import { getIcrcActor } from "@/common/libs/icrc";
 import { SupportedStandard } from "@/@types/icrc";
 import { HttpAgent } from "@dfinity/agent";
 import { extend } from "dayjs";

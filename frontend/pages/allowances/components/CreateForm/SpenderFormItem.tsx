@@ -1,7 +1,7 @@
 import { AllowanceValidationErrorsEnum, TAllowance } from "@/@types/allowance";
 import { SelectOption } from "@/@types/components";
-import formatContact from "@/utils/formatContact";
-import { validatePrincipal } from "@/utils/identity";
+import formatContact from "@/common/utils/formatContact";
+import { validatePrincipal } from "@/common/utils/definityIdentity";
 import { BasicInput } from "@components/input";
 import { BasicSelect } from "@components/select";
 import { BasicSwitch } from "@components/switch";

@@ -1,6 +1,6 @@
 import { handlePrincipalAuthenticated } from "@redux/CheckAuth";
 import { ChangeEvent, useRef, useState } from "react";
-import { validatePrincipal } from "@/utils/identity";
+import { validatePrincipal } from "@/common/utils/definityIdentity";
 import WatchOnlyInputSuffix from "./WatchOnlyInputSuffix";
 import WatchOnlyRecordsPopover from "./WatchOnlyRecordsPopover";
 import { useAppSelector } from "@redux/Store";

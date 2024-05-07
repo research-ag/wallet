@@ -3,7 +3,7 @@ import { ContactSubAccount } from "@/@types/transactions";
 import { useAppSelector } from "@redux/Store";
 import { Dispatch, SetStateAction, useMemo } from "react";
 import { setSenderContactAction } from "@redux/transaction/TransactionActions";
-import { getIconSrc } from "@/utils/icons";
+import { getIconSrc } from "@/common/utils/icons";
 import { AvatarEmpty } from "@components/avatar";
 import SearchIcon from "@assets/svg/files/icon-search.svg";
 import { CustomInput } from "@components/input";

@@ -1,7 +1,7 @@
 import { NewContact, TransactionValidationErrorsEnum } from "@/@types/transactions";
-import { isHexadecimalValid } from "@/utils/checkers";
-import { validatePrincipal } from "@/utils/identity";
+import { validatePrincipal } from "@/common/utils/definityIdentity";
 import { CustomInput } from "@components/input";
+import { isHexadecimalValid } from "@pages/home/helpers/checkers";
 import { useAppSelector } from "@redux/Store";
 import { removeErrorAction, setErrorAction, setSenderContactNewAction } from "@redux/transaction/TransactionActions";
 import { useEffect, useState } from "react";

@@ -1,7 +1,7 @@
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { AvatarEmpty } from "@components/avatar";
 import { ReactComponent as DropIcon } from "@assets/svg/files/chevron-right-icon.svg";
-import { getIconSrc } from "@/utils/icons";
+import { getIconSrc } from "@/common/utils/icons";
 import { useAppSelector } from "@redux/Store";
 import { useTranslation } from "react-i18next";
 

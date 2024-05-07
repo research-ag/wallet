@@ -1,7 +1,7 @@
 import { TAllowance, AllowanceValidationErrorsEnum } from "@/@types/allowance";
 import { IconTypeEnum } from "@/const";
 import { validateAmount } from "@/utils";
-import { getAssetIcon } from "@/utils/icons";
+import { getAssetIcon } from "@/common/utils/icons";
 import CurrencyInput from "@components/input/CurrencyInput";
 import { useAppSelector } from "@redux/Store";
 import { removeAllowanceErrorAction, setAllowanceErrorAction } from "@redux/allowance/AllowanceActions";

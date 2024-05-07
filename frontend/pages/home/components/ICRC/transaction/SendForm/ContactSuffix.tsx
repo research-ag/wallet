@@ -7,7 +7,7 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { useMemo } from "react";
 import { AvatarEmpty } from "@components/avatar";
 import useSend from "@pages/home/hooks/useSend";
-import { middleTruncation } from "@/utils/strings";
+import { middleTruncation } from "@/common/utils/strings";
 
 export default function ContactSuffix() {
   const { senderPrincipal, senderSubAccount, isSenderAllowance } = useSend();

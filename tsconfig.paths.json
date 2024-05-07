@@ -9,6 +9,7 @@
       "@pages/*": ["frontend/pages/*"],
       "@hooks/*": ["frontend/pages/hooks/*"],
       "@workers/*": ["frontend/pages/workers/*"],
+      "@common/*": ["frontend/common/*"],
       "@/*": ["frontend/*"]
     }
   }

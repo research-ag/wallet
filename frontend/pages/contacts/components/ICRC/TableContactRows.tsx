@@ -28,7 +28,7 @@ import {
   SubAccountContactErr,
 } from "@redux/models/ContactsModels";
 import { useTranslation } from "react-i18next";
-import { getAssetIcon } from "@/utils/icons";
+import { getAssetIcon } from "@/common/utils/icons";
 
 interface TableContactRowsProps {
   changeName(value: string): void;

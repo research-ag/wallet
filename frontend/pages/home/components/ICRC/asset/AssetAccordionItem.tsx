@@ -12,7 +12,7 @@ import {
   setSelectedAccount,
   setSelectedAsset,
 } from "@redux/assets/AssetReducer";
-import { getAssetIcon } from "@/utils/icons";
+import { getAssetIcon } from "@/common/utils/icons";
 import { IconTypeEnum } from "@/const";
 import { getFirstNChars, getUSDFromToken, toFullDecimal } from "@/utils";
 import { ChevronDownIcon, ChevronLeftIcon } from "@radix-ui/react-icons";

@@ -1,4 +1,4 @@
-import { getIcrcActor, getICRCSupportedStandards } from "@/pages/home/helpers/icrc";
+import { getIcrcActor, getICRCSupportedStandards } from "@/common/libs/icrc";
 import {
   GetBalanceParams,
   TransactionFeeParams,

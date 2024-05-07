@@ -7,7 +7,7 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { clsx } from "clsx";
 import { useTranslation } from "react-i18next";
 import { Asset } from "@redux/models/AccountModels";
-import { getAssetIcon } from "@/utils/icons";
+import { getAssetIcon } from "@/common/utils/icons";
 import {
   AssetMutationAction,
   AssetMutationResult,
@@ -21,7 +21,7 @@ import { useAppDispatch, useAppSelector } from "@redux/Store";
 import useCreateUpdateAsset from "@pages/home/hooks/useCreateUpdateAsset";
 import { useState } from "react";
 import useAssetMutate, { assetMutateInitialState } from "@pages/home/hooks/useAssetMutate";
-import { getAssetDetails } from "@pages/home/helpers/icrc";
+import { getAssetDetails } from "@/common/libs/icrc";
 import { db } from "@/database/db";
 
 const AddAssetAutomatic = () => {

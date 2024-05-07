@@ -7,7 +7,7 @@ import { SelectOption } from "@/@types/components";
 import { clsx } from "clsx";
 import { useTranslation } from "react-i18next";
 import * as Popover from "@radix-ui/react-popover";
-import { cleanAlphanumeric } from "@/utils/strings";
+import { cleanAlphanumeric } from "@/common/utils/strings";
 
 interface TSelectProps extends VariantProps<typeof selectTriggerCVA>, VariantProps<typeof selectContentCVA> {
   options: SelectOption[];

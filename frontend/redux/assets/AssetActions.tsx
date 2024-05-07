@@ -11,12 +11,12 @@ import { AccountIdentifier, SubAccount as SubAccountNNS } from "@dfinity/ledger-
 import { Asset, ICPSubAccount } from "@redux/models/AccountModels";
 
 import { Principal } from "@dfinity/principal";
-import { getETHRate, getTokensFromMarket } from "@/utils/market";
 import { GetAllTransactionsICPParams, UpdateAllBalances } from "@/@types/assets";
-import { getICRCSupportedStandards } from "@pages/home/helpers/icrc";
+import { getICRCSupportedStandards } from "@/common/libs/icrc";
 import { HttpAgent } from "@dfinity/agent";
-import { refreshAssetBalances } from "@/utils/assets";
 import { setTransactions } from "@redux/transaction/TransactionReducer";
+import { getETHRate, getTokensFromMarket } from "@/common/utils/market";
+import { refreshAssetBalances } from "@pages/home/helpers/assets";
 
 /**
  * This function updates the balances for all provided assets and their subaccounts, based on the market price and the account balance.

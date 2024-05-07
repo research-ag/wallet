@@ -1,4 +1,4 @@
-import { getIconSrc } from "@/utils/icons";
+import { getIconSrc } from "@/common/utils/icons";
 import { AvatarEmpty } from "@components/avatar";
 
 interface OwnSubAccountCardProps {

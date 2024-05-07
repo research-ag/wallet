@@ -2,7 +2,7 @@ import { Asset, AssetToAdd } from "@redux/models/AccountModels";
 import ContactAssetPop from "../contactAssetPop";
 import SubAccountFormItem from "./SubAccountFormItem";
 import { AssetContact, Contact } from "@redux/models/ContactsModels";
-import { getAssetIcon } from "@/utils/icons";
+import { getAssetIcon } from "@/common/utils/icons";
 
 interface ContactAssetDetailsProps {
   assets: Array<Asset>;

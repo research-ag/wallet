@@ -18,7 +18,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { TransactionValidationErrorsEnum } from "@/@types/transactions";
 import { SendingStatusEnum } from "@/const";
-import { getSubAccountBalance, transferTokens, transferTokensFromAllowance } from "@pages/home/helpers/icrc";
+import { getSubAccountBalance, transferTokens, transferTokensFromAllowance } from "@/common/libs/icrc";
 import { LoadingLoader } from "@components/loader";
 import { toHoleBigInt } from "@/utils";
 import reloadBallance from "@pages/helpers/reloadBalance";

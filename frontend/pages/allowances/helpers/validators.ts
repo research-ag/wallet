@@ -1,11 +1,11 @@
 import { AllowanceValidationErrorsEnum, TAllowance } from "@/@types/allowance";
 import { validateAmount } from "@/utils";
-import { isHexadecimalValid } from "@/utils/checkers";
-import { validatePrincipal } from "@/utils/identity";
+import { validatePrincipal } from "@/common/utils/definityIdentity";
 import store from "@redux/Store";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import dayjs from "dayjs";
 import { db } from "@/database/db";
+import { isHexadecimalValid } from "@pages/home/helpers/checkers";
 
 export async function getDuplicatedAllowance(allowance: TAllowance): Promise<TAllowance | undefined> {
   return (await db().getAllowance(db().generateAllowancePrimaryKey(allowance))) || undefined;

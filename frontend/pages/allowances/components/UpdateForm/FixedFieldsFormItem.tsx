@@ -1,7 +1,7 @@
 import { TAllowance } from "@/@types/allowance";
 import { IconTypeEnum } from "@/const";
-import { getAssetIcon } from "@/utils/icons";
-import { middleTruncation } from "@/utils/strings";
+import { getAssetIcon } from "@/common/utils/icons";
+import { middleTruncation } from "@/common/utils/strings";
 import { BasicChip } from "@components/chip";
 import { useAppSelector } from "@redux/Store";
 import { clsx } from "clsx";

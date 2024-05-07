@@ -1,11 +1,11 @@
 import { toFullDecimal } from "@/utils";
 import { useAppSelector } from "@redux/Store";
 import { useEffect, useMemo, useState } from "react";
-import { getAllowanceDetails, getTransactionFeeFromLedger } from "../helpers/icrc/";
 import { TransactionSenderOptionEnum } from "@/@types/transactions";
-import { validatePrincipal } from "@/utils/identity";
-import { isHexadecimalValid } from "@/utils/checkers";
+import { validatePrincipal } from "@/common/utils/definityIdentity";
 import { Asset } from "@redux/models/AccountModels";
+import { getAllowanceDetails, getTransactionFeeFromLedger } from "@common/libs/icrc";
+import { isHexadecimalValid } from "../helpers/checkers";
 
 export default function useSend() {
   const [transactionFee, setTransactionFee] = useState<string>("0");

@@ -17,7 +17,7 @@ import { IcrcLedgerCanister } from "@dfinity/ledger-icrc";
 import { db } from "@/database/db";
 import { LoadingLoader } from "@components/loader";
 import { IconTypeEnum } from "@/const";
-import { getAssetIcon } from "@/utils/icons";
+import { getAssetIcon } from "@/common/utils/icons";
 import { asciiHex } from "@pages/contacts/constants/asciiHex";
 
 interface DialogAddSubAccountProps {

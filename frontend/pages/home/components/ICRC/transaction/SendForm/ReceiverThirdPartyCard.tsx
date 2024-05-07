@@ -1,6 +1,6 @@
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 import { ReactComponent as CheckIcon } from "@assets/svg/files/check.svg";
-import { middleTruncation } from "@/utils/strings";
+import { middleTruncation } from "@/common/utils/strings";
 import { clearReceiverAction, setIsInspectDetailAction } from "@redux/transaction/TransactionActions";
 
 interface ReceiverThirdPartyCardProps {

@@ -10,8 +10,8 @@ import { useTranslation } from "react-i18next";
 import useSend from "@pages/home/hooks/useSend";
 import { resetSendStateAction, setTransactionDrawerAction } from "@redux/transaction/TransactionActions";
 import { TransactionDrawer, TransactionValidationErrorsEnum } from "@/@types/transactions";
-import { getElapsedSecond } from "@/utils/formatTime";
-import { middleTruncation } from "@/utils/strings";
+import { getElapsedSecond } from "@/common/utils/datetimeFormaters";
+import { middleTruncation } from "@/common/utils/strings";
 
 interface DialogSendConfirmationProps {
   showConfirmationModal(value: boolean): void;

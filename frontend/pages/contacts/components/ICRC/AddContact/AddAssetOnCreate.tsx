@@ -1,7 +1,7 @@
 import { Asset, AssetToAdd } from "@redux/models/AccountModels";
 import { AssetContact, Contact, SubAccountContact } from "@redux/models/ContactsModels";
 import ContactAssetPop from "../contactAssetPop";
-import { getAssetIcon } from "@/utils/icons";
+import { getAssetIcon } from "@/common/utils/icons";
 import ContactAssetElement from "../contactAssetElement";
 import { removeLeadingZeros } from "@/utils";
 import { useTranslation } from "react-i18next";

@@ -8,8 +8,7 @@ import ExpirationFormItem from "./ExpirationFormItem";
 import { AllowanceValidationErrorsEnum } from "@/@types/allowance";
 import { useTranslation } from "react-i18next";
 import { CustomButton } from "@components/button";
-import { validatePrincipal } from "@/utils/identity";
-import { isHexadecimalValid } from "@/utils/checkers";
+import { validatePrincipal } from "@/common/utils/definityIdentity";
 import {
   removeAllowanceErrorAction,
   setAllowanceErrorAction,
@@ -19,7 +18,8 @@ import { db } from "@/database/db";
 import { LoadingLoader } from "@components/loader";
 import { refreshAllowance } from "@pages/allowances/helpers/refresh";
 import { getDuplicatedAllowance } from "@pages/allowances/helpers/validators";
-import { getAllowanceDetails } from "@pages/home/helpers/icrc";
+import { getAllowanceDetails } from "@/common/libs/icrc";
+import { isHexadecimalValid } from "@pages/home/helpers/checkers";
 
 export default function CreateForm() {
   const { t } = useTranslation();

@@ -4,12 +4,12 @@ import DeleteAllowanceModal from "@pages/allowances/components/DeleteAllowanceMo
 import { Dispatch, SetStateAction } from "react";
 import { useAppSelector } from "@redux/Store";
 import { CustomCopy } from "@components/tooltip";
-import { middleTruncation } from "@/utils/strings";
-import { formatDateTime } from "@/utils/formatTime";
+import { middleTruncation } from "@/common/utils/strings";
+import { formatDateTime } from "@/common/utils/datetimeFormaters";
 import { useTranslation } from "react-i18next";
 import ActionCard from "./ActionCard";
 import { ReactComponent as SortIcon } from "@assets/svg/files/sort.svg";
-import { getAssetIcon } from "@/utils/icons";
+import { getAssetIcon } from "@/common/utils/icons";
 import { IconTypeEnum } from "@/const";
 import clsx from "clsx";
 

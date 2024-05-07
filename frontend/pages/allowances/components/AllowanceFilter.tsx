@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import { IconButton } from "@components/button";
 import useAllowanceDrawer from "../hooks/useAllowanceDrawer";
 import { useAppSelector } from "@redux/Store";
-import { cleanAlphanumeric } from "@/utils/strings";
+import { cleanAlphanumeric } from "@/common/utils/strings";
 
 interface AllowanceFilterProps {
   setSearchKey: Dispatch<SetStateAction<string>>;

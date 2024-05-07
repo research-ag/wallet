@@ -3,7 +3,7 @@ import PlusIcon from "@assets/svg/files/plus-icon.svg";
 //
 import { AssetContact, SubAccountContact } from "@redux/models/ContactsModels";
 import { IconTypeEnum } from "@/const";
-import { getAssetIcon } from "@/utils/icons";
+import { getAssetIcon } from "@/common/utils/icons";
 
 interface ContactAssetElementProps {
   contAst: AssetContact;

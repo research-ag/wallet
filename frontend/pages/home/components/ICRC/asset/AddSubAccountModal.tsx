@@ -2,7 +2,7 @@
 import { IconTypeEnum } from "@/const";
 import { db } from "@/database/db";
 import { checkHexString, getUSDFromToken, hexToNumber, hexToUint8Array, removeLeadingZeros } from "@/utils";
-import { getAssetIcon } from "@/utils/icons";
+import { getAssetIcon } from "@/common/utils/icons";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 import { CustomButton } from "@components/button";
 import { CustomCheck } from "@components/checkbox";

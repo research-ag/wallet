@@ -13,7 +13,7 @@ import { getFirstNChars, getUSDFromToken, hexToNumber, toFullDecimal } from "@/u
 import { AssetHook } from "../../../hooks/assetHook";
 import bigInt from "big-integer";
 import DialogAddSubAccount from "./DialogAddSubAccount";
-import { getAssetIcon } from "@/utils/icons";
+import { getAssetIcon } from "@/common/utils/icons";
 import clsx from "clsx";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { setAssetMutation, setSelectedAccount, setSelectedAsset } from "@redux/assets/AssetReducer";

@@ -1,5 +1,5 @@
 import { SelectOption } from "@/@types/components";
-import formatAsset from "@/utils/formatAsset";
+import formatAsset from "@common/utils/formatAsset";
 import { BasicSelect } from "@components/select";
 import { useAppSelector } from "@redux/Store";
 import { setSenderAssetAction } from "@redux/transaction/TransactionActions";

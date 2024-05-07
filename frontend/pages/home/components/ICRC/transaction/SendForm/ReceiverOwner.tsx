@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { BasicSelect } from "@components/select";
 import { useAppSelector } from "@redux/Store";
-import formatSubAccount from "@/utils/formatSubAccount";
+import formatSubAccount from "@/common/utils/formatSubAccount";
 import { SelectOption } from "@/@types/components";
 import { setReceiverOwnSubAccountAction } from "@redux/transaction/TransactionActions";
 import { useTranslation } from "react-i18next";
