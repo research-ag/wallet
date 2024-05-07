@@ -1,7 +1,5 @@
 import PlusIcon from "@assets/svg/files/plus-icon.svg";
-import { ReactComponent as WarningIcon } from "@assets/svg/files/warning.svg";
 import { ReactComponent as TrashIcon } from "@assets/svg/files/trash-icon.svg";
-import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
 import { CustomInput } from "@components/input";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
@@ -11,6 +9,8 @@ import { useTranslation } from "react-i18next";
 import { CustomCopy } from "@components/tooltip";
 import { toFullDecimal } from "@/utils";
 import DeleteSubAccountModal from "./DeleteSubAccountModal";
+import { useAppSelector } from "@redux/Store";
+import { db } from "@/database/db";
 
 interface AccountAccordionItemProps {
   currentSubAccount: SubAccount;
@@ -24,31 +24,30 @@ export default function AccountAccordionItem({
   currentAsset,
 }: AccountAccordionItemProps) {
   const { t } = useTranslation();
+  const { assets } = useAppSelector((state) => state.asset);
+
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [nameError, setNameError] = useState(false);
-  const [loadingDelete, setLoadingDelete] = useState(false);
-  const [editNameId, setEditNameId] = useState("");
-  const [name, setName] = useState("");
+  const [editingSubAccountId, setEditingSubAccountId] = useState("");
+  const [subAccountName, setSubAccountName] = useState("");
+  const [isNameInvalid, setNameValid] = useState(false);
+
+  console.log({
+    subAccountName,
+    editingSubAccountId,
+    isNameInvalid,
+  });
 
   return (
     <>
-      <div
-        aria-haspopup="true"
-        className={getAccountStyles()}
-        // onClick={() => {
-        //   if (selectedAsset?.tokenSymbol !== currentAsset.tokenSymbol) changeSelectedAsset(asset);
-        //   if (selectedAccount !== currentSubAccount) changeSelectedAccount(currentSubAccount);
-        //   if (editNameId !== currentSubAccount.sub_account_id) setEditNameId("");
-        // }}
-      >
+      <div aria-haspopup="true" className={getAccountStyles()}>
         <div className="flex flex-col items-start justify-center">
-          {editNameId === currentSubAccount.sub_account_id ? (
+          {editingSubAccountId === currentSubAccount.sub_account_id ? (
             <div className="flex flex-row items-center justify-start">
               <CustomInput
                 intent={"primary"}
                 placeholder={""}
-                value={name}
-                border={nameError ? "error" : undefined}
+                value={subAccountName}
+                border={isNameInvalid ? "error" : undefined}
                 sizeComp="small"
                 sizeInput="small"
                 inputClass="!py-1"
@@ -64,13 +63,13 @@ export default function AccountAccordionItem({
               </button>
               <button
                 className="flex items-center justify-center p-1 ml-2 rounded cursor-pointer bg-LockColor"
-                onClick={onAdd}
+                onClick={onCancelEdit}
               >
                 <img src={PlusIcon} className="w-4 h-4 rotate-45" alt="info-icon" />
               </button>
             </div>
           ) : (
-            <button className="p-0 w-full text-left min-h-[1.645rem]" onDoubleClick={onDoubleClick}>
+            <button className="p-0 w-full text-left min-h-[1.645rem]" onDoubleClick={onEditSubAccount}>
               <p className={`${accName()} break-words max-w-[9rem]`}>{`${currentSubAccount?.name}`}</p>
             </button>
           )}
@@ -87,12 +86,7 @@ export default function AccountAccordionItem({
             )}
           </div>
         </div>
-        <div
-          className={getDefaultAccountStyles(
-            // currentSubAccount?.sub_account_id !== "0x0" && Number(currentSubAccount?.amount) === 0 && !newSub,
-            currentSubAccount?.sub_account_id !== "0x0",
-          )}
-        >
+        <div className={getDefaultAccountStyles(currentSubAccount?.sub_account_id !== "0x0")}>
           <div className="flex flex-col items-end justify-center">
             <p className="whitespace-nowrap">
               {`${toFullDecimal(
@@ -105,7 +99,6 @@ export default function AccountAccordionItem({
               2,
             )}`}</p>
           </div>
-          {/* {currentSubAccount?.sub_account_id !== "0x0" && Number(currentSubAccount?.amount) === 0 && !newSub && ( */}
           {currentSubAccount?.sub_account_id !== "0x0" && Number(currentSubAccount?.amount) === 0 && (
             <button className="p-0" onClick={() => setDeleteModalOpen(true)}>
               <TrashIcon className=" fill-PrimaryTextColorLight dark:fill-PrimaryTextColor" />
@@ -124,65 +117,38 @@ export default function AccountAccordionItem({
     </>
   );
 
-  function onDoubleClick() {
-    setEditNameId(currentSubAccount.sub_account_id);
-    // setName(currentSubAccount.name);
-    // setNewSub(undefined);
-    // setAddOpen(false);
+  function onEditSubAccount() {
+    setEditingSubAccountId(currentSubAccount.sub_account_id);
+    setSubAccountName(currentSubAccount.name);
+    setNameValid(false);
   }
 
   function onNameChange(e: ChangeEvent<HTMLInputElement>) {
-    // setName(e.target.value);
-    // setNameError(false);
+    // TODO: implement validation needed.
+    setSubAccountName(e.target.value);
+    setNameValid(false);
   }
 
-  function onAdd() {
-    setEditNameId("");
-    // setNewSub(undefined);
-    // setAddOpen(false);
+  function onCancelEdit() {
+    setEditingSubAccountId("");
+    setNameValid(false);
+    setSubAccountName("");
   }
 
   async function onSave() {
-    //   if (name.trim() !== "") {
-    //     setEditNameId("");
-    //     if (newSub) {
-    //       // INFO: adding new sub account ?
-    //       const asset = assets[+tokenIndex];
-    //       const subAccounts = asset.subAccounts
-    //         .map((sa) => ({
-    //           ...sa,
-    //           name: name,
-    //           numb: currentSubAccount.sub_account_id,
-    //         }))
-    //         .sort((a, b) => bigInt(a.numb).compare(bigInt(b.numb)));
-    //       await db().updateAsset(
-    //         asset.address,
-    //         {
-    //           ...asset,
-    //           subAccounts: subAccounts,
-    //         },
-    //         { sync: true },
-    //       );
-    //       setNewSub(undefined);
-    //       setAddOpen(false);
-    //     } else {
-    //       // INFO: updating the name of the sub account
-    //       const asset = assets[+tokenIndex];
-    //       const subAccounts = asset.subAccounts.map((sa) =>
-    //         sa.sub_account_id === currentSubAccount.sub_account_id ? { ...sa, name: name } : sa,
-    //       );
-    //       await db().updateAsset(
-    //         asset.address,
-    //         {
-    //           ...asset,
-    //           subAccounts: subAccounts,
-    //         },
-    //         { sync: true },
-    //       );
-    //     }
-    //   } else {
-    //     setNameError(true);
-    //   }
+    if (subAccountName.trim() === "") return setNameValid(true);
+
+    const assetIndex = assets.findIndex((a) => a.address === currentAsset.address);
+    if (assetIndex === -1) return;
+
+    const asset = assets[assetIndex];
+    const subAccounts = asset.subAccounts.map((sa) =>
+      sa.sub_account_id === currentSubAccount.sub_account_id ? { ...sa, subAccountName: subAccountName } : sa,
+    );
+    await db().updateAsset(asset.address, { ...asset, subAccounts: subAccounts }, { sync: true });
+
+    setEditingSubAccountId("");
+    setNameValid(false);
   }
 
   function getAccountStyles() {
@@ -190,8 +156,6 @@ export default function AccountAccordionItem({
       ["relative flex flex-row justify-between items-center w-[calc(100%-2rem)] min-h-[3.5rem] pl-4 pr-4 text-PrimaryColor dark:text-PrimaryColorLight cursor-pointer hover:bg-[rgb(51,178,239,0.24)] text-md"]:
         true,
       ["bg-[rgb(51,178,239,0.24)]"]: isCurrentSubAccountSelected,
-      // ["bg-[rgb(51,178,239,0.24)]"]: isCurrentSubAccountSelected && !newSub,
-      // ["!bg-SvgColor"]: newSub,
     });
   }
 

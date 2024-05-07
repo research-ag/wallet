@@ -27,8 +27,6 @@ export const UseAsset = () => {
   }, [assets]);
 
   useEffect(() => {
-    console.log("selectedAsset", selectedAsset);
-
     if (selectedAsset) {
       let actualSub: SubAccount | undefined = undefined;
       selectedAsset.subAccounts.map((currentSubAccount: SubAccount) => {
