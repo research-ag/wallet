@@ -270,6 +270,7 @@ const AccountElement = ({
       ["!bg-SvgColor"]: newSub,
     });
   }
+
   function accName() {
     return clsx({ ["text-[#33b2ef]"]: chechEqId() });
   }

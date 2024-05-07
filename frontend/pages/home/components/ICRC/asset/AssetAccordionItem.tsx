@@ -113,15 +113,15 @@ export default function AssetAccordionItem(props: AssetAccordionItemProps) {
         {hasSubAccounts && (
           <Accordion.Content>
             <div className={getContainerStyles(isCurrentAssetLast)}>
-              {currentAsset.subAccounts.map((subAccount, index) => {
+              {currentAsset.subAccounts.map((currentSubAccount, index) => {
                 const isCurrentSubAccountSelected =
-                  subAccount.sub_account_id === selectedAccount?.sub_account_id &&
-                  subAccount.symbol === selectedAccount?.symbol;
+                  currentSubAccount.sub_account_id === selectedAccount?.sub_account_id &&
+                  currentSubAccount.symbol === selectedAccount?.symbol;
 
                 return (
                   <AccountAccordionItem
-                    subAccount={subAccount}
-                    key={`${subAccount.sub_account_id}-${index}`}
+                    currentSubAccount={currentSubAccount}
+                    key={`${currentSubAccount.sub_account_id}-${index}`}
                     isCurrentSubAccountSelected={isCurrentSubAccountSelected}
                     currentAsset={currentAsset}
                   />

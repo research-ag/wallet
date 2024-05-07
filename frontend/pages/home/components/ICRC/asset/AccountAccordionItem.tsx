@@ -10,20 +10,21 @@ import { ChangeEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { CustomCopy } from "@components/tooltip";
 import { toFullDecimal } from "@/utils";
+import DeleteSubAccountModal from "./DeleteSubAccountModal";
 
 interface AccountAccordionItemProps {
-  subAccount: SubAccount;
+  currentSubAccount: SubAccount;
   isCurrentSubAccountSelected: boolean;
   currentAsset: Asset;
 }
 
 export default function AccountAccordionItem({
-  subAccount,
+  currentSubAccount,
   isCurrentSubAccountSelected,
   currentAsset,
 }: AccountAccordionItemProps) {
   const { t } = useTranslation();
-  const [deleteModal, setDeleteModal] = useState(false);
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [nameError, setNameError] = useState(false);
   const [loadingDelete, setLoadingDelete] = useState(false);
   const [editNameId, setEditNameId] = useState("");
@@ -36,12 +37,12 @@ export default function AccountAccordionItem({
         className={getAccountStyles()}
         // onClick={() => {
         //   if (selectedAsset?.tokenSymbol !== currentAsset.tokenSymbol) changeSelectedAsset(asset);
-        //   if (selectedAccount !== subAccount) changeSelectedAccount(subAccount);
-        //   if (editNameId !== subAccount.sub_account_id) setEditNameId("");
+        //   if (selectedAccount !== currentSubAccount) changeSelectedAccount(currentSubAccount);
+        //   if (editNameId !== currentSubAccount.sub_account_id) setEditNameId("");
         // }}
       >
         <div className="flex flex-col items-start justify-center">
-          {editNameId === subAccount.sub_account_id ? (
+          {editNameId === currentSubAccount.sub_account_id ? (
             <div className="flex flex-row items-center justify-start">
               <CustomInput
                 intent={"primary"}
@@ -70,50 +71,62 @@ export default function AccountAccordionItem({
             </div>
           ) : (
             <button className="p-0 w-full text-left min-h-[1.645rem]" onDoubleClick={onDoubleClick}>
-              <p className={`${accName()} break-words max-w-[9rem]`}>{`${subAccount?.name}`}</p>
+              <p className={`${accName()} break-words max-w-[9rem]`}>{`${currentSubAccount?.name}`}</p>
             </button>
           )}
           <div className="flex flex-row items-center justify-start gap-3 min-h-5">
-            <p className={`${subAccountIdStyles()} break-words max-w-[9rem] text-left`}>{subAccount?.sub_account_id}</p>
+            <p className={`${subAccountIdStyles()} break-words max-w-[9rem] text-left`}>
+              {currentSubAccount?.sub_account_id}
+            </p>
             {isCurrentSubAccountSelected && (
-              <CustomCopy size={"xSmall"} className="p-0" copyText={subAccount?.sub_account_id.substring(2) || "0"} />
+              <CustomCopy
+                size={"xSmall"}
+                className="p-0"
+                copyText={currentSubAccount?.sub_account_id.substring(2) || "0"}
+              />
             )}
           </div>
         </div>
         <div
           className={getDefaultAccountStyles(
-            // subAccount?.sub_account_id !== "0x0" && Number(subAccount?.amount) === 0 && !newSub,
-            subAccount?.sub_account_id !== "0x0",
+            // currentSubAccount?.sub_account_id !== "0x0" && Number(currentSubAccount?.amount) === 0 && !newSub,
+            currentSubAccount?.sub_account_id !== "0x0",
           )}
         >
           <div className="flex flex-col items-end justify-center">
             <p className="whitespace-nowrap">
-              {`${toFullDecimal(subAccount?.amount, subAccount.decimal, Number(currentAsset.shortDecimal))} ${
-                currentAsset.symbol
-              }`}
+              {`${toFullDecimal(
+                currentSubAccount?.amount,
+                currentSubAccount.decimal,
+                Number(currentAsset.shortDecimal),
+              )} ${currentAsset.symbol}`}
             </p>
-            <p className={subAccountCurrencyStyles()}>{`≈ $${Number(subAccount?.currency_amount).toFixed(2)}`}</p>
+            <p className={subAccountCurrencyStyles()}>{`≈ $${Number(currentSubAccount?.currency_amount).toFixed(
+              2,
+            )}`}</p>
           </div>
-          {/* {subAccount?.sub_account_id !== "0x0" && Number(subAccount?.amount) === 0 && !newSub && ( */}
-          {subAccount?.sub_account_id !== "0x0" && Number(subAccount?.amount) === 0 && (
-            <button
-              className="p-0"
-              onClick={() => {
-                setDeleteModal(true);
-              }}
-            >
+          {/* {currentSubAccount?.sub_account_id !== "0x0" && Number(currentSubAccount?.amount) === 0 && !newSub && ( */}
+          {currentSubAccount?.sub_account_id !== "0x0" && Number(currentSubAccount?.amount) === 0 && (
+            <button className="p-0" onClick={() => setDeleteModalOpen(true)}>
               <TrashIcon className=" fill-PrimaryTextColorLight dark:fill-PrimaryTextColor" />
             </button>
           )}
         </div>
       </div>
-      {deleteModal && <p>Delete Modal</p>}
+      {isDeleteModalOpen && (
+        <DeleteSubAccountModal
+          currentAsset={currentAsset}
+          isDeleteModalOpen={isDeleteModalOpen}
+          onClose={() => setDeleteModalOpen(false)}
+          currentSubAccount={currentSubAccount}
+        />
+      )}
     </>
   );
 
   function onDoubleClick() {
-    setEditNameId(subAccount.sub_account_id);
-    // setName(subAccount.name);
+    setEditNameId(currentSubAccount.sub_account_id);
+    // setName(currentSubAccount.name);
     // setNewSub(undefined);
     // setAddOpen(false);
   }
@@ -139,7 +152,7 @@ export default function AccountAccordionItem({
     //         .map((sa) => ({
     //           ...sa,
     //           name: name,
-    //           numb: subAccount.sub_account_id,
+    //           numb: currentSubAccount.sub_account_id,
     //         }))
     //         .sort((a, b) => bigInt(a.numb).compare(bigInt(b.numb)));
     //       await db().updateAsset(
@@ -156,7 +169,7 @@ export default function AccountAccordionItem({
     //       // INFO: updating the name of the sub account
     //       const asset = assets[+tokenIndex];
     //       const subAccounts = asset.subAccounts.map((sa) =>
-    //         sa.sub_account_id === subAccount.sub_account_id ? { ...sa, name: name } : sa,
+    //         sa.sub_account_id === currentSubAccount.sub_account_id ? { ...sa, name: name } : sa,
     //       );
     //       await db().updateAsset(
     //         asset.address,
