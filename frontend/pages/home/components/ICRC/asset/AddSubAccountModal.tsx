@@ -43,8 +43,6 @@ export default function AddSubAccountModal({
   const [loading, setLoading] = useState(false);
   const [newErr, setNewErr] = useState({ name: false, idx: false });
   const [hexChecked, setHexChecked] = useState<boolean>(false);
-  // const [editNameId, setEditNameId] = useState("");
-  // const [name, setName] = useState("");
 
   const currentAssetIndex = assets.findIndex((asset) => asset.tokenSymbol === currentAsset.tokenSymbol);
 
@@ -62,9 +60,6 @@ export default function AddSubAccountModal({
       decimal: Number(currentAsset.decimal),
       symbol: currentAsset.tokenSymbol,
     });
-
-    // setEditNameId(currentAsset.subAccounts.length.toFixed());
-    // setName("");
   }, []);
 
   if (currentAssetIndex === -1) return <></>;
