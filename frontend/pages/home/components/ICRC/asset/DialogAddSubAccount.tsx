@@ -18,6 +18,7 @@ import { db } from "@/database/db";
 import { LoadingLoader } from "@components/loader";
 import { IconTypeEnum } from "@/const";
 import { getAssetIcon } from "@/utils/icons";
+import { asciiHex } from "@pages/contacts/constants/asciiHex";
 
 interface DialogAddSubAccountProps {
   newErr: any;
@@ -52,7 +53,7 @@ const DialogAddSubAccount = ({
 }: DialogAddSubAccountProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const { asciiHex, userAgent, userPrincipal, changeSelectedAccount } = GeneralHook();
+  const { userAgent, userPrincipal, changeSelectedAccount } = GeneralHook();
   const [loading, setLoading] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 

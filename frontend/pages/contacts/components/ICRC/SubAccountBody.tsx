@@ -25,12 +25,12 @@ import { getNormalizedHex, isHexadecimalValid } from "@/utils/checkers";
 import { getAllowanceDetails } from "@/pages/home/helpers/icrc/";
 import { DeleteContactTypeEnum } from "@/const";
 import useContactTable from "../../hooks/useContactTable";
-import { GeneralHook } from "@pages/home/hooks/generalHook";
 import { LoadingLoader } from "@components/loader";
 import store from "@redux/Store";
 import { SupportedStandardEnum } from "@/@types/icrc";
 import { CustomButton } from "@components/button";
 import { ChangeEvent, useState } from "react";
+import { asciiHex } from "@pages/contacts/constants/asciiHex";
 
 interface SubAccountBodyProps {
   asst: AssetContact;
@@ -74,7 +74,6 @@ export default function SubAccountBody(props: SubAccountBodyProps) {
     setDeleteObject,
     setFromPrincSub,
   } = props;
-  const { asciiHex } = GeneralHook();
   const { editCntctSubacc, addCntctSubacc, isPending, setIsPending } = useContactTable();
   const [princ, setPrinc] = useState("");
 

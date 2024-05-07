@@ -4,8 +4,6 @@ import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { setSelectedAccount, setSelectedAsset } from "@redux/assets/AssetReducer";
 
 export const UseAsset = () => {
-  console.log("render UseAsset");
-
   const dispatch = useAppDispatch();
   const { assets } = useAppSelector((state) => state.asset);
   const { selectedAsset, selectedAccount } = useAppSelector((state) => state.asset.helper);

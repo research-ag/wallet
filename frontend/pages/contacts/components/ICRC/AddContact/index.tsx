@@ -19,6 +19,7 @@ import { SupportedStandardEnum } from "@/@types/icrc";
 import { db } from "@/database/db";
 import { getAccountIdentifier } from "@/utils";
 import { retrieveAssetsWithAllowance, retrieveSubAccountsWithAllowance } from "@pages/home/helpers/icrc/";
+import { asciiHex } from "@pages/contacts/constants/asciiHex";
 
 interface AddContactProps {
   setAddOpen(value: boolean): void;
@@ -27,7 +28,7 @@ interface AddContactProps {
 export default function AddContact({ setAddOpen }: AddContactProps) {
   const { t } = useTranslation();
   const [isAllowancesChecking, setIsAllowancesChecking] = useState<boolean>(false);
-  const { assets, asciiHex } = GeneralHook();
+  const { assets } = GeneralHook();
   const { checkPrincipalValid } = usePrincipalValidator();
 
   const {

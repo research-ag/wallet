@@ -32,43 +32,6 @@ export const GeneralHook = () => {
     return assets.find((asst: Asset) => asst.address === address) ? true : false;
   };
 
-  const asciiHex = [
-    "Backspace",
-    "Enter",
-    "Control",
-    "End",
-    "Home",
-    "ArrowLeft",
-    "ArrowRight",
-    "Delete",
-    "0",
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-    "8",
-    "9",
-    "A",
-    "B",
-    "C",
-    "D",
-    "E",
-    "F",
-    "V",
-    "X",
-    "a",
-    "b",
-    "c",
-    "d",
-    "e",
-    "f",
-    "v",
-    "x",
-  ];
-
   return {
     userAgent,
     userPrincipal,
@@ -83,7 +46,6 @@ export const GeneralHook = () => {
     changeSelectedAsset,
     changeSelectedAccount,
     changeSelectedTransaction,
-    asciiHex,
     //
     getTotalAsset,
     checkAssetAdded,

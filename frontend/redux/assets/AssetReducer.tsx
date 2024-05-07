@@ -14,7 +14,7 @@ interface AssetStateHelper {
 interface AssetStateMutation {
   assetMutated?: Asset;
   assetAction: AssetMutationAction;
-  subAccountAction: SubAccountMutationAction,
+  subAccountAction: SubAccountMutationAction;
   assetResult: AssetMutationResult;
 }
 
