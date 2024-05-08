@@ -114,7 +114,7 @@ export const formatckBTCTransaccion = (
        * References:
        * - https://forum.dfinity.org/t/breaking-changes-in-ledger-icrc-icp-javascript-libraries/23465
        * - https://github.com/dfinity/ic-js/blob/bf808fef5e3dbe4c3662abe8b350a04ba684619d/packages/ledger-icrc/candid/icrc_ledger.d.ts#L148
-      */
+       */
       (operation: {
         from: Account;
         memo: [] | [Uint8Array | number[]];

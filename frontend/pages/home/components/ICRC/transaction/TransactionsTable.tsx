@@ -1,17 +1,12 @@
 import { TransactionDrawer } from "@/@types/transactions";
-import { AssetSymbolEnum } from "@/common/const";
-import { hexToUint8Array } from "@common/utils/hexadecimal";
 import { useTransactionsTable } from "@pages/home/hooks/useTransactionsTable";
-import { getAllTransactionsICP, getAllTransactionsICRC1 } from "@redux/assets/AssetActions";
-import { Asset, SubAccount, Transaction } from "@redux/models/AccountModels";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { setTransactionDrawerAction } from "@redux/transaction/TransactionActions";
-import { addTxWorker, setSelectedTransaction, setTransactions } from "@redux/transaction/TransactionReducer";
+import { setSelectedTransaction } from "@redux/transaction/TransactionReducer";
 import { flexRender, getCoreRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 import { clsx } from "clsx";
-import { useEffect } from "react";
 
-const ICRCTransactionsTable = () => {
+export default function ICRCTransactionsTable() {
   const dispatch = useAppDispatch();
   const { transactions, selectedTransaction } = useAppSelector((state) => state.transaction);
   const { columns, sorting, setSorting } = useTransactionsTable();
@@ -74,7 +69,7 @@ const ICRCTransactionsTable = () => {
       </table>
     </div>
   );
-};
+}
 
 // Tailwind CSS
 const colStyle = (idxTH: number) =>
@@ -85,74 +80,3 @@ const colStyle = (idxTH: number) =>
     ["w-[20%] min-w-[20%] max-w-[20%]"]: idxTH === 2,
     ["w-[25%] min-w-[25%] max-w-[25%]"]: idxTH === 3,
   });
-
-export default function TransactionsTableWrapper() {
-  const dispatch = useAppDispatch();
-  const { txWorker } = useAppSelector((state) => state.transaction);
-  const { selectedAccount, selectedAsset } = useAppSelector((state) => state.asset.helper);
-  const { assets } = useAppSelector((state) => state.asset);
-
-  const getSelectedSubaccountICRCTx = async (founded: boolean) => {
-    const selectedToken = assets.find((tk: Asset) => tk.symbol === selectedAsset?.symbol);
-
-    if (selectedToken) {
-      const auxTx: Transaction[] = await getAllTransactionsICRC1(
-        selectedToken?.index || "",
-        hexToUint8Array(selectedAccount?.sub_account_id || "0x0"),
-        true,
-        selectedAsset?.tokenSymbol || "",
-        selectedToken.address,
-        selectedAccount?.sub_account_id,
-      );   
-
-      !founded && addNewTxsToList(auxTx, selectedAsset, selectedAccount);
-    }
-  };
-
-  const getSelectedSubaccountICPTx = async (founded: boolean) => {
-    const auxTx: Transaction[] = await getAllTransactionsICP({
-      subaccount_index: selectedAccount?.sub_account_id || "",
-      loading: true,
-      isOGY: selectedAccount?.symbol === AssetSymbolEnum.Enum.OGY,
-    });
-
-    !founded && addNewTxsToList(auxTx, selectedAsset, selectedAccount);
-  };
-
-  const addNewTxsToList = (txs: Transaction[], asset?: Asset, subacc?: SubAccount) => {
-    if (asset && subacc) {
-      dispatch(
-        addTxWorker({
-          symbol: asset.symbol,
-          tokenSymbol: asset.tokenSymbol,
-          subaccount: subacc.sub_account_id,
-          tx: txs,
-        }),
-      );
-    }
-  };
-
-  async function filterTransactions() {
-    const transactionsByAccount = txWorker.find((tx) => {
-      return selectedAccount?.symbol === tx.tokenSymbol && selectedAccount?.sub_account_id === tx.subaccount;
-    });
-
-    if (transactionsByAccount) dispatch(setTransactions(transactionsByAccount.tx));
-    else dispatch(setTransactions([]));
-
-    const isSelectedICP = selectedAsset?.tokenSymbol === AssetSymbolEnum.Enum.ICP;
-    const isSelectedOGY = selectedAsset?.tokenSymbol === AssetSymbolEnum.Enum.OGY;
-
-    if (isSelectedICP || isSelectedOGY) {
-      await getSelectedSubaccountICPTx(!!transactionsByAccount);
-    } else {
-      await getSelectedSubaccountICRCTx(!!transactionsByAccount);
-    }
-  }
-
-  useEffect(() => {
-    filterTransactions();
-  }, [selectedAccount, selectedAsset, txWorker]);
-
-  return <ICRCTransactionsTable />;
-}
