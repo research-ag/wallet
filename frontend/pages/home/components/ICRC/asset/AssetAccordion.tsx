@@ -17,7 +17,7 @@ export default function AssetAccordion(props: AssetAccordionProps) {
 
   return (
     <div className="w-full max-h-[calc(100vh-13rem)] scroll-y-light">
-      <Accordion.Root type="multiple" defaultValue={[]} onValueChange={onValueChange}>
+      <Accordion.Root type="multiple" defaultValue={[]} value={accordionIndex} onValueChange={onValueChange}>
         {assets.map((currentAsset: Asset, index) => {
           const cleanSearchKey = searchKey.toLocaleLowerCase().trim();
           const isNameIncluded = currentAsset?.name?.toLocaleLowerCase().includes(cleanSearchKey);

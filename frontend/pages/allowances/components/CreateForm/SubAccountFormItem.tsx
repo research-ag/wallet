@@ -36,7 +36,7 @@ export default function SubAccountFormItem(props: ISubAccountFormItemProps) {
     if (!searchValue) return allowanceAsset?.subAccounts.map(formatSubAccount) || [];
 
     const filteredSubAccounts =
-    allowanceAsset?.subAccounts.filter((account) => account.name.toLowerCase().includes(searchValue.toLowerCase())) ||
+      allowanceAsset?.subAccounts.filter((account) => account.name.toLowerCase().includes(searchValue.toLowerCase())) ||
       [];
 
     return filteredSubAccounts.map(formatSubAccount);

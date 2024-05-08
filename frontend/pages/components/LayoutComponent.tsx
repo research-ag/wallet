@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { RouteProps } from "react-router-dom";
 import "./style.scss";
 import TopBarComponent from "./topbar";
+import DisclaimerModal from "@components/DisclaimerModal";
 
 interface LayoutProps extends RouteProps {
   role: any;
@@ -16,8 +17,9 @@ const LayoutComponent = ({ children, isLoginPage }: LayoutProps) => {
       <div className={"flex flex-col w-full h-screen"}>
         <TopBarComponent isLoginPage={isLoginPage}></TopBarComponent>
         <Suspense>
-          <div className="flex flex-col justify-between relative w-full h-screen">{children}</div>
+          <div className="relative flex flex-col justify-between w-full h-screen">{children}</div>
         </Suspense>
+        <DisclaimerModal isLoginPage={isLoginPage} />
       </div>
     </div>
   );

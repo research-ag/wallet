@@ -144,7 +144,6 @@ export default function AccountAccordionItem({
   async function onSave() {
     if (subAccountName.trim() === "") return setNameInvalid(true);
 
-
     const assetIndex = assets.findIndex((a) => a.address === currentAsset.address);
     if (assetIndex === -1) return;
 

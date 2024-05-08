@@ -17,7 +17,6 @@ interface AuthState {
   assetList: Asset[];
   theme: string;
   blur: boolean;
-  disclaimer: boolean;
   dbLocation: DB_Type;
   customDbCanisterId: string;
   userAgent: HttpAgent;
@@ -35,7 +34,6 @@ const initialState: AuthState = {
   blur: false,
   authClient: "",
   assetList: [],
-  disclaimer: true,
   dbLocation: DB_Type.LOCAL,
   customDbCanisterId: "",
   userAgent: defaultValue,
@@ -99,9 +97,6 @@ const authSlice = createSlice({
     setBlur(state, action) {
       state.blur = action.payload;
     },
-    setDisclaimer(state, action) {
-      state.disclaimer = action.payload;
-    },
     setDbLocation(state, action) {
       state.dbLocation = action.payload;
     },
@@ -132,7 +127,6 @@ export const {
   setAuthClient,
   setTheme,
   setBlur,
-  setDisclaimer,
   setDbLocation,
   setCustomDbCanisterId,
   setUserAgent,
