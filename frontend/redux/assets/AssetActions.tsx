@@ -1,18 +1,15 @@
 import store from "@redux/Store";
 import { SnsToken } from "@redux/models/TokenModels";
-import { IcrcAccount, IcrcIndexCanister, IcrcTokenMetadataResponse } from "@dfinity/ledger-icrc";
+import { IcrcTokenMetadataResponse } from "@dfinity/ledger-icrc";
 import { setTokenMarket, setICPSubaccounts, setAccordionAssetIdx, setAssets } from "./AssetReducer";
 import { AccountIdentifier, SubAccount as SubAccountNNS } from "@dfinity/ledger-icp";
 import { Asset, ICPSubAccount } from "@redux/models/AccountModels";
-import { Principal } from "@dfinity/principal";
-import { GetAllTransactionsICPParams, UpdateAllBalances } from "@/@types/assets";
+import { UpdateAllBalances } from "@/@types/assets";
 import { getICRCSupportedStandards } from "@/common/libs/icrc";
 import { HttpAgent } from "@dfinity/agent";
-import { setTransactions } from "@redux/transaction/TransactionReducer";
 import { getETHRate, getTokensFromMarket } from "@/common/utils/market";
 import { refreshAssetBalances } from "@pages/home/helpers/assets";
 import { hexToUint8Array } from "@common/utils/hexadecimal";
-import { formatckBTCTransaccion, formatIcpTransaccion } from "@pages/home/helpers/transactions";
 import { getMetadataInfo } from "@common/utils/icrc";
 
 /**
@@ -80,104 +77,6 @@ export const updateAllBalances: UpdateAllBalances = async (params) => {
   }
 
   return newAssetsUpload;
-};
-
-export const getAllTransactionsICP = async (params: GetAllTransactionsICPParams) => {
-  const { subaccount_index, loading, isOGY } = params;
-
-  const myPrincipal = store.getState().auth.userPrincipal;
-  let subacc: SubAccountNNS | undefined = undefined;
-  try {
-    subacc = SubAccountNNS.fromBytes(hexToUint8Array(subaccount_index)) as SubAccountNNS;
-  } catch {
-    subacc = undefined;
-  }
-
-  const accountIdentifier = AccountIdentifier.fromPrincipal({
-    principal: myPrincipal,
-    subAccount: subacc,
-  });
-  try {
-    const response = await fetch(
-      `${isOGY ? import.meta.env.VITE_ROSETTA_URL_OGY : import.meta.env.VITE_ROSETTA_URL}/search/transactions`,
-      {
-        method: "POST",
-        body: JSON.stringify({
-          network_identifier: {
-            blockchain: isOGY ? import.meta.env.VITE_NET_ID_BLOCKCHAIN_OGY : import.meta.env.VITE_NET_ID_BLOCKCHAIN,
-            network: isOGY ? import.meta.env.VITE_NET_ID_NETWORK_OGY : import.meta.env.VITE_NET_ID_NETWORK,
-          },
-          account_identifier: {
-            address: accountIdentifier.toHex(),
-          },
-        }),
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "*/*",
-        },
-      },
-    ).catch();
-    if (!response.ok) throw Error(`${response.statusText}`);
-    const { transactions } = await response.json();
-    const transactionsInfo = transactions.map(({ transaction, block_identifier }: any) =>
-      formatIcpTransaccion(accountIdentifier.toHex(), transaction, block_identifier.hash),
-    );
-
-    if (loading) {
-      store.dispatch(setTransactions(transactionsInfo));
-    } else {
-      return transactionsInfo;
-    }
-  } catch (error) {
-    if (!loading) {
-      return [];
-    }
-  }
-};
-
-export const getAllTransactionsICRC1 = async (
-  canister_id: any,
-  subaccount_index: Uint8Array,
-  loading: boolean,
-  assetSymbol: string,
-  canister: string,
-  subNumber?: string,
-) => {
-  try {
-    const myAgent = store.getState().auth.userAgent;
-    const myPrincipal = store.getState().auth.userPrincipal;
-    const canisterPrincipal = Principal.fromText(canister_id);
-
-    const { getTransactions: ICRC1_getTransactions } = IcrcIndexCanister.create({
-      agent: myAgent,
-      canisterId: canisterPrincipal,
-    });
-
-    const ICRC1getTransactions = await ICRC1_getTransactions({
-      account: {
-        owner: myPrincipal,
-        subaccount: subaccount_index,
-      } as IcrcAccount,
-      max_results: BigInt(100),
-    });
-
-    const transactionsInfo = ICRC1getTransactions.transactions.map(({ transaction, id }) =>
-      formatckBTCTransaccion(transaction, id, myPrincipal?.toString(), assetSymbol, canister, subNumber),
-    );
-
-    if (
-      loading &&
-      store.getState().asset.helper.selectedAccount?.sub_account_id === subNumber &&
-      assetSymbol === store.getState().asset.helper.selectedAsset?.tokenSymbol
-    ) {
-      store.dispatch(setTransactions(transactionsInfo));
-      return transactionsInfo;
-    } else {
-      return transactionsInfo;
-    }
-  } catch {
-    return [];
-  }
 };
 
 export const getSNSTokens = async (agent: HttpAgent): Promise<Asset[]> => {
