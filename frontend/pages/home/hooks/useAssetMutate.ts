@@ -20,11 +20,6 @@ export default function useAssetMutate() {
   const [newAsset, setNewAsset] = useState<Asset>(assetMutateInitialState);
   const [errToken, setErrToken] = useState("");
 
-  // useEffect(() => {
-  //   TODO: set to redux status adding asset
-  //   if (!isAppDataFreshing) setAddStatus(AddingAssetsEnum.Enum.done);
-  // }, [isAppDataFreshing]);
-
   return {
     newAsset,
     setNewAsset,
