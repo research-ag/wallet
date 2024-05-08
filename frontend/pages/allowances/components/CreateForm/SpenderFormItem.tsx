@@ -33,7 +33,8 @@ export default function SpenderFormItem(props: ISpenderFormItemProps) {
   const { contacts, setAllowanceState, isLoading, allowance } = props;
 
   const options = useMemo(() => {
-    if (!search) contacts?.map(formatContact);
+    if (!search) return contacts?.map(formatContact);
+
     return contacts
       ?.filter((contact) => contact.name.toLowerCase().includes(search?.toLowerCase() || ""))
       .map(formatContact);
