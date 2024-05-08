@@ -144,13 +144,16 @@ export default function AccountAccordionItem({
   async function onSave() {
     if (subAccountName.trim() === "") return setNameInvalid(true);
 
+
     const assetIndex = assets.findIndex((a) => a.address === currentAsset.address);
     if (assetIndex === -1) return;
 
     const asset = assets[assetIndex];
-    const subAccounts = asset.subAccounts.map((sa) =>
-      sa.sub_account_id === currentSubAccount.sub_account_id ? { ...sa, subAccountName: subAccountName } : sa,
+
+    const subAccounts: SubAccount[] = asset.subAccounts.map((sa) =>
+      sa.sub_account_id === currentSubAccount.sub_account_id ? { ...sa, name: subAccountName } : sa,
     );
+
     await db().updateAsset(asset.address, { ...asset, subAccounts: subAccounts }, { sync: true });
 
     setEditingSubAccountId("");
