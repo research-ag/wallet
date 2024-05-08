@@ -103,7 +103,7 @@ export default function TransactionsTableWrapper() {
         selectedAsset?.tokenSymbol || "",
         selectedToken.address,
         selectedAccount?.sub_account_id,
-      );
+      );   
 
       !founded && addNewTxsToList(auxTx, selectedAsset, selectedAccount);
     }

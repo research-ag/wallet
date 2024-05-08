@@ -1,3 +1,4 @@
+import { Buffer } from "buffer";
 import { removeLeadingZeros } from "@/common/utils/strings";
 import { isNullish, uint8ArrayToHexString } from "@dfinity/utils";
 
