@@ -18,7 +18,7 @@ export default function SubAccountFormItem(props: ISubAccountFormItemProps) {
   const { t } = useTranslation();
   const { errors } = useAppSelector((state) => state.allowance);
   const { assets } = useAppSelector((state) => state.asset);
-  const { allowance, selectedAsset, setAllowanceState, isLoading } = props;
+  const { allowance, setAllowanceState, isLoading } = props;
   const [searchValue, setSearchValue] = useState<string | null>(null);
   const onOpenChange = () => setSearchValue(null);
   const onSearchChange = (searchValue: string) => {
@@ -33,14 +33,14 @@ export default function SubAccountFormItem(props: ISubAccountFormItemProps) {
   );
 
   const options = useMemo(() => {
-    if (!searchValue) return selectedAsset?.subAccounts.map(formatSubAccount) || [];
+    if (!searchValue) return allowanceAsset?.subAccounts.map(formatSubAccount) || [];
 
     const filteredSubAccounts =
-      selectedAsset?.subAccounts.filter((account) => account.name.toLowerCase().includes(searchValue.toLowerCase())) ||
+    allowanceAsset?.subAccounts.filter((account) => account.name.toLowerCase().includes(searchValue.toLowerCase())) ||
       [];
 
     return filteredSubAccounts.map(formatSubAccount);
-  }, [allowance.asset, searchValue, selectedAsset]);
+  }, [allowance.asset, searchValue, allowanceAsset]);
 
   function formatSubAccount(subAccount: SubAccount) {
     return {
