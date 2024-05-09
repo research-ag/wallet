@@ -17,7 +17,7 @@ interface ISubAccountFormItemProps {
 export default function SubAccountFormItem(props: ISubAccountFormItemProps) {
   const { t } = useTranslation();
   const { errors } = useAppSelector((state) => state.allowance);
-  const { assets } = useAppSelector((state) => state.asset);
+  const { assets } = useAppSelector((state) => state.asset.list);
   const { allowance, setAllowanceState, isLoading } = props;
   const [searchValue, setSearchValue] = useState<string | null>(null);
   const onOpenChange = () => setSearchValue(null);

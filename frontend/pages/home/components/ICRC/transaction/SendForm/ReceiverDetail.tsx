@@ -8,7 +8,7 @@ import { toFullDecimal } from "@common/utils/amount";
 
 export default function ReceiverDetail() {
   const { t } = useTranslation();
-  const { assets } = useAppSelector((state) => state.asset);
+  const { assets } = useAppSelector((state) => state.asset.list);
   const { receiver, sender } = useAppSelector((state) => state.transaction);
   const { isReceiverOwnSubAccount, receiverSubAccount, getReceiverBalance } = useSend();
 

@@ -15,7 +15,7 @@ interface FixedFieldsProps {
 export default function FixedFieldsFormItem({ allowance }: FixedFieldsProps) {
   const { t } = useTranslation();
   const { contacts } = useAppSelector((state) => state.contacts);
-  const { assets } = useAppSelector((state) => state.asset);
+  const { assets } = useAppSelector((state) => state.asset.list);
 
   const spenderName = useMemo(() => {
     const contact = contacts.find((contact) => contact.principal === allowance?.spender);

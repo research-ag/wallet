@@ -6,7 +6,7 @@ import { filterByAsset, filterBySpenderAndSubAccount } from "../helpers/filters"
 import { sortByAmount, sortByExpiration, sortBySpender, sortBySubAccount } from "../helpers/sorters";
 
 export default function useAllowances() {
-  const { allowances: rawAllowances } = useAppSelector((state) => state.allowance);
+  const { allowances: rawAllowances } = useAppSelector((state) => state.allowance.list);
   const [searchKey, setSearchKey] = useState<string>("");
   const [selectedAssets, setSelectedAssets] = useState<string[]>([]);
   const [sorting, setSorting] = useState<SortOrder>(SortOrderEnum.Values.ASC);

@@ -8,7 +8,8 @@ import { setSelectedTransaction, setTransactions } from "@redux/transaction/Tran
 export const GeneralHook = () => {
   const dispatch = useAppDispatch();
 
-  const { ICPSubaccounts, assets, accounts } = useAppSelector((state) => state.asset);
+  const { assets } = useAppSelector((state) => state.asset.list);
+  const { ICPSubaccounts, accounts } = useAppSelector((state) => state.asset);
   const { selectedAsset, selectedAccount } = useAppSelector((state) => state.asset.helper);
 
   const { userAgent, userPrincipal } = useAppSelector((state) => state.auth);

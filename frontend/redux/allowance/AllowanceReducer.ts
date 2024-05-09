@@ -25,7 +25,9 @@ interface AllowanceState {
   isDeleteAllowance: boolean;
   isLoading: boolean;
   selectedAllowance: TAllowance;
-  allowances: TAllowance[];
+  list: {
+    allowances: TAllowance[];
+  };
   errors: string[];
 }
 
@@ -37,7 +39,9 @@ const initialState: AllowanceState = {
   isDeleteAllowance: false,
   isLoading: false,
   selectedAllowance: initialAllowanceState,
-  allowances: [],
+  list: {
+    allowances: [],
+  },
   errors: [],
 };
 
@@ -58,18 +62,18 @@ const allowanceSlice = createSlice({
       state.selectedAllowance = action.payload;
     },
     setReduxAllowances(state: AllowanceState, action: PayloadAction<TAllowance[]>) {
-      state.allowances = action.payload;
+      state.list.allowances = action.payload;
     },
     addReduxAllowance(state: AllowanceState, action: PayloadAction<TAllowance>) {
-      state.allowances = [...state.allowances, action.payload];
+      state.list.allowances = [...state.list.allowances, action.payload];
     },
     updateReduxAllowance(state: AllowanceState, action: PayloadAction<TAllowance>) {
-      state.allowances = state.allowances.map((allowance) =>
+      state.list.allowances = state.list.allowances.map((allowance) =>
         allowance.id === action.payload.id ? action.payload : allowance,
       );
     },
     deleteReduxAllowance(state: AllowanceState, action: PayloadAction<string>) {
-      state.allowances = state.allowances.filter((allowance) => allowance.id !== action.payload);
+      state.list.allowances = state.list.allowances.filter((allowance) => allowance.id !== action.payload);
     },
     setAllowanceError(state: AllowanceState, action: PayloadAction<string>) {
       const currentErrors = [...(state.errors ?? [])];

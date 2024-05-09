@@ -140,7 +140,6 @@ export enum TransactionDrawer {
 
 export interface TransactionState {
   scannerActiveOption: TransactionScannerOption;
-  transactions: Array<Transaction>;
   isLoading: boolean;
   isInspectTransference: boolean;
   sendingStatus: SendingStatus;
@@ -152,8 +151,11 @@ export interface TransactionState {
   endTime: Date;
   transactionDrawer: TransactionDrawer;
   selectedTransaction: Transaction | undefined;
-  txLoad: boolean;
-  txWorker: Array<TransactionList>;
+  list: {
+    txLoad: boolean;
+    txWorker: Array<TransactionList>;
+    transactions: Array<Transaction>;
+  };
 }
 
 export interface KeyValidationErrors {

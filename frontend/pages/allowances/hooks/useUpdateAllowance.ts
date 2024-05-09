@@ -22,8 +22,9 @@ import { removeZeroesFromAmount, toFullDecimal, toHoleBigInt } from "@common/uti
 export function useUpdateAllowance() {
   const dispatch = useAppDispatch();
   const { onCloseUpdateAllowanceDrawer } = useAllowanceDrawer();
-  const { selectedAllowance, allowances } = useAppSelector((state) => state.allowance);
-  const { assets } = useAppSelector((state) => state.asset);
+  const { allowances } = useAppSelector((state) => state.allowance.list);
+  const { selectedAllowance } = useAppSelector((state) => state.allowance);
+  const { assets } = useAppSelector((state) => state.asset.list);
   const [allowance, setAllowance] = useState<TAllowance>(selectedAllowance);
 
   const setAllowanceState = (allowanceData: Partial<TAllowance>) => {

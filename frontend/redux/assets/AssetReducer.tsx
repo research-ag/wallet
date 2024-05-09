@@ -42,8 +42,10 @@ interface AssetState {
   ICPSubaccounts: Array<ICPSubAccount>;
   accounts: Array<SubAccount>;
   utilData: AssetStateUtilData;
-  assets: Array<Asset>;
   mutation: AssetStateMutation;
+  list: {
+    assets: Array<Asset>;
+  };
 }
 
 const initialState: AssetState = {
@@ -64,7 +66,9 @@ const initialState: AssetState = {
     tokensMarket: [],
     icr1SystemAssets: ICRC1systemAssets,
   },
-  assets: [],
+  list: {
+    assets: [],
+  },
 };
 
 const assetSlice = createSlice({
@@ -95,9 +99,7 @@ const assetSlice = createSlice({
     },
     // asset reducers
     setAssets(state, action) {
-      state.assets = action.payload.sort((a: Asset, b: Asset) => {
-        return a.sortIndex - b.sortIndex;
-      });
+      state.list.assets = action.payload.sort((a: Asset, b: Asset) => a.sortIndex - b.sortIndex);
     },
     // sub accounts reducers
     updateSubAccountBalance: {
@@ -106,15 +108,15 @@ const assetSlice = createSlice({
         { payload }: PayloadAction<{ tokenSymbol: string; subAccountId: string; amount: string }>,
       ) {
         const { tokenSymbol, subAccountId, amount } = payload;
-        const assetIndex = state.assets.findIndex((asset) => asset.tokenSymbol === tokenSymbol);
+        const assetIndex = state.list.assets.findIndex((asset) => asset.tokenSymbol === tokenSymbol);
 
         const marketPrince =
           state.utilData.tokensMarket.find((tokenMarket) => tokenMarket.symbol === tokenSymbol)?.price || "0";
-        const decimals = state.assets.find((asset) => asset.tokenSymbol === tokenSymbol)?.decimal;
+        const decimals = state.list.assets.find((asset) => asset.tokenSymbol === tokenSymbol)?.decimal;
         const USDAmount = marketPrince ? getUSDFromToken(amount, marketPrince, Number(decimals)) : "0";
 
-        if (assetIndex !== -1 && state.assets[assetIndex]) {
-          const newAssetSubAccounts = state.assets[assetIndex].subAccounts.map((subAccount) => {
+        if (assetIndex !== -1 && state.list.assets[assetIndex]) {
+          const newAssetSubAccounts = state.list.assets[assetIndex].subAccounts.map((subAccount) => {
             if (subAccount.sub_account_id === subAccountId) {
               return {
                 ...subAccount,
@@ -125,7 +127,7 @@ const assetSlice = createSlice({
             return subAccount;
           });
 
-          state.assets[assetIndex].subAccounts = newAssetSubAccounts;
+          state.list.assets[assetIndex].subAccounts = newAssetSubAccounts;
         }
       },
       prepare(tokenSymbol: string, subAccountId: string, amount: string) {
@@ -148,7 +150,7 @@ const assetSlice = createSlice({
       (state.helper.initLoad = true), (state.ICPSubaccounts = []);
       state.utilData.tokensMarket = [];
       state.accounts = [];
-      state.assets = [];
+      state.list.assets = [];
       state.helper.selectedAccount = undefined;
       state.helper.selectedAsset = undefined;
       state.helper.accordionIndex = [];

@@ -13,7 +13,7 @@ export default function SearchAsset(props: SearchAssetProps) {
   const { searchKey, setSearchKey } = props;
   const dispatch = useAppDispatch();
   const { selectedAsset, accordionIndex } = useAppSelector((state) => state.asset.helper);
-  const { assets } = useAppSelector((state) => state.asset);
+  const { assets } = useAppSelector((state) => state.asset.list);
   const { t } = useTranslation();
 
   useEffect(() => {

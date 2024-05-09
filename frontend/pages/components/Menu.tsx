@@ -8,8 +8,8 @@ import { useAppSelector } from "@redux/Store";
 const Menu = () => {
   const { contacts } = useAppSelector((state) => state.contacts);
   const { isAppDataFreshing } = useAppSelector((state) => state.common);
-  const { assets } = useAppSelector((state) => state.asset);
-  const { allowances } = useAppSelector((state) => state.allowance);
+  const { assets } = useAppSelector((state) => state.asset.list);
+  const { allowances } = useAppSelector((state) => state.allowance.list);
   const { t } = useTranslation();
 
   const menuList = [

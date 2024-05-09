@@ -18,7 +18,7 @@ interface AssetFilterProps {
 export default function AssetFilter(props: AssetFilterProps) {
   const { setAssetSelectOpen, selectedAssets, assetSelectOpen, setSelectedAssets } = props;
   const { t } = useTranslation();
-  const { assets } = useAppSelector((state) => state.asset);
+  const { assets } = useAppSelector((state) => state.asset.list);
 
   return (
     <DropdownMenu.Root

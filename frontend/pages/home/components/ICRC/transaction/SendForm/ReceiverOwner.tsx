@@ -10,7 +10,7 @@ export default function ReceiverOwner() {
   const { t } = useTranslation();
   const { sender, receiver } = useAppSelector((state) => state.transaction);
   const [searchSubAccountValue, setSearchSubAccountValue] = useState<string | null>(null);
-  const { assets } = useAppSelector((state) => state.asset);
+  const { assets } = useAppSelector((state) => state.asset.list);
 
   const currentAsset = useMemo(() => {
     return assets.find((asset) => asset?.tokenSymbol === sender?.asset?.tokenSymbol);

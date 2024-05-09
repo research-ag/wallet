@@ -11,7 +11,7 @@ export default function useSend() {
   const [transactionFee, setTransactionFee] = useState<string>("0");
   const { userPrincipal } = useAppSelector((state) => state.auth);
   const { contacts } = useAppSelector((state) => state.contacts);
-  const { assets } = useAppSelector((state) => state.asset);
+  const { assets } = useAppSelector((state) => state.asset.list);
   const { sender, receiver, amount, sendingStatus, errors, initTime, endTime } = useAppSelector(
     (state) => state.transaction,
   );

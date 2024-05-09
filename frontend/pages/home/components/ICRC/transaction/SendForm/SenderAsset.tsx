@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 
 export default function SenderAsset() {
   const { t } = useTranslation();
-  const { assets } = useAppSelector((state) => state.asset);
+  const { assets } = useAppSelector((state) => state.asset.list);
   const { sender } = useAppSelector((state) => state.transaction);
   const [searchAsset, setSearchAsset] = useState<string | null>(null);
 

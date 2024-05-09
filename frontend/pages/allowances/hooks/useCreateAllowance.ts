@@ -27,7 +27,7 @@ export default function useCreateAllowance() {
   const dispatch = useAppDispatch();
   const [isLoading, setLoading] = useState(false);
   const { onCloseCreateAllowanceDrawer } = useAllowanceDrawer();
-  const { assets } = useAppSelector(({ asset }) => asset);
+  const { assets } = useAppSelector((state) => state.asset.list);
   const { selectedAsset, selectedAccount } = useAppSelector((state) => state.asset.helper);
 
   const initial = useMemo(() => {

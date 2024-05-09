@@ -12,9 +12,9 @@ interface TransactionsWrapperProps {
 
 export default function TransactionsWrapper({ children }: TransactionsWrapperProps) {
   const dispatch = useAppDispatch();
-  const { txWorker } = useAppSelector((state) => state.transaction);
+  const { txWorker } = useAppSelector((state) => state.transaction.list);
   const { selectedAccount, selectedAsset } = useAppSelector((state) => state.asset.helper);
-  const { assets } = useAppSelector((state) => state.asset);
+  const { assets } = useAppSelector((state) => state.asset.list);
 
   const getSelectedSubaccountICRCTx = async (founded: boolean) => {
     const selectedToken = assets.find((tk: Asset) => tk.symbol === selectedAsset?.symbol);

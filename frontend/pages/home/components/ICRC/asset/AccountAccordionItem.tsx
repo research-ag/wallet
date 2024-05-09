@@ -26,7 +26,7 @@ export default function AccountAccordionItem({
 }: AccountAccordionItemProps) {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const { assets } = useAppSelector((state) => state.asset);
+  const { assets } = useAppSelector((state) => state.asset.list);
   const { selectedAccount, selectedAsset } = useAppSelector((state) => state.asset.helper);
 
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);

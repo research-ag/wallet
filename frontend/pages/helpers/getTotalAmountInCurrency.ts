@@ -3,7 +3,7 @@ import store from "@redux/Store";
 export default function getTotalAmountInCurrency() {
   let amount = 0;
 
-  store.getState().asset.assets.map((tk) => {
+  store.getState().asset.list.assets.map((tk) => {
     const market = store.getState().asset.utilData.tokensMarket.find((tm) => tm.symbol === tk.tokenSymbol);
     let assetTotal = BigInt(0);
     tk.subAccounts.map((sa) => {

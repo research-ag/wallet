@@ -26,7 +26,7 @@ const columns = ["subAccount", "spender", "amount", "expiration", "action"];
 
 export default function AllowanceList({ allowances, handleSortChange }: AllowanceListProps) {
   const { t } = useTranslation();
-  const { assets } = useAppSelector((state) => state.asset);
+  const { assets } = useAppSelector((state) => state.asset.list);
   const { contacts } = useAppSelector((state) => state.contacts);
 
   return (

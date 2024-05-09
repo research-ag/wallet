@@ -19,7 +19,7 @@ interface IAmountFormItemProps {
 export default function AmountFormItem(props: IAmountFormItemProps) {
   const { t } = useTranslation();
   const { errors } = useAppSelector((state) => state.allowance);
-  const { assets } = useAppSelector((state) => state.asset);
+  const { assets } = useAppSelector((state) => state.asset.list);
   const { allowance, setAllowanceState, isLoading } = props;
   const { asset } = allowance;
 

@@ -31,7 +31,7 @@ import { toFullDecimal } from "@common/utils/amount";
 
 const AddAssetManual = () => {
   const { assetAction, assetMutated } = useAppSelector((state) => state.asset.mutation);
-  const { assets } = useAppSelector((state) => state.asset);
+  const { assets } = useAppSelector((state) => state.asset.list);
   const { newAsset, setNewAsset, setErrToken, errToken } = useAssetMutate();
 
   const { t } = useTranslation();

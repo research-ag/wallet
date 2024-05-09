@@ -12,7 +12,7 @@ interface AssetAccordionProps {
 export default function AssetAccordion(props: AssetAccordionProps) {
   const { searchKey } = props;
   const dispatch = useAppDispatch();
-  const { assets } = useAppSelector((state) => state.asset);
+  const { assets } = useAppSelector((state) => state.asset.list);
   const { accordionIndex } = useAppSelector((state) => state.asset.helper);
 
   return (

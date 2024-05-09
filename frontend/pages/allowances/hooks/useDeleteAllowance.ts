@@ -16,7 +16,7 @@ import { initialAllowanceState } from "@redux/allowance/AllowanceReducer";
 export default function useDeleteAllowance() {
   const dispatch = useAppDispatch();
   const { selectedAllowance } = useAppSelector((state) => state.allowance);
-  const { assets } = useAppSelector((state) => state.asset);
+  const { assets } = useAppSelector((state) => state.asset.list);
   const [isPending, setIsPending] = useState(false);
 
   const asset = useMemo(() => {

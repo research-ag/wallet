@@ -27,7 +27,7 @@ import { db } from "@/database/db";
 const AddAssetAutomatic = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const { assets } = useAppSelector((state) => state.asset);
+  const { assets } = useAppSelector((state) => state.asset.list);
   const [network, setNetwork] = useState<TokenNetwork>(TokenNetworkEnum.enum["ICRC-1"]);
   const { newAssetList, assetTOpen, setAssetTOpen, networkTOpen, setNetworkTOpen } = useCreateUpdateAsset();
   const { newAsset, setNewAsset, setErrToken, errToken } = useAssetMutate();

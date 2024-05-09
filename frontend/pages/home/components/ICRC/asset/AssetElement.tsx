@@ -33,7 +33,7 @@ const AssetElement = ({ asset, idx, accordionIndex, setAssetOpen, setAddOpen }: 
   const { authClient, theme } = useAppSelector((state) => state.auth);
   const { tokensMarket } = useAppSelector((state) => state.asset.utilData);
   const { selectedAsset } = useAppSelector((state) => state.asset.helper);
-  const { assets } = useAppSelector((state) => state.asset);
+  const { assets } = useAppSelector((state) => state.asset.list);
 
   const { editNameId, setEditNameId, name, setName, newSub, setNewSub, hexChecked, setHexChecked } = AssetHook();
   const [usedIdxs, setUsedIdxs] = useState<string[]>([]);

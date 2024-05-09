@@ -20,7 +20,7 @@ export default function AmountFormItem(props: IAmountFormItemProps) {
   const { t } = useTranslation();
   const { errors } = useAppSelector((state) => state.allowance);
   const { allowance, selectedAsset, isLoading, setAllowanceState } = props;
-  const { assets } = useAppSelector((state) => state.asset);
+  const { assets } = useAppSelector((state) => state.asset.list);
   const { asset } = allowance;
 
   const { icon, symbol } = useMemo(() => {

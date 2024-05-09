@@ -17,7 +17,7 @@ interface AssetFilterProps {
 
 export default function AssetFilter(props: AssetFilterProps) {
   const { t } = useTranslation();
-  const { assets } = useAppSelector((state) => state.asset);
+  const { assets } = useAppSelector((state) => state.asset.list);
   const { setAssetOpen, assetFilter, assetOpen, setAssetFilter } = props;
 
   return (

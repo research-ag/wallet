@@ -8,7 +8,8 @@ import { clsx } from "clsx";
 
 export default function ICRCTransactionsTable() {
   const dispatch = useAppDispatch();
-  const { transactions, selectedTransaction } = useAppSelector((state) => state.transaction);
+  const { transactions } = useAppSelector((state) => state.transaction.list);
+  const { selectedTransaction } = useAppSelector((state) => state.transaction);
   const { columns, sorting, setSorting } = useTransactionsTable();
 
   const table = useReactTable({

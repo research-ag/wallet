@@ -19,7 +19,7 @@ interface DeleteSubAccountModalProps {
 
 export default function DeleteSubAccountModal(props: DeleteSubAccountModalProps) {
   const { isDeleteModalOpen, onClose, currentSubAccount, currentAsset } = props;
-  const { assets } = useAppSelector((state) => state.asset);
+  const { assets } = useAppSelector((state) => state.asset.list);
   const [isDeleteLoading, setDeleteLoading] = useState(false);
   const { t } = useTranslation();
   return (

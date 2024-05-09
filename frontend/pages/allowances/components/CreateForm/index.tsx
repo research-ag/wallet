@@ -25,9 +25,10 @@ export default function CreateForm() {
   const { t } = useTranslation();
   const { contacts } = useAppSelector((state) => state.contacts);
   const { isAppDataFreshing } = useAppSelector((state) => state.common);
-  const { assets } = useAppSelector((state) => state.asset);
+  const { assets } = useAppSelector((state) => state.asset.list);
   const { selectedAsset } = useAppSelector((state) => state.asset.helper);
-  const { errors, allowances } = useAppSelector((state) => state.allowance);
+  const { allowances } = useAppSelector((state) => state.allowance.list);
+  const { errors } = useAppSelector((state) => state.allowance);
   const { allowance, setAllowanceState, createAllowance, isPending, isLoading, setLoading } = useCreateAllowance();
   const { userPrincipal } = useAppSelector((state) => state.auth);
 

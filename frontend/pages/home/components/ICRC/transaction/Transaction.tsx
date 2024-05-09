@@ -17,7 +17,8 @@ const DrawerTransaction = () => {
   const { t } = useTranslation();
 
   const { authClient } = AccountHook();
-  const { assets, ICPSubaccounts } = useAppSelector((state) => state.asset);
+  const { assets } = useAppSelector((state) => state.asset.list);
+  const { ICPSubaccounts } = useAppSelector((state) => state.asset);
   const { selectedAccount } = useAppSelector((state) => state.asset.helper);
   const { selectedTransaction } = useAppSelector((state) => state.transaction);
 

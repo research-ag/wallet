@@ -36,7 +36,7 @@ export default function AddSubAccountModal({
 }: AddSubAccountModalProps) {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const { assets } = useAppSelector((state) => state.asset);
+  const { assets } = useAppSelector((state) => state.asset.list);
   const { tokensMarket } = useAppSelector((state) => state.asset.utilData);
   const { selectedAsset, accordionIndex } = useAppSelector((state) => state.asset.helper);
   const { userAgent, userPrincipal, authClient } = useAppSelector((state) => state.auth);
