@@ -95,6 +95,7 @@ export default function WorkersWrapper({ children }: { children: React.ReactNode
     const assets = await db().getAssets();
     await updateAllBalances({
       loading: true,
+      fromLogin: true,
       myAgent: userAgent,
       assets,
       basicSearch: false,
@@ -129,17 +130,17 @@ export default function WorkersWrapper({ children }: { children: React.ReactNode
     }
   }
 
-  // useEffect(() => {
-  //   loadInitialData();
-  // }, [isAppDataFreshing]);
+  useEffect(() => {
+    loadInitialData();
+  }, [isAppDataFreshing]);
 
-  // useEffect(() => {
-  //   const timer = setInterval(() => workerDataRefresh(), WORKER_INTERVAL);
+  useEffect(() => {
+    const timer = setInterval(() => workerDataRefresh(), WORKER_INTERVAL);
 
-  //   return () => {
-  //     clearInterval(timer);
-  //   };
-  // }, []);
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
 
   return <>{children}</>;
 }
