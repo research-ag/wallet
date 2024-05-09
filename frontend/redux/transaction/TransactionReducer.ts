@@ -166,23 +166,8 @@ const transactionSlice = createSlice({
     setSelectedTransaction(state, action) {
       state.selectedTransaction = action.payload;
     },
-    setTxWorker(state, action) {
-      const txList = [...state.list.txWorker];
-
-      const idx = txList.findIndex((tx: TransactionList) => {
-        return tx.symbol === action.payload.symbol && tx.subaccount === action.payload.subaccount;
-      });
-      const auxTx = txList.find((tx: TransactionList) => {
-        return tx.symbol === action.payload.symbol && tx.subaccount === action.payload.subaccount;
-      });
-
-      if (!auxTx) {
-        txList.push(action.payload);
-      } else {
-        txList[idx] = action.payload;
-      }
-
-      state.list.txWorker = txList;
+    setTxWorker(state: TransactionState, action: PayloadAction<TransactionList[]>) {
+      state.list.txWorker = action.payload;
     },
     addTxWorker(state, action: PayloadAction<TransactionList>) {
       state.list.txWorker = [...state.list.txWorker, action.payload];

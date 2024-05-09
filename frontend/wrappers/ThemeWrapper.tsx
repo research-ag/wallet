@@ -1,12 +1,16 @@
 import { ThemesEnum } from "@/common/const";
 import { db } from "@/database/db";
 import { ThemeHook } from "@pages/hooks/themeHook";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 export default function ThemeWrapper({ children }: { children: JSX.Element }) {
+  const isFirstRenderRef = useRef(true);
   const { changeTheme } = ThemeHook();
 
   useEffect(() => {
+    if (!isFirstRenderRef.current) return;
+    isFirstRenderRef.current = false;
+
     const theme = db().getTheme();
     if (
       theme === ThemesEnum.enum.dark ||

@@ -18,34 +18,31 @@ export default function WorkersWrapper({ children }: { children: React.ReactNode
   const { userAgent } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const { assets } = useAppSelector((state) => state.asset.list);
-  // const { transactions } = useAppSelector((state) => state.transaction.list);
-  // const { contacts } = useAppSelector((state) => state.contacts);
-  // const { allowances } = useAppSelector((state) => state.allowance.list);
   const initialFetch = useRef<boolean>(true);
 
-  // const dispatch = useAppDispatch();
-
   async function fetchICPTransactions(asset: Asset) {
-    // TODO: TODO: set all transactions inside the redux to reduce the renders
+    const txTransactions = [];
+
     for (const subAccount of asset.subAccounts) {
       const transactions = await getAllTransactionsICP({
         subaccount_index: subAccount.sub_account_id,
         isOGY: asset.tokenSymbol === AssetSymbolEnum.Enum.OGY,
       });
 
-      dispatch(
-        setTxWorker({
-          tx: transactions,
-          symbol: asset.symbol,
-          tokenSymbol: asset.tokenSymbol,
-          subaccount: subAccount.sub_account_id,
-        }),
-      );
+      txTransactions.push({
+        tx: transactions,
+        symbol: asset.symbol,
+        tokenSymbol: asset.tokenSymbol,
+        subaccount: subAccount.sub_account_id,
+      });
     }
+
+    return txTransactions;
   }
 
   async function fetchICRC1Transactions(asset: Asset, selectedToken: Asset) {
-    // TODO: TODO: set all transactions inside the redux to reduce the renders
+    const txTransactions = [];
+
     for (const subAccount of asset.subAccounts) {
       const transactions = await getAllTransactionsICRC1({
         canisterId: selectedToken.index || "",
@@ -55,31 +52,35 @@ export default function WorkersWrapper({ children }: { children: React.ReactNode
         subNumber: subAccount.sub_account_id,
       });
 
-      dispatch(
-        setTxWorker({
-          tx: transactions,
-          symbol: asset.symbol,
-          tokenSymbol: asset.tokenSymbol,
-          subaccount: subAccount.sub_account_id,
-        }),
-      );
+      txTransactions.push({
+        tx: transactions,
+        symbol: asset.symbol,
+        tokenSymbol: asset.tokenSymbol,
+        subaccount: subAccount.sub_account_id,
+      });
     }
+
+    return txTransactions;
   }
 
   async function transactionCacheRefresh() {
     try {
-      for (const asset of assets) {
-        console.log(asset.name);
+      const txWorker = [];
 
+      for (const asset of assets) {
         if (asset.tokenSymbol === AssetSymbolEnum.Enum.ICP || asset.tokenSymbol === AssetSymbolEnum.Enum.OGY) {
-          await fetchICPTransactions(asset);
+          const transactionsBySubAccounts = await fetchICPTransactions(asset);
+          txWorker.push(...transactionsBySubAccounts);
         } else {
           const selectedAsset = assets.find((currentAsset) => currentAsset.symbol === asset.symbol);
           if (selectedAsset) {
-            await fetchICRC1Transactions(asset, selectedAsset);
+            const transactoinsBySubaccount = await fetchICRC1Transactions(asset, selectedAsset);
+            txWorker.push(...transactoinsBySubaccount);
           }
         }
       }
+
+      dispatch(setTxWorker(txWorker));
     } catch (error) {
       console.error("Error in transactionCacheRefresh worker", error);
     }
@@ -104,7 +105,7 @@ export default function WorkersWrapper({ children }: { children: React.ReactNode
     await contactCacheRefresh();
 
     dispatch(setAppDataRefreshing(false));
-  };
+  }
 
   async function workerDataRefresh() {
     if (!isAppDataFreshing) {
@@ -126,20 +127,19 @@ export default function WorkersWrapper({ children }: { children: React.ReactNode
 
       dispatch(setAppDataRefreshing(false));
     }
+  }
 
-  };
+  // useEffect(() => {
+  //   loadInitialData();
+  // }, [isAppDataFreshing]);
 
-  useEffect(() => {
-    loadInitialData();
-  }, [isAppDataFreshing]);
+  // useEffect(() => {
+  //   const timer = setInterval(() => workerDataRefresh(), WORKER_INTERVAL);
 
-  useEffect(() => {
-    const timer = setInterval(() => workerDataRefresh(), WORKER_INTERVAL);
-
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
+  //   return () => {
+  //     clearInterval(timer);
+  //   };
+  // }, []);
 
   return <>{children}</>;
 }
