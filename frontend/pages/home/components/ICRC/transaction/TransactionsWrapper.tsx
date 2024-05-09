@@ -69,12 +69,15 @@ export default function TransactionsWrapper({ children }: TransactionsWrapperPro
   };
 
   async function filterTransactions() {
+    const selectedSubAccountId = selectedAccount?.sub_account_id;
+
     const transactionsByAccount = txWorker.find((tx) => {
-      return selectedAccount?.symbol === tx.tokenSymbol && selectedAccount?.sub_account_id === tx.subaccount;
+      return selectedAccount?.symbol === tx.tokenSymbol && selectedSubAccountId === tx.subaccount;
     });
 
-    if (transactionsByAccount) dispatch(setTransactions(transactionsByAccount.tx));
-    else dispatch(setTransactions([]));
+    if (transactionsByAccount) {
+      dispatch(setTransactions(transactionsByAccount.tx));
+    } else dispatch(setTransactions([]));
 
     const isSelectedICP = selectedAsset?.tokenSymbol === AssetSymbolEnum.Enum.ICP;
     const isSelectedOGY = selectedAsset?.tokenSymbol === AssetSymbolEnum.Enum.OGY;
@@ -88,7 +91,7 @@ export default function TransactionsWrapper({ children }: TransactionsWrapperPro
 
   useEffect(() => {
     filterTransactions();
-  }, [selectedAccount, selectedAsset, txWorker]);
+  }, [selectedAccount]);
 
   return children;
 }

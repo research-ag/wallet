@@ -3,7 +3,7 @@
 import { Asset, SubAccount, Transaction } from "@redux/models/AccountModels";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { setAccounts, setAssets, setSelectedAccount, setSelectedAsset } from "@redux/assets/AssetReducer";
-import { setSelectedTransaction, setTransactions } from "@redux/transaction/TransactionReducer";
+import { setSelectedTransaction } from "@redux/transaction/TransactionReducer";
 
 export const GeneralHook = () => {
   const dispatch = useAppDispatch();
@@ -15,7 +15,6 @@ export const GeneralHook = () => {
   const { userAgent, userPrincipal } = useAppSelector((state) => state.auth);
   const changeAssets = (value: Array<Asset>) => dispatch(setAssets(value));
   const changeAccounts = (value: Array<SubAccount>) => dispatch(setAccounts(value));
-  const changeTransactions = (value: Array<Transaction>) => dispatch(setTransactions(value));
   const changeSelectedAsset = (value: Asset) => dispatch(setSelectedAsset(value));
   const changeSelectedAccount = (value: SubAccount | undefined) => dispatch(setSelectedAccount(value));
   const changeSelectedTransaction = (value: Transaction | undefined) => dispatch(setSelectedTransaction(value));
@@ -43,7 +42,6 @@ export const GeneralHook = () => {
     selectedAccount,
     changeAssets,
     changeAccounts,
-    changeTransactions,
     changeSelectedAsset,
     changeSelectedAccount,
     changeSelectedTransaction,

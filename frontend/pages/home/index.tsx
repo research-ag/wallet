@@ -7,8 +7,8 @@ const Home = () => {
   return (
     <Fragment>
       <div className="flex flex-row w-full h-full">
-        <AssetsList></AssetsList>
-        <DetailList></DetailList>
+        <AssetsList />
+        <DetailList />
       </div>
     </Fragment>
   );
