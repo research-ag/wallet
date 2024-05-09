@@ -85,73 +85,56 @@ export default function WorkersWrapper({ children }: { children: React.ReactNode
     }
   }
 
-  async function assetsRefreshManager() {
-    console.log("fetch and dispatch assets STARTED");
-
-    const assetsDB = await db().getAssets();
-    await updateAllBalances({
-      loading: true,
-      myAgent: userAgent,
-      assets: assetsDB.length !== 0 ? assetsDB : [],
-      basicSearch: false,
-    });
-    console.log("fetch and dispatch assets FINISHED");
-  }
-
-  async function transactionsRefreshManager() {
-    console.log("fetch and dispatch transactions STARTED");
-    await transactionCacheRefresh();
-    console.log("fetch and dispatch transactions END");
-  }
-
-  async function allowancesRefreshManager() {
-    console.log("fetch and dispatch allowances STARTED");
-    await allowanceCacheRefresh();
-    console.log("fetch and dispatch allowances END");
-  }
-
-  async function contactsRefreshManager() {
-    console.log("fetch and dispatch contacts STARTED");
-    await contactCacheRefresh();
-    console.log("fetch and dispatch contacts END");
-  }
-
-  useEffect(() => {
+  async function loadInitialData() {
     if (!initialFetch.current) return;
     initialFetch.current = false;
 
     dispatch(setAppDataRefreshing(true));
 
-    (async () => {
-      console.log("RUNNING INITIAL");
+    const assets = await db().getAssets();
+    await updateAllBalances({
+      loading: true,
+      myAgent: userAgent,
+      assets,
+      basicSearch: false,
+    });
 
-      await assetsRefreshManager();
-      await transactionsRefreshManager();
-      await allowancesRefreshManager();
-      await contactsRefreshManager();
-    })();
+    await transactionCacheRefresh();
+    await allowanceCacheRefresh();
+    await contactCacheRefresh();
 
     dispatch(setAppDataRefreshing(false));
+  };
+
+  async function workerDataRefresh() {
+    if (!isAppDataFreshing) {
+      console.log("RUNNING WORKER");
+
+      dispatch(setAppDataRefreshing(true));
+
+      const assets = await db().getAssets();
+      await updateAllBalances({
+        loading: true,
+        myAgent: userAgent,
+        assets,
+        basicSearch: false,
+      });
+
+      await transactionCacheRefresh();
+      await allowanceCacheRefresh();
+      await contactCacheRefresh();
+
+      dispatch(setAppDataRefreshing(false));
+    }
+
+  };
+
+  useEffect(() => {
+    loadInitialData();
   }, [isAppDataFreshing]);
 
   useEffect(() => {
-    // TODO: will overwrite any forced refresh by the user
-    const timer = setInterval(() => {
-      if (!isAppDataFreshing) {
-        console.log("RUNNING WORKER");
-
-        dispatch(setAppDataRefreshing(true));
-
-        (async () => {
-          await assetsRefreshManager();
-          await transactionsRefreshManager();
-          await allowancesRefreshManager();
-          await contactsRefreshManager();
-        })();
-
-        dispatch(setAppDataRefreshing(false));
-      }
-    }, WORKER_INTERVAL);
+    const timer = setInterval(() => workerDataRefresh(), WORKER_INTERVAL);
 
     return () => {
       clearInterval(timer);

@@ -42,6 +42,8 @@ export const updateAllBalances: UpdateAllBalances = async (params) => {
   });
 
   const newAssetsUpload = updateAssets.sort((a, b) => a.sortIndex - b.sortIndex);
+  console.log("newAssetsUpload", newAssetsUpload);
+  
   store.dispatch(setAssets(newAssetsUpload));
 
   if (loading) {
