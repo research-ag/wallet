@@ -9,6 +9,8 @@ import { useAppSelector } from "@redux/Store";
 import { CustomCopy } from "@components/tooltip";
 import ActionCard from "@pages/allowances/components/ActionCard";
 import clsx from "clsx";
+import UpdateAllowanceDrawer from "@pages/allowances/components/UpdateAllowanceDrawer";
+import DeleteAllowanceModal from "@pages/allowances/components/DeleteAllowanceModal";
 
 const columns = ["subAccount", "spender", "amount", "expiration", "action"];
 
@@ -20,6 +22,9 @@ export default function AllowancesTable() {
 
   return (
     <div className="w-full max-h-[calc(100vh-14rem)] scroll-y-light">
+      <UpdateAllowanceDrawer />
+      <DeleteAllowanceModal />
+
       <table className="relative w-full text-black-color dark:text-gray-color-9">
         <thead className={headerStyles}>
           <tr>

@@ -7,8 +7,9 @@ import { sortByAmount, sortByExpiration, sortBySpender, sortBySubAccount } from 
 
 export default function useAllowances() {
   const { allowances: rawAllowances } = useAppSelector((state) => state.allowance.list);
+  const { selectedAccount, selectedAsset } = useAppSelector((state) => state.asset.helper);
   const [searchKey, setSearchKey] = useState<string>("");
-  const [selectedAssets, setSelectedAssets] = useState<string[]>([]);
+  const [assetFilters, setAssetFilters] = useState<string[]>([]);
   const [sorting, setSorting] = useState<SortOrder>(SortOrderEnum.Values.ASC);
   const [column, setColumn] = useState<AllowancesTableColumns>(AllowancesTableColumnsEnum.Values.subAccountId);
 
@@ -24,9 +25,15 @@ export default function useAllowances() {
   };
 
   const allowances = useMemo(() => {
-    const filteredByAssets = selectedAssets.length > 0 ? filterByAsset(selectedAssets, rawAllowances) : rawAllowances;
+    const isHomeInPath = window.location.pathname.includes("home");
 
-    const filteredBySpender = filterBySpenderAndSubAccount(searchKey, filteredByAssets);
+    const finalAssetFilter = isHomeInPath ? [selectedAsset?.tokenSymbol || ""] : assetFilters || [];
+    const filteredByAssets =
+      finalAssetFilter.length > 0 ? filterByAsset(finalAssetFilter, rawAllowances) : rawAllowances;
+
+    const subAccountFilter = isHomeInPath ? selectedAccount?.sub_account_id || "" : searchKey;
+    const filteredBySpender = filterBySpenderAndSubAccount(subAccountFilter, filteredByAssets);
+
     const filtered = filteredBySpender;
 
     if (column === AllowancesTableColumnsEnum.Values.subAccountId) {
@@ -46,7 +53,7 @@ export default function useAllowances() {
     }
 
     return filtered;
-  }, [selectedAssets, searchKey, sorting, column, rawAllowances]);
+  }, [assetFilters, searchKey, sorting, column, rawAllowances, selectedAccount, selectedAsset]);
 
   return {
     allowances,
@@ -56,7 +63,7 @@ export default function useAllowances() {
     handleSortChange: onSort,
     searchKey,
     setSearchKey,
-    selectedAssets,
-    setSelectedAssets,
+    assetFilters,
+    setAssetFilters,
   };
 }

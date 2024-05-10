@@ -28,7 +28,7 @@ export default function TransactionsTable(props: TransactionsTableProps) {
   const { assets } = useAppSelector((state) => state.asset.list);
 
   return (
-    <div className="w-full max-h-[calc(100vh-13rem)] scroll-y-light mt-4" onScroll={onScroll}>
+    <div className="w-full max-h-[calc(100vh-15rem)] scroll-y-light mt-2" onScroll={onScroll}>
       <table className="relative w-full text-black-color dark:text-gray-color-9 ">
         <thead className={headerStyles}>
           <tr>
