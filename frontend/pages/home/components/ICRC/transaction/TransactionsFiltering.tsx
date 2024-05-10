@@ -15,8 +15,6 @@ export default function TransactionsFiltering({ children }: { children: JSX.Elem
   const lastSelectedAccountRef = useRef<SubAccount | undefined>(selectedAccount);
 
   const refreshICRCTransactions = async () => {
-    console.log("render icrc");
-
     const currentAsset = assets.find((asset: Asset) => asset.address === selectedAsset?.address);
     const isAssetFull = currentAsset?.index && selectedAccount?.sub_account_id && selectedAsset?.tokenSymbol;
     const isSubAccountSelected = selectedAccount?.sub_account_id;

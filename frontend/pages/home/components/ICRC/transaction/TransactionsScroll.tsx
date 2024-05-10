@@ -3,6 +3,12 @@ import { useAppSelector } from "@redux/Store";
 import { deChunkTransactions } from "@pages/home/helpers/mappers";
 import { useEffect, useRef, useState } from "react";
 import { SubAccount, Transaction } from "@redux/models/AccountModels";
+import { sortByDate } from "@pages/home/helpers/sorters";
+
+export enum SortOrderEnum {
+  ASC = "asc",
+  DESC = "desc",
+}
 
 export default function TransactionsWrapper() {
   const { transactions: transactionChunks } = useAppSelector((state) => state.transaction.list);
@@ -12,6 +18,7 @@ export default function TransactionsWrapper() {
   const isInitialLoadRef = useRef(true);
   const isAtBottomRef = useRef(false);
   const lastSelectedAccountRef = useRef<SubAccount | undefined>(selectedAccount);
+  const sortDirectionRef = useRef<SortOrderEnum>(SortOrderEnum.DESC);
 
   const onScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const element = e.target as HTMLDivElement;
@@ -24,6 +31,17 @@ export default function TransactionsWrapper() {
 
     if (!isScrolledToBottom) {
       if (isAtBottomRef.current) isAtBottomRef.current = false;
+    }
+  };
+
+  const onSort = () => {
+    const sorted = sortByDate(sortDirectionRef.current, transactions);
+    setTransactions(sorted);
+
+    if (sortDirectionRef.current === SortOrderEnum.DESC) {
+      sortDirectionRef.current = SortOrderEnum.ASC;
+    } else {
+      sortDirectionRef.current = SortOrderEnum.DESC;
     }
   };
 
@@ -60,5 +78,5 @@ export default function TransactionsWrapper() {
     setTransactions((prev) => [...prev, ...data]);
   }, [chunkNumber, transactionChunks]);
 
-  return <TransactionsTable onScroll={onScroll} transactions={transactions} />;
+  return <TransactionsTable onScroll={onScroll} transactions={transactions} onSort={onSort} />;
 }

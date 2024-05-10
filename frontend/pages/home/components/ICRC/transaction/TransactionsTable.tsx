@@ -17,10 +17,11 @@ const columns: string[] = ["type", "transactionID", "date", "amount"];
 export interface TransactionsTableProps {
   onScroll: (e: React.UIEvent<HTMLDivElement>) => void;
   transactions: Transaction[];
+  onSort: () => void;
 }
 
 export default function TransactionsTable(props: TransactionsTableProps) {
-  const { onScroll, transactions } = props;
+  const { onScroll, transactions, onSort } = props;
   const { t } = useTranslation();
   const { selectedTransaction } = useAppSelector((state) => state.transaction);
   const { selectedAccount, selectedAsset } = useAppSelector((state) => state.asset.helper);
@@ -38,7 +39,7 @@ export default function TransactionsTable(props: TransactionsTableProps) {
                   {currentColumn === columns[columns.length - 2] && (
                     <SortIcon
                       className="w-3 h-3 ml-1 cursor-pointer dark:fill-gray-color-6 fill-black-color"
-                      onClick={console.log}
+                      onClick={onSort}
                     />
                   )}
                 </div>
@@ -87,7 +88,7 @@ export default function TransactionsTable(props: TransactionsTableProps) {
 
             return (
               <tr key={`${transaction.hash}-${index}-${transaction.canisterId}`} className="relative">
-                <td>
+                <td className={colStyle(0)}>
                   {isCurrentSelected && <div className="absolute w-2 h-[4.05rem] left-0 bg-primary-color"></div>}
                   <div className="flex justify-center w-full h-12 my-2">
                     <div className="flex items-center justify-center p-2 border rounded-md border-BorderColorTwoLight dark:border-BorderColorTwo">
@@ -96,25 +97,28 @@ export default function TransactionsTable(props: TransactionsTableProps) {
                   </div>
                 </td>
 
-                <td>
+                <td className={colStyle(1)}>
                   <CodeElement tx={transaction} />
                 </td>
 
-                <td>
-                  <p>{moment(transaction.timestamp).format("M/DD/YYYY")}</p>
+                <td className={colStyle(3)}>
+                  <div className="flex items-center justify-end">
+                    <p className="text-md w-fit">{moment(transaction.timestamp).format("M/DD/YYYY")}</p>
+                  </div>
                 </td>
 
-                <td className="flex flex-col items-end justify-center w-full pr-5 my-2">
-                  <p
-                    className={`text-right whitespace-nowrap ${isTo ? "text-TextSendColor" : "text-TextReceiveColor"}`}
-                  >{`${isTo && !isApprove ? "-" : ""}${
-                    isTypeSend
+                <td className={colStyle(0)}>
+                  <div className="flex flex-col items-end justify-center w-full pr-5 my-2">
+                    <p
+                      className={`text-right whitespace-nowrap ${isTo ? "text-TextSendColor" : "text-TextReceiveColor"}`}
+                    >{`${isTo && !isApprove ? "-" : ""}${isTypeSend
                       ? toFullDecimal(
-                          BigInt(transaction?.amount || "0") + BigInt(selectedAccount?.transaction_fee || "0"),
-                          selectedAccount?.decimal || 8,
-                        )
+                        BigInt(transaction?.amount || "0") + BigInt(selectedAccount?.transaction_fee || "0"),
+                        selectedAccount?.decimal || 8,
+                      )
                       : toFullDecimal(BigInt(transaction?.amount || "0"), selectedAccount?.decimal || 8)
-                  } ${getAssetSymbol(transaction?.symbol || selectedAsset?.symbol || "", assets)}`}</p>
+                      } ${getAssetSymbol(transaction?.symbol || selectedAsset?.symbol || "", assets)}`}</p>
+                  </div>
                 </td>
               </tr>
             );
