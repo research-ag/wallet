@@ -12,7 +12,7 @@ import {
   TransactionValidationErrorsType,
 } from "@/@types/transactions";
 import { SendingStatusEnum, SendingStatus } from "@/common/const";
-import { Asset, SubAccount, TransactionList } from "@redux/models/AccountModels";
+import { Asset, SubAccount, Transaction, TransactionList } from "@redux/models/AccountModels";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 export const initialTransactionState: TransactionState = {
@@ -159,7 +159,7 @@ const transactionSlice = createSlice({
       state.scannerActiveOption = initialTransactionState?.scannerActiveOption;
       state.isInspectTransference = initialTransactionState?.isInspectTransference;
     },
-    setTransactions(state, action) {
+    setTransactions(state: TransactionState, action: PayloadAction<Array<Transaction[]>>) {
       state.list.transactions = action.payload;
     },
     // transactions

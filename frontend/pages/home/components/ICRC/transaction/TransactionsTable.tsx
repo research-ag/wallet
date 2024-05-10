@@ -1,19 +1,30 @@
 import { TransactionDrawer } from "@/@types/transactions";
+import { deChunkTransactions } from "@pages/home/helpers/mappers";
 import { useTransactionsTable } from "@pages/home/hooks/useTransactionsTable";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { setTransactionDrawerAction } from "@redux/transaction/TransactionActions";
 import { setSelectedTransaction } from "@redux/transaction/TransactionReducer";
 import { flexRender, getCoreRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 import { clsx } from "clsx";
+import { useState } from "react";
 
 export default function ICRCTransactionsTable() {
   const dispatch = useAppDispatch();
   const { transactions } = useAppSelector((state) => state.transaction.list);
   const { selectedTransaction } = useAppSelector((state) => state.transaction);
   const { columns, sorting, setSorting } = useTransactionsTable();
+  const [chunkNumber, setChunkNumber] = useState(1);
+
+  const data = deChunkTransactions({
+    transactions,
+    chunkNumber: chunkNumber + 1,
+    from: chunkNumber,
+  });
+
+  console.log("data: ", data);
 
   const table = useReactTable({
-    data: transactions || [],
+    data: [],
     columns,
     state: {
       sorting,
@@ -23,10 +34,22 @@ export default function ICRCTransactionsTable() {
     getSortedRowModel: getSortedRowModel(),
   });
 
+  const onScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    // TODO: verify if the scroll is at the bottom
+    const target = e.target as HTMLDivElement;
+    const scrollBottom = target.scrollHeight - target.scrollTop - target.clientHeight;
+    if (scrollBottom < 10) {
+      // include new chunks of data
+      console.log("fetch more data");
+
+    }
+  };
+
+
   return (
-    <div className="w-full max-h-[calc(100vh-13rem)] scroll-y-light mt-4">
+    <div className="w-full max-h-[calc(100vh-13rem)] scroll-y-light mt-4" onScroll={onScroll}>
       <table className="w-full text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md">
-        <thead className="sticky top-0 border-b border-BorderColorTwoLight dark:border-BorderColorTwo bg-SecondaryColorLight dark:bg-SecondaryColor">
+        {/* <thead className="sticky top-0 border-b border-BorderColorTwoLight dark:border-BorderColorTwo bg-SecondaryColorLight dark:bg-SecondaryColor">
           {table.getHeaderGroups().map((headerGroup, idxTR) => (
             <tr key={`tr-transac-${idxTR}`}>
               {headerGroup.headers.map((header, idxTH) => (
@@ -43,16 +66,15 @@ export default function ICRCTransactionsTable() {
               ))}
             </tr>
           ))}
-        </thead>
-        <tbody>
+        </thead> */}
+        {/* <tbody>
           {table.getRowModel().rows.map((row, idxTR) => (
             <tr
-              className={`border-b border-b-BorderColorTwoLight dark:border-b-BorderColorTwo cursor-pointer ${
-                (selectedTransaction?.hash && selectedTransaction?.hash === row.original.hash) ||
+              className={`border-b border-b-BorderColorTwoLight dark:border-b-BorderColorTwo cursor-pointer ${(selectedTransaction?.hash && selectedTransaction?.hash === row.original.hash) ||
                 (selectedTransaction?.idx && selectedTransaction?.idx === row.original.idx)
-                  ? "bg-SelectRowColor/10"
-                  : ""
-              }`}
+                ? "bg-SelectRowColor/10"
+                : ""
+                }`}
               key={`tr-transac-${idxTR}`}
               onClick={() => {
                 dispatch(setSelectedTransaction(row.original));
@@ -66,7 +88,7 @@ export default function ICRCTransactionsTable() {
               ))}
             </tr>
           ))}
-        </tbody>
+        </tbody> */}
       </table>
     </div>
   );

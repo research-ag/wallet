@@ -205,3 +205,73 @@ export const formatckBTCTransaccion = (
     timestamp: Math.floor(Number(timestamp) / MILI_PER_SECOND),
   } as Transaction;
 };
+
+export function chunkTransactions(options: { transactions: Transaction[], chunkSize: number }) {
+  // TODO: generate chunks where each chink max are 40 transactions
+  const exampleChunks: Array<Transaction[]> = [
+    [
+      // ... 40 transactions
+    ],
+    [
+      // ... 40 transactions
+    ],
+    [
+      // ... 40 transactions
+    ],
+    [
+      // ... 40 transactions
+    ],
+    [
+      // ... 40 transactions
+    ],
+    [
+      // ... 40 transactions
+    ],
+  ];
+
+  const { transactions, chunkSize } = options;
+  const transactionsChunks: Array<Transaction[]> = [];
+
+  for (let i = 0; i < transactions.length; i += chunkSize) {
+    const chunk = transactions.slice(i, i + chunkSize);
+    transactionsChunks.push(chunk);
+  }
+
+  return transactionsChunks;
+};
+
+interface deChunkTransactionsParams { transactions: Array<Transaction[]>, chunkNumber: number, from: number };
+
+export function deChunkTransactions(options: deChunkTransactionsParams) {
+  const { transactions, chunkNumber, from } = options;
+  const transactionsMerged: Transaction[] = [];
+
+  if (transactions.length === 0) return [];
+  if (transactions.length === 1) return transactions[0];
+
+  if (chunkNumber <= 0 || from <= 0) {
+    console.error("Error: chunkNumber and from must be positive integers.");
+    return [];
+  }
+
+  if (chunkNumber > transactions.length) {
+    console.error(`Error: chunkNumber ${chunkNumber} exceeds total chunks (${transactions.length}).`);
+    return [];
+  }
+
+  const chunkIndex = chunkNumber - 1;
+  const fromIndex = from - 1;
+
+  if (fromIndex < 0 || fromIndex >= transactions[chunkIndex].length) {
+    console.error(`Error: from index ${fromIndex} is invalid for chunk ${chunkNumber}.`);
+    return [];
+  }
+
+  for (let index = fromIndex; index <= chunkIndex; index++) {
+    console.log({ fromIndex, chunkIndex, index });
+    transactionsMerged.push(...transactions[index]);
+  };
+
+  return transactionsMerged;
+};
+

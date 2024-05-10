@@ -154,7 +154,7 @@ export interface TransactionState {
   list: {
     txLoad: boolean;
     txWorker: Array<TransactionList>;
-    transactions: Array<Transaction>;
+    transactions: Array<Transaction[]>;
   };
 }
 
