@@ -1,5 +1,5 @@
 import GenericTokenIcon from "@/assets/svg/files/generic-token.svg";
-import { IconType, IconTypeEnum, symbolIconDict } from "@/const";
+import { IconType, IconTypeEnum, symbolIconDict } from "@/common/const";
 import store from "@redux/Store";
 
 export const getAssetIcon = (type: IconType, symbol?: string, logo?: string) => {
@@ -33,6 +33,6 @@ export const getIconSrc = (logo?: string, symbol?: string): string => {
 };
 
 const getLogoFromICRC = (symbol: string) => {
-  const logo = store.getState().asset.icr1SystemAssets.find((asset) => asset.tokenSymbol === symbol)?.logo;
+  const logo = store.getState().asset.utilData.icr1SystemAssets.find((asset) => asset.tokenSymbol === symbol)?.logo;
   return logo;
 };

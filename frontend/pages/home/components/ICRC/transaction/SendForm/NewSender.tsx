@@ -1,5 +1,5 @@
-import { getIconSrc } from "@/utils/icons";
-import { middleTruncation } from "@/utils/strings";
+import { getIconSrc } from "@/common/utils/icons";
+import { middleTruncation } from "@/common/utils/strings";
 import useSend from "@pages/home/hooks/useSend";
 import { useAppSelector } from "@redux/Store";
 import { useEffect, useState } from "react";

@@ -8,36 +8,35 @@ import { SubAccount, Asset } from "@redux/models/AccountModels";
 import AccountElement from "./AccountElement";
 import { Fragment, useState } from "react";
 import * as Accordion from "@radix-ui/react-accordion";
-import { GeneralHook } from "../../../hooks/generalHook";
-import { ThemeHook } from "@hooks/themeHook";
-import { IconTypeEnum, ThemesEnum } from "@/const";
-import { getFirstNChars, getUSDfromToken, hexToNumber, toFullDecimal } from "@/utils";
+import { IconTypeEnum, ThemesEnum } from "@/common/const";
 import { AssetHook } from "../../../hooks/assetHook";
 import bigInt from "big-integer";
-import { AccountHook } from "@pages/hooks/accountHook";
 import DialogAddSubAccount from "./DialogAddSubAccount";
-import DeleteAssetModal from "./DeleteAssetModal";
-import { getAssetIcon } from "@/utils/icons";
+import { getAssetIcon } from "@/common/utils/icons";
 import clsx from "clsx";
+import { useAppDispatch, useAppSelector } from "@redux/Store";
+import { setAssetMutation, setSelectedAccount, setSelectedAsset } from "@redux/assets/AssetReducer";
+import { hexToNumber } from "@common/utils/hexadecimal";
+import { getFirstNChars } from "@common/utils/strings";
+import { getUSDFromToken, toFullDecimal } from "@common/utils/amount";
 
 interface AssetElementProps {
   asset: Asset;
   idx: number;
   accordionIndex: string[];
-  setAssetInfo(value: Asset | undefined): void;
   setAssetOpen(value: boolean): void;
   setAddOpen(value: boolean): void;
 }
 
-const AssetElement = ({ asset, idx, accordionIndex, setAssetInfo, setAssetOpen, setAddOpen }: AssetElementProps) => {
-  const { theme } = ThemeHook();
-  const { authClient } = AccountHook();
+const AssetElement = ({ asset, idx, accordionIndex, setAssetOpen, setAddOpen }: AssetElementProps) => {
+  const dispatch = useAppDispatch();
+  const { authClient, theme } = useAppSelector((state) => state.auth);
+  const { tokensMarket } = useAppSelector((state) => state.asset.utilData);
+  const { selectedAsset } = useAppSelector((state) => state.asset.helper);
+  const { assets } = useAppSelector((state) => state.asset.list);
 
-  const { assets, selectedAsset, changeSelectedAsset, changeSelectedAccount } = GeneralHook();
-  const { editNameId, setEditNameId, name, setName, newSub, setNewSub, hexChecked, setHexChecked, tokensMarket } =
-    AssetHook();
+  const { editNameId, setEditNameId, name, setName, newSub, setNewSub, hexChecked, setHexChecked } = AssetHook();
   const [usedIdxs, setUsedIdxs] = useState<string[]>([]);
-  const [openDelete, setOpenDelete] = useState(false);
   const [newErr, setNewErr] = useState<{ name: boolean; idx: boolean }>({ name: false, idx: false });
 
   return (
@@ -113,6 +112,7 @@ const AssetElement = ({ asset, idx, accordionIndex, setAssetInfo, setAssetOpen, 
             </div>
           </Accordion.Trigger>
         </div>
+
         {(asset?.subAccounts || newSub) && (
           <Accordion.Content>
             <div
@@ -164,23 +164,23 @@ const AssetElement = ({ asset, idx, accordionIndex, setAssetInfo, setAssetOpen, 
           accordionIndex={accordionIndex}
         />
       )}
-      {openDelete && <DeleteAssetModal open={openDelete} setOpen={setOpenDelete} asset={asset} />}
+      {/* {openDelete && <DeleteAssetModal open={openDelete} setOpen={setOpenDelete} asset={asset} />} */}
     </Fragment>
   );
 
   function onSelectAsset() {
-    changeSelectedAsset(asset);
+    dispatch(setSelectedAsset(asset));
     if (asset?.tokenSymbol !== selectedAsset?.tokenSymbol) {
       setNewSub(undefined);
       setAddOpen(false);
-      asset.subAccounts.length > 0 && changeSelectedAccount(asset.subAccounts[0]);
+      asset.subAccounts.length > 0 && dispatch(setSelectedAccount(asset.subAccounts[0]));
     }
     setName("");
     setEditNameId("");
   }
 
   function onInfoClic() {
-    setAssetInfo(asset);
+    dispatch(setAssetMutation(asset));
     setAssetOpen(true);
   }
 
@@ -214,7 +214,7 @@ const AssetElement = ({ asset, idx, accordionIndex, setAssetInfo, setAssetOpen, 
     asset.subAccounts.map((sa) => {
       total = total + BigInt(sa.amount);
     }, 0);
-    const currencyTotal = assetMarket ? getUSDfromToken(total.toString(), assetMarket.price, asset.decimal) : "0.00";
+    const currencyTotal = assetMarket ? getUSDFromToken(total.toString(), assetMarket.price, asset.decimal) : "0.00";
 
     return {
       asset: total,
@@ -233,7 +233,7 @@ const AssetElement = ({ asset, idx, accordionIndex, setAssetInfo, setAssetOpen, 
   }
 
   function onDeleteSubAccount() {
-    setOpenDelete(true);
+    // setOpenDelete(true);
   }
 };
 

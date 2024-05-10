@@ -1,5 +1,5 @@
-import { IconTypeEnum } from "@/const";
-import { getAssetIcon } from "@/utils/icons";
+import { IconTypeEnum } from "@/common/const";
+import { getAssetIcon } from "@/common/utils/icons";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { useAppSelector } from "@redux/Store";
 import { useTranslation } from "react-i18next";
@@ -17,7 +17,7 @@ interface AssetFilterProps {
 
 export default function AssetFilter(props: AssetFilterProps) {
   const { t } = useTranslation();
-  const { assets } = useAppSelector((state) => state.asset);
+  const { assets } = useAppSelector((state) => state.asset.list);
   const { setAssetOpen, assetFilter, assetOpen, setAssetFilter } = props;
 
   return (

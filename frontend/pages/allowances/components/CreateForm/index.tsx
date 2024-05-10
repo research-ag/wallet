@@ -8,8 +8,7 @@ import ExpirationFormItem from "./ExpirationFormItem";
 import { AllowanceValidationErrorsEnum } from "@/@types/allowance";
 import { useTranslation } from "react-i18next";
 import { CustomButton } from "@components/button";
-import { validatePrincipal } from "@/utils/identity";
-import { isHexadecimalValid } from "@/utils/checkers";
+import { validatePrincipal } from "@/common/utils/definityIdentity";
 import {
   removeAllowanceErrorAction,
   setAllowanceErrorAction,
@@ -19,14 +18,17 @@ import { db } from "@/database/db";
 import { LoadingLoader } from "@components/loader";
 import { refreshAllowance } from "@pages/allowances/helpers/refresh";
 import { getDuplicatedAllowance } from "@pages/allowances/helpers/validators";
-import { getAllowanceDetails } from "@pages/home/helpers/icrc";
+import { getAllowanceDetails } from "@/common/libs/icrc";
+import { isHexadecimalValid } from "@pages/home/helpers/checkers";
 
 export default function CreateForm() {
   const { t } = useTranslation();
   const { contacts } = useAppSelector((state) => state.contacts);
   const { isAppDataFreshing } = useAppSelector((state) => state.common);
-  const { assets, selectedAsset } = useAppSelector((state) => state.asset);
-  const { errors, allowances } = useAppSelector((state) => state.allowance);
+  const { assets } = useAppSelector((state) => state.asset.list);
+  const { selectedAsset } = useAppSelector((state) => state.asset.helper);
+  const { allowances } = useAppSelector((state) => state.allowance.list);
+  const { errors } = useAppSelector((state) => state.allowance);
   const { allowance, setAllowanceState, createAllowance, isPending, isLoading, setLoading } = useCreateAllowance();
   const { userPrincipal } = useAppSelector((state) => state.auth);
 

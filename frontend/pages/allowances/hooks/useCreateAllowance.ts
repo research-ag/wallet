@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 
 import { AllowanceValidationErrorsEnum, TAllowance } from "@/@types/allowance";
-import { submitAllowanceApproval, createApproveAllowanceParams, getSubAccountBalance } from "@/pages/home/helpers/icrc";
+import { submitAllowanceApproval, createApproveAllowanceParams, getSubAccountBalance } from "@/common/libs/icrc";
 import useAllowanceDrawer from "./useAllowanceDrawer";
 // eslint-disable-next-line import/named
 import { throttle } from "lodash";
@@ -21,13 +21,14 @@ import { Asset } from "@redux/models/AccountModels";
 import { getAllowanceAsset } from "../helpers/mappers";
 import { refreshAllowance } from "../helpers/refresh";
 import { db } from "@/database/db";
-import { removeZeroesFromAmount, toFullDecimal, toHoleBigInt } from "@/utils";
+import { removeZeroesFromAmount, toFullDecimal, toHoleBigInt } from "@common/utils/amount";
 
 export default function useCreateAllowance() {
   const dispatch = useAppDispatch();
   const [isLoading, setLoading] = useState(false);
   const { onCloseCreateAllowanceDrawer } = useAllowanceDrawer();
-  const { assets, selectedAsset, selectedAccount } = useAppSelector(({ asset }) => asset);
+  const { assets } = useAppSelector((state) => state.asset.list);
+  const { selectedAsset, selectedAccount } = useAppSelector((state) => state.asset.helper);
 
   const initial = useMemo(() => {
     const supported = selectedAsset?.supportedStandards?.includes(SupportedStandardEnum.Values["ICRC-2"]);

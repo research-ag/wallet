@@ -1,5 +1,5 @@
-import { IconTypeEnum } from "@/const";
-import { getAssetIcon } from "./icons";
+import { IconTypeEnum } from "@/common/const";
+import { getAssetIcon } from "@common/utils/icons";
 import { Asset } from "@redux/models/AccountModels";
 
 export default function formatAsset(asset: Asset) {

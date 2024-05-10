@@ -3,21 +3,24 @@ import { ReactComponent as DownBlueArrow } from "@assets/svg/files/down-blue-arr
 //
 import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
-import { getAssetSymbol, getICRC1Acc, hexToUint8Array, shortAddress, toFullDecimal } from "@/utils";
-import { AssetSymbolEnum, SpecialTxTypeEnum } from "@/const";
+import { AssetSymbolEnum, SpecialTxTypeEnum } from "@/common/const";
 import { Principal } from "@dfinity/principal";
 import { AccountHook } from "@pages/hooks/accountHook";
 import { IcrcAccount } from "@dfinity/ledger-icrc";
 import { CustomCopy } from "@components/tooltip";
-import { GeneralHook } from "@pages/home/hooks/generalHook";
 import { useAppSelector } from "@redux/Store";
+import { hexToUint8Array } from "@common/utils/hexadecimal";
+import { getAssetSymbol, getICRC1Acc, shortAddress } from "@common/utils/icrc";
+import { toFullDecimal } from "@common/utils/amount";
 
 const DrawerTransaction = () => {
   const { t } = useTranslation();
 
   const { authClient } = AccountHook();
-  const { assets } = useAppSelector((state) => state.asset);
-  const { ICPSubaccounts, selectedTransaction, selectedAccount } = GeneralHook();
+  const { assets } = useAppSelector((state) => state.asset.list);
+  const { ICPSubaccounts } = useAppSelector((state) => state.asset);
+  const { selectedAccount } = useAppSelector((state) => state.asset.helper);
+  const { selectedTransaction } = useAppSelector((state) => state.transaction);
 
   const assetSymbol = getAssetSymbol(selectedTransaction?.symbol || "", assets);
 

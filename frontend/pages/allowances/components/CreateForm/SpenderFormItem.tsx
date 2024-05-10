@@ -1,7 +1,7 @@
 import { AllowanceValidationErrorsEnum, TAllowance } from "@/@types/allowance";
 import { SelectOption } from "@/@types/components";
-import formatContact from "@/utils/formatContact";
-import { validatePrincipal } from "@/utils/identity";
+import formatContact from "@/common/utils/formatContact";
+import { validatePrincipal } from "@/common/utils/definityIdentity";
 import { BasicInput } from "@components/input";
 import { BasicSelect } from "@components/select";
 import { BasicSwitch } from "@components/switch";
@@ -33,7 +33,8 @@ export default function SpenderFormItem(props: ISpenderFormItemProps) {
   const { contacts, setAllowanceState, isLoading, allowance } = props;
 
   const options = useMemo(() => {
-    if (!search) contacts?.map(formatContact);
+    if (!search) return contacts?.map(formatContact);
+
     return contacts
       ?.filter((contact) => contact.name.toLowerCase().includes(search?.toLowerCase() || ""))
       .map(formatContact);

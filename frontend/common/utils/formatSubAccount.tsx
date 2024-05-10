@@ -1,6 +1,6 @@
 import { SubAccount } from "@redux/models/AccountModels";
 import { BasicChip } from "@components/chip";
-import { middleTruncation } from "./strings";
+import { middleTruncation } from "@/common/utils/strings";
 
 export default function formatSubAccount(subAccount: SubAccount) {
   return {

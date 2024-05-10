@@ -9,10 +9,9 @@ export default function Allowances() {
   const { allowances, handleSortChange, searchKey, setSearchKey, selectedAssets, setSelectedAssets } = useAllowances();
   return (
     <div className="px-[2rem]">
-      <div className="flex items-center justify-between mb-[2rem] mt-[2rem]">
+      <div className="flex items-center justify-between pl-1 mt-[1.5rem]">
         <Menu />
         <AllowanceFilter
-          searchKey={searchKey}
           setSearchKey={setSearchKey}
           selectedAssets={selectedAssets}
           setSelectedAssets={setSelectedAssets}

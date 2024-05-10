@@ -1,7 +1,7 @@
 import { TAllowance } from "@/@types/allowance";
-import { IconTypeEnum } from "@/const";
-import { getAssetIcon } from "@/utils/icons";
-import { middleTruncation } from "@/utils/strings";
+import { IconTypeEnum } from "@/common/const";
+import { getAssetIcon } from "@/common/utils/icons";
+import { middleTruncation } from "@/common/utils/strings";
 import { BasicChip } from "@components/chip";
 import { useAppSelector } from "@redux/Store";
 import { clsx } from "clsx";
@@ -15,7 +15,7 @@ interface FixedFieldsProps {
 export default function FixedFieldsFormItem({ allowance }: FixedFieldsProps) {
   const { t } = useTranslation();
   const { contacts } = useAppSelector((state) => state.contacts);
-  const { assets } = useAppSelector((state) => state.asset);
+  const { assets } = useAppSelector((state) => state.asset.list);
 
   const spenderName = useMemo(() => {
     const contact = contacts.find((contact) => contact.principal === allowance?.spender);

@@ -1,8 +1,8 @@
 import { TAllowance, AllowanceValidationErrorsEnum } from "@/@types/allowance";
 import { SelectOption } from "@/@types/components";
 import { SupportedStandardEnum } from "@/@types/icrc";
-import { IconTypeEnum } from "@/const";
-import { getAssetIcon } from "@/utils/icons";
+import { IconTypeEnum } from "@/common/const";
+import { getAssetIcon } from "@/common/utils/icons";
 import { BasicSelect } from "@components/select";
 import { getAllowanceAsset } from "@pages/allowances/helpers/mappers";
 import { useAppSelector } from "@redux/Store";

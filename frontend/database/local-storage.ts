@@ -3,7 +3,7 @@ import { Contact } from "@redux/models/ContactsModels";
 import { TAllowance } from "@/@types/allowance";
 import { Identity } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
-import { defaultTokens } from "@/defaultTokens";
+import { defaultTokens } from "@/common/defaultTokens";
 import { Asset } from "@redux/models/AccountModels";
 import store from "@redux/Store";
 import { setAssets } from "@redux/assets/AssetReducer";

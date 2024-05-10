@@ -1,4 +1,4 @@
-import { isObjectValid } from "@/utils/checkers";
+import { isObjectValid } from "@pages/home/helpers/checkers";
 import { useAppSelector } from "@redux/Store";
 import { setSenderAssetAction, setSenderSubAccountAction } from "@redux/transaction/TransactionActions";
 import { useEffect } from "react";
@@ -9,7 +9,7 @@ interface SenderInitializerProps {
 
 export default function SenderInitializer(props: SenderInitializerProps) {
   const { children } = props;
-  const { selectedAsset, selectedAccount } = useAppSelector((state) => state.asset);
+  const { selectedAsset, selectedAccount } = useAppSelector((state) => state.asset.helper);
   const { sender } = useAppSelector((state) => state.transaction);
 
   useEffect(() => {

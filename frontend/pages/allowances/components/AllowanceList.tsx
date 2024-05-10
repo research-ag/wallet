@@ -4,13 +4,13 @@ import DeleteAllowanceModal from "@pages/allowances/components/DeleteAllowanceMo
 import { Dispatch, SetStateAction } from "react";
 import { useAppSelector } from "@redux/Store";
 import { CustomCopy } from "@components/tooltip";
-import { middleTruncation } from "@/utils/strings";
-import { formatDateTime } from "@/utils/formatTime";
+import { middleTruncation } from "@/common/utils/strings";
+import { formatDateTime } from "@/common/utils/datetimeFormaters";
 import { useTranslation } from "react-i18next";
 import ActionCard from "./ActionCard";
 import { ReactComponent as SortIcon } from "@assets/svg/files/sort.svg";
-import { getAssetIcon } from "@/utils/icons";
-import { IconTypeEnum } from "@/const";
+import { getAssetIcon } from "@/common/utils/icons";
+import { IconTypeEnum } from "@/common/const";
 import clsx from "clsx";
 
 interface AllowanceListProps {
@@ -26,7 +26,7 @@ const columns = ["subAccount", "spender", "amount", "expiration", "action"];
 
 export default function AllowanceList({ allowances, handleSortChange }: AllowanceListProps) {
   const { t } = useTranslation();
-  const { assets } = useAppSelector((state) => state.asset);
+  const { assets } = useAppSelector((state) => state.asset.list);
   const { contacts } = useAppSelector((state) => state.contacts);
 
   return (

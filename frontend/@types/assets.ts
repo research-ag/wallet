@@ -22,6 +22,5 @@ export type UpdateAllBalances = (params: UpdateAllBalancesParams) => Promise<Ass
 
 export interface GetAllTransactionsICPParams {
   subaccount_index: string;
-  loading: boolean;
   isOGY: boolean;
 }

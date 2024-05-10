@@ -16,7 +16,7 @@ import { useTranslation } from "react-i18next";
 import { useAppSelector } from "@redux/Store";
 import { TransactionDrawer, TransactionValidationErrorsEnum, transactionErrors } from "@/@types/transactions";
 import { LoadingLoader } from "@components/loader";
-import { toHoleBigInt } from "@/utils";
+import { toHoleBigInt } from "@common/utils/amount";
 
 export default function SendForm() {
   const { t } = useTranslation();

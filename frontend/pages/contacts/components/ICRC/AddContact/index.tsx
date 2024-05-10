@@ -12,13 +12,14 @@ import ContactAssetDetails from "./ContactAssetDetails";
 import { LoadingLoader } from "@components/loader";
 import { CustomButton } from "@components/button";
 import { AssetContact } from "@redux/models/ContactsModels";
-import { isHexadecimalValid, validateSubaccounts } from "@/utils/checkers";
 import { clsx } from "clsx";
-import { validatePrincipal } from "@/utils/identity";
+import { validatePrincipal } from "@/common/utils/definityIdentity";
 import { SupportedStandardEnum } from "@/@types/icrc";
 import { db } from "@/database/db";
-import { getAccountIdentifier } from "@/utils";
-import { retrieveAssetsWithAllowance, retrieveSubAccountsWithAllowance } from "@pages/home/helpers/icrc/";
+import { retrieveAssetsWithAllowance, retrieveSubAccountsWithAllowance } from "@/common/libs/icrc/";
+import { asciiHex } from "@pages/contacts/constants/asciiHex";
+import { isHexadecimalValid, validateSubaccounts } from "@pages/home/helpers/checkers";
+import { getAccountIdentifier } from "@common/utils/icrc";
 
 interface AddContactProps {
   setAddOpen(value: boolean): void;
@@ -27,7 +28,7 @@ interface AddContactProps {
 export default function AddContact({ setAddOpen }: AddContactProps) {
   const { t } = useTranslation();
   const [isAllowancesChecking, setIsAllowancesChecking] = useState<boolean>(false);
-  const { assets, asciiHex } = GeneralHook();
+  const { assets } = GeneralHook();
   const { checkPrincipalValid } = usePrincipalValidator();
 
   const {

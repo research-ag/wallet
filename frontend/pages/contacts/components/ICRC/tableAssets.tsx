@@ -12,10 +12,10 @@ import {
   SubAccountContact,
   SubAccountContactErr,
 } from "@redux/models/ContactsModels";
-import { DeleteContactTypeEnum, IconTypeEnum } from "@/const";
+import { DeleteContactTypeEnum, IconTypeEnum } from "@/common/const";
 import { Fragment } from "react";
 import TableSubAccounts from "./tableSubAccounts";
-import { getAssetIcon } from "@/utils/icons";
+import { getAssetIcon } from "@/common/utils/icons";
 
 interface TableAssetsProps {
   cntc: Contact;

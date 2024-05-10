@@ -1,5 +1,5 @@
 // svgs
-import { AccountDefaultEnum, IconTypeEnum, TokenNetwork, TokenNetworkEnum } from "@/const";
+import { IconTypeEnum, TokenNetwork, TokenNetworkEnum } from "@/common/const";
 import ChevIcon from "@assets/svg/files/chev-icon.svg";
 //
 import { CustomButton } from "@components/button";
@@ -7,44 +7,30 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { clsx } from "clsx";
 import { useTranslation } from "react-i18next";
 import { Asset } from "@redux/models/AccountModels";
-import { getAssetIcon } from "@/utils/icons";
+import { getAssetIcon } from "@/common/utils/icons";
+import {
+  AssetMutationAction,
+  AssetMutationResult,
+  setAccordionAssetIdx,
+  setAssetMutation,
+  setAssetMutationAction,
+  setAssetMutationResult,
+  setSelectedAsset,
+} from "@redux/assets/AssetReducer";
+import { useAppDispatch, useAppSelector } from "@redux/Store";
+import useCreateUpdateAsset from "@pages/home/hooks/useCreateUpdateAsset";
+import { useState } from "react";
+import useAssetMutate, { assetMutateInitialState } from "@pages/home/hooks/useAssetMutate";
+import { getAssetDetails } from "@/common/libs/icrc";
+import { db } from "@/database/db";
 
-interface AddAssetAutomaticProps {
-  setNetworkTOpen(value: boolean): void;
-  networkTOpen: boolean;
-  setNetwork(value: TokenNetwork): void;
-  network: TokenNetwork;
-  setNewAsset(value: Asset): void;
-  newAsset: Asset;
-  setAssetTOpen(value: boolean): void;
-  addAssetToData(): void;
-  assetTOpen: boolean;
-  setValidToken(value: boolean): void;
-  setErrToken(value: string): void;
-  errToken: string;
-  setManual(value: boolean): void;
-  newAssetList: Asset[];
-  assets: Asset[];
-}
-
-const AddAssetAutomatic = ({
-  setNetworkTOpen,
-  networkTOpen,
-  setNetwork,
-  network,
-  setNewAsset,
-  newAsset,
-  setAssetTOpen,
-  addAssetToData,
-  assetTOpen,
-  setValidToken,
-  setErrToken,
-  errToken,
-  setManual,
-  newAssetList,
-  assets,
-}: AddAssetAutomaticProps) => {
+const AddAssetAutomatic = () => {
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
+  const { assets } = useAppSelector((state) => state.asset.list);
+  const [network, setNetwork] = useState<TokenNetwork>(TokenNetworkEnum.enum["ICRC-1"]);
+  const { newAssetList, assetTOpen, setAssetTOpen, networkTOpen, setNetworkTOpen } = useCreateUpdateAsset();
+  const { newAsset, setNewAsset, setErrToken, errToken } = useAssetMutate();
 
   return (
     <div className="flex flex-col items-start justify-start w-full">
@@ -84,7 +70,7 @@ const AddAssetAutomatic = ({
                 sideOffset={2}
                 align="end"
               >
-                {TokenNetworkEnum.options.map((sa, idx) => {
+                {TokenNetworkEnum.options.map((networkOption, idx) => {
                   return (
                     <DropdownMenu.Item
                       key={`net-${idx}`}
@@ -92,11 +78,11 @@ const AddAssetAutomatic = ({
                         idx > 0 ? "border-t border-BorderColorLight dark:border-BorderColor" : ""
                       }`}
                       onSelect={() => {
-                        onSelectNetwork(sa);
+                        onSelectNetwork(networkOption);
                       }}
                     >
                       <div className="flex flex-col items-start justify-center">
-                        <p>{`${sa}`}</p>
+                        <p>{`${networkOption}`}</p>
                       </div>
                     </DropdownMenu.Item>
                   );
@@ -182,70 +168,66 @@ const AddAssetAutomatic = ({
     </div>
   );
 
-  function onSelectNetwork(sa: TokenNetwork) {
-    setNetwork(sa);
-    if (sa !== network)
-      setNewAsset({
-        address: "",
-        symbol: "",
-        name: "",
-        tokenName: "",
-        tokenSymbol: "",
-        decimal: "",
-        shortDecimal: "",
-        subAccounts: [
-          {
-            sub_account_id: "0x0",
-            name: AccountDefaultEnum.Values.Default,
-            amount: "0",
-            currency_amount: "0",
-            address: "",
-            decimal: 0,
-            symbol: "",
-            transaction_fee: "",
-          },
-        ],
-        index: "",
-        sortIndex: 999,
-        supportedStandards: [],
-      });
+  function onSelectNetwork(networkOption: TokenNetwork) {
+    if (networkOption === network) return;
+
+    setNetwork(networkOption);
+    setNewAsset(assetMutateInitialState);
   }
 
   function onSelectToken(newAsset: Asset) {
     setNewAsset(newAsset);
     setErrToken("");
-    setValidToken(true);
   }
 
   function onAddAssetManually() {
-    setManual(true);
-    setNewAsset({
-      address: "",
-      symbol: "",
-      name: "",
-      tokenName: "",
-      tokenSymbol: "",
-      decimal: "",
-      shortDecimal: "",
-      subAccounts: [
-        {
-          sub_account_id: "0x0",
-          name: AccountDefaultEnum.Values.Default,
-          amount: "0",
-          currency_amount: "0",
-          address: "",
-          decimal: 0,
-          symbol: "",
-          transaction_fee: "",
-        },
-      ],
-      index: "",
-      sortIndex: 999,
-      supportedStandards: [],
-    });
+    dispatch(setAssetMutationAction(AssetMutationAction.ADD_MANUAL));
+    setNewAsset(assetMutateInitialState);
   }
+
   async function onAdd() {
     newAsset.address.trim() !== "" && addAssetToData();
+  }
+
+  async function addAssetToData() {
+    if (isAssetAdded(newAsset.address)) {
+      setErrToken(t("adding.asset.already.imported"));
+      return;
+    }
+
+    try {
+      dispatch(setAssetMutation(newAsset));
+      dispatch(setAssetMutationResult(AssetMutationResult.ADDING));
+
+      const idxSorting = assets.length > 0 ? [...assets].sort((a, b) => b.sortIndex - a.sortIndex) : [];
+      const sortIndex = (idxSorting.length > 0 ? idxSorting[0]?.sortIndex : 0) + 1;
+
+      const updatedAsset = await getAssetDetails({
+        canisterId: newAsset.address,
+        includeDefault: true,
+        customName: newAsset.name,
+        customSymbol: newAsset.symbol,
+        supportedStandard: newAsset.supportedStandards,
+        sortIndex,
+      });
+
+      const assetToSave: Asset = { ...newAsset, ...updatedAsset, sortIndex };
+
+      await db().addAsset(assetToSave, { sync: true });
+
+      dispatch(setAssetMutationResult(AssetMutationResult.ADDED));
+      dispatch(setSelectedAsset(assetToSave));
+      dispatch(setAccordionAssetIdx([assetToSave.symbol]));
+    } catch (error) {
+      console.error("Error adding asset", error);
+      dispatch(setAssetMutationResult(AssetMutationResult.FAILED));
+    } finally {
+      dispatch(setAssetMutationAction(AssetMutationAction.NONE));
+    }
+  }
+
+  function isAssetAdded(address: string) {
+    return assets.find((asst: Asset) => asst.address === address) ? true : false;
   }
 };
 

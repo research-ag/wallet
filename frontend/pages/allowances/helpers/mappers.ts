@@ -29,7 +29,7 @@ interface AllowanceWithNames extends TAllowance {
 
 export function includeNamesToAllowances(allowances: TAllowance[]) {
   const contacts = store.getState().contacts.contacts;
-  const assets = store.getState().asset.assets;
+  const assets = store.getState().asset.list.assets;
 
   const fullAllowances = allowances.map((allowance) => {
     const contact = contacts.find((contact) => contact.principal === allowance.spender);

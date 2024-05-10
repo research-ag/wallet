@@ -1,4 +1,4 @@
-import { removeLeadingZeros } from "@/utils";
+import { removeLeadingZeros } from "@common/utils/strings";
 import { SubAccountContact } from "@redux/models/ContactsModels";
 
 export function validateSubaccounts(newSubAccounts: SubAccountContact[]) {

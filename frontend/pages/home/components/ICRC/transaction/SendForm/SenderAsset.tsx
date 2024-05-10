@@ -1,5 +1,5 @@
 import { SelectOption } from "@/@types/components";
-import formatAsset from "@/utils/formatAsset";
+import formatAsset from "@common/utils/formatAsset";
 import { BasicSelect } from "@components/select";
 import { useAppSelector } from "@redux/Store";
 import { setSenderAssetAction } from "@redux/transaction/TransactionActions";
@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 
 export default function SenderAsset() {
   const { t } = useTranslation();
-  const { assets } = useAppSelector((state) => state.asset);
+  const { assets } = useAppSelector((state) => state.asset.list);
   const { sender } = useAppSelector((state) => state.transaction);
   const [searchAsset, setSearchAsset] = useState<string | null>(null);
 

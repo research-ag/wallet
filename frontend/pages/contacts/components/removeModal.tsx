@@ -5,7 +5,7 @@ import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 import { BasicModal } from "@components/modal";
 import { CustomButton } from "@components/button";
 import { useTranslation } from "react-i18next";
-import { DeleteContactTypeEnum } from "@/const";
+import { DeleteContactTypeEnum } from "@/common/const";
 import useContactTable from "../hooks/useContactTable";
 
 interface RemoveModalProps {

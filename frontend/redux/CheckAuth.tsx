@@ -13,17 +13,14 @@ import {
 import { AuthClient } from "@dfinity/auth-client";
 import { clearDataAsset, setICRC1SystemAssets, setInitLoad } from "./assets/AssetReducer";
 import { AuthNetwork } from "./models/TokenModels";
-import { AuthNetworkTypeEnum } from "@/const";
+import { AuthNetworkTypeEnum } from "@/common/const";
 import { Ed25519KeyIdentity, DelegationIdentity } from "@dfinity/identity";
 import { clearDataContacts } from "./contacts/ContactsReducer";
 import { Principal } from "@dfinity/principal";
 import { Secp256k1KeyIdentity } from "@dfinity/identity-secp256k1";
 import { DB_Type, db } from "@/database/db";
 import { setTransactions } from "./transaction/TransactionReducer";
-import { getSNSTokens, updateAllBalances } from "./assets/AssetActions";
-import contactCacheRefresh from "@pages/contacts/helpers/contactCacheRefresh";
-import { allowanceCacheRefresh } from "@pages/allowances/helpers/cache";
-import { setAppDataRefreshing } from "./common/CommonReducer";
+import { getSNSTokens } from "./assets/AssetActions";
 import { addWatchOnlySessionToLocal } from "@pages/helpers/watchOnlyStorage";
 import watchOnlyRefresh from "@pages/helpers/watchOnlyRefresh";
 
@@ -135,34 +132,11 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean,
 
   await db().setIdentity(authIdentity, myPrincipal);
 
-  store.dispatch(setAuthenticated(true, false, !!fixedPrincipal, principalString));
-  store.dispatch(setInitLoad(false));
-  await refreshCachedData();
-};
-
-/**
- * Refresh the cached data only after success sign in
- * If you added a new module that needs to be refreshed after sign in, add it here
- */
-const refreshCachedData = async () => {
-  store.dispatch(setAppDataRefreshing(true));
-  const assets = await db().getAssets();
-
-  // INFO: sns Tokens should load before the assets to show correctly the asset logo see: utils/icons.getAssetIcon
   const snsTokens = await getSNSTokens(store.getState().auth.userAgent);
   store.dispatch(setICRC1SystemAssets(snsTokens));
 
-  await updateAllBalances({
-    loading: true,
-    myAgent: store.getState().auth.userAgent,
-    assets,
-    fromLogin: true,
-    basicSearch: true,
-  });
-
-  await allowanceCacheRefresh();
-  await contactCacheRefresh();
-  store.dispatch(setAppDataRefreshing(false));
+  store.dispatch(setAuthenticated(true, false, !!fixedPrincipal, principalString));
+  store.dispatch(setInitLoad(false));
 };
 
 export const logout = async () => {

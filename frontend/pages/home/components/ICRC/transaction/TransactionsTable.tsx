@@ -1,15 +1,17 @@
 import { TransactionDrawer } from "@/@types/transactions";
-import { GeneralHook } from "@pages/home/hooks/generalHook";
-import { UseTransaction } from "@pages/home/hooks/useTransaction";
-import { TableHook } from "@pages/hooks/tableHook";
+import { useTransactionsTable } from "@pages/home/hooks/useTransactionsTable";
+import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { setTransactionDrawerAction } from "@redux/transaction/TransactionActions";
+import { setSelectedTransaction } from "@redux/transaction/TransactionReducer";
 import { flexRender, getCoreRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 import { clsx } from "clsx";
 
-const ICRCTransactionsTable = () => {
-  const { transactions } = GeneralHook();
-  const { selectedTransaction, changeSelectedTransaction } = UseTransaction();
-  const { columns, sorting, setSorting } = TableHook();
+export default function ICRCTransactionsTable() {
+  const dispatch = useAppDispatch();
+  const { transactions } = useAppSelector((state) => state.transaction.list);
+  const { selectedTransaction } = useAppSelector((state) => state.transaction);
+  const { columns, sorting, setSorting } = useTransactionsTable();
+
   const table = useReactTable({
     data: transactions || [],
     columns,
@@ -53,7 +55,7 @@ const ICRCTransactionsTable = () => {
               }`}
               key={`tr-transac-${idxTR}`}
               onClick={() => {
-                changeSelectedTransaction(row.original);
+                dispatch(setSelectedTransaction(row.original));
                 setTransactionDrawerAction(TransactionDrawer.INSPECT);
               }}
             >
@@ -68,7 +70,7 @@ const ICRCTransactionsTable = () => {
       </table>
     </div>
   );
-};
+}
 
 // Tailwind CSS
 const colStyle = (idxTH: number) =>
@@ -79,5 +81,3 @@ const colStyle = (idxTH: number) =>
     ["w-[20%] min-w-[20%] max-w-[20%]"]: idxTH === 2,
     ["w-[25%] min-w-[25%] max-w-[25%]"]: idxTH === 3,
   });
-
-export default ICRCTransactionsTable;

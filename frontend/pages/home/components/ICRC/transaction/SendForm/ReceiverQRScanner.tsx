@@ -1,5 +1,5 @@
 import { TransactionScannerOptionEnum } from "@/@types/transactions";
-import { subUint8ArrayToHex } from "@/utils";
+import { subUint8ArrayToHex } from "@common/utils/unitArray";
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import QRscanner from "@pages/components/QRscanner";
 import { setReceiverNewContactAction, setScannerActiveOptionAction } from "@redux/transaction/TransactionActions";

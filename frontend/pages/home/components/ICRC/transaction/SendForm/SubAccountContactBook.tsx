@@ -6,7 +6,7 @@ import OwnSubAccountCard from "./OwnSubAccountCard";
 export default function SubAccountContactBook() {
   const [balance, setBalance] = useState("");
   const { sender } = useAppSelector((state) => state.transaction);
-  const { assets } = useAppSelector((state) => state.asset);
+  const { assets } = useAppSelector((state) => state.asset.list);
   const { getSenderMaxAmount } = useSend();
 
   const subAccountName =

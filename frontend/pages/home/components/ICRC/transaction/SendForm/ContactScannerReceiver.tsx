@@ -4,13 +4,14 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { removeErrorAction, setErrorAction, setReceiverNewContactAction } from "@redux/transaction/TransactionActions";
 import { useTranslation } from "react-i18next";
 import { decodeIcrcAccount, encodeIcrcAccount } from "@dfinity/ledger-icrc";
-import { hexToUint8Array, subUint8ArrayToHex } from "@/utils";
 import ContactSuffix from "./ContactSuffix";
 import { TransactionValidationErrorsEnum } from "@/@types/transactions";
 import { useAppSelector } from "@redux/Store";
-import { isHexadecimalValid } from "@/utils/checkers";
-import { validatePrincipal } from "@/utils/identity";
+import { validatePrincipal } from "@/common/utils/definityIdentity";
 import { Principal } from "@dfinity/principal";
+import { isHexadecimalValid } from "@pages/home/helpers/checkers";
+import { hexToUint8Array } from "@common/utils/hexadecimal";
+import { subUint8ArrayToHex } from "@common/utils/unitArray";
 
 export default function ContactScannerReceiver() {
   const [inputValue, setInputValue] = useState("");

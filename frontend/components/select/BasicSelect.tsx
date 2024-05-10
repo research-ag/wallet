@@ -7,7 +7,7 @@ import { SelectOption } from "@/@types/components";
 import { clsx } from "clsx";
 import { useTranslation } from "react-i18next";
 import * as Popover from "@radix-ui/react-popover";
-import { cleanAlphanumeric } from "@/utils/strings";
+import { cleanAlphanumeric } from "@/common/utils/strings";
 
 interface TSelectProps extends VariantProps<typeof selectTriggerCVA>, VariantProps<typeof selectContentCVA> {
   options: SelectOption[];
@@ -38,6 +38,7 @@ export default function Select(props: TSelectProps) {
   const selectedValue = useMemo(() => {
     const result = options.find((option) => option.value === currentValue);
     if (result) return result;
+
     return options.find((option) => option.value === initialValue);
   }, [currentValue]);
 
@@ -72,7 +73,7 @@ export default function Select(props: TSelectProps) {
           </div>
         )}
         <div>
-          {options.length === 0 && <div className={`${getFlatStyle(contentWidth)}`}></div>}
+          <div className={`${getFlatStyle(contentWidth)}`}></div>
           {options
             .filter((option) => option.value !== selectedValue?.value)
             .map((option, index) => (

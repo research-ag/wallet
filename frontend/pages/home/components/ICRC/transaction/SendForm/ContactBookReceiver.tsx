@@ -6,7 +6,7 @@ import { SelectOption } from "@/@types/components";
 import { setReceiverContactAction } from "@redux/transaction/TransactionActions";
 import { useAppSelector } from "@redux/Store";
 import useSend from "@pages/home/hooks/useSend";
-import { middleTruncation } from "@/utils/strings";
+import { middleTruncation } from "@/common/utils/strings";
 
 export default function ContactBookReceiver() {
   const [searchSubAccountValue, setSearchSubAccountValue] = useState<string | null>(null);

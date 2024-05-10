@@ -1,5 +1,5 @@
 import { AllowanceValidationErrorsEnum, TAllowance } from "@/@types/allowance";
-import { submitAllowanceApproval, createApproveAllowanceParams, getSubAccountBalance } from "@/pages/home/helpers/icrc";
+import { submitAllowanceApproval, createApproveAllowanceParams, getSubAccountBalance } from "@/common/libs/icrc";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { useMutation } from "@tanstack/react-query";
 import { useCallback, useState } from "react";
@@ -17,13 +17,14 @@ import dayjs from "dayjs";
 import { refreshAllowance } from "../helpers/refresh";
 // eslint-disable-next-line import/named
 import { throttle } from "lodash";
-import { removeZeroesFromAmount, toFullDecimal, toHoleBigInt } from "@/utils";
+import { removeZeroesFromAmount, toFullDecimal, toHoleBigInt } from "@common/utils/amount";
 
 export function useUpdateAllowance() {
   const dispatch = useAppDispatch();
   const { onCloseUpdateAllowanceDrawer } = useAllowanceDrawer();
-  const { selectedAllowance, allowances } = useAppSelector((state) => state.allowance);
-  const { assets } = useAppSelector((state) => state.asset);
+  const { allowances } = useAppSelector((state) => state.allowance.list);
+  const { selectedAllowance } = useAppSelector((state) => state.allowance);
+  const { assets } = useAppSelector((state) => state.asset.list);
   const [allowance, setAllowance] = useState<TAllowance>(selectedAllowance);
 
   const setAllowanceState = (allowanceData: Partial<TAllowance>) => {

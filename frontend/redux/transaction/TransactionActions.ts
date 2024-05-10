@@ -37,7 +37,7 @@ import {
   TransactionSenderOption,
   TransactionValidationErrorsType,
 } from "@/@types/transactions";
-import { SendingStatus } from "@/const";
+import { SendingStatus } from "@/common/const";
 
 export function setSenderAssetAction(asset: Asset) {
   store.dispatch(setSenderAsset(asset));

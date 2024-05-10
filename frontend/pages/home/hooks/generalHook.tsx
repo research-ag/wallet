@@ -7,9 +7,10 @@ import { setSelectedTransaction, setTransactions } from "@redux/transaction/Tran
 
 export const GeneralHook = () => {
   const dispatch = useAppDispatch();
-  const { transactions, selectedTransaction } = useAppSelector((state) => state.transaction);
 
-  const { ICPSubaccounts, assets, accounts, selectedAsset, selectedAccount } = useAppSelector((state) => state.asset);
+  const { assets } = useAppSelector((state) => state.asset.list);
+  const { ICPSubaccounts, accounts } = useAppSelector((state) => state.asset);
+  const { selectedAsset, selectedAccount } = useAppSelector((state) => state.asset.helper);
 
   const { userAgent, userPrincipal } = useAppSelector((state) => state.auth);
   const changeAssets = (value: Array<Asset>) => dispatch(setAssets(value));
@@ -32,60 +33,20 @@ export const GeneralHook = () => {
     return assets.find((asst: Asset) => asst.address === address) ? true : false;
   };
 
-  const asciiHex = [
-    "Backspace",
-    "Enter",
-    "Control",
-    "End",
-    "Home",
-    "ArrowLeft",
-    "ArrowRight",
-    "Delete",
-    "0",
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-    "8",
-    "9",
-    "A",
-    "B",
-    "C",
-    "D",
-    "E",
-    "F",
-    "V",
-    "X",
-    "a",
-    "b",
-    "c",
-    "d",
-    "e",
-    "f",
-    "v",
-    "x",
-  ];
-
   return {
     userAgent,
     userPrincipal,
     ICPSubaccounts,
     assets,
     accounts,
-    transactions,
     selectedAsset,
     selectedAccount,
-    selectedTransaction,
     changeAssets,
     changeAccounts,
     changeTransactions,
     changeSelectedAsset,
     changeSelectedAccount,
     changeSelectedTransaction,
-    asciiHex,
     //
     getTotalAsset,
     checkAssetAdded,

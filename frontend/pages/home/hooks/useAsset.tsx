@@ -5,8 +5,8 @@ import { setSelectedAccount, setSelectedAsset } from "@redux/assets/AssetReducer
 
 export const UseAsset = () => {
   const dispatch = useAppDispatch();
-  const { assets, selectedAsset, selectedAccount } = useAppSelector((state) => state.asset);
-
+  const { assets } = useAppSelector((state) => state.asset.list);
+  const { selectedAsset, selectedAccount } = useAppSelector((state) => state.asset.helper);
   const changeSelectedAsset = (value: Asset) => dispatch(setSelectedAsset(value));
   const changeSelectedAccount = (value: SubAccount | undefined) => dispatch(setSelectedAccount(value));
 

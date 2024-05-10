@@ -1,17 +1,17 @@
-import { toFullDecimal } from "@/utils";
 import { useAppSelector } from "@redux/Store";
 import { useEffect, useMemo, useState } from "react";
-import { getAllowanceDetails, getTransactionFeeFromLedger } from "../helpers/icrc/";
 import { TransactionSenderOptionEnum } from "@/@types/transactions";
-import { validatePrincipal } from "@/utils/identity";
-import { isHexadecimalValid } from "@/utils/checkers";
+import { validatePrincipal } from "@/common/utils/definityIdentity";
 import { Asset } from "@redux/models/AccountModels";
+import { getAllowanceDetails, getTransactionFeeFromLedger } from "@common/libs/icrc";
+import { isHexadecimalValid } from "../helpers/checkers";
+import { toFullDecimal } from "@common/utils/amount";
 
 export default function useSend() {
   const [transactionFee, setTransactionFee] = useState<string>("0");
   const { userPrincipal } = useAppSelector((state) => state.auth);
   const { contacts } = useAppSelector((state) => state.contacts);
-  const { assets } = useAppSelector((state) => state.asset);
+  const { assets } = useAppSelector((state) => state.asset.list);
   const { sender, receiver, amount, sendingStatus, errors, initTime, endTime } = useAppSelector(
     (state) => state.transaction,
   );

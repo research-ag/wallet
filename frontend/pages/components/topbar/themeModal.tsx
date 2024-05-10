@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import { clsx } from "clsx";
 import * as RadioGroup from "@radix-ui/react-radio-group";
 import { ThemeHook } from "@pages/hooks/themeHook";
-import { ThemesEnum } from "@/const";
+import { ThemesEnum } from "@/common/const";
 import { db } from "@/database/db";
 
 interface ThemeModalProps {

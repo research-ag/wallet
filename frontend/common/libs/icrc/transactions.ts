@@ -1,4 +1,4 @@
-import { getIcrcActor, getICRCSupportedStandards } from "@/pages/home/helpers/icrc";
+import { getIcrcActor, getICRCSupportedStandards } from "@/common/libs/icrc";
 import {
   GetBalanceParams,
   TransactionFeeParams,
@@ -7,19 +7,14 @@ import {
   SupportedStandard,
 } from "@/@types/icrc";
 import { getCanister } from "./getIcrcCanister";
-import {
-  getMetadataInfo,
-  getUSDfromToken,
-  hexToUint8Array,
-  hexadecimalToUint8Array,
-  toFullDecimal,
-  toHoleBigInt,
-} from "@/utils";
 import { Principal } from "@dfinity/principal";
 import { IcrcLedgerCanister, TransferFromParams } from "@dfinity/ledger-icrc";
 import store from "@redux/Store";
 import { Asset } from "@redux/models/AccountModels";
-import { AccountDefaultEnum } from "@/const";
+import { AccountDefaultEnum } from "@/common/const";
+import { hexadecimalToUint8Array, hexToUint8Array } from "@common/utils/hexadecimal";
+import { getUSDFromToken, toFullDecimal, toHoleBigInt } from "@common/utils/amount";
+import { getMetadataInfo } from "@common/utils/icrc";
 
 export async function getTransactionFeeFromLedger(params: TransactionFeeParams) {
   try {
@@ -108,7 +103,9 @@ interface DetailsParams {
   supportedStandard?: SupportedStandard[];
   ledgerIndex?: string;
 }
-
+/**
+ * Get asset details from the ledger (supported standards, symbol, name, logo, balance and usd amount)
+ */
 export async function getAssetDetails(params: DetailsParams): Promise<Asset | undefined> {
   try {
     const { canisterId, customSymbol, customName, sortIndex, supportedStandard: standard, ledgerIndex } = params;
@@ -140,12 +137,12 @@ export async function getAssetDetails(params: DetailsParams): Promise<Asset | un
       subAccount: "0x0",
     });
 
-    const assetMarket = store.getState().asset.tokensMarket.find((token) => token.symbol === symbol);
+    const assetMarket = store.getState().asset.utilData.tokensMarket.find((token) => token.symbol === symbol);
 
     let USDAmount = "0";
 
     if (assetMarket) {
-      USDAmount = getUSDfromToken(balance.toString(), assetMarket.price, decimals);
+      USDAmount = getUSDFromToken(balance.toString(), assetMarket.price, decimals);
     }
 
     const asset: Asset = {

@@ -1,5 +1,5 @@
-import { AssetSymbolEnum, SpecialTxTypeEnum } from "@/const";
-import { getAddress, shortAddress } from "@/utils";
+import { AssetSymbolEnum, SpecialTxTypeEnum } from "@/common/const";
+import { getAddress, shortAddress } from "@common/utils/icrc";
 import { AccountHook } from "@pages/hooks/accountHook";
 import { useAppSelector } from "@redux/Store";
 import { Transaction } from "@redux/models/AccountModels";
@@ -17,7 +17,10 @@ const CodeElement = ({ tx }: CodeElementProps) => {
   const accId = clsx("text-primary-color/60");
   const { authClient } = AccountHook();
 
-  const { selectedAccount, ICPSubaccounts, assets } = useAppSelector((state) => state.asset);
+  const { ICPSubaccounts } = useAppSelector((state) => state.asset);
+  const { assets } = useAppSelector((state) => state.asset.list);
+  const { selectedAccount } = useAppSelector((state) => state.asset.helper);
+
   const { contacts } = useAppSelector((state) => state.contacts);
 
   const isTo = getAddress(

@@ -5,7 +5,7 @@ import { useAppSelector } from "@redux/Store";
 import { resetSendStateAction, setTransactionDrawerAction } from "@redux/transaction/TransactionActions";
 import { useTranslation } from "react-i18next";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
-import { DrawerOptionEnum } from "@/const";
+import { DrawerOptionEnum } from "@/common/const";
 import DrawerSend from "@/pages/home/components/ICRC/transaction/DrawerSend";
 import DrawerReceive from "@/pages/home/components/ICRC/transaction/DrawerReceive";
 // eslint-disable-next-line

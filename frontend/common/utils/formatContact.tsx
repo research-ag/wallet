@@ -1,6 +1,6 @@
 import { Contact } from "@redux/models/ContactsModels";
-import { middleTruncation } from "./strings";
 import { AvatarEmpty } from "@components/avatar";
+import { middleTruncation } from "@/common/utils/strings";
 
 export default function formatContact(contact: Contact) {
   return {

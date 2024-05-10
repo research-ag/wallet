@@ -2,36 +2,34 @@
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
 import { BasicModal } from "@components/modal";
-import { AddingAssetsEnum, TokenNetwork, IconTypeEnum, TokenNetworkEnum, AddingAssets } from "@/const";
+import { IconTypeEnum } from "@/common/const";
 import { useTranslation } from "react-i18next";
-import { Asset } from "@redux/models/AccountModels";
-import { getAssetIcon } from "@/utils/icons";
-interface DialogAssetConfirmationProps {
-  modal: boolean;
-  showModal(value: boolean): void;
-  setAssetOpen(value: boolean): void;
-  newAsset: Asset;
-  setNewAsset(value: Asset): void;
-  setNetwork(value: TokenNetwork): void;
-  addStatus: AddingAssets;
-  setManual(value: boolean): void;
-}
+import { getAssetIcon } from "@/common/utils/icons";
+import { useAppDispatch, useAppSelector } from "@redux/Store";
+import { AssetMutationResult, setAssetMutation, setAssetMutationResult } from "@redux/assets/AssetReducer";
+import { useEffect } from "react";
+import clsx from "clsx";
 
-const DialogAssetConfirmation = ({
-  modal,
-  showModal,
-  setAssetOpen,
-  newAsset,
-  setNewAsset,
-  setNetwork,
-  addStatus,
-  setManual,
-}: DialogAssetConfirmationProps) => {
+const DialogAssetConfirmation = () => {
+  const dispatch = useAppDispatch();
   const { t } = useTranslation();
+  const { assetResult, assetAction, assetMutated } = useAppSelector((state) => state.asset.mutation);
+  const isModalOpen = assetResult !== AssetMutationResult.NONE;
+
+  useEffect(() => {
+    const closeTimer = setTimeout(() => {
+      dispatch(setAssetMutation(undefined));
+      dispatch(setAssetMutationResult(AssetMutationResult.NONE));
+    }, 5000);
+
+    return () => {
+      clearTimeout(closeTimer);
+    };
+  }, [assetAction, assetMutated]);
 
   return (
     <BasicModal
-      open={modal}
+      open={isModalOpen}
       width="w-[18rem]"
       padding="py-3 px-1"
       border="border border-BorderColorTwoLight dark:border-BorderColorTwo"
@@ -42,62 +40,45 @@ const DialogAssetConfirmation = ({
           onClick={onClose}
         />
         <div className="flex flex-col items-center justify-start w-full py-2">
-          {getAssetIcon(IconTypeEnum.Enum.ASSET, newAsset?.tokenSymbol, newAsset.logo)}
-          <p
-            className={`text-lg font-semibold mt-3 ${
-              addStatus === AddingAssetsEnum.Enum.done ? "text-TextReceiveColor" : "text-TextSendColor"
-            }`}
-          >
-            {getMessage(addStatus).top}
-          </p>
-          <p className="mt-3 text-lg font-semibold">{getMessage(addStatus).botton}</p>
+          {getAssetIcon(IconTypeEnum.Enum.ASSET, assetMutated?.tokenSymbol, assetMutated?.logo)}
+          <p className={getMessageTextStyles(assetResult)}> {getMessage(assetResult)} </p>
         </div>
       </div>
     </BasicModal>
   );
 
   function onClose() {
-    showModal(false);
-    setAssetOpen(false);
-    setNetwork(TokenNetworkEnum.enum["ICRC-1"]);
-    setNewAsset({
-      address: "",
-      symbol: "",
-      decimal: "",
-      shortDecimal: "",
-      name: "",
-      tokenSymbol: "",
-      tokenName: "",
-      subAccounts: [
-        {
-          sub_account_id: "0x0",
-          name: "Default",
-          amount: "0",
-          currency_amount: "0",
-          address: "",
-          symbol: "",
-          decimal: 0,
-          transaction_fee: "0",
-        },
-      ],
-      index: "",
-      sortIndex: 999,
-      supportedStandards: [],
-    });
-    setManual(false);
+    dispatch(setAssetMutation(undefined));
+    dispatch(setAssetMutationResult(AssetMutationResult.NONE));
   }
 
-  function getMessage(status: string) {
-    switch (status) {
-      case AddingAssetsEnum.Enum.adding:
-        return { top: "", botton: t("adding.asset") };
-      case AddingAssetsEnum.Enum.done:
-        return { top: t("congrats"), botton: t("adding.asset.successful") };
-      case AddingAssetsEnum.Enum.error:
-        return { top: t("error"), botton: t("adding.asset.failed") };
+  function getMessageTextStyles(status: AssetMutationResult) {
+    const resultTextStyles = clsx("text-lg font-semibold mt-3");
 
+    switch (status) {
+      case AssetMutationResult.ADDING:
+        return clsx(resultTextStyles, "text-black-color dark:text-gray-color-9");
+      case AssetMutationResult.ADDED:
+        return clsx(resultTextStyles, "text-slate-color-success");
+      case AssetMutationResult.FAILED:
+        return clsx(resultTextStyles, "text-slate-color-error");
       default:
-        return { top: t("adding.asset"), botton: "" };
+        return resultTextStyles;
+    }
+  }
+
+  function getMessage(status: AssetMutationResult) {
+    switch (status) {
+      case AssetMutationResult.ADDING:
+        return t("adding.asset");
+
+      case AssetMutationResult.ADDED:
+        return t("adding.asset.successful");
+
+      case AssetMutationResult.FAILED:
+        return t("adding.asset.failed");
+      default:
+        return "";
     }
   }
 };

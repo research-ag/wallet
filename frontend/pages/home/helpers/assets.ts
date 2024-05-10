@@ -1,6 +1,8 @@
 import { RefreshOptions } from "@/@types/assets";
-import { AccountDefaultEnum } from "@/const";
-import { getMetadataInfo, getSubAccountArray, getUSDfromToken, hexToNumber, hexToUint8Array } from "@/utils";
+import { AccountDefaultEnum } from "@/common/const";
+import { getUSDFromToken } from "@common/utils/amount";
+import { hexToNumber, hexToUint8Array } from "@common/utils/hexadecimal";
+import { getMetadataInfo, getSubAccountArray } from "@common/utils/icrc";
 import { IcrcLedgerCanister } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
@@ -43,7 +45,7 @@ async function refreshAsset(asset: Asset, options: RefreshOptions) {
       });
 
       const amount = myBalance.toString();
-      const USDAmount = assetMarket ? getUSDfromToken(myBalance.toString(), assetMarket.price, decimals) : "0";
+      const USDAmount = assetMarket ? getUSDFromToken(myBalance.toString(), assetMarket.price, decimals) : "0";
 
       const assetSubAccount: SubAccount = {
         name: currentSubAccount.name,
@@ -76,7 +78,7 @@ async function refreshAsset(asset: Asset, options: RefreshOptions) {
 
         if (Number(myBalance) > 0) {
           const amount = myBalance.toString();
-          const USDAmount = assetMarket ? getUSDfromToken(amount, assetMarket.price, decimals) : "0";
+          const USDAmount = assetMarket ? getUSDFromToken(amount, assetMarket.price, decimals) : "0";
 
           const assetSubAccount: SubAccount = {
             name: index === 0 ? AccountDefaultEnum.Values.Default : "-",

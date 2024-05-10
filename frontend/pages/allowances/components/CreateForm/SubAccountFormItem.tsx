@@ -3,7 +3,7 @@ import { SelectOption } from "@/@types/components";
 import { BasicChip } from "@components/chip";
 import { BasicSelect } from "@components/select";
 import { useAppSelector } from "@redux/Store";
-import { Asset } from "@redux/models/AccountModels";
+import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -17,8 +17,8 @@ interface ISubAccountFormItemProps {
 export default function SubAccountFormItem(props: ISubAccountFormItemProps) {
   const { t } = useTranslation();
   const { errors } = useAppSelector((state) => state.allowance);
-  const { assets } = useAppSelector((state) => state.asset);
-  const { allowance, selectedAsset, setAllowanceState, isLoading } = props;
+  const { assets } = useAppSelector((state) => state.asset.list);
+  const { allowance, setAllowanceState, isLoading } = props;
   const [searchValue, setSearchValue] = useState<string | null>(null);
   const onOpenChange = () => setSearchValue(null);
   const onSearchChange = (searchValue: string) => {
@@ -33,18 +33,22 @@ export default function SubAccountFormItem(props: ISubAccountFormItemProps) {
   );
 
   const options = useMemo(() => {
-    const accountsToMap = searchValue
-      ? allowanceAsset?.subAccounts?.filter((account) => account.name.toLowerCase().includes(searchValue.toLowerCase()))
-      : allowanceAsset?.subAccounts || selectedAsset?.subAccounts;
+    if (!searchValue) return allowanceAsset?.subAccounts.map(formatSubAccount) || [];
 
-    return (
-      accountsToMap?.map((account) => ({
-        value: account?.sub_account_id,
-        label: account?.name,
-        icon: <BasicChip text={account.sub_account_id} size="medium" className="mr-4" />,
-      })) || []
-    );
-  }, [allowance.asset, searchValue, selectedAsset]);
+    const filteredSubAccounts =
+      allowanceAsset?.subAccounts.filter((account) => account.name.toLowerCase().includes(searchValue.toLowerCase())) ||
+      [];
+
+    return filteredSubAccounts.map(formatSubAccount);
+  }, [allowance.asset, searchValue, allowanceAsset]);
+
+  function formatSubAccount(subAccount: SubAccount) {
+    return {
+      value: subAccount.sub_account_id,
+      label: subAccount.name,
+      icon: <BasicChip text={subAccount.sub_account_id} size="medium" className="mr-4" />,
+    };
+  }
 
   return (
     <div className="mt-4">

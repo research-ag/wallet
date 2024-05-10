@@ -4,11 +4,11 @@ import useSend from "@pages/home/hooks/useSend";
 import OwnSubAccountCard from "./OwnSubAccountCard";
 import ReceiverThirdPartyCard from "./ReceiverThirdPartyCard";
 import { useMemo } from "react";
-import { toFullDecimal } from "@/utils";
+import { toFullDecimal } from "@common/utils/amount";
 
 export default function ReceiverDetail() {
   const { t } = useTranslation();
-  const { assets } = useAppSelector((state) => state.asset);
+  const { assets } = useAppSelector((state) => state.asset.list);
   const { receiver, sender } = useAppSelector((state) => state.transaction);
   const { isReceiverOwnSubAccount, receiverSubAccount, getReceiverBalance } = useSend();
 

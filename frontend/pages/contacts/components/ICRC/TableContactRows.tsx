@@ -6,7 +6,6 @@ import { ReactComponent as CheckIcon } from "@assets/svg/files/edit-check.svg";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
 import ContactAssetPop from "./contactAssetPop";
-import { getInitialFromName, shortAddress } from "@/utils";
 import TableAssets from "./tableAssets";
 import { CustomCopy } from "@components/tooltip";
 import { CustomInput } from "@components/input";
@@ -19,7 +18,7 @@ import { AssetToAdd } from "@redux/models/AccountModels";
 import usePrincipalValidator from "../../hooks/usePrincipalValidator";
 import { GeneralHook } from "@pages/home/hooks/generalHook";
 import useContactTable from "../../hooks/useContactTable";
-import { DeleteContactTypeEnum } from "@/const";
+import { DeleteContactTypeEnum } from "@/common/const";
 import {
   AssetContact,
   Contact,
@@ -28,7 +27,9 @@ import {
   SubAccountContactErr,
 } from "@redux/models/ContactsModels";
 import { useTranslation } from "react-i18next";
-import { getAssetIcon } from "@/utils/icons";
+import { getAssetIcon } from "@/common/utils/icons";
+import { getInitialFromName } from "@common/utils/strings";
+import { shortAddress } from "@common/utils/icrc";
 
 interface TableContactRowsProps {
   changeName(value: string): void;

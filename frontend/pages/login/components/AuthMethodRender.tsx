@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { AuthNetwork } from "@redux/models/TokenModels";
-import { AuthNetworkType, AuthNetworkTypeEnum } from "@/const";
+import { AuthNetworkType, AuthNetworkTypeEnum } from "@/common/const";
 import { handleAuthenticated } from "@redux/CheckAuth";
 import SeedInput from "./SeedInput";
 import WatchOnlyInput from "./WatchOnlyInput";

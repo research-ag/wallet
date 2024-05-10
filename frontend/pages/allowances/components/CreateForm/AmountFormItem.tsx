@@ -1,13 +1,13 @@
 import { TAllowance, AllowanceValidationErrorsEnum } from "@/@types/allowance";
-import { IconTypeEnum } from "@/const";
-import { validateAmount } from "@/utils";
-import { getAssetIcon } from "@/utils/icons";
+import { IconTypeEnum } from "@/common/const";
+import { getAssetIcon } from "@/common/utils/icons";
 import CurrencyInput from "@components/input/CurrencyInput";
 import { useAppSelector } from "@redux/Store";
 import { removeAllowanceErrorAction, setAllowanceErrorAction } from "@redux/allowance/AllowanceActions";
 import { Asset } from "@redux/models/AccountModels";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { validateAmount } from "@common/utils/amount";
 
 interface IAmountFormItemProps {
   allowance: TAllowance;
@@ -19,7 +19,7 @@ interface IAmountFormItemProps {
 export default function AmountFormItem(props: IAmountFormItemProps) {
   const { t } = useTranslation();
   const { errors } = useAppSelector((state) => state.allowance);
-  const { assets } = useAppSelector((state) => state.asset);
+  const { assets } = useAppSelector((state) => state.asset.list);
   const { allowance, setAllowanceState, isLoading } = props;
   const { asset } = allowance;
 

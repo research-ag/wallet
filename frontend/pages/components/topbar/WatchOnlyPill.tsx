@@ -1,9 +1,9 @@
 import { useAppSelector } from "@redux/Store";
 import WatchOnlyRecords from "./WatchOnlyRecords";
 import { ChevronDownIcon, ChevronLeftIcon } from "@radix-ui/react-icons";
-import { shortAddress } from "@/utils";
 import { MAX_ALIAS_ADDRESS_LENGTH } from "./useWatchOnlyMutation";
 import { useState } from "react";
+import { shortAddress } from "@common/utils/icrc";
 
 interface WatchOnlyPillProps {
   text: string;
@@ -26,7 +26,7 @@ export default function WatchOnlyPill({ text, icon }: WatchOnlyPillProps) {
 
   return (
     <div className="relative w-[16rem]">
-      <div className="px-1 py-1 rounded-lg border border-GrayColor/50">
+      <div className="px-1 py-1 border rounded-lg border-GrayColor/50">
         <div className="flex items-center justify-between w-full gap-2 whitespace-nowrap">
           <img src={icon} alt="icon" className="w-5" />
           <p className="text-md">

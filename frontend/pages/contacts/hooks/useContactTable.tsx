@@ -1,5 +1,4 @@
-import { DeleteContactTypeEnum } from "@/const";
-import { hexToNumber } from "@/utils";
+import { DeleteContactTypeEnum } from "@/common/const";
 import bigInt from "big-integer";
 import {
   AssetContact,
@@ -13,6 +12,7 @@ import { db } from "@/database/db";
 
 import { useState } from "react";
 import { useAppSelector } from "@redux/Store";
+import { hexToNumber } from "@common/utils/hexadecimal";
 
 export default function useContactTable() {
   const [isPending, setIsPending] = useState(false);

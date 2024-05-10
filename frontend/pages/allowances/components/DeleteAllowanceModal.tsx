@@ -1,5 +1,5 @@
 import { AllowanceValidationErrorsEnum } from "@/@types/allowance";
-import { middleTruncation } from "@/utils/strings";
+import { middleTruncation } from "@/common/utils/strings";
 import { ReactComponent as AlertIcon } from "@assets/svg/files/alert-icon.svg";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 import { LoadingLoader } from "@components/loader";

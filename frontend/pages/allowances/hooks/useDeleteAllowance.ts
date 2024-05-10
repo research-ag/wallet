@@ -1,4 +1,4 @@
-import { submitAllowanceApproval, createApproveAllowanceParams, getSubAccountBalance } from "@/pages/home/helpers/icrc";
+import { submitAllowanceApproval, createApproveAllowanceParams, getSubAccountBalance } from "@/common/libs/icrc";
 import { useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { updateSubAccountBalance } from "@redux/assets/AssetReducer";
@@ -16,7 +16,7 @@ import { initialAllowanceState } from "@redux/allowance/AllowanceReducer";
 export default function useDeleteAllowance() {
   const dispatch = useAppDispatch();
   const { selectedAllowance } = useAppSelector((state) => state.allowance);
-  const { assets } = useAppSelector((state) => state.asset);
+  const { assets } = useAppSelector((state) => state.asset.list);
   const [isPending, setIsPending] = useState(false);
 
   const asset = useMemo(() => {

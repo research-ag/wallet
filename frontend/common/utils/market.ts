@@ -1,5 +1,9 @@
 import { TokenMarketInfo } from "@redux/models/TokenModels";
 
+/**
+ * Fetches token market data from the API.
+ * @returns {Promise<TokenMarketInfo[]>} A promise that resolves to an array of token market data.
+ */
 export async function getTokensFromMarket(): Promise<TokenMarketInfo[]> {
   const marketUrl = import.meta.env.VITE_APP_TOKEN_MARKET;
 
@@ -13,6 +17,10 @@ export async function getTokensFromMarket(): Promise<TokenMarketInfo[]> {
   }
 }
 
+/**
+ * Fetches the current Ethereum rate from the API.
+ * @returns {Promise<TokenMarketInfo | undefined>} A promise that resolves to the Ethereum rate or undefined if an error occurred.
+ */
 export async function getETHRate() {
   try {
     const ethUrl = import.meta.env.VITE_APP_ETH_MARKET;
