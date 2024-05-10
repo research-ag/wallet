@@ -1,94 +1,125 @@
-import { TransactionDrawer } from "@/@types/transactions";
-import { deChunkTransactions } from "@pages/home/helpers/mappers";
-import { useTransactionsTable } from "@pages/home/hooks/useTransactionsTable";
-import { useAppDispatch, useAppSelector } from "@redux/Store";
-import { setTransactionDrawerAction } from "@redux/transaction/TransactionActions";
-import { setSelectedTransaction } from "@redux/transaction/TransactionReducer";
-import { flexRender, getCoreRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
+import { ReactComponent as SortIcon } from "@assets/svg/files/sort.svg";
+import UpAmountIcon from "@assets/svg/files/up-amount-icon.svg";
+import DownAmountIcon from "@assets/svg/files/down-amount-icon.svg";
+//
+import { useAppSelector } from "@redux/Store";
 import { clsx } from "clsx";
-import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { SpecialTxTypeEnum, TransactionTypeEnum } from "@common/const";
+import { getAddress, getAssetSymbol } from "@common/utils/icrc";
+import CodeElement from "@components/TableCodeElement";
+import moment from "moment";
+import { toFullDecimal } from "@common/utils/amount";
+import { Transaction } from "@redux/models/AccountModels";
 
-export default function ICRCTransactionsTable() {
-  const dispatch = useAppDispatch();
-  const { transactions } = useAppSelector((state) => state.transaction.list);
+const columns: string[] = ["type", "transactionID", "date", "amount"];
+
+export interface TransactionsTableProps {
+  onScroll: (e: React.UIEvent<HTMLDivElement>) => void;
+  transactions: Transaction[];
+}
+
+export default function TransactionsTable(props: TransactionsTableProps) {
+  const { onScroll, transactions } = props;
+  const { t } = useTranslation();
   const { selectedTransaction } = useAppSelector((state) => state.transaction);
-  const { columns, sorting, setSorting } = useTransactionsTable();
-  const [chunkNumber, setChunkNumber] = useState(1);
-
-  const data = deChunkTransactions({
-    transactions,
-    chunkNumber: chunkNumber + 1,
-    from: chunkNumber,
-  });
-
-  console.log("data: ", data);
-
-  const table = useReactTable({
-    data: [],
-    columns,
-    state: {
-      sorting,
-    },
-    onSortingChange: setSorting,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-  });
-
-  const onScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    // TODO: verify if the scroll is at the bottom
-    const target = e.target as HTMLDivElement;
-    const scrollBottom = target.scrollHeight - target.scrollTop - target.clientHeight;
-    if (scrollBottom < 10) {
-      // include new chunks of data
-      console.log("fetch more data");
-
-    }
-  };
-
+  const { selectedAccount, selectedAsset } = useAppSelector((state) => state.asset.helper);
+  const { assets } = useAppSelector((state) => state.asset.list);
 
   return (
     <div className="w-full max-h-[calc(100vh-13rem)] scroll-y-light mt-4" onScroll={onScroll}>
-      <table className="w-full text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md">
-        {/* <thead className="sticky top-0 border-b border-BorderColorTwoLight dark:border-BorderColorTwo bg-SecondaryColorLight dark:bg-SecondaryColor">
-          {table.getHeaderGroups().map((headerGroup, idxTR) => (
-            <tr key={`tr-transac-${idxTR}`}>
-              {headerGroup.headers.map((header, idxTH) => (
-                <th key={`th-transac-${idxTH}`} className={colStyle(idxTH)}>
-                  <div
-                    {...{
-                      className: idxTH === 2 && header.column.getCanSort() ? "cursor-pointer select-none" : "",
-                      onClick: idxTH === 2 ? header.column.getToggleSortingHandler() : undefined,
-                    }}
-                  >
-                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+      <table className="relative w-full text-black-color dark:text-gray-color-9">
+        <thead className={headerStyles}>
+          <tr>
+            {columns.map((currentColumn, index) => (
+              <th key={currentColumn} className={colStyle(index)}>
+                <div className={`flex items-center px-1 py-2 ${justifyCell(index)}`}>
+                  <p>{t(currentColumn)}</p>
+                  {currentColumn === columns[columns.length - 2] && (
+                    <SortIcon
+                      className="w-3 h-3 ml-1 cursor-pointer dark:fill-gray-color-6 fill-black-color"
+                      onClick={console.log}
+                    />
+                  )}
+                </div>
+              </th>
+            ))}
+          </tr>
+        </thead>
+
+        <tbody className={bodyStyles}>
+          {transactions.map((transaction, index) => {
+            // TYPE
+            const isSelectedByHash = selectedTransaction?.hash && selectedTransaction?.hash === transaction.hash;
+            const isSelectedByIdx = selectedTransaction?.idx && selectedTransaction?.idx === transaction.idx;
+            const isCurrentSelected = isSelectedByHash || isSelectedByIdx;
+
+            const isBurn = transaction.kind === SpecialTxTypeEnum.Enum.burn;
+            const isMint = transaction.kind === SpecialTxTypeEnum.Enum.mint;
+            const isSend = getAddress(
+              transaction.type,
+              transaction.from || "",
+              transaction.fromSub || "",
+              selectedAccount?.address || "",
+              selectedAccount?.sub_account_id || "",
+            );
+
+            let srcType;
+
+            switch (true) {
+              case isBurn:
+                srcType = UpAmountIcon;
+                break;
+              case isMint:
+                srcType = DownAmountIcon;
+                break;
+              case isSend:
+                srcType = UpAmountIcon;
+                break;
+              default:
+                srcType = DownAmountIcon;
+            }
+
+            // AMOUNT
+            const isTo = transaction.kind !== SpecialTxTypeEnum.Enum.mint && isSend;
+            const isApprove = transaction.kind?.toUpperCase() === TransactionTypeEnum.Enum.APPROVE;
+            const isTypeSend = transaction?.type === TransactionTypeEnum.Enum.SEND;
+
+            return (
+              <tr key={`${transaction.hash}-${index}-${transaction.canisterId}`} className="relative">
+                <td>
+                  {isCurrentSelected && <div className="absolute w-2 h-[4.05rem] left-0 bg-primary-color"></div>}
+                  <div className="flex justify-center w-full h-12 my-2">
+                    <div className="flex items-center justify-center p-2 border rounded-md border-BorderColorTwoLight dark:border-BorderColorTwo">
+                      <img src={srcType} alt={transaction.kind} />
+                    </div>
                   </div>
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead> */}
-        {/* <tbody>
-          {table.getRowModel().rows.map((row, idxTR) => (
-            <tr
-              className={`border-b border-b-BorderColorTwoLight dark:border-b-BorderColorTwo cursor-pointer ${(selectedTransaction?.hash && selectedTransaction?.hash === row.original.hash) ||
-                (selectedTransaction?.idx && selectedTransaction?.idx === row.original.idx)
-                ? "bg-SelectRowColor/10"
-                : ""
-                }`}
-              key={`tr-transac-${idxTR}`}
-              onClick={() => {
-                dispatch(setSelectedTransaction(row.original));
-                setTransactionDrawerAction(TransactionDrawer.INSPECT);
-              }}
-            >
-              {row.getVisibleCells().map((cell, idxTD) => (
-                <td key={`tr-transac-${idxTD}`} className={colStyle(idxTD)}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
-              ))}
-            </tr>
-          ))}
-        </tbody> */}
+
+                <td>
+                  <CodeElement tx={transaction} />
+                </td>
+
+                <td>
+                  <p>{moment(transaction.timestamp).format("M/DD/YYYY")}</p>
+                </td>
+
+                <td className="flex flex-col items-end justify-center w-full pr-5 my-2">
+                  <p
+                    className={`text-right whitespace-nowrap ${isTo ? "text-TextSendColor" : "text-TextReceiveColor"}`}
+                  >{`${isTo && !isApprove ? "-" : ""}${
+                    isTypeSend
+                      ? toFullDecimal(
+                          BigInt(transaction?.amount || "0") + BigInt(selectedAccount?.transaction_fee || "0"),
+                          selectedAccount?.decimal || 8,
+                        )
+                      : toFullDecimal(BigInt(transaction?.amount || "0"), selectedAccount?.decimal || 8)
+                  } ${getAssetSymbol(transaction?.symbol || selectedAsset?.symbol || "", assets)}`}</p>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
       </table>
     </div>
   );
@@ -103,3 +134,30 @@ const colStyle = (idxTH: number) =>
     ["w-[20%] min-w-[20%] max-w-[20%]"]: idxTH === 2,
     ["w-[25%] min-w-[25%] max-w-[25%]"]: idxTH === 3,
   });
+
+function justifyCell(index: number) {
+  switch (index) {
+    case 0:
+      return "justify-start";
+    case 1:
+      return "justify-start";
+    case 2:
+      return "justify-end";
+    case 3:
+      return "justify-end";
+    default:
+      return "";
+  }
+}
+
+const headerStyles = clsx(
+  "sticky top-0",
+  "border-b dark:border-gray-color-1",
+  "text-left text-md text-black-color dark:text-gray-color-6 bg-white dark:bg-SecondaryColor",
+  "divide-y dark:divide-gray-color-1 divide-gray-color-6",
+);
+
+const bodyStyles = clsx(
+  "text-md text-left text-black-color dark:text-gray-color-6",
+  "divide-y dark:divide-gray-color-1 divide-gray-color-6",
+);
