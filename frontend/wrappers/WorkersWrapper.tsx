@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { setAppDataRefreshing } from "@redux/common/CommonReducer";
 import { db } from "@/database/db";
-import { updateAllBalances } from "@redux/assets/AssetActions";
+import { getSNSTokens, updateAllBalances } from "@redux/assets/AssetActions";
 import { AssetSymbolEnum } from "@common/const";
 import { Asset } from "@redux/models/AccountModels";
 import { getAllTransactionsICP, getAllTransactionsICRC1 } from "@pages/home/helpers/requests";
@@ -10,6 +10,7 @@ import { setTxWorker } from "@redux/transaction/TransactionReducer";
 import { hexToUint8Array } from "@common/utils/hexadecimal";
 import { allowanceCacheRefresh } from "@pages/allowances/helpers/cache";
 import contactCacheRefresh from "@pages/contacts/helpers/contactCacheRefresh";
+import { setICRC1SystemAssets } from "@redux/assets/AssetReducer";
 
 const WORKER_INTERVAL = 10 * 60 * 1000; // 10 minutes
 
@@ -92,6 +93,9 @@ export default function WorkersWrapper({ children }: { children: React.ReactNode
 
     dispatch(setAppDataRefreshing(true));
 
+    const snsTokens = await getSNSTokens(userAgent);
+    dispatch(setICRC1SystemAssets(snsTokens));
+
     const assets = await db().getAssets();
     await updateAllBalances({
       loading: true,
@@ -110,8 +114,6 @@ export default function WorkersWrapper({ children }: { children: React.ReactNode
 
   async function workerDataRefresh() {
     if (!isAppDataFreshing) {
-      console.log("RUNNING WORKER");
-
       dispatch(setAppDataRefreshing(true));
 
       const assets = await db().getAssets();

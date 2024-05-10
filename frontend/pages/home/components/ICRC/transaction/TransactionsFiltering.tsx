@@ -55,8 +55,6 @@ export default function TransactionsFiltering({ children }: { children: JSX.Elem
   };
 
   const refreshICPTransactions = async () => {
-    console.log("render icp");
-
     const isNotSelectedAsset =
       !selectedAccount?.symbol || !selectedAsset?.tokenSymbol || !selectedAccount?.sub_account_id;
 

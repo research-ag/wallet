@@ -160,7 +160,7 @@ function justifyCell(index: number) {
 const headerStyles = clsx(
   "sticky top-0 z-10",
   "border-b dark:border-gray-color-1",
-  "text-left text-md text-black-color dark:text-gray-color-6 bg-white dark:bg-SecondaryColor",
+  "text-left text-md text-black-color dark:text-gray-color-6 bg-secondary-color-1-light dark:bg-SecondaryColor",
   "divide-y dark:divide-gray-color-1 divide-gray-color-6",
 );
 

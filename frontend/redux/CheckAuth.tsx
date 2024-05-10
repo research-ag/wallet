@@ -11,7 +11,7 @@ import {
   setUserPrincipal,
 } from "./auth/AuthReducer";
 import { AuthClient } from "@dfinity/auth-client";
-import { clearDataAsset, setICRC1SystemAssets, setInitLoad } from "./assets/AssetReducer";
+import { clearDataAsset, setInitLoad } from "./assets/AssetReducer";
 import { AuthNetwork } from "./models/TokenModels";
 import { AuthNetworkTypeEnum } from "@/common/const";
 import { Ed25519KeyIdentity, DelegationIdentity } from "@dfinity/identity";
@@ -20,7 +20,6 @@ import { Principal } from "@dfinity/principal";
 import { Secp256k1KeyIdentity } from "@dfinity/identity-secp256k1";
 import { DB_Type, db } from "@/database/db";
 import { setTransactions } from "./transaction/TransactionReducer";
-import { getSNSTokens } from "./assets/AssetActions";
 import { addWatchOnlySessionToLocal } from "@pages/helpers/watchOnlyStorage";
 import watchOnlyRefresh from "@pages/helpers/watchOnlyRefresh";
 
@@ -131,9 +130,6 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean,
   store.dispatch(setUserPrincipal(myPrincipal));
 
   await db().setIdentity(authIdentity, myPrincipal);
-
-  const snsTokens = await getSNSTokens(store.getState().auth.userAgent);
-  store.dispatch(setICRC1SystemAssets(snsTokens));
 
   store.dispatch(setAuthenticated(true, false, !!fixedPrincipal, principalString));
   store.dispatch(setInitLoad(false));
