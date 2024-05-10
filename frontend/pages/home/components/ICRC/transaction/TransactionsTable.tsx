@@ -110,14 +110,17 @@ export default function TransactionsTable(props: TransactionsTableProps) {
                 <td className={colStyle(0)}>
                   <div className="flex flex-col items-end justify-center w-full pr-5 my-2">
                     <p
-                      className={`text-right whitespace-nowrap ${isTo ? "text-TextSendColor" : "text-TextReceiveColor"}`}
-                    >{`${isTo && !isApprove ? "-" : ""}${isTypeSend
-                      ? toFullDecimal(
-                        BigInt(transaction?.amount || "0") + BigInt(selectedAccount?.transaction_fee || "0"),
-                        selectedAccount?.decimal || 8,
-                      )
-                      : toFullDecimal(BigInt(transaction?.amount || "0"), selectedAccount?.decimal || 8)
-                      } ${getAssetSymbol(transaction?.symbol || selectedAsset?.symbol || "", assets)}`}</p>
+                      className={`text-right whitespace-nowrap ${
+                        isTo ? "text-TextSendColor" : "text-TextReceiveColor"
+                      }`}
+                    >{`${isTo && !isApprove ? "-" : ""}${
+                      isTypeSend
+                        ? toFullDecimal(
+                            BigInt(transaction?.amount || "0") + BigInt(selectedAccount?.transaction_fee || "0"),
+                            selectedAccount?.decimal || 8,
+                          )
+                        : toFullDecimal(BigInt(transaction?.amount || "0"), selectedAccount?.decimal || 8)
+                    } ${getAssetSymbol(transaction?.symbol || selectedAsset?.symbol || "", assets)}`}</p>
                   </div>
                 </td>
               </tr>

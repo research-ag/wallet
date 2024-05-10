@@ -1,33 +1,25 @@
-import { AllowancesTableColumns, TAllowance } from "@/@types/allowance";
-import UpdateAllowanceDrawer from "@pages/allowances/components/UpdateAllowanceDrawer";
-import DeleteAllowanceModal from "@pages/allowances/components/DeleteAllowanceModal";
+import { ReactComponent as SortIcon } from "@assets/svg/files/sort.svg";
+//
+import { AllowancesTableColumns } from "@/@types/allowance";
+import useAllowances from "@pages/allowances/hooks/useAllowances";
+import { middleTruncation } from "@common/utils/strings";
+import { formatDateTime } from "@common/utils/datetimeFormaters";
+import { useTranslation } from "react-i18next";
 import { useAppSelector } from "@redux/Store";
 import { CustomCopy } from "@components/tooltip";
-import { middleTruncation } from "@/common/utils/strings";
-import { formatDateTime } from "@/common/utils/datetimeFormaters";
-import { useTranslation } from "react-i18next";
-import ActionCard from "./ActionCard";
-import { ReactComponent as SortIcon } from "@assets/svg/files/sort.svg";
-import { getAssetIcon } from "@/common/utils/icons";
-import { IconTypeEnum } from "@/common/const";
+import ActionCard from "@pages/allowances/components/ActionCard";
 import clsx from "clsx";
-
-interface AllowanceListProps {
-  allowances: TAllowance[];
-  handleSortChange: (column: AllowancesTableColumns) => Promise<void>;
-}
 
 const columns = ["subAccount", "spender", "amount", "expiration", "action"];
 
-export default function AllowanceList({ allowances, handleSortChange }: AllowanceListProps) {
+export default function AllowancesTable() {
   const { t } = useTranslation();
   const { assets } = useAppSelector((state) => state.asset.list);
   const { contacts } = useAppSelector((state) => state.contacts);
+  const { allowances, handleSortChange } = useAllowances();
 
   return (
-    <div className="w-full max-h-[calc(100vh-13rem)] scroll-y-light mt-4">
-      <UpdateAllowanceDrawer />
-      <DeleteAllowanceModal />
+    <div className="w-full max-h-[calc(100vh-14rem)] scroll-y-light">
       <table className="relative w-full text-black-color dark:text-gray-color-9">
         <thead className={headerStyles}>
           <tr>
@@ -76,10 +68,6 @@ export default function AllowanceList({ allowances, handleSortChange }: Allowanc
             return (
               <tr key={allowance.id}>
                 <td className="flex items-center justify-start p-1">
-                  <div>
-                    {getAssetIcon(IconTypeEnum.Enum.ALLOWANCE, asset?.tokenSymbol, asset?.logo)}
-                    <p className="mt-1 text-center">{asset?.symbol || "-"}</p>
-                  </div>
                   <div className="ml-2">
                     {subAccountName && <p>{subAccountName || subAccountName}</p>}
                     {subAccountId && <p className="dark:text-gray-color-4 text-gray-color-5">{subAccountId}</p>}
@@ -135,14 +123,13 @@ function justifyCell(index: number) {
 }
 
 const headerStyles = clsx(
-  "sticky top-0",
-  "border-b dark:border-gray-color-1 dark:bg-level-2-color",
-  "font-bold text-left text-md text-black-color dark:text-gray-color-6 bg-white dark:bg-level-2-color",
+  "sticky top-0 z-10",
+  "border-b dark:border-gray-color-1",
+  "font-bold text-left text-md text-black-color dark:text-gray-color-6 bg-white dark:bg-SecondaryColor",
   "divide-y dark:divide-gray-color-1 divide-gray-color-6",
 );
 
 const bodyStyles = clsx(
   "text-md text-left text-black-color dark:text-gray-color-6",
-  "bg-white dark:bg-level-2-color",
   "divide-y dark:divide-gray-color-1 divide-gray-color-6",
 );
