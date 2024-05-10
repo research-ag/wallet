@@ -28,7 +28,7 @@ export default function TransactionsTable(props: TransactionsTableProps) {
 
   return (
     <div className="w-full max-h-[calc(100vh-13rem)] scroll-y-light mt-4" onScroll={onScroll}>
-      <table className="relative w-full text-black-color dark:text-gray-color-9">
+      <table className="relative w-full text-black-color dark:text-gray-color-9 ">
         <thead className={headerStyles}>
           <tr>
             {columns.map((currentColumn, index) => (
@@ -107,14 +107,13 @@ export default function TransactionsTable(props: TransactionsTableProps) {
                 <td className="flex flex-col items-end justify-center w-full pr-5 my-2">
                   <p
                     className={`text-right whitespace-nowrap ${isTo ? "text-TextSendColor" : "text-TextReceiveColor"}`}
-                  >{`${isTo && !isApprove ? "-" : ""}${
-                    isTypeSend
-                      ? toFullDecimal(
-                          BigInt(transaction?.amount || "0") + BigInt(selectedAccount?.transaction_fee || "0"),
-                          selectedAccount?.decimal || 8,
-                        )
-                      : toFullDecimal(BigInt(transaction?.amount || "0"), selectedAccount?.decimal || 8)
-                  } ${getAssetSymbol(transaction?.symbol || selectedAsset?.symbol || "", assets)}`}</p>
+                  >{`${isTo && !isApprove ? "-" : ""}${isTypeSend
+                    ? toFullDecimal(
+                      BigInt(transaction?.amount || "0") + BigInt(selectedAccount?.transaction_fee || "0"),
+                      selectedAccount?.decimal || 8,
+                    )
+                    : toFullDecimal(BigInt(transaction?.amount || "0"), selectedAccount?.decimal || 8)
+                    } ${getAssetSymbol(transaction?.symbol || selectedAsset?.symbol || "", assets)}`}</p>
                 </td>
               </tr>
             );
@@ -151,7 +150,7 @@ function justifyCell(index: number) {
 }
 
 const headerStyles = clsx(
-  "sticky top-0",
+  "sticky top-0 z-10",
   "border-b dark:border-gray-color-1",
   "text-left text-md text-black-color dark:text-gray-color-6 bg-white dark:bg-SecondaryColor",
   "divide-y dark:divide-gray-color-1 divide-gray-color-6",

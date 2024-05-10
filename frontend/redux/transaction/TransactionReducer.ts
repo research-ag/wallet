@@ -169,8 +169,26 @@ const transactionSlice = createSlice({
     setTxWorker(state: TransactionState, action: PayloadAction<TransactionList[]>) {
       state.list.txWorker = action.payload;
     },
-    addTxWorker(state, action: PayloadAction<TransactionList>) {
-      state.list.txWorker = [...state.list.txWorker, action.payload];
+    updateTxWorkerSubAccount(state: TransactionState, action: PayloadAction<TransactionList>) {
+      const { txWorker } = state.list;
+      const { tx, symbol, tokenSymbol, subaccount } = action.payload;
+
+      const txWorkerIndex = txWorker.findIndex(
+        (worker) => worker.tokenSymbol === tokenSymbol && worker.subaccount === subaccount,
+      );
+
+      if (txWorkerIndex !== -1) {
+        txWorker[txWorkerIndex].tx = tx;
+      } else {
+        txWorker.push({
+          tx,
+          symbol,
+          tokenSymbol,
+          subaccount,
+        });
+      }
+
+      state.list.txWorker = txWorker;
     },
   },
 });
@@ -204,7 +222,7 @@ export const {
   setTransactionDrawer,
   setSelectedTransaction,
   setTxWorker,
-  addTxWorker,
+  updateTxWorkerSubAccount,
 } = transactionSlice.actions;
 
 export default transactionSlice.reducer;
