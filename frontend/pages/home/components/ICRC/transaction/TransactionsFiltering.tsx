@@ -1,10 +1,10 @@
 import { chunkTransactions } from "@pages/home/helpers/mappers";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { setTransactions, updateTxWorkerSubAccount } from "@redux/transaction/TransactionReducer";
 import { AssetSymbolEnum } from "@common/const";
 import { getAllTransactionsICP, getAllTransactionsICRC1 } from "@pages/home/helpers/requests";
-import { Asset, Transaction } from "@redux/models/AccountModels";
+import { Asset, SubAccount, Transaction } from "@redux/models/AccountModels";
 import { hexToUint8Array } from "@common/utils/hexadecimal";
 
 export default function TransactionsFiltering({ children }: { children: JSX.Element }) {
@@ -12,8 +12,11 @@ export default function TransactionsFiltering({ children }: { children: JSX.Elem
   const { txWorker } = useAppSelector((state) => state.transaction.list);
   const { selectedAccount, selectedAsset } = useAppSelector((state) => state.asset.helper);
   const { assets } = useAppSelector((state) => state.asset.list);
+  const lastSelectedAccountRef = useRef<SubAccount | undefined>(selectedAccount);
 
   const refreshICRCTransactions = async () => {
+    console.log("render icrc");
+
     const currentAsset = assets.find((asset: Asset) => asset.address === selectedAsset?.address);
     const isAssetFull = currentAsset?.index && selectedAccount?.sub_account_id && selectedAsset?.tokenSymbol;
     const isSubAccountSelected = selectedAccount?.sub_account_id;
@@ -54,6 +57,8 @@ export default function TransactionsFiltering({ children }: { children: JSX.Elem
   };
 
   const refreshICPTransactions = async () => {
+    console.log("render icp");
+
     const isNotSelectedAsset =
       !selectedAccount?.symbol || !selectedAsset?.tokenSymbol || !selectedAccount?.sub_account_id;
 
@@ -111,6 +116,10 @@ export default function TransactionsFiltering({ children }: { children: JSX.Elem
   }
 
   useEffect(() => {
+    const isSameSubAccount = lastSelectedAccountRef.current?.sub_account_id === selectedAccount?.sub_account_id;
+    const isSameTokenSymbol = lastSelectedAccountRef.current?.symbol === selectedAccount?.symbol;
+    if (isSameSubAccount && isSameTokenSymbol) return;
+
     filterTransactions();
   }, [selectedAccount]);
 
