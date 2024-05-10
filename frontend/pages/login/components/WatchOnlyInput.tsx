@@ -23,7 +23,7 @@ export default function WatchOnlyInput() {
         <input
           autoFocus
           type="text"
-          className="w-full p-2 outline-none bg-inherit"
+          className="w-full p-2 outline-none bg-inherit text-black-color dark:text-gray-color-8"
           onChange={onPrincipalChange}
           ref={watchOnlyInputRef}
           onKeyDown={(e) => {
