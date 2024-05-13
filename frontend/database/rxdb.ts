@@ -24,7 +24,7 @@ import {
 } from "@/candid/database/db.did";
 import { Asset } from "@redux/models/AccountModels";
 import store from "@redux/Store";
-import { setAssets } from "@redux/assets/AssetReducer";
+import { setAccordionAssetIdx, setAssets } from "@redux/assets/AssetReducer";
 import {
   addReduxContact,
   deleteReduxContact,
@@ -217,6 +217,7 @@ export class RxdbDatabase extends IWalletDatabase {
     const result = (documents && documents.map(this._mapAssetDoc)) || [];
     const assets = newAssets || result || [];
     store.dispatch(setAssets(assets));
+    store.dispatch(setAccordionAssetIdx([assets[0].tokenSymbol]));
   }
 
   /**
