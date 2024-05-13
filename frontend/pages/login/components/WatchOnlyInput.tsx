@@ -23,6 +23,7 @@ export default function WatchOnlyInput() {
         ) : null}
 
         <input
+          id="watch-only-input"
           autoFocus
           type="text"
           className="w-full p-2 outline-none bg-inherit text-black-color dark:text-gray-color-8"
@@ -53,6 +54,7 @@ export default function WatchOnlyInput() {
     setPrincipalAddress(principal);
     onPrincipalChange(principal);
     if (watchOnlyInputRef.current) watchOnlyInputRef.current.value = principal;
+    document.getElementById("watch-only-input")?.focus();
   }
 }
 
