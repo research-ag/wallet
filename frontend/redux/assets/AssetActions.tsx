@@ -1,7 +1,7 @@
 import store from "@redux/Store";
 import { SnsToken } from "@redux/models/TokenModels";
 import { IcrcTokenMetadataResponse } from "@dfinity/ledger-icrc";
-import { setTokenMarket, setICPSubaccounts, setAccordionAssetIdx, setAssets } from "./AssetReducer";
+import { setTokenMarket, setICPSubaccounts, setAssets } from "./AssetReducer";
 import { AccountIdentifier, SubAccount as SubAccountNNS } from "@dfinity/ledger-icp";
 import { Asset, ICPSubAccount } from "@redux/models/AccountModels";
 import { UpdateAllBalances } from "@/@types/assets";
@@ -19,7 +19,7 @@ import { getMetadataInfo } from "@common/utils/icrc";
  * @returns An object containing updated `newAssetsUpload` and `assets` arrays.
  */
 export const updateAllBalances: UpdateAllBalances = async (params) => {
-  const { loading, myAgent = store.getState().auth.userAgent, assets, basicSearch = false, fromLogin } = params;
+  const { myAgent = store.getState().auth.userAgent, assets, basicSearch = false } = params;
 
   const tokenMarkets = await getTokensFromMarket();
   const ETHRate = await getETHRate();
@@ -42,15 +42,7 @@ export const updateAllBalances: UpdateAllBalances = async (params) => {
   });
 
   const newAssetsUpload = updateAssets.sort((a, b) => a.sortIndex - b.sortIndex);
-
   store.dispatch(setAssets(newAssetsUpload));
-
-  if (loading) {
-    if (fromLogin) {
-      newAssetsUpload.length > 0 && store.dispatch(setAccordionAssetIdx([newAssetsUpload[0].tokenSymbol]));
-    }
-  }
-
   const icpAsset = newAssetsUpload.find((asset) => asset.tokenSymbol === "ICP");
 
   if (icpAsset) {

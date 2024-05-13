@@ -6,7 +6,7 @@ import { Principal } from "@dfinity/principal";
 import { defaultTokens } from "@/common/defaultTokens";
 import { Asset } from "@redux/models/AccountModels";
 import store from "@redux/Store";
-import { setAssets } from "@redux/assets/AssetReducer";
+import { setAccordionAssetIdx, setAssets } from "@redux/assets/AssetReducer";
 
 import {
   addReduxContact,
@@ -73,6 +73,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
   private async _assetStateSync(newAssets?: Asset[]): Promise<void> {
     const assets = newAssets || this._getAssets();
     store.dispatch(setAssets(assets));
+    store.dispatch(setAccordionAssetIdx([assets[0].tokenSymbol]));
   }
 
   /**
