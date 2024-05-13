@@ -4,12 +4,24 @@ import HplWalletLightIcon from "@/assets/svg/files/logo_ICRC-1.svg";
 import { ReactComponent as LoginLogoIcon } from "@/assets/svg/files/login-logo.svg";
 //
 import { ThemeHook } from "@hooks/themeHook";
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import { ThemesEnum } from "@/common/const";
 import AuthMethods from "./components/AuthMethods";
+import { DB_LOCATION_AUTH } from "@pages/components/topbar/dbLocationModal";
+import { db, DB_Type } from "@/database/db";
+import { useAppDispatch } from "@redux/Store";
+import { setDbLocation } from "@redux/auth/AuthReducer";
 
 const Login = () => {
+  const dispatch = useAppDispatch();
   const { theme } = ThemeHook();
+
+  useEffect(() => {
+    const lastUserSync = localStorage.getItem(DB_LOCATION_AUTH);
+    const toStoreValue = lastUserSync === DB_Type.LOCAL ? DB_Type.LOCAL : DB_Type.CANISTER;
+    db().setDbLocation(toStoreValue);
+    dispatch(setDbLocation(toStoreValue));
+  }, []);
 
   return (
     <Fragment>

@@ -18,6 +18,8 @@ interface DbLocationModalProps {
   setOpen(value: boolean): void;
 }
 
+export const DB_LOCATION_AUTH = "user-manually-db-location";
+
 const DbLocationModal = ({ setOpen }: DbLocationModalProps) => {
   const { t } = useTranslation();
 
@@ -38,21 +40,11 @@ const DbLocationModal = ({ setOpen }: DbLocationModalProps) => {
         />
       </div>
       <p className="mb-2 font-light">{t("database.modal.msg")}</p>
-      <div
-        className={clsx(themeBox, "bg-ThemeColorSelectorLight", "border-BorderColor")}
-        onClick={() => {
-          handleChange(DB_Type.LOCAL);
-        }}
-      >
+      <div className={clsx(themeBox, "bg-ThemeColorSelectorLight", "border-BorderColor")} onClick={handleSelectStorage}>
         <div
           className={clsx(option, optionBottom, "border-BorderColor", "bg-PrimaryColorLight", "dark:bg-PrimaryColor")}
         >
-          <RadioGroup.Root
-            value={dbLocation}
-            onChange={() => {
-              handleChange(DB_Type.LOCAL);
-            }}
-          >
+          <RadioGroup.Root value={dbLocation} onChange={handleSelectStorage}>
             <div className="flex flex-row items-center p-3">
               <RadioGroup.Item
                 className={`w-5 h-5 rounded-full border-2  outline-none p-0 ${
@@ -73,16 +65,9 @@ const DbLocationModal = ({ setOpen }: DbLocationModalProps) => {
       <div className={clsx(themeBox, "bg-ThemeColorSelector", "border-BorderColor")}>
         <div
           className={clsx(option, optionBottom, "border-BorderColor", "bg-PrimaryColorLight", "dark:bg-PrimaryColor")}
-          onClick={() => {
-            handleChange(DB_Type.CANISTER);
-          }}
+          onClick={handleSelectRxdb}
         >
-          <RadioGroup.Root
-            value={dbLocation}
-            onChange={() => {
-              handleChange(DB_Type.CANISTER);
-            }}
-          >
+          <RadioGroup.Root value={dbLocation} onChange={handleSelectRxdb}>
             <div className="flex flex-row items-center p-3">
               <RadioGroup.Item
                 className={`w-5 h-5 rounded-full border-2  outline-none p-0 ${
@@ -112,6 +97,16 @@ const DbLocationModal = ({ setOpen }: DbLocationModalProps) => {
       </div>
     </Fragment>
   );
+
+  function handleSelectRxdb() {
+    localStorage.setItem(DB_LOCATION_AUTH, DB_Type.CANISTER);
+    handleChange(DB_Type.CANISTER);
+  }
+
+  function handleSelectStorage() {
+    localStorage.setItem(DB_LOCATION_AUTH, DB_Type.LOCAL);
+    handleChange(DB_Type.LOCAL);
+  }
 
   function handleChange(location: DB_Type) {
     changeDbLocation(location);

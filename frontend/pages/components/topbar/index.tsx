@@ -188,6 +188,7 @@ const TopBarComponent = ({ isLoginPage }: { isLoginPage: boolean }) => {
     });
   }
 };
+
 export default TopBarComponent;
 
 // Tailwind CSS constants
