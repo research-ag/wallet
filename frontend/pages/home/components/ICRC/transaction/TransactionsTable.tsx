@@ -2,7 +2,7 @@ import { ReactComponent as SortIcon } from "@assets/svg/files/sort.svg";
 import UpAmountIcon from "@assets/svg/files/up-amount-icon.svg";
 import DownAmountIcon from "@assets/svg/files/down-amount-icon.svg";
 //
-import { useAppSelector } from "@redux/Store";
+import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { clsx } from "clsx";
 import { useTranslation } from "react-i18next";
 import { SpecialTxTypeEnum, TransactionTypeEnum } from "@common/const";
@@ -11,6 +11,9 @@ import CodeElement from "@components/TableCodeElement";
 import moment from "moment";
 import { toFullDecimal } from "@common/utils/amount";
 import { Transaction } from "@redux/models/AccountModels";
+import { setTransactionDrawerAction } from "@redux/transaction/TransactionActions";
+import { TransactionDrawer } from "@/@types/transactions";
+import { setSelectedTransaction } from "@redux/transaction/TransactionReducer";
 
 const columns: string[] = ["type", "transactionID", "date", "amount"];
 
@@ -26,6 +29,7 @@ export default function TransactionsTable(props: TransactionsTableProps) {
   const { selectedTransaction } = useAppSelector((state) => state.transaction);
   const { selectedAccount, selectedAsset } = useAppSelector((state) => state.asset.helper);
   const { assets } = useAppSelector((state) => state.asset.list);
+  const dispatch = useAppDispatch();
 
   return (
     <div className="w-full max-h-[calc(100vh-15rem)] scroll-y-light mt-2" onScroll={onScroll}>
@@ -87,7 +91,11 @@ export default function TransactionsTable(props: TransactionsTableProps) {
             const isTypeSend = transaction?.type === TransactionTypeEnum.Enum.SEND;
 
             return (
-              <tr key={`${transaction.hash}-${index}-${transaction.canisterId}`} className="relative">
+              <tr
+                key={`${transaction.hash}-${index}-${transaction.canisterId}`}
+                className="relative cursor-pointer"
+                onClick={() => onTransactionInpect(transaction)}
+              >
                 <td className={colStyle(0)}>
                   {isCurrentSelected && <div className="absolute w-2 h-[4.05rem] left-0 bg-primary-color"></div>}
                   <div className="flex justify-center w-full h-12 my-2">
@@ -130,6 +138,11 @@ export default function TransactionsTable(props: TransactionsTableProps) {
       </table>
     </div>
   );
+
+  function onTransactionInpect(transaction: Transaction) {
+    dispatch(setSelectedTransaction(transaction));
+    setTransactionDrawerAction(TransactionDrawer.INSPECT);
+  }
 }
 
 // Tailwind CSS
