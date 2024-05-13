@@ -13,6 +13,7 @@ export default function TransactionsFiltering({ children }: { children: JSX.Elem
   const { selectedAccount, selectedAsset } = useAppSelector((state) => state.asset.helper);
   const { assets } = useAppSelector((state) => state.asset.list);
   const lastSelectedAccountRef = useRef<SubAccount | undefined>(selectedAccount);
+  const lastSelectedAssetRef = useRef<Asset | undefined>(selectedAsset);
 
   const refreshICRCTransactions = async () => {
     const currentAsset = assets.find((asset: Asset) => asset.address === selectedAsset?.address);
@@ -111,13 +112,19 @@ export default function TransactionsFiltering({ children }: { children: JSX.Elem
     }
   }
 
+
   useEffect(() => {
     const isSameSubAccount = lastSelectedAccountRef.current?.sub_account_id === selectedAccount?.sub_account_id;
-    const isSameTokenSymbol = lastSelectedAccountRef.current?.symbol === selectedAccount?.symbol;
+    const isSameTokenSymbol = lastSelectedAssetRef.current?.tokenSymbol === selectedAsset?.tokenSymbol;
+    console.log(isSameSubAccount && isSameTokenSymbol);
+
     if (isSameSubAccount && isSameTokenSymbol) return;
 
+    lastSelectedAccountRef.current = selectedAccount;
+    lastSelectedAssetRef.current = selectedAsset
+
     filterTransactions();
-  }, [selectedAccount]);
+  }, [selectedAccount, selectedAsset]);
 
   return children;
 }
