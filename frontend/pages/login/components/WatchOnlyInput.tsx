@@ -17,7 +17,7 @@ export default function WatchOnlyInput() {
     <div className="relative w-full">
       <div className="flex items-center justify-start border rounded bg-inherit border-gray-color-2 dark:border-gray-color-6">
         {alias ? (
-          <p className="px-2 font-bold border-r-2 text-md border-gray-color-2 dark:border-gray-color-6">{alias}</p>
+          <p className="px-2 font-bold border-r-2 text-md border-gray-color-2 dark:border-gray-color-6 text-black-color dark:text-gray-color-8">{alias}</p>
         ) : null}
 
         <input
