@@ -23,9 +23,8 @@ import { setTransactions } from "./transaction/TransactionReducer";
 import { addWatchOnlySessionToLocal } from "@pages/helpers/watchOnlyStorage";
 import watchOnlyRefresh from "@pages/helpers/watchOnlyRefresh";
 
-const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${
-  import.meta.env.VITE_APP_LOGO
-}#authorize`;
+const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${import.meta.env.VITE_APP_LOGO
+  }#authorize`;
 
 const NETWORK_AUTHORIZE_PATH = "https://identity.ic0.app/#authorize";
 const HTTP_AGENT_HOST = "https://identity.ic0.app";
@@ -125,11 +124,10 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean,
   const myPrincipal = fixedPrincipal || (await myAgent.getPrincipal());
   const principalString = myPrincipal.toString();
 
-  store.dispatch(setUserAgent(myAgent));
-  store.dispatch(setUserPrincipal(myPrincipal));
-
   await db().setIdentity(authIdentity, myPrincipal);
 
+  store.dispatch(setUserAgent(myAgent));
+  store.dispatch(setUserPrincipal(myPrincipal));
   store.dispatch(setAuthenticated(true, false, !!fixedPrincipal, principalString));
   store.dispatch(setInitLoad(false));
 };
