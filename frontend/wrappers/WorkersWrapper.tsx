@@ -14,6 +14,7 @@ import { setICRC1SystemAssets } from "@redux/assets/AssetReducer";
 
 const WORKER_INTERVAL = 10 * 60 * 1000; // 10 minutes
 
+// INFO: This wrapper is reponsible of refresh and load the main data (transactions, allowances, assets, contacts and sns tokens)
 export default function WorkersWrapper({ children }: { children: React.ReactNode }) {
   const { isAppDataFreshing } = useAppSelector((state) => state.common);
   const { userAgent } = useAppSelector((state) => state.auth);

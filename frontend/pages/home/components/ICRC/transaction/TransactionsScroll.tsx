@@ -2,7 +2,7 @@ import TransactionsTable from "./TransactionsTable";
 import { useAppSelector } from "@redux/Store";
 import { deChunkTransactions } from "@pages/home/helpers/mappers";
 import { useEffect, useRef, useState } from "react";
-import { SubAccount, Transaction } from "@redux/models/AccountModels";
+import { Asset, SubAccount, Transaction } from "@redux/models/AccountModels";
 import { sortByDate } from "@pages/home/helpers/sorters";
 
 export enum SortOrderEnum {
@@ -12,12 +12,13 @@ export enum SortOrderEnum {
 
 export default function TransactionsWrapper() {
   const { transactions: transactionChunks } = useAppSelector((state) => state.transaction.list);
-  const { selectedAccount } = useAppSelector((state) => state.asset.helper);
+  const { selectedAccount, selectedAsset } = useAppSelector((state) => state.asset.helper);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [chunkNumber, setChunkNumber] = useState(1);
   const isInitialLoadRef = useRef(true);
   const isAtBottomRef = useRef(false);
   const lastSelectedAccountRef = useRef<SubAccount | undefined>(selectedAccount);
+  const lastSelectedAssetRef = useRef<Asset | undefined>(selectedAsset);
   const sortDirectionRef = useRef<SortOrderEnum>(SortOrderEnum.DESC);
 
   const onScroll = (e: React.UIEvent<HTMLDivElement>) => {
@@ -47,13 +48,15 @@ export default function TransactionsWrapper() {
 
   useEffect(() => {
     const isSameSubAccount = lastSelectedAccountRef.current?.sub_account_id === selectedAccount?.sub_account_id;
-    const isSameTokenSymbol = lastSelectedAccountRef.current?.symbol === selectedAccount?.symbol;
+    const isSameTokenSymbol = lastSelectedAssetRef.current?.tokenSymbol === selectedAsset?.tokenSymbol;
     if (isSameSubAccount && isSameTokenSymbol) return;
+
+    lastSelectedAccountRef.current = selectedAccount;
+    lastSelectedAssetRef.current = selectedAsset;
 
     setTransactions([]);
     setChunkNumber(1);
-    lastSelectedAccountRef.current = selectedAccount;
-  }, [selectedAccount]);
+  }, [selectedAccount, selectedAsset]);
 
   useEffect(() => {
     if (isInitialLoadRef.current) {

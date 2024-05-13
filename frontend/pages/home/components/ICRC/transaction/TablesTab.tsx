@@ -69,7 +69,7 @@ export default function TablesTab({ toggle, allowanceTabAllowed, openTab }: Tabl
         )}
       </div>
 
-      {(!watchOnlyMode && openTab !== TabOption.TRANSACTIONS) && (
+      {!watchOnlyMode && openTab !== TabOption.TRANSACTIONS && (
         <IconButton
           icon={<PlusIcon className="w-6 h-6" />}
           size="small"
