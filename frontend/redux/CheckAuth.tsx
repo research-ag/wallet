@@ -5,6 +5,7 @@ import {
   clearDataAuth,
   setAuthLoading,
   setAuthenticated,
+  setDbLocation,
   setDebugMode,
   setUnauthenticated,
   setUserAgent,
@@ -83,6 +84,7 @@ export const handleSeedAuthenticated = async (seed: string) => {
 export const handlePrincipalAuthenticated = async (principalAddress: string) => {
   try {
     db().setDbLocation(DB_Type.LOCAL);
+    store.dispatch(setDbLocation(DB_Type.LOCAL));
     const authClient = await AuthClient.create();
     const principal = Principal.fromText(principalAddress);
     addWatchOnlySessionToLocal({ alias: "", principal: principalAddress });
