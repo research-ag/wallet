@@ -18,7 +18,7 @@ const Login = () => {
 
   useEffect(() => {
     const lastUserSync = localStorage.getItem(DB_LOCATION_AUTH);
-    const toStoreValue = lastUserSync === DB_Type.LOCAL ? DB_Type.LOCAL : DB_Type.CANISTER;
+    const toStoreValue = lastUserSync === DB_Type.CANISTER ? DB_Type.CANISTER : DB_Type.LOCAL;
     db().setDbLocation(toStoreValue);
     dispatch(setDbLocation(toStoreValue));
   }, []);

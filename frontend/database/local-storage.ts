@@ -6,7 +6,13 @@ import { Principal } from "@dfinity/principal";
 import { defaultTokens } from "@/common/defaultTokens";
 import { Asset } from "@redux/models/AccountModels";
 import store from "@redux/Store";
-import { setAccordionAssetIdx, setAssets } from "@redux/assets/AssetReducer";
+import {
+  addReduxAsset,
+  deleteReduxAsset,
+  setAccordionAssetIdx,
+  setAssets,
+  updateReduxAsset,
+} from "@redux/assets/AssetReducer";
 
 import {
   addReduxContact,
@@ -93,8 +99,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
   async addAsset(asset: Asset, options?: DatabaseOptions): Promise<void> {
     const assets = this._getAssets();
     this._setAssets([...assets, asset]);
-
-    if (options?.sync) this._assetStateSync();
+    if (options?.sync) store.dispatch(addReduxAsset(asset));
   }
 
   async updateAssets(assets: Asset[], options?: DatabaseOptions): Promise<void> {
@@ -116,7 +121,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
         } else return tkn;
       }),
     );
-    if (options?.sync) this._assetStateSync();
+    if (options?.sync) store.dispatch(updateReduxAsset(newDoc));
   }
 
   /**
@@ -125,7 +130,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
    */
   async deleteAsset(address: string, options?: DatabaseOptions): Promise<void> {
     this._setAssets(this._getAssets().filter((tkn) => tkn.address !== address));
-    if (options?.sync) this._assetStateSync();
+    if (options?.sync) store.dispatch(deleteReduxAsset(address));
   }
 
   /**

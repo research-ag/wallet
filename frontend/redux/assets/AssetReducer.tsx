@@ -101,6 +101,17 @@ const assetSlice = createSlice({
     setAssets(state, action) {
       state.list.assets = action.payload.sort((a: Asset, b: Asset) => a.sortIndex - b.sortIndex);
     },
+    addReduxAsset(state: AssetState, action: PayloadAction<Asset>) {
+      state.list.assets = [...state.list.assets, action.payload];
+    },
+    updateReduxAsset(state: AssetState, action: PayloadAction<Asset>) {
+      const assetIndex = state.list.assets.findIndex((asset) => asset.tokenSymbol === action.payload.tokenSymbol);
+
+      if (assetIndex !== -1) state.list.assets[assetIndex] = action.payload;
+    },
+    deleteReduxAsset(state: AssetState, action: PayloadAction<string>) {
+      state.list.assets = state.list.assets.filter((asset) => asset.address !== action.payload);
+    },
     // sub accounts reducers
     updateSubAccountBalance: {
       reducer(
@@ -160,6 +171,9 @@ const assetSlice = createSlice({
 });
 
 export const {
+  addReduxAsset,
+  updateReduxAsset,
+  deleteReduxAsset,
   setInitLoad,
   clearDataAsset,
   setAssetMutationAction,
