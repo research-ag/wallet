@@ -145,6 +145,6 @@ export const getMetadataInfo = (myMetadata: IcrcTokenMetadataResponse) => {
 
 export const getAssetSymbol = (symbol: string, assets: Array<Asset>) => {
   return assets.find((a: Asset) => {
-    return a.tokenSymbol === symbol;
+    return a.tokenSymbol === symbol || a.symbol === symbol;
   })?.symbol;
 };

@@ -19,7 +19,7 @@ const DrawerTransaction = () => {
   const { authClient } = AccountHook();
   const { assets } = useAppSelector((state) => state.asset.list);
   const { ICPSubaccounts } = useAppSelector((state) => state.asset);
-  const { selectedAccount } = useAppSelector((state) => state.asset.helper);
+  const { selectedAccount, selectedAsset } = useAppSelector((state) => state.asset.helper);
   const { selectedTransaction } = useAppSelector((state) => state.transaction);
 
   const assetSymbol = getAssetSymbol(selectedTransaction?.symbol || "", assets);
@@ -88,7 +88,7 @@ const DrawerTransaction = () => {
               <p className="">{`${toFullDecimal(
                 BigInt(selectedTransaction?.amount || "0") + BigInt(selectedAccount?.transaction_fee || "0"),
                 selectedAccount?.decimal || 8,
-              )} ${assetSymbol}`}</p>
+              )} ${assetSymbol || selectedAsset?.symbol || t("unknown")}`}</p>
             </div>
           </div>
         )}
@@ -157,7 +157,7 @@ const DrawerTransaction = () => {
               <p className="">{`${toFullDecimal(
                 BigInt(selectedTransaction?.amount || "0"),
                 selectedAccount?.decimal || 8,
-              )} ${assetSymbol}`}</p>
+              )} ${assetSymbol || selectedAsset?.symbol || t("unknown")}`}</p>
             </div>
           </div>
         )}
@@ -168,7 +168,7 @@ const DrawerTransaction = () => {
               <p className="font-bold">{`${toFullDecimal(
                 BigInt(selectedAccount?.transaction_fee || "0"),
                 selectedAccount?.decimal || 8,
-              )} ${assetSymbol}`}</p>
+              )} ${assetSymbol || selectedAsset?.symbol || t("unknown")}`}</p>
             </div>
           </div>
         )}
