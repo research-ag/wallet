@@ -74,7 +74,6 @@ export default function TransactionsWrapper() {
       transactions: [],
       chunkNumber: 1,
     });
-
   }, [selectedAccount, selectedAsset]);
 
   useEffect(() => {
@@ -98,13 +97,10 @@ export default function TransactionsWrapper() {
       from: 1,
     });
 
-    console.log(data);
-
     setTableData((prev) => ({
       ...prev,
       transactions: data,
     }));
-
   }, [chunkNumber, transactionChunks]);
 
   return <TransactionsTable onScroll={onScroll} transactions={transactions} onSort={onSort} />;

@@ -1,7 +1,6 @@
 // svgs
 import { ReactComponent as InfoIcon } from "@assets/svg/files/info-icon.svg";
 //
-import { GeneralHook } from "../../../hooks/generalHook";
 import { IcrcIndexCanister } from "@dfinity/ledger-icrc";
 import { CustomInput } from "@components/input";
 import { CustomCopy } from "@components/tooltip";
@@ -24,6 +23,7 @@ import {
   setAssetMutation,
   setAssetMutationAction,
   setAssetMutationResult,
+  setSelectedAsset,
 } from "@redux/assets/AssetReducer";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import useAssetMutate, { assetMutateInitialState } from "@pages/home/hooks/useAssetMutate";
@@ -37,7 +37,6 @@ const AddAssetManual = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { authClient } = AccountHook();
-  const { checkAssetAdded } = GeneralHook();
 
   const [testLoading, setTestLoading] = useState(false);
   const [tested, setTested] = useState(false);
@@ -224,6 +223,10 @@ const AddAssetManual = () => {
     </div>
   );
 
+  function checkAssetAdded(address: string) {
+    return assets.find((asst: Asset) => asst.address === address) ? true : false;
+  }
+
   function onLedgerChange(e: ChangeEvent<HTMLInputElement>) {
     setNewAsset((prev: Asset) => {
       return { ...prev, address: e.target.value.trim() };
@@ -399,8 +402,9 @@ const AddAssetManual = () => {
         await db().updateAsset(assetDB.address, updatedFull, { sync: true });
       }
 
+      dispatch(setSelectedAsset(newAsset));
+      dispatch(setAccordionAssetIdx([newAsset.tokenSymbol]));
       setNewAsset(assetMutateInitialState);
-
       dispatch(setAssetMutation(undefined));
       dispatch(setAssetMutationAction(AssetMutationAction.NONE));
     } else if (await onTest(false)) addAssetToData();
@@ -433,7 +437,8 @@ const AddAssetManual = () => {
       await db().addAsset(assetToSave, { sync: true });
 
       dispatch(setAssetMutationResult(AssetMutationResult.ADDED));
-      dispatch(setAccordionAssetIdx([assetToSave.symbol]));
+      dispatch(setSelectedAsset(newAsset));
+      dispatch(setAccordionAssetIdx([newAsset.tokenSymbol]));
     } catch (error) {
       console.error("Error adding asset", error);
       dispatch(setAssetMutationResult(AssetMutationResult.FAILED));

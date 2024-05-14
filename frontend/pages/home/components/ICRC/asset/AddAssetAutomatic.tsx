@@ -217,7 +217,7 @@ const AddAssetAutomatic = () => {
 
       dispatch(setAssetMutationResult(AssetMutationResult.ADDED));
       dispatch(setSelectedAsset(assetToSave));
-      dispatch(setAccordionAssetIdx([assetToSave.symbol]));
+      dispatch(setAccordionAssetIdx([assetToSave.tokenSymbol]));
     } catch (error) {
       console.error("Error adding asset", error);
       dispatch(setAssetMutationResult(AssetMutationResult.FAILED));

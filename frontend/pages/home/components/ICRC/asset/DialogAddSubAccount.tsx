@@ -7,9 +7,8 @@ import { CustomCheck } from "@components/checkbox";
 import { CustomButton } from "@components/button";
 import { useTranslation } from "react-i18next";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
-import { GeneralHook } from "../../../hooks/generalHook";
-import { useAppDispatch } from "@redux/Store";
-import { setAccordionAssetIdx } from "@redux/assets/AssetReducer";
+import { useAppDispatch, useAppSelector } from "@redux/Store";
+import { setAccordionAssetIdx, setSelectedAccount } from "@redux/assets/AssetReducer";
 import bigInt from "big-integer";
 import { ChangeEvent, Fragment, useState } from "react";
 import { IcrcLedgerCanister } from "@dfinity/ledger-icrc";
@@ -55,7 +54,7 @@ const DialogAddSubAccount = ({
 }: DialogAddSubAccountProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const { userAgent, userPrincipal, changeSelectedAccount } = GeneralHook();
+  const { userAgent, userPrincipal } = useAppSelector((state) => state.auth);
   const [loading, setLoading] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
@@ -246,7 +245,7 @@ const DialogAddSubAccount = ({
             setShowConfirm(true);
             setAddOpen(false);
             setHexChecked(false);
-            changeSelectedAccount(savedSub);
+            dispatch(setSelectedAccount(savedSub));
             setNewSub(undefined);
             setLoading(false);
             setShowConfirm(false);

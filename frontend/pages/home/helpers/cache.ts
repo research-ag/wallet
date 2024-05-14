@@ -65,7 +65,6 @@ export async function transactionCacheRefresh(assets: Asset[]) {
       }
     }
 
-    console.log("tx Worker Completed", txWorker);
     store.dispatch(setTxWorker(txWorker));
   } catch (error) {
     console.error("Error in transactionCacheRefresh worker", error);
