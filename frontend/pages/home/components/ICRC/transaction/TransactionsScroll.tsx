@@ -13,9 +13,17 @@ export enum SortOrderEnum {
 export default function TransactionsWrapper() {
   const { transactions: transactionChunks } = useAppSelector((state) => state.transaction.list);
   const { selectedAccount, selectedAsset } = useAppSelector((state) => state.asset.helper);
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [chunkNumber, setChunkNumber] = useState(1);
-  //
+
+  const [tableData, setTableData] = useState<{
+    transactions: Transaction[];
+    chunkNumber: number;
+  }>({
+    transactions: [],
+    chunkNumber: 1,
+  });
+
+  const { transactions, chunkNumber } = tableData;
+
   const isInitialLoadRef = useRef(true);
   const isAtBottomRef = useRef(false);
   const lastSelectedAccountRef = useRef<SubAccount | undefined>(selectedAccount);
@@ -28,7 +36,11 @@ export default function TransactionsWrapper() {
 
     if (isScrolledToBottom && !isAtBottomRef.current) {
       if (transactionChunks.length <= chunkNumber) return;
-      setChunkNumber((prev) => prev + 1);
+
+      setTableData((prev) => ({
+        ...prev,
+        chunkNumber: prev.chunkNumber + 1,
+      }));
     }
 
     if (!isScrolledToBottom) {
@@ -38,7 +50,10 @@ export default function TransactionsWrapper() {
 
   const onSort = () => {
     const sorted = sortByDate(sortDirectionRef.current, transactions);
-    setTransactions(sorted);
+    setTableData((prev) => ({
+      ...prev,
+      transactions: sorted,
+    }));
 
     if (sortDirectionRef.current === SortOrderEnum.DESC) {
       sortDirectionRef.current = SortOrderEnum.ASC;
@@ -55,8 +70,11 @@ export default function TransactionsWrapper() {
     lastSelectedAccountRef.current = selectedAccount;
     lastSelectedAssetRef.current = selectedAsset;
 
-    setTransactions([]);
-    setChunkNumber(1);
+    setTableData({
+      transactions: [],
+      chunkNumber: 1,
+    });
+
   }, [selectedAccount, selectedAsset]);
 
   useEffect(() => {
@@ -67,9 +85,10 @@ export default function TransactionsWrapper() {
         chunkNumber: 2,
         from: 1,
       });
-
-      setTransactions(data);
-      setChunkNumber(2);
+      setTableData({
+        transactions: data,
+        chunkNumber: 2,
+      });
       return;
     }
 
@@ -79,7 +98,13 @@ export default function TransactionsWrapper() {
       from: 1,
     });
 
-    setTransactions(data);
+    console.log(data);
+
+    setTableData((prev) => ({
+      ...prev,
+      transactions: data,
+    }));
+
   }, [chunkNumber, transactionChunks]);
 
   return <TransactionsTable onScroll={onScroll} transactions={transactions} onSort={onSort} />;
