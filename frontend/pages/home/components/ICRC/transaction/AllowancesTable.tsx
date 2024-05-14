@@ -19,6 +19,7 @@ export default function AllowancesTable() {
   const { assets } = useAppSelector((state) => state.asset.list);
   const { contacts } = useAppSelector((state) => state.contacts);
   const { allowances, handleSortChange } = useAllowances();
+  const { isAppDataFreshing } = useAppSelector((state) => state.common);
 
   return (
     <div className="w-full max-h-[calc(100vh-14rem)] scroll-y-light">
@@ -65,6 +66,8 @@ export default function AllowancesTable() {
 
             // Amount
             const hidden = !allowance?.expiration && allowance.amount === "0";
+            const amount = (isAppDataFreshing && !allowance?.amount) ? "0" : allowance.amount;
+
             const assetSymbol = assets.find((asset) => asset.tokenSymbol === allowance.asset.tokenSymbol)?.symbol;
 
             // Expiration
@@ -92,7 +95,7 @@ export default function AllowancesTable() {
                 <td className="py-1">
                   <p>
                     {hidden && "-"}
-                    {!hidden && allowance.amount} {!hidden && assetSymbol}
+                    {!hidden && amount} {!hidden && assetSymbol}
                   </p>
                 </td>
                 <td className="py-1">

@@ -94,10 +94,10 @@ export default function AddSubAccountModal({
               onChange={onChangeName}
               onKeyUp={onKeyUp}
             />
-            <button className="flex flex-row gap-2 p-0" onClick={onChangeCheckboxHex}>
+            <div className="flex flex-row gap-2 p-0" onClick={onChangeCheckboxHex}>
               <CustomCheck className="border-BorderColorLight dark:border-BorderColor" checked={hexChecked} />
               <p className="text-sm">{t("hex.check")}</p>
-            </button>
+            </div>
             {hexChecked && (
               <CustomInput
                 intent={"primary"}

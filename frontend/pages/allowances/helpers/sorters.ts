@@ -4,7 +4,6 @@ import { excludeNamesFromAllowance, includeNamesToAllowances } from "./mappers";
 
 export function sortBySubAccount(order: SortOrder, filteredData: TAllowance[]) {
   const includedNames = includeNamesToAllowances(filteredData);
-
   const sorted = includedNames.sort((a, b) => {
     const aSubAccountName = a.subAccountName || "";
     const bSubAccountName = b.subAccountName || "";

@@ -23,6 +23,7 @@ export default function AllowanceList({ allowances, handleSortChange }: Allowanc
   const { t } = useTranslation();
   const { assets } = useAppSelector((state) => state.asset.list);
   const { contacts } = useAppSelector((state) => state.contacts);
+  const { isAppDataFreshing } = useAppSelector((state) => state.common);
 
   return (
     <div className="w-full max-h-[calc(100vh-13rem)] scroll-y-light mt-4">
@@ -68,6 +69,7 @@ export default function AllowanceList({ allowances, handleSortChange }: Allowanc
 
             // Amount
             const hidden = !allowance?.expiration && allowance.amount === "0";
+            const amount = (isAppDataFreshing && !allowance?.amount) ? "0" : allowance.amount;
             const assetSymbol = assets.find((asset) => asset.tokenSymbol === allowance.asset.tokenSymbol)?.symbol;
 
             // Expiration
@@ -99,7 +101,7 @@ export default function AllowanceList({ allowances, handleSortChange }: Allowanc
                 <td className="py-1">
                   <p>
                     {hidden && "-"}
-                    {!hidden && allowance.amount} {!hidden && assetSymbol}
+                    {!hidden && amount} {!hidden && assetSymbol}
                   </p>
                 </td>
                 <td className="py-1">
