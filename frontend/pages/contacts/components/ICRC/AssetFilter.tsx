@@ -52,7 +52,7 @@ export default function AssetFilter(props: AssetFilterProps) {
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>
         <DropdownMenu.Content className={contentContainerStyles} sideOffset={2} align="end">
-          <button
+          <div
             onClick={handleSelectAll}
             className="flex flex-row items-center justify-between w-full px-3 py-2 rounded-t-lg hover:bg-secondary-color-1-light hover:dark:bg-HoverColor"
           >
@@ -61,10 +61,10 @@ export default function AssetFilter(props: AssetFilterProps) {
               className="border-secondary-color-2-light dark:border-BorderColor"
               checked={assetFilter.length === assets.length}
             />
-          </button>
+          </div>
           {assets.map((asset, k) => {
             return (
-              <button
+              <div
                 key={k}
                 className={assetStyle(k, assets)}
                 onClick={() => {
@@ -80,7 +80,7 @@ export default function AssetFilter(props: AssetFilterProps) {
                   className="border-BorderColorLight dark:border-BorderColor"
                   checked={assetFilter.includes(asset.symbol)}
                 />
-              </button>
+              </div>
             );
           })}
         </DropdownMenu.Content>

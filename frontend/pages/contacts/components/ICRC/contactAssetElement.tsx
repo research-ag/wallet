@@ -25,7 +25,7 @@ const ContactAssetElement = ({
   setNewSubaccounts,
 }: ContactAssetElementProps) => {
   return (
-    <button
+    <div
       key={k}
       onClick={onClicAssetElem}
       className={`flex flex-row justify-between items-center w-full p-3 ${
@@ -55,7 +55,7 @@ const ContactAssetElement = ({
           </button>
         )}
       </div>
-    </button>
+    </div>
   );
 
   function onClicAssetElem() {
