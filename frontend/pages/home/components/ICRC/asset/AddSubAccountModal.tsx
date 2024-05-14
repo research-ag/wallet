@@ -28,6 +28,8 @@ interface AddSubAccountModalProps {
   usedIdxs: string[];
 }
 
+export const MAX_SUB_ACCOUNT_NAME_LENGTH = 10;
+
 export default function AddSubAccountModal({
   isAddSubAccountOpen,
   onClose,
@@ -207,7 +209,7 @@ export default function AddSubAccountModal({
 
         let errName = false;
         let errIdx = false;
-        if (newSub.name.trim() === "") errName = true;
+        if (newSub.name.trim() === "" || newSub.name.trim().length > MAX_SUB_ACCOUNT_NAME_LENGTH) errName = true;
         const checkedIdx = subClean === "" ? "0x0" : `0x${subClean}`;
         if (usedIdxs.includes(checkedIdx.toLowerCase())) {
           errIdx = true;

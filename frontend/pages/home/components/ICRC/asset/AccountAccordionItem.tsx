@@ -10,7 +10,7 @@ import { CustomCopy } from "@components/tooltip";
 import DeleteSubAccountModal from "./DeleteSubAccountModal";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { db } from "@/database/db";
-import { setSelectedAccount, setSelectedAsset } from "@redux/assets/AssetReducer";
+import { setSelectedAccount, setSelectedAsset, setSubAccountMutation } from "@redux/assets/AssetReducer";
 import { toFullDecimal } from "@common/utils/amount";
 
 interface AccountAccordionItemProps {
@@ -28,22 +28,23 @@ export default function AccountAccordionItem({
   const dispatch = useAppDispatch();
   const { assets } = useAppSelector((state) => state.asset.list);
   const { selectedAccount, selectedAsset } = useAppSelector((state) => state.asset.helper);
-
+  const { subAccountMutation } = useAppSelector((state) => state.asset.mutation);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [editingSubAccountId, setEditingSubAccountId] = useState("");
-  const [subAccountName, setSubAccountName] = useState("");
-  const [isNameInvalid, setNameInvalid] = useState(false);
+
+  const isNameInvalid = !subAccountMutation
+    ? true
+    : subAccountMutation.name.trim() === "" || subAccountMutation.name.trim().length > 15;
 
   return (
     <>
       <div aria-haspopup="true" className={getAccountStyles()} onClick={onSelectSubAccount}>
         <div className="flex flex-col items-start justify-center">
-          {editingSubAccountId === currentSubAccount.sub_account_id ? (
+          {subAccountMutation?.sub_account_id === currentSubAccount.sub_account_id ? (
             <div className="flex flex-row items-center justify-start">
               <CustomInput
                 intent={"primary"}
                 placeholder={""}
-                value={subAccountName}
+                value={subAccountMutation?.name || ""}
                 border={isNameInvalid ? "error" : undefined}
                 sizeComp="small"
                 sizeInput="small"
@@ -115,34 +116,26 @@ export default function AccountAccordionItem({
   );
 
   function onSelectSubAccount() {
-    setEditingSubAccountId("");
-    setSubAccountName("");
-    setNameInvalid(false);
+    dispatch(setSubAccountMutation(undefined));
     if (selectedAsset?.address !== currentAsset.address) dispatch(setSelectedAsset(currentAsset));
     if (selectedAccount?.sub_account_id !== currentSubAccount.sub_account_id)
       dispatch(setSelectedAccount(currentSubAccount));
   }
 
   function onEditSubAccount() {
-    setEditingSubAccountId(currentSubAccount.sub_account_id);
-    setSubAccountName(currentSubAccount.name);
-    setNameInvalid(false);
+    dispatch(setSubAccountMutation(currentSubAccount));
   }
 
   function onNameChange(e: ChangeEvent<HTMLInputElement>) {
-    // TODO: implement validation needed.
-    setSubAccountName(e.target.value);
-    setNameInvalid(false);
+    subAccountMutation && dispatch(setSubAccountMutation({ ...subAccountMutation, name: e.target.value }));
   }
 
   function onCancelEdit() {
-    setEditingSubAccountId("");
-    setNameInvalid(false);
-    setSubAccountName("");
+    dispatch(setSubAccountMutation(undefined));
   }
 
   async function onSave() {
-    if (subAccountName.trim() === "") return setNameInvalid(true);
+    if (isNameInvalid) return;
 
     const assetIndex = assets.findIndex((a) => a.address === currentAsset.address);
     if (assetIndex === -1) return;
@@ -150,13 +143,11 @@ export default function AccountAccordionItem({
     const asset = assets[assetIndex];
 
     const subAccounts: SubAccount[] = asset.subAccounts.map((sa) =>
-      sa.sub_account_id === currentSubAccount.sub_account_id ? { ...sa, name: subAccountName } : sa,
+      sa.sub_account_id === currentSubAccount.sub_account_id ? { ...sa, ...subAccountMutation } : sa,
     );
 
     await db().updateAsset(asset.address, { ...asset, subAccounts: subAccounts }, { sync: true });
-
-    setEditingSubAccountId("");
-    setNameInvalid(false);
+    dispatch(setSubAccountMutation(undefined));
   }
 
   function getAccountStyles() {

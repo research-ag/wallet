@@ -15,6 +15,7 @@ interface AssetStateMutation {
   assetMutated?: Asset;
   assetAction: AssetMutationAction;
   assetResult: AssetMutationResult;
+  subAccountMutation: SubAccount | undefined;
 }
 
 interface AssetStateUtilData {
@@ -59,6 +60,7 @@ const initialState: AssetState = {
     assetMutated: undefined,
     assetAction: AssetMutationAction.NONE,
     assetResult: AssetMutationResult.NONE,
+    subAccountMutation: undefined,
   },
   ICPSubaccounts: [],
   accounts: [],
@@ -78,6 +80,9 @@ const assetSlice = createSlice({
     // state helpers
     setInitLoad(state, action: PayloadAction<boolean>) {
       state.helper.initLoad = action.payload;
+    },
+    setSubAccountMutation(state, action: PayloadAction<SubAccount | undefined>) {
+      state.mutation.subAccountMutation = action.payload;
     },
     setAssetMutationResult(state, action: PayloadAction<AssetMutationResult>) {
       state.mutation.assetResult = action.payload;
@@ -172,6 +177,7 @@ const assetSlice = createSlice({
 
 export const {
   addReduxAsset,
+  setSubAccountMutation,
   updateReduxAsset,
   deleteReduxAsset,
   setInitLoad,
