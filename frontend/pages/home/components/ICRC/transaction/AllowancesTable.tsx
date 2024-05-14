@@ -66,7 +66,7 @@ export default function AllowancesTable() {
 
             // Amount
             const hidden = !allowance?.expiration && allowance.amount === "0";
-            const amount = (isAppDataFreshing && !allowance?.amount) ? "0" : allowance.amount;
+            const amount = isAppDataFreshing && !allowance?.amount ? "0" : allowance.amount;
 
             const assetSymbol = assets.find((asset) => asset.tokenSymbol === allowance.asset.tokenSymbol)?.symbol;
 

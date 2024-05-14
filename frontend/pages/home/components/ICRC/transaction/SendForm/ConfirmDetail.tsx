@@ -21,7 +21,7 @@ import { SendingStatusEnum } from "@/common/const";
 import { getSubAccountBalance, transferTokens, transferTokensFromAllowance } from "@/common/libs/icrc";
 import { LoadingLoader } from "@components/loader";
 import reloadBallance from "@pages/helpers/reloadBalance";
-import { toHoleBigInt } from "@common/utils/amount";
+import { toHoleBigInt, validateAmount } from "@common/utils/amount";
 
 interface ConfirmDetailProps {
   showConfirmationModal: Dispatch<SetStateAction<boolean>>;
@@ -51,7 +51,7 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
       <div className="flex items-center justify-end mt-6">
         <p className="mr-4 text-md text-slate-color-error">{t(getError())}</p>
         {isLoading && <LoadingLoader color="dark:border-secondary-color-1-light border-black-color mr-2" />}
-        <BasicButton className="w-1/6 mr-2 font-bold bg-secondary-color-2" onClick={OnBack}>
+        <BasicButton className="w-1/6 mr-2 font-bold bg-secondary-color-2" onClick={onBack}>
           {t("back")}
         </BasicButton>
         <BasicButton className="w-1/6 font-bold bg-primary-color" onClick={handleTransaction}>
@@ -123,16 +123,16 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
   async function handleTransaction() {
     try {
       setSendingStatusAction(SendingStatusEnum.Values.none);
-      setInitTxTime(new Date());
       const assetAddress = sender.asset.address;
       const decimal = sender.asset.decimal;
 
-      if (!amount || Number(amount) <= 0) {
+      if (!amount || Number(amount) <= 0 || !validateAmount(amount || "", Number(decimal))) {
         setErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.amount"]);
         return;
       }
       removeErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.amount"]);
 
+      setInitTxTime(new Date());
       // INFO: enabled verify all the fields were filled
       if (enableSend) {
         if (assetAddress && decimal && senderSubAccount && receiverPrincipal && receiverSubAccount && amount) {
@@ -183,7 +183,7 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
     }
   }
 
-  function OnBack() {
+  function onBack() {
     setFullErrorsAction([]);
     setIsInspectDetailAction(false);
   }
