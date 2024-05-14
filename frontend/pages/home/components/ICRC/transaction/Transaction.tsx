@@ -6,7 +6,6 @@ import { useTranslation } from "react-i18next";
 import { AssetSymbolEnum, SpecialTxTypeEnum } from "@/common/const";
 import { Principal } from "@dfinity/principal";
 import { AccountHook } from "@pages/hooks/accountHook";
-import { IcrcAccount } from "@dfinity/ledger-icrc";
 import { CustomCopy } from "@components/tooltip";
 import { useAppSelector } from "@redux/Store";
 import { hexToUint8Array } from "@common/utils/hexadecimal";
@@ -36,7 +35,7 @@ const DrawerTransaction = () => {
             <div className="flex flex-row items-center justify-between w-full font-normal">
               <p>{`${t("acc.principal")}`}</p>
               <div className="flex flex-row items-center justify-start gap-2">
-                <p>{`${hasSub(false) ? shortAddress(getPrincipal(false), 12, 12) : t("unknown")}`}</p>
+                <p>{`${(hasSub(false) && getPrincipal(false)) ? shortAddress(getPrincipal(false) || "", 12, 12) : t("unknown")}`}</p>
                 <CustomCopy
                   size={"small"}
                   copyText={getPrincipal(false)}
@@ -105,10 +104,10 @@ const DrawerTransaction = () => {
             <div className="flex flex-row items-center justify-between w-full font-normal">
               <p>{`${t("acc.principal")}`}</p>
               <div className="flex flex-row items-center justify-start gap-2">
-                <p>{`${hasSub(true) ? shortAddress(getPrincipal(true), 12, 12) : t("unknown")}`}</p>
+                <p>{`${(hasSub(true) && getPrincipal(true)) ? shortAddress(getPrincipal(true) || "", 12, 12) : t("unknown")}`}</p>
                 <CustomCopy
                   size={"small"}
-                  copyText={getPrincipal(true)}
+                  copyText={getPrincipal(true) || t("unknown")}
                   copyStroke="cursor-pointer max-w-[0.7rem] h-auto"
                   isTransaction={true}
                 />
@@ -201,7 +200,10 @@ const DrawerTransaction = () => {
   }
 
   function getPrincipal(to: boolean) {
-    return isICPWithSub(to) ? authClient : to ? selectedTransaction?.to || "" : selectedTransaction?.from || "";
+    if (isICPWithSub(to)) return authClient;
+    if (to && selectedTransaction?.to) return selectedTransaction?.to;
+    if (!to && selectedTransaction?.from) return selectedTransaction?.from;
+    return undefined;
   }
 
   function getSub(to: boolean) {
@@ -214,14 +216,17 @@ const DrawerTransaction = () => {
     else return selectedTransaction?.fromSub || "0x0";
   }
 
-  function getICRCAccount(to: boolean) {
+  function getICRCAccount(to: boolean): string {
     try {
+      if (!getPrincipal(to)) return t("unknown");
+
       return getICRC1Acc({
-        owner: Principal.fromText(getPrincipal(to)),
+        owner: Principal.fromText(getPrincipal(to) || ""),
         subaccount: hexToUint8Array(getSub(to)),
-      } as IcrcAccount);
+      });
+
     } catch {
-      return getPrincipal(to);
+      return getPrincipal(to) || "";
     }
   }
 };
