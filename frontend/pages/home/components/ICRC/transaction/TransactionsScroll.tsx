@@ -50,6 +50,7 @@ export default function TransactionsWrapper() {
 
   const onSort = () => {
     const sorted = sortByDate(sortDirectionRef.current, transactions);
+
     setTableData((prev) => ({
       ...prev,
       transactions: sorted,
