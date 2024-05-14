@@ -58,8 +58,8 @@ const DeleteAssetModal = () => {
 
     await db().updateContacts(updatedContacts, { sync: true }).then();
 
-    dispatch(setAssetMutation(undefined));
     dispatch(setAssetMutationAction(AssetMutationAction.NONE));
+    dispatch(setAssetMutation(undefined));
   }
 };
 

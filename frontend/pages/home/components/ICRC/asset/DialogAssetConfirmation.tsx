@@ -10,16 +10,15 @@ import { AssetMutationResult, setAssetMutation, setAssetMutationResult } from "@
 import { useEffect } from "react";
 import clsx from "clsx";
 
-const DialogAssetConfirmation = () => {
+const DialogAssetConfirmation = ({ isModalOpen }: { isModalOpen: boolean }) => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const { assetResult, assetAction, assetMutated } = useAppSelector((state) => state.asset.mutation);
-  const isModalOpen = assetResult !== AssetMutationResult.NONE;
 
   useEffect(() => {
     const closeTimer = setTimeout(() => {
-      dispatch(setAssetMutation(undefined));
       dispatch(setAssetMutationResult(AssetMutationResult.NONE));
+      dispatch(setAssetMutation(undefined));
     }, 5000);
 
     return () => {
@@ -83,4 +82,11 @@ const DialogAssetConfirmation = () => {
   }
 };
 
-export default DialogAssetConfirmation;
+export default function Wrapper() {
+  const { assetResult } = useAppSelector((state) => state.asset.mutation);
+  const isModalOpen = assetResult !== AssetMutationResult.NONE;
+
+  if (!isModalOpen) return <></>;
+
+  return <DialogAssetConfirmation isModalOpen={isModalOpen} />
+};
