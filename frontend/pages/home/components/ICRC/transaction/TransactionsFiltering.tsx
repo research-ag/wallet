@@ -118,7 +118,6 @@ export default function TransactionsFiltering({ children }: { children: JSX.Elem
 
   useEffect(() => {
     const isTxWorkerChanged = !isEqual(lastTxWorker.current, txWorker);
-
     if (isTxWorkerChanged) {
       lastTxWorker.current = txWorker;
       searchCurrentAccountTransactions();

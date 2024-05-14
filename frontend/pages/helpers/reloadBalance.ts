@@ -5,13 +5,13 @@ import { updateAllBalances } from "@redux/assets/AssetActions";
 import { setAppDataRefreshing, setLastDataRefresh } from "@redux/common/CommonReducer";
 import store from "@redux/Store";
 import dayjs from "dayjs";
+import { transactionCacheRefresh } from "@pages/home/helpers/cache";
 
 export default async function reloadBallance() {
   try {
     store.dispatch(setAppDataRefreshing(true));
 
     const dbAssets = await db().getAssets();
-
     await updateAllBalances({
       loading: true,
       myAgent: store.getState().auth.userAgent,
@@ -20,6 +20,7 @@ export default async function reloadBallance() {
       basicSearch: true,
     });
 
+    await transactionCacheRefresh(store.getState().asset.list.assets);
     await allowanceCacheRefresh();
     await contactCacheRefresh();
 

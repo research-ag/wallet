@@ -86,7 +86,6 @@ export const getAllTransactionsICRC1 = async (params: GetAllTransactionsICRCPara
       max_results: BigInt(100),
     });
 
-    // TODO: move formatckBTCTransaccion mapper in helpers in transactions
     const transactionsInfo = ICRC1getTransactions.transactions.map(({ transaction, id }) =>
       formatckBTCTransaccion(transaction, id, myPrincipal?.toString(), assetSymbol, canister, subNumber),
     );

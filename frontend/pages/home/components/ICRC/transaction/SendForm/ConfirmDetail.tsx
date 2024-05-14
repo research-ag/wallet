@@ -178,7 +178,7 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
       setSendingStatusAction(SendingStatusEnum.Values.error);
       setEndTxTime(new Date());
     } finally {
-      reloadBallance();
+      await reloadBallance();
       setIsLoadingAction(false);
     }
   }

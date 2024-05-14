@@ -15,6 +15,7 @@ export default function TransactionsWrapper() {
   const { selectedAccount, selectedAsset } = useAppSelector((state) => state.asset.helper);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [chunkNumber, setChunkNumber] = useState(1);
+  //
   const isInitialLoadRef = useRef(true);
   const isAtBottomRef = useRef(false);
   const lastSelectedAccountRef = useRef<SubAccount | undefined>(selectedAccount);
@@ -78,7 +79,7 @@ export default function TransactionsWrapper() {
       from: 1,
     });
 
-    setTransactions((prev) => [...prev, ...data]);
+    setTransactions(data);
   }, [chunkNumber, transactionChunks]);
 
   return <TransactionsTable onScroll={onScroll} transactions={transactions} onSort={onSort} />;
