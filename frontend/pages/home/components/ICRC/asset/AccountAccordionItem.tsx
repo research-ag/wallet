@@ -98,7 +98,7 @@ export default function AccountAccordionItem({
           </div>
           {currentSubAccount?.sub_account_id !== "0x0" && Number(currentSubAccount?.amount) === 0 && (
             <button className="p-0" onClick={() => setDeleteModalOpen(true)}>
-              <TrashIcon className=" fill-PrimaryTextColorLight dark:fill-PrimaryTextColor" />
+              <TrashIcon className="w-3 h-3 fill-PrimaryTextColorLight dark:fill-PrimaryTextColor" />
             </button>
           )}
         </div>

@@ -104,7 +104,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
 
   async updateAssets(assets: Asset[], options?: DatabaseOptions): Promise<void> {
     this._setAssets(assets);
-    if (options?.sync) this._assetStateSync();
+    if (options?.sync) store.dispatch(setAssets(assets));
   }
 
   /**

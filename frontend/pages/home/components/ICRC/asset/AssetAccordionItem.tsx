@@ -51,7 +51,7 @@ export default function AssetAccordionItem(props: AssetAccordionItemProps) {
                 {getAssetIcon(IconTypeEnum.Enum.ASSET, currentAsset?.tokenSymbol, currentAsset.logo)}
 
                 <div className="flex flex-col items-start justify-start">
-                  <p className="text-lg">
+                  <p className="text-md">
                     {getFirstNChars(currentAsset?.name ? currentAsset.name : currentAsset.tokenName, 18)}
                   </p>
 
@@ -60,7 +60,7 @@ export default function AssetAccordionItem(props: AssetAccordionItemProps) {
                       {currentAsset.symbol ? currentAsset.symbol : currentAsset.tokenSymbol}
                     </p>
                     <div className="p-0 mr-1" onClick={onAssetUpdate}>
-                      <img src={InfoIcon} className="ml-1" alt="info-icon" />
+                      <img src={InfoIcon} className="w-3 h-3 ml-1" alt="info-icon" />
                     </div>
                     {isCurrentAssetSelected ? (
                       <div
@@ -96,9 +96,9 @@ export default function AssetAccordionItem(props: AssetAccordionItemProps) {
             </div>
             <div className="flex flex-col items-center justify-between h-8 ml-3 ">
               {currentAsset?.subAccounts && accordionIndex.includes(currentAsset.tokenSymbol) ? (
-                <ChevronLeftIcon />
+                <ChevronLeftIcon className="w-3 h-3" />
               ) : (
-                <ChevronDownIcon />
+                <ChevronDownIcon className="w-3 h-3" />
               )}
               {getFullTokenAmount().token === BigInt("0") && (
                 <TrashIcon
