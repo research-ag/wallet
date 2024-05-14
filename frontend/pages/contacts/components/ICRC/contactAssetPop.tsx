@@ -61,10 +61,8 @@ const ContactAssetPop = ({
             >
               <div className="flex flex-col justify-start items-start  dark:bg-SecondaryColor rounded-lg w-40 border border-BorderColorLight/20 dark:border-BorderColor/20 shadow max-h-64 z-[2000]">
                 <div className="flex flex-col w-full scroll-y-light">
-                  <button
-                    className={
-                      "flex flex-row justify-between items-center rounded-t-lg px-3 py-2 w-full hover:bg-secondary-color-1-light hover:dark:bg-HoverColor"
-                    }
+                  <div
+                    className="flex flex-row items-center justify-between w-full px-3 py-2 rounded-t-lg hover:bg-secondary-color-1-light hover:dark:bg-HoverColor"
                     onClick={handleSelectAll}
                   >
                     <p>{t("selected.all")}</p>
@@ -72,10 +70,10 @@ const ContactAssetPop = ({
                       className="border-BorderColorLight dark:border-BorderColor"
                       checked={assetsToAdd.length === assets.length}
                     />
-                  </button>
+                  </div>
                   {assets.map((asset, k) => {
                     return (
-                      <button
+                      <div
                         key={k}
                         className={`flex flex-row justify-between items-center px-3 py-2 w-full hover:bg-secondary-color-1-light hover:dark:bg-HoverColor ${
                           symbolToAdd.includes(asset.tokenSymbol) && assetsToAdd.length !== assets.length
@@ -95,7 +93,7 @@ const ContactAssetPop = ({
                           className="border-BorderColorLight dark:border-BorderColor"
                           checked={symbolToAdd.includes(asset.tokenSymbol)}
                         />
-                      </button>
+                      </div>
                     );
                   })}
                 </div>

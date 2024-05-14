@@ -35,7 +35,9 @@ const DrawerTransaction = () => {
             <div className="flex flex-row items-center justify-between w-full font-normal">
               <p>{`${t("acc.principal")}`}</p>
               <div className="flex flex-row items-center justify-start gap-2">
-                <p>{`${(hasSub(false) && getPrincipal(false)) ? shortAddress(getPrincipal(false) || "", 12, 12) : t("unknown")}`}</p>
+                <p>{`${
+                  hasSub(false) && getPrincipal(false) ? shortAddress(getPrincipal(false) || "", 12, 12) : t("unknown")
+                }`}</p>
                 <CustomCopy
                   size={"small"}
                   copyText={getPrincipal(false)}
@@ -104,7 +106,9 @@ const DrawerTransaction = () => {
             <div className="flex flex-row items-center justify-between w-full font-normal">
               <p>{`${t("acc.principal")}`}</p>
               <div className="flex flex-row items-center justify-start gap-2">
-                <p>{`${(hasSub(true) && getPrincipal(true)) ? shortAddress(getPrincipal(true) || "", 12, 12) : t("unknown")}`}</p>
+                <p>{`${
+                  hasSub(true) && getPrincipal(true) ? shortAddress(getPrincipal(true) || "", 12, 12) : t("unknown")
+                }`}</p>
                 <CustomCopy
                   size={"small"}
                   copyText={getPrincipal(true) || t("unknown")}
@@ -224,7 +228,6 @@ const DrawerTransaction = () => {
         owner: Principal.fromText(getPrincipal(to) || ""),
         subaccount: hexToUint8Array(getSub(to)),
       });
-
     } catch {
       return getPrincipal(to) || "";
     }
