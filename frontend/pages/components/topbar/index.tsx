@@ -168,10 +168,10 @@ const TopBarComponent = ({ isLoginPage }: { isLoginPage: boolean }) => {
           </DropdownMenu.Root>
         </div>
       </div>
-      <BasicModal open={themeOpen} top="top-[35%]">
+      <BasicModal open={themeOpen} top="top-[35%]" border="dark-border-2 dark-border-gray-color-6">
         <ThemeModal setOpen={setThemeOpen} />
       </BasicModal>
-      <BasicModal open={dbLocationOpen} top="top-[35%]">
+      <BasicModal open={dbLocationOpen} top="top-[35%]" border="dark-border-2 dark-border-gray-color-6">
         <DbLocationModal setOpen={setDbLocationOpen} />
       </BasicModal>
     </Fragment>

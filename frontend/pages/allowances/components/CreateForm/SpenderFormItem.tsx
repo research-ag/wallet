@@ -50,7 +50,7 @@ export default function SpenderFormItem(props: ISpenderFormItemProps) {
     <div className="mt-4">
       <label htmlFor="Spender" className="flex justify-between mb-2">
         <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("spender")}</p>
-        <div className="flex items-center justify-between w-3/6 px-2 py-1 rounded-md bg-PrimaryColorLight dark:bg-ThemeColorBack">
+        <div className="flex items-center justify-between w-3/6 px-2 py-1 rounded-md dark:bg-ThemeColorBack">
           <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("contact.book")}</p>
           <BasicSwitch checked={isNew} onChange={onContactBookChange} disabled={isLoading} />
           <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("new")}</p>

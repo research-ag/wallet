@@ -18,7 +18,7 @@ export default function SenderAllowanceContact() {
   return (
     <div>
       <label htmlFor="Spender" className="flex items-center justify-between mx-6 mb-2">
-        <div className="flex items-center justify-between my-1 rounded-md bg-PrimaryColorLight dark:bg-ThemeColorBack">
+        <div className="flex items-center justify-between my-1 rounded-md dark:bg-ThemeColorBack">
           <p className="mr-1 opacity-50 text-md text-start text-PrimaryTextColorLight dark:text-PrimaryTextColor">
             {t("contact.book")}
           </p>
