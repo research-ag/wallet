@@ -31,6 +31,7 @@ export default function AssetAccordionItem(props: AssetAccordionItemProps) {
   const { currentAsset, isCurrentAssetLast } = props;
   const [isAddSubAccountOpen, setAddSubAccountOpen] = useState(false);
   const { selectedAsset, accordionIndex, selectedAccount } = useAppSelector((state) => state.asset.helper);
+  const { isAppDataFreshing } = useAppSelector((state) => state.common);
   const { tokensMarket } = useAppSelector((state) => state.asset.utilData);
   const [usedIdxs, setUsedIdxs] = useState<string[]>([]);
   const dispatch = useAppDispatch();
@@ -100,7 +101,7 @@ export default function AssetAccordionItem(props: AssetAccordionItemProps) {
               ) : (
                 <ChevronDownIcon className="w-3 h-3" />
               )}
-              {getFullTokenAmount().token === BigInt("0") && (
+              {(getFullTokenAmount().token === BigInt("0") && !isAppDataFreshing) && (
                 <TrashIcon
                   onClick={onDeleteAsset}
                   className="w-3 h-3 cursor-pointer fill-PrimaryTextColorLight dark:fill-PrimaryTextColor "
