@@ -126,7 +126,7 @@ export const getSNSTokens = async (agent: HttpAgent): Promise<Asset[]> => {
               currency_amount: "0",
               transaction_fee: metadata.fee,
               decimal: 0,
-              symbol: "",
+              symbol: metadata.symbol,
             },
           ],
           supportedStandards: supportedStandards,
