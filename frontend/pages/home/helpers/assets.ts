@@ -55,7 +55,7 @@ async function refreshAsset(asset: Asset, options: RefreshOptions) {
         currency_amount: USDAmount,
         transaction_fee: myTransactionFee.toString(),
         decimal: decimals,
-        symbol: asset.symbol,
+        symbol: asset.tokenSymbol,
       };
 
       loadedSubAccountsIds.push(currentSubAccount.sub_account_id);
@@ -88,7 +88,7 @@ async function refreshAsset(asset: Asset, options: RefreshOptions) {
             currency_amount: USDAmount,
             transaction_fee: myTransactionFee.toString(),
             decimal: decimals,
-            symbol: asset.symbol,
+            symbol: asset.tokenSymbol,
           };
 
           assetSubAccounts.push(assetSubAccount);
