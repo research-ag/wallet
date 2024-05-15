@@ -71,8 +71,6 @@ export default function TransactionsWrapper() {
     lastSelectedAccountRef.current = selectedAccount;
     lastSelectedAssetRef.current = selectedAsset;
 
-    console.log("selected changed, ", { selectedAccount, selectedAsset });
-
     setTableData({
       transactions: [],
       chunkNumber: 1,
