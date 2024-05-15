@@ -30,6 +30,7 @@ export default function AccountAccordionItem({
   const { selectedAccount, selectedAsset } = useAppSelector((state) => state.asset.helper);
   const { subAccountMutation } = useAppSelector((state) => state.asset.mutation);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+  const isCurrentEdit = subAccountMutation?.sub_account_id === currentSubAccount.sub_account_id && currentAsset?.tokenSymbol === subAccountMutation?.symbol;
 
   const isNameInvalid = !subAccountMutation
     ? true
@@ -39,7 +40,7 @@ export default function AccountAccordionItem({
     <>
       <div aria-haspopup="true" className={getAccountStyles()} onClick={onSelectSubAccount}>
         <div className="flex flex-col items-start justify-center">
-          {subAccountMutation?.sub_account_id === currentSubAccount.sub_account_id ? (
+          {isCurrentEdit ? (
             <div className="flex flex-row items-center justify-start">
               <CustomInput
                 intent={"primary"}
