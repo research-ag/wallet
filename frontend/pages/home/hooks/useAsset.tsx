@@ -6,7 +6,7 @@ import { setSelectedAccount, setSelectedAsset } from "@redux/assets/AssetReducer
 export const UseAsset = () => {
   const dispatch = useAppDispatch();
   const { assets } = useAppSelector((state) => state.asset.list);
-  const { selectedAsset, selectedAccount } = useAppSelector((state) => state.asset.helper);
+  const { selectedAsset } = useAppSelector((state) => state.asset.helper);
   const changeSelectedAsset = (value: Asset) => dispatch(setSelectedAsset(value));
   const changeSelectedAccount = (value: SubAccount | undefined) => dispatch(setSelectedAccount(value));
 
@@ -23,18 +23,7 @@ export const UseAsset = () => {
 
   useEffect(() => {
     if (selectedAsset) {
-      let actualSub: SubAccount | undefined = undefined;
-
-      selectedAsset.subAccounts.map((currentSubAccount: SubAccount) => {
-        if (currentSubAccount.sub_account_id === (selectedAccount?.sub_account_id || "")) {
-          actualSub = currentSubAccount;
-          changeSelectedAccount(currentSubAccount);
-        }
-      });
-
-      if (!actualSub) {
-        changeSelectedAccount(selectedAsset.subAccounts[0]);
-      }
+      changeSelectedAccount(selectedAsset.subAccounts[0]);
     }
   }, [selectedAsset]);
 
