@@ -20,14 +20,13 @@ export default function CurrencyInput(props: InputCurrencyProps) {
     <div className={inputCurrencyCVA({ className, isLoading, border })}>
       <input
         type="text"
-        className="w-4/5 outline-none bg-inherit"
+        className="w-7/12 outline-none bg-inherit"
         autoComplete="false"
         onChange={handleCurrencyChange}
         value={value || ""}
       />
-      <div className="flex items-center justify-between">
-        {icon}
-        <p className="mt-1 ml-4 text-lg">{currency}</p>
+      <div className="flex items-center w-fit">
+        {icon} <p className="ml-1 text-md">{currency}</p>
       </div>
     </div>
   );
@@ -35,7 +34,7 @@ export default function CurrencyInput(props: InputCurrencyProps) {
 
 const inputCurrencyCVA = cva(
   [
-    "flex",
+    "flex justify-between",
     "border",
     "bg-ThemeColorSelectorLight dark:bg-SecondaryColor",
     "text-PrimaryTextColorLight dark:text-PrimaryTextColor",
