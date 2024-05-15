@@ -48,12 +48,12 @@ export default function SpenderFormItem(props: ISpenderFormItemProps) {
 
   return (
     <div className="mt-4">
-      <label htmlFor="Spender" className="flex justify-between mb-2">
+      <label htmlFor="Spender" className="flex items-center justify-between mb-2">
         <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("spender")}</p>
-        <div className="flex items-center justify-between w-3/6 px-2 py-1 rounded-md dark:bg-ThemeColorBack">
-          <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("contact.book")}</p>
+        <div className="flex items-center justify-between px-2 py-1 rounded-md dark:bg-ThemeColorBack">
+          <p className="mr-1 text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("contact.book")}</p>
           <BasicSwitch checked={isNew} onChange={onContactBookChange} disabled={isLoading} />
-          <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("new")}</p>
+          <p className="ml-1 text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("new")}</p>
         </div>
       </label>
       {!isNew && (

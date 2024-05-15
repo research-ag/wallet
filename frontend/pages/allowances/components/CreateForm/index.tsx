@@ -93,7 +93,7 @@ export default function CreateForm() {
       event.preventDefault();
       setFullAllowanceErrorsAction([]);
 
-      // // INFO: this validation guarantee all the fields need for icrc2_allowance where set, if not show user feedback
+      // INFO: this validation guarantee all the fields need for icrc2_allowance where set, if not show user feedback
       if (!allowance.asset.address || !allowance.asset.decimal)
         return setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.asset"]);
       removeAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.asset"]);
