@@ -88,5 +88,5 @@ export default function Wrapper() {
 
   if (!isModalOpen) return <></>;
 
-  return <DialogAssetConfirmation isModalOpen={isModalOpen} />
-};
+  return <DialogAssetConfirmation isModalOpen={isModalOpen} />;
+}

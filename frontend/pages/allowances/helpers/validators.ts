@@ -5,13 +5,14 @@ import { Asset, SubAccount } from "@redux/models/AccountModels";
 import dayjs from "dayjs";
 import { db } from "@/database/db";
 import { isHexadecimalValid } from "@pages/home/helpers/checkers";
-import { validateAmount } from "@common/utils/amount";
+import { toHoleBigInt, validateAmount } from "@common/utils/amount";
+import { getTransactionFeeFromLedger } from "@common/libs/icrc";
 
 export async function getDuplicatedAllowance(allowance: TAllowance): Promise<TAllowance | undefined> {
   return (await db().getAllowance(db().generateAllowancePrimaryKey(allowance))) || undefined;
 }
 
-export function validateCreateAllowance(allowance: TAllowance, asset: Asset) {
+export async function validateCreateAllowance(allowance: TAllowance, asset: Asset) {
   if (!allowance.asset.address || !allowance.asset.decimal || !allowance.asset.supportedStandards.includes("ICRC-2"))
     throw AllowanceValidationErrorsEnum.Values["error.invalid.asset"];
 
@@ -24,10 +25,20 @@ export function validateCreateAllowance(allowance: TAllowance, asset: Asset) {
   if (allowance?.spender === store.getState().auth.userPrincipal.toText())
     throw AllowanceValidationErrorsEnum.Values["error.self.allowance"];
 
+  const transactionFee = await getTransactionFeeFromLedger({
+    assetAddress: allowance.asset.address,
+    assetDecimal: allowance.asset.decimal,
+  });
+
+  const isAmountMoreThanFee =
+    toHoleBigInt(allowance.amount || "0", Number(allowance.asset.decimal)) >
+    toHoleBigInt(transactionFee || "0", Number(allowance.asset.decimal));
+
   if (
     !allowance.amount ||
     Number(allowance.amount) === 0 ||
-    !validateAmount(allowance.amount, Number(allowance.asset.decimal))
+    !validateAmount(allowance.amount, Number(allowance.asset.decimal)) ||
+    !isAmountMoreThanFee
   )
     throw AllowanceValidationErrorsEnum.Values["error.invalid.amount"];
 
@@ -43,8 +54,17 @@ export function validateCreateAllowance(allowance: TAllowance, asset: Asset) {
     throw AllowanceValidationErrorsEnum.Values["error.before.present.expiration"];
 }
 
-export function validateUpdateAllowance(allowance: TAllowance, asset: Asset) {
-  if (!allowance.amount || !validateAmount(allowance.amount, Number(allowance.asset.decimal)))
+export async function validateUpdateAllowance(allowance: TAllowance, asset: Asset) {
+  const transactionFee = await getTransactionFeeFromLedger({
+    assetAddress: allowance.asset.address,
+    assetDecimal: allowance.asset.decimal,
+  });
+
+  const isAmountMoreThanFee =
+    toHoleBigInt(allowance.amount || "0", Number(allowance.asset.decimal)) >
+    toHoleBigInt(transactionFee || "0", Number(allowance.asset.decimal));
+
+  if (!allowance.amount || !validateAmount(allowance.amount, Number(allowance.asset.decimal)) || !isAmountMoreThanFee)
     throw AllowanceValidationErrorsEnum.Values["error.invalid.amount"];
 
   const subAccount = asset.subAccounts.find(

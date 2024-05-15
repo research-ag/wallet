@@ -57,7 +57,7 @@ export function useUpdateAllowance() {
         !dayjs(fullAllowance.expiration).isSame(dayjs(existingAllowance.expiration)) ||
         fullAllowance.amount !== existingAllowance.amount
       ) {
-        validateUpdateAllowance(fullAllowance, asset);
+        await validateUpdateAllowance(fullAllowance, asset);
 
         const amountWithoutZeros = removeZeroesFromAmount(allowance.amount || "0");
         const amountBigint = toHoleBigInt(amountWithoutZeros, Number(asset.decimal));

@@ -65,7 +65,7 @@ export default function useCreateAllowance() {
       amount: removeZeroesFromAmount(allowance.amount || "0"),
     };
 
-    validateCreateAllowance(fullAllowance, asset);
+    await validateCreateAllowance(fullAllowance, asset);
 
     const amountWithoutZeros = removeZeroesFromAmount(allowance.amount || "0");
     const amountBigint = toHoleBigInt(amountWithoutZeros, Number(asset.decimal));

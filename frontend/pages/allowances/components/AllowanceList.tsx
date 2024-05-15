@@ -82,7 +82,9 @@ export default function AllowanceList({ allowances, handleSortChange }: Allowanc
                     {getAssetIcon(IconTypeEnum.Enum.ALLOWANCE, asset?.tokenSymbol, asset?.logo)}
                     <div className="ml-2">
                       {subAccountName && <p>{subAccountName || subAccountName}</p>}
-                      {subAccountId && <p className="text-sm dark:text-gray-color-4 text-gray-color-5">{subAccountId}</p>}
+                      {subAccountId && (
+                        <p className="text-sm dark:text-gray-color-4 text-gray-color-5">{subAccountId}</p>
+                      )}
                     </div>
                   </div>
                   <p className="mt-1 text-center">{asset?.symbol || "-"}</p>

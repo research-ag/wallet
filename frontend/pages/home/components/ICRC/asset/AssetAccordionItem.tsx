@@ -101,7 +101,7 @@ export default function AssetAccordionItem(props: AssetAccordionItemProps) {
               ) : (
                 <ChevronDownIcon className="w-3 h-3" />
               )}
-              {(getFullTokenAmount().token === BigInt("0") && !isAppDataFreshing) && (
+              {getFullTokenAmount().token === BigInt("0") && !isAppDataFreshing && (
                 <TrashIcon
                   onClick={onDeleteAsset}
                   className="w-3 h-3 cursor-pointer fill-PrimaryTextColorLight dark:fill-PrimaryTextColor "

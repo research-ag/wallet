@@ -56,15 +56,15 @@ export function sortByAmount(order: SortOrder, filteredData: TAllowance[]): TAll
   // INFO: 8 is the most accuracy, that's why it's fixed number. Remove this comment if this behaviors changes.
   return order === SortOrderEnum.Values.ASC
     ? [...filteredData].sort((a, b) => {
-      const aAmount = toHoleBigInt(fixDecimals(a.amount || "0"), 8);
-      const bAmount = toHoleBigInt(fixDecimals(b.amount || "0"), 8);
-      return Number(aAmount - bAmount);
-    })
+        const aAmount = toHoleBigInt(fixDecimals(a.amount || "0"), 8);
+        const bAmount = toHoleBigInt(fixDecimals(b.amount || "0"), 8);
+        return Number(aAmount - bAmount);
+      })
     : [...filteredData].sort((a, b) => {
-      const aAmount = toHoleBigInt(fixDecimals(a.amount || "0"), 8);
-      const bAmount = toHoleBigInt(fixDecimals(b.amount || "0"), 8);
-      return Number(bAmount - aAmount);
-    });
+        const aAmount = toHoleBigInt(fixDecimals(a.amount || "0"), 8);
+        const bAmount = toHoleBigInt(fixDecimals(b.amount || "0"), 8);
+        return Number(bAmount - aAmount);
+      });
 }
 
 export function sortByExpiration(order: SortOrder, filteredData: TAllowance[]): TAllowance[] {

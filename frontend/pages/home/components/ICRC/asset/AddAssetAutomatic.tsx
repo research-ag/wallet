@@ -195,7 +195,7 @@ const AddAssetAutomatic = () => {
       return;
     }
 
-    try {     
+    try {
       dispatch(setAssetMutation(newAsset));
       dispatch(setAssetMutationResult(AssetMutationResult.ADDING));
 
