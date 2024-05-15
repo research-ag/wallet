@@ -10,11 +10,12 @@ $light-gray-icon: #878787;
 $light-background: #ffffff;
 $light-mask: #f8f7fa;
 $accent-color: #63a5e8;
+$border-color: #68658b;
 
 .date-picker {
   width: 60%;
   fieldset {
-    border-color: $primary-color !important;
+    border-color: $border-color !important;
   }
   input {
     padding-top: 0.5rem;
