@@ -116,7 +116,7 @@ const assetStyle = (k: number, assets: Asset[]) =>
 const triggerContainerStyles = clsx(
   "flex flex-row justify-start items-center cursor-pointer",
   "border border-BorderColorLight dark:border-BorderColor",
-  "rounded px-2 py-1 w-[10rem] h-[2.5rem]",
+  "rounded px-2 py-1 w-[10rem] h-[2.2rem]",
   "bg-SecondaryColorLight dark:bg-SecondaryColor",
 );
 

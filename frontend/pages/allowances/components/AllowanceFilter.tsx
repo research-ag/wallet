@@ -24,8 +24,8 @@ export default function AllowanceFilter(props: AllowanceFilterProps) {
   const [assetSelectOpen, setAssetSelectOpen] = useState(false);
 
   return (
-    <div className="flex items-center justify-between w-2/3 ">
-      <div className="flex items-center justify-center w-1/3">
+    <div className="flex items-center justify-end w-2/5">
+      <div className="flex items-center justify-center mr-4">
         <p className="mr-4 text-md dark:text-gray-color-9 text-black-color">Asset</p>
         <AssetFilter
           assetSelectOpen={assetSelectOpen}
@@ -35,11 +35,11 @@ export default function AllowanceFilter(props: AllowanceFilterProps) {
         />
       </div>
 
-      <div className="flex w-2/3">
+      <div className="flex items-center justify-center w-full">
         <CustomInput
-          prefix={<img src={SearchIcon} className="mx-2" alt="search-icon" />}
+          prefix={<img src={SearchIcon} className="w-5 h-5 mx-2" alt="search-icon" />}
           intent={"secondary"}
-          sizeInput={"medium"}
+          sizeInput={"small"}
           placeholder={t("allowance.search")}
           onChange={(e) => setSearchKey(cleanAlphanumeric(e.target.value))}
         />
