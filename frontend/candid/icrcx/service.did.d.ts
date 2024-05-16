@@ -86,7 +86,7 @@ export interface _SERVICE {
   // privates queries
   icrcXCredit: ActorMethod<[Token], bigint>; 
   icrcXAllCredits: ActorMethod<[], [Token, bigint][]>;
-  icrcXTrackedDepopsit: ActorMethod<[Token], BalanceResponse>;
+  icrcXTrackedDeposit: ActorMethod<[Token], BalanceResponse>;
 
   // update methods
   icrcXNotify: ActorMethod<[NotifyArg], NotifyResponse>;

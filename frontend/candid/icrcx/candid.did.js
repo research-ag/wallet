@@ -90,7 +90,7 @@ export const idlFactory = ({ IDL }) => {
       [IDL.Vec(IDL.Record({ token: Token }))],
       ["query"]
     ),
-    icrcXTrackedDepopsit: IDL.Func([Token], [BalanceResponse], ["query"]),
+    icrcXTrackedDeposit: IDL.Func([Token], [BalanceResponse], ["query"]),
 
     // updated
     icrcXNotify: IDL.Func([NotifyArg], [NotifyResponse], ["update"]),
