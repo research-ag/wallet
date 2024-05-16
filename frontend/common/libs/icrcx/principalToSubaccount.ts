@@ -18,4 +18,3 @@ export default async function principalToSubaccount(args: PrincipalToSubaccountA
 
   return await actor.principalToSubaccount(principal);
 };
-
