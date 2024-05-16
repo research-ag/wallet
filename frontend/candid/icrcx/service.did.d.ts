@@ -15,33 +15,33 @@ export type Subaccount = Uint8Array[];
 
 export interface NotifyArg {
   token: Token;
-};
+}
 
 export interface NotifyResult {
   depositInc: Amount;
   creditInc: Amount;
-};
+}
 
 export interface NotifyResponse {
   Ok: NotifyResult;
   Err: {
     CallLedgerError: string;
     NotAvailable: string;
-  },
-};
+  };
+}
 
 export interface BalanceResponse {
   Ok: Amount;
   Err: {
     NotAvailable: string;
-  },
-};
+  };
+}
 
 export interface WithdrawArgs {
   toSubaccount?: Subaccount;
   amount: Amount;
   token: Token;
-};
+}
 
 export interface WithdrawResponse {
   Ok: {
@@ -54,14 +54,13 @@ export interface WithdrawResponse {
     InsufficientBalance: string;
     AmountBelowMinimum: Amount;
   };
-};
+}
 
 export interface DepositArgs {
   token: Token;
   amount: Amount;
   subaccount?: Subaccount;
-};
-
+}
 
 export interface DepositResponse {
   Ok: {
@@ -73,8 +72,7 @@ export interface DepositResponse {
     CallLedgerError: string;
     TransferError: string;
   };
-};
-
+}
 
 export interface _SERVICE {
   principalToSubaccount: ActorMethod<[Principal], Subaccount | undefined>;
@@ -84,7 +82,7 @@ export interface _SERVICE {
   icrcXTokenInfo: ActorMethod<[Token], TokenInfo>;
 
   // privates queries
-  icrcXCredit: ActorMethod<[Token], bigint>; 
+  icrcXCredit: ActorMethod<[Token], bigint>;
   icrcXAllCredits: ActorMethod<[], [Token, bigint][]>;
   icrcXTrackedDeposit: ActorMethod<[Token], BalanceResponse>;
 
@@ -92,4 +90,4 @@ export interface _SERVICE {
   icrcXNotify: ActorMethod<[NotifyArg], NotifyResponse>;
   icrcXDeposit: ActorMethod<[DepositArgs], DepositResponse>;
   icrcXWithdraw: ActorMethod<[WithdrawArgs], WithdrawResponse>;
-};
+}

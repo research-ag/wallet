@@ -1,6 +1,6 @@
 export { getICRCSupportedStandards } from "./getICRCSupportedStandards";
 export { getCanister } from "./getIcrcCanister";
-export { getIcrcActor } from "./getIcrcActor";
+export { getIcrcActor } from "./actor";
 
 export {
   createApproveAllowanceParams,

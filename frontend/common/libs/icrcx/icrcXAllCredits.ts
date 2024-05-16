@@ -3,12 +3,12 @@ import { ICRCXActor } from "@/common/libs/icrcx/actor";
 import { HttpAgent } from "@dfinity/agent";
 
 interface icrcXAllCreditsArgs {
-  address: string | Principal;
+  canisterId: string | Principal;
   agent: HttpAgent;
-};
+}
 
 export default async function icrcXAllCredits(args: icrcXAllCreditsArgs) {
-  const { address, agent } = args;
-  const actor = ICRCXActor({ address, agent });
+  const { canisterId, agent } = args;
+  const actor = ICRCXActor({ canisterId, agent });
   return await actor.icrcXAllCredits();
-};
+}

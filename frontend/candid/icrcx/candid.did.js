@@ -73,11 +73,7 @@ export const idlFactory = ({ IDL }) => {
 
   return IDL.Service({
     // helper function
-    principalToSubaccount: IDL.Func(
-      [IDL.Principal],
-      [IDL.Opt(SubAccount)],
-      ["query"]
-    ),
+    principalToSubaccount: IDL.Func([IDL.Principal], [IDL.Opt(SubAccount)], ["query"]),
 
     // public queries
     icrcXSupportedTokens: IDL.Func([], [IDL.Vec(Token)], ["query"]),
@@ -85,11 +81,7 @@ export const idlFactory = ({ IDL }) => {
 
     // privates queries
     icrcXCredit: IDL.Func([Token], [IDL.Int], ["query"]),
-    icrcXAllCredits: IDL.Func(
-      [],
-      [IDL.Vec(IDL.Record({ token: Token }))],
-      ["query"]
-    ),
+    icrcXAllCredits: IDL.Func([], [IDL.Vec(IDL.Record({ token: Token }))], ["query"]),
     icrcXTrackedDeposit: IDL.Func([Token], [BalanceResponse], ["query"]),
 
     // updated

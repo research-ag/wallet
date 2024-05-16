@@ -4,12 +4,12 @@ import { HttpAgent } from "@dfinity/agent";
 import { NotifyArg } from "@candid/icrcx/service.did";
 
 interface IcrcXNotifyArgs extends NotifyArg {
-  address: string | Principal;
+  canisterId: string | Principal;
   agent: HttpAgent;
-};
+}
 
 export default async function icrcXNotify(args: IcrcXNotifyArgs) {
-  const { address, agent, token } = args;
-  const actor = ICRCXActor({ address, agent });
+  const { canisterId, agent, token } = args;
+  const actor = ICRCXActor({ canisterId, agent });
   return await actor.icrcXNotify({ token });
-};
+}

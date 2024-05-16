@@ -16,7 +16,7 @@ export async function getICRCSupportedStandards(params: ICRCSupportedStandardsPa
     const { assetAddress, agent } = params;
     const ledgerActor = getIcrcActor({
       agent,
-      assetAddress,
+      canisterId: assetAddress,
     });
     const response = await ledgerActor.icrc1_supported_standards();
     return response.map((standard) => standard.name as SupportedStandard);

@@ -35,7 +35,7 @@ export async function transferTokens(params: TransferTokensParams) {
 
   const ledgerActor = getIcrcActor({
     agent,
-    assetAddress,
+    canisterId: assetAddress,
   });
 
   await ledgerActor.icrc1_transfer({
@@ -80,7 +80,7 @@ export async function getSubAccountBalance(params: GetBalanceParams) {
 
     const ledgerActor = getIcrcActor({
       agent,
-      assetAddress,
+      canisterId: assetAddress,
     });
 
     const balance = await ledgerActor.icrc1_balance_of({
