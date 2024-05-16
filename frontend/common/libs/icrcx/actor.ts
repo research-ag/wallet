@@ -1,17 +1,16 @@
 import { Actor, HttpAgent } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import { idlFactory as icrcxFactory } from "@/candid/icrcx/candid.did";
+import { _SERVICE as icrcxService } from "@/candid/icrcx/service.did";
 
 interface ICRCXActorArgs {
   address: string | Principal;
   agent: HttpAgent;
 };
 
-export default function getICRCXActor(args: ICRCXActorArgs) {
-  const { address, agent } = args;
-  return Actor.createActor<ICRCXActorArgs>(icrcxFactory, {
-    agent,
-    canisterId: typeof address === "string" ? Principal.fromText(address) : address,
+export function ICRCXActor(args: ICRCXActorArgs) {
+  return Actor.createActor<icrcxService>(icrcxFactory, {
+    agent: args.agent,
+    canisterId: args.address
   });
 };
-
