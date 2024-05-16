@@ -9,11 +9,6 @@ interface IcrcXSupportedTokensArgs {
 
 export default async function icrcXSupportedTokens(args: IcrcXSupportedTokensArgs) {
   const { address, agent } = args;
-
-  const actor = ICRCXActor({
-    address,
-    agent,
-  });
-
+  const actor = ICRCXActor({ address, agent });
   return await actor.icrcXSupportedTokens();
 };

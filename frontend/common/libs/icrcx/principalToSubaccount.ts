@@ -10,11 +10,6 @@ interface PrincipalToSubaccountArgs {
 
 export default async function principalToSubaccount(args: PrincipalToSubaccountArgs) {
   const { principal, address, agent } = args;
-
-  const actor = ICRCXActor({
-    address,
-    agent,
-  });
-
+  const actor = ICRCXActor({ address, agent });
   return await actor.principalToSubaccount(principal);
 };
