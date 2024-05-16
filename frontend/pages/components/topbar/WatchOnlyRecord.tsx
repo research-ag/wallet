@@ -104,30 +104,32 @@ export default function WatchOnlyRecord(props: WatchOnlyRecordProps) {
   );
 
   async function onChangeSession() {
-    if (!isCurrentUser) await handlePrincipalAuthenticated(data.principal);
+    if (!isCurrentUser) {      
+      await handlePrincipalAuthenticated(data.principal);
 
-    dispatch(setSelectedAccount(undefined));
-    dispatch(setSelectedAsset(undefined));
-    dispatch(setAssets([]));
-    dispatch(setTransactions([]));
-    dispatch(clearDataContacts());
-    dispatch(setReduxAllowances([]));
-    dispatch(setAppDataRefreshing(true));
-
-    const DBAssets = await db().getAssets();
-
-    await updateAllBalances({
-      loading: true,
-      myAgent: userAgent,
-      assets: DBAssets,
-      basicSearch: false,
-    });
-
-    await transactionCacheRefresh(assets);
-    await allowanceCacheRefresh();
-    await contactCacheRefresh();
-
-    dispatch(setAppDataRefreshing(false));
+      dispatch(setSelectedAccount(undefined));
+      dispatch(setSelectedAsset(undefined));
+      dispatch(setAssets([]));
+      dispatch(setTransactions([]));
+      dispatch(clearDataContacts());
+      dispatch(setReduxAllowances([]));
+      dispatch(setAppDataRefreshing(true));
+      
+      const DBAssets = await db().getAssets();
+      
+      await updateAllBalances({
+        loading: true,
+        myAgent: userAgent,
+        assets: DBAssets,
+        basicSearch: false,
+      });
+      
+      await transactionCacheRefresh(assets);
+      await allowanceCacheRefresh();
+      await contactCacheRefresh();
+      
+      dispatch(setAppDataRefreshing(false));
+    };
   }
 }
 
