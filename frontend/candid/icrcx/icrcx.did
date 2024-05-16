@@ -1,3 +1,5 @@
+// REFERENCE: https://github.com/research-ag/icrcX/blob/main/icrcX.did
+
 type Token = principal;
 type Amount = nat;
 
