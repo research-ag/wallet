@@ -75,7 +75,6 @@ export default function TransactionsWrapper() {
       transactions: [],
       chunkNumber: 1,
     });
-
   }, [selectedAccount, selectedAsset]);
 
   useEffect(() => {

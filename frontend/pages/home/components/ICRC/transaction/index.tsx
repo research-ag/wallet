@@ -23,18 +23,14 @@ const DetailList = () => {
 
   return (
     <Fragment>
-      <div className="relative flex flex-col items-center justify-start w-full min-h-full gap-2 pt-6 bg-SecondaryColorLight dark:bg-SecondaryColor pr-9 pl-7 h-fit">
-        <ICRCSubaccountAction />
-        <TablesTab toggle={toggleTab} openTab={openTab} allowanceTabAllowed={allowanceTabAllowed} />
-
-        {openTab === TabOption.TRANSACTIONS && (
-          <TransactionsFiltering>
-            <TransactionsScroll />
-          </TransactionsFiltering>
-        )}
-
-        {openTab === TabOption.ALLOWANCES && allowanceTabAllowed && <AllowancesTable />}
-      </div>
+      <TransactionsFiltering>
+        <div className="relative flex flex-col items-center justify-start w-full min-h-full gap-2 pt-6 bg-SecondaryColorLight dark:bg-SecondaryColor pr-9 pl-7 h-fit">
+          <ICRCSubaccountAction />
+          <TablesTab toggle={toggleTab} openTab={openTab} allowanceTabAllowed={allowanceTabAllowed} />
+          {openTab === TabOption.TRANSACTIONS && <TransactionsScroll />}
+          {openTab === TabOption.ALLOWANCES && allowanceTabAllowed && <AllowancesTable />}
+        </div>
+      </TransactionsFiltering>
       <SendReceiveDrawer />
       <TransactionInspectDrawer />
     </Fragment>

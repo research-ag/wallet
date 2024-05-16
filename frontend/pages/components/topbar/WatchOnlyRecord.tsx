@@ -12,6 +12,13 @@ import { clearDataContacts } from "@redux/contacts/ContactsReducer";
 import { setTransactions } from "@redux/transaction/TransactionReducer";
 import { setReduxAllowances } from "@redux/allowance/AllowanceReducer";
 import { shortAddress } from "@common/utils/icrc";
+import { setAppDataRefreshing } from "@redux/common/CommonReducer";
+import { db } from "@/database/db";
+import { updateAllBalances } from "@redux/assets/AssetActions";
+import { transactionCacheRefresh } from "@pages/home/helpers/cache";
+import { allowanceCacheRefresh } from "@pages/allowances/helpers/cache";
+import contactCacheRefresh from "@pages/contacts/helpers/contactCacheRefresh";
+import { setAssets, setSelectedAccount, setSelectedAsset } from "@redux/assets/AssetReducer";
 
 interface WatchOnlyRecordProps {
   watchOnlyItem: EditWatchOnlyItem | null;
@@ -22,8 +29,9 @@ interface WatchOnlyRecordProps {
 
 export default function WatchOnlyRecord(props: WatchOnlyRecordProps) {
   const { data, watchOnlyItem, setWatchOnlyItem, isLast } = props;
-  const { userPrincipal } = useAppSelector((state) => state.auth);
+  const { userPrincipal, userAgent } = useAppSelector((state) => state.auth);
   const { isAppDataFreshing } = useAppSelector((state) => state.common);
+  const { assets } = useAppSelector((state) => state.asset.list);
   const dispatch = useAppDispatch();
 
   const { onEditInputChanged, onSaveEdit, onActivateDelete, onCancelEdit, onEditAlias } = useWatchOnlyMutation({
@@ -96,10 +104,30 @@ export default function WatchOnlyRecord(props: WatchOnlyRecordProps) {
   );
 
   async function onChangeSession() {
+    if (!isCurrentUser) await handlePrincipalAuthenticated(data.principal);
+
+    dispatch(setSelectedAccount(undefined));
+    dispatch(setSelectedAsset(undefined));
+    dispatch(setAssets([]));
     dispatch(setTransactions([]));
     dispatch(clearDataContacts());
     dispatch(setReduxAllowances([]));
-    if (!isCurrentUser) await handlePrincipalAuthenticated(data.principal);
+    dispatch(setAppDataRefreshing(true));
+
+    const DBAssets = await db().getAssets();
+
+    await updateAllBalances({
+      loading: true,
+      myAgent: userAgent,
+      assets: DBAssets,
+      basicSearch: false,
+    });
+
+    await transactionCacheRefresh(assets);
+    await allowanceCacheRefresh();
+    await contactCacheRefresh();
+
+    dispatch(setAppDataRefreshing(false));
   }
 }
 

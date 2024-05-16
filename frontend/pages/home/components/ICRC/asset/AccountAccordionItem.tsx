@@ -30,7 +30,9 @@ export default function AccountAccordionItem({
   const { selectedAccount, selectedAsset } = useAppSelector((state) => state.asset.helper);
   const { subAccountMutation } = useAppSelector((state) => state.asset.mutation);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
-  const isCurrentEdit = subAccountMutation?.sub_account_id === currentSubAccount.sub_account_id && currentAsset?.tokenSymbol === subAccountMutation?.symbol;
+  const isCurrentEdit =
+    subAccountMutation?.sub_account_id === currentSubAccount.sub_account_id &&
+    currentAsset?.tokenSymbol === subAccountMutation?.symbol;
 
   const isNameInvalid = !subAccountMutation
     ? true
