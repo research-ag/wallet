@@ -1,4 +1,5 @@
-import { getIcrcActor, getICRCSupportedStandards } from "@/common/libs/icrc";
+import { getICRCSupportedStandards } from "@/common/libs/icrc";
+import ICRCXActor from "@/common/libs/icrc/actor";
 import {
   GetBalanceParams,
   TransactionFeeParams,
@@ -33,7 +34,7 @@ export async function transferTokens(params: TransferTokensParams) {
   const amount = toHoleBigInt(transferAmount, Number(decimal));
   const agent = store.getState().auth.userAgent;
 
-  const ledgerActor = getIcrcActor({
+  const ledgerActor = ICRCXActor({
     agent,
     canisterId: assetAddress,
   });
@@ -78,7 +79,7 @@ export async function getSubAccountBalance(params: GetBalanceParams) {
     const sessionPrincipal = store.getState().auth.userPrincipal;
     const agent = store.getState().auth.userAgent;
 
-    const ledgerActor = getIcrcActor({
+    const ledgerActor = ICRCXActor({
       agent,
       canisterId: assetAddress,
     });

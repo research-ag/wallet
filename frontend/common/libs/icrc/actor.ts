@@ -16,7 +16,7 @@ export interface IcrcActorParams {
 const pollingStrategyFactory = () =>
   chain(conditionalDelay(once(), DELAY), backoff(0, 0), timeout(FIVE_MINUTES_IN_MSEC));
 
-export function getIcrcActor(params: IcrcActorParams): LedgerActor {
+export default function ICRCXActor(params: IcrcActorParams): LedgerActor {
   const { canisterId, agent } = params;
   return Actor.createActor<LedgerActor>(LedgerFactory, { agent, canisterId, pollingStrategyFactory });
 }
