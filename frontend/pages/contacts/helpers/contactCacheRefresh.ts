@@ -7,20 +7,21 @@ export default async function contactCacheRefresh() {
   try {
     const contacts = await db().getContacts();
 
-    const updatedContacts = [];
     if (contacts) {
-      for (const contact of contacts) {
+      const promises = contacts.map(async (contact) => {
         const updatedAsset = await retrieveAssetsWithAllowance({
           accountPrincipal: contact.principal,
           assets: contact.assets,
         });
 
-        updatedContacts.push({ ...contact, assets: updatedAsset });
-      }
-    }
+        return { ...contact, assets: updatedAsset };
+      });
 
-    store.dispatch(setReduxContacts(updatedContacts));
+      const updatedContacts = await Promise.all(promises);
+
+      store.dispatch(setReduxContacts(updatedContacts));
+    }
   } catch (error) {
     console.error(error);
   }
-}
+};

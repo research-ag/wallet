@@ -1,10 +1,12 @@
 import store from "@redux/Store";
-import { IcrcAccount, IcrcIndexCanister } from "@dfinity/ledger-icrc";
 import { AccountIdentifier, SubAccount as SubAccountNNS } from "@dfinity/ledger-icp";
 import { Principal } from "@dfinity/principal";
 import { GetAllTransactionsICPParams } from "@/@types/assets";
 import { hexToUint8Array } from "@common/utils/hexadecimal";
 import { formatckBTCTransaccion, formatIcpTransaccion } from "./mappers";
+import { Actor } from "@dfinity/agent";
+import { _SERVICE as LedgerActor } from "@candid/IcrcIndex/icrc_index";
+import { idlFactory as LedgerFactory } from "@candid/IcrcIndex/icrc_index.idl";
 
 export const getAllTransactionsICP = async (params: GetAllTransactionsICPParams) => {
   const { subaccount_index, isOGY } = params;
@@ -73,24 +75,22 @@ export const getAllTransactionsICRC1 = async (params: GetAllTransactionsICRCPara
     const myPrincipal = store.getState().auth.userPrincipal;
     const canisterPrincipal = typeof canisterId === "string" ? Principal.fromText(canisterId) : canisterId;
 
-    const { getTransactions: ICRC1_getTransactions } = IcrcIndexCanister.create({
+    const actor = Actor.createActor<LedgerActor>(LedgerFactory, {
       agent: myAgent,
       canisterId: canisterPrincipal,
     });
 
-    const ICRC1getTransactions = await ICRC1_getTransactions({
-      account: {
-        owner: myPrincipal,
-        subaccount: subaccount_index,
-      } as IcrcAccount,
+    const result = await actor.get_account_transactions({
+      account: { owner: myPrincipal, subaccount: [subaccount_index] },
       max_results: BigInt(100),
+      start: [],
     });
 
-    const transactionsInfo = ICRC1getTransactions.transactions.map(({ transaction, id }) =>
-      formatckBTCTransaccion(transaction, id, myPrincipal?.toString(), assetSymbol, canister, subNumber),
-    );
+    if (!result?.Ok?.transactions) return [];
 
-    return transactionsInfo;
+    return result?.Ok?.transactions.map(({ transaction, id }) => {
+      return formatckBTCTransaccion(transaction, id, myPrincipal?.toString(), assetSymbol, canister, subNumber);
+    });
   } catch {
     return [];
   }
