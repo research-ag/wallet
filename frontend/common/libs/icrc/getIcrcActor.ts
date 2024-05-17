@@ -13,7 +13,7 @@ const DELAY = 250;
  */
 export interface IcrcActorParams {
   /** The address of the ICRC Ledger canister. */
-  assetAddress: string;
+  assetAddress: string | Principal;
   /** The HTTP agent used for communication with the Dfinity network. */
   agent: HttpAgent;
 }
@@ -30,10 +30,9 @@ export interface IcrcActorParams {
  */
 export function getIcrcActor(params: IcrcActorParams): LedgerActor {
   const { assetAddress, agent } = params;
-  const canisterId = Principal.fromText(assetAddress);
   const ledgerActor = Actor.createActor<LedgerActor>(LedgerFactory, {
     agent,
-    canisterId,
+    canisterId: assetAddress,
     pollingStrategyFactory: () => chain(conditionalDelay(once(), DELAY), backoff(0, 0), timeout(FIVE_MINUTES_IN_MSEC)),
   });
   return ledgerActor;
