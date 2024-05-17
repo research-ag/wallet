@@ -7,18 +7,25 @@ import { hexToUint8Array } from "@common/utils/hexadecimal";
 
 async function fetchICPTransactions(asset: Asset) {
   const txTransactions = [];
+  const promises = [];
 
   for (const subAccount of asset.subAccounts) {
-    const transactions = await getAllTransactionsICP({
+    const params = {
       subaccount_index: subAccount.sub_account_id,
       isOGY: asset.tokenSymbol === AssetSymbolEnum.Enum.OGY,
-    });
+    };
 
+    promises.push(getAllTransactionsICP(params));
+  }
+
+  const transactions = await Promise.all(promises);
+
+  for (let i = 0; i < transactions.length; i++) {
     txTransactions.push({
-      tx: transactions,
+      tx: transactions[i],
       symbol: asset.symbol,
       tokenSymbol: asset.tokenSymbol,
-      subaccount: subAccount.sub_account_id,
+      subaccount: asset.subAccounts[i].sub_account_id,
     });
   }
 
@@ -27,21 +34,28 @@ async function fetchICPTransactions(asset: Asset) {
 
 async function fetchICRC1Transactions(asset: Asset, selectedToken: Asset) {
   const txTransactions = [];
+  const promises = [];
 
   for (const subAccount of asset.subAccounts) {
-    const transactions = await getAllTransactionsICRC1({
+    const params = {
       canisterId: selectedToken.index || "",
       subaccount_index: hexToUint8Array(subAccount.sub_account_id || "0x0"),
       assetSymbol: asset.tokenSymbol,
       canister: selectedToken.address,
       subNumber: subAccount.sub_account_id,
-    });
+    };
 
+    promises.push(getAllTransactionsICRC1(params));
+  }
+
+  const transactions = await Promise.all(promises);
+
+  for (let i = 0; i < transactions.length; i++) {
     txTransactions.push({
-      tx: transactions,
+      tx: transactions[i],
       symbol: asset.symbol,
       tokenSymbol: asset.tokenSymbol,
-      subaccount: subAccount.sub_account_id,
+      subaccount: asset.subAccounts[i].sub_account_id,
     });
   }
 

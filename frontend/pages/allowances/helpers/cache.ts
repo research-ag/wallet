@@ -9,7 +9,7 @@ export async function allowanceCacheRefresh() {
   const updatedAllowances: TAllowance[] = [];
 
   if (allowances?.length) {
-    for (const allowance of allowances) {
+    const promises = allowances.map(async (allowance) => {
       try {
         const spenderPrincipal = allowance?.spender;
         const spenderSubaccount = allowance?.subAccountId;
@@ -29,16 +29,23 @@ export async function allowanceCacheRefresh() {
             assetDecimal,
           });
 
-          updatedAllowances.push({
+          return {
             ...allowance,
             amount: response?.allowance ? response?.allowance : "0",
             expiration: response?.expires_at ? response?.expires_at : "",
-          });
+          };
         }
+
+        return null;
       } catch (error) {
         console.log(error);
+        return null;
       }
-    }
+    });
+
+    const updatedAllowancesData = await Promise.all(promises);
+
+    updatedAllowances.push(...updatedAllowancesData.filter((allowance) => allowance !== null));
   }
 
   store.dispatch(setReduxAllowances(updatedAllowances));
