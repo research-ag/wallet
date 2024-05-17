@@ -36,10 +36,10 @@ export async function allowanceCacheRefresh() {
           };
         }
 
-        return null;
+        return allowance;
       } catch (error) {
         console.log(error);
-        return null;
+        return allowance;
       }
     });
 
