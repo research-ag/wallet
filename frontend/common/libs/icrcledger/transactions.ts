@@ -1,5 +1,5 @@
-import { getICRCSupportedStandards } from "@/common/libs/icrc";
-import ICRCXActor from "@/common/libs/icrc/actor";
+import { getICRCSupportedStandards } from "@/common/libs/icrcledger";
+import ICRCXActor from "@/common/libs/icrcledger/actor";
 import {
   GetBalanceParams,
   TransactionFeeParams,

@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 
 import { AllowanceValidationErrorsEnum, TAllowance } from "@/@types/allowance";
-import { submitAllowanceApproval, createApproveAllowanceParams, getSubAccountBalance } from "@/common/libs/icrc";
+import { submitAllowanceApproval, createApproveAllowanceParams, getSubAccountBalance } from "@/common/libs/icrcledger";
 import useAllowanceDrawer from "./useAllowanceDrawer";
 // eslint-disable-next-line import/named
 import { throttle } from "lodash";

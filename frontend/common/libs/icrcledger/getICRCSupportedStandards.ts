@@ -2,7 +2,7 @@ import { SupportedStandard } from "@/@types/icrc";
 import { HttpAgent } from "@dfinity/agent";
 import { extend } from "dayjs";
 import utc from "dayjs/plugin/utc";
-import ICRCXActor from "@/common/libs/icrc/actor";
+import ICRCXActor from "@/common/libs/icrcledger/actor";
 extend(utc);
 //
 

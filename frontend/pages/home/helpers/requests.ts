@@ -4,9 +4,7 @@ import { Principal } from "@dfinity/principal";
 import { GetAllTransactionsICPParams } from "@/@types/assets";
 import { hexToUint8Array } from "@common/utils/hexadecimal";
 import { formatckBTCTransaccion, formatIcpTransaccion } from "./mappers";
-import { Actor } from "@dfinity/agent";
-import { _SERVICE as LedgerActor } from "@candid/IcrcIndex/icrc_index";
-import { idlFactory as LedgerFactory } from "@candid/IcrcIndex/icrc_index.idl";
+import getAccountTransactions from "@common/libs/icrcindex/getAccountTransactions";
 
 export const getAllTransactionsICP = async (params: GetAllTransactionsICPParams) => {
   const { subaccount_index, isOGY } = params;
@@ -75,15 +73,12 @@ export const getAllTransactionsICRC1 = async (params: GetAllTransactionsICRCPara
     const myPrincipal = store.getState().auth.userPrincipal;
     const canisterPrincipal = typeof canisterId === "string" ? Principal.fromText(canisterId) : canisterId;
 
-    const actor = Actor.createActor<LedgerActor>(LedgerFactory, {
-      agent: myAgent,
-      canisterId: canisterPrincipal,
-    });
-
-    const result = await actor.get_account_transactions({
+    const result = await getAccountTransactions({
       account: { owner: myPrincipal, subaccount: [subaccount_index] },
       max_results: BigInt(100),
       start: [],
+      canisterId: canisterPrincipal,
+      agent: myAgent,
     });
 
     if (!result?.Ok?.transactions) return [];

@@ -5,7 +5,7 @@ import { setTokenMarket, setICPSubaccounts, setAssets } from "./AssetReducer";
 import { AccountIdentifier, SubAccount as SubAccountNNS } from "@dfinity/ledger-icp";
 import { Asset, ICPSubAccount } from "@redux/models/AccountModels";
 import { UpdateAllBalances } from "@/@types/assets";
-import { getICRCSupportedStandards } from "@/common/libs/icrc";
+import { getICRCSupportedStandards } from "@/common/libs/icrcledger";
 import { HttpAgent } from "@dfinity/agent";
 import { getETHRate, getTokensFromMarket } from "@/common/utils/market";
 import { refreshAssetBalances } from "@pages/home/helpers/assets";

@@ -1,4 +1,4 @@
-import { submitAllowanceApproval, createApproveAllowanceParams, getSubAccountBalance } from "@/common/libs/icrc";
+import { submitAllowanceApproval, createApproveAllowanceParams, getSubAccountBalance } from "@/common/libs/icrcledger";
 import { useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { updateSubAccountBalance } from "@redux/assets/AssetReducer";

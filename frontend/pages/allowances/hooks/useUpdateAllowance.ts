@@ -1,5 +1,5 @@
 import { AllowanceValidationErrorsEnum, TAllowance } from "@/@types/allowance";
-import { submitAllowanceApproval, createApproveAllowanceParams, getSubAccountBalance } from "@/common/libs/icrc";
+import { submitAllowanceApproval, createApproveAllowanceParams, getSubAccountBalance } from "@/common/libs/icrcledger";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { useMutation } from "@tanstack/react-query";
 import { useCallback, useState } from "react";

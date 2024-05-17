@@ -1,5 +1,5 @@
 import { TransactionValidationErrorsEnum } from "@/@types/transactions";
-import { getSubAccountBalance } from "@/common/libs/icrc";
+import { getSubAccountBalance } from "@/common/libs/icrcledger";
 import useSend from "@pages/home/hooks/useSend";
 import { useAppSelector } from "@redux/Store";
 import { removeErrorAction, setAmountAction, setErrorAction } from "@redux/transaction/TransactionActions";

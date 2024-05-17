@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 import { db } from "@/database/db";
 import { isHexadecimalValid } from "@pages/home/helpers/checkers";
 import { toHoleBigInt, validateAmount } from "@common/utils/amount";
-import { getTransactionFeeFromLedger } from "@common/libs/icrc";
+import { getTransactionFeeFromLedger } from "@common/libs/icrcledger";
 
 export async function getDuplicatedAllowance(allowance: TAllowance): Promise<TAllowance | undefined> {
   return (await db().getAllowance(db().generateAllowancePrimaryKey(allowance))) || undefined;

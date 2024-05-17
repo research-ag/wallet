@@ -12,7 +12,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { Principal } from "@dfinity/principal";
 import { LoadingLoader } from "@components/loader";
 import { AccountHook } from "@pages/hooks/accountHook";
-import { getAssetDetails } from "@/common/libs/icrc";
+import { getAssetDetails } from "@/common/libs/icrcledger";
 import { db } from "@/database/db";
 import { Contact } from "@redux/models/ContactsModels";
 import { getAssetIcon } from "@/common/utils/icons";

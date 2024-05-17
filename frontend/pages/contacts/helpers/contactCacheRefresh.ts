@@ -1,4 +1,4 @@
-import { retrieveAssetsWithAllowance } from "@/common/libs/icrc/";
+import { retrieveAssetsWithAllowance } from "@/common/libs/icrcledger/";
 import { db } from "@/database/db";
 import store from "@redux/Store";
 import { setReduxContacts } from "@redux/contacts/ContactsReducer";
@@ -24,4 +24,4 @@ export default async function contactCacheRefresh() {
   } catch (error) {
     console.error(error);
   }
-};
+}

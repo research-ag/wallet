@@ -16,7 +16,7 @@ import { clsx } from "clsx";
 import { validatePrincipal } from "@/common/utils/definityIdentity";
 import { SupportedStandardEnum } from "@/@types/icrc";
 import { db } from "@/database/db";
-import { retrieveAssetsWithAllowance, retrieveSubAccountsWithAllowance } from "@/common/libs/icrc/";
+import { retrieveAssetsWithAllowance, retrieveSubAccountsWithAllowance } from "@/common/libs/icrcledger/";
 import { asciiHex } from "@pages/contacts/constants/asciiHex";
 import { isHexadecimalValid, validateSubaccounts } from "@pages/home/helpers/checkers";
 import { getAccountIdentifier } from "@common/utils/icrc";
