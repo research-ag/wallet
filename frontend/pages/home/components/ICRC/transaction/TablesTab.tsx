@@ -63,7 +63,7 @@ export default function TablesTab({ toggle, allowanceTabAllowed, openTab }: Tabl
                   : "border-b border-SelectRowColor"
               }`}
             >
-              {t("allowance")} ({allowancesCount})
+              {t("allowance.allowances")} ({allowancesCount})
             </p>
           </CustomButton>
         )}

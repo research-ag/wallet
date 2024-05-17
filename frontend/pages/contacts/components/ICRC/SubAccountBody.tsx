@@ -143,28 +143,10 @@ export default function SubAccountBody(props: SubAccountBodyProps) {
               }`}
             >
               <div className="relative flex flex-row items-center justify-start w-full h-10 gap-2 px-4">
-                {sa.subaccount_index === selSubaccIdx ? (
-                  <div className="relative flex flex-row items-center justify-start w-full gap-2">
-                    <CustomInput
-                      intent={"primary"}
-                      border={subaccEditedErr.subaccount_index ? "error" : "selected"}
-                      sizeComp={"xLarge"}
-                      sizeInput="small"
-                      inputClass="text-center"
-                      value={fromPrincSub ? princ : subaccEdited.subaccount_index}
-                      onChange={onSubAccountChange}
-                      onKeyDown={onKeyDownIndex}
-                    />
-                    <CustomButton size={"xSmall"} onClick={onFromPrincChange}>
-                      <p>{fromPrincSub ? "Principal" : "Hex"}</p>
-                    </CustomButton>
-                  </div>
-                ) : (
-                  <div className="flex flex-row items-center justify-center w-full gap-2 px-2 opacity-70">
-                    <p className="text-nowrap">{shortAddress(`0x${sa.subaccount_index || "0"}`, 7, 5)}</p>
-                    <CustomCopy size={"xSmall"} className="p-0" copyText={sa.subaccount_index || "0"} />
-                  </div>
-                )}
+                <div className="flex flex-row items-center justify-center w-full gap-2 px-2 opacity-70">
+                  <p className="text-nowrap">{shortAddress(`0x${sa.subaccount_index || "0"}`, 7, 5)}</p>
+                  <CustomCopy size={"xSmall"} className="p-0" copyText={sa.subaccount_index || "0"} />
+                </div>
               </div>
             </td>
             <td

@@ -104,7 +104,7 @@ export default function WatchOnlyRecord(props: WatchOnlyRecordProps) {
   );
 
   async function onChangeSession() {
-    if (!isCurrentUser) {      
+    if (!isCurrentUser) {
       await handlePrincipalAuthenticated(data.principal);
 
       dispatch(setSelectedAccount(undefined));
@@ -114,22 +114,22 @@ export default function WatchOnlyRecord(props: WatchOnlyRecordProps) {
       dispatch(clearDataContacts());
       dispatch(setReduxAllowances([]));
       dispatch(setAppDataRefreshing(true));
-      
+
       const DBAssets = await db().getAssets();
-      
+
       await updateAllBalances({
         loading: true,
         myAgent: userAgent,
         assets: DBAssets,
         basicSearch: false,
       });
-      
+
       await transactionCacheRefresh(assets);
       await allowanceCacheRefresh();
       await contactCacheRefresh();
-      
+
       dispatch(setAppDataRefreshing(false));
-    };
+    }
   }
 }
 
