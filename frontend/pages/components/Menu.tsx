@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
 import { CustomButton } from "@components/button";
 import history from "@pages/history";
-import { CONTACTS, HOME } from "@pages/paths";
+import { CONTACTS, HOME, SERVICES } from "@pages/paths";
 import { useAppSelector } from "@redux/Store";
 
 const Menu = () => {
@@ -21,14 +21,19 @@ const Menu = () => {
     {
       name: "Allowances",
       path: "/allowances",
-      label: `${allowances?.length !== 1 ? t("allowance.allowances") : t("allowance.allowances")} (${
-        allowances?.length
-      })`,
+      label: `${allowances?.length !== 1 ? t("allowance.allowances") : t("allowance.allowances")} (${allowances?.length
+        })`,
     },
     {
       name: "Contacts",
       path: CONTACTS,
       label: `${assets?.length !== 1 ? t("contacts") : t("contact")} (${contacts?.length})`,
+    },
+    {
+      name: "Services",
+      path: SERVICES,
+      // TODO: get from the state
+      label: `${assets?.length !== 1 ? t("services") : t("services")} (${contacts?.length})`,
     },
   ];
 
@@ -47,11 +52,10 @@ const Menu = () => {
             }}
           >
             <p
-              className={`!font-normal  mr-2 ${
-                window.location.pathname !== menu.path
-                  ? " text-PrimaryTextColorLight/60 dark:text-PrimaryTextColor/60"
-                  : "border-b border-SelectRowColor"
-              }`}
+              className={`!font-normal  mr-2 ${window.location.pathname !== menu.path
+                ? " text-PrimaryTextColorLight/60 dark:text-PrimaryTextColor/60"
+                : "border-b border-SelectRowColor"
+                }`}
             >
               {menu.label}
             </p>

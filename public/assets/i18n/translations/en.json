@@ -171,6 +171,8 @@
   "watchOnlyMode.title": "Watch-Only Mode",
   "watchOnlyMode.delete.message": "Are you sure you want to delete this record?",
 
+  "services": "Services",
+
   "error.asset.empty": "Asset is empty",
   "error.sender.empty": "From is empty",
   "error.receiver.empty": "To is empty",
