@@ -119,6 +119,7 @@ export default function AccountAccordionItem({
   );
 
   function onSelectSubAccount() {
+    if (isCurrentEdit) return;
     dispatch(setSubAccountMutation(undefined));
     if (selectedAsset?.address !== currentAsset.address) dispatch(setSelectedAsset(currentAsset));
     if (selectedAccount?.sub_account_id !== currentSubAccount.sub_account_id)

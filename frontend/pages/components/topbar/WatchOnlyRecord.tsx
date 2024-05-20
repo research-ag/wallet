@@ -118,10 +118,10 @@ export default function WatchOnlyRecord(props: WatchOnlyRecordProps) {
       const DBAssets = await db().getAssets();
 
       await updateAllBalances({
-        loading: true,
         myAgent: userAgent,
         assets: DBAssets,
-        basicSearch: false,
+        basicSearch: true,
+        loading: true,
       });
 
       await transactionCacheRefresh(assets);
