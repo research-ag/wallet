@@ -1,9 +1,12 @@
 import Menu from "@pages/components/Menu";
-import ServicesFilters from "./components/ServicesFilters";
-import ServicesList from "./components/ServicesList";
+import ServicesFilters from "@/pages/services/components/ServicesFilters";
+import ServicesList from "@/pages/services//components/ServicesList";
 import { useCallback, useState } from "react";
 
 export default function Services() {
+  console.log("Services");
+  
+  const [assetFilter, setAssetFilter] = useState<string[]>([]);
   const [serviceSearchkey, setServiceSearchKey] = useState("");
 
   const onServiceKeyChange = useCallback((serviceSearchkey: string) => {
@@ -15,9 +18,13 @@ export default function Services() {
       <Menu />
 
       <div className="flex flex-col items-start justify-start w-full h-full">
-        <ServicesFilters onServiceKeyChange={onServiceKeyChange} />
-        <ServicesList serviceSearchkey={serviceSearchkey} />
+        <ServicesFilters onServiceKeyChange={onServiceKeyChange} assetFilter={assetFilter} onAssetFilterChange={onAssetFilterChange} />
+        <ServicesList serviceSearchkey={serviceSearchkey} assetFilter={assetFilter} />
       </div>
     </div>
   );
+
+  function onAssetFilterChange(assetFilter: string[]) {
+    setAssetFilter(assetFilter);
+  };
 }

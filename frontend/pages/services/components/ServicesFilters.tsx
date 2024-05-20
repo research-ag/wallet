@@ -1,15 +1,35 @@
+import SearchIcon from "@assets/svg/files/icon-search.svg";
+//
 import { memo } from "react";
 import AddServiceModal from "./AddServiceModal";
+import AssetFilter from "./AssetFilter";
+import { CustomInput } from "@components/input";
 
 interface ServicesFiltersProps {
   onServiceKeyChange: (key: string) => void;
+  assetFilter: string[];
+  onAssetFilterChange: (assetFilter: string[]) => void;
 }
 
-function ServicesFilters({ onServiceKeyChange }: ServicesFiltersProps) {
+function ServicesFilters(props: ServicesFiltersProps) {
+  console.log("ServicesFilters");
+  const { onServiceKeyChange, assetFilter, onAssetFilterChange } = props;
   return (
-    <div>
-      <p>ServicesFilters</p>
-      <input type="text" placeholder="Search Services" onChange={(e) => onServiceKeyChange(e.target.value)} />
+    <div className="flex items-end justify-start w-full gap-3">
+      <AssetFilter
+        onAssetFilterChange={onAssetFilterChange}
+        assetFilter={assetFilter}
+      />
+
+      <CustomInput
+        compOutClass="!w-[40%]"
+        prefix={<img src={SearchIcon} className="mx-2" alt="search-icon" />}
+        intent={"secondary"}
+        sizeInput={"medium"}
+        placeholder="Search Service"
+        onChange={(e) => onServiceKeyChange(e.target.value)}
+      />
+
       <AddServiceModal />
     </div>
   );
