@@ -8,7 +8,7 @@ import useAllowances from "./hooks/useAllowances";
 export default function Allowances() {
   const { allowances, handleSortChange, setSearchKey, assetFilters, setAssetFilters } = useAllowances();
   return (
-    <div className="flex flex-col w-full pt-[1rem] px-[2rem]">
+    <div className="flex flex-col w-full pt-[1rem] px-[2.25rem]">
       <div className="flex items-center justify-between">
         <Menu />
         <AllowanceFilter

@@ -6,11 +6,10 @@ import AddContact from "@pages/contacts/components/ICRC/AddContact";
 import ContactList from "@pages/contacts/components/contactList";
 
 const Contacts = () => {
-  const { assetOpen, addOpen, searchKey, assetFilter, setAssetOpen, setAddOpen, setSearchKey, setAssetFilter } =
-    useContactFilters();
+  const { assetOpen, addOpen, searchKey, assetFilter, setAssetOpen, setAddOpen, setSearchKey, setAssetFilter } = useContactFilters();
 
   return (
-    <div className="flex flex-col w-full pt-[1rem] px-[2rem]">
+    <div className="flex flex-col w-full pt-[1rem] px-[2.25rem]">
       <Menu />
       <div className="flex flex-col items-start justify-start w-full">
         <ContactFilters
