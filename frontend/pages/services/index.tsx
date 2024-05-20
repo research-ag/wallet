@@ -11,10 +11,10 @@ export default function Services() {
   }, []);
 
   return (
-    <div className="flex flex-col w-full pt-[1rem] bg-red-900 px-[2rem]">
+    <div className="flex flex-col w-full pt-[1rem] px-[2rem]">
       <Menu />
 
-      <div className="flex flex-col items-start justify-start w-full h-full bg-blue-500">
+      <div className="flex flex-col items-start justify-start w-full h-full">
         <ServicesFilters onServiceKeyChange={onServiceKeyChange} />
         <ServicesList serviceSearchkey={serviceSearchkey} />
       </div>
