@@ -1,7 +1,7 @@
 import store from "@redux/Store";
 import { SnsToken } from "@redux/models/TokenModels";
 import { IcrcTokenMetadataResponse } from "@dfinity/ledger-icrc";
-import { setTokenMarket, setICPSubaccounts, setAssets } from "./AssetReducer";
+import { setTokenMarket, setICPSubaccounts, setAssets } from "@/redux/assets/AssetReducer";
 import { AccountIdentifier, SubAccount as SubAccountNNS } from "@dfinity/ledger-icp";
 import { Asset, ICPSubAccount } from "@redux/models/AccountModels";
 import { UpdateAllBalances } from "@/@types/assets";

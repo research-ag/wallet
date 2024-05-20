@@ -25,7 +25,7 @@ import {
   setEndTime,
   setFullErrors,
   setTransactionDrawer,
-} from "./TransactionReducer";
+} from "@/redux/transaction/TransactionReducer";
 
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import {
