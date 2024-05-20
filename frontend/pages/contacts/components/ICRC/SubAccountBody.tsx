@@ -20,7 +20,6 @@ import {
   SubAccountContact,
   SubAccountContactErr,
 } from "@redux/models/ContactsModels";
-import { getAllowanceDetails } from "@/common/libs/icrcledger/";
 import { DeleteContactTypeEnum } from "@/common/const";
 import useContactTable from "../../hooks/useContactTable";
 import { LoadingLoader } from "@components/loader";
@@ -33,6 +32,7 @@ import { getNormalizedHex, isHexadecimalValid } from "@pages/home/helpers/checke
 import { hexToUint8Array } from "@common/utils/hexadecimal";
 import { getInitialFromName, removeLeadingZeros } from "@common/utils/strings";
 import { shortAddress } from "@common/utils/icrc";
+import { getAllowanceDetails } from "@common/libs/icrcledger/icrcAllowance";
 
 interface SubAccountBodyProps {
   asst: AssetContact;

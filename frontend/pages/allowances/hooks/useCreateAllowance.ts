@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 
 import { AllowanceValidationErrorsEnum, TAllowance } from "@/@types/allowance";
-import { submitAllowanceApproval, createApproveAllowanceParams, getSubAccountBalance } from "@/common/libs/icrcledger";
+import { submitAllowanceApproval, createApproveAllowanceParams } from "@/common/libs/icrcledger/icrcAllowance";
 import useAllowanceDrawer from "./useAllowanceDrawer";
 // eslint-disable-next-line import/named
 import { throttle } from "lodash";
@@ -22,6 +22,8 @@ import { getAllowanceAsset } from "../helpers/mappers";
 import { refreshAllowance } from "../helpers/refresh";
 import { db } from "@/database/db";
 import { removeZeroesFromAmount, toFullDecimal, toHoleBigInt } from "@common/utils/amount";
+import ICRC1BalanceOf from "@common/libs/icrcledger/ICRC1BalanceOf";
+import { hexToUint8Array } from "@common/utils/hexadecimal";
 
 export default function useCreateAllowance() {
   const dispatch = useAppDispatch();
@@ -29,6 +31,7 @@ export default function useCreateAllowance() {
   const { onCloseCreateAllowanceDrawer } = useAllowanceDrawer();
   const { assets } = useAppSelector((state) => state.asset.list);
   const { selectedAsset, selectedAccount } = useAppSelector((state) => state.asset.helper);
+  const { userAgent, userPrincipal } = useAppSelector((state) => state.auth);
 
   const initial = useMemo(() => {
     const supported = selectedAsset?.supportedStandards?.includes(SupportedStandardEnum.Values["ICRC-2"]);
@@ -97,11 +100,14 @@ export default function useCreateAllowance() {
 
   const onSuccess = async () => {
     setIsLoadingAllowanceAction(false);
-    const refreshParams = {
-      subAccount: allowance.subAccountId,
-      assetAddress: allowance.asset.address,
-    };
-    const amount = await getSubAccountBalance(refreshParams);
+
+    const amount = await ICRC1BalanceOf({
+      canisterId: allowance.asset.address,
+      agent: userAgent,
+      owner: userPrincipal,
+      subaccount: [hexToUint8Array(allowance.subAccountId)],
+    });
+
     const balance = amount ? amount.toString() : "0";
     dispatch(updateSubAccountBalance(allowance.asset.tokenSymbol, allowance.subAccountId, balance));
     onCloseCreateAllowanceDrawer();

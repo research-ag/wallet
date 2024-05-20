@@ -1,10 +1,12 @@
 import { TransactionValidationErrorsEnum } from "@/@types/transactions";
-import { getSubAccountBalance } from "@/common/libs/icrcledger";
 import useSend from "@pages/home/hooks/useSend";
 import { useAppSelector } from "@redux/Store";
 import { removeErrorAction, setAmountAction, setErrorAction } from "@redux/transaction/TransactionActions";
 import { ChangeEvent, useState } from "react";
 import { toFullDecimal, toHoleBigInt, validateAmount } from "@common/utils/amount";
+import ICRC1BalanceOf from "@common/libs/icrcledger/ICRC1BalanceOf";
+import { Principal } from "@dfinity/principal";
+import { hexToUint8Array } from "@common/utils/hexadecimal";
 
 interface MaxAmount {
   transactionAmount: string;
@@ -29,6 +31,7 @@ const maxAmountInitialState: MaxAmount = {
 export default function useTransactionAmount() {
   const [maxAmount, setMaxAmount] = useState<MaxAmount>(maxAmountInitialState);
   const { sender } = useAppSelector((state) => state.transaction);
+  const { userAgent } = useAppSelector((state) => state.auth);
   const { transactionFee, getSenderMaxAmount, isSenderAllowance, senderPrincipal, senderSubAccount } = useSend();
 
   function onChangeAmount(e: ChangeEvent<HTMLInputElement>) {
@@ -54,14 +57,14 @@ export default function useTransactionAmount() {
       let transactionAmountWithoutFee = "";
 
       if (isSenderAllowance()) {
-        const params = {
-          principal: senderPrincipal,
-          subAccount: senderSubAccount,
-          assetAddress: sender?.asset?.address,
-        };
-
         // INFO: get the balance of the person's sub account who has given the allowance
-        const allowanceBigintBalance = await getSubAccountBalance(params);
+        const allowanceBigintBalance = await ICRC1BalanceOf({
+          canisterId: sender?.asset?.address,
+          agent: userAgent,
+          owner: Principal.fromText(senderPrincipal),
+          subaccount: [hexToUint8Array(senderSubAccount)],
+        });
+
         const allowanceSubaccountBalance = toFullDecimal(allowanceBigintBalance, Number(sender?.asset?.decimal));
 
         // INFO: get the allowance amount guaranteed

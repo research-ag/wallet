@@ -18,7 +18,7 @@ import { db } from "@/database/db";
 import { LoadingLoader } from "@components/loader";
 import { refreshAllowance } from "@pages/allowances/helpers/refresh";
 import { getDuplicatedAllowance } from "@pages/allowances/helpers/validators";
-import { getAllowanceDetails } from "@/common/libs/icrcledger";
+import { getAllowanceDetails } from "@/common/libs/icrcledger/icrcAllowance";
 import { isHexadecimalValid } from "@pages/home/helpers/checkers";
 
 export default function CreateForm() {

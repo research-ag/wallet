@@ -1,5 +1,5 @@
-import { retrieveAssetsWithAllowance } from "@/common/libs/icrcledger/";
 import { db } from "@/database/db";
+import { retrieveAssetsWithAllowance } from "@common/libs/icrcledger/icrcAllowance";
 import store from "@redux/Store";
 import { setReduxContacts } from "@redux/contacts/ContactsReducer";
 

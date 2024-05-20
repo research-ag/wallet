@@ -3,13 +3,14 @@ import { useEffect, useMemo, useState } from "react";
 import { TransactionSenderOptionEnum } from "@/@types/transactions";
 import { validatePrincipal } from "@/common/utils/definityIdentity";
 import { Asset } from "@redux/models/AccountModels";
-import { getAllowanceDetails, getTransactionFeeFromLedger } from "@common/libs/icrcledger";
 import { isHexadecimalValid } from "../helpers/checkers";
 import { toFullDecimal } from "@common/utils/amount";
+import ICRC1Fee from "@common/libs/icrcledger/ICRC1Fee";
+import { getAllowanceDetails } from "@common/libs/icrcledger/icrcAllowance";
 
 export default function useSend() {
   const [transactionFee, setTransactionFee] = useState<string>("0");
-  const { userPrincipal } = useAppSelector((state) => state.auth);
+  const { userPrincipal, userAgent } = useAppSelector((state) => state.auth);
   const { contacts } = useAppSelector((state) => state.contacts);
   const { assets } = useAppSelector((state) => state.asset.list);
   const { sender, receiver, amount, sendingStatus, errors, initTime, endTime } = useAppSelector(
@@ -47,12 +48,12 @@ export default function useSend() {
     const decimalPlaces = updateAsset?.decimal ?? 0;
 
     if (transactionFee == "0" && updateAsset?.address && decimalPlaces) {
-      transactionFee =
-        (await getTransactionFeeFromLedger({
-          assetAddress: updateAsset.address,
-          assetDecimal: decimalPlaces,
-        })) || "0";
+      const fee = await ICRC1Fee({
+        canisterId: updateAsset.address,
+        agent: userAgent,
+      });
 
+      transactionFee = toFullDecimal(fee, Number(decimalPlaces));
       return transactionFee;
     }
 

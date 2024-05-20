@@ -1,5 +1,5 @@
 import { TAllowance } from "@/@types/allowance";
-import { getAllowanceDetails } from "@/common/libs/icrcledger/";
+import { getAllowanceDetails } from "@/common/libs/icrcledger/icrcAllowance";
 import { db } from "@/database/db";
 import store from "@redux/Store";
 import { setReduxAllowances } from "@redux/allowance/AllowanceReducer";

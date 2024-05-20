@@ -2,22 +2,21 @@ import { SupportedStandard } from "@/@types/icrc";
 import { HttpAgent } from "@dfinity/agent";
 import { extend } from "dayjs";
 import utc from "dayjs/plugin/utc";
-import ICRCXActor from "@/common/libs/icrcledger/actor";
+import { Principal } from "@dfinity/principal";
+import ICRCLedgerActor from "./actor";
 extend(utc);
 //
 
 interface ICRCSupportedStandardsParams {
-  assetAddress: string;
+  canisterId: string | Principal;
   agent: HttpAgent;
 }
 
-export async function getICRCSupportedStandards(params: ICRCSupportedStandardsParams): Promise<SupportedStandard[]> {
+export default async function ICRC1SupportedStandards(
+  args: ICRCSupportedStandardsParams,
+): Promise<SupportedStandard[]> {
   try {
-    const { assetAddress, agent } = params;
-    const ledgerActor = ICRCXActor({
-      agent,
-      canisterId: assetAddress,
-    });
+    const ledgerActor = ICRCLedgerActor(args);
     const response = await ledgerActor.icrc1_supported_standards();
     return response.map((standard) => standard.name as SupportedStandard);
   } catch (error) {

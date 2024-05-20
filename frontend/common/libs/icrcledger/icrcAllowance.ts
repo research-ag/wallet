@@ -4,7 +4,7 @@ import {
   HasSubAccountsParams,
   SupportedStandardEnum,
 } from "@/@types/icrc";
-import { Actor } from "@dfinity/agent";
+import { Actor, HttpAgent } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import store from "@redux/Store";
 import { AssetContact } from "@redux/models/ContactsModels";
@@ -12,11 +12,42 @@ import { AssetContact } from "@redux/models/ContactsModels";
 import { _SERVICE as LedgerActor } from "@candid/icrcLedger/icrcLedgerService";
 import { idlFactory as LedgerFactory } from "@candid/icrcLedger/icrcLedgerCandid.did";
 import dayjs from "dayjs";
-import { ApproveParams } from "@dfinity/ledger-icrc";
-import { getCanister } from "./getIcrcCanister";
+import { ApproveParams, IcrcLedgerCanister } from "@dfinity/ledger-icrc";
 import { TAllowance } from "@/@types/allowance";
 import { hexToUint8Array } from "@common/utils/hexadecimal";
 import { toFullDecimal, toHoleBigInt } from "@common/utils/amount";
+
+interface CanisterOptions {
+  assetAddress: string | Principal;
+  agent?: HttpAgent;
+}
+
+function getCanister(options: CanisterOptions): IcrcLedgerCanister {
+  const { assetAddress, agent = store.getState().auth.userAgent } = options;
+
+  const canisterId = typeof assetAddress === "string" ? Principal.fromText(assetAddress) : assetAddress;
+
+  return IcrcLedgerCanister.create({
+    agent,
+    canisterId,
+  });
+}
+
+export async function submitAllowanceApproval(
+  params: ApproveParams,
+  assetAddress: string,
+): Promise<bigint | undefined> {
+  try {
+    const canister = getCanister({ assetAddress });
+    const result = await canister.approve(params);
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+// TODO: move to allowance helper ---------------
 
 function calculateExpirationAsBigInt(
   expirationString: string | undefined,
@@ -53,6 +84,7 @@ export function createApproveAllowanceParams(allowance: TAllowance): ApprovePara
   const subAccountUint8Array = new Uint8Array(hexToUint8Array(allowanceSubAccountId));
   const amount: bigint = toHoleBigInt(allowanceAmount, Number(allowanceAssetDecimal));
   const expiration = calculateExpirationAsBigInt(allowance.expiration);
+
   return {
     spender: {
       owner,
@@ -62,20 +94,6 @@ export function createApproveAllowanceParams(allowance: TAllowance): ApprovePara
     amount: amount,
     expires_at: expiration,
   };
-}
-
-export async function submitAllowanceApproval(
-  params: ApproveParams,
-  assetAddress: string,
-): Promise<bigint | undefined> {
-  try {
-    const canister = getCanister({ assetAddress });
-    const result = await canister.approve(params);
-    return result;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
 }
 
 export async function getAllowanceDetails(params: CheckAllowanceParams) {
@@ -166,3 +184,5 @@ export async function retrieveAssetsWithAllowance(params: HasAssetAllowanceParam
 
   return [...assetsWithAllowance, ...noSupportedAssets];
 }
+
+// ------------------------------------------------------------------------------------------------------------

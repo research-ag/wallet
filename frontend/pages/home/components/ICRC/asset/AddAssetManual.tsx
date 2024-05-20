@@ -12,7 +12,6 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { Principal } from "@dfinity/principal";
 import { LoadingLoader } from "@components/loader";
 import { AccountHook } from "@pages/hooks/accountHook";
-import { getAssetDetails } from "@/common/libs/icrcledger";
 import { db } from "@/database/db";
 import { Contact } from "@redux/models/ContactsModels";
 import { getAssetIcon } from "@/common/utils/icons";
@@ -28,6 +27,7 @@ import {
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import useAssetMutate, { assetMutateInitialState } from "@pages/home/hooks/useAssetMutate";
 import { toFullDecimal } from "@common/utils/amount";
+import getAssetDetails from "@pages/home/helpers/getAssetDetails";
 
 const AddAssetManual = () => {
   const { assetAction, assetMutated } = useAppSelector((state) => state.asset.mutation);

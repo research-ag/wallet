@@ -18,10 +18,14 @@ import {
 import { useTranslation } from "react-i18next";
 import { TransactionValidationErrorsEnum } from "@/@types/transactions";
 import { SendingStatusEnum } from "@/common/const";
-import { getSubAccountBalance, transferTokens, transferTokensFromAllowance } from "@/common/libs/icrcledger";
 import { LoadingLoader } from "@components/loader";
 import reloadBallance from "@pages/helpers/reloadBalance";
 import { toHoleBigInt, validateAmount } from "@common/utils/amount";
+import ICRC1BalanceOf from "@common/libs/icrcledger/ICRC1BalanceOf";
+import ICRC2TransferForm from "@common/libs/icrcledger/ICRC2TransferForm";
+import { Principal } from "@dfinity/principal";
+import { hexadecimalToUint8Array, hexToUint8Array } from "@common/utils/hexadecimal";
+import ICRC1Tranfer from "@common/libs/icrcledger/ICRC1Tranfer";
 
 interface ConfirmDetailProps {
   showConfirmationModal: Dispatch<SetStateAction<boolean>>;
@@ -30,6 +34,7 @@ interface ConfirmDetailProps {
 export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailProps) {
   const { t } = useTranslation();
   const { sender, errors, isLoading } = useAppSelector((state) => state.transaction);
+  const { userAgent } = useAppSelector((state) => state.auth);
   const {
     receiverPrincipal,
     receiverSubAccount,
@@ -83,11 +88,11 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
     removeErrorAction(TransactionValidationErrorsEnum.Values["error.allowance.not.enough"]);
     removeErrorAction(TransactionValidationErrorsEnum.Values["error.allowance.subaccount.not.enough"]);
 
-    const balance = await getSubAccountBalance({
-      assetAddress: sender?.asset?.address,
-      assetDecimal: sender?.asset?.decimal,
-      principal: senderPrincipal,
-      subAccount: senderSubAccount,
+    const balance = await ICRC1BalanceOf({
+      canisterId: sender?.asset?.address,
+      agent: userAgent,
+      owner: Principal.fromText(senderPrincipal),
+      subaccount: [hexToUint8Array(senderSubAccount)],
     });
 
     const allowanceGuaranteed = toHoleBigInt(await getAllowanceAmount(), Number(sender?.asset?.decimal));
@@ -143,15 +148,18 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
             showConfirmationModal(true);
             setIsLoadingAction(true);
 
-            await transferTokensFromAllowance({
-              receiverPrincipal,
-              senderPrincipal,
-              assetAddress,
-              transferAmount: amount,
-              decimal,
-              fromSubAccount: senderSubAccount,
-              toSubAccount: receiverSubAccount,
-              transactionFee,
+            await ICRC2TransferForm({
+              agent: userAgent,
+              canisterId: assetAddress,
+              from: {
+                owner: Principal.fromText(senderPrincipal),
+                subaccount: [hexToUint8Array(senderSubAccount)],
+              },
+              to: {
+                owner: Principal.fromText(receiverPrincipal),
+                subaccount: [hexToUint8Array(receiverSubAccount)],
+              },
+              amount: toHoleBigInt(amount, Number(decimal)),
             });
           } else {
             const isValid = await validateBalance();
@@ -160,16 +168,20 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
             showConfirmationModal(true);
             setIsLoadingAction(true);
 
-            await transferTokens({
-              receiverPrincipal,
-              assetAddress,
-              transferAmount: amount,
-              decimal,
-              fromSubAccount: senderSubAccount,
-              toSubAccount: receiverSubAccount,
+            await ICRC1Tranfer({
+              canisterId: assetAddress,
+              agent: userAgent,
+              from_subaccount: hexadecimalToUint8Array(senderSubAccount),
+              to: {
+                owner: Principal.fromText(receiverPrincipal),
+                subaccount: [hexToUint8Array(receiverSubAccount)],
+              },
+              amount: toHoleBigInt(amount, Number(decimal)),
+              fee: [],
+              memo: [],
+              created_at_time: [],
             });
           }
-
           setSendingStatusAction(SendingStatusEnum.Values.done);
           setEndTxTime(new Date());
         }

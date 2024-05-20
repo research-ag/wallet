@@ -5,7 +5,7 @@ import { setTokenMarket, setICPSubaccounts, setAssets } from "./AssetReducer";
 import { AccountIdentifier, SubAccount as SubAccountNNS } from "@dfinity/ledger-icp";
 import { Asset, ICPSubAccount } from "@redux/models/AccountModels";
 import { UpdateAllBalances } from "@/@types/assets";
-import { getICRCSupportedStandards } from "@/common/libs/icrcledger";
+import ICRC1SupportedStandards from "@/common/libs/icrcledger/ICRC1SupportedStandards";
 import { HttpAgent } from "@dfinity/agent";
 import { getETHRate, getTokensFromMarket } from "@/common/utils/market";
 import { refreshAssetBalances } from "@pages/home/helpers/assets";
@@ -101,8 +101,8 @@ export const getSNSTokens = async (agent: HttpAgent): Promise<Asset[]> => {
       if (!symbolsAdded.includes(metadata.symbol)) {
         symbolsAdded.push(metadata.symbol);
 
-        const supportedStandards = await getICRCSupportedStandards({
-          assetAddress: tkn.canister_ids.ledger_canister_id,
+        const supportedStandards = await ICRC1SupportedStandards({
+          canisterId: tkn.canister_ids.ledger_canister_id,
           agent: agent,
         });
 

@@ -169,13 +169,13 @@ export type TransferError =
   | { TooOld: null }
   | { InsufficientFunds: { balance: bigint } };
 export interface TransferFromArgs {
-  to: Account;
-  fee: [] | [bigint];
-  spender_subaccount: [] | [Uint8Array | number[]];
   from: Account;
-  memo: [] | [Uint8Array | number[]];
-  created_at_time: [] | [bigint];
+  to: Account;
   amount: bigint;
+  fee?: [] | [bigint];
+  spender_subaccount?: [] | [Uint8Array | number[]];
+  memo?: [] | [Uint8Array | number[]];
+  created_at_time?: [] | [bigint];
 }
 export type TransferFromError =
   | {
