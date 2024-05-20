@@ -28,6 +28,7 @@ import {
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import useAssetMutate, { assetMutateInitialState } from "@pages/home/hooks/useAssetMutate";
 import { toFullDecimal } from "@common/utils/amount";
+import logger from "@/common/utils/logger";
 
 const AddAssetManual = () => {
   const { assetAction, assetMutated } = useAppSelector((state) => state.asset.mutation);
@@ -440,7 +441,7 @@ const AddAssetManual = () => {
       dispatch(setSelectedAsset(newAsset));
       dispatch(setAccordionAssetIdx([newAsset.tokenSymbol]));
     } catch (error) {
-      console.error("Error adding asset", error);
+      logger.debug("Error adding asset", error);
       dispatch(setAssetMutationResult(AssetMutationResult.FAILED));
     } finally {
       dispatch(setAssetMutationAction(AssetMutationAction.NONE));

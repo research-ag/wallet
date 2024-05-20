@@ -12,6 +12,7 @@ import { AllowanceValidationErrorsEnum } from "@/@types/allowance";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { refreshAllowance } from "../helpers/refresh";
 import { initialAllowanceState } from "@redux/allowance/AllowanceReducer";
+import logger from "@/common/utils/logger";
 
 export default function useDeleteAllowance() {
   const dispatch = useAppDispatch();
@@ -50,7 +51,7 @@ export default function useDeleteAllowance() {
       setFullAllowanceErrorsAction([]);
       setIsDeleteAllowanceAction(false);
     } catch (error) {
-      console.log(error);
+      logger.debug(error);
       if (error === AllowanceValidationErrorsEnum.Values["error.not.enough.balance"])
         return setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.not.enough.balance"]);
     } finally {

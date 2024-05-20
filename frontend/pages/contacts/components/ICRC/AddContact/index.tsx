@@ -20,6 +20,7 @@ import { retrieveAssetsWithAllowance, retrieveSubAccountsWithAllowance } from "@
 import { asciiHex } from "@pages/contacts/constants/asciiHex";
 import { isHexadecimalValid, validateSubaccounts } from "@pages/home/helpers/checkers";
 import { getAccountIdentifier } from "@common/utils/icrc";
+import logger from "@/common/utils/logger";
 
 interface AddContactProps {
   setAddOpen(value: boolean): void;
@@ -157,7 +158,7 @@ export default function AddContact({ setAddOpen }: AddContactProps) {
 
       setNewSubaccounts(fullSubAccounts);
     } catch (error) {
-      console.error(error);
+      logger.debug(error);
     } finally {
       setIsAllowancesChecking(false);
     }

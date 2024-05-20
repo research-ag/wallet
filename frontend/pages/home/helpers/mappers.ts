@@ -4,6 +4,7 @@ import { subUint8ArrayToHex } from "@common/utils/unitArray";
 import { Account, Transaction as IcrcTransaction } from "@dfinity/ledger-icrc/dist/candid/icrc_index";
 import { AccountIdentifier, SubAccount as SubAccountNNS } from "@dfinity/ledger-icp";
 import { Principal } from "@dfinity/principal";
+import logger from "@/common/utils/logger";
 
 export const MILI_PER_SECOND = 1000000;
 
@@ -232,12 +233,12 @@ export function deChunkTransactions(options: deChunkTransactionsParams): Transac
   if (transactions.length === 1) return transactions[0];
 
   if (chunkNumber <= 0 || from <= 0) {
-    console.error("Error: chunkNumber and from must be positive integers.");
+    logger.debug("Error: chunkNumber and from must be positive integers.");
     return [];
   }
 
   if (chunkNumber > transactions.length) {
-    console.error(`Error: chunkNumber ${chunkNumber} exceeds total chunks (${transactions.length}).`);
+    logger.debug(`Error: chunkNumber ${chunkNumber} exceeds total chunks (${transactions.length}).`);
     return [];
   }
 
@@ -245,7 +246,7 @@ export function deChunkTransactions(options: deChunkTransactionsParams): Transac
   const fromIndex = from - 1;
 
   if (fromIndex < 0 || fromIndex >= transactions[chunkIndex].length) {
-    console.error(`Error: from index ${fromIndex} is invalid for chunk ${chunkNumber}.`);
+    logger.debug(`Error: from index ${fromIndex} is invalid for chunk ${chunkNumber}.`);
     return [];
   }
 

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { AnonymousIdentity, HttpAgent, Identity } from "@dfinity/agent";
+import logger from "@/common/utils/logger";
 import store from "./Store";
 import {
   clearDataAuth,
@@ -46,7 +47,7 @@ export const handleAuthenticated = async (opt: AuthNetwork) => {
         resolve();
       },
       onError: (e) => {
-        console.error("onError", e);
+        logger.debug("onError", e);
         store.dispatch(setUnauthenticated());
         store.dispatch(setDebugMode(false));
         reject();

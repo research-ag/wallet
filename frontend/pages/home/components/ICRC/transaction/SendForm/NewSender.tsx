@@ -3,6 +3,7 @@ import { middleTruncation } from "@/common/utils/strings";
 import useSend from "@pages/home/hooks/useSend";
 import { useAppSelector } from "@redux/Store";
 import { useEffect, useState } from "react";
+import logger from "@/common/utils/logger";
 
 export default function NewSender() {
   const { sender } = useAppSelector((state) => state.transaction);
@@ -32,7 +33,7 @@ export default function NewSender() {
       const balance = await getSenderMaxAmount();
       setBalance(balance || "");
     } catch (error) {
-      console.log(error);
+      logger.debug(error);
       return 0;
     }
   }

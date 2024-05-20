@@ -17,6 +17,7 @@ import { useAppSelector } from "@redux/Store";
 import { TransactionDrawer, TransactionValidationErrorsEnum, transactionErrors } from "@/@types/transactions";
 import { LoadingLoader } from "@components/loader";
 import { toHoleBigInt } from "@common/utils/amount";
+import logger from "@/common/utils/logger";
 
 export default function SendForm() {
   const { t } = useTranslation();
@@ -89,7 +90,7 @@ export default function SendForm() {
 
       setIsInspectDetailAction(true);
     } catch (error) {
-      console.error(error);
+      logger.debug(error);
     } finally {
       setIsLoadingAction(false);
     }

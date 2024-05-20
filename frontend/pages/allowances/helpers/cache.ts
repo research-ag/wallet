@@ -3,6 +3,7 @@ import { getAllowanceDetails } from "@/common/libs/icrc/";
 import { db } from "@/database/db";
 import store from "@redux/Store";
 import { setReduxAllowances } from "@redux/allowance/AllowanceReducer";
+import logger from "@/common/utils/logger";
 
 export async function allowanceCacheRefresh() {
   const allowances = await db().getAllowances();
@@ -38,7 +39,7 @@ export async function allowanceCacheRefresh() {
 
         return allowance;
       } catch (error) {
-        console.log(error);
+        logger.debug(error);
         return allowance;
       }
     });

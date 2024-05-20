@@ -17,6 +17,7 @@ import { getCanister } from "./getIcrcCanister";
 import { TAllowance } from "@/@types/allowance";
 import { hexToUint8Array } from "@common/utils/hexadecimal";
 import { toFullDecimal, toHoleBigInt } from "@common/utils/amount";
+import logger from "@common/utils/logger";
 
 function calculateExpirationAsBigInt(
   expirationString: string | undefined,
@@ -34,7 +35,7 @@ function calculateExpirationAsBigInt(
     const expirationTimestamp = dayjs.utc(expirationString).valueOf() * 1000000;
     return BigInt(expirationTimestamp);
   } catch (error) {
-    console.error(error);
+    logger.debug(error);
     return undefined;
   }
 }
@@ -73,7 +74,7 @@ export async function submitAllowanceApproval(
     const result = await canister.approve(params);
     return result;
   } catch (error) {
-    console.error(error);
+    logger.debug(error);
     throw error;
   }
 }
@@ -109,7 +110,7 @@ export async function getAllowanceDetails(params: CheckAllowanceParams) {
 
     return { allowance, expires_at };
   } catch (e) {
-    console.error(e);
+    logger.debug(e);
     return { allowance: "", expires_at: "" };
   }
 }

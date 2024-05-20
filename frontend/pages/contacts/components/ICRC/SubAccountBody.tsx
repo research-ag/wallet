@@ -33,6 +33,7 @@ import { getNormalizedHex, isHexadecimalValid } from "@pages/home/helpers/checke
 import { hexToUint8Array } from "@common/utils/hexadecimal";
 import { getInitialFromName, removeLeadingZeros } from "@common/utils/strings";
 import { shortAddress } from "@common/utils/icrc";
+import logger from "@common/utils/logger";
 
 interface SubAccountBodyProps {
   asst: AssetContact;
@@ -363,7 +364,7 @@ export default function SubAccountBody(props: SubAccountBodyProps) {
       if (error === SUB_ACCOUNT_NAME_ERROR) {
         return setSubaccEditedErr({ name: true, subaccount_index: false });
       }
-      console.error(error);
+      logger.debug(error);
     } finally {
       setIsPending(false);
       setFromPrincSub(false);

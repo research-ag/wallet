@@ -5,6 +5,7 @@ import { useAppSelector } from "@redux/Store";
 import { removeErrorAction, setAmountAction, setErrorAction } from "@redux/transaction/TransactionActions";
 import { ChangeEvent, useState } from "react";
 import { toFullDecimal, toHoleBigInt, validateAmount } from "@common/utils/amount";
+import logger from "@/common/utils/logger";
 
 interface MaxAmount {
   transactionAmount: string;
@@ -156,7 +157,7 @@ export default function useTransactionAmount() {
         setAmountAction(endTransactionWithoutFee);
       }
     } catch (error) {
-      console.log(error);
+      logger.debug(error);
       setMaxAmount(maxAmountInitialState);
     } finally {
       removeErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.amount"]);

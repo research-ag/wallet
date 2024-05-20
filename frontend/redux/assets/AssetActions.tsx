@@ -11,6 +11,7 @@ import { getETHRate, getTokensFromMarket } from "@/common/utils/market";
 import { refreshAssetBalances } from "@pages/home/helpers/assets";
 import { hexToUint8Array } from "@common/utils/hexadecimal";
 import { getMetadataInfo } from "@common/utils/icrc";
+import logger from "@/common/utils/logger";
 
 /**
  * This function updates the balances for all provided assets and their subaccounts, based on the market price and the account balance.
@@ -86,7 +87,7 @@ export const getSNSTokens = async (agent: HttpAgent): Promise<Asset[]> => {
         break;
       }
     } catch (error) {
-      console.error("snses", error);
+      logger.debug("snses", error);
       break;
     }
   }

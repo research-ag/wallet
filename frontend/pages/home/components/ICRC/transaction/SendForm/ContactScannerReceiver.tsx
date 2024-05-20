@@ -12,6 +12,7 @@ import { Principal } from "@dfinity/principal";
 import { isHexadecimalValid } from "@pages/home/helpers/checkers";
 import { hexToUint8Array } from "@common/utils/hexadecimal";
 import { subUint8ArrayToHex } from "@common/utils/unitArray";
+import logger from "@/common/utils/logger";
 
 export default function ContactScannerReceiver() {
   const [inputValue, setInputValue] = useState("");
@@ -61,7 +62,7 @@ export default function ContactScannerReceiver() {
       setReceiverNewContactAction(icrcAccount);
       removeErrorAction(TransactionValidationErrorsEnum.Values["invalid.receiver.identifier"]);
     } catch (error) {
-      console.log(error);
+      logger.debug(error);
       setErrorAction(TransactionValidationErrorsEnum.Values["invalid.receiver.identifier"]);
     }
   }

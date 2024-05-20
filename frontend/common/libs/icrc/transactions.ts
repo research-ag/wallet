@@ -15,6 +15,7 @@ import { AccountDefaultEnum } from "@/common/const";
 import { hexadecimalToUint8Array, hexToUint8Array } from "@common/utils/hexadecimal";
 import { getUSDFromToken, toFullDecimal, toHoleBigInt } from "@common/utils/amount";
 import { getMetadataInfo } from "@common/utils/icrc";
+import logger from "@common/utils/logger";
 
 export async function getTransactionFeeFromLedger(params: TransactionFeeParams) {
   try {
@@ -24,7 +25,7 @@ export async function getTransactionFeeFromLedger(params: TransactionFeeParams) 
     const result = await canister.transactionFee({});
     return toFullDecimal(result, Number(assetDecimal));
   } catch (error) {
-    console.error(error);
+    logger.debug(error);
   }
 }
 
@@ -89,7 +90,7 @@ export async function getSubAccountBalance(params: GetBalanceParams) {
     });
     return balance;
   } catch (error) {
-    console.error(error);
+    logger.debug(error);
     return BigInt(0);
   }
 }
@@ -173,6 +174,6 @@ export async function getAssetDetails(params: DetailsParams): Promise<Asset | un
 
     return asset;
   } catch (error) {
-    console.error(error);
+    logger.debug(error);
   }
 }

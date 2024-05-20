@@ -4,6 +4,7 @@ import store from "@redux/Store";
 import { setTxWorker } from "@redux/transaction/TransactionReducer";
 import { getAllTransactionsICP, getAllTransactionsICRC1 } from "./requests";
 import { hexToUint8Array } from "@common/utils/hexadecimal";
+import logger from "@/common/utils/logger";
 
 async function fetchICPTransactions(asset: Asset) {
   const txTransactions = [];
@@ -81,6 +82,6 @@ export async function transactionCacheRefresh(assets: Asset[]) {
 
     store.dispatch(setTxWorker(txWorker));
   } catch (error) {
-    console.error("Error in transactionCacheRefresh worker", error);
+    logger.debug("Error in transactionCacheRefresh worker", error);
   }
 }

@@ -1,4 +1,5 @@
 import { TokenMarketInfo } from "@redux/models/TokenModels";
+import logger from "@/common/utils/logger";
 
 /**
  * Fetches token market data from the API.
@@ -12,7 +13,7 @@ export async function getTokensFromMarket(): Promise<TokenMarketInfo[]> {
     const tokenMarkets: TokenMarketInfo[] = await response.json();
     return tokenMarkets.filter((token) => !token.unreleased);
   } catch (error) {
-    console.warn("Error fetching token markets:", error);
+    logger.debug("Error fetching token markets:", error);
     return [];
   }
 }
@@ -39,7 +40,7 @@ export async function getETHRate() {
       unreleased: 0,
     };
   } catch (error) {
-    console.warn("Error fetching ETH rate:", error);
+    logger.debug("Error fetching ETH rate:", error);
     return undefined;
   }
 }

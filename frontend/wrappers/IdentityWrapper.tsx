@@ -4,6 +4,7 @@ import { handleLoginApp } from "@redux/CheckAuth";
 import { useAppDispatch } from "@redux/Store";
 import { setAuth } from "@redux/auth/AuthReducer";
 import { useEffect, useRef } from "react";
+import logger from "@/common/utils/logger";
 
 export default function IdentityWrapper({ children }: { children: JSX.Element }) {
   const isFirstRenderRef = useRef(true);
@@ -22,7 +23,7 @@ export default function IdentityWrapper({ children }: { children: JSX.Element })
         dispatch(setAuth());
       }
     };
-    getIdentity().catch(console.error);
+    getIdentity().catch(logger.debug);
     watchOnlyRefresh();
   }, []);
 

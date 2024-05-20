@@ -3,6 +3,7 @@ import { subUint8ArrayToHex } from "@common/utils/unitArray";
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import QRscanner from "@pages/components/QRscanner";
 import { setReceiverNewContactAction, setScannerActiveOptionAction } from "@redux/transaction/TransactionActions";
+import logger from "@/common/utils/logger";
 
 export default function ReceiverQRScanner() {
   return (
@@ -20,7 +21,7 @@ export default function ReceiverQRScanner() {
           onGoBack();
           setReceiverNewContactAction(scannedContact);
         } catch (error) {
-          console.error(error);
+          logger.debug(error);
         }
       }}
     />
