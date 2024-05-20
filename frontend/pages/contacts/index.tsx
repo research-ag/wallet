@@ -1,18 +1,18 @@
 import Menu from "@pages/components/Menu";
-import useContactFilters from "./hooks/useContactFilters";
-import ContactFilters from "./components/contactFilters";
+import useContactFilters from "@pages/contacts/hooks/useContactFilters";
+import ContactFilters from "@pages/contacts/components/contactFilters";
 import { BasicModal } from "@components/modal";
-import AddContact from "./components/ICRC/AddContact";
-import ContactList from "./components/contactList";
+import AddContact from "@pages/contacts/components/ICRC/AddContact";
+import ContactList from "@pages/contacts/components/contactList";
 
 const Contacts = () => {
   const { assetOpen, addOpen, searchKey, assetFilter, setAssetOpen, setAddOpen, setSearchKey, setAssetFilter } =
     useContactFilters();
 
   return (
-    <div className="flex flex-col w-full h-full pt-6 px-9">
+    <div className="flex flex-col w-full pt-[1rem] px-[2rem]">
       <Menu />
-      <div className="flex flex-col items-start justify-start w-full h-full">
+      <div className="flex flex-col items-start justify-start w-full">
         <ContactFilters
           assetOpen={assetOpen}
           addOpen={addOpen}

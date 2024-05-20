@@ -8,8 +8,8 @@ import useAllowances from "./hooks/useAllowances";
 export default function Allowances() {
   const { allowances, handleSortChange, setSearchKey, assetFilters, setAssetFilters } = useAllowances();
   return (
-    <div className="px-[2rem]">
-      <div className="flex items-center justify-between pl-1 mt-[1.5rem]">
+    <div className="flex flex-col w-full pt-[1rem] px-[2rem]">
+      <div className="flex items-center justify-between">
         <Menu />
         <AllowanceFilter
           setSearchKey={setSearchKey}

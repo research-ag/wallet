@@ -21,8 +21,9 @@ const Menu = () => {
     {
       name: "Allowances",
       path: "/allowances",
-      label: `${allowances?.length !== 1 ? t("allowance.allowances") : t("allowance.allowances")} (${allowances?.length
-        })`,
+      label: `${allowances?.length !== 1 ? t("allowance.allowances") : t("allowance.allowances")} (${
+        allowances?.length
+      })`,
     },
     {
       name: "Contacts",
@@ -33,7 +34,7 @@ const Menu = () => {
       name: "Services",
       path: SERVICES,
       // TODO: get from the state
-      label: `${assets?.length !== 1 ? t("services") : t("services")} (${contacts?.length})`,
+      label: `${assets?.length !== 1 ? t("services") : t("services")} (${0})`,
     },
   ];
 
@@ -52,10 +53,11 @@ const Menu = () => {
             }}
           >
             <p
-              className={`!font-normal  mr-2 ${window.location.pathname !== menu.path
-                ? " text-PrimaryTextColorLight/60 dark:text-PrimaryTextColor/60"
-                : "border-b border-SelectRowColor"
-                }`}
+              className={`!font-normal  mr-2 ${
+                window.location.pathname !== menu.path
+                  ? " text-PrimaryTextColorLight/60 dark:text-PrimaryTextColor/60"
+                  : "border-b border-SelectRowColor"
+              }`}
             >
               {menu.label}
             </p>
