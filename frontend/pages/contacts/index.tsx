@@ -5,7 +5,7 @@ import AssetFilter from "./components/ICRC/AssetFilter";
 import { useTranslation } from "react-i18next";
 import { CustomInput } from "@components/input";
 import AddContactModal from "./components/ICRC/AddContactModal";
-import ContactList from "./components/contactList";
+import ContactList from "./components/ContactList";
 
 const Contacts = () => {
   const { t } = useTranslation();

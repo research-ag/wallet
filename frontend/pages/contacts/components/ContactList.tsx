@@ -17,6 +17,7 @@ import { Principal } from "@dfinity/principal";
 import DeleteContactModal from "./ICRC/DeleteContactModal";
 import logger from "@common/utils/logger";
 import clsx from "clsx";
+import SubAccountTable from "./ICRC/SubAccountTable";
 
 interface ContactListProps {
   contactSearchKey: string;
@@ -93,15 +94,7 @@ const ContactList = ({ assetFilter, contactSearchKey }: ContactListProps) => {
                   <tr className={getRowStyles(contact)}>
                     <td>
                       <div className="relative flex flex-row items-center justify-start w-full gap-2 px-4 min-h-14">
-
-                        {(isCurrentContactDropdownOpen
-                          // isCurrentContactEdited ||
-                          // contact.principal === openAssetsPrin 
-                          // isCurrentContactEditedAddAsst
-                        ) && (
-                            <div className="absolute left-0 w-1 h-14 bg-SelectRowColor"></div>
-                          )}
-
+                        {isCurrentContactDropdownOpen && <div className="absolute left-0 w-1 h-14 bg-SelectRowColor" />}
                         {isCurrentContactEdited ? (
                           <CustomInput
                             intent={"primary"}
@@ -129,16 +122,13 @@ const ContactList = ({ assetFilter, contactSearchKey }: ContactListProps) => {
                     </td>
                     <td className="py-2">
                       <div className="flex flex-row items-center justify-start gap-2 px-2 opacity-70">
-
                         <p>{shortAddress(contact.principal, 12, 9)}</p>
                         <CustomCopy size={"xSmall"} className="p-0" copyText={contact.principal} />
-
                       </div>
                     </td>
 
                     <td className="py-2">
                       <div className="flex flex-row items-start justify-center w-full gap-4">
-
                         {isCurrentContactEdited && (
                           <CheckIcon
                             onClick={() => onSaveContact(contact)}
@@ -154,26 +144,18 @@ const ContactList = ({ assetFilter, contactSearchKey }: ContactListProps) => {
                         ) : (
                           <DeleteContactModal contact={contact} />
                         )}
-
                       </div>
                     </td>
                     <td className="py-2">
                       <div className="flex flex-row items-start justify-center w-full gap-2">
                         <ChevIcon
                           onClick={() => onOpenDropdown(contact)}
-                          className={`w-8 h-8 stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor stroke-0  cursor-pointer ${contactDropdown?.principal === contact.principal ? "" : "rotate-90"
-                            }`}
+                          className={getChevIconStyles(isCurrentContactDropdownOpen)}
                         />
                       </div>
                     </td>
                   </tr>
-                  {isCurrentContactDropdownOpen && (
-                    <tr className="bg-SecondaryColorLight dark:bg-SecondaryColor">
-                      <td colSpan={4} className="w-full h-4 border-BorderColorTwoLight dark:border-BorderColorTwo">
-                        <div>Dropdown</div>
-                      </td>
-                    </tr>
-                  )}
+                  {isCurrentContactDropdownOpen && <SubAccountTable contact={contact} />}
                 </Fragment>
               );
             })}
@@ -182,6 +164,13 @@ const ContactList = ({ assetFilter, contactSearchKey }: ContactListProps) => {
       </div>
     </Fragment>
   );
+
+  function getChevIconStyles(isCurrentContactDropdownOpen: boolean) {
+    return clsx({
+      ["w-8 h-8 stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor stroke-0  cursor-pointer"]: true,
+      ["rotate-90"]: !isCurrentContactDropdownOpen,
+    });
+  };
 
   function getRowStyles(contact: Contact) {
     return clsx({
