@@ -77,17 +77,17 @@ export default function AllowanceList({ allowances, handleSortChange }: Allowanc
 
             return (
               <tr key={allowance.id}>
-                <td className="flex flex-col items-start justify-start p-1">
-                  <div className="flex">
+                <td className="flex flex-col items-start justify-start">
+                  <div className="flex items-center justify-center">
                     {getAssetIcon(IconTypeEnum.Enum.ALLOWANCE, asset?.tokenSymbol, asset?.logo)}
-                    <div className="ml-2">
+                    <div className="mt-2 ml-2">
                       {subAccountName && <p>{subAccountName || subAccountName}</p>}
                       {subAccountId && (
                         <p className="text-sm dark:text-gray-color-4 text-gray-color-5">{subAccountId}</p>
                       )}
                     </div>
                   </div>
-                  <p className="mt-1 text-center">{asset?.symbol || "-"}</p>
+                  <p className="ml-0.5 text-center">{asset?.symbol || "-"}</p>
                 </td>
                 <td className="py-1">
                   {spenderName && <p>{spenderName}</p>}
