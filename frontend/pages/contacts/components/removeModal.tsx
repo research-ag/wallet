@@ -7,6 +7,7 @@ import { CustomButton } from "@components/button";
 import { useTranslation } from "react-i18next";
 import { DeleteContactTypeEnum } from "@/common/const";
 import useContactTable from "../hooks/useContactTable";
+import deleteContact from "../services/deleteContact";
 
 interface RemoveModalProps {
   deleteModal: boolean;
@@ -27,7 +28,7 @@ interface RemoveModalProps {
 
 const RemoveModal = ({ deleteModal, setDeleteModal, deleteType, getDeleteMsg, deleteObject }: RemoveModalProps) => {
   const { t } = useTranslation();
-  const { removeCntct, removeAsset, removeSubacc } = useContactTable();
+  const { removeAsset, removeSubacc } = useContactTable();
 
   return (
     <BasicModal
@@ -78,7 +79,7 @@ const RemoveModal = ({ deleteModal, setDeleteModal, deleteType, getDeleteMsg, de
   function handleConfirmButton() {
     switch (deleteType) {
       case DeleteContactTypeEnum.Enum.CONTACT:
-        removeCntct(deleteObject.principal);
+        deleteContact(deleteObject.principal);
         break;
       case DeleteContactTypeEnum.Enum.ASSET:
         removeAsset(deleteObject.principal, deleteObject.tokenSymbol);

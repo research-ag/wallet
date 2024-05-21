@@ -52,7 +52,7 @@ export default function TableContactRows(props: TableContactRowsProps) {
   const {
     selContactPrin,
     setSelContactPrin,
-    updateContact,
+    // updateContact,
     addAsset,
     selCntcPrinAddAsst,
     setSelCntcPrinAddAsst,
@@ -335,7 +335,8 @@ export default function TableContactRows(props: TableContactRowsProps) {
           principal: Principal.fromText(contactEdited.principal),
         }).toHex(),
       };
-      updateContact(updatedContact, cntc.principal);
+      console.log(updatedContact);
+      // updateContact(updatedContact, cntc.principal);
       setSelContactPrin("");
     }
   }

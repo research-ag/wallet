@@ -1,38 +1,46 @@
 import Menu from "@pages/components/Menu";
-import useContactFilters from "./hooks/useContactFilters";
-import ContactFilters from "./components/contactFilters";
-import { BasicModal } from "@components/modal";
-import AddContact from "./components/ICRC/AddContact";
+import SearchIcon from "@assets/svg/files/icon-search.svg";
+import { useCallback, useState } from "react";
+import AssetFilter from "./components/ICRC/AssetFilter";
+import { useTranslation } from "react-i18next";
+import { CustomInput } from "@components/input";
+import AddContactModal from "./components/ICRC/AddContactModal";
 import ContactList from "./components/contactList";
 
 const Contacts = () => {
-  const { assetOpen, addOpen, searchKey, assetFilter, setAssetOpen, setAddOpen, setSearchKey, setAssetFilter } =
-    useContactFilters();
+  const { t } = useTranslation();
+  const [contactSearchKey, setContactSearchKey] = useState("");
+  const [assetFilter, setAssetFilter] = useState<string[]>([]);
+
+  const onContactSearchKeyChange = useCallback((searchKey: string) => {
+    setContactSearchKey(searchKey);
+  }, []);
+
+  const onAssetFilterChange = useCallback((assetFilter: string[]) => {
+    setAssetFilter(assetFilter);
+  }, []);
 
   return (
     <div className="flex flex-col w-full pt-[1rem] px-[2.25rem]">
       <Menu />
       <div className="flex flex-col items-start justify-start w-full">
-        <ContactFilters
-          assetOpen={assetOpen}
-          addOpen={addOpen}
-          searchKey={searchKey}
-          assetFilter={assetFilter}
-          setAssetOpen={setAssetOpen}
-          setAddOpen={setAddOpen}
-          setSearchKey={setSearchKey}
-          setAssetFilter={setAssetFilter}
-        />
-        <ContactList searchKey={searchKey} assetFilter={assetFilter} />
+        <div className="flex items-center justify-start w-full gap-3 text-md">
+          <AssetFilter assetFilter={assetFilter} onAssetFilterChange={onAssetFilterChange} />
+
+          <CustomInput
+            compOutClass="!w-[40%]"
+            prefix={<img src={SearchIcon} className="mx-2" alt="search-icon" />}
+            intent={"secondary"}
+            sizeInput={"medium"}
+            placeholder={t("search.contact")}
+            value={contactSearchKey}
+            onChange={(e) => onContactSearchKeyChange(e.target.value)}
+          />
+
+          <AddContactModal />
+        </div>
+        <ContactList contactSearchKey={contactSearchKey} assetFilter={assetFilter} />
       </div>
-      <BasicModal
-        open={addOpen}
-        width="w-[48rem]"
-        padding="py-5 px-8"
-        border="border border-BorderColorTwoLight dark:border-BorderColorTwo"
-      >
-        <AddContact setAddOpen={setAddOpen} />
-      </BasicModal>
     </div>
   );
 };

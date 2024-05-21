@@ -18,10 +18,6 @@ export default function useContactTable() {
   const [isPending, setIsPending] = useState(false);
   const { contacts } = useAppSelector((state) => state.contacts);
 
-  const updateContact = async (editedContact: Contact, pastPrincipal: string) => {
-    await db().updateContact(pastPrincipal, editedContact, { sync: true });
-  };
-
   const addAsset = async (asset: AssetContact[], pastPrincipal: string) => {
     const contact = contacts.find((contact) => contact.principal === pastPrincipal);
     contact &&
@@ -34,8 +30,6 @@ export default function useContactTable() {
         { sync: true },
       ));
   };
-
-  const removeCntct = async (principal: string) => await db().deleteContact(principal, { sync: true });
 
   const removeAsset = async (principal: string, tokenSymbol: string) => {
     const contact = contacts.find((contact) => contact.principal === principal);
@@ -50,6 +44,7 @@ export default function useContactTable() {
         { sync: true },
       ));
   };
+
   const removeSubacc = async (principal: string, tokenSymbol: string, subIndex: string) => {
     const contact = contacts.find((contact) => contact.principal === principal);
 
@@ -219,7 +214,6 @@ export default function useContactTable() {
     setOpenAssetsPrin,
     openSubaccToken,
     setOpenSubaccToken,
-    updateContact,
     selSubaccIdx,
     setSelSubaccIdx,
     subaccEdited,
@@ -233,7 +227,6 @@ export default function useContactTable() {
     setDeleteObject,
     editCntctSubacc,
     addCntctSubacc,
-    removeCntct,
     removeAsset,
     removeSubacc,
     contactEditedErr,

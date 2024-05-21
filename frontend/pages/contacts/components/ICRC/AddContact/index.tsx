@@ -23,10 +23,10 @@ import { getAccountIdentifier } from "@common/utils/icrc";
 import logger from "@/common/utils/logger";
 
 interface AddContactProps {
-  setAddOpen(value: boolean): void;
+  onClose(): void;
 }
 
-export default function AddContact({ setAddOpen }: AddContactProps) {
+export default function AddContact({ onClose }: AddContactProps) {
   const { t } = useTranslation();
   const [isAllowancesChecking, setIsAllowancesChecking] = useState<boolean>(false);
   const { assets } = GeneralHook();
@@ -62,9 +62,7 @@ export default function AddContact({ setAddOpen }: AddContactProps) {
     <div className="relative flex flex-col items-start justify-start w-full gap-4 text-md">
       <CloseIcon
         className={getCloseIconStyles(isCreating)}
-        onClick={() => {
-          setAddOpen(false);
-        }}
+        onClick={onClose}
       />
       <p>{t("add.contact")}</p>
 
@@ -205,7 +203,7 @@ export default function AddContact({ setAddOpen }: AddContactProps) {
         await db().addContact(reduxContact, { sync: true });
 
         setIsCreating(false);
-        setAddOpen(false);
+        onClose();
       }
       setNewContactSubNameErr([]);
       setNewContactSubIdErr([]);
