@@ -10,9 +10,9 @@ const Contacts = () => {
     useContactFilters();
 
   return (
-    <div className="flex flex-col w-full h-full pt-6 px-9">
+    <div className="flex flex-col w-full pt-[1rem] px-[2.25rem]">
       <Menu />
-      <div className="flex flex-col items-start justify-start w-full h-full">
+      <div className="flex flex-col items-start justify-start w-full">
         <ContactFilters
           assetOpen={assetOpen}
           addOpen={addOpen}
