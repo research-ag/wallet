@@ -5,7 +5,7 @@ import contacts from "@/redux/contacts/ContactsReducer";
 import allowance from "@/redux/allowance/AllowanceReducer";
 import transaction from "@/redux/transaction/TransactionReducer";
 import common from "@/redux/common/CommonReducer";
-import services from "@/redux/services/reducer";
+import services from "@/redux/services/ServiceReducer";
 
 const appReducer = combineReducers({
   common,
