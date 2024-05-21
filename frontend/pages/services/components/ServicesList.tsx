@@ -5,9 +5,8 @@ interface ServicesListProps {
   assetFilter: string[];
 }
 
-export default function ServicesList({ serviceSearchkey }: ServicesListProps) {
-  console.log("ServicesList");
-  const { services } = useServices({});
+export default function ServicesList({ serviceSearchkey, assetFilter }: ServicesListProps) {
+  const { services } = useServices({ serviceSearchkey, assetFilter });
 
   return (
     <div>
