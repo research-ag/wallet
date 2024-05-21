@@ -1,5 +1,6 @@
 import { TAllowance } from "@/@types/allowance";
 import { db } from "@/database/db";
+import logger from "@/common/utils/logger";
 
 export async function refreshAllowance(allowance: TAllowance, isDeleted = false) {
   try {
@@ -16,6 +17,6 @@ export async function refreshAllowance(allowance: TAllowance, isDeleted = false)
       }
     }
   } catch (error) {
-    console.log(error);
+    logger.debug(error);
   }
 }

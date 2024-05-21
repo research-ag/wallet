@@ -8,6 +8,7 @@ import {
   setSenderContactNewAction,
   setSenderOptionAction,
 } from "@redux/transaction/TransactionActions";
+import logger from "@/common/utils/logger";
 
 export default function SenderQRScanner() {
   return (
@@ -24,7 +25,7 @@ export default function SenderQRScanner() {
           setSenderContactNewAction(scannedContact);
           onGoBack();
         } catch (error) {
-          console.error(error);
+          logger.debug(error);
         }
       }}
     />

@@ -7,6 +7,7 @@ import { toFullDecimal, toHoleBigInt, validateAmount } from "@common/utils/amoun
 import ICRC1BalanceOf from "@common/libs/icrcledger/ICRC1BalanceOf";
 import { Principal } from "@dfinity/principal";
 import { hexToUint8Array } from "@common/utils/hexadecimal";
+import logger from "@/common/utils/logger";
 
 interface MaxAmount {
   transactionAmount: string;
@@ -159,7 +160,7 @@ export default function useTransactionAmount() {
         setAmountAction(endTransactionWithoutFee);
       }
     } catch (error) {
-      console.log(error);
+      logger.debug(error);
       setMaxAmount(maxAmountInitialState);
     } finally {
       removeErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.amount"]);

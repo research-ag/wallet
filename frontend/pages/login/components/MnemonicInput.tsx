@@ -5,6 +5,7 @@ import { handleMnemonicAuthenticated } from "@redux/CheckAuth";
 import { ChangeEvent, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import * as bip39 from "bip39";
+import logger from "@/common/utils/logger";
 
 export default function MnemonicInput() {
   const [phrase, setPhrase] = useState("");
@@ -55,7 +56,7 @@ export default function MnemonicInput() {
         handleMnemonicAuthenticated(sanitizedPhrase);
       }
     } catch (error) {
-      console.log(error);
+      logger.debug(error);
       setIsError(true);
     }
   }

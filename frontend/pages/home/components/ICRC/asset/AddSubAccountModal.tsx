@@ -21,6 +21,8 @@ import { useTranslation } from "react-i18next";
 import { checkHexString, hexToNumber, hexToUint8Array } from "@common/utils/hexadecimal";
 import { removeLeadingZeros } from "@common/utils/strings";
 import { getUSDFromToken } from "@common/utils/amount";
+import logger from "@/common/utils/logger";
+
 interface AddSubAccountModalProps {
   isAddSubAccountOpen: boolean;
   onClose: () => void;
@@ -275,7 +277,7 @@ export default function AddSubAccountModal({
             setLoading(false);
             setShowConfirm(false);
           } catch (e) {
-            console.log("AddErr: ", e);
+            logger.debug("AddErr: ", e);
             setLoading(false);
           }
         } else {

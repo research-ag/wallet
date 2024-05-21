@@ -16,6 +16,7 @@ import { ApproveParams, IcrcLedgerCanister } from "@dfinity/ledger-icrc";
 import { TAllowance } from "@/@types/allowance";
 import { hexToUint8Array } from "@common/utils/hexadecimal";
 import { toFullDecimal, toHoleBigInt } from "@common/utils/amount";
+import logger from "@common/utils/logger";
 
 interface CanisterOptions {
   assetAddress: string | Principal;
@@ -31,20 +32,6 @@ function getCanister(options: CanisterOptions): IcrcLedgerCanister {
     agent,
     canisterId,
   });
-}
-
-export async function submitAllowanceApproval(
-  params: ApproveParams,
-  assetAddress: string,
-): Promise<bigint | undefined> {
-  try {
-    const canister = getCanister({ assetAddress });
-    const result = await canister.approve(params);
-    return result;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
 }
 
 // TODO: move to allowance helper ---------------
@@ -65,7 +52,7 @@ function calculateExpirationAsBigInt(
     const expirationTimestamp = dayjs.utc(expirationString).valueOf() * 1000000;
     return BigInt(expirationTimestamp);
   } catch (error) {
-    console.error(error);
+    logger.debug(error);
     return undefined;
   }
 }
@@ -94,6 +81,20 @@ export function createApproveAllowanceParams(allowance: TAllowance): ApprovePara
     amount: amount,
     expires_at: expiration,
   };
+}
+
+export async function submitAllowanceApproval(
+  params: ApproveParams,
+  assetAddress: string,
+): Promise<bigint | undefined> {
+  try {
+    const canister = getCanister({ assetAddress });
+    const result = await canister.approve(params);
+    return result;
+  } catch (error) {
+    logger.debug(error);
+    throw error;
+  }
 }
 
 export async function getAllowanceDetails(params: CheckAllowanceParams) {
@@ -127,7 +128,7 @@ export async function getAllowanceDetails(params: CheckAllowanceParams) {
 
     return { allowance, expires_at };
   } catch (e) {
-    console.error(e);
+    logger.debug(e);
     return { allowance: "", expires_at: "" };
   }
 }

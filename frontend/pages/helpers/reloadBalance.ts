@@ -6,6 +6,7 @@ import { setAppDataRefreshing, setLastDataRefresh } from "@redux/common/CommonRe
 import store from "@redux/Store";
 import dayjs from "dayjs";
 import { transactionCacheRefresh } from "@pages/home/helpers/cache";
+import logger from "@/common/utils/logger";
 
 export default async function reloadBallance() {
   try {
@@ -27,6 +28,6 @@ export default async function reloadBallance() {
     store.dispatch(setLastDataRefresh(dayjs().toISOString()));
     store.dispatch(setAppDataRefreshing(false));
   } catch (e) {
-    console.error("Error reloading balance", e);
+    logger.debug("Error reloading balance", e);
   }
 }

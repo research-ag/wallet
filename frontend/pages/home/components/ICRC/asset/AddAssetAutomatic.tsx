@@ -23,6 +23,7 @@ import { useState } from "react";
 import useAssetMutate, { assetMutateInitialState } from "@pages/home/hooks/useAssetMutate";
 import { db } from "@/database/db";
 import getAssetDetails from "@pages/home/helpers/getAssetDetails";
+import logger from "@/common/utils/logger";
 
 const AddAssetAutomatic = () => {
   const { t } = useTranslation();
@@ -219,7 +220,7 @@ const AddAssetAutomatic = () => {
       dispatch(setSelectedAsset(assetToSave));
       dispatch(setAccordionAssetIdx([assetToSave.tokenSymbol]));
     } catch (error) {
-      console.error("Error adding asset", error);
+      logger.debug("Error adding asset", error);
       dispatch(setAssetMutationResult(AssetMutationResult.FAILED));
     } finally {
       dispatch(setAssetMutationAction(AssetMutationAction.NONE));

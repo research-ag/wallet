@@ -1,6 +1,7 @@
 import { lastOfArray, RxCollection } from "rxdb";
 import { replicateRxCollection, RxReplicationState } from "rxdb/plugins/replication";
 import { BehaviorSubject } from "rxjs";
+import logger from "@/common/utils/logger";
 
 const pushing$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 const pulling$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -46,7 +47,7 @@ export const setupReplication: <T extends { updatedAt: number; deleted: boolean 
           return documentsPushed;
         } catch (err) {
           pushing$.next(false);
-          console.error("RxDb Push", err);
+          logger.debug("RxDb Push", err);
           throw err;
         }
       },
@@ -74,7 +75,7 @@ export const setupReplication: <T extends { updatedAt: number; deleted: boolean 
           };
         } catch (err) {
           pulling$.next(false);
-          console.error("RxDb Pull", err);
+          logger.debug("RxDb Pull", err);
           throw err;
         }
       },

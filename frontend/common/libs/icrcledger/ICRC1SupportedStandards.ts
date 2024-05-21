@@ -4,6 +4,7 @@ import { extend } from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { Principal } from "@dfinity/principal";
 import ICRCLedgerActor from "./actor";
+import logger from "@/common/utils/logger";
 extend(utc);
 //
 
@@ -20,7 +21,7 @@ export default async function ICRC1SupportedStandards(
     const response = await ledgerActor.icrc1_supported_standards();
     return response.map((standard) => standard.name as SupportedStandard);
   } catch (error) {
-    console.error(error);
+    logger.debug(error);
     return [];
   }
 }

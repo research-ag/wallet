@@ -2,6 +2,7 @@ import { db } from "@/database/db";
 import { retrieveAssetsWithAllowance } from "@common/libs/icrcledger/icrcAllowance";
 import store from "@redux/Store";
 import { setReduxContacts } from "@redux/contacts/ContactsReducer";
+import logger from "@/common/utils/logger";
 
 export default async function contactCacheRefresh() {
   try {
@@ -22,6 +23,6 @@ export default async function contactCacheRefresh() {
       store.dispatch(setReduxContacts(updatedContacts));
     }
   } catch (error) {
-    console.error(error);
+    logger.debug(error);
   }
 }

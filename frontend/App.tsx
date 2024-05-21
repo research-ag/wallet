@@ -7,7 +7,6 @@ import { queryClient } from "./config/query";
 import { QueryClientProvider } from "@tanstack/react-query";
 import EthereumSignInProviderWrapper from "./wrappers/EthereumSignInWrapper";
 import LanguageWrapper from "./wrappers/LanguageWrapper";
-import DebugWrapper from "./wrappers/DebugWrapper";
 import ThemeWrapper from "./wrappers/ThemeWrapper";
 import DatabaseWrapper from "./wrappers/DatabaseWrapper";
 import IdentityWrapper from "./wrappers/IdentityWrapper";
@@ -27,13 +26,11 @@ export default function AppWrapper() {
         <IdentityWrapper>
           <QueryClientProvider client={queryClient}>
             <LanguageWrapper>
-              <DebugWrapper>
-                <ThemeWrapper>
-                  <DatabaseWrapper>
-                    <App />
-                  </DatabaseWrapper>
-                </ThemeWrapper>
-              </DebugWrapper>
+              <ThemeWrapper>
+                <DatabaseWrapper>
+                  <App />
+                </DatabaseWrapper>
+              </ThemeWrapper>
             </LanguageWrapper>
           </QueryClientProvider>
         </IdentityWrapper>
