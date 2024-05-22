@@ -157,4 +157,6 @@ export const logout = async () => {
   store.dispatch(setUserAgent(undefined));
   store.dispatch(setUserPrincipal(undefined));
   store.dispatch(setTransactions([]));
+  store.dispatch(setServices([]));
+  store.dispatch(setServicesData([]));
 };

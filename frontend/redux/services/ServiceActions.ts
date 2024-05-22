@@ -16,12 +16,13 @@ export const getServicesData = async (myAgent: HttpAgent, principal: string) => 
         canisterId: srv.principal,
       });
 
-      const supportedAssets = await serviceActor.icrcXSupportedTokens();
-      const credits = await serviceActor.icrcXAllCredits();
+      const supportedAssets = await serviceActor.icrcX_supported_tokens();
+      const credits = await serviceActor.icrcX_all_credits();
 
       const serviceAssets = await Promise.all(
         supportedAssets.map(async (ast) => {
-          const tokenInfo = await serviceActor.icrcXTokenInfo(ast);
+          const tokenInfo = await serviceActor.icrcX_token_info(ast);
+
           const asset = myAssets.find((myAst) => myAst.address === ast.toText());
           const credit = credits.find((crd) => crd[0] === ast);
 
@@ -29,15 +30,15 @@ export const getServicesData = async (myAgent: HttpAgent, principal: string) => 
             tokenSymbol: "",
             balance: "",
             credit: credit ? credit[1].toString() : "",
-            minDeposit: tokenInfo.minDeposit.toString(),
-            minWithdraw: tokenInfo.minWithdraw.toString(),
-            depositFee: tokenInfo.depositFee.toString(),
-            withdrawFee: tokenInfo.withdrawFee.toString(),
+            minDeposit: tokenInfo.min_deposit.toString(),
+            minWithdraw: tokenInfo.min_withdrawal.toString(),
+            depositFee: tokenInfo.deposit_fee.toString(),
+            withdrawFee: tokenInfo.withdrawal_fee.toString(),
           };
           if (asset) {
-            const balance = await serviceActor.icrcXTrackedDeposit(ast);
+            const balance = await serviceActor.icrcX_trackedDeposit(ast);
             serviceAsset.tokenSymbol = asset.tokenSymbol;
-            serviceAsset.balance = balance.Ok.toString();
+            serviceAsset.balance = balance.Ok ? balance.Ok.toString() : "";
           }
 
           return serviceAsset;

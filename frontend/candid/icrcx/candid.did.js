@@ -1,92 +1,73 @@
 export const idlFactory = ({ IDL }) => {
   const Token = IDL.Principal;
+  const Subaccount = IDL.Vec(IDL.Nat8);
   const Amount = IDL.Nat;
-
-  const TokenInfo = IDL.Record({
-    minDeposit: Amount,
-    minWithdrawal: Amount,
-    depositFee: Amount,
-    withdrawalFee: Amount,
-  });
-
-  const SubAccount = IDL.Vec(IDL.Nat8);
-
-  const NotifyArg = IDL.Record({
-    token: Token,
-  });
-
-  const NotifyResult = IDL.Record({
-    depositInc: Amount,
-    creditInc: Amount,
-  });
-
-  const NotifyResponse = IDL.Variant({
-    Ok: NotifyResult,
-    Err: IDL.Variant({
-      CallLedgerError: IDL.Text,
-      NotAvailable: IDL.Text,
-    }),
-  });
-
-  const BalanceResponse = IDL.Variant({
-    Ok: Amount,
-    Err: IDL.Variant({
-      NotAvailable: IDL.Text,
-    }),
-  });
-
-  const WithdrawArgs = IDL.Record({
-    toSubaccount: IDL.Opt(SubAccount),
-    amount: Amount,
-    token: Token,
-  });
-
-  const WithdrawResponse = IDL.Variant({
-    Ok: IDL.Record({
-      txid: IDL.Nat,
-      amount: Amount,
-    }),
-    Err: IDL.Variant({
-      CallLedgerError: IDL.Text,
-      InsufficientCredit: IDL.Text,
-      AmountBelowMinimum: Amount,
-    }),
-  });
-
   const DepositArgs = IDL.Record({
-    token: Token,
-    amount: Amount,
-    subaccount: IDL.Opt(SubAccount),
+    "token" : Token,
+    "subaccount" : IDL.Opt(Subaccount),
+    "amount" : Amount,
   });
-
   const DepositResponse = IDL.Variant({
-    Ok: IDL.Record({
-      txid: IDL.Nat,
-      creditInc: Amount,
-    }),
-    Err: IDL.Variant({
-      AmountBelowMinimum: Amount,
-      CallLedgerError: IDL.Text,
-      TransferError: IDL.Text,
+    "Ok" : IDL.Record({ "credit_inc" : Amount, "txid" : IDL.Nat }),
+    "Err" : IDL.Variant({
+      "TransferError" : IDL.Text,
+      "AmountBelowMinimum" : IDL.Null,
+      "CallLedgerError" : IDL.Text,
     }),
   });
-
+  const NotifyArg = IDL.Record({ "token" : Token });
+  const NotifyResult = IDL.Record({
+    "credit_inc" : Amount,
+    "deposit_inc" : Amount,
+  });
+  const NotifyResponse = IDL.Variant({
+    "Ok" : NotifyResult,
+    "Err" : IDL.Variant({
+      "NotAvailable" : IDL.Text,
+      "CallLedgerError" : IDL.Text,
+    }),
+  });
+  const TokenInfo = IDL.Record({
+    "min_deposit" : Amount,
+    "min_withdrawal" : Amount,
+    "withdrawal_fee" : Amount,
+    "deposit_fee" : Amount,
+  });
+  const BalanceResponse = IDL.Variant({
+    "Ok" : Amount,
+    "Err" : IDL.Variant({ "NotAvailable" : IDL.Text }),
+  });
+  const WithdrawArgs = IDL.Record({
+    "token" : Token,
+    "to_subaccount" : IDL.Opt(Subaccount),
+    "amount" : Amount,
+  });
+  const WithdrawResponse = IDL.Variant({
+    "Ok" : IDL.Record({ "txid" : IDL.Nat, "amount" : Amount }),
+    "Err" : IDL.Variant({
+      "AmountBelowMinimum" : IDL.Null,
+      "InsufficientCredit" : IDL.Null,
+      "CallLedgerError" : IDL.Text,
+    }),
+  });
   return IDL.Service({
-    // helper function
-    principalToSubaccount: IDL.Func([IDL.Principal], [IDL.Opt(SubAccount)], ["query"]),
-
-    // public queries
-    icrcXSupportedTokens: IDL.Func([], [IDL.Vec(Token)], ["query"]),
-    icrcXTokenInfo: IDL.Func([Token], [TokenInfo], ["query"]),
-
-    // privates queries
-    icrcXCredit: IDL.Func([Token], [IDL.Int], ["query"]),
-    icrcXAllCredits: IDL.Func([], [IDL.Vec(IDL.Record({ token: Token }))], ["query"]),
-    icrcXTrackedDeposit: IDL.Func([Token], [BalanceResponse], ["query"]),
-
-    // updated
-    icrcXNotify: IDL.Func([NotifyArg], [NotifyResponse], ["update"]),
-    icrcXDeposit: IDL.Func([DepositArgs], [DepositResponse], ["update"]),
-    icrcXWithdraw: IDL.Func([WithdrawArgs], [WithdrawResponse], ["update"]),
+    "icrcX_all_credits" : IDL.Func(
+        [],
+        [IDL.Vec(IDL.Tuple(Token, IDL.Int))],
+        ["query"],
+      ),
+    "icrcX_credit" : IDL.Func([Token], [IDL.Int], ["query"]),
+    "icrcX_deposit" : IDL.Func([DepositArgs], [DepositResponse], []),
+    "icrcX_notify" : IDL.Func([NotifyArg], [NotifyResponse], []),
+    "icrcX_supported_tokens" : IDL.Func([], [IDL.Vec(Token)], ["query"]),
+    "icrcX_token_info" : IDL.Func([Token], [TokenInfo], ["query"]),
+    "icrcX_trackedDeposit" : IDL.Func([Token], [BalanceResponse], ["query"]),
+    "icrcX_withdraw" : IDL.Func([WithdrawArgs], [WithdrawResponse], []),
+    "principalToSubaccount" : IDL.Func(
+        [IDL.Principal],
+        [IDL.Opt(IDL.Vec(IDL.Nat8))],
+        ["query"],
+      ),
   });
 };
+export const init = ({ IDL }) => { return []; };
