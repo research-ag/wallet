@@ -22,6 +22,7 @@ import { getSubAccountBalance, transferTokens, transferTokensFromAllowance } fro
 import { LoadingLoader } from "@components/loader";
 import reloadBallance from "@pages/helpers/reloadBalance";
 import { toHoleBigInt, validateAmount } from "@common/utils/amount";
+import logger from "@/common/utils/logger";
 
 interface ConfirmDetailProps {
   showConfirmationModal: Dispatch<SetStateAction<boolean>>;
@@ -175,6 +176,7 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
         }
       }
     } catch (error) {
+      logger.debug("Error sending transaction", error);
       setSendingStatusAction(SendingStatusEnum.Values.error);
       setEndTxTime(new Date());
     } finally {

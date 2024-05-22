@@ -11,6 +11,7 @@ import { useAppSelector } from "@redux/Store";
 import { hexToUint8Array } from "@common/utils/hexadecimal";
 import { getAssetSymbol, getICRC1Acc, shortAddress } from "@common/utils/icrc";
 import { toFullDecimal } from "@common/utils/amount";
+import logger from "@/common/utils/logger";
 
 const DrawerTransaction = () => {
   const { t } = useTranslation();
@@ -228,7 +229,8 @@ const DrawerTransaction = () => {
         owner: Principal.fromText(getPrincipal(to) || ""),
         subaccount: hexToUint8Array(getSub(to)),
       });
-    } catch {
+    } catch (error) {
+      logger.debug("Error getting ICRC1 account", error);
       return getPrincipal(to) || "";
     }
   }

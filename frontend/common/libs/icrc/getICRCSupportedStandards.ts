@@ -14,11 +14,7 @@ interface ICRCSupportedStandardsParams {
 
 export async function getICRCSupportedStandards(params: ICRCSupportedStandardsParams): Promise<SupportedStandard[]> {
   try {
-    const { assetAddress, agent } = params;
-    const ledgerActor = getIcrcActor({
-      agent,
-      assetAddress,
-    });
+    const ledgerActor = getIcrcActor(params);
     const response = await ledgerActor.icrc1_supported_standards();
     return response.map((standard) => standard.name as SupportedStandard);
   } catch (error) {

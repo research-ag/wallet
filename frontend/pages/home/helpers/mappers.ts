@@ -96,7 +96,8 @@ export const formatckBTCTransaccion = (
         let subaccTo: SubAccountNNS | undefined = undefined;
         try {
           subaccTo = SubAccountNNS.fromBytes((operation.to.subaccount as [Uint8Array])[0]) as SubAccountNNS;
-        } catch {
+        } catch (error) {
+          logger.debug("Error parsing subaccount", error);
           subaccTo = undefined;
         }
         trans.idx = id.toString();
@@ -138,7 +139,8 @@ export const formatckBTCTransaccion = (
         let subaccFrom: SubAccountNNS | undefined = undefined;
         try {
           subaccFrom = SubAccountNNS.fromBytes((operation.from.subaccount as [Uint8Array])[0]) as SubAccountNNS;
-        } catch {
+        } catch (error) {
+          logger.debug("Error parsing subaccount", error);
           subaccFrom = undefined;
         }
         trans.idx = id.toString();
@@ -181,7 +183,8 @@ export const formatckBTCTransaccion = (
       let subaccTo: SubAccountNNS | undefined = undefined;
       try {
         subaccTo = SubAccountNNS.fromBytes((operation.to.subaccount as [Uint8Array])[0]) as SubAccountNNS;
-      } catch {
+      } catch (error) {
+        logger.debug("Error parsing subaccount", error);
         subaccTo = undefined;
       }
       trans.identityTo = AccountIdentifier.fromPrincipal({
@@ -193,7 +196,8 @@ export const formatckBTCTransaccion = (
       let subaccFrom: SubAccountNNS | undefined = undefined;
       try {
         subaccFrom = SubAccountNNS.fromBytes((operation.to.subaccount as [Uint8Array])[0]) as SubAccountNNS;
-      } catch {
+      } catch (error) {
+        logger.debug("Error parsing subaccount", error);
         subaccFrom = undefined;
       }
       trans.identityFrom = AccountIdentifier.fromPrincipal({

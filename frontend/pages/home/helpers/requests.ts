@@ -7,6 +7,7 @@ import { formatckBTCTransaccion, formatIcpTransaccion } from "./mappers";
 import { Actor } from "@dfinity/agent";
 import { _SERVICE as LedgerActor } from "@candid/IcrcIndex/icrc_index";
 import { idlFactory as LedgerFactory } from "@candid/IcrcIndex/icrc_index.idl";
+import logger from "@/common/utils/logger";
 
 export const getAllTransactionsICP = async (params: GetAllTransactionsICPParams) => {
   const { subaccount_index, isOGY } = params;
@@ -16,7 +17,8 @@ export const getAllTransactionsICP = async (params: GetAllTransactionsICPParams)
 
   try {
     subacc = SubAccountNNS.fromBytes(hexToUint8Array(subaccount_index)) as SubAccountNNS;
-  } catch {
+  } catch (error) {
+    logger.debug("Error parsing subaccount", error);
     subacc = undefined;
   }
 
@@ -55,6 +57,7 @@ export const getAllTransactionsICP = async (params: GetAllTransactionsICPParams)
 
     return transactionsInfo;
   } catch (error) {
+    logger.debug("Error getting transactions", error);
     return [];
   }
 };
@@ -91,7 +94,8 @@ export const getAllTransactionsICRC1 = async (params: GetAllTransactionsICRCPara
     return result?.Ok?.transactions.map(({ transaction, id }) => {
       return formatckBTCTransaccion(transaction, id, myPrincipal?.toString(), assetSymbol, canister, subNumber);
     });
-  } catch {
+  } catch (error) {
+    logger.debug("Error getting transactions", error);
     return [];
   }
 };
