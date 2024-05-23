@@ -94,7 +94,8 @@ export const handlePrincipalAuthenticated = async (principalAddress: string) => 
     addWatchOnlySessionToLocal({ alias: "", principal: principalAddress });
     watchOnlyRefresh();
     await handleLoginApp(authClient.getIdentity(), false, principal);
-  } catch {
+  } catch (error) {
+    logger.debug("Error parsing principal", error);
     return;
   }
 };

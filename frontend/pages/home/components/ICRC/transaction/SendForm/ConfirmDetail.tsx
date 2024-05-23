@@ -26,6 +26,7 @@ import ICRC2TransferForm from "@common/libs/icrcledger/ICRC2TransferForm";
 import { Principal } from "@dfinity/principal";
 import { hexadecimalToUint8Array, hexToUint8Array } from "@common/utils/hexadecimal";
 import ICRC1Tranfer from "@common/libs/icrcledger/ICRC1Tranfer";
+import logger from "@/common/utils/logger";
 
 interface ConfirmDetailProps {
   showConfirmationModal: Dispatch<SetStateAction<boolean>>;
@@ -187,6 +188,7 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
         }
       }
     } catch (error) {
+      logger.debug("Error sending transaction", error);
       setSendingStatusAction(SendingStatusEnum.Values.error);
       setEndTxTime(new Date());
     } finally {

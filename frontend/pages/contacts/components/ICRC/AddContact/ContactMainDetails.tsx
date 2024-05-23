@@ -2,6 +2,7 @@ import { Principal } from "@dfinity/principal";
 import NameFormItem from "./NameFormItem";
 import PrincipalFormItem from "./PrincipalFormItem";
 import { Contact } from "@redux/models/ContactsModels";
+import logger from "@/common/utils/logger";
 
 interface ContactMainDetailsProps {
   newContact: Contact;
@@ -43,7 +44,8 @@ export default function ContactMainDetails(props: ContactMainDetailsProps) {
       try {
         Principal.fromText(value);
         setNewContactPrinErr(false);
-      } catch {
+      } catch (error) {
+        logger.debug("Error parsing principal", error);
         setNewContactPrinErr(true);
       }
     else setNewContactPrinErr(false);

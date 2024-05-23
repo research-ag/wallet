@@ -7,6 +7,7 @@ import { isHexadecimalValid } from "../helpers/checkers";
 import { toFullDecimal } from "@common/utils/amount";
 import ICRC1Fee from "@common/libs/icrcledger/ICRC1Fee";
 import { getAllowanceDetails } from "@common/libs/icrcledger/icrcAllowance";
+import logger from "@/common/utils/logger";
 
 export default function useSend() {
   const [transactionFee, setTransactionFee] = useState<string>("0");
@@ -145,7 +146,7 @@ export default function useSend() {
       const response = await getAllowanceAmount();
       return response;
     } catch (error) {
-      console.warn("Error fetching sender balance:", error);
+      logger.debug("Error fetching sender balance:", error);
       return "0";
     }
   }
@@ -166,7 +167,7 @@ export default function useSend() {
 
       return response?.allowance || "0";
     } catch (error) {
-      console.warn("Error fetching sender balance:", error);
+      logger.debug("Error fetching sender balance:", error);
       return "0";
     }
   }

@@ -27,7 +27,7 @@ export default function SendReceiveDrawer() {
 
   return (
     <BasicDrawer isDrawerOpen={isDrawerOpen}>
-      <div className="flex items-center justify-between w-full px-6 mt-8 row">
+      <div className="relative flex items-center justify-between w-full px-6 mt-8 row">
         <div className="flex flex-row items-center justify-start w-full gap-4">
           <CustomButton
             intent={"noBG"}

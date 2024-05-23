@@ -33,43 +33,43 @@ export default function TransactionInspectDrawer() {
     selectedAccount?.sub_account_id || "",
   );
 
-  if (!isDrawerOpen) return <></>;
-
   return (
     <BasicDrawer isDrawerOpen={isDrawerOpen}>
-      <div className="flex flex-row items-center justify-between w-full px-6 mt-4">
-        <div className="flex flex-row items-center justify-start gap-7">
-          <p className="text-lg font-semibold text-PrimaryTextColorLight dark:text-PrimaryTextColor">
-            {selectedTransaction?.kind === SpecialTxTypeEnum.Enum.mint
-              ? "Mint"
-              : selectedTransaction?.kind === SpecialTxTypeEnum.Enum.burn
-              ? "Burn"
-              : selectedTransaction?.type === TransactionTypeEnum.Enum.RECEIVE
-              ? t("transaction.received")
-              : t("transaction.sent")}
-          </p>
-          <img
-            src={
-              selectedTransaction?.kind === SpecialTxTypeEnum.Enum.mint
-                ? DownAmountIcon
+      {isDrawerOpen && (
+        <div className="flex flex-row items-center justify-between w-full px-6 mt-4">
+          <div className="flex flex-row items-center justify-start gap-7">
+            <p className="text-lg font-semibold text-PrimaryTextColorLight dark:text-PrimaryTextColor">
+              {selectedTransaction?.kind === SpecialTxTypeEnum.Enum.mint
+                ? "Mint"
                 : selectedTransaction?.kind === SpecialTxTypeEnum.Enum.burn
-                ? UpAmountIcon
-                : isTo
-                ? UpAmountIcon
-                : DownAmountIcon
-            }
-            alt=""
+                ? "Burn"
+                : selectedTransaction?.type === TransactionTypeEnum.Enum.RECEIVE
+                ? t("transaction.received")
+                : t("transaction.sent")}
+            </p>
+            <img
+              src={
+                selectedTransaction?.kind === SpecialTxTypeEnum.Enum.mint
+                  ? DownAmountIcon
+                  : selectedTransaction?.kind === SpecialTxTypeEnum.Enum.burn
+                  ? UpAmountIcon
+                  : isTo
+                  ? UpAmountIcon
+                  : DownAmountIcon
+              }
+              alt=""
+            />
+          </div>
+
+          <CloseIcon
+            className="cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
+            onClick={() => {
+              setTransactionDrawerAction(TransactionDrawer.NONE);
+              dispatch(setSelectedTransaction(undefined));
+            }}
           />
         </div>
-
-        <CloseIcon
-          className="cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
-          onClick={() => {
-            setTransactionDrawerAction(TransactionDrawer.NONE);
-            dispatch(setSelectedTransaction(undefined));
-          }}
-        />
-      </div>
+      )}
 
       <DrawerTransaction />
     </BasicDrawer>

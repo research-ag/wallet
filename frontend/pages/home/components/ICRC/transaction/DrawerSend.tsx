@@ -16,7 +16,7 @@ function DrawerSend() {
   }, []);
 
   return (
-    <div className="px-8 mt-8 overflow-y-auto">
+    <div className="px-6 mt-8 overflow-y-auto ">
       <SenderInitializer>
         <SendFormConditionalRender showConfirmationModal={showConfirmationModal}>
           <SendForm />

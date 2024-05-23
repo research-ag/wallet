@@ -13,6 +13,7 @@ import { ThemesEnum } from "@/common/const";
 import { db, DB_Type } from "@/database/db";
 import store from "@/redux/Store";
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
+import logger from "@/common/utils/logger";
 
 interface DbLocationModalProps {
   setOpen(value: boolean): void;
@@ -126,7 +127,8 @@ const DbLocationModal = ({ setOpen }: DbLocationModalProps) => {
     try {
       !!value && decodeIcrcAccount(value);
       setCanisterIdErrErr(false);
-    } catch {
+    } catch (error) {
+      logger.debug("Error parsing canisterId", error);
       setCanisterIdErrErr(true);
     }
   }

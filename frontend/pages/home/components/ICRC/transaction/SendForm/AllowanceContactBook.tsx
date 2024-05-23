@@ -70,7 +70,7 @@ export function AllowanceContactBook() {
       <DropdownMenu.Root modal={isOpen} onOpenChange={onOpenChange}>
         <DropdownMenu.Trigger
           asChild
-          className="flex items-center justify-between p-2 px-4 mt-2 border rounded-md cursor-pointer bg-ThemeColorSelectorLight dark:bg-SecondaryColor h-14"
+          className="flex w-[21rem] items-center justify-between h-12 p-2 px-4 mt-2 border rounded-md cursor-pointer bg-ThemeColorSelectorLight dark:bg-SecondaryColor"
         >
           <div className="flex items-center justify-center">
             <div className="mr-2">
@@ -106,7 +106,7 @@ export function AllowanceContactBook() {
             <DropIcon className={`fill-gray-color-4 ${isOpen ? "-rotate-90" : ""}`} />
           </div>
         </DropdownMenu.Trigger>
-        <DropdownMenu.Content className="w-[23rem] z-50 mt-2 bg-ThemeColorSelectorLight dark:bg-ThemeColorBack rounded-md border border-RadioCheckColor">
+        <DropdownMenu.Content className="w-[21rem] z-50 mt-1 bg-ThemeColorSelectorLight dark:bg-ThemeColorBack rounded-md border border-RadioCheckColor">
           <DropdownMenu.Group className="p-2">
             <CustomInput
               prefix={<img src={SearchIcon} className="mx-2" alt="search-icon" />}

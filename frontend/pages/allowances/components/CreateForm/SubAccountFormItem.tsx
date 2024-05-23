@@ -65,7 +65,7 @@ export default function SubAccountFormItem(props: ISubAccountFormItemProps) {
         border={isError() ? "error" : undefined}
         onSearch={onSearchChange}
         onOpenChange={onOpenChange}
-        contentWidth="23rem"
+        componentWidth="23rem"
       />
     </div>
   );
