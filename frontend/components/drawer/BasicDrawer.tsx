@@ -14,7 +14,7 @@ export default function BasicDrawer(props: IDrawerProps) {
   return (
     <>
       <div className={getDrawerBlank(isDrawerOpen)} />
-      <div className={getDrawerContainerStyle(isDrawerOpen)}>
+      <div id="right-drower" className={getDrawerContainerStyle(isDrawerOpen)}>
         {title && onClose && (
           <div className="flex items-center justify-between px-8 mt-8 mb-8">
             <h1 className="text-xl font-bold text-PrimaryTextColorLight dark:text-PrimaryTextColor">{title}</h1>
@@ -38,18 +38,8 @@ function getCloseIconStyles(enabled: boolean) {
 
 function getDrawerContainerStyle(isDrawerOpen: boolean) {
   return clsx(
-    "fixed",
-    "z-[1000]",
-    "w-[28rem]",
-    "h-screen",
-    "top-0",
-    "bg-PrimaryColorLight",
-    "dark:bg-PrimaryColor",
-    "transition-{right}",
-    "duration-500",
-    "ease-in-out",
-    "flex flex-col",
-    isDrawerOpen ? "right-0" : "-right-[28rem]",
+    "h-full bg-PrimaryColorLight dark:bg-PrimaryColor fixed z-[999] top-0 w-[28rem] overflow-x-hidden transition-{right} duration-500",
+    isDrawerOpen ? "!right-0" : "right-[-30rem]",
   );
 }
 
