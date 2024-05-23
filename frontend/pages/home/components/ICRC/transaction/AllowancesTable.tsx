@@ -73,7 +73,7 @@ export default function AllowancesTable() {
             const userDate = allowance?.expiration ? formatDateTime(allowance.expiration) : t("no.expiration");
 
             return (
-              <tr key={allowance.id}>
+              <tr key={allowance.id} className="py-2 border-b dark:border-gray-color-1 border-gray-color-6">
                 <td className="flex items-center justify-start p-1">
                   <div className="ml-2">
                     {subAccountName && <p>{subAccountName || subAccountName}</p>}
@@ -131,12 +131,8 @@ function justifyCell(index: number) {
 
 const headerStyles = clsx(
   "sticky top-0 z-10",
-  "border-b dark:border-gray-color-1",
+  "border-b dark:border-gray-color-1 border-gray-color-6",
   "font-bold text-left text-md text-black-color dark:text-gray-color-6 bg-secondary-color-1-light dark:bg-SecondaryColor",
-  "divide-y dark:divide-gray-color-1 divide-gray-color-6",
 );
 
-const bodyStyles = clsx(
-  "text-md text-left text-black-color dark:text-gray-color-6",
-  "divide-y dark:divide-gray-color-1 divide-gray-color-6",
-);
+const bodyStyles = clsx("text-md text-left text-black-color dark:text-gray-color-6");

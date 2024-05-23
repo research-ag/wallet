@@ -76,7 +76,7 @@ export default function AllowanceList({ allowances, handleSortChange }: Allowanc
             const userDate = allowance?.expiration ? formatDateTime(allowance.expiration) : t("no.expiration");
 
             return (
-              <tr key={allowance.id}>
+              <tr key={allowance.id} className="border-b dark:border-gray-color-1 border-gray-color-6">
                 <td className="flex flex-col items-start justify-start">
                   <div className="flex items-center justify-start">
                     {getAssetIcon(IconTypeEnum.Enum.ALLOWANCE, asset?.tokenSymbol, asset?.logo)}
@@ -140,13 +140,11 @@ function justifyCell(index: number) {
 
 const headerStyles = clsx(
   "sticky top-0",
-  "border-b dark:border-gray-color-1 dark:bg-level-2-color",
+  "border-b dark:border-gray-color-1 border-gray-color-6",
   "font-bold text-left text-md text-black-color dark:text-gray-color-6 bg-white dark:bg-level-2-color",
-  "divide-y dark:divide-gray-color-1 divide-gray-color-6",
 );
 
 const bodyStyles = clsx(
   "text-md text-left text-black-color dark:text-gray-color-6",
-  "bg-white dark:bg-level-2-color",
-  "border-b dark:border-gray-color-1 dark:bg-level-2-color",
+  "bg-white dark:bg-level-2-color dark:bg-level-2-color",
 );
