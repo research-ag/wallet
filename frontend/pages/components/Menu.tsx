@@ -9,6 +9,7 @@ const Menu = () => {
   const { contacts } = useAppSelector((state) => state.contacts);
   const { isAppDataFreshing } = useAppSelector((state) => state.common);
   const { assets } = useAppSelector((state) => state.asset.list);
+  const { services } = useAppSelector((state) => state.services);
   const { allowances } = useAppSelector((state) => state.allowance.list);
   const { t } = useTranslation();
 
@@ -34,7 +35,7 @@ const Menu = () => {
       name: "Services",
       path: SERVICES,
       // TODO: get from the state
-      label: `${assets?.length !== 1 ? t("services") : t("services")} (${0})`,
+      label: `${services?.length !== 1 ? t("services") : t("services")} (${services.length})`,
     },
   ];
 

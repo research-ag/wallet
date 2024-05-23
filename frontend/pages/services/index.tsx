@@ -1,11 +1,11 @@
 import Menu from "@pages/components/Menu";
 import ServicesFilters from "@/pages/services/components/ServicesFilters";
 import ServicesList from "@/pages/services//components/ServicesList";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
+import useServices from "./hooks/useServices";
 
 export default function Services() {
-  const [assetFilter, setAssetFilter] = useState<string[]>([]);
-  const [serviceSearchkey, setServiceSearchKey] = useState("");
+  const { serviceList, assetFilter, setAssetFilter, setServiceSearchKey } = useServices();
 
   const onServiceKeyChange = useCallback((serviceSearchkey: string) => {
     setServiceSearchKey(serviceSearchkey);
@@ -21,7 +21,7 @@ export default function Services() {
           assetFilter={assetFilter}
           onAssetFilterChange={onAssetFilterChange}
         />
-        <ServicesList serviceSearchkey={serviceSearchkey} assetFilter={assetFilter} />
+        <ServicesList services={serviceList} />
       </div>
     </div>
   );

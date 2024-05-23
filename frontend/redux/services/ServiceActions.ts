@@ -36,9 +36,9 @@ export const getServicesData = async (myAgent: HttpAgent, principal: string) => 
             withdrawFee: tokenInfo.withdrawal_fee.toString(),
           };
           if (asset) {
-            const balance = await serviceActor.icrcX_trackedDeposit(ast);
+            const balance = (await serviceActor.icrcX_trackedDeposit(ast)) as any;
             serviceAsset.tokenSymbol = asset.tokenSymbol;
-            serviceAsset.balance = balance.Ok ? balance.Ok.toString() : "";
+            serviceAsset.balance = (balance.Ok as any) ? balance.Ok.toString() : "";
           }
 
           return serviceAsset;

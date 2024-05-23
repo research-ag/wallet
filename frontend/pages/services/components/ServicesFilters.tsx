@@ -12,14 +12,10 @@ interface ServicesFiltersProps {
 }
 
 function ServicesFilters(props: ServicesFiltersProps) {
-  console.log("ServicesFilters");
   const { onServiceKeyChange, assetFilter, onAssetFilterChange } = props;
   return (
     <div className="flex items-end justify-start w-full gap-3">
-      <AssetFilter
-        onAssetFilterChange={onAssetFilterChange}
-        assetFilter={assetFilter}
-      />
+      <AssetFilter onAssetFilterChange={onAssetFilterChange} assetFilter={assetFilter} />
 
       <CustomInput
         compOutClass="!w-[40%]"
