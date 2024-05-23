@@ -92,7 +92,16 @@ export const getAllTransactionsICRC1 = async (params: GetAllTransactionsICRCPara
     if (!result?.Ok?.transactions) return [];
 
     return result?.Ok?.transactions.map(({ transaction, id }) => {
-      return formatckBTCTransaccion(transaction, id, myPrincipal?.toString(), assetSymbol, canister, subNumber);
+      const formatresult = formatckBTCTransaccion({
+        ckBTCTransaction: transaction,
+        id,
+        principal: myPrincipal?.toString(),
+        symbol: assetSymbol,
+        canister,
+        subNumber,
+      });
+
+      return formatresult;
     });
   } catch (error) {
     logger.debug("Error getting transactions", error);
