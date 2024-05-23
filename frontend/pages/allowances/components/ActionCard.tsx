@@ -21,7 +21,7 @@ export default function ActionCard(props: ActionCardProps) {
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
         <span className="cursor-pointer">
-          <DotsIcon className="w-5 h-5 cursor-pointer stroke-gray-color-3 dark:fill-PrimaryColorLight fill-gray-color-3" />
+          <DotsIcon className="absolute w-5 h-5 cursor-pointer right-5 bottom-5 to stroke-gray-color-3 dark:fill-PrimaryColorLight fill-gray-color-3 " />
         </span>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content

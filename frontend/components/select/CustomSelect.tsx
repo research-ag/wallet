@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 export interface ContentRenderProps<T> {
   open: boolean;
   options: T[];
-  selectedOption: T
+  selectedOption: T;
 }
 
 export interface SelectProps<T> {
