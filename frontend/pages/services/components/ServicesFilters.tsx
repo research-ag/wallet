@@ -14,7 +14,7 @@ interface ServicesFiltersProps {
 function ServicesFilters(props: ServicesFiltersProps) {
   const { onServiceKeyChange, assetFilter, onAssetFilterChange } = props;
   return (
-    <div className="flex items-end justify-start w-full gap-3">
+    <div className="flex items-end justify-end w-full gap-3">
       <AssetFilter onAssetFilterChange={onAssetFilterChange} assetFilter={assetFilter} />
 
       <CustomInput
@@ -22,7 +22,7 @@ function ServicesFilters(props: ServicesFiltersProps) {
         prefix={<img src={SearchIcon} className="mx-2" alt="search-icon" />}
         intent={"secondary"}
         sizeInput={"medium"}
-        placeholder="Search Service"
+        placeholder="Search by Name and Principal"
         onChange={(e) => onServiceKeyChange(e.target.value)}
       />
 

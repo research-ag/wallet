@@ -13,14 +13,16 @@ export default function Services() {
 
   return (
     <div className="flex flex-col w-full pt-[1rem] px-[2.25rem]">
-      <Menu />
-
-      <div className="flex flex-col items-start justify-start w-full h-full">
+      <div className="flex flex-row justify-between items-center w-full">
+        <Menu noMargin={true} compClass="w-3/5" />
         <ServicesFilters
           onServiceKeyChange={onServiceKeyChange}
           assetFilter={assetFilter}
           onAssetFilterChange={onAssetFilterChange}
         />
+      </div>
+
+      <div className="flex flex-col items-start justify-start w-full h-full">
         <ServicesList services={serviceList} />
       </div>
     </div>

@@ -5,7 +5,13 @@ import history from "@pages/history";
 import { CONTACTS, HOME, SERVICES } from "@pages/paths";
 import { useAppSelector } from "@redux/Store";
 
-const Menu = () => {
+interface MenuProps {
+  noMargin?: boolean;
+  compClass?: string;
+}
+
+const Menu = (props: MenuProps) => {
+  const { noMargin, compClass } = props;
   const { contacts } = useAppSelector((state) => state.contacts);
   const { isAppDataFreshing } = useAppSelector((state) => state.common);
   const { assets } = useAppSelector((state) => state.asset.list);
@@ -41,14 +47,14 @@ const Menu = () => {
 
   return (
     <Fragment>
-      <div className="flex flex-row items-center justify-start gap-3">
+      <div className={`flex flex-row items-center justify-start gap-3 ${compClass ? compClass : ""}`}>
         {menuList.map((menu, k) => (
           <CustomButton
             key={k}
             size={"small"}
             intent={"noBG"}
             border={"underline"}
-            className="flex flex-row items-center justify-start mb-4"
+            className={`flex flex-row items-center justify-start ${noMargin ? "" : "mb-4"}`}
             onClick={() => {
               handleMenuClic(menu.path);
             }}
