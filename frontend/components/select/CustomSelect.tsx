@@ -1,8 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 
-interface SelectProps<T> {
-  triggerComponent: (props: { open: boolean; options: T[]; selectedOption: T }) => JSX.Element;
-  contentComponent: (props: { open: boolean; options: T[]; selectedOption: T }) => JSX.Element;
+export interface ContentRenderProps<T> {
+  open: boolean;
+  options: T[];
+  selectedOption: T
+}
+
+export interface SelectProps<T> {
+  triggerComponent: (props: ContentRenderProps<T>) => JSX.Element;
+  contentComponent: (props: ContentRenderProps<T>) => JSX.Element;
   options: T[];
   selectedOption: T;
 }
