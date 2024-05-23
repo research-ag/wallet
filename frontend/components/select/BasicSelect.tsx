@@ -54,6 +54,7 @@ export default function Select(props: TSelectProps) {
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>
         <DropdownMenu.Content className={contentStyles(disabled, componentWidth)}>
+          <div className={`w-[${componentWidth}]`}></div>
           {onSearch && (
             <div className="p-2">
               <CustomInput
@@ -125,7 +126,7 @@ const triggerStyles = (
   border: "none" | "error" | null | undefined,
   componentWidth: string,
 ) => {
-  return clsx(selectTriggerCVA({ disabled, border }), `w-[${componentWidth}]`);
+  return clsx(selectTriggerCVA({ disabled, border }), `!w-[${componentWidth}]`);
 };
 
 const selectTriggerCVA = cva(
@@ -161,13 +162,11 @@ const selectTriggerCVA = cva(
 );
 
 const contentStyles = (disabled: boolean | null | undefined, componentWidth: string) => {
-  return clsx(selectContentCVA({ disabled }), `w-[${componentWidth}]`);
+  return clsx(selectContentCVA({ disabled }), `!w-[${componentWidth}]`);
 };
 
 const selectContentCVA = cva(
   [
-    // HERE
-    "w-[22rem]",
     "mt-1 bg-red-600",
     "bg-ThemeColorSelectorLight dark:bg-ThemeColorBack",
     "rounded-md border border-RadioCheckColor",

@@ -40,7 +40,7 @@ function getDrawerContainerStyle(isDrawerOpen: boolean) {
   return clsx(
     "fixed",
     "z-[1000]",
-    "w-[28rem]",
+    "w-[26rem]",
     "h-screen",
     "top-0",
     "bg-PrimaryColorLight",

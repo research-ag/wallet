@@ -79,7 +79,7 @@ export default function ContactBookReceiver() {
         currentValue={receiver?.thirdContactSubAccount?.subAccountId}
         onSearch={onSearchChange}
         onOpenChange={onOpenChange}
-        componentWidth="24rem"
+        componentWidth="21rem"
       />
     </div>
   );

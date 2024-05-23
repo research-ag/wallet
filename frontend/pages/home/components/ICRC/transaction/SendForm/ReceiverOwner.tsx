@@ -49,7 +49,7 @@ export default function ReceiverOwner() {
 
   return (
     <div className="mx-4 mt-4">
-      <div>
+      <div className="relative">
         <p className="opacity-50 text-start text-md text-black-color dark:text-white">{t("subAccount")}</p>
         <BasicSelect
           onSelect={onSelect}
@@ -58,7 +58,7 @@ export default function ReceiverOwner() {
           currentValue={receiver?.ownSubAccount?.sub_account_id || ""}
           onSearch={onSearchChange}
           onOpenChange={onOpenChange}
-          componentWidth="24rem"
+          componentWidth="21rem"
         />
       </div>
     </div>
