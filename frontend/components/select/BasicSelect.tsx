@@ -167,7 +167,7 @@ const contentStyles = (disabled: boolean | null | undefined, componentWidth: str
 
 const selectContentCVA = cva(
   [
-    "mt-1 bg-red-600",
+    "mt-",
     "bg-ThemeColorSelectorLight dark:bg-ThemeColorBack",
     "rounded-md border border-RadioCheckColor",
     "scroll-y-light",
