@@ -30,7 +30,7 @@ export default function SenderSubAccount() {
         currentValue={sender?.subAccount?.sub_account_id || ""}
         onSearch={onSearchChange}
         onOpenChange={onOpenChange}
-        contentWidth="23rem"
+        componentWidth="24rem"
       />
     </div>
   );

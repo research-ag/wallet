@@ -58,7 +58,7 @@ export default function ReceiverOwner() {
           currentValue={receiver?.ownSubAccount?.sub_account_id || ""}
           onSearch={onSearchChange}
           onOpenChange={onOpenChange}
-          contentWidth="23rem"
+          componentWidth="24rem"
         />
       </div>
     </div>

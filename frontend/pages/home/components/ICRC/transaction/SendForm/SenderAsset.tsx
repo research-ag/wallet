@@ -25,7 +25,7 @@ export default function SenderAsset() {
 
   return (
     <div>
-      <p className="opacity-50 text-start text-black-color dark:text-white">{t("asset")}</p>
+      <p className="opacity-50 text-start text-black-color dark:text-white text-md">{t("asset")}</p>
       <BasicSelect
         onSelect={onAssetChange}
         options={options}
@@ -34,7 +34,7 @@ export default function SenderAsset() {
         disabled={false}
         onSearch={onSearchChange}
         onOpenChange={onOpenChange}
-        contentWidth="23rem"
+        componentWidth="23rem"
       />
     </div>
   );

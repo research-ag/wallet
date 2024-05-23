@@ -25,7 +25,6 @@ export default function AllowancesTable() {
     <div className="w-full max-h-[calc(100vh-14rem)] scroll-y-light">
       <UpdateAllowanceDrawer />
       <DeleteAllowanceModal />
-
       <table className="relative w-full text-black-color dark:text-gray-color-9">
         <thead className={headerStyles}>
           <tr>

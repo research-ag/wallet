@@ -6,33 +6,24 @@ import SearchIcon from "@assets/svg/files/icon-search.svg";
 import { SelectOption } from "@/@types/components";
 import { clsx } from "clsx";
 import { useTranslation } from "react-i18next";
-import * as Popover from "@radix-ui/react-popover";
 import { cleanAlphanumeric } from "@/common/utils/strings";
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 
 interface TSelectProps extends VariantProps<typeof selectTriggerCVA>, VariantProps<typeof selectContentCVA> {
   options: SelectOption[];
   currentValue: string | number;
   initialValue?: string | number;
-  contentWidth?: string;
   onSelect: (option: SelectOption) => void;
   onSearch?: (searchValue: string) => void;
   onOpenChange?: (open: boolean) => void;
+  componentWidth: string;
 }
 
 export default function Select(props: TSelectProps) {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
-  const {
-    disabled,
-    options,
-    initialValue,
-    currentValue,
-    onSelect,
-    onSearch,
-    onOpenChange,
-    border,
-    contentWidth = "24rem",
-  } = props;
+  const { disabled, options, initialValue, currentValue, onSelect, onSearch, onOpenChange, border, componentWidth } =
+    props;
   const searchTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
 
   const selectedValue = useMemo(() => {
@@ -43,8 +34,8 @@ export default function Select(props: TSelectProps) {
   }, [currentValue]);
 
   return (
-    <Popover.Root open={isOpen} onOpenChange={handleOpenChange}>
-      <Popover.Trigger asChild className={selectTriggerCVA({ disabled, border })}>
+    <DropdownMenu.Root open={isOpen} onOpenChange={handleOpenChange}>
+      <DropdownMenu.Trigger asChild className={triggerStyles(disabled, border, componentWidth)}>
         <div className="flex items-center justify-center">
           <div className="flex items-center mr-2">
             {selectedValue && (
@@ -60,41 +51,43 @@ export default function Select(props: TSelectProps) {
           </div>
           <DropIcon className={`fill-gray-color-4 ${isOpen ? "-rotate-90" : ""}`} />
         </div>
-      </Popover.Trigger>
-      <Popover.Content className={selectContentCVA({ disabled })}>
-        {onSearch && (
-          <div className="p-2">
-            <CustomInput
-              prefix={<img src={SearchIcon} className="mx-2 w-[1.2rem] h-[1.2rem]" alt="search-icon" />}
-              onChange={handleSearchChange}
-              placeholder="Search"
-              className="dark:bg-SideColor bg-PrimaryColorLight h-[3rem]"
-            />
-          </div>
-        )}
-        <div>
-          <div className={`${getFlatStyle(contentWidth)}`}></div>
-          {options
-            .filter((option) => option.value !== selectedValue?.value)
-            .map((option, index) => (
-              <div
-                onClick={() => {
-                  handleSelectOption(option);
-                  setIsOpen(false);
-                }}
-                key={index}
-                className={getItemStyles(contentWidth)}
-              >
-                {option?.icon}
-                <div className="ml-2">
-                  <p className={textStyles()}>{option.label}</p>
-                  <p className={textStyles(true)}>{option?.subLabel}</p>
+      </DropdownMenu.Trigger>
+      <DropdownMenu.Portal>
+        <DropdownMenu.Content className={contentStyles(disabled, componentWidth)}>
+          {onSearch && (
+            <div className="p-2">
+              <CustomInput
+                prefix={<img src={SearchIcon} className="mx-2 w-[1.2rem] h-[1rem]" alt="search-icon" />}
+                onChange={handleSearchChange}
+                placeholder="Search"
+                className="dark:bg-SideColor bg-PrimaryColorLight h-[2.5rem]"
+                inputClass="h-[2rem]"
+              />
+            </div>
+          )}
+          <div>
+            {options
+              .filter((option) => option.value !== selectedValue?.value)
+              .map((option, index) => (
+                <div
+                  onClick={() => {
+                    handleSelectOption(option);
+                    setIsOpen(false);
+                  }}
+                  key={index}
+                  className={getItemStyles()}
+                >
+                  {option?.icon}
+                  <div className="ml-2">
+                    <p className={textStyles()}>{option.label}</p>
+                    <p className={textStyles(true)}>{option?.subLabel}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
-        </div>
-      </Popover.Content>
-    </Popover.Root>
+              ))}
+          </div>
+        </DropdownMenu.Content>
+      </DropdownMenu.Portal>
+    </DropdownMenu.Root>
   );
 
   function handleOpenChange(open: boolean) {
@@ -119,18 +112,21 @@ function textStyles(isSubLabel = false) {
   return clsx("text-start text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor", isSubLabel && "opacity-50");
 }
 
-function getItemStyles(width: string) {
+function getItemStyles() {
   return clsx(
-    "flex items-center min-h-[3.5rem]",
+    "flex items-center min-h-[3rem]",
     "justify-start px-2 py-2 bg-opacity-50",
     "cursor-pointer hover:bg-RadioCheckColor",
-    `w-[${width}]`,
   );
 }
 
-function getFlatStyle(width: string) {
-  return clsx(`w-[${width}]`);
-}
+const triggerStyles = (
+  disabled: boolean | null | undefined,
+  border: "none" | "error" | null | undefined,
+  componentWidth: string,
+) => {
+  return clsx(selectTriggerCVA({ disabled, border }), `w-[${componentWidth}]`);
+};
 
 const selectTriggerCVA = cva(
   [
@@ -143,7 +139,7 @@ const selectTriggerCVA = cva(
     "mt-2 ",
     "cursor-pointer",
     "px-4",
-    "h-14",
+    "h-12",
   ],
   {
     variants: {
@@ -164,12 +160,19 @@ const selectTriggerCVA = cva(
   },
 );
 
+const contentStyles = (disabled: boolean | null | undefined, componentWidth: string) => {
+  return clsx(selectContentCVA({ disabled }), `w-[${componentWidth}]`);
+};
+
 const selectContentCVA = cva(
   [
-    "w-fit max-h-[20vh] z-50 mt-2",
+    // HERE
+    "w-[22rem]",
+    "mt-1 bg-red-600",
     "bg-ThemeColorSelectorLight dark:bg-ThemeColorBack",
     "rounded-md border border-RadioCheckColor",
     "scroll-y-light",
+    "z-[1500]",
   ],
   {
     variants: {

@@ -58,7 +58,7 @@ export default function AssetFormItem(props: AssetFormItemProps) {
         border={isError() ? "error" : undefined}
         onSearch={onSearchChange}
         onOpenChange={onOpenChange}
-        contentWidth="23rem"
+        componentWidth="24rem"
       />
     </div>
   );
