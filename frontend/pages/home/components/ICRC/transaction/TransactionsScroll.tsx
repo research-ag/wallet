@@ -32,7 +32,7 @@ export default function TransactionsWrapper() {
 
   const onScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const element = e.target as HTMLDivElement;
-    const scrollFull = (element.scrollHeight - element.clientHeight) - 10;
+    const scrollFull = element.scrollHeight - element.clientHeight - 10;
     const isScrolledToBottom = scrollFull <= element.scrollTop;
 
     if (isScrolledToBottom && !isAtBottomRef.current) {
