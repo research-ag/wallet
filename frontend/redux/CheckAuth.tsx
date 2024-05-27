@@ -21,13 +21,12 @@ import { clearDataContacts } from "./contacts/ContactsReducer";
 import { Principal } from "@dfinity/principal";
 import { Secp256k1KeyIdentity } from "@dfinity/identity-secp256k1";
 import { db, DB_Type } from "@/database/db";
-import { setTransactions } from "./transaction/TransactionReducer";
+import { setTransactions, setTxWorker } from "./transaction/TransactionReducer";
 import { addWatchOnlySessionToLocal } from "@pages/helpers/watchOnlyStorage";
 import watchOnlyRefresh from "@pages/helpers/watchOnlyRefresh";
 
-const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${
-  import.meta.env.VITE_APP_LOGO
-}#authorize`;
+const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${import.meta.env.VITE_APP_LOGO
+  }#authorize`;
 
 const NETWORK_AUTHORIZE_PATH = "https://identity.ic0.app/#authorize";
 const HTTP_AGENT_HOST = "https://identity.ic0.app";
@@ -150,4 +149,5 @@ export const logout = async () => {
   store.dispatch(setUserAgent(undefined));
   store.dispatch(setUserPrincipal(undefined));
   store.dispatch(setTransactions([]));
+  store.dispatch(setTxWorker([]));
 };
