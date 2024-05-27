@@ -76,11 +76,10 @@ export const getAllTransactionsICRC1 = async (params: GetAllTransactionsICRCPara
 
     const myAgent = store.getState().auth.userAgent;
     const myPrincipal = store.getState().auth.userPrincipal;
-    const canisterPrincipal = typeof canisterId === "string" ? Principal.fromText(canisterId) : canisterId;
 
     const actor = Actor.createActor<LedgerActor>(LedgerFactory, {
       agent: myAgent,
-      canisterId: canisterPrincipal,
+      canisterId,
     });
 
     const result = await actor.get_account_transactions({
