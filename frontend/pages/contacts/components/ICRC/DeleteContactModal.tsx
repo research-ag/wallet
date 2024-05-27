@@ -1,7 +1,7 @@
 import { ReactComponent as TrashIcon } from "@assets/svg/files/trash-icon.svg";
 import { BasicModal } from "@components/modal";
 import { Contact } from "@redux/models/ContactsModels";
-import { useState } from "react";// svgs
+import { useState } from "react"; // svgs
 import { ReactComponent as WarningIcon } from "@assets/svg/files/warning.svg";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
@@ -10,7 +10,6 @@ import { useTranslation } from "react-i18next";
 import deleteContact from "@pages/contacts/services/deleteContact";
 import logger from "@common/utils/logger";
 import { LoadingLoader } from "@components/loader";
-
 
 export default function DeleteContactModal({ contact }: { contact: Contact }) {
   const { t } = useTranslation();
@@ -94,7 +93,6 @@ export default function DeleteContactModal({ contact }: { contact: Contact }) {
               <p>{t("confirm")}</p>
             </CustomButton>
           </div>
-
         </div>
       </BasicModal>
     </>
@@ -103,9 +101,9 @@ export default function DeleteContactModal({ contact }: { contact: Contact }) {
   function getDeleteMessage() {
     return {
       msg1: t("delete.contact.contact.msg", { name: deleteObject.name }),
-      msg2: deleteObject.name
+      msg2: deleteObject.name,
     };
-  };
+  }
 
   // function getDeleteMs() {
   //   let msg1 = "";
@@ -179,5 +177,4 @@ export default function DeleteContactModal({ contact }: { contact: Contact }) {
   //   });
   //   setDeleteModal(true);
   // }
-
-};
+}

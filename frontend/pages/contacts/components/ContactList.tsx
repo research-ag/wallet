@@ -2,6 +2,7 @@
 import { ReactComponent as ChevIcon } from "@assets/svg/files/chev-icon.svg";
 import { ReactComponent as CheckIcon } from "@assets/svg/files/edit-check.svg";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
+import DeleteContactModal from "./ICRC/DeleteContactModal";
 //
 import { ChangeEvent, Fragment, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -14,10 +15,10 @@ import { Contact } from "@redux/models/ContactsModels";
 import { getInitialFromName } from "@common/utils/strings";
 import { AccountIdentifier } from "@dfinity/ledger-icp";
 import { Principal } from "@dfinity/principal";
-import DeleteContactModal from "./ICRC/DeleteContactModal";
 import logger from "@common/utils/logger";
 import clsx from "clsx";
 import SubAccountTable from "./ICRC/SubAccountTable";
+import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 
 interface ContactListProps {
   contactSearchKey: string;
@@ -81,7 +82,6 @@ const ContactList = ({ assetFilter, contactSearchKey }: ContactListProps) => {
 
           <tbody>
             {getFilteredContacts().map((contact, idx) => {
-
               const hasContactAllowance = contact?.assets.some((asset) =>
                 asset.subaccounts.some((subaccount) => subaccount?.allowance?.allowance),
               );
@@ -96,28 +96,55 @@ const ContactList = ({ assetFilter, contactSearchKey }: ContactListProps) => {
                       <div className="relative flex flex-row items-center justify-start w-full gap-2 px-4 min-h-14">
                         {isCurrentContactDropdownOpen && <div className="absolute left-0 w-1 h-14 bg-SelectRowColor" />}
                         {isCurrentContactEdited ? (
-                          <CustomInput
-                            intent={"primary"}
-                            border={contactNameInvalid ? "error" : "selected"}
-                            sizeComp={"xLarge"}
-                            sizeInput="small"
-                            onChange={onContactNameChange}
-                            value={contactEdited?.name || ""}
-                          />
+                          <div className="flex items-center justify-between w-full gap-2">
+
+                            <CustomInput
+                              intent={"primary"}
+                              border={contactNameInvalid ? "error" : "selected"}
+                              sizeComp={"xLarge"}
+                              sizeInput="small"
+                              onChange={onContactNameChange}
+                              value={contactEdited?.name || ""}
+                            />
+
+                            {isCurrentContactEdited && (
+                              <CheckIcon
+                                onClick={() => onSaveContact(contact)}
+                                className="w-4 h-4 opacity-50 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
+                              />
+                            )}
+
+                            {isCurrentContactEdited ? (
+                              <CloseIcon
+                                onClick={onCancelContactEdit}
+                                className="w-5 h-5 opacity-50 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
+                              />
+                            ) : (
+                              <DeleteContactModal contact={contact} />
+                            )}
+                          </div>
                         ) : null}
 
                         {!isCurrentContactEdited ? (
                           <div className="flex flex-row items-center justify-start w-full gap-2">
-                            <div className={`flex justify-center items-center !min-w-[2rem] w-8 h-8 rounded-md ${getContactColor(idx)}`}>
+                            <div
+                              className={`flex justify-center items-center !min-w-[2rem] w-8 h-8 rounded-md ${getContactColor(
+                                idx,
+                              )}`}
+                            >
                               <p className="text-PrimaryTextColor">{getInitialFromName(contact.name, 2)}</p>
                             </div>
-                            <p className="text-left opacity-70 break-words max-w-[14rem]" onDoubleClick={() => onEditContact(contact)}>{contact.name}</p>
+                            <p
+                              className="text-left opacity-70 break-words max-w-[14rem]"
+                              onDoubleClick={() => onEditContact(contact)}
+                            >
+                              {contact.name}
+                            </p>
                             {hasContactAllowance && (
                               <MoneyHandIcon className="relative w-5 h-5 cursor-pointer fill-RadioCheckColor" />
                             )}
                           </div>
                         ) : null}
-
                       </div>
                     </td>
                     <td className="py-2">
@@ -129,25 +156,15 @@ const ContactList = ({ assetFilter, contactSearchKey }: ContactListProps) => {
 
                     <td className="py-2">
                       <div className="flex flex-row items-start justify-center w-full gap-4">
-                        {isCurrentContactEdited && (
-                          <CheckIcon
-                            onClick={() => onSaveContact(contact)}
-                            className="w-4 h-4 opacity-50 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
-                          />
-                        )}
-
-                        {isCurrentContactEdited ? (
-                          <CloseIcon
-                            onClick={onCancelContactEdit}
-                            className="w-5 h-5 opacity-50 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
-                          />
-                        ) : (
-                          <DeleteContactModal contact={contact} />
-                        )}
+                        <DotsHorizontalIcon
+                          className="w-5 h-5 opacity-50 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
+                          onClick={onContactAction}
+                        />
                       </div>
                     </td>
-                    <td className="py-2">
-                      <div className="flex flex-row items-start justify-center w-full gap-2">
+                    <td className="p-2">
+                      <div className="flex items-center justify-center pl-2 rounded-md cursor-pointer bg-gray-color-2">
+                        <span className="text-md">3</span>
                         <ChevIcon
                           onClick={() => onOpenDropdown(contact)}
                           className={getChevIconStyles(isCurrentContactDropdownOpen)}
@@ -165,18 +182,23 @@ const ContactList = ({ assetFilter, contactSearchKey }: ContactListProps) => {
     </Fragment>
   );
 
+  function onContactAction() {
+    console.log("Contact Action");
+  }
+
   function getChevIconStyles(isCurrentContactDropdownOpen: boolean) {
     return clsx({
-      ["w-8 h-8 stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor stroke-0  cursor-pointer"]: true,
+      ["w-6 h-6 stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor stroke-0  cursor-pointer"]: true,
       ["rotate-90"]: !isCurrentContactDropdownOpen,
     });
-  };
+  }
 
   function getRowStyles(contact: Contact) {
     return clsx({
       ["border-b border-BorderColorTwoLight dark:border-BorderColorTwo"]: true,
-      ["bg-SecondaryColorLight dark:bg-SecondaryColor"]: contactDropdown?.principal === contact.principal && contactEdited?.principal !== contact.principal,
-      ["bg-SelectRowColor/10"]: contactEdited?.principal === contact.principal
+      ["bg-SecondaryColorLight dark:bg-SecondaryColor"]:
+        contactDropdown?.principal === contact.principal && contactEdited?.principal !== contact.principal,
+      ["bg-SelectRowColor/10"]: contactEdited?.principal === contact.principal,
     });
   }
 
@@ -199,7 +221,9 @@ const ContactList = ({ assetFilter, contactSearchKey }: ContactListProps) => {
     if (isNameInValid) return;
 
     try {
-      const accountIdentifier = AccountIdentifier.fromPrincipal({ principal: Principal.fromText(contactEdited.principal) }).toHex();
+      const accountIdentifier = AccountIdentifier.fromPrincipal({
+        principal: Principal.fromText(contactEdited.principal),
+      }).toHex();
       // QUESTION: Should we spred the contact and update the assets?
       // const updatedContact = {
       //   ...contactEdited,
@@ -210,7 +234,9 @@ const ContactList = ({ assetFilter, contactSearchKey }: ContactListProps) => {
       // updateContact(updatedContact, contact.principal);
     } catch (error) {
       logger.debug("Error saving contact", error);
-    };
+    } finally {
+      setContactEdited(null);
+    }
   }
 
   function onEditContact(contact: Contact) {
@@ -245,9 +271,11 @@ const ContactList = ({ assetFilter, contactSearchKey }: ContactListProps) => {
         });
       });
 
-      const assetFilterMatch = assetFilter.length === 0 || currentContact.assets.some((asset) => {
-        return assetFilter.includes(asset.symbol);
-      });
+      const assetFilterMatch =
+        assetFilter.length === 0 ||
+        currentContact.assets.some((asset) => {
+          return assetFilter.includes(asset.symbol);
+        });
 
       return nameMatch || principalMatch || subAccountNameMatch || assetFilterMatch;
     });

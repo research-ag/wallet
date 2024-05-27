@@ -14,7 +14,7 @@ import { useTranslation } from "react-i18next";
 interface AssetFilterProps {
   assetFilter: string[];
   onAssetFilterChange: (assetFilter: string[]) => void;
-};
+}
 
 function AssetFilter({ assetFilter, onAssetFilterChange }: AssetFilterProps) {
   const { t } = useTranslation();
@@ -132,7 +132,6 @@ const contentContainerStyles = clsx(
 );
 
 export default memo(AssetFilter, arePropsEqual);
-
 
 function arePropsEqual(prevProps: AssetFilterProps, nextProps: AssetFilterProps) {
   if (prevProps === nextProps) return true;

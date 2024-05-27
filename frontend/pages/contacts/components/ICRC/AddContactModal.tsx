@@ -9,11 +9,7 @@ function AddContactModal() {
 
   return (
     <div>
-      <IconButton
-        icon={<PlusIcon className="w-6 h-6" />}
-        size="medium"
-        onClick={() => setOpen(true)}
-      />
+      <IconButton icon={<PlusIcon className="w-6 h-6" />} size="medium" onClick={() => setOpen(true)} />
 
       <BasicModal
         open={open}
@@ -25,6 +21,6 @@ function AddContactModal() {
       </BasicModal>
     </div>
   );
-};
+}
 
 export default memo(AddContactModal);

@@ -60,10 +60,7 @@ export default function AddContact({ onClose }: AddContactProps) {
 
   return (
     <div className="relative flex flex-col items-start justify-start w-full gap-4 text-md">
-      <CloseIcon
-        className={getCloseIconStyles(isCreating)}
-        onClick={onClose}
-      />
+      <CloseIcon className={getCloseIconStyles(isCreating)} onClick={onClose} />
       <p>{t("add.contact")}</p>
 
       <ContactMainDetails
