@@ -135,15 +135,15 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean,
 
   await db().setIdentity(authIdentity, myPrincipal);
 
-  store.dispatch(setUserPrincipal(myPrincipal));
-  store.dispatch(setAuthenticated(true, false, !!fixedPrincipal, principalString));
-  store.dispatch(setInitLoad(false));
-
   if (!fixedPrincipal) {
     const { services, serviceData } = await getServicesData(myAgent, principalString);
     store.dispatch(setServices(services));
     store.dispatch(setServicesData(serviceData));
   }
+
+  store.dispatch(setUserPrincipal(myPrincipal));
+  store.dispatch(setAuthenticated(true, false, !!fixedPrincipal, principalString));
+  store.dispatch(setInitLoad(false));
 };
 
 export const logout = async () => {

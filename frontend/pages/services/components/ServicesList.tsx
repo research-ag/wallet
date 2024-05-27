@@ -2,6 +2,7 @@
 import { ReactComponent as PencilIcon } from "@assets/svg/files/pencil.svg";
 import { ReactComponent as TrashIcon } from "@assets/svg/files/trash-icon.svg";
 import { ReactComponent as ChevIcon } from "@assets/svg/files/chev-icon.svg";
+import { ReactComponent as MoreIcon } from "@assets/svg/files/more-alt.svg";
 import { ReactComponent as CheckIcon } from "@assets/svg/files/edit-check.svg";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
@@ -11,10 +12,11 @@ import { CustomInput } from "@components/input";
 import { CustomCopy } from "@components/tooltip";
 import { Service } from "@redux/models/ServiceModels";
 import { clsx } from "clsx";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { useTranslation } from "react-i18next";
 import useServicesList from "../hooks/useServiceList";
 import ServiceAssetsList from "./ServiceAssetsList";
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 
 interface ServicesListProps {
   services: Service[];
@@ -33,6 +35,7 @@ export default function ServicesList({ services }: ServicesListProps) {
     onClose,
     onSave,
   } = useServicesList();
+  const [openMore, setOpenMore] = useState(-1);
 
   return (
     <table className="w-full text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md mt-2">
@@ -53,7 +56,11 @@ export default function ServicesList({ services }: ServicesListProps) {
           return (
             <Fragment key={k}>
               <tr className={ServiceStyle(srv)}>
-                <td className="">
+                <td
+                  onDoubleClick={() => {
+                    onEditService(srv);
+                  }}
+                >
                   <div className="relative flex flex-row items-center justify-start w-full gap-2 px-4 min-h-14">
                     {srv.principal === selectedService && (
                       <div className="absolute left-0 w-1 h-14 bg-SelectRowColor"></div>
@@ -66,6 +73,18 @@ export default function ServicesList({ services }: ServicesListProps) {
                         sizeInput="small"
                         value={editedService.name}
                         onChange={onContactNameChange}
+                        sufix={
+                          <div className="flex flex-row justify-start items-center">
+                            <CheckIcon
+                              onClick={onSave}
+                              className="w-4 h-4 opacity-50 cursor-pointer stroke-slate-color-success"
+                            />
+                            <CloseIcon
+                              onClick={onClose}
+                              className="w-5 h-5 opacity-50 cursor-pointer stroke-slate-color-error"
+                            />
+                          </div>
+                        }
                       />
                     ) : (
                       <div className="flex flex-row items-center justify-start w-full gap-2">
@@ -88,33 +107,34 @@ export default function ServicesList({ services }: ServicesListProps) {
                   </div>
                 </td>
                 <td className="py-2">
-                  <div className="flex flex-row items-start justify-center w-full gap-4">
-                    {srv.principal === selectedService ? (
-                      <CheckIcon
-                        onClick={onSave}
-                        className="w-4 h-4 opacity-50 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
-                      />
-                    ) : (
-                      <PencilIcon
-                        onClick={() => {
-                          onEditService(srv);
-                        }}
-                        className="w-4 h-4 opacity-50 cursor-pointer fill-PrimaryTextColorLight dark:fill-PrimaryTextColor"
-                      />
-                    )}
-                    {srv.principal === selectedService ? (
-                      <CloseIcon
-                        onClick={onClose}
-                        className="w-5 h-5 opacity-50 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
-                      />
-                    ) : (
-                      <TrashIcon
-                        onClick={() => {
-                          // onDeleteSubAccount(cntc);
-                        }}
-                        className="w-4 h-4 cursor-pointer fill-PrimaryTextColorLight dark:fill-PrimaryTextColor"
-                      />
-                    )}
+                  <div className="relative flex items-center justify-center h-full">
+                    <DropdownMenu.Root
+                      open={openMore === k}
+                      onOpenChange={(e) => {
+                        onOpenMoreChange(k, e);
+                      }}
+                    >
+                      <DropdownMenu.Trigger>
+                        <MoreIcon className="cursor-pointer fill-PrimaryTextColorLight/70 dark:fill-PrimaryTextColor/70" />
+                      </DropdownMenu.Trigger>
+                      <DropdownMenu.Portal>
+                        <DropdownMenu.Content
+                          className=" w-[6rem] rounded-md bg-DeleteBackgroundColor !z-[999] text-PrimaryTextColorLight dark:text-PrimaryTextColor dark:border dark:border-BorderColorTwo shadow-md shadow-PrimaryColor/30 dark:shadow-black/20"
+                          sideOffset={5}
+                          align="end"
+                        >
+                          <div
+                            className="flex flex-row items-center justify-center gap-2 p-2 cursor-pointer hover:bg-TextErrorColor/20 rounded-b-md"
+                            onClick={() => {
+                              // onDeleteSubAccount(cntc);
+                            }}
+                          >
+                            <TrashIcon className="w-4 h-4 cursor-pointer fill-TextErrorColor" />
+                            <p className="text-TextErrorColor">{t("delete")}</p>
+                          </div>
+                        </DropdownMenu.Content>
+                      </DropdownMenu.Portal>
+                    </DropdownMenu.Root>
                   </div>
                 </td>
                 <td className="py-2">
@@ -156,5 +176,9 @@ export default function ServicesList({ services }: ServicesListProps) {
     if (idx % 3 === 0) return "bg-ContactColor1";
     else if (idx % 3 === 1) return "bg-ContactColor2";
     else return "bg-ContactColor3";
+  }
+
+  function onOpenMoreChange(k: number, e: boolean) {
+    setOpenMore(e ? k : -1);
   }
 }

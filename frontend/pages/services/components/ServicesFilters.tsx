@@ -14,7 +14,7 @@ interface ServicesFiltersProps {
 function ServicesFilters(props: ServicesFiltersProps) {
   const { onServiceKeyChange, assetFilter, onAssetFilterChange } = props;
   return (
-    <div className="flex items-end justify-end w-full gap-3">
+    <div className="flex items-center justify-start w-full gap-3">
       <AssetFilter onAssetFilterChange={onAssetFilterChange} assetFilter={assetFilter} />
 
       <CustomInput

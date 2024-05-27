@@ -13,7 +13,6 @@ interface MenuProps {
 const Menu = (props: MenuProps) => {
   const { noMargin, compClass } = props;
   const { contacts } = useAppSelector((state) => state.contacts);
-  const { isAppDataFreshing } = useAppSelector((state) => state.common);
   const { assets } = useAppSelector((state) => state.asset.list);
   const { services } = useAppSelector((state) => state.services);
   const { allowances } = useAppSelector((state) => state.allowance.list);
@@ -70,9 +69,6 @@ const Menu = (props: MenuProps) => {
             </p>
           </CustomButton>
         ))}
-        {isAppDataFreshing && (
-          <div className=" mt-[-1rem] inline-block w-4 h-4 after:block after:w-4 after:h-4 after:rounded-[50%] after:border-[0.2rem] after:border-t-SelectRowColor after:border-b-SelectRowColor after:border-r-transparent after:border-l-transparent lds-dual-ring"></div>
-        )}
       </div>
     </Fragment>
   );

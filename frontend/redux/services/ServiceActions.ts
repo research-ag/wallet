@@ -16,34 +16,40 @@ export const getServicesData = async (myAgent: HttpAgent, principal: string) => 
         canisterId: srv.principal,
       });
 
-      const supportedAssets = await serviceActor.icrcX_supported_tokens();
-      const credits = await serviceActor.icrcX_all_credits();
+      let serviceAssets: ServiceAsset[] = [];
+      try {
+        const supportedAssets = await serviceActor.icrcX_supported_tokens();
+        if (supportedAssets.length > 0) {
+          const credits = await serviceActor.icrcX_all_credits();
+          serviceAssets = await Promise.all(
+            supportedAssets.map(async (ast) => {
+              const tokenInfo = await serviceActor.icrcX_token_info(ast);
 
-      const serviceAssets = await Promise.all(
-        supportedAssets.map(async (ast) => {
-          const tokenInfo = await serviceActor.icrcX_token_info(ast);
+              const asset = myAssets.find((myAst) => myAst.address === ast.toText());
+              const credit = credits.find((crd) => crd[0] === ast);
 
-          const asset = myAssets.find((myAst) => myAst.address === ast.toText());
-          const credit = credits.find((crd) => crd[0] === ast);
+              const serviceAsset: ServiceAsset = {
+                tokenSymbol: "",
+                balance: "",
+                credit: credit ? credit[1].toString() : "",
+                minDeposit: tokenInfo.min_deposit.toString(),
+                minWithdraw: tokenInfo.min_withdrawal.toString(),
+                depositFee: tokenInfo.deposit_fee.toString(),
+                withdrawFee: tokenInfo.withdrawal_fee.toString(),
+              };
+              if (asset) {
+                const balance = (await serviceActor.icrcX_trackedDeposit(ast)) as any;
+                serviceAsset.tokenSymbol = asset.tokenSymbol;
+                serviceAsset.balance = (balance.Ok as any) ? balance.Ok.toString() : "";
+              }
 
-          const serviceAsset: ServiceAsset = {
-            tokenSymbol: "",
-            balance: "",
-            credit: credit ? credit[1].toString() : "",
-            minDeposit: tokenInfo.min_deposit.toString(),
-            minWithdraw: tokenInfo.min_withdrawal.toString(),
-            depositFee: tokenInfo.deposit_fee.toString(),
-            withdrawFee: tokenInfo.withdrawal_fee.toString(),
-          };
-          if (asset) {
-            const balance = (await serviceActor.icrcX_trackedDeposit(ast)) as any;
-            serviceAsset.tokenSymbol = asset.tokenSymbol;
-            serviceAsset.balance = (balance.Ok as any) ? balance.Ok.toString() : "";
-          }
-
-          return serviceAsset;
-        }),
-      );
+              return serviceAsset;
+            }),
+          );
+        }
+      } catch (error) {
+        console.error("service-err", error);
+      }
 
       return {
         name: srv.name,
