@@ -70,7 +70,7 @@ export type TimerActionType = z.infer<typeof TimerActionTypeEnum>;
 export const ICRCSubaccountInfoEnum = z.enum(["TRANSACTIONS", "ALLOWANCES"]);
 export type ICRCSubaccountInfo = z.infer<typeof ICRCSubaccountInfoEnum>;
 
-export const SpecialTxTypeEnum = z.enum(["mint", "burn"]);
+export const SpecialTxTypeEnum = z.enum(["mint", "burn", "transfer", "approve"]);
 export type SpecialTxType = z.infer<typeof SpecialTxTypeEnum>;
 
 export const DIP20systemAssets: Array<Asset> = [];

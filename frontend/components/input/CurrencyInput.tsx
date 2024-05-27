@@ -40,6 +40,7 @@ const inputCurrencyCVA = cva(
     "text-PrimaryTextColorLight dark:text-PrimaryTextColor",
     "py-2 px-4",
     "rounded-lg",
+    "h-12",
   ],
   {
     variants: {

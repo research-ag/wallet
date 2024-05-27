@@ -358,6 +358,7 @@ export default function SubAccountBody(props: SubAccountBodyProps) {
         setAddSub(false);
       }
     } catch (error) {
+      logger.debug("Error checking subaccount", error);
       if (error === SUB_ACCOUNT_ID_ERROR) {
         return setSubaccEditedErr({ name: false, subaccount_index: true });
       }
@@ -387,7 +388,8 @@ export default function SubAccountBody(props: SubAccountBodyProps) {
         try {
           Principal.fromText(value);
           setSubaccEditedErr({ ...subaccEditedErr, subaccount_index: false });
-        } catch {
+        } catch (error) {
+          logger.debug("Error parsing principal", error);
           setSubaccEditedErr({ ...subaccEditedErr, subaccount_index: true });
         }
       }

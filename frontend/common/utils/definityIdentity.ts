@@ -4,7 +4,7 @@ export function validatePrincipal(principal: string): boolean {
   try {
     Principal.fromText(principal.trim());
     return true;
-  } catch (e) {
+  } catch {
     return false;
   }
 }

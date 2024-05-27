@@ -31,7 +31,7 @@ export const updateAllBalances: UpdateAllBalances = async (params) => {
   const myPrincipal = store.getState().auth.userPrincipal;
 
   if (!myPrincipal) {
-    console.warn("No principal found");
+    logger.debug("No principal found");
     return;
   }
 
@@ -54,7 +54,8 @@ export const updateAllBalances: UpdateAllBalances = async (params) => {
 
       try {
         subacc = SubAccountNNS.fromBytes(hexToUint8Array(saICP.sub_account_id)) as SubAccountNNS;
-      } catch {
+      } catch (error) {
+        logger.debug("Error parsing subaccount", error);
         subacc = undefined;
       }
 

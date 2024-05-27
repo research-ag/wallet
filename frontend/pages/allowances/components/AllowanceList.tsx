@@ -87,7 +87,7 @@ export default function AllowanceList({ allowances, handleSortChange }: Allowanc
                       )}
                     </div>
                   </div>
-                  <p className="ml-0.5 text-center">{asset?.symbol || "-"}</p>
+                  <p className="ml-1 text-center text-md">{asset?.symbol || "-"}</p>
                 </td>
                 <td className="py-1">
                   {spenderName && <p>{spenderName}</p>}
@@ -140,13 +140,11 @@ function justifyCell(index: number) {
 
 const headerStyles = clsx(
   "sticky top-0",
-  "border-b dark:border-gray-color-1 dark:bg-level-2-color",
+  "border-b dark:border-gray-color-1 border-gray-color-6",
   "font-bold text-left text-md text-black-color dark:text-gray-color-6 bg-white dark:bg-level-2-color",
-  "divide-y dark:divide-gray-color-1 divide-gray-color-6",
 );
 
 const bodyStyles = clsx(
   "text-md text-left text-black-color dark:text-gray-color-6",
-  "bg-white dark:bg-level-2-color",
-  "divide-y dark:divide-gray-color-1 divide-gray-color-6",
+  "bg-white dark:bg-level-2-color dark:bg-level-2-color",
 );

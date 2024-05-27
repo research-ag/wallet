@@ -65,7 +65,7 @@ export default function SpenderFormItem(props: ISpenderFormItemProps) {
           border={getError() ? "error" : undefined}
           onSearch={onSearchChange}
           onOpenChange={onOpenChange}
-          contentWidth="23rem"
+          componentWidth="23rem"
         />
       )}
       {isNew && (

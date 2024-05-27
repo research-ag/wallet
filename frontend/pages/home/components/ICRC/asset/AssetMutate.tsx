@@ -16,7 +16,7 @@ export default function AssetMutate() {
       <div className={containerStyles} onClick={onAddAsset}>
         <img src={PlusIcon} alt="plus-icon" />
       </div>
-      {isDrawerOpen ? <AssetDrawerMutate isDrawerOpen={isDrawerOpen} /> : null}
+      <AssetDrawerMutate isDrawerOpen={isDrawerOpen} />
       <DialogAssetConfirmation />
     </>
   );

@@ -1,10 +1,17 @@
-import { OperationStatusEnum, OperationTypeEnum, SpecialTxTypeEnum, TransactionTypeEnum } from "@/common/const";
+import {
+  OperationStatusEnum,
+  OperationTypeEnum,
+  SpecialTxTypeEnum,
+  TransactionType,
+  TransactionTypeEnum,
+} from "@/common/const";
 import { Transaction, Operation, RosettaTransaction } from "@/redux/models/AccountModels";
 import { subUint8ArrayToHex } from "@common/utils/unitArray";
-import { Account, Transaction as IcrcTransaction } from "@dfinity/ledger-icrc/dist/candid/icrc_index";
+import { Transaction as IcrcTransaction } from "@dfinity/ledger-icrc/dist/candid/icrc_index";
 import { AccountIdentifier, SubAccount as SubAccountNNS } from "@dfinity/ledger-icp";
 import { Principal } from "@dfinity/principal";
 import logger from "@/common/utils/logger";
+import { Approve, Burn, Mint, Transfer } from "@candid/icrcLedger/icrcLedgerService";
 
 export const MILI_PER_SECOND = 1000000;
 
@@ -18,6 +25,7 @@ export const formatIcpTransaccion = (
     metadata: { timestamp, block_height },
     transaction_identifier: { hash },
   } = rosettaTransaction;
+
   const transaction = { status: OperationStatusEnum.Enum.COMPLETED } as Transaction;
   operations?.forEach((operation: Operation, i: number) => {
     const value = BigInt(operation.amount.value);
@@ -60,151 +68,226 @@ export const formatIcpTransaccion = (
   } as Transaction;
 };
 
-export const formatckBTCTransaccion = (
-  ckBTCTransaction: IcrcTransaction,
-  id: bigint,
-  principal: string,
-  symbol: string,
-  canister: string,
-  subNumber?: string,
-): Transaction => {
-  const { timestamp, transfer, mint, burn, kind } = ckBTCTransaction;
-  const trans = { status: OperationStatusEnum.Enum.COMPLETED, kind: kind } as Transaction;
-  // Check Tx type ["transfer", "mint", "burn"]
-  if (kind === SpecialTxTypeEnum.Enum.mint)
-    mint.forEach(
-      (operation: {
-        to: Account;
-        memo: [] | [Uint8Array | number[]];
-        created_at_time: [] | [bigint];
-        amount: bigint;
-      }) => {
-        // Get Tx data from Mint record
-        const value = operation.amount;
-        const amount = value.toString();
-        trans.to = (operation.to.owner as Principal).toString();
-        if (operation.to.subaccount.length > 0)
-          trans.toSub = `0x${subUint8ArrayToHex((operation.to.subaccount as [Uint8Array])[0])}`;
-        else trans.toSub = "0x0";
-        trans.from = "";
-        trans.fromSub = "";
-        trans.canisterId = canister;
-        trans.symbol = symbol;
-        trans.amount = amount;
+interface FormatBTCArgs {
+  ckBTCTransaction: IcrcTransaction;
+  id: bigint;
+  principal: string;
+  symbol: string;
+  canister: string;
+  subNumber?: string;
+}
 
-        // Get AccountIdentifier of Receiver
-        let subaccTo: SubAccountNNS | undefined = undefined;
-        try {
-          subaccTo = SubAccountNNS.fromBytes((operation.to.subaccount as [Uint8Array])[0]) as SubAccountNNS;
-        } catch {
-          subaccTo = undefined;
-        }
-        trans.idx = id.toString();
-        trans.identityTo = AccountIdentifier.fromPrincipal({
-          principal: operation.to.owner as Principal,
-          subAccount: subaccTo,
-        }).toHex();
-        trans.type = TransactionTypeEnum.Enum.RECEIVE;
-      },
-    );
-  else if (kind === SpecialTxTypeEnum.Enum.burn)
-    burn.forEach(
-      // Get Tx data from Burn record
-      /**
-       * INFO: memo type modified from [] | [Uint8Array] to [] | [Uint8Array | number[]] on ledger-icrc
-       * References:
-       * - https://forum.dfinity.org/t/breaking-changes-in-ledger-icrc-icp-javascript-libraries/23465
-       * - https://github.com/dfinity/ic-js/blob/bf808fef5e3dbe4c3662abe8b350a04ba684619d/packages/ledger-icrc/candid/icrc_ledger.d.ts#L148
-       */
-      (operation: {
-        from: Account;
-        memo: [] | [Uint8Array | number[]];
-        created_at_time: [] | [bigint];
-        amount: bigint;
-      }) => {
-        const value = operation.amount;
-        const amount = value.toString();
-        trans.from = (operation.from.owner as Principal).toString();
-        if (operation.from.subaccount.length > 0)
-          trans.fromSub = `0x${subUint8ArrayToHex((operation.from.subaccount as [Uint8Array])[0])}`;
-        else trans.fromSub = "0x0";
-        trans.to = "";
-        trans.toSub = "";
-        trans.canisterId = canister;
-        trans.symbol = symbol;
-        trans.amount = amount;
+function mintMapper(mint: Mint[], initial: Transaction): Transaction {
+  return mint.reduce((acc, current) => {
+    const amount = current.amount.toString();
+    const toOwner = current.to.owner;
+    const toSubAccount = current.to.subaccount.length
+      ? `0x${subUint8ArrayToHex((current.to.subaccount as [Uint8Array])[0])}`
+      : "0x0";
+    const from = "";
+    const fromSub = "";
 
-        // Get AccountIdentifier of Sender
-        let subaccFrom: SubAccountNNS | undefined = undefined;
-        try {
-          subaccFrom = SubAccountNNS.fromBytes((operation.from.subaccount as [Uint8Array])[0]) as SubAccountNNS;
-        } catch {
-          subaccFrom = undefined;
-        }
-        trans.idx = id.toString();
-        trans.identityFrom = AccountIdentifier.fromPrincipal({
-          principal: operation.from.owner as Principal,
-          subAccount: subaccFrom,
-        }).toHex();
-        trans.type = TransactionTypeEnum.Enum.SEND;
-      },
-    );
-  else
-    transfer?.forEach((operation: any) => {
-      // Get Tx data from transfer record
-      const value = operation.amount;
-      const amount = value.toString();
-      trans.to = (operation.to.owner as Principal).toString();
-      trans.from = (operation.from.owner as Principal).toString();
+    let subaccTo: SubAccountNNS | undefined = undefined;
+    try {
+      subaccTo = SubAccountNNS.fromBytes((current.to.subaccount as [Uint8Array])[0]) as SubAccountNNS;
+    } catch (error) {
+      logger.debug("Error parsing subaccount", error);
+      subaccTo = undefined;
+    }
 
-      if (operation.to.subaccount.length > 0)
-        trans.toSub = `0x${subUint8ArrayToHex((operation.to.subaccount as [Uint8Array])[0])}`;
-      else trans.toSub = "0x0";
+    const identityTo = AccountIdentifier.fromPrincipal({
+      principal: current.to.owner as Principal,
+      subAccount: subaccTo,
+    }).toHex();
 
-      if (operation.from.subaccount.length > 0)
-        trans.fromSub = `0x${subUint8ArrayToHex((operation.from.subaccount as [Uint8Array])[0])}`;
-      else trans.fromSub = "0x0";
+    const type = TransactionTypeEnum.Enum.RECEIVE;
 
-      const subCheck = subNumber;
-      if (trans.from === principal && trans.fromSub === subCheck) {
-        trans.type = TransactionTypeEnum.Enum.SEND;
+    return {
+      ...acc,
+      amount,
+      to: toOwner.toString(),
+      toSub: toSubAccount,
+      from,
+      fromSub,
+      identityTo,
+      type,
+    };
+  }, initial);
+}
+
+function burnMapper(burn: Burn[], initial: Transaction): Transaction {
+  return burn.reduce((acc, current) => {
+    const amount = current.amount.toString();
+    const fromOwner = current.from.owner;
+    const fromSubAccount = current.from.subaccount.length
+      ? `0x${subUint8ArrayToHex((current.from.subaccount as [Uint8Array])[0])}`
+      : "0x0";
+    const to = "";
+    const toSub = "";
+
+    let subaccFrom: SubAccountNNS | undefined = undefined;
+    try {
+      subaccFrom = SubAccountNNS.fromBytes((current.from.subaccount as [Uint8Array])[0]) as SubAccountNNS;
+    } catch (error) {
+      logger.debug("Error parsing subaccount", error);
+      subaccFrom = undefined;
+    }
+
+    const identityFrom = AccountIdentifier.fromPrincipal({
+      principal: current.from.owner as Principal,
+      subAccount: subaccFrom,
+    }).toHex();
+
+    return {
+      ...acc,
+      amount,
+      from: fromOwner.toString(),
+      fromSub: fromSubAccount,
+      to,
+      toSub,
+      identityFrom: identityFrom,
+      type: TransactionTypeEnum.Enum.SEND,
+    };
+  }, initial);
+}
+
+function approveMapper(approve: Approve[], initial: Transaction): Transaction {
+  return approve.reduce((acc, current) => {
+    const amount = current.amount.toString();
+    const fee = current.fee.toString();
+    const from = current.from.owner.toString();
+    const fromSubAccount = current.from.subaccount.length
+      ? `0x${subUint8ArrayToHex((current.from.subaccount as [Uint8Array])[0])}`
+      : "0x0";
+
+    const to = current.spender.owner.toString();
+    const toSubAccount = current.spender.subaccount.length
+      ? `0x${subUint8ArrayToHex((current.spender.subaccount as [Uint8Array])[0])}`
+      : "0x0";
+
+    return {
+      ...acc,
+      amount,
+      fee,
+      from,
+      fromSub: fromSubAccount,
+      to,
+      toSub: toSubAccount,
+      type: TransactionTypeEnum.Enum.APPROVE,
+    };
+  }, initial);
+}
+
+interface MapperArgs {
+  principal: string;
+  subNumber: string | undefined;
+}
+
+function transferMapper(transfer: Transfer[], initial: Transaction, options: MapperArgs): Transaction {
+  return transfer.reduce((acc, current) => {
+    const amount = current.amount.toString();
+    const toOwner = current.to.owner;
+    const fromOwner = current.from.owner;
+    const toSubAccount = current.to.subaccount.length
+      ? `0x${subUint8ArrayToHex((current.to.subaccount as [Uint8Array])[0])}`
+      : "0x0";
+
+    const fromSubAccount = current.from.subaccount.length
+      ? `0x${subUint8ArrayToHex((current.from.subaccount as [Uint8Array])[0])}`
+      : "0x0";
+
+    const subCheck = options.subNumber;
+
+    let type: TransactionType = TransactionTypeEnum.Enum.RECEIVE;
+    if (fromOwner.toString() === options.principal && fromSubAccount === subCheck) {
+      type = TransactionTypeEnum.Enum.SEND;
+    }
+
+    let subaccTo: SubAccountNNS | undefined = undefined;
+    try {
+      if (current.to.subaccount.length) {
+        subaccTo = SubAccountNNS.fromBytes((current.to.subaccount as [Uint8Array])[0]) as SubAccountNNS;
       } else {
-        trans.type = TransactionTypeEnum.Enum.RECEIVE;
-      }
-
-      trans.canisterId = canister;
-      trans.symbol = symbol;
-      trans.amount = amount;
-      trans.idx = id.toString();
-
-      // Get AccountIdentifier of Receiver
-      let subaccTo: SubAccountNNS | undefined = undefined;
-      try {
-        subaccTo = SubAccountNNS.fromBytes((operation.to.subaccount as [Uint8Array])[0]) as SubAccountNNS;
-      } catch {
         subaccTo = undefined;
       }
-      trans.identityTo = AccountIdentifier.fromPrincipal({
-        principal: operation.to.owner as Principal,
-        subAccount: subaccTo,
-      }).toHex();
+    } catch (error) {
+      logger.debug("HERE 1: Error parsing subaccount", error);
+      subaccTo = undefined;
+    }
 
-      // Get AccountIdentifier of Sender
-      let subaccFrom: SubAccountNNS | undefined = undefined;
-      try {
-        subaccFrom = SubAccountNNS.fromBytes((operation.to.subaccount as [Uint8Array])[0]) as SubAccountNNS;
-      } catch {
+    const identityTo = AccountIdentifier.fromPrincipal({
+      principal: current.to.owner as Principal,
+      subAccount: subaccTo,
+    }).toHex();
+
+    // Get AccountIdentifier of Sender
+    let subaccFrom: SubAccountNNS | undefined = undefined;
+    try {
+      if (current.to.subaccount.length) {
+        // TODO: verify if this is the best approach and value if right value if to.subaccount instead of from.subaccount
+        subaccFrom = SubAccountNNS.fromBytes((current.to.subaccount as [Uint8Array])[0]) as SubAccountNNS;
+      } else {
         subaccFrom = undefined;
       }
-      trans.identityFrom = AccountIdentifier.fromPrincipal({
-        principal: operation.from.owner as Principal,
-        subAccount: subaccFrom,
-      }).toHex();
-    });
-  return {
-    ...trans,
+    } catch (error) {
+      logger.debug("HERE 2: Error parsing subaccount", error);
+      subaccFrom = undefined;
+    }
+    const identityFrom = AccountIdentifier.fromPrincipal({
+      principal: current.from.owner as Principal,
+      subAccount: subaccFrom,
+    }).toHex();
+
+    return {
+      ...acc,
+      amount,
+      to: toOwner.toString(),
+      toSub: toSubAccount,
+      from: fromOwner.toString(),
+      fromSub: fromSubAccount,
+      identityTo,
+      identityFrom,
+      type,
+    };
+  }, initial);
+}
+
+export const formatckBTCTransaccion = (args: FormatBTCArgs): Transaction => {
+  const { ckBTCTransaction, id, principal, symbol, canister, subNumber } = args;
+  const { approve, burn, kind, mint, timestamp, transfer } = ckBTCTransaction;
+
+  const initialTransaction: Transaction = {
+    idx: id.toString(),
+    from: "",
+    fromSub: "",
+    to: "",
+    toSub: "",
+    amount: "",
+    canisterId: canister,
+    status: OperationStatusEnum.Enum.COMPLETED,
+    type: "NONE",
+    symbol,
+    identityTo: "",
+    identityFrom: "",
+    kind,
+    hash: "",
     timestamp: Math.floor(Number(timestamp) / MILI_PER_SECOND),
-  } as Transaction;
+    fee: "",
+  };
+
+  switch (kind) {
+    case SpecialTxTypeEnum.Enum.mint:
+      return mintMapper(mint, initialTransaction);
+    case SpecialTxTypeEnum.Enum.burn:
+      return burnMapper(burn, initialTransaction);
+    case SpecialTxTypeEnum.Enum.approve:
+      return approveMapper(approve, initialTransaction);
+    case SpecialTxTypeEnum.Enum.transfer:
+      return transferMapper(transfer, initialTransaction, { principal, subNumber });
+    default:
+      logger.debug(`formatckBTCTransaccion: unknown transaction type ${kind}`);
+      return initialTransaction;
+  }
 };
 
 export function chunkTransactions(options: { transactions: Transaction[]; chunkSize: number }) {

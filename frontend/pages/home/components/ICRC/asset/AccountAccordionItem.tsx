@@ -38,6 +38,9 @@ export default function AccountAccordionItem({
     ? true
     : subAccountMutation.name.trim() === "" || subAccountMutation.name.trim().length > 15;
 
+  const hasBalance = Number(currentSubAccount?.amount) > 0;
+  const isDefaultAccount = currentSubAccount?.sub_account_id === "0x0";
+
   return (
     <>
       <div aria-haspopup="true" className={getAccountStyles()} onClick={onSelectSubAccount}>
@@ -87,7 +90,7 @@ export default function AccountAccordionItem({
             )}
           </div>
         </div>
-        <div className={getDefaultAccountStyles(currentSubAccount?.sub_account_id !== "0x0")}>
+        <div className={getDefaultAccountStyles(hasBalance || isDefaultAccount)}>
           <div className="flex flex-col items-end justify-center">
             <p className="whitespace-nowrap">
               {`${toFullDecimal(
@@ -100,7 +103,7 @@ export default function AccountAccordionItem({
               2,
             )}`}</p>
           </div>
-          {currentSubAccount?.sub_account_id !== "0x0" && Number(currentSubAccount?.amount) === 0 && (
+          {!hasBalance && !isDefaultAccount && (
             <button className="p-0" onClick={() => setDeleteModalOpen(true)}>
               <TrashIcon className="w-3 h-3 fill-PrimaryTextColorLight dark:fill-PrimaryTextColor" />
             </button>
@@ -156,7 +159,7 @@ export default function AccountAccordionItem({
 
   function getAccountStyles() {
     return clsx({
-      ["relative flex flex-row justify-between items-center w-[calc(100%-2rem)] min-h-[3.5rem] pl-4 pr-4 text-PrimaryColor dark:text-PrimaryColorLight cursor-pointer hover:bg-[rgb(51,178,239,0.24)] text-md"]:
+      ["relative flex justify-between items-center w-[calc(100%-2rem)] min-h-[3.5rem] text-PrimaryColor dark:text-PrimaryColorLight cursor-pointer hover:bg-[rgb(51,178,239,0.24)] text-md px-1"]:
         true,
       ["bg-[rgb(51,178,239,0.24)]"]: isCurrentSubAccountSelected,
     });
@@ -182,6 +185,5 @@ export default function AccountAccordionItem({
 
 const getDefaultAccountStyles = (isNotDefault = false) =>
   clsx("flex flex-row justify-between items-center gap-2", {
-    "pr-6": !isNotDefault,
-    "": isNotDefault,
+    "pr-6": isNotDefault,
   });

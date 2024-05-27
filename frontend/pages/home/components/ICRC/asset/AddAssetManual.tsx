@@ -238,7 +238,8 @@ const AddAssetManual = () => {
       try {
         Principal.fromText(e.target.value.trim());
         setErrToken("");
-      } catch {
+      } catch (error) {
+        logger.debug("Error getting ledger", error);
         setErrToken("non");
       }
     else setErrToken("");
@@ -253,7 +254,8 @@ const AddAssetManual = () => {
       try {
         Principal.fromText(e.target.value.trim());
         setErrIndex("");
-      } catch {
+      } catch (error) {
+        logger.debug("Error getting index", error);
         setErrIndex("non");
       }
     else setErrIndex("");
@@ -340,7 +342,8 @@ const AddAssetManual = () => {
         });
         await getTransactions({ max_results: BigInt(1), account: { owner: Principal.fromText(authClient) } });
         setValidIndex(true);
-      } catch {
+      } catch (error) {
+        logger.debug("Error getting index", error);
         validData = false;
         setErrIndex(t("add.index.import.error"));
         setValidIndex(false);
