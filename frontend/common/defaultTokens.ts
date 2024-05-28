@@ -93,7 +93,7 @@ export const ICRC1systemAssets: Array<Asset> = [
     logo: "",
     subAccounts: [{ ...defaultSubAccount, transaction_fee: "10000" }],
     supportedStandards,
-  }
+  },
 ];
 
 // INFO: default assets of a new user
@@ -153,5 +153,5 @@ export const defaultTokens: Asset[] = [
     logo: "",
     subAccounts: [{ ...defaultSubAccount, transaction_fee: "10000" }],
     supportedStandards,
-  }
+  },
 ];
