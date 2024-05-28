@@ -80,20 +80,6 @@ export const ICRC1systemAssets: Array<Asset> = [
     index: "",
     supportedStandards,
   },
-  {
-    sortIndex: 3,
-    symbol: "ckUSDC",
-    name: "ckUSDC",
-    tokenSymbol: "ckUSDC",
-    tokenName: "ckUSDC",
-    address: "xevnm-gaaaa-aaaar-qafnq-cai",
-    index: "xrs4b-hiaaa-aaaar-qafoa-cai",
-    decimal: "6",
-    shortDecimal: "6",
-    logo: "",
-    subAccounts: [{ ...defaultSubAccount, transaction_fee: "10000" }],
-    supportedStandards,
-  },
 ];
 
 // INFO: default assets of a new user

@@ -7,10 +7,10 @@ import { allowanceCacheRefresh } from "@pages/allowances/helpers/cache";
 import contactCacheRefresh from "@pages/contacts/helpers/contactCacheRefresh";
 import { setICRC1SystemAssets } from "@redux/assets/AssetReducer";
 import { transactionCacheRefresh } from "@pages/home/helpers/cache";
+import { getckERC20Tokens } from "@common/utils/ckERC20";
 
 const WORKER_INTERVAL = 10 * 60 * 1000; // 10 minutes
 
-// INFO: This wrapper is reponsible of refresh and load the main data (transactions, allowances, assets, contacts and sns tokens)
 export default function WorkersWrapper({ children }: { children: React.ReactNode }) {
   const { isAppDataFreshing } = useAppSelector((state) => state.common);
   const { userAgent } = useAppSelector((state) => state.auth);
@@ -24,8 +24,9 @@ export default function WorkersWrapper({ children }: { children: React.ReactNode
 
     dispatch(setAppDataRefreshing(true));
 
+    const erc20Tokens = await getckERC20Tokens();
     const snsTokens = await getSNSTokens(userAgent);
-    dispatch(setICRC1SystemAssets(snsTokens));
+    dispatch(setICRC1SystemAssets([...erc20Tokens, ...snsTokens]));
 
     const dbAssets = await db().getAssets();
     await updateAllBalances({

@@ -53,11 +53,11 @@ export interface ManagedCanisterIds {
 }
 export type ManagedCanisterStatus =
   | {
-    Created: { canister_id: Principal };
-  }
+      Created: { canister_id: Principal };
+    }
   | {
-    Installed: { canister_id: Principal; installed_wasm_hash: string };
-  };
+      Installed: { canister_id: Principal; installed_wasm_hash: string };
+    };
 export interface ManagedCanisters {
   erc20_contract: Erc20Contract;
   ledger: [] | [ManagedCanisterStatus];
