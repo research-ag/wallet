@@ -8,6 +8,7 @@ import { CustomCopy } from "@components/tooltip";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
 import { assetMutateInitialState } from "@pages/home/hooks/useAssetMutate";
+import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { Asset } from "@redux/models/AccountModels";
 import { Contact } from "@redux/models/ContactsModels";
 import { useState } from "react";
@@ -21,16 +22,15 @@ export default function SubAccountTable({ contact }: { contact: Contact }) {
     <tr className="bg-SecondaryColorLight dark:bg-SecondaryColor">
       <td colSpan={4} className="w-full h-4 border-BorderColorTwoLight dark:border-BorderColorTwo">
 
-        <table className="w-full text-left">
+        <table className="w-full font-light text-left">
           <thead className="h-[2.8rem]">
             <tr>
               <th className="w-[5%]"></th>
-              <th className="w-[5%]"></th>
-              <th className="w-[20%]">Asset</th>
-              <th className="w-[20%]">Name</th>
-              <th className="w-[25%]">Sub-account</th>
-              <th className="w-[20%]">Account Identifier</th>
-              <th className="w-[5%]"></th>
+              <th className="w-[19%]">Asset</th>
+              <th className="w-[19%]">Name</th>
+              <th className="w-[10%]">Sub-account</th>
+              <th className="w-[37%]">Account Identifier</th>
+              <th className="w-[13%]"></th>
             </tr>
           </thead>
           <tbody>
@@ -38,36 +38,41 @@ export default function SubAccountTable({ contact }: { contact: Contact }) {
 
               return (
                 <tr key={index} className="h-[2.8rem]">
-                  <td></td>
-                  <td className="h-full">
+                  <td className="h-full w-[5%]">
                     <div className="relative flex items-center justify-center w-full h-full">
                       <div className="w-1.5 h-1.5 bg-primary-color"></div>
                       {index !== 0 && <div className="absolute bottom-0 w-1 h-12 border-l border-dotted left-1/2 border-primary-color" />}
                     </div>
                   </td>
-                  <th className="w-[20%] flex items-center">
+                  <th className="w-[19%] flex items-center">
                     {getAssetIcon(IconTypeEnum.Values.ASSET, "ICP", "")} <span className="ml-2">ICP</span>
                   </th>
-                  <th className="w-[20%]">
+                  <th className="w-[19%]">
                     <div className="flex items-center">
                       <AvatarEmpty title="Sub-1" />
                       <span className="ml-2">Sub-1</span>
-                      {/* TODO: add allowance tooltip */}
                     </div>
                   </th>
-                  <th className="w-[25%]">
+                  <th className="w-[10%]">
                     <div className="flex items-center">
                       <p className="mr-2">0x22</p>
                       <CustomCopy size={"xSmall"} className="p-0" copyText={contact.principal} />
                     </div>
                   </th>
-                  <th className="w-[20%]">
+                  <th className="w-[36%]">
                     <div className="flex items-center w-full px-2">
                       <p className="mr-2">{shortAddress(getSubAccount(contact.principal), 12, 10)}</p>
                       <CustomCopy size={"xSmall"} className="p-0" copyText={getSubAccount(contact.principal)} />
                     </div>
                   </th>
-                  <th className="w-[5%]"></th>
+                  <th className="w-[14%]">
+                    <div className="flex items-center">
+                      <DotsHorizontalIcon
+                        className="w-5 h-5 opacity-50 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
+                        onClick={onContactAction}
+                      />
+                    </div>
+                  </th>
                 </tr>
               );
             })}
@@ -85,4 +90,7 @@ export default function SubAccountTable({ contact }: { contact: Contact }) {
     });
   }
 
+  function onContactAction() {
+    console.log("Contact action");
+  };
 }
