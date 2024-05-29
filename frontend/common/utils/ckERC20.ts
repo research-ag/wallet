@@ -18,7 +18,6 @@ export async function getckERC20Tokens(): Promise<Asset[]> {
       const index = data.index as any;
 
       return {
-        tokenSymbol: data.ckerc20_token_symbol,
         ledger: ledger[0].Installed.canister_id as Principal,
         index: index[0].Installed.canister_id as Principal,
       };
