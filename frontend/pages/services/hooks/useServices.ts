@@ -1,14 +1,16 @@
 import { useAppSelector } from "@redux/Store";
-import { Service } from "@redux/models/ServiceModels";
+import { Service, ServiceAsset } from "@redux/models/ServiceModels";
 import { useEffect, useState } from "react";
 
 // TODO: implement filtering
 export default function useServices() {
   const { authClient } = useAppSelector((state) => state.auth);
-  const { services, servicesData } = useAppSelector((state) => state.services);
+  const { services, servicesData, serviceAssets } = useAppSelector((state) => state.services);
   const [serviceList, setServiceList] = useState<Service[]>([]);
   const [assetFilter, setAssetFilter] = useState<string[]>([]);
   const [serviceSearchkey, setServiceSearchKey] = useState("");
+  const [supportedAssetsActive, setSupportedAssetsActive] = useState(false);
+  const [filterAssets, setFilterAssets] = useState<ServiceAsset[]>([]);
 
   // ServiceTable
 
@@ -26,6 +28,19 @@ export default function useServices() {
   }, [serviceSearchkey, assetFilter, services]);
 
   useEffect(() => {
+    const auxFilterAssets = serviceAssets.filter((ast) => supportedAssetsActive || ast.visible);
+    setFilterAssets(auxFilterAssets);
+    if (!supportedAssetsActive) {
+      const auxFilter: string[] = [];
+      assetFilter.map((astFil) => {
+        const auxAsst = auxFilterAssets.find((auxF) => auxF.tokenSymbol === astFil);
+        if (auxAsst) auxFilter.push(astFil);
+      });
+      setAssetFilter(auxFilter);
+    }
+  }, [supportedAssetsActive]);
+
+  useEffect(() => {
     localStorage.setItem(`services-${authClient}`, JSON.stringify(servicesData));
   }, [servicesData]);
 
@@ -36,5 +51,8 @@ export default function useServices() {
     setAssetFilter,
     serviceSearchkey,
     setServiceSearchKey,
+    supportedAssetsActive,
+    setSupportedAssetsActive,
+    filterAssets,
   };
 }

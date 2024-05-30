@@ -3,18 +3,22 @@ import store from "@redux/Store";
 import { _SERVICE as IcrcxActor } from "@candid/icrcx/service.did";
 import { idlFactory as IcrcxIDLFactory } from "@candid/icrcx/candid.did";
 import { ServiceAsset, ServiceData } from "@redux/models/ServiceModels";
+import { IcrcLedgerCanister } from "@dfinity/ledger-icrc";
+import { getMetadataInfo } from "@common/utils/icrc";
 
 export const getServicesData = async (myAgent: HttpAgent, principal: string) => {
   const myAssets = store.getState().asset.list.assets;
-
+  const snsAssets = store.getState().asset.utilData.icr1SystemAssets;
   const serviceData = (JSON.parse(localStorage.getItem(`services-${principal}`) || "null") as ServiceData[]) || [];
 
+  const filterAssets: ServiceAsset[] = [];
   const services = await Promise.all(
     serviceData.map(async (srv) => {
       const serviceActor = Actor.createActor<IcrcxActor>(IcrcxIDLFactory, {
         agent: myAgent,
         canisterId: srv.principal,
       });
+      const assetsData = srv.assets;
 
       let serviceAssets: ServiceAsset[] = [];
       try {
@@ -26,23 +30,68 @@ export const getServicesData = async (myAgent: HttpAgent, principal: string) => 
               const tokenInfo = await serviceActor.icrcX_token_info(ast);
 
               const asset = myAssets.find((myAst) => myAst.address === ast.toText());
+              const snsAsset = snsAssets.find((myAst) => myAst.address === ast.toText());
+              const assetData = assetsData.find((myAst) => myAst.principal === ast.toText());
               const credit = credits.find((crd) => crd[0] === ast);
 
               const serviceAsset: ServiceAsset = {
                 tokenSymbol: "",
+                tokenName: "",
+                logo: "",
+                decimal: "",
+                shortDecimal: "",
                 balance: "",
+                principal: ast.toText(),
                 credit: credit ? credit[1].toString() : "",
                 minDeposit: tokenInfo.min_deposit.toString(),
                 minWithdraw: tokenInfo.min_withdrawal.toString(),
                 depositFee: tokenInfo.deposit_fee.toString(),
                 withdrawFee: tokenInfo.withdrawal_fee.toString(),
+                visible: false,
               };
-              if (asset) {
-                const balance = (await serviceActor.icrcX_trackedDeposit(ast)) as any;
-                serviceAsset.tokenSymbol = asset.tokenSymbol;
-                serviceAsset.balance = (balance.Ok as any) ? balance.Ok.toString() : "";
-              }
 
+              const balance = (await serviceActor.icrcX_trackedDeposit(ast)) as any;
+              serviceAsset.balance = (balance.Ok as any) ? balance.Ok.toString() : "";
+              if (assetData) {
+                serviceAsset.tokenSymbol = assetData.tokenSymbol;
+                serviceAsset.tokenName = assetData.tokenName;
+                serviceAsset.decimal = assetData.decimal;
+                serviceAsset.shortDecimal = assetData.shortDecimal;
+                serviceAsset.logo = assetData.logo;
+                serviceAsset.visible = true;
+              } else if (asset) {
+                serviceAsset.tokenSymbol = asset.symbol;
+                serviceAsset.tokenName = asset.name;
+                serviceAsset.decimal = asset.decimal;
+                serviceAsset.shortDecimal = asset.shortDecimal;
+                serviceAsset.logo = asset.logo || "";
+              } else if (snsAsset) {
+                serviceAsset.tokenSymbol = snsAsset.tokenSymbol;
+                serviceAsset.tokenName = snsAsset.tokenName;
+                serviceAsset.decimal = snsAsset.decimal;
+                serviceAsset.shortDecimal = snsAsset.shortDecimal;
+                serviceAsset.logo = snsAsset.logo || "";
+              } else {
+                const { metadata } = IcrcLedgerCanister.create({
+                  agent: myAgent,
+                  canisterId: ast,
+                });
+
+                const myMetadata = await metadata({ certified: false });
+                const { decimals, name, symbol, logo } = getMetadataInfo(myMetadata);
+                serviceAsset.tokenSymbol = symbol;
+                serviceAsset.tokenName = name;
+                serviceAsset.decimal = decimals.toFixed();
+                serviceAsset.shortDecimal = decimals.toFixed();
+                serviceAsset.logo = logo || "";
+              }
+              const filterAsset = filterAssets.find((fAsst) => fAsst.principal === ast.toText());
+              if (filterAsset) {
+                const index = filterAssets.indexOf(filterAsset);
+                if (filterAsset.visible) filterAssets[index].visible = true;
+              } else {
+                filterAssets.push(serviceAsset);
+              }
               return serviceAsset;
             }),
           );
@@ -59,5 +108,5 @@ export const getServicesData = async (myAgent: HttpAgent, principal: string) => 
     }),
   );
 
-  return { services, serviceData };
+  return { services, serviceData, filterAssets };
 };

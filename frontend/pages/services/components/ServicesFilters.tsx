@@ -4,18 +4,35 @@ import { memo } from "react";
 import AddServiceModal from "./AddServiceModal";
 import AssetFilter from "./AssetFilter";
 import { CustomInput } from "@components/input";
+import { ServiceAsset } from "@redux/models/ServiceModels";
 
 interface ServicesFiltersProps {
   onServiceKeyChange: (key: string) => void;
   assetFilter: string[];
   onAssetFilterChange: (assetFilter: string[]) => void;
+  supportedAssetsActive: boolean;
+  setSupportedAssetsActive: (assetFilter: boolean) => void;
+  filterAssets: ServiceAsset[];
 }
 
 function ServicesFilters(props: ServicesFiltersProps) {
-  const { onServiceKeyChange, assetFilter, onAssetFilterChange } = props;
+  const {
+    onServiceKeyChange,
+    assetFilter,
+    onAssetFilterChange,
+    supportedAssetsActive,
+    setSupportedAssetsActive,
+    filterAssets,
+  } = props;
   return (
     <div className="flex items-center justify-start w-full gap-3">
-      <AssetFilter onAssetFilterChange={onAssetFilterChange} assetFilter={assetFilter} />
+      <AssetFilter
+        onAssetFilterChange={onAssetFilterChange}
+        assetFilter={assetFilter}
+        supportedAssetsActive={supportedAssetsActive}
+        setSupportedAssetsActive={setSupportedAssetsActive}
+        filterAssets={filterAssets}
+      />
 
       <CustomInput
         compOutClass="!w-[40%]"

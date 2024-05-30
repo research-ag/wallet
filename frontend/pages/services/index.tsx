@@ -5,7 +5,15 @@ import { useCallback } from "react";
 import useServices from "./hooks/useServices";
 
 export default function Services() {
-  const { serviceList, assetFilter, setAssetFilter, setServiceSearchKey } = useServices();
+  const {
+    serviceList,
+    assetFilter,
+    setAssetFilter,
+    setServiceSearchKey,
+    supportedAssetsActive,
+    setSupportedAssetsActive,
+    filterAssets,
+  } = useServices();
 
   const onServiceKeyChange = useCallback((serviceSearchkey: string) => {
     setServiceSearchKey(serviceSearchkey);
@@ -19,6 +27,9 @@ export default function Services() {
           onServiceKeyChange={onServiceKeyChange}
           assetFilter={assetFilter}
           onAssetFilterChange={onAssetFilterChange}
+          supportedAssetsActive={supportedAssetsActive}
+          setSupportedAssetsActive={setSupportedAssetsActive}
+          filterAssets={filterAssets}
         />
       </div>
 

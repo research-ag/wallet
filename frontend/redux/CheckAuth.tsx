@@ -25,7 +25,7 @@ import { setTransactions } from "./transaction/TransactionReducer";
 import { addWatchOnlySessionToLocal } from "@pages/helpers/watchOnlyStorage";
 import watchOnlyRefresh from "@pages/helpers/watchOnlyRefresh";
 import { getServicesData } from "./services/ServiceActions";
-import { setServices, setServicesData } from "./services/ServiceReducer";
+import { setServiceAssets, setServices, setServicesData } from "./services/ServiceReducer";
 
 const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${
   import.meta.env.VITE_APP_LOGO
@@ -136,14 +136,15 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean,
   await db().setIdentity(authIdentity, myPrincipal);
 
   if (!fixedPrincipal) {
-    const { services, serviceData } = await getServicesData(myAgent, principalString);
+    const { services, serviceData, filterAssets } = await getServicesData(myAgent, principalString);
     store.dispatch(setServices(services));
     store.dispatch(setServicesData(serviceData));
+    store.dispatch(setServiceAssets(filterAssets));
   }
 
+  store.dispatch(setInitLoad(false));
   store.dispatch(setUserPrincipal(myPrincipal));
   store.dispatch(setAuthenticated(true, false, !!fixedPrincipal, principalString));
-  store.dispatch(setInitLoad(false));
 };
 
 export const logout = async () => {

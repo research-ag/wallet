@@ -1,14 +1,17 @@
-import { Service, ServiceData } from "@redux/models/ServiceModels";
+import { assetServiceToData, assetsServiceToData } from "@common/utils/service";
+import { Service, ServiceAsset, ServiceAssetData, ServiceData } from "@redux/models/ServiceModels";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 interface ServiceState {
   servicesData: ServiceData[];
   services: Service[];
+  serviceAssets: ServiceAsset[];
 }
 
 const initialState: ServiceState = {
   servicesData: [],
   services: [],
+  serviceAssets: [],
 };
 
 const servicesSlice = createSlice({
@@ -23,13 +26,23 @@ const servicesSlice = createSlice({
     },
     addService(state, action: PayloadAction<Service>) {
       state.services.push(action.payload);
-      state.servicesData.push({ name: action.payload.name, principal: action.payload.principal });
+      const auxAssets = action.payload.assets.map((asst) => {
+        return {
+          tokenSymbol: asst.tokenSymbol,
+          tokenName: asst.tokenName,
+          decimal: asst.decimal,
+          shortDecimal: asst.shortDecimal,
+          principal: asst.principal,
+          logo: asst.logo,
+        } as ServiceAssetData;
+      });
+      state.servicesData.push({ name: action.payload.name, principal: action.payload.principal, assets: auxAssets });
     },
     removeService(state, action: PayloadAction<string>) {
       state.services = state.services.filter((srv) => srv.principal !== action.payload);
       state.servicesData = state.servicesData.filter((srv) => srv.principal !== action.payload);
     },
-    editService(state, action: PayloadAction<Service>) {
+    editServiceName(state, action: PayloadAction<Service>) {
       state.services = state.services.map((srv) => {
         if (srv.principal !== action.payload.principal) {
           return srv;
@@ -45,8 +58,76 @@ const servicesSlice = createSlice({
         }
       });
     },
+    addServiceAsset: {
+      reducer(state: ServiceState, { payload }: PayloadAction<{ service: string; serviceAssets: ServiceAsset[] }>) {
+        const { service, serviceAssets } = payload;
+        const auxServices: Service[] = [];
+        state.services.map((srv) => {
+          if (srv.principal === service) {
+            const auxAssetService = srv.assets.map((ast) => {
+              const auxAsset = serviceAssets.find((srvAsst) => srvAsst.principal === ast.principal);
+              if (!auxAsset) return ast;
+              else return { ...ast, visible: true };
+            });
+            auxServices.push({ ...srv, assets: auxAssetService });
+          } else auxServices.push(srv);
+        });
+        state.services = auxServices;
+
+        const auxServicesData: ServiceData[] = [];
+        state.servicesData.map((srv) => {
+          if (srv.principal === service) {
+            auxServicesData.push({ ...srv, assets: [...srv.assets, ...assetsServiceToData(serviceAssets)] });
+          } else auxServicesData.push(srv);
+        });
+        state.servicesData = auxServicesData;
+      },
+      prepare(service: string, serviceAssets: ServiceAsset[]) {
+        return { payload: { service, serviceAssets } };
+      },
+    },
+    removeServiceAsset: {
+      reducer(state: ServiceState, { payload }: PayloadAction<{ service: string; serviceAsset: ServiceAsset }>) {
+        const { service, serviceAsset } = payload;
+        const auxServices: Service[] = [];
+        state.services.map((srv) => {
+          if (srv.principal === service) {
+            const auxAssetService = srv.assets.map((ast) => {
+              if (ast.principal !== serviceAsset.principal) return ast;
+              else return { ...ast, visible: false };
+            });
+            auxServices.push({ ...srv, assets: auxAssetService });
+          } else auxServices.push(srv);
+        });
+        state.services = auxServices;
+
+        const auxServicesData: ServiceData[] = [];
+        state.servicesData.map((srv) => {
+          if (srv.principal === service) {
+            const auxAssetServiceData = srv.assets.filter((ast) => ast.principal !== serviceAsset.principal);
+            auxServicesData.push({ ...srv, assets: auxAssetServiceData });
+          } else auxServicesData.push(srv);
+        });
+        state.servicesData = auxServicesData;
+      },
+      prepare(service: string, serviceAsset: ServiceAsset) {
+        return { payload: { service, serviceAsset } };
+      },
+    },
+    setServiceAssets(state, action: PayloadAction<ServiceAsset[]>) {
+      state.serviceAssets = action.payload;
+    },
   },
 });
 
-export const { setServicesData, setServices, addService, removeService, editService } = servicesSlice.actions;
+export const {
+  setServicesData,
+  setServices,
+  addService,
+  removeService,
+  editServiceName,
+  addServiceAsset,
+  removeServiceAsset,
+  setServiceAssets,
+} = servicesSlice.actions;
 export default servicesSlice.reducer;

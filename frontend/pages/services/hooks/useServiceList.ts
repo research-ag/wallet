@@ -1,6 +1,6 @@
 import { useAppDispatch } from "@redux/Store";
 import { Service } from "@redux/models/ServiceModels";
-import { editService } from "@redux/services/ServiceReducer";
+import { editServiceName, removeService } from "@redux/services/ServiceReducer";
 import { ChangeEvent, useState } from "react";
 
 export default function useServicesList() {
@@ -33,13 +33,16 @@ export default function useServicesList() {
   }
   function onSave() {
     if (editedService && !editedServiceErr.name) {
-      dispatch(editService(editedService));
+      dispatch(editServiceName(editedService));
       setSelectedService("");
     }
   }
   function onClose() {
     setEditedService(undefined);
     setSelectedService("");
+  }
+  function onDeleteService(srv: Service) {
+    dispatch(removeService(srv.principal));
   }
   function onChevIconClic(srv: Service) {
     if (srv.principal === openService) setOpenService("");
@@ -69,5 +72,6 @@ export default function useServicesList() {
     onEditService,
     onClose,
     onSave,
+    onDeleteService,
   };
 }
