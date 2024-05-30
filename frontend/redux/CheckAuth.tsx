@@ -21,7 +21,7 @@ import { clearDataContacts } from "./contacts/ContactsReducer";
 import { Principal } from "@dfinity/principal";
 import { Secp256k1KeyIdentity } from "@dfinity/identity-secp256k1";
 import { db, DB_Type } from "@/database/db";
-import { setTransactions } from "./transaction/TransactionReducer";
+import { setTransactions, setTxWorker } from "./transaction/TransactionReducer";
 import { addWatchOnlySessionToLocal } from "@pages/helpers/watchOnlyStorage";
 import watchOnlyRefresh from "@pages/helpers/watchOnlyRefresh";
 
@@ -150,4 +150,5 @@ export const logout = async () => {
   store.dispatch(setUserAgent(undefined));
   store.dispatch(setUserPrincipal(undefined));
   store.dispatch(setTransactions([]));
+  store.dispatch(setTxWorker([]));
 };

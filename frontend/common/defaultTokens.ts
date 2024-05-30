@@ -126,4 +126,18 @@ export const defaultTokens: Asset[] = [
     subAccounts: [{ ...defaultSubAccount, transaction_fee: "2000000000000" }],
     supportedStandards,
   },
+  {
+    sortIndex: 3,
+    symbol: "ckUSDC",
+    name: "ckUSDC",
+    tokenSymbol: "ckUSDC",
+    tokenName: "ckUSDC",
+    address: "xevnm-gaaaa-aaaar-qafnq-cai",
+    index: "xrs4b-hiaaa-aaaar-qafoa-cai",
+    decimal: "6",
+    shortDecimal: "6",
+    logo: "",
+    subAccounts: [{ ...defaultSubAccount, transaction_fee: "10000" }],
+    supportedStandards,
+  },
 ];
