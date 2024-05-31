@@ -17,25 +17,30 @@ import useServicesList from "../hooks/useServiceList";
 import ServiceAssetsList from "./ServiceAssetsList";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { DeleteServiceModal } from "./Modals/deleteService";
+import { NewServiceRow } from "./NewServiceRow";
 
 interface ServicesListProps {
   services: Service[];
+  newService: boolean;
+  setNewService(value: boolean): void;
 }
 
-export default function ServicesList({ services }: ServicesListProps) {
+export default function ServicesList({ services, newService, setNewService }: ServicesListProps) {
   const { t } = useTranslation();
   const {
     selectedService,
     openService,
     editedService,
     editedServiceErr,
+    addService,
+    setAddService,
     onContactNameChange,
     onChevIconClic,
     onEditService,
     onClose,
     onSave,
     onDeleteService,
-  } = useServicesList();
+  } = useServicesList(newService);
   const [openMore, setOpenMore] = useState(-1);
   const [deleteService, setDeleteService] = useState<Service>();
 
@@ -55,6 +60,7 @@ export default function ServicesList({ services }: ServicesListProps) {
           </tr>
         </thead>
         <tbody>
+          {addService && <NewServiceRow setAddService={setAddService} setNewService={setNewService} />}
           {services.map((srv, k) => {
             return (
               <Fragment key={k}>
@@ -127,13 +133,16 @@ export default function ServicesList({ services }: ServicesListProps) {
                             align="end"
                           >
                             <div
-                              className="flex flex-row items-center justify-center gap-2 p-2 cursor-pointer hover:bg-TextErrorColor/20 rounded-b-md"
+                              className="flex flex-row items-center justify-center gap-2 p-1 cursor-pointer hover:bg-TextErrorColor/20 rounded-b-md"
                               onClick={() => {
+                                setNewService(false);
+                                setAddService(false);
+                                setOpenMore(-1);
                                 onDelete(srv);
                               }}
                             >
                               <TrashIcon className="w-4 h-4 cursor-pointer fill-TextErrorColor" />
-                              <p className="text-TextErrorColor">{t("delete")}</p>
+                              <p className="text-TextErrorColor text-md">{t("delete")}</p>
                             </div>
                           </DropdownMenu.Content>
                         </DropdownMenu.Portal>
@@ -145,6 +154,7 @@ export default function ServicesList({ services }: ServicesListProps) {
                       <ChevIcon
                         onClick={() => {
                           onChevIconClic(srv);
+                          setNewService(false);
                         }}
                         className={`w-8 h-8 stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor stroke-0  cursor-pointer ${
                           srv.principal === openService ? "" : "rotate-90"

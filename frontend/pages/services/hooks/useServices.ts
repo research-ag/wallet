@@ -11,6 +11,7 @@ export default function useServices() {
   const [serviceSearchkey, setServiceSearchKey] = useState("");
   const [supportedAssetsActive, setSupportedAssetsActive] = useState(false);
   const [filterAssets, setFilterAssets] = useState<ServiceAsset[]>([]);
+  const [newService, setNewService] = useState(false);
 
   // ServiceTable
 
@@ -38,7 +39,7 @@ export default function useServices() {
       });
       setAssetFilter(auxFilter);
     }
-  }, [supportedAssetsActive]);
+  }, [supportedAssetsActive, serviceAssets]);
 
   useEffect(() => {
     localStorage.setItem(`services-${authClient}`, JSON.stringify(servicesData));
@@ -54,5 +55,7 @@ export default function useServices() {
     supportedAssetsActive,
     setSupportedAssetsActive,
     filterAssets,
+    newService,
+    setNewService,
   };
 }

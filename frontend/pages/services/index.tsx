@@ -13,6 +13,8 @@ export default function Services() {
     supportedAssetsActive,
     setSupportedAssetsActive,
     filterAssets,
+    newService,
+    setNewService,
   } = useServices();
 
   const onServiceKeyChange = useCallback((serviceSearchkey: string) => {
@@ -30,11 +32,12 @@ export default function Services() {
           supportedAssetsActive={supportedAssetsActive}
           setSupportedAssetsActive={setSupportedAssetsActive}
           filterAssets={filterAssets}
+          setNewService={setNewService}
         />
       </div>
 
       <div className="flex flex-col items-start justify-start w-full h-full">
-        <ServicesList services={serviceList} />
+        <ServicesList services={serviceList} newService={newService} setNewService={setNewService} />
       </div>
     </div>
   );

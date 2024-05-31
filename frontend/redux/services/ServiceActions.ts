@@ -110,3 +110,91 @@ export const getServicesData = async (myAgent: HttpAgent, principal: string) => 
 
   return { services, serviceData, filterAssets };
 };
+
+export const getServiceData = async (myAgent: HttpAgent, servicePrincipal: string) => {
+  const myAssets = store.getState().asset.list.assets;
+  const snsAssets = store.getState().asset.utilData.icr1SystemAssets;
+  try {
+    const serviceActor = Actor.createActor<IcrcxActor>(IcrcxIDLFactory, {
+      agent: myAgent,
+      canisterId: servicePrincipal,
+    });
+    const supportedAssets = await serviceActor.icrcX_supported_tokens();
+
+    let serviceAssets: ServiceAsset[] = [];
+    if (supportedAssets.length > 0) {
+      const credits = await serviceActor.icrcX_all_credits();
+      serviceAssets = await Promise.all(
+        supportedAssets.map(async (ast) => {
+          const tokenInfo = await serviceActor.icrcX_token_info(ast);
+
+          const asset = myAssets.find((myAst) => myAst.address === ast.toText());
+          const snsAsset = snsAssets.find((myAst) => myAst.address === ast.toText());
+          const credit = credits.find((crd) => crd[0] === ast);
+
+          const serviceAsset: ServiceAsset = {
+            tokenSymbol: "",
+            tokenName: "",
+            logo: "",
+            decimal: "",
+            shortDecimal: "",
+            balance: "",
+            principal: ast.toText(),
+            credit: credit ? credit[1].toString() : "",
+            minDeposit: tokenInfo.min_deposit.toString(),
+            minWithdraw: tokenInfo.min_withdrawal.toString(),
+            depositFee: tokenInfo.deposit_fee.toString(),
+            withdrawFee: tokenInfo.withdrawal_fee.toString(),
+            visible: false,
+          };
+
+          const balance = (await serviceActor.icrcX_trackedDeposit(ast)) as any;
+          serviceAsset.balance = (balance.Ok as any) ? balance.Ok.toString() : "";
+          if (asset) {
+            serviceAsset.tokenSymbol = asset.symbol;
+            serviceAsset.tokenName = asset.name;
+            serviceAsset.decimal = asset.decimal;
+            serviceAsset.shortDecimal = asset.shortDecimal;
+            serviceAsset.logo = asset.logo || "";
+          } else if (snsAsset) {
+            serviceAsset.tokenSymbol = snsAsset.tokenSymbol;
+            serviceAsset.tokenName = snsAsset.tokenName;
+            serviceAsset.decimal = snsAsset.decimal;
+            serviceAsset.shortDecimal = snsAsset.shortDecimal;
+            serviceAsset.logo = snsAsset.logo || "";
+          } else {
+            const { metadata } = IcrcLedgerCanister.create({
+              agent: myAgent,
+              canisterId: ast,
+            });
+
+            const myMetadata = await metadata({ certified: false });
+            const { decimals, name, symbol, logo } = getMetadataInfo(myMetadata);
+            serviceAsset.tokenSymbol = symbol;
+            serviceAsset.tokenName = name;
+            serviceAsset.decimal = decimals.toFixed();
+            serviceAsset.shortDecimal = decimals.toFixed();
+            serviceAsset.logo = logo || "";
+          }
+          return serviceAsset;
+        }),
+      );
+    }
+    return serviceAssets;
+  } catch {
+    return [];
+  }
+};
+
+export const testServicePrincipal = async (myAgent: HttpAgent, servicePrincipal: string) => {
+  try {
+    const serviceActor = Actor.createActor<IcrcxActor>(IcrcxIDLFactory, {
+      agent: myAgent,
+      canisterId: servicePrincipal,
+    });
+    await serviceActor.icrcX_supported_tokens();
+    return true;
+  } catch {
+    return false;
+  }
+};

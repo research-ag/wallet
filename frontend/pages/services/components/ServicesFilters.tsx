@@ -1,7 +1,8 @@
 import SearchIcon from "@assets/svg/files/icon-search.svg";
+import { IconButton } from "@components/button";
+import { ReactComponent as PlusIcon } from "@assets/svg/files/plus-icon.svg";
 //
 import { memo } from "react";
-import AddServiceModal from "./AddServiceModal";
 import AssetFilter from "./AssetFilter";
 import { CustomInput } from "@components/input";
 import { ServiceAsset } from "@redux/models/ServiceModels";
@@ -13,6 +14,7 @@ interface ServicesFiltersProps {
   supportedAssetsActive: boolean;
   setSupportedAssetsActive: (assetFilter: boolean) => void;
   filterAssets: ServiceAsset[];
+  setNewService(value: boolean): void;
 }
 
 function ServicesFilters(props: ServicesFiltersProps) {
@@ -23,6 +25,7 @@ function ServicesFilters(props: ServicesFiltersProps) {
     supportedAssetsActive,
     setSupportedAssetsActive,
     filterAssets,
+    setNewService,
   } = props;
   return (
     <div className="flex items-center justify-start w-full gap-3">
@@ -43,7 +46,7 @@ function ServicesFilters(props: ServicesFiltersProps) {
         onChange={(e) => onServiceKeyChange(e.target.value)}
       />
 
-      <AddServiceModal />
+      <IconButton icon={<PlusIcon className="w-6 h-6" />} size="medium" onClick={() => setNewService(true)} />
     </div>
   );
 }

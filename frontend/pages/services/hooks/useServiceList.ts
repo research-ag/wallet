@@ -1,9 +1,9 @@
 import { useAppDispatch } from "@redux/Store";
 import { Service } from "@redux/models/ServiceModels";
 import { editServiceName, removeService } from "@redux/services/ServiceReducer";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 
-export default function useServicesList() {
+export default function useServicesList(newService: boolean) {
   const dispatch = useAppDispatch();
 
   const [selectedService, setSelectedService] = useState("");
@@ -54,6 +54,19 @@ export default function useServicesList() {
     if (srv.principal !== selectedService) setSelectedService("");
     setAddService(false);
   }
+
+  useEffect(() => {
+    if (newService) {
+      setSelectedService("");
+      setOpenService("");
+      setEditedService(undefined);
+      setEditedServiceErr({
+        name: false,
+        principal: false,
+      });
+      setAddService(true);
+    }
+  }, [newService]);
 
   return {
     selectedService,
