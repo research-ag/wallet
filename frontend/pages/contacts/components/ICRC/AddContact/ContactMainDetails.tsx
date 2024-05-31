@@ -1,61 +1,62 @@
-import { Principal } from "@dfinity/principal";
-import NameFormItem from "./NameFormItem";
-import PrincipalFormItem from "./PrincipalFormItem";
-import { Contact } from "@redux/models/ContactsModels";
-import logger from "@/common/utils/logger";
+import { Contact, NewContactErrors } from "@/@types/contacts";
+import { Dispatch, SetStateAction } from "react";
+import { CustomInput } from "@components/input";
+import { useTranslation } from "react-i18next";
+import { validatePrincipal } from "@common/utils/definityIdentity";
 
 interface ContactMainDetailsProps {
   newContact: Contact;
-  setNewContactErr: any;
-  newContactNameErr: any;
-  setNewContactNameErr: any;
-  newContactPrinErr: any;
-  setNewContactPrinErr: any;
-  setNewContact: any;
+  setNewContact: Dispatch<SetStateAction<Contact>>;
+  newContactErrors: NewContactErrors;
+  setNewContactErrors: Dispatch<SetStateAction<NewContactErrors>>;
 }
+
+// TODO: validate that the principal is a valid principal
+// TODO: validate the name length
+// TODO: validate that the principal does not already exist
 export default function ContactMainDetails(props: ContactMainDetailsProps) {
-  const {
-    newContact,
-    setNewContact,
-    setNewContactErr,
-    newContactNameErr,
-    setNewContactNameErr,
-    newContactPrinErr,
-    setNewContactPrinErr,
-  } = props;
+  const { t } = useTranslation();
+  const { newContact, setNewContact, setNewContactErrors, newContactErrors } = props;
 
   return (
     <div className="flex flex-row items-start justify-start w-full gap-3">
-      <NameFormItem newContactNameErr={newContactNameErr} newContact={newContact} onNameChange={onNameChange} />
-      <PrincipalFormItem
-        newContactPrinErr={newContactPrinErr}
-        newContact={newContact}
-        onPrincipalChange={onPrincipalChange}
-      />
+      <div className="flex flex-col justify-start items-start w-[50%]">
+        <p>{t("name")}</p>
+        <CustomInput
+          sizeInput={"medium"}
+          placeholder={""}
+          border={newContactErrors.name ? "error" : undefined}
+          value={newContact.name}
+          onChange={(e) => onNameChange(e.target.value)}
+        />
+      </div>
+
+      <div className="flex flex-col items-start justify-start w-full">
+        <p>{"Principal"}</p>
+        <CustomInput
+          sizeInput={"medium"}
+          placeholder={""}
+          border={newContactErrors.principal ? "error" : undefined}
+          value={newContact.principal}
+          onChange={(e) => onPrincipalChange(e.target.value)}
+        />
+      </div>
     </div>
   );
 
   function onPrincipalChange(value: string) {
-    setNewContact((prev: Contact) => {
-      return { ...prev, principal: value };
-    });
-    setNewContactErr("");
-    if (value.trim() !== "")
-      try {
-        Principal.fromText(value);
-        setNewContactPrinErr(false);
-      } catch (error) {
-        logger.debug("Error parsing principal", error);
-        setNewContactPrinErr(true);
-      }
-    else setNewContactPrinErr(false);
+    setNewContact((prev: Contact) => ({ ...prev, principal: value }));
+
+    if (!validatePrincipal(value)) {
+      setNewContactErrors((prev: NewContactErrors) => ({ ...prev, principal: true }));
+    } else {
+      setNewContactErrors((prev: NewContactErrors) => ({ ...prev, principal: false }));
+    }
   }
 
   function onNameChange(value: string) {
-    setNewContact((prev: Contact) => {
-      return { ...prev, name: value };
-    });
-    setNewContactErr("");
-    setNewContactNameErr(false);
+    setNewContact((prev: Contact) => ({ ...prev, name: value }));
+    if (value.length === 0) setNewContactErrors((prev) => ({ ...prev, name: true }));
+    else setNewContactErrors((prev) => ({ ...prev, name: false }));
   }
 }

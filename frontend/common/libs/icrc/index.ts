@@ -5,7 +5,6 @@ export { getIcrcActor } from "./getIcrcActor";
 export {
   createApproveAllowanceParams,
   getAllowanceDetails,
-  retrieveAssetsWithAllowance,
   retrieveSubAccountsWithAllowance,
   submitAllowanceApproval,
 } from "./icrcAllowance";

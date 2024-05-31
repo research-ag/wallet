@@ -1,41 +1,39 @@
-import { Contact, SubAccountContact } from "@redux/models/ContactsModels";
-
+import { Contact, NewContactErrors } from "@/@types/contacts";
 import { useState } from "react";
 
 export const useCreateContact = () => {
   const [newContact, setNewContact] = useState<Contact>({
     name: "",
     principal: "",
-    assets: [],
+    accountIdentifier: "",
+    accounts: [],
   });
-  const [isCreating, setIsCreating] = useState(false);
-  const [selAstContact, setSelAstContact] = useState("");
-  const [newSubAccounts, setNewSubaccounts] = useState<SubAccountContact[]>([]);
 
-  const [newContactErr, setNewContactErr] = useState("");
-  const [newContactNameErr, setNewContactNameErr] = useState(false);
-  const [newContactPrinErr, setNewContactPrinErr] = useState(false);
-  const [newContactSubNameErr, setNewContactSubNameErr] = useState<number[]>([]);
-  const [newContactSubIdErr, setNewContactSubIdErr] = useState<number[]>([]);
+  // TODO: probably show be located in the ContactMainDetails component
+  const [newContactErrors, setNewContactErrors] = useState<NewContactErrors>({
+    name: false,
+    principal: false,
+  });
+
+  console.log("newContact: ", newContact);
+
+  // -------------------------- Accounts --------------------------
+
+  const [isCreating, setIsCreating] = useState(false);
 
   return {
-    isCreating,
-    setIsCreating,
     newContact,
     setNewContact,
-    selAstContact,
-    setSelAstContact,
-    newSubAccounts,
-    setNewSubaccounts,
-    newContactErr,
-    setNewContactErr,
-    newContactNameErr,
-    setNewContactNameErr,
-    newContactPrinErr,
-    setNewContactPrinErr,
-    newContactSubNameErr,
-    setNewContactSubNameErr,
-    newContactSubIdErr,
-    setNewContactSubIdErr,
+    newContactErrors,
+    setNewContactErrors,
+    //
+    isCreating,
+    setIsCreating,
+    // newSubAccounts,
+    // setNewSubaccounts,
+    // newContactSubNameErr,
+    // setNewContactSubNameErr,
+    // newContactSubIdErr,
+    // setNewContactSubIdErr,
   };
 };

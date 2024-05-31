@@ -17,3 +17,18 @@ export interface Contact {
   accounts: ContactAccount[];
   allowances?: ContactAllowance;
 }
+
+// ----------------------------- Args -----------------------------
+export interface RetrieveSubAccountsWithAllowanceArgs {
+  accountPrincipal: string;
+  subAccounts: ContactAccount[];
+  assetAddress: string;
+  assetDecimal: string;
+}
+
+// ----------------------------- Errors -----------------------------
+
+export interface NewContactErrors {
+  name: boolean;
+  principal: boolean;
+}
