@@ -1,5 +1,7 @@
 import { Contact } from "@/@types/contacts";
 import { Dispatch, SetStateAction } from "react";
+import ContactAssetPop from "@/pages/contacts/components/ICRC/contactAssetPop";
+import { useAppSelector } from "@redux/Store";
 
 interface ContactAssetDetailsProps {
   newContact: Contact;
@@ -8,56 +10,55 @@ interface ContactAssetDetailsProps {
 
 export default function ContactAssetDetails(props: ContactAssetDetailsProps) {
   // const [selAstContact, setSelAstContact] = useState("");
-  // const assets = useAppSelector((state) => state.asset.list.assets);
+  const assets = useAppSelector((state) => state.asset.list.assets);
   // const [newSubAccounts, setNewSubaccounts] = useState<ContactAccount[]>([]);
   // const [newContactSubNameErr, setNewContactSubNameErr] = useState<number[]>([]);
   // const [newContactSubIdErr, setNewContactSubIdErr] = useState<number[]>([]);
 
   console.log(props);
-  // const {
-  //   assets,
-  //   newContact,
-  //   selAstContact,
-  //   isValidSubacc,
-  //   newSubAccounts,
-  //   setNewSubaccounts,
-  //   newContactSubNameErr,
-  //   newContactSubIdErr,
-  //   setNewContact,
-  //   setNewContactSubNameErr,
-  //   asciiHex,
-  //   setSelAstContact,
-  // } = props;
+  const {
+    //   assets,
+    newContact,
+    //   selAstContact,
+    //   isValidSubacc,
+    //   newSubAccounts,
+    //   setNewSubaccounts,
+    //   newContactSubNameErr,
+    //   newContactSubIdErr,
+    //   setNewContact,
+    //   setNewContactSubNameErr,
+    //   asciiHex,
+    //   setSelAstContact,
+  } = props;
 
   return (
     <div className="flex flex-row items-center justify-center w-full gap-3 rounded-sm h-72 bg-ThirdColorLight dark:bg-ThirdColor">
       {/* TODO: when to show the assets popove */}
-      {/* {newContact.assets.length === 0 ? (
+      {newContact.accounts.length === 0 ? (
         <ContactAssetPop
           assets={assets}
-          getAssetIcon={getAssetIcon}
           btnClass="bg-AddSecondaryButton rounded-l-sm w-8 h-8"
-          onAdd={(data) => {
-            assetToAddEmpty(data);
-          }}
+          // onAdd={(data) => assetToAddEmpty(data)}
+          onAdd={console.log}
         />
       ) : (
-        <SubAccountFormItem
-          assets={assets}
-          newContact={newContact}
-          selAstContact={selAstContact}
-          isValidSubacc={isValidSubacc}
-          newSubAccounts={newSubAccounts}
-          setNewSubaccounts={setNewSubaccounts}
-          newContactSubNameErr={newContactSubNameErr}
-          newContactSubIdErr={newContactSubIdErr}
-          setNewContact={setNewContact}
-          setNewContactSubNameErr={setNewContactSubNameErr}
-          setNewContactErr={setNewContactErr}
-          setNewContactSubIdErr={setNewContactSubIdErr}
-          asciiHex={asciiHex}
-        />
-      )} */}
+        <></>
+        // <SubAccountFormItem
+        //   assets={assets}
+        //   newContact={newContact}
+        //   selAstContact={selAstContact}
+        //   isValidSubacc={isValidSubacc}
+        //   newSubAccounts={newSubAccounts}
+        //   setNewSubaccounts={setNewSubaccounts}
+        //   newContactSubNameErr={newContactSubNameErr}
+        //   newContactSubIdErr={newContactSubIdErr}
+        //   setNewContact={setNewContact}
+        //   setNewContactSubNameErr={setNewContactSubNameErr}
+        //   setNewContactErr={setNewContactErr}
+        //   setNewContactSubIdErr={setNewContactSubIdErr}
+        //   asciiHex={asciiHex}
+        // />
+      )}
     </div>
   );
 

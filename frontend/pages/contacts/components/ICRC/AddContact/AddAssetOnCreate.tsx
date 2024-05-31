@@ -1,7 +1,6 @@
 import { Asset, AssetToAdd } from "@redux/models/AccountModels";
 import { AssetContact, Contact, SubAccountContact } from "@redux/models/ContactsModels";
 import ContactAssetPop from "../contactAssetPop";
-import { getAssetIcon } from "@/common/utils/icons";
 import ContactAssetElement from "../contactAssetElement";
 import { useTranslation } from "react-i18next";
 import { removeLeadingZeros } from "@common/utils/strings";
@@ -43,7 +42,6 @@ export default function AddAssetOnCreate(props: AddAssetOnCreateProps) {
               return !isIncluded;
             })}
             compClass="flex flex-row justify-end items-center w-full"
-            getAssetIcon={getAssetIcon}
             onAdd={(data) => {
               assetToAdd(data);
             }}

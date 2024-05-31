@@ -1,6 +1,7 @@
 // svgsetassetsToAdd
-import { IconType, IconTypeEnum } from "@/common/const";
+import { IconTypeEnum } from "@/common/const";
 import { ReactComponent as PlusIcon } from "@assets/svg/files/plus.svg";
+import { getAssetIcon } from "@common/utils/icons";
 //
 import { CustomButton } from "@components/button";
 import { CustomCheck } from "@components/checkbox";
@@ -11,7 +12,6 @@ import { useTranslation } from "react-i18next";
 interface ContactAssetPopProps {
   onAdd(data: AssetToAdd[]): void;
   assets: Asset[];
-  getAssetIcon(type: IconType, symbol?: string, logo?: string): JSX.Element;
   btnClass?: string;
   compClass?: string;
   onOpen?: any;
@@ -21,7 +21,6 @@ interface ContactAssetPopProps {
 const ContactAssetPop = ({
   onAdd,
   assets,
-  getAssetIcon,
   btnClass = "",
   compClass = "flex flex-row justify-center items-center w-full",
   onOpen,

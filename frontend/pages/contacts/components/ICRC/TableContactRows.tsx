@@ -27,7 +27,6 @@ import {
   SubAccountContactErr,
 } from "@redux/models/ContactsModels";
 import { useTranslation } from "react-i18next";
-import { getAssetIcon } from "@/common/utils/icons";
 import { getInitialFromName } from "@common/utils/strings";
 import { shortAddress } from "@common/utils/icrc";
 
@@ -145,7 +144,6 @@ export default function TableContactRows(props: TableContactRowsProps) {
                       compClass="flex flex-row justify-center items-center"
                       btnClass="!w-8 !h-8 bg-AddSecondaryButton rounded-l-none"
                       assets={getFilteredAssets(cntc)}
-                      getAssetIcon={getAssetIcon}
                       onAdd={(data) => {
                         onAddAssets(data, cntc);
                       }}
