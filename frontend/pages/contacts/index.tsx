@@ -23,7 +23,7 @@ const Contacts = () => {
   return (
     <div className="flex flex-col w-full pt-[1rem] px-[2.25rem]">
       <Menu />
-      <div className="flex flex-col items-start justify-start w-full">
+      <div className="flex flex-col items-start justify-start w-full gap-4">
         <div className="flex items-center justify-start w-full gap-3 text-md">
           <AssetFilter assetFilter={assetFilter} onAssetFilterChange={onAssetFilterChange} />
 

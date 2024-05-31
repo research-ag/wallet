@@ -16,7 +16,7 @@ const Allowances = lazy(() => import("./allowances"));
 
 const SwitchRoute = () => {
   const { authLoading, superAdmin, authenticated, blur } = useAppSelector((state) => state.auth);
-  
+
   if (authLoading) return <Loader />;
 
   return (
