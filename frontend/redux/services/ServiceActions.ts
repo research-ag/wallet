@@ -5,6 +5,7 @@ import { idlFactory as IcrcxIDLFactory } from "@candid/icrcx/candid.did";
 import { ServiceAsset, ServiceData } from "@redux/models/ServiceModels";
 import { IcrcLedgerCanister } from "@dfinity/ledger-icrc";
 import { getMetadataInfo } from "@common/utils/icrc";
+import { Principal } from "@dfinity/principal";
 
 export const getServicesData = async (myAgent: HttpAgent, principal: string) => {
   const myAssets = store.getState().asset.list.assets;
@@ -196,5 +197,19 @@ export const testServicePrincipal = async (myAgent: HttpAgent, servicePrincipal:
     return true;
   } catch {
     return false;
+  }
+};
+
+export const notifyServiceAsset = async (myAgent: HttpAgent, servicePrincipal: string, assetPrincipal: string) => {
+  try {
+    const serviceActor = Actor.createActor<IcrcxActor>(IcrcxIDLFactory, {
+      agent: myAgent,
+      canisterId: servicePrincipal,
+    });
+    const res = await serviceActor.icrcX_notify({ token: Principal.fromText(assetPrincipal) });
+    return res;
+  } catch (e) {
+    console.error("Notify Err:", e);
+    return { Err: { CallLedgerError: "Action Error" } };
   }
 };

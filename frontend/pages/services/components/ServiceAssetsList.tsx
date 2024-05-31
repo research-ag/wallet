@@ -16,6 +16,8 @@ import useServiceAsset from "../hooks/useServiceAsset";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { Fragment, useState } from "react";
 import { DeleteAssetServiceModal } from "./Modals/deleteAssetService";
+import { NotifyAssetModal } from "./Modals/notifyAsset";
+import { LoadingLoader } from "@components/loader";
 
 interface ServiceAssetsListProps {
   servicePrincipal: string;
@@ -24,9 +26,20 @@ interface ServiceAssetsListProps {
 
 export default function ServiceAssetsList({ service, servicePrincipal }: ServiceAssetsListProps) {
   const { t } = useTranslation();
-  const { assetsToAdd, setAssetsToAdd, addAssetsToService, deleteAssetsToService } = useServiceAsset();
+  const {
+    assetsToAdd,
+    setAssetsToAdd,
+    addAssetsToService,
+    deleteAssetsToService,
+    notifyAsset,
+    notifyRes,
+    setNotifyRes,
+  } = useServiceAsset();
   const [openMore, setOpenMore] = useState(-1);
   const [deleteAsset, setDeleteAsset] = useState<ServiceAsset>();
+  const [assetToNotify, setAssetToNotify] = useState<ServiceAsset>();
+  const [notifyLoading, setNotifyLoading] = useState(false);
+
   return (
     <Fragment>
       <table className="w-full text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md ">
@@ -134,8 +147,13 @@ export default function ServiceAssetsList({ service, servicePrincipal }: Service
                         arrowFill="fill-SelectRowColor"
                         side="top"
                         trigger={
-                          <button className="flex w-10 h-10 justify-center items-center rounded-md bg-SelectRowColor p-0">
-                            <NotifyIcon />
+                          <button
+                            className="flex w-10 h-10 justify-center items-center rounded-md bg-SelectRowColor p-0"
+                            onClick={() => {
+                              onNotify(asst.principal, asst);
+                            }}
+                          >
+                            {notifyLoading ? <LoadingLoader /> : <NotifyIcon />}
                           </button>
                         }
                       >
@@ -203,6 +221,15 @@ export default function ServiceAssetsList({ service, servicePrincipal }: Service
           removeAssetService={deleteAssetsToService}
         />
       )}
+      {notifyRes && assetToNotify && (
+        <NotifyAssetModal
+          open={!!notifyRes}
+          setOpen={onNotifyAssetChange}
+          service={service}
+          asset={assetToNotify}
+          res={notifyRes}
+        />
+      )}
     </Fragment>
   );
   function onOpenMoreChange(k: number, e: boolean) {
@@ -210,5 +237,22 @@ export default function ServiceAssetsList({ service, servicePrincipal }: Service
   }
   function onDeleteServiceAssetChange(value: boolean) {
     if (!value) setDeleteAsset(undefined);
+  }
+
+  async function onNotify(asstPrincipal: string, asst: ServiceAsset) {
+    if (!notifyLoading) {
+      setNotifyLoading(true);
+      const resNotify = (await notifyAsset(service.principal, asstPrincipal)) as any;
+      console.log("resNotify", resNotify);
+      setNotifyRes(resNotify);
+      setAssetToNotify(asst);
+      setNotifyLoading(false);
+    }
+  }
+  function onNotifyAssetChange(value: boolean) {
+    if (!value) {
+      setNotifyRes(undefined);
+      setAssetToNotify(undefined);
+    }
   }
 }
