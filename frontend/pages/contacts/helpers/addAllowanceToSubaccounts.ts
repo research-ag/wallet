@@ -10,9 +10,7 @@ export interface RequestAccountAllowance {
   account: ContactAccount;
 }
 
-interface AddAllowanceToSubaccountsArgs { subaccounts: RequestAccountAllowance[]; }
-
-export default async function addAllowanceToSubaccounts({ subaccounts }: AddAllowanceToSubaccountsArgs) {
+export default async function addAllowanceToSubaccounts(subaccounts: RequestAccountAllowance[]) {
   return Promise.all(
     subaccounts.map(async (subaccount) => {
       const response = await getAllowanceDetails(subaccount);

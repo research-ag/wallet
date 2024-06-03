@@ -6,6 +6,7 @@ import { asciiHex } from "@pages/contacts/constants/asciiHex";
 import { Dispatch, SetStateAction, useState } from "react";
 import { Contact, ContactAccount } from "@/@types/contacts";
 import AllowanceTooltip from "../AllowanceTooltip";
+import logger from "@common/utils/logger";
 
 interface AddSubAccountOnCreateProps {
   contactAssetSelected: string;
@@ -13,16 +14,18 @@ interface AddSubAccountOnCreateProps {
   newContact: Contact;
 }
 
+export interface SubAccountError {
+  name: boolean;
+  subAccountId: boolean;
+  tokenSymbol: boolean;
+  index: number;
+};
+
 export default function AddSubAccountOnCreate(props: AddSubAccountOnCreateProps) {
   const { contactAssetSelected, newContact, setNewContact } = props;
   const { t } = useTranslation();
 
-  const [subAccountError, setSubAccountError] = useState<{
-    name: boolean;
-    subAccountId: boolean;
-    tokenSymbol: boolean;
-    index: number;
-  } | null>(null);
+  const [subAccountError, setSubAccountError] = useState<SubAccountError | null>(null);
 
   return (
     <div className="flex flex-col items-start justify-start w-full h-full gap-4 p-3 bg-SecondaryColorLight dark:bg-SecondaryColor">
@@ -172,10 +175,11 @@ export default function AddSubAccountOnCreate(props: AddSubAccountOnCreateProps)
 
   function onDeleteSubAccount(k: number) {
     setNewContact((prev: Contact) => {
-      return {
-        ...prev,
-        accounts: prev.accounts.filter((sa, index) => index !== k),
-      };
+      const accounts = prev.accounts.filter((sa, index) => {
+        logger.debug(sa)
+        return index !== k
+      });
+      return { ...prev, accounts };
     });
   }
 }

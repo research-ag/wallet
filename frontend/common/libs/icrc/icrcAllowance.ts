@@ -18,7 +18,7 @@ import { TAllowance } from "@/@types/allowance";
 import { hexToUint8Array } from "@common/utils/hexadecimal";
 import { toFullDecimal, toHoleBigInt } from "@common/utils/amount";
 import logger from "@common/utils/logger";
-import { RetrieveSubAccountsWithAllowanceArgs } from "@/@types/contacts";
+// import { RetrieveSubAccountsWithAllowanceArgs } from "@/@types/contacts";
 
 function calculateExpirationAsBigInt(
   expirationString: string | undefined,
@@ -116,28 +116,29 @@ export async function getAllowanceDetails(params: CheckAllowanceParams) {
   }
 }
 
-export async function retrieveSubAccountsWithAllowance(params: RetrieveSubAccountsWithAllowanceArgs) {
-  const { accountPrincipal, subAccounts, assetAddress, assetDecimal } = params;
+// export async function retrieveSubAccountsWithAllowance(params: RetrieveSubAccountsWithAllowanceArgs) {
+//   const { accountPrincipal, subAccounts, assetAddress, assetDecimal } = params;
 
-  const subAccountsWithAllowance = await Promise.all(
-    subAccounts.map(async (subAccount) => {
-      const spenderSubaccount = subAccount?.subaccountId;
-      const response = await getAllowanceDetails({
-        allocatorSubaccount: spenderSubaccount,
-        allocatorPrincipal: accountPrincipal,
-        assetAddress,
-        assetDecimal,
-      });
+//   const subAccountsWithAllowance = await Promise.all(
+//     subAccounts.map(async (subAccount) => {
 
-      return {
-        ...subAccount,
-        allowance: response,
-      };
-    }),
-  );
+//       const spenderSubaccount = subAccount?.subaccountId;
+//       const response = await getAllowanceDetails({
+//         allocatorSubaccount: spenderSubaccount,
+//         allocatorPrincipal: accountPrincipal,
+//         assetAddress,
+//         assetDecimal,
+//       });
 
-  return subAccountsWithAllowance;
-}
+//       return {
+//         ...subAccount,
+//         allowance: response,
+//       };
+//     }),
+//   );
+
+//   return subAccountsWithAllowance;
+// }
 
 // export async function retrieveAssetsWithAllowance(params: HasAssetAllowanceParams): Promise<AssetContact[] | []> {
 //   const { accountPrincipal, assets } = params;

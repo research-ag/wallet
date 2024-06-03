@@ -9,13 +9,10 @@ export const useCreateContact = () => {
     accounts: [],
   });
 
-  // TODO: probably show be located in the ContactMainDetails component
   const [newContactErrors, setNewContactErrors] = useState<NewContactErrors>({
     name: false,
     principal: false,
   });
-
-  console.log("newContact: ", newContact);
 
   // -------------------------- Accounts --------------------------
 
@@ -29,11 +26,5 @@ export const useCreateContact = () => {
     //
     isCreating,
     setIsCreating,
-    // newSubAccounts,
-    // setNewSubaccounts,
-    // newContactSubNameErr,
-    // setNewContactSubNameErr,
-    // newContactSubIdErr,
-    // setNewContactSubIdErr,
   };
 };
