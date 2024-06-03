@@ -82,12 +82,12 @@ export async function submitAllowanceApproval(
 
 export async function getAllowanceDetails(params: CheckAllowanceParams) {
   try {
-    const { spenderPrincipal, spenderSubaccount, accountPrincipal, assetAddress, assetDecimal } = params;
+    const { spenderPrincipal, allocatorSubaccount, allocatorPrincipal, assetAddress, assetDecimal } = params;
 
     const userPrincipal = store.getState().auth.userPrincipal;
     const agent = store.getState().auth.userAgent;
     const canisterId = Principal.fromText(assetAddress);
-    const subAccountUint8Array = new Uint8Array(hexToUint8Array(spenderSubaccount));
+    const subAccountUint8Array = new Uint8Array(hexToUint8Array(allocatorSubaccount));
 
     const ledgerActor = Actor.createActor<LedgerActor>(LedgerFactory, {
       agent,
@@ -100,13 +100,12 @@ export async function getAllowanceDetails(params: CheckAllowanceParams) {
         subaccount: [],
       },
       account: {
-        owner: accountPrincipal ? Principal.fromText(accountPrincipal) : userPrincipal,
+        owner: allocatorPrincipal ? Principal.fromText(allocatorPrincipal) : userPrincipal,
         subaccount: [subAccountUint8Array],
       },
     });
 
     const allowance = Number(result.allowance) <= 0 ? "" : toFullDecimal(result.allowance, Number(assetDecimal));
-
     const expires_at = result.expires_at.length <= 0 ? "" : dayjs(Number(result?.expires_at) / 1000000).format();
 
     return { allowance, expires_at };
@@ -123,8 +122,8 @@ export async function retrieveSubAccountsWithAllowance(params: RetrieveSubAccoun
     subAccounts.map(async (subAccount) => {
       const spenderSubaccount = subAccount?.subaccountId;
       const response = await getAllowanceDetails({
-        spenderSubaccount,
-        accountPrincipal,
+        allocatorSubaccount: spenderSubaccount,
+        allocatorPrincipal: accountPrincipal,
         assetAddress,
         assetDecimal,
       });

@@ -51,6 +51,7 @@ export default function ContactList(props: ContactListProps) {
           {data.map((contact, index) => {
             const isContactExpanded = contactDropdown?.principal === contact.principal;
             const isContactEditable = contactEdited?.principal === contact.principal;
+            const hasContactAllowance = contact.accounts.some((account) => account.allowance);
 
             return (
               <Fragment key={`${contact.principal}-${index}`}>
@@ -97,7 +98,7 @@ export default function ContactList(props: ContactListProps) {
                           >
                             {contact.name}
                           </p>
-                          {contact?.allowances && (
+                          {hasContactAllowance && (
                             <MoneyHandIcon className="relative w-5 h-5 cursor-pointer fill-RadioCheckColor" />
                           )}
                         </div>
@@ -162,8 +163,7 @@ export default function ContactList(props: ContactListProps) {
       //   principal: Principal.fromText(contactEdited.principal),
       // }).toHex();
 
-      const updatedContact = { ...contactEdited };
-      console.log("updated contact", updatedContact);
+      // const updatedContact = { ...contactEdited };
       // updateContact(updatedContact, contact.principal);
     } catch (error) {
       logger.debug("Error saving contact", error);
@@ -247,7 +247,6 @@ export default function ContactList(props: ContactListProps) {
 }
 
 const getBodyRowStyles = (isContactExpanded: boolean, isContactEditable: boolean) => {
-  console.log({ isContactExpanded, isContactEditable });
   return clsx({
     ["border-b border-BorderColorTwoLight dark:border-BorderColorTwo"]: true,
     ["bg-SecondaryColorLight dark:bg-SecondaryColor"]: isContactExpanded && !isContactEditable,

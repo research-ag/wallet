@@ -1,6 +1,8 @@
-import { Contact } from "@/@types/contacts";
+export default function useContactErrorMesage() {
+  // console.log({ contact });
 
-export default function useContactErrorMesage(contact: Contact) {
-  console.log({ contact });
+  // -------------------------- Accounts --------------------------
+  // TODO: filter for account.tokenSymbol and check if accountId is duplicated
+
   return "";
 }

@@ -328,8 +328,8 @@ export default function SubAccountBody(props: SubAccountBodyProps) {
       if (asset.supportedStandards.includes(SupportedStandardEnum.Values["ICRC-2"])) {
         allowance = await getAllowanceDetails({
           spenderPrincipal: store.getState().auth.userPrincipal.toText(),
-          spenderSubaccount: subaccEdited.sub_account_id,
-          accountPrincipal: contact.principal,
+          allocatorSubaccount: subaccEdited.sub_account_id,
+          allocatorPrincipal: contact.principal,
           assetAddress: asset.address,
           assetDecimal: asset.decimal,
         });

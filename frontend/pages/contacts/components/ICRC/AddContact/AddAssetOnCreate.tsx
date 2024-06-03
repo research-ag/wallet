@@ -1,120 +1,124 @@
-import { Asset, AssetToAdd } from "@redux/models/AccountModels";
-import { AssetContact, Contact, SubAccountContact } from "@redux/models/ContactsModels";
+import { Contact } from "@/@types/contacts";
+import { useAppSelector } from "@redux/Store";
+import { useTranslation } from "react-i18next";
+import { Dispatch, SetStateAction } from "react";
+import { Asset } from "@redux/models/AccountModels";
 import ContactAssetPop from "../contactAssetPop";
 import ContactAssetElement from "../contactAssetElement";
-import { useTranslation } from "react-i18next";
-import { removeLeadingZeros } from "@common/utils/strings";
 
 interface AddAssetOnCreateProps {
-  assets: Array<Asset>;
   newContact: Contact;
-  newSubAccounts: SubAccountContact[];
-  selAstContact: string;
-  isValidSubacc: (from: string, validContact: boolean, contAst?: AssetContact) => any;
-  setNewSubaccounts: any;
-  setNewContact: any;
+  setNewContact: Dispatch<SetStateAction<Contact>>;
+  contactAssetSelected: string;
+  setContactAssetSelected: Dispatch<SetStateAction<string>>;
+  contactAssets: Asset[];
+  setContactAssets: Dispatch<SetStateAction<Asset[]>>;
 }
 
 export default function AddAssetOnCreate(props: AddAssetOnCreateProps) {
+  const assets = useAppSelector((state) => state.asset.list.assets);
   const { t } = useTranslation();
-  const { isValidSubacc, setNewContact, assets, newContact, selAstContact, newSubAccounts, setNewSubaccounts } = props;
+  const { setNewContact, newContact, contactAssetSelected, contactAssets, setContactAssets, setContactAssetSelected } =
+    props;
+
+  const unselectedAssets = assets.filter(
+    (currentAsset) => contactAssets.find((asset) => asset.tokenSymbol === currentAsset.tokenSymbol) === undefined,
+  );
 
   return (
     <div className="flex flex-col justify-start items-start w-[70%] h-full">
       <div className="flex flex-row items-center justify-between w-full p-3">
         <p className="whitespace-nowrap">{t("add.assets")}</p>
-        {assets.filter((ast) => {
-          let isIncluded = false;
-          for (let index = 0; index < newContact.assets.length; index++) {
-            if (newContact.assets[index].tokenSymbol === ast.tokenSymbol) {
-              isIncluded = true;
-              break;
-            }
-          }
-          return !isIncluded;
-        }).length != 0 && (
+        {unselectedAssets.length !== 0 && (
           <ContactAssetPop
-            assets={assets.filter((ast) => {
-              let isIncluded = false;
-              newContact.assets.map((contAst) => {
-                if (ast.tokenSymbol === contAst.tokenSymbol) isIncluded = true;
-              });
-              return !isIncluded;
-            })}
+            assets={unselectedAssets}
             compClass="flex flex-row justify-end items-center w-full"
-            onAdd={(data) => {
-              assetToAdd(data);
-            }}
+            onAdd={assetToAdd}
           />
         )}
       </div>
 
       <div className="flex flex-col w-full h-full scroll-y-light">
-        {newContact.assets.map((contAst, k) => {
+        {contactAssets.map((contAst, k) => {
+          const assetSubAccounts = newContact.accounts.filter((curr) => curr.tokenSymbol === contAst.tokenSymbol);
+          const isLastIncomplete = newContact.accounts.filter((curr) => !curr.name || !curr.subaccountId).length > 0;
+          const onSelectedCount = assetSubAccounts.length;
+          const onUnselectedCount = isLastIncomplete ? newContact.accounts.length - 1 : newContact.accounts.length;
+
           return (
             <ContactAssetElement
               key={k}
               contAst={contAst}
               k={k}
-              selAstContact={selAstContact}
-              isValidSubacc={() => {
-                isValidSubacc("change", true, contAst);
-              }}
-              isAvailableAddContact={isAvailableAddContact}
-              newSubAccounts={newSubAccounts}
-              setNewSubaccounts={setNewSubaccounts}
-            ></ContactAssetElement>
+              newContact={newContact}
+              contactAssetSelected={contactAssetSelected}
+              setContactAssetSelected={setContactAssetSelected}
+              setNewContact={setNewContact}
+              onSelectedCount={onSelectedCount}
+              onUnselectedCount={onUnselectedCount}
+            />
           );
         })}
       </div>
     </div>
   );
 
-  function isAvailableAddContact() {
-    let isAvailable = true;
-    const ids: string[] = [];
+  // async function isValidSubacc() {
+  // TODO: remove the select asset logic to another function (OK)
+  // INFO: change asset tab
+  // setNewContact(auxContact);
+  // setSelAstContact(contAst.tokenSymbol);
+  // setNewSubaccounts(
+  //   contAst.subaccounts.length === 0
+  //     ? [{ name: "", subaccount_index: "", sub_account_id: "", allowance: { allowance: "", expires_at: "" } }]
+  //     : contAst.subaccounts,
+  // );
+  // TODO: after validation save data (PENDING)
+  // INFO: create contact into redux and local storage
+  // setIsCreating(true);
+  // const result = await retrieveAssetsWithAllowance({
+  //   accountPrincipal: newContact.principal,
+  //   assets: newContact.assets,
+  // });
+  // const reduxContact = {
+  //   ...auxContact,
+  //   assets: result,
+  //   accountIdentier: getAccountIdentifier(auxContact.principal, 0),
+  // };
+  // await db().addContact(reduxContact, { sync: true });
+  // setIsCreating(false);
+  // onClose();
+  // }
 
-    for (let index = 0; index < newSubAccounts.length; index++) {
-      const newSa = newSubAccounts[index];
-      let subAccIdx = "";
-      if (removeLeadingZeros(newSa.subaccount_index.trim()) === "") {
-        if (newSa.subaccount_index.length !== 0) subAccIdx = "0";
-      } else subAccIdx = removeLeadingZeros(newSa.subaccount_index.trim());
+  // function isAvailableAddContact() {
+  //   return true;
+  // TODO: move this logic to the respective compoent (PENDING)
+  //   let isAvailable = true;
+  //   const ids: string[] = [];
 
-      if (newSa.name.trim() === "") {
-        isAvailable = false;
-        break;
-      }
+  //   for (let index = 0; index < newSubAccounts.length; index++) {
+  //     const newSa = newSubAccounts[index];
+  //     let subAccIdx = "";
+  //     if (removeLeadingZeros(newSa.subaccount_index.trim()) === "") {
+  //       if (newSa.subaccount_index.length !== 0) subAccIdx = "0";
+  //     } else subAccIdx = removeLeadingZeros(newSa.subaccount_index.trim());
 
-      if (subAccIdx === "" || ids.includes(subAccIdx)) {
-        isAvailable = false;
-        break;
-      } else {
-        ids.push(subAccIdx);
-      }
-    }
-    return isAvailable;
-  }
+  //     if (newSa.name.trim() === "") {
+  //       isAvailable = false;
+  //       break;
+  //     }
 
-  function assetToAdd(data: AssetToAdd[]) {
-    setNewContact((prev: Contact) => {
-      return {
-        ...prev,
-        assets: [
-          ...prev.assets,
-          ...data.map((ata) => {
-            return {
-              symbol: ata.symbol,
-              tokenSymbol: ata.tokenSymbol,
-              logo: ata.logo,
-              subaccounts: [],
-              address: ata.address,
-              decimal: ata.decimal,
-              shortDecimal: ata.shortDecimal,
-            };
-          }),
-        ],
-      };
-    });
+  //     if (subAccIdx === "" || ids.includes(subAccIdx)) {
+  //       isAvailable = false;
+  //       break;
+  //     } else {
+  //       ids.push(subAccIdx);
+  //     }
+  //   }
+  //   return isAvailable;
+  // }
+
+  function assetToAdd(data: Asset[]) {
+    setContactAssets((prev: Asset[]) => [...prev, ...data]);
   }
 }

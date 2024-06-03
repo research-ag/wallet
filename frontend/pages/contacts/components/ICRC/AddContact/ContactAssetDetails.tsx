@@ -1,102 +1,39 @@
 import { Contact } from "@/@types/contacts";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import ContactAssetPop from "@/pages/contacts/components/ICRC/contactAssetPop";
 import { useAppSelector } from "@redux/Store";
+import { Asset } from "@redux/models/AccountModels";
+import SubAccountFormItem from "@pages/contacts/components/ICRC/AddContact/SubAccountFormItem";
 
 interface ContactAssetDetailsProps {
   newContact: Contact;
   setNewContact: Dispatch<SetStateAction<Contact>>;
 }
 
-export default function ContactAssetDetails(props: ContactAssetDetailsProps) {
-  // const [selAstContact, setSelAstContact] = useState("");
+export default function ContactAssetDetails({ newContact, setNewContact }: ContactAssetDetailsProps) {
   const assets = useAppSelector((state) => state.asset.list.assets);
-  // const [newSubAccounts, setNewSubaccounts] = useState<ContactAccount[]>([]);
-  // const [newContactSubNameErr, setNewContactSubNameErr] = useState<number[]>([]);
-  // const [newContactSubIdErr, setNewContactSubIdErr] = useState<number[]>([]);
-
-  console.log(props);
-  const {
-    //   assets,
-    newContact,
-    //   selAstContact,
-    //   isValidSubacc,
-    //   newSubAccounts,
-    //   setNewSubaccounts,
-    //   newContactSubNameErr,
-    //   newContactSubIdErr,
-    //   setNewContact,
-    //   setNewContactSubNameErr,
-    //   asciiHex,
-    //   setSelAstContact,
-  } = props;
+  const [contactAssetSelected, setContactAssetSelected] = useState("");
+  const [contactAssets, setContactAssets] = useState<Asset[]>([]);
 
   return (
     <div className="flex flex-row items-center justify-center w-full gap-3 rounded-sm h-72 bg-ThirdColorLight dark:bg-ThirdColor">
-      {/* TODO: when to show the assets popove */}
-      {newContact.accounts.length === 0 ? (
-        <ContactAssetPop
-          assets={assets}
-          btnClass="bg-AddSecondaryButton rounded-l-sm w-8 h-8"
-          // onAdd={(data) => assetToAddEmpty(data)}
-          onAdd={console.log}
-        />
+      {contactAssets.length === 0 ? (
+        <ContactAssetPop assets={assets} btnClass="bg-AddSecondaryButton rounded-l-sm w-8 h-8" onAdd={onSelectAssets} />
       ) : (
-        <></>
-        // <SubAccountFormItem
-        //   assets={assets}
-        //   newContact={newContact}
-        //   selAstContact={selAstContact}
-        //   isValidSubacc={isValidSubacc}
-        //   newSubAccounts={newSubAccounts}
-        //   setNewSubaccounts={setNewSubaccounts}
-        //   newContactSubNameErr={newContactSubNameErr}
-        //   newContactSubIdErr={newContactSubIdErr}
-        //   setNewContact={setNewContact}
-        //   setNewContactSubNameErr={setNewContactSubNameErr}
-        //   setNewContactErr={setNewContactErr}
-        //   setNewContactSubIdErr={setNewContactSubIdErr}
-        //   asciiHex={asciiHex}
-        // />
+        <SubAccountFormItem
+          contactAssets={contactAssets}
+          newContact={newContact}
+          setNewContact={setNewContact}
+          contactAssetSelected={contactAssetSelected}
+          setContactAssetSelected={setContactAssetSelected}
+          setContactAssets={setContactAssets}
+        />
       )}
     </div>
   );
 
-  // function assetToAddEmpty(data: AssetToAdd[]) {
-  //   let auxConatct: Contact = {
-  //     name: "",
-  //     principal: "",
-  //     assets: [],
-  //   };
-
-  //   setNewContact((prev: Contact) => {
-  //     auxConatct = {
-  //       ...prev,
-  //       assets: data.map((ata) => {
-  //         return {
-  //           symbol: ata.symbol,
-  //           tokenSymbol: ata.tokenSymbol,
-  //           subaccounts: [],
-  //           logo: ata.logo,
-  //           address: ata.address,
-  //           decimal: ata.decimal,
-  //           shortDecimal: ata.shortDecimal,
-  //           supportedStandards: ata.supportedStandards,
-  //         };
-  //       }),
-  //     };
-  //     return auxConatct;
-  //   });
-
-  //   if (data[0]) {
-  //     setSelAstContact(data[0].tokenSymbol);
-  //     const auxAsset = auxConatct.assets.find((ast) => ast.tokenSymbol === data[0].tokenSymbol);
-  //     if (auxAsset)
-  //       setNewSubaccounts(
-  //         auxAsset.subaccounts.length === 0
-  //           ? [{ name: "", subaccount_index: "", sub_account_id: "" }]
-  //           : auxAsset.subaccounts,
-  //       );
-  //   }
-  // }
+  function onSelectAssets(data: Asset[]) {
+    setContactAssets(data);
+    setContactAssetSelected(data[0]?.tokenSymbol);
+  }
 }

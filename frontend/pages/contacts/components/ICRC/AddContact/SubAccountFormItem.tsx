@@ -1,63 +1,36 @@
-import { Asset } from "@redux/models/AccountModels";
-import { AssetContact, Contact, SubAccountContact } from "@redux/models/ContactsModels";
 import AddAssetOnCreate from "./AddAssetOnCreate";
+import { Contact } from "@/@types/contacts";
+import { Asset } from "@redux/models/AccountModels";
+import { Dispatch, SetStateAction } from "react";
 import AddSubAccountOnCreate from "./AssSubAccounOnCreate";
 
 interface SubAccountFormItemProps {
-  assets: Array<Asset>;
-  newContact: Contact;
-  newSubAccounts: SubAccountContact[];
-  newContactSubNameErr: number[];
-  newContactSubIdErr: number[];
-  asciiHex: string[];
-  selAstContact: string;
-  isValidSubacc: (from: string, validContact: boolean, contAst?: AssetContact) => any;
-  setNewSubaccounts: any;
   setNewContact: any;
-  setNewContactSubNameErr: any;
-  setNewContactErr: any;
-  setNewContactSubIdErr: any;
+  newContact: Contact;
+  contactAssetSelected: string;
+  contactAssets: Asset[];
+  setContactAssetSelected: Dispatch<SetStateAction<string>>;
+  setContactAssets: Dispatch<SetStateAction<Asset[]>>;
 }
 
 export default function SubAccountFormItem(props: SubAccountFormItemProps) {
-  const {
-    assets,
-    newContact,
-    newSubAccounts,
-    newContactSubNameErr,
-    newContactSubIdErr,
-    asciiHex,
-    selAstContact,
-    isValidSubacc,
-    setNewSubaccounts,
-    setNewContact,
-    setNewContactSubNameErr,
-    setNewContactErr,
-    setNewContactSubIdErr,
-  } = props;
+  const { contactAssets, newContact, setContactAssetSelected, setNewContact, setContactAssets, contactAssetSelected } =
+    props;
 
   return (
     <div className="flex flex-row items-start justify-start w-full h-full">
       <AddAssetOnCreate
-        assets={assets}
+        contactAssets={contactAssets}
         newContact={newContact}
-        newSubAccounts={newSubAccounts}
-        selAstContact={selAstContact}
-        isValidSubacc={isValidSubacc}
-        setNewSubaccounts={setNewSubaccounts}
+        setContactAssetSelected={setContactAssetSelected}
+        setContactAssets={setContactAssets}
+        contactAssetSelected={contactAssetSelected}
         setNewContact={setNewContact}
       />
       <AddSubAccountOnCreate
-        newContactSubNameErr={newContactSubNameErr}
-        newContactSubIdErr={newContactSubIdErr}
-        asciiHex={asciiHex}
-        selAstContact={selAstContact}
-        newSubAccounts={newSubAccounts}
-        setNewContactSubIdErr={setNewContactSubIdErr}
-        setNewContactSubNameErr={setNewContactSubNameErr}
-        setNewContactErr={setNewContactErr}
-        setNewSubaccounts={setNewSubaccounts}
+        contactAssetSelected={contactAssetSelected}
         setNewContact={setNewContact}
+        newContact={newContact}
       />
     </div>
   );

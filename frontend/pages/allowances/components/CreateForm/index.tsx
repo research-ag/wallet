@@ -114,8 +114,8 @@ export default function CreateForm() {
       const response = await getAllowanceDetails({
         assetAddress: allowance.asset.address,
         assetDecimal: allowance.asset.decimal,
-        spenderSubaccount: allowance.subAccountId,
-        spenderPrincipal: allowance.spender,
+        allocatorSubaccount: allowance.subAccountId,
+        allocatorPrincipal: allowance.spender,
       });
 
       const newAllowance = {

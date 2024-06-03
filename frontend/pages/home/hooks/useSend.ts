@@ -158,8 +158,8 @@ export default function useSend() {
       const decimal = sender?.asset?.decimal;
 
       const response = await getAllowanceDetails({
-        spenderSubaccount: subAccount,
-        accountPrincipal: principal,
+        allocatorSubaccount: subAccount,
+        allocatorPrincipal: principal,
         assetAddress,
         assetDecimal: decimal,
       });

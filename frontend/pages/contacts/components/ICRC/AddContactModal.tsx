@@ -2,7 +2,7 @@ import { IconButton } from "@components/button";
 import { BasicModal } from "@components/modal";
 import { PlusIcon } from "@radix-ui/react-icons";
 import { memo, useState } from "react";
-import AddContact from "./AddContact";
+import AddContact from "@/pages/contacts/components/ICRC/AddContact";
 
 function AddContactModal() {
   const [open, setOpen] = useState(false);

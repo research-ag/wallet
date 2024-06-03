@@ -13,24 +13,28 @@ import { validatePrincipal } from "@common/utils/definityIdentity";
 import logger from "@common/utils/logger";
 import useContactErrorMesage from "@pages/contacts/hooks/useContactErrorMessage";
 import ContactAssetDetails from "@/pages/contacts/components/ICRC/AddContact/ContactAssetDetails";
+import { checkHexString } from "@common/utils/hexadecimal";
+import { useAppSelector } from "@redux/Store";
 
 interface AddContactProps {
   onClose(): void;
 }
 export default function AddContact({ onClose }: AddContactProps) {
   const { t } = useTranslation();
+  const assets = useAppSelector((state) => state.asset.list.assets);
+  const errorMessage = useContactErrorMesage();
   const [isAllowancesChecking, setIsAllowancesChecking] = useState<boolean>(false);
-
   const { newContactErrors, setNewContactErrors, isCreating, newContact, setNewContact } = useCreateContact();
-
-  const errorMessage = useContactErrorMesage(newContact);
 
   // const isAssetICRC2Supported = (() => {
   //   const fullAsset = assets.find((asset) => asset.tokenSymbol === selAstContact);
   //   return fullAsset?.supportedStandards?.includes(SupportedStandardEnum.Values["ICRC-2"]);
   // })();
 
-  const isAssetICRC2Supported = false;
+  // const isAssetICRC2Supported = false;
+  // TODO: is one is beign added (missing id) do not allow to test (show warning???)
+  // TODO: if ICRC-2 is not supported what to do?
+  const enableAllowanceTest = newContact.accounts.length > 0;
 
   return (
     <div className="relative flex flex-col items-start justify-start w-full gap-4 text-md">
@@ -51,7 +55,8 @@ export default function AddContact({ onClose }: AddContactProps) {
         {(isAllowancesChecking || isCreating) && (
           <LoadingLoader color="dark:border-secondary-color-1-light border-black-color" />
         )}
-        {isAssetICRC2Supported && (
+
+        {enableAllowanceTest && (
           <CustomButton
             className="bg-slate-color-success min-w-[5rem] flex justify-between items-center"
             onClick={onAllowanceNewContactCheck}
@@ -60,6 +65,7 @@ export default function AddContact({ onClose }: AddContactProps) {
             <MoneyHandIcon className="fill-PrimaryColorLight" /> {t("test")}
           </CustomButton>
         )}
+
         <CustomButton className="min-w-[5rem]" onClick={console.log} disabled={isCreating || isAllowancesChecking}>
           <p>{t("add.contact")}</p>
         </CustomButton>
@@ -73,6 +79,36 @@ export default function AddContact({ onClose }: AddContactProps) {
       const isPrincipalValid = validatePrincipal(newContact.principal);
       if (!isPrincipalValid) setNewContactErrors((prev) => ({ ...prev, principal: true }));
       else setNewContactErrors((prev) => ({ ...prev, principal: false }));
+
+      const contactAccounts = newContact.accounts.filter((account) => {
+        return account.subaccountId.trim().length > 0 && checkHexString(account.subaccountId);
+      });
+
+      const requestArgs = contactAccounts.map((account) => {
+        const currentAsset = assets.find((asset) => asset.tokenSymbol === account.tokenSymbol);
+
+        if (!currentAsset) {
+          logger.debug("onAllowanceNewContactCheck: Asset not found", account.tokenSymbol);
+          return;
+        }
+
+        return {
+          assetAddress: currentAsset?.address,
+          assetDecimal: currentAsset?.decimal,
+          spenderSubaccount: account.subaccountId,
+          spenderPrincipal: newContact.principal,
+        };
+      });
+
+      console.log(requestArgs);
+
+      // allocator principal
+      // allocator subaccount
+      // spender principal
+      // asset ledger
+      // asset decimal
+
+      // TODO: for each requestArgs call retrieveSubAccountsWithAllowance parallelly
 
       // for (let index = 0; index < newSubAccounts.length; index++) {
       // const subAccount = newSubAccounts[index];
@@ -116,62 +152,6 @@ export default function AddContact({ onClose }: AddContactProps) {
     }
   }
 
-  // async function isValidSubacc(from: string, validContact: boolean, contAst?: AssetContact) {
-  //   const { auxNewSub, errName, errId, validSubaccounts } = validateSubaccounts(newSubAccounts);
-  //   // Check if valid Subaccounts and Valid prev contact info
-  //   if (validSubaccounts && validContact) {
-  //     const auxContact = { ...newContact };
-  //     let editKey = 0;
-  //     // Setting subaccount to the selected asset
-  //     for (let index = 0; index < auxContact.assets.length; index++) {
-  //       if (auxContact.assets[index].tokenSymbol === selAstContact) {
-  //         editKey = index;
-  //         break;
-  //       }
-  //     }
-
-  //     if (auxContact.assets.length > 0) auxContact.assets[editKey].subaccounts = auxNewSub;
-  //     if (from === "change" && contAst) {
-  //       // INFO: change asset tab
-  //       setNewContact(auxContact);
-  //       setSelAstContact(contAst.tokenSymbol);
-  //       setNewSubaccounts(
-  //         contAst.subaccounts.length === 0
-  //           ? [{ name: "", subaccount_index: "", sub_account_id: "", allowance: { allowance: "", expires_at: "" } }]
-  //           : contAst.subaccounts,
-  //       );
-  //     } else {
-  //       // INFO: create contact into redux and local storage
-  //       setIsCreating(true);
-  //       const result = await retrieveAssetsWithAllowance({
-  //         accountPrincipal: newContact.principal,
-  //         assets: newContact.assets,
-  //       });
-
-  //       const reduxContact = {
-  //         ...auxContact,
-  //         assets: result,
-  //         accountIdentier: getAccountIdentifier(auxContact.principal, 0),
-  //       };
-
-  //       // TODO: modify the structure
-  //       await db().addContact(reduxContact, { sync: true });
-
-  //       setIsCreating(false);
-  //       onClose();
-  //     }
-  //     setNewContactSubNameErr([]);
-  //     setNewContactSubIdErr([]);
-  //     setNewContactErr("");
-  //   } else {
-  //     setNewContactSubNameErr(errName);
-  //     setNewContactSubIdErr(errId);
-  //     if (errName.length > 0 || errId.length > 0) setNewContactErr("check.add.contact.subacc.err");
-  //   }
-
-  //   return { validSubaccounts, auxNewSub, errName, errId };
-  // }
-
   // function onAddContact() {
   //   let validContact = true;
   //   let err = { msg: "", name: false, prin: false };
@@ -192,7 +172,6 @@ export default function AddContact({ onClose }: AddContactProps) {
   //       err = { ...err, msg: "check.add.contact.prin.err", prin: true };
   //     }
   //   }
-
   //   setNewContactErr(err.msg);
   //   setNewContactNameErr(err.name);
   //   setNewContactPrinErr(err.prin);

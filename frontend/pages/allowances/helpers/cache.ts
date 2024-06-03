@@ -25,7 +25,7 @@ export async function allowanceCacheRefresh() {
         ) {
           const response = await getAllowanceDetails({
             spenderPrincipal,
-            spenderSubaccount,
+            allocatorSubaccount: spenderSubaccount,
             assetAddress,
             assetDecimal,
           });

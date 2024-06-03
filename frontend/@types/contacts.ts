@@ -1,8 +1,10 @@
 export interface ContactAccount {
   name: string;
+  // TODO: Is this necessary?
   subaccount: string;
   subaccountId: string;
   tokenSymbol: string;
+  allowance?: ContactAllowance;
 }
 
 export interface ContactAllowance {
@@ -15,10 +17,10 @@ export interface Contact {
   principal: string;
   accountIdentifier: string;
   accounts: ContactAccount[];
-  allowances?: ContactAllowance;
 }
 
 // ----------------------------- Args -----------------------------
+
 export interface RetrieveSubAccountsWithAllowanceArgs {
   accountPrincipal: string;
   subAccounts: ContactAccount[];
