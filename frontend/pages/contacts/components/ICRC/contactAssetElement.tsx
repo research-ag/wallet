@@ -7,33 +7,28 @@ import { Asset } from "@redux/models/AccountModels";
 import { Dispatch, SetStateAction } from "react";
 import clsx from "clsx";
 import { Contact } from "@/@types/contacts";
+import { useContact } from "@pages/contacts/contexts/ContactProvider";
 
 interface ContactAssetElementProps {
   contAst: Asset;
-  k: number;
+  interator: number;
   contactAssetSelected: string;
   setContactAssetSelected: Dispatch<SetStateAction<string>>;
-  setNewContact: Dispatch<SetStateAction<Contact>>;
-  newContact: Contact;
-  onSelectedCount: number;
-  onUnselectedCount: number;
 }
 
 const ContactAssetElement = (props: ContactAssetElementProps) => {
-  const {
-    contAst,
-    k,
-    contactAssetSelected,
-    setNewContact,
-    setContactAssetSelected,
-    newContact,
-    onSelectedCount,
-    onUnselectedCount,
-  } = props;
+  const { contAst, interator, contactAssetSelected, setContactAssetSelected } = props;
+  const { newContact, setNewContact } = useContact();
+
   const isCurrentAssetSelected = contAst.tokenSymbol === contactAssetSelected;
 
+  const assetSubAccounts = newContact.accounts.filter((curr) => curr.tokenSymbol === contAst.tokenSymbol);
+  const isLastIncomplete = newContact.accounts.filter((curr) => !curr.name || !curr.subaccountId).length > 0;
+  const onSelectedCount = assetSubAccounts.length;
+  const onUnselectedCount = isLastIncomplete ? newContact.accounts.length - 1 : newContact.accounts.length;
+
   return (
-    <div key={k} onClick={onSelectContactAsset} className={assetElementStyles(isCurrentAssetSelected)}>
+    <div key={interator} onClick={onSelectContactAsset} className={assetElementStyles(isCurrentAssetSelected)}>
       <div className="flex flex-row items-center justify-start gap-3">
         {getAssetIcon(IconTypeEnum.Enum.FILTER, contAst.tokenSymbol, contAst.logo)}
         <p>{contAst.symbol}</p>

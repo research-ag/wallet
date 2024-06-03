@@ -162,7 +162,6 @@ export default function ContactList(props: ContactListProps) {
       // const accountIdentifier = AccountIdentifier.fromPrincipal({
       //   principal: Principal.fromText(contactEdited.principal),
       // }).toHex();
-
       // const updatedContact = { ...contactEdited };
       // updateContact(updatedContact, contact.principal);
     } catch (error) {

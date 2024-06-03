@@ -85,7 +85,7 @@ export default function useContactTable() {
       newName,
       newIndex,
       allowance,
-    })
+    });
 
     // TODO: allownce object breaking changes
     // contact &&

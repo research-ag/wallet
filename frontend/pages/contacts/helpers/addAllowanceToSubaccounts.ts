@@ -16,7 +16,7 @@ export default async function addAllowanceToSubaccounts(subaccounts: RequestAcco
       const response = await getAllowanceDetails(subaccount);
       return {
         ...subaccount.account,
-        allowance: response
+        allowance: response,
       };
     }),
   );

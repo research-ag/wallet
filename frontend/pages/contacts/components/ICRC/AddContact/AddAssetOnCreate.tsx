@@ -1,4 +1,3 @@
-import { Contact } from "@/@types/contacts";
 import { useAppSelector } from "@redux/Store";
 import { useTranslation } from "react-i18next";
 import { Dispatch, SetStateAction } from "react";
@@ -7,8 +6,6 @@ import ContactAssetPop from "../contactAssetPop";
 import ContactAssetElement from "../contactAssetElement";
 
 interface AddAssetOnCreateProps {
-  newContact: Contact;
-  setNewContact: Dispatch<SetStateAction<Contact>>;
   contactAssetSelected: string;
   setContactAssetSelected: Dispatch<SetStateAction<string>>;
   contactAssets: Asset[];
@@ -18,8 +15,7 @@ interface AddAssetOnCreateProps {
 export default function AddAssetOnCreate(props: AddAssetOnCreateProps) {
   const assets = useAppSelector((state) => state.asset.list.assets);
   const { t } = useTranslation();
-  const { setNewContact, newContact, contactAssetSelected, contactAssets, setContactAssets, setContactAssetSelected } =
-    props;
+  const { contactAssetSelected, contactAssets, setContactAssets, setContactAssetSelected } = props;
 
   const unselectedAssets = assets.filter(
     (currentAsset) => contactAssets.find((asset) => asset.tokenSymbol === currentAsset.tokenSymbol) === undefined,
@@ -39,26 +35,15 @@ export default function AddAssetOnCreate(props: AddAssetOnCreateProps) {
       </div>
 
       <div className="flex flex-col w-full h-full scroll-y-light">
-        {contactAssets.map((contAst, k) => {
-          const assetSubAccounts = newContact.accounts.filter((curr) => curr.tokenSymbol === contAst.tokenSymbol);
-          const isLastIncomplete = newContact.accounts.filter((curr) => !curr.name || !curr.subaccountId).length > 0;
-          const onSelectedCount = assetSubAccounts.length;
-          const onUnselectedCount = isLastIncomplete ? newContact.accounts.length - 1 : newContact.accounts.length;
-
-          return (
-            <ContactAssetElement
-              key={k}
-              contAst={contAst}
-              k={k}
-              newContact={newContact}
-              contactAssetSelected={contactAssetSelected}
-              setContactAssetSelected={setContactAssetSelected}
-              setNewContact={setNewContact}
-              onSelectedCount={onSelectedCount}
-              onUnselectedCount={onUnselectedCount}
-            />
-          );
-        })}
+        {contactAssets.map((contAst, index) => (
+          <ContactAssetElement
+            key={index}
+            contAst={contAst}
+            interator={index}
+            contactAssetSelected={contactAssetSelected}
+            setContactAssetSelected={setContactAssetSelected}
+          />
+        ))}
       </div>
     </div>
   );

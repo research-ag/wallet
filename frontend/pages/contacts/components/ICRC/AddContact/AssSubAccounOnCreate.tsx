@@ -3,29 +3,20 @@ import { ReactComponent as TrashIcon } from "@assets/svg/files/trash-empty.svg";
 import { useTranslation } from "react-i18next";
 import { checkHexString } from "@common/utils/hexadecimal";
 import { asciiHex } from "@pages/contacts/constants/asciiHex";
-import { Dispatch, SetStateAction, useState } from "react";
 import { Contact, ContactAccount } from "@/@types/contacts";
 import AllowanceTooltip from "../AllowanceTooltip";
 import logger from "@common/utils/logger";
+import { useContactError } from "@pages/contacts/contexts/ContactErrorProvider";
+import { useContact } from "@pages/contacts/contexts/ContactProvider";
 
 interface AddSubAccountOnCreateProps {
   contactAssetSelected: string;
-  setNewContact: Dispatch<SetStateAction<Contact>>;
-  newContact: Contact;
 }
 
-export interface SubAccountError {
-  name: boolean;
-  subAccountId: boolean;
-  tokenSymbol: boolean;
-  index: number;
-};
-
-export default function AddSubAccountOnCreate(props: AddSubAccountOnCreateProps) {
-  const { contactAssetSelected, newContact, setNewContact } = props;
+export default function AddSubAccountOnCreate({ contactAssetSelected }: AddSubAccountOnCreateProps) {
+  const { newContact, setNewContact } = useContact();
   const { t } = useTranslation();
-
-  const [subAccountError, setSubAccountError] = useState<SubAccountError | null>(null);
+  const { subAccountError, setSubAccountError } = useContactError();
 
   return (
     <div className="flex flex-col items-start justify-start w-full h-full gap-4 p-3 bg-SecondaryColorLight dark:bg-SecondaryColor">
@@ -176,8 +167,8 @@ export default function AddSubAccountOnCreate(props: AddSubAccountOnCreateProps)
   function onDeleteSubAccount(k: number) {
     setNewContact((prev: Contact) => {
       const accounts = prev.accounts.filter((sa, index) => {
-        logger.debug(sa)
-        return index !== k
+        logger.debug(sa);
+        return index !== k;
       });
       return { ...prev, accounts };
     });

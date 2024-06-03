@@ -2,7 +2,6 @@
 import { ReactComponent as MoneyHandIcon } from "@assets/svg/files/money-hand.svg";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
-import { useCreateContact } from "@pages/contacts/hooks/useCreateContact";
 import { useTranslation } from "react-i18next";
 import ContactMainDetails from "./ContactMainDetails";
 import { clsx } from "clsx";
@@ -15,7 +14,15 @@ import ContactAssetDetails from "@/pages/contacts/components/ICRC/AddContact/Con
 import { checkHexString } from "@common/utils/hexadecimal";
 import { useAppSelector } from "@redux/Store";
 import addAllowanceToSubaccounts, { RequestAccountAllowance } from "@pages/contacts/helpers/addAllowanceToSubaccounts";
-import { isContactAccountNameValid, isContactAccountValid, isContactNameValid, isContactPrincipalValid } from "@pages/contacts/helpers/validators";
+import {
+  isContactAccountNameValid,
+  isContactAccountValid,
+  isContactNameValid,
+  isContactPrincipalValid,
+} from "@pages/contacts/helpers/validators";
+import { useContactError } from "@pages/contacts/contexts/ContactErrorProvider";
+import { useContact } from "@pages/contacts/contexts/ContactProvider";
+// import { useContactError } from "@pages/contacts/contexts/ContactErrorProvider";
 
 interface AddContactProps {
   onClose(): void;
@@ -25,19 +32,9 @@ export default function AddContact({ onClose }: AddContactProps) {
   const assets = useAppSelector((state) => state.asset.list.assets);
   const userPrincipal = useAppSelector((state) => state.auth.userPrincipal);
   const [isAllowancesChecking, setIsAllowancesChecking] = useState<boolean>(false);
-
-  const {
-    newContactErrors,
-    setNewContactErrors,
-    isCreating,
-    newContact,
-    setNewContact
-  } = useCreateContact();
-
-  // const isAssetICRC2Supported = (() => {
-  //   const fullAsset = assets.find((asset) => asset.tokenSymbol === selAstContact);
-  //   return fullAsset?.supportedStandards?.includes(SupportedStandardEnum.Values["ICRC-2"]);
-  // })();
+  const { newContact, setNewContact } = useContact();
+  const [isCreating, setIsCreating] = useState(false);
+  const { setNewContactErrors } = useContactError();
 
   // const isAssetICRC2Supported = false;
   // TODO: is one is beign added (missing id) do not allow to test (show warning???)
@@ -49,14 +46,8 @@ export default function AddContact({ onClose }: AddContactProps) {
       <CloseIcon className={getCloseIconStyles(isCreating)} onClick={onClose} />
       <p>{t("add.contact")}</p>
 
-      <ContactMainDetails
-        newContact={newContact}
-        setNewContact={setNewContact}
-        newContactErrors={newContactErrors}
-        setNewContactErrors={setNewContactErrors}
-      />
-
-      <ContactAssetDetails setNewContact={setNewContact} newContact={newContact} />
+      <ContactMainDetails />
+      <ContactAssetDetails />
 
       <div className="flex flex-row items-center justify-end w-full gap-3">
         <p className="text-TextErrorColor">
@@ -119,7 +110,6 @@ export default function AddContact({ onClose }: AddContactProps) {
       // TODO: if no name set but id empty, it will be removed.
       // TODO: if (no name) or (no name and no id) explit and include after test
       setNewContact((prev) => ({ ...prev, accounts: newSubAccounts }));
-
     } catch (error) {
       logger.debug(error);
     } finally {
@@ -128,6 +118,7 @@ export default function AddContact({ onClose }: AddContactProps) {
   }
 
   function onAddContact() {
+    setIsCreating(true);
     if (!isContactNameValid(newContact.name)) console.log("invalid contact name");
     if (!isContactPrincipalValid(newContact.principal)) console.log("invalid contact principal");
 
@@ -145,10 +136,10 @@ export default function AddContact({ onClose }: AddContactProps) {
 
     if (accountErrors.length > 0) {
       console.log("invalid subaccount");
-    };
+    }
 
     // TODO: save contact action
-
+    setIsCreating(false);
   }
 }
 

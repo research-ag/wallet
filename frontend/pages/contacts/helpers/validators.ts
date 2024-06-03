@@ -17,4 +17,3 @@ export const isContactAccountNameValid = (name: string): boolean => {
 export const isContactAccountValid = (account: ContactAccount): boolean => {
   return checkHexString(account.subaccountId) && isContactAccountNameValid(account.name);
 };
-

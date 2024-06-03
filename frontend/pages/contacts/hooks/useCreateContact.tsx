@@ -1,4 +1,4 @@
-import { Contact, NewContactErrors } from "@/@types/contacts";
+import { Contact } from "@/@types/contacts";
 import { useState } from "react";
 
 export const useCreateContact = () => {
@@ -8,23 +8,5 @@ export const useCreateContact = () => {
     accountIdentifier: "",
     accounts: [],
   });
-
-  const [newContactErrors, setNewContactErrors] = useState<NewContactErrors>({
-    name: false,
-    principal: false,
-  });
-
-  // -------------------------- Accounts --------------------------
-
-  const [isCreating, setIsCreating] = useState(false);
-
-  return {
-    newContact,
-    setNewContact,
-    newContactErrors,
-    setNewContactErrors,
-    //
-    isCreating,
-    setIsCreating,
-  };
+  return { newContact, setNewContact };
 };

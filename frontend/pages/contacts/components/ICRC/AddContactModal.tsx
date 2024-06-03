@@ -3,6 +3,8 @@ import { BasicModal } from "@components/modal";
 import { PlusIcon } from "@radix-ui/react-icons";
 import { memo, useState } from "react";
 import AddContact from "@/pages/contacts/components/ICRC/AddContact";
+import ContactErrorProvider from "@pages/contacts/contexts/ContactErrorProvider";
+import ContactProvider from "@pages/contacts/contexts/ContactProvider";
 
 function AddContactModal() {
   const [open, setOpen] = useState(false);
@@ -17,7 +19,13 @@ function AddContactModal() {
         padding="py-5 px-8"
         border="border border-BorderColorTwoLight dark:border-BorderColorTwo"
       >
-        {open && <AddContact onClose={() => setOpen(false)} />}
+        {open && (
+          <ContactProvider>
+            <ContactErrorProvider>
+              <AddContact onClose={() => setOpen(false)} />
+            </ContactErrorProvider>
+          </ContactProvider>
+        )}
       </BasicModal>
     </div>
   );

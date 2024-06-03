@@ -1,22 +1,17 @@
 import { Contact, NewContactErrors } from "@/@types/contacts";
-import { Dispatch, SetStateAction } from "react";
 import { CustomInput } from "@components/input";
 import { useTranslation } from "react-i18next";
 import { validatePrincipal } from "@common/utils/definityIdentity";
-
-interface ContactMainDetailsProps {
-  newContact: Contact;
-  setNewContact: Dispatch<SetStateAction<Contact>>;
-  newContactErrors: NewContactErrors;
-  setNewContactErrors: Dispatch<SetStateAction<NewContactErrors>>;
-}
+import { useContactError } from "@pages/contacts/contexts/ContactErrorProvider";
+import { useContact } from "@pages/contacts/contexts/ContactProvider";
 
 // TODO: validate that the principal is a valid principal
 // TODO: validate the name length
 // TODO: validate that the principal does not already exist
-export default function ContactMainDetails(props: ContactMainDetailsProps) {
+export default function ContactMainDetails() {
+  const { newContact, setNewContact } = useContact();
+  const { setNewContactErrors, newContactErrors } = useContactError();
   const { t } = useTranslation();
-  const { newContact, setNewContact, setNewContactErrors, newContactErrors } = props;
 
   return (
     <div className="flex flex-row items-start justify-start w-full gap-3">
