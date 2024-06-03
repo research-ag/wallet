@@ -120,8 +120,8 @@ export default function CreateForm() {
 
       const newAllowance = {
         ...allowance,
-        amount: response?.allowance || "0",
-        expiration: response?.expires_at || "",
+        amount: response?.amount || "0",
+        expiration: response?.expiration || "",
         id: db().generateAllowancePrimaryKey(allowance),
       };
 

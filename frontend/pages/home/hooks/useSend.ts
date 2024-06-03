@@ -164,7 +164,7 @@ export default function useSend() {
         assetDecimal: decimal,
       });
 
-      return response?.allowance || "0";
+      return response?.amount || "0";
     } catch (error) {
       logger.debug("Error fetching sender balance:", error);
       return "0";

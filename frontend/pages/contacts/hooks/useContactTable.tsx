@@ -1,5 +1,5 @@
 import { DeleteContactTypeEnum } from "@/common/const";
-import bigInt from "big-integer";
+// import bigInt from "big-integer";
 import {
   AssetContact,
   Contact,
@@ -12,7 +12,7 @@ import { db } from "@/database/db";
 
 import { useState } from "react";
 import { useAppSelector } from "@redux/Store";
-import { hexToNumber } from "@common/utils/hexadecimal";
+// import { hexToNumber } from "@common/utils/hexadecimal";
 
 export default function useContactTable() {
   const [isPending, setIsPending] = useState(false);
@@ -74,45 +74,55 @@ export default function useContactTable() {
     subIndex: string,
     newName: string,
     newIndex: string,
-    allowance: { allowance: string; expires_at: string },
+    allowance: { amount: string; expiration: string },
   ) => {
     const contact = contacts.find((contact) => contact.principal === principal);
+    console.log({
+      contact,
+      principal,
+      tokenSymbol,
+      subIndex,
+      newName,
+      newIndex,
+      allowance,
+    })
 
-    contact &&
-      (await db().updateContact(
-        principal,
-        {
-          ...contact,
-          assets: contact.assets.map((asset) => {
-            if (asset.tokenSymbol !== tokenSymbol) {
-              return asset;
-            } else {
-              return {
-                ...asset,
-                subaccounts: asset.subaccounts
-                  .map((subAccount) => {
-                    if (subAccount.subaccount_index !== subIndex) return subAccount;
-                    else {
-                      return {
-                        name: newName,
-                        subaccount_index: newIndex,
-                        sub_account_id: `0x${newIndex}`,
-                        allowance: allowance,
-                      };
-                    }
-                  })
-                  .sort(
-                    (a, b) =>
-                      hexToNumber(`0x${a.subaccount_index}`)?.compare(
-                        hexToNumber(`0x${b.subaccount_index}`) || bigInt(0),
-                      ) || 0,
-                  ),
-              };
-            }
-          }),
-        },
-        { sync: true },
-      ));
+    // TODO: allownce object breaking changes
+    // contact &&
+    //   (await db().updateContact(
+    //     principal,
+    //     {
+    //       ...contact,
+    //       assets: contact.assets.map((asset) => {
+    //         if (asset.tokenSymbol !== tokenSymbol) {
+    //           return asset;
+    //         } else {
+    //           return {
+    //             ...asset,
+    //             subaccounts: asset.subaccounts
+    //               .map((subAccount) => {
+    //                 if (subAccount.subaccount_index !== subIndex) return subAccount;
+    //                 else {
+    //                   return {
+    //                     name: newName,
+    //                     subaccount_index: newIndex,
+    //                     sub_account_id: `0x${newIndex}`,
+    //                     allowance: allowance,
+    //                   };
+    //                 }
+    //               })
+    //               .sort(
+    //                 (a, b) =>
+    //                   hexToNumber(`0x${a.subaccount_index}`)?.compare(
+    //                     hexToNumber(`0x${b.subaccount_index}`) || bigInt(0),
+    //                   ) || 0,
+    //               ),
+    //           };
+    //         }
+    //       }),
+    //     },
+    //     { sync: true },
+    //   ));
   };
 
   const addCntctSubacc = async (
@@ -121,41 +131,51 @@ export default function useContactTable() {
     newName: string,
     newIndex: string,
     subAccountId: string,
-    allowance: { allowance: string; expires_at: string },
+    allowance: { amount: string; expiration: string },
   ) => {
-    const contact = contacts.find((contact) => contact.principal === principal);
+    // TODO: allownce object breaking changes
+    console.log({
+      principal,
+      tokenSymbol,
+      newName,
+      newIndex,
+      subAccountId,
+      allowance,
+    });
 
-    contact &&
-      (await db().updateContact(
-        principal,
-        {
-          ...contact,
-          assets: contact.assets.map((asset) => {
-            if (asset.tokenSymbol !== tokenSymbol) {
-              return asset;
-            } else {
-              return {
-                ...asset,
-                subaccounts: [
-                  ...asset.subaccounts,
-                  {
-                    name: newName,
-                    subaccount_index: newIndex,
-                    sub_account_id: subAccountId,
-                    allowance: allowance,
-                  },
-                ].sort(
-                  (a, b) =>
-                    hexToNumber(`0x${a.subaccount_index}`)?.compare(
-                      hexToNumber(`0x${b.subaccount_index}`) || bigInt(0),
-                    ) || 0,
-                ),
-              };
-            }
-          }),
-        },
-        { sync: true },
-      ));
+    // const contact = contacts.find((contact) => contact.principal === principal);
+
+    // contact &&
+    //   (await db().updateContact(
+    //     principal,
+    //     {
+    //       ...contact,
+    //       assets: contact.assets.map((asset) => {
+    //         if (asset.tokenSymbol !== tokenSymbol) {
+    //           return asset;
+    //         } else {
+    //           return {
+    //             ...asset,
+    //             subaccounts: [
+    //               ...asset.subaccounts,
+    //               {
+    //                 name: newName,
+    //                 subaccount_index: newIndex,
+    //                 sub_account_id: subAccountId,
+    //                 allowance: allowance,
+    //               },
+    //             ].sort(
+    //               (a, b) =>
+    //                 hexToNumber(`0x${a.subaccount_index}`)?.compare(
+    //                   hexToNumber(`0x${b.subaccount_index}`) || bigInt(0),
+    //                 ) || 0,
+    //             ),
+    //           };
+    //         }
+    //       }),
+    //     },
+    //     { sync: true },
+    //   ));
   };
 
   const [deleteModal, setDeleteModal] = useState(false);

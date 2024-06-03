@@ -15,6 +15,7 @@ import useContactErrorMesage from "@pages/contacts/hooks/useContactErrorMessage"
 import ContactAssetDetails from "@/pages/contacts/components/ICRC/AddContact/ContactAssetDetails";
 import { checkHexString } from "@common/utils/hexadecimal";
 import { useAppSelector } from "@redux/Store";
+import addAllowanceToSubaccounts, { RequestAccountAllowance } from "@pages/contacts/helpers/addAllowanceToSubaccounts";
 
 interface AddContactProps {
   onClose(): void;
@@ -22,6 +23,7 @@ interface AddContactProps {
 export default function AddContact({ onClose }: AddContactProps) {
   const { t } = useTranslation();
   const assets = useAppSelector((state) => state.asset.list.assets);
+  const userPrincipal = useAppSelector((state) => state.auth.userPrincipal);
   const errorMessage = useContactErrorMesage();
   const [isAllowancesChecking, setIsAllowancesChecking] = useState<boolean>(false);
   const { newContactErrors, setNewContactErrors, isCreating, newContact, setNewContact } = useCreateContact();
@@ -66,7 +68,7 @@ export default function AddContact({ onClose }: AddContactProps) {
           </CustomButton>
         )}
 
-        <CustomButton className="min-w-[5rem]" onClick={console.log} disabled={isCreating || isAllowancesChecking}>
+        <CustomButton className="min-w-[5rem]" onClick={onAddContact} disabled={isCreating || isAllowancesChecking}>
           <p>{t("add.contact")}</p>
         </CustomButton>
       </div>
@@ -84,7 +86,7 @@ export default function AddContact({ onClose }: AddContactProps) {
         return account.subaccountId.trim().length > 0 && checkHexString(account.subaccountId);
       });
 
-      const requestArgs = contactAccounts.map((account) => {
+      const requestArgs: (RequestAccountAllowance | undefined)[] = contactAccounts.map((account) => {
         const currentAsset = assets.find((asset) => asset.tokenSymbol === account.tokenSymbol);
 
         if (!currentAsset) {
@@ -95,56 +97,20 @@ export default function AddContact({ onClose }: AddContactProps) {
         return {
           assetAddress: currentAsset?.address,
           assetDecimal: currentAsset?.decimal,
-          spenderSubaccount: account.subaccountId,
           spenderPrincipal: newContact.principal,
+          allocatorPrincipal: userPrincipal.toString(),
+          allocatorSubaccount: account.subaccountId,
+          account,
         };
+
       });
 
-      console.log(requestArgs);
+      const clena = requestArgs.filter((item) => item !== undefined);
+      const newSubAccounts = await addAllowanceToSubaccounts({ subaccounts: clena });
+      // TODO: if no name set but id empty, it will be removed.
+      // TODO: if (no name) or (no name and no id) explit and include after test
+      setNewContact((prev) => ({ ...prev, accounts: newSubAccounts }));
 
-      // allocator principal
-      // allocator subaccount
-      // spender principal
-      // asset ledger
-      // asset decimal
-
-      // TODO: for each requestArgs call retrieveSubAccountsWithAllowance parallelly
-
-      // for (let index = 0; index < newSubAccounts.length; index++) {
-      // const subAccount = newSubAccounts[index];
-
-      // const isSubAccountDuplicated =
-      //   newSubAccounts.filter((currentSubAccount) => subAccount.subaccountId === currentSubAccount.subaccountId)
-      //     .length > 1;
-
-      // if (subAccount.name.trim().length === 0) {
-      //   setNewContactSubNameErr([index]);
-      //   return;
-      // }
-
-      // if (!isHexadecimalValid(subAccount.subaccountId) || isSubAccountDuplicated) {
-      //   setNewContactSubIdErr([index]);
-      //   return;
-      // }
-      // }
-
-      // setNewContactSubNameErr([]);
-      // setNewContactSubIdErr([]);
-
-      // const findAssetResult = assets.find((asset) => asset.tokenSymbol === selAstContact);
-      // if (!findAssetResult) {
-      //   logger.debug("onAllowanceNewContactCheck: Asset not found", selAstContact);
-      //   return;
-      // }
-
-      // const fullSubAccounts = await retrieveSubAccountsWithAllowance({
-      //   accountPrincipal: newContact.principal,
-      //   subAccounts: newSubAccounts,
-      //   assetAddress: findAssetResult.address,
-      //   assetDecimal: findAssetResult.decimal,
-      // });
-
-      // setNewSubaccounts(fullSubAccounts);
     } catch (error) {
       logger.debug(error);
     } finally {
@@ -152,31 +118,28 @@ export default function AddContact({ onClose }: AddContactProps) {
     }
   }
 
-  // function onAddContact() {
-  //   let validContact = true;
-  //   let err = { msg: "", name: false, prin: false };
+  function onAddContact() {
+    // TODO: implement validation and error handling
+    // let validContact = true;
+    // let err = { msg: "", name: false, prin: false };
 
-  //   if (newContact.name.trim() === "" && newContact.principal.trim() === "") {
-  //     validContact = false;
-  //     err = { msg: "check.add.contact.both.err", name: true, prin: true };
-  //   } else {
-  //     if (newContact.name.trim() === "") {
-  //       validContact = false;
-  //       err = { ...err, msg: "check.add.contact.name.err", name: true };
-  //     }
-  //     if (newContact.principal.trim() === "") {
-  //       validContact = false;
-  //       err = { ...err, msg: "check.add.contact.prin.empty.err", prin: true };
-  //     } else if (!checkPrincipalValid(newContact.principal)) {
-  //       validContact = false;
-  //       err = { ...err, msg: "check.add.contact.prin.err", prin: true };
-  //     }
-  //   }
-  //   setNewContactErr(err.msg);
-  //   setNewContactNameErr(err.name);
-  //   setNewContactPrinErr(err.prin);
-  //   isValidSubacc("add", validContact);
-  // }
+    // if (newContact.name.trim() === "" && newContact.principal.trim() === "") {
+    //   validContact = false;
+    //   err = { msg: "check.add.contact.both.err", name: true, prin: true };
+    // } else {
+    //   if (newContact.name.trim() === "") {
+    //     validContact = false;
+    //     err = { ...err, msg: "check.add.contact.name.err", name: true };
+    //   }
+    //   if (newContact.principal.trim() === "") {
+    //     validContact = false;
+    //     err = { ...err, msg: "check.add.contact.prin.empty.err", prin: true };
+    //   } else if (!checkPrincipalValid(newContact.principal)) {
+    //     validContact = false;
+    //     err = { ...err, msg: "check.add.contact.prin.err", prin: true };
+    //   }
+    // }
+  }
 }
 
 function getCloseIconStyles(isCreating: boolean) {

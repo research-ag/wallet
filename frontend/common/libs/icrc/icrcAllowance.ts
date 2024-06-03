@@ -80,6 +80,7 @@ export async function submitAllowanceApproval(
   }
 }
 
+// TODO: allowance -> amount and expires_at -> expiration. Breaking where getAllowanceDetails is used
 export async function getAllowanceDetails(params: CheckAllowanceParams) {
   try {
     const { spenderPrincipal, allocatorSubaccount, allocatorPrincipal, assetAddress, assetDecimal } = params;
@@ -105,13 +106,13 @@ export async function getAllowanceDetails(params: CheckAllowanceParams) {
       },
     });
 
-    const allowance = Number(result.allowance) <= 0 ? "" : toFullDecimal(result.allowance, Number(assetDecimal));
-    const expires_at = result.expires_at.length <= 0 ? "" : dayjs(Number(result?.expires_at) / 1000000).format();
+    const amount = Number(result.allowance) <= 0 ? "" : toFullDecimal(result.allowance, Number(assetDecimal));
+    const expiration = result.expires_at.length <= 0 ? "" : dayjs(Number(result?.expires_at) / 1000000).format();
 
-    return { allowance, expires_at };
+    return { amount, expiration };
   } catch (e) {
     logger.debug(e);
-    return { allowance: "", expires_at: "" };
+    return { amount: "", expiration: "" };
   }
 }
 
