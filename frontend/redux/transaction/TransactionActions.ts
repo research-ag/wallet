@@ -25,12 +25,15 @@ import {
   setEndTime,
   setFullErrors,
   setTransactionDrawer,
+  setSenderService,
+  setReceiverService,
 } from "@/redux/transaction/TransactionReducer";
 
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import {
   ContactSubAccount,
   NewContact,
+  ServiceSubAccount,
   TransactionDrawer,
   TransactionReceiverOption,
   TransactionScannerOption,
@@ -72,6 +75,9 @@ export function setSenderSubAccountAction(subAccount: SubAccount) {
 export function setSenderContactAction(contact: ContactSubAccount) {
   store.dispatch(setSenderContact(contact));
 }
+export function setSenderServiceAction(service: ServiceSubAccount) {
+  store.dispatch(setSenderService(service));
+}
 export function setSenderContactNewAction(newContact: NewContact) {
   store.dispatch(setSenderContactNew(newContact));
 }
@@ -89,6 +95,9 @@ export function setReceiverNewContactAction(newContact: NewContact) {
 }
 export function setReceiverContactAction(contact: ContactSubAccount) {
   store.dispatch(setReceiverContact(contact));
+}
+export function setReceiverServiceAction(service: ServiceSubAccount) {
+  store.dispatch(setReceiverService(service));
 }
 export function setScannerActiveOptionAction(scannerActiveOption: TransactionScannerOption) {
   store.dispatch(setScannerActiveOption(scannerActiveOption));

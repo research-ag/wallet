@@ -8,6 +8,7 @@ import { useMemo } from "react";
 import { AvatarEmpty } from "@components/avatar";
 import useSend from "@pages/home/hooks/useSend";
 import { middleTruncation } from "@/common/utils/strings";
+import { ReceiverServiceSelector } from "./ReceiverServiceSelector";
 
 export default function ContactSuffix() {
   const { senderPrincipal, senderSubAccount, isSenderAllowance } = useSend();
@@ -61,6 +62,7 @@ export default function ContactSuffix() {
 
   return (
     <div className="relative flex flex-row items-center justify-center gap-2">
+      <ReceiverServiceSelector />
       {filteredContacts.length > 0 && (
         <DropdownMenu.Root>
           <DropdownMenu.Trigger asChild>

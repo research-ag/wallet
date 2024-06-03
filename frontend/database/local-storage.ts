@@ -79,7 +79,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
   private async _assetStateSync(newAssets?: Asset[]): Promise<void> {
     const assets = newAssets || this._getAssets();
     store.dispatch(setAssets(assets));
-    store.dispatch(setAccordionAssetIdx([assets[0].tokenSymbol]));
+    assets[0].tokenSymbol && store.dispatch(setAccordionAssetIdx([assets[0].tokenSymbol]));
   }
 
   /**

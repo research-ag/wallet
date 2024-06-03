@@ -1,6 +1,7 @@
 import {
   ContactSubAccount,
   NewContact,
+  ServiceSubAccount,
   TransactionDrawer,
   TransactionReceiverOption,
   TransactionReceiverOptionEnum,
@@ -27,6 +28,7 @@ export const initialTransactionState: TransactionState = {
     subAccount: {} as SubAccount,
     newAllowanceContact: {} as NewContact,
     asset: {} as Asset,
+    serviceSubAccount: {} as ServiceSubAccount,
   },
   receiver: {
     receiverOption: TransactionReceiverOptionEnum.Values.third,
@@ -34,6 +36,7 @@ export const initialTransactionState: TransactionState = {
     ownSubAccount: {} as SubAccount,
     thirdContactSubAccount: {} as ContactSubAccount,
     thirdNewContact: {} as NewContact,
+    serviceSubAccount: {} as ServiceSubAccount,
   },
   initTime: new Date(),
   endTime: new Date(),
@@ -61,8 +64,10 @@ const transactionSlice = createSlice({
       state.sender.asset = action.payload;
       state.sender.subAccount = {} as SubAccount;
       state.sender.allowanceContactSubAccount = {} as ContactSubAccount;
+      state.sender.serviceSubAccount = {} as ServiceSubAccount;
       state.receiver.ownSubAccount = {} as SubAccount;
       state.receiver.thirdContactSubAccount = {} as ContactSubAccount;
+      state.receiver.serviceSubAccount = {} as ServiceSubAccount;
     },
     setScannerActiveOption(state: TransactionState, action: PayloadAction<TransactionScannerOption>) {
       state.scannerActiveOption = action.payload;
@@ -100,16 +105,25 @@ const transactionSlice = createSlice({
       state.sender.subAccount = action.payload;
       state.sender.newAllowanceContact = {} as NewContact;
       state.sender.allowanceContactSubAccount = {} as ContactSubAccount;
+      state.sender.serviceSubAccount = {} as ServiceSubAccount;
     },
     setSenderContact(state: TransactionState, action: PayloadAction<ContactSubAccount>) {
       state.sender.allowanceContactSubAccount = action.payload;
       state.sender.newAllowanceContact = {} as NewContact;
       state.sender.subAccount = {} as SubAccount;
+      state.sender.serviceSubAccount = {} as ServiceSubAccount;
     },
     setSenderContactNew(state: TransactionState, action: PayloadAction<NewContact>) {
       state.sender.newAllowanceContact = action.payload;
       state.sender.allowanceContactSubAccount = {} as ContactSubAccount;
       state.sender.subAccount = {} as SubAccount;
+      state.sender.serviceSubAccount = {} as ServiceSubAccount;
+    },
+    setSenderService(state: TransactionState, action: PayloadAction<ServiceSubAccount>) {
+      state.sender.newAllowanceContact = {} as NewContact;
+      state.sender.allowanceContactSubAccount = {} as ContactSubAccount;
+      state.sender.subAccount = {} as SubAccount;
+      state.sender.serviceSubAccount = action.payload;
     },
     setReceiverOption(state: TransactionState, action: PayloadAction<TransactionReceiverOption>) {
       state.receiver.receiverOption = action.payload;
@@ -121,28 +135,39 @@ const transactionSlice = createSlice({
       state.receiver.ownSubAccount = action.payload;
       state.receiver.thirdContactSubAccount = {} as ContactSubAccount;
       state.receiver.thirdNewContact = {} as NewContact;
+      state.receiver.serviceSubAccount = {} as ServiceSubAccount;
     },
     setReceiverNewContact(state: TransactionState, action: PayloadAction<NewContact>) {
       state.receiver.thirdNewContact = action.payload;
       state.receiver.thirdContactSubAccount = {} as ContactSubAccount;
       state.receiver.ownSubAccount = {} as SubAccount;
+      state.receiver.serviceSubAccount = {} as ServiceSubAccount;
     },
     setReceiverContact(state: TransactionState, action: PayloadAction<ContactSubAccount>) {
       state.receiver.thirdContactSubAccount = action.payload;
       state.receiver.thirdNewContact = {} as NewContact;
       state.receiver.ownSubAccount = {} as SubAccount;
+      state.receiver.serviceSubAccount = {} as ServiceSubAccount;
+    },
+    setReceiverService(state: TransactionState, action: PayloadAction<ServiceSubAccount>) {
+      state.receiver.thirdContactSubAccount = {} as ContactSubAccount;
+      state.receiver.thirdNewContact = {} as NewContact;
+      state.receiver.ownSubAccount = {} as SubAccount;
+      state.receiver.serviceSubAccount = action.payload;
     },
     clearSender(state: TransactionState) {
       state.sender.newAllowanceContact = {} as NewContact;
       state.errors = [];
       state.sender.allowanceContactSubAccount = {} as ContactSubAccount;
       state.sender.subAccount = {} as SubAccount;
+      state.sender.serviceSubAccount = {} as ServiceSubAccount;
     },
     clearReceiver(state: TransactionState) {
       state.receiver.thirdContactSubAccount = {} as ContactSubAccount;
       state.errors = [];
       state.receiver.thirdNewContact = {} as NewContact;
       state.receiver.ownSubAccount = {} as SubAccount;
+      state.receiver.serviceSubAccount = {} as ServiceSubAccount;
     },
     setInitTime(state: TransactionState, action: PayloadAction<Date>) {
       state.initTime = action.payload;
@@ -208,11 +233,13 @@ export const {
   setSenderSubAccount,
   setSenderContact,
   setSenderContactNew,
+  setSenderService,
   setReceiverIsManual,
   setReceiverOption,
   setReceiverOwnSubAccount,
   setReceiverNewContact,
   setReceiverContact,
+  setReceiverService,
   clearSender,
   setTransactions,
   clearReceiver,

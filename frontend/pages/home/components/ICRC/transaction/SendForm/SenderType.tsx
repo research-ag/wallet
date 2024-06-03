@@ -48,6 +48,18 @@ export default function SenderType(props: SenderTypeProps) {
             </p>
           </div>
         )}
+        <div className="flex flex-row items-center p-1">
+          <RadioGroup.Item
+            className={getRadioGroupStyles(senderOption === TransactionSenderOptionEnum.Values.service)}
+            value={TransactionSenderOptionEnum.Values.service}
+            id="r-light"
+          >
+            <RadioGroup.Indicator className="flex items-center justify-center w-full h-full relative after:content-[''] after:block after:w-3 after:h-3 after:rounded-full after:bg-primary-color" />
+          </RadioGroup.Item>
+          <p className={getRadioTextStyles(senderOption === TransactionSenderOptionEnum.Values.service)}>
+            {t("services")}
+          </p>
+        </div>
       </RadioGroup.Root>
     </div>
   );
@@ -73,7 +85,7 @@ function getRadioGroupStyles(isActive: boolean) {
 
 function getRadioTextStyles(isActive: boolean) {
   return clsx(
-    "ml-4 text-lg opacity-50  ml-4 opacity-50",
+    "ml-1 text-lg opacity-50 opacity-50",
     isActive ? "text-primary-color font-bold" : "text-black-color dark:text-white",
   );
 }

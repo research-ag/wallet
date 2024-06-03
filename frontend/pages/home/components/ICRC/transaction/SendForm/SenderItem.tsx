@@ -3,6 +3,7 @@ import SenderSubAccount from "./SenderSubAccount";
 import SenderAllowanceContact from "./SenderAllowanceContact";
 import { useAppSelector } from "@redux/Store";
 import { TransactionSenderOptionEnum } from "@/@types/transactions";
+import SenderService from "./SenderService";
 
 export default function SenderItem() {
   const { sender } = useAppSelector((state) => state.transaction);
@@ -15,6 +16,7 @@ export default function SenderItem() {
       <div className="py-4">
         {sender.senderOption === TransactionSenderOptionEnum.Values.own && <SenderSubAccount />}
         {sender.senderOption === TransactionSenderOptionEnum.Values.allowance && <SenderAllowanceContact />}
+        {sender.senderOption === TransactionSenderOptionEnum.Values.service && <SenderService />}
       </div>
     </div>
   );
