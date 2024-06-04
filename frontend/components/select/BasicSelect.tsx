@@ -54,7 +54,7 @@ export default function Select(props: TSelectProps) {
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>
         <DropdownMenu.Content className={contentStyles(disabled, componentWidth)}>
-          <div className={`w-[${componentWidth}]`}></div>
+          <div className={`w-[${componentWidth}] `}></div>
           {onSearch && (
             <div className="p-2">
               <CustomInput
@@ -167,7 +167,7 @@ const contentStyles = (disabled: boolean | null | undefined, componentWidth: str
 
 const selectContentCVA = cva(
   [
-    "mt-",
+    "mt-1 max-h-[25rem]",
     "bg-ThemeColorSelectorLight dark:bg-ThemeColorBack",
     "rounded-md border border-RadioCheckColor",
     "scroll-y-light",

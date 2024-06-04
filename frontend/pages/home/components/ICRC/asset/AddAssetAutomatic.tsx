@@ -210,6 +210,7 @@ const AddAssetAutomatic = () => {
         customSymbol: newAsset.symbol,
         supportedStandard: newAsset.supportedStandards,
         sortIndex,
+        ledgerIndex: newAsset.index,
       });
 
       const assetToSave: Asset = { ...newAsset, ...updatedAsset, sortIndex };

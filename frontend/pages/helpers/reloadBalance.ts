@@ -2,9 +2,8 @@ import { db } from "@/database/db";
 import contactCacheRefresh from "@pages/contacts/helpers/contactCacheRefresh";
 import { allowanceCacheRefresh } from "@pages/allowances/helpers/cache";
 import { updateAllBalances } from "@redux/assets/AssetActions";
-import { setAppDataRefreshing, setLastDataRefresh } from "@redux/common/CommonReducer";
+import { setAppDataRefreshing } from "@redux/common/CommonReducer";
 import store from "@redux/Store";
-import dayjs from "dayjs";
 import { transactionCacheRefresh } from "@pages/home/helpers/cache";
 import logger from "@/common/utils/logger";
 
@@ -25,7 +24,6 @@ export default async function reloadBallance() {
     await allowanceCacheRefresh();
     await contactCacheRefresh();
 
-    store.dispatch(setLastDataRefresh(dayjs().toISOString()));
     store.dispatch(setAppDataRefreshing(false));
   } catch (e) {
     logger.debug("Error reloading balance", e);

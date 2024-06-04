@@ -1,6 +1,5 @@
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { useAppSelector } from "@redux/Store";
-import logger from "@/common/utils/logger";
 
 export default function usePrincipalValidator() {
   const { contacts } = useAppSelector((state) => state.contacts);
@@ -9,8 +8,7 @@ export default function usePrincipalValidator() {
     if (principal.trim() === "") return false;
     try {
       decodeIcrcAccount(principal);
-    } catch (error) {
-      logger.debug("Error parsing principal", error);
+    } catch {
       return false;
     }
     return contacts.find((ctc) => ctc.principal === principal) ? false : true;

@@ -42,6 +42,7 @@ export default function AllowanceFilter(props: AllowanceFilterProps) {
           sizeInput={"small"}
           placeholder={t("allowance.search")}
           onChange={(e) => setSearchKey(cleanAlphanumeric(e.target.value))}
+          className="w-60"
         />
 
         {!watchOnlyMode && (

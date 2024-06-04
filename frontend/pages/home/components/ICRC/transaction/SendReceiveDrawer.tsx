@@ -17,6 +17,7 @@ const unselectedButton = "text-PrimaryTextColorLight dark:text-PrimaryTextColor"
 
 export default function SendReceiveDrawer() {
   const { transactionDrawer } = useAppSelector((state) => state.transaction);
+  const { watchOnlyMode } = useAppSelector((state) => state.auth);
   const { t } = useTranslation();
 
   const isDrawerOpen = useMemo(() => {
@@ -29,14 +30,16 @@ export default function SendReceiveDrawer() {
     <BasicDrawer isDrawerOpen={isDrawerOpen}>
       <div className="relative flex items-center justify-between w-full px-6 mt-8 row">
         <div className="flex flex-row items-center justify-start w-full gap-4">
-          <CustomButton
-            intent={"noBG"}
-            border={"underline"}
-            className={`!font-light ${customSend()}`}
-            onClick={() => setTransactionDrawerAction(TransactionDrawer.SEND)}
-          >
-            <p>{t("transfer")}</p>
-          </CustomButton>
+          {!watchOnlyMode && (
+            <CustomButton
+              intent={"noBG"}
+              border={"underline"}
+              className={`!font-light ${customSend()}`}
+              onClick={() => setTransactionDrawerAction(TransactionDrawer.SEND)}
+            >
+              <p>{t("transfer")}</p>
+            </CustomButton>
+          )}
 
           <CustomButton
             intent={"noBG"}

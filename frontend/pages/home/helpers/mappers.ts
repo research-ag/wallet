@@ -153,8 +153,28 @@ function burnMapper(burn: Burn[], initial: Transaction): Transaction {
 
 function approveMapper(approve: Approve[], initial: Transaction): Transaction {
   return approve.reduce((acc, current) => {
-    logger.debug("Implement approve mapper", current);
-    return acc;
+    const amount = current.amount.toString();
+    const fee = current.fee.toString();
+    const from = current.from.owner.toString();
+    const fromSubAccount = current.from.subaccount.length
+      ? `0x${subUint8ArrayToHex((current.from.subaccount as [Uint8Array])[0])}`
+      : "0x0";
+
+    const to = current.spender.owner.toString();
+    const toSubAccount = current.spender.subaccount.length
+      ? `0x${subUint8ArrayToHex((current.spender.subaccount as [Uint8Array])[0])}`
+      : "0x0";
+
+    return {
+      ...acc,
+      amount,
+      fee,
+      from,
+      fromSub: fromSubAccount,
+      to,
+      toSub: toSubAccount,
+      type: TransactionTypeEnum.Enum.APPROVE,
+    };
   }, initial);
 }
 
@@ -192,7 +212,6 @@ function transferMapper(transfer: Transfer[], initial: Transaction, options: Map
       }
     } catch (error) {
       logger.debug("HERE 1: Error parsing subaccount", error);
-      console.log(current.to.subaccount);
       subaccTo = undefined;
     }
 
