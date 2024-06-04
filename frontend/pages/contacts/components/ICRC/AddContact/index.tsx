@@ -19,9 +19,7 @@ export default function AddContact({ onClose }: AddContactProps) {
 
   const { newContact, onAddContact, onCheckAccountsAllowances, isAllowancesChecking, isCreating } = useCreateContact();
 
-  // const isAssetICRC2Supported = false;
-  // TODO: is one is beign added (missing id) do not allow to test (show warning???)
-  // TODO: if ICRC-2 is not supported what to do?
+  // const isAssetICRC2Supported = false; TODO: if ICRC-2 is not supported what to do?
   const enableAllowanceTest = newContact.accounts.length > 0;
 
   return (

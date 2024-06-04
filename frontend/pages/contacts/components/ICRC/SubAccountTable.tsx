@@ -1,3 +1,4 @@
+import { ReactComponent as SortIcon } from "@assets/svg/files/sort.svg";
 import { Contact } from "@/@types/contacts";
 // import { Asset } from "@redux/models/AccountModels";
 import { useAppSelector } from "@redux/Store";
@@ -21,6 +22,7 @@ import { AvatarEmpty } from "@components/avatar";
 import { CustomCopy } from "@components/tooltip";
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import logger from "@common/utils/logger";
+import AddContactAccountRow from "./AddContactAccountRow";
 
 export default function SubAccountTable({ contact }: { contact: Contact }) {
   // const { t } = useTranslation();
@@ -30,13 +32,29 @@ export default function SubAccountTable({ contact }: { contact: Contact }) {
   return (
     <tr className="bg-SecondaryColorLight dark:bg-SecondaryColor">
       <td colSpan={4} className="w-full h-4 border-BorderColorTwoLight dark:border-BorderColorTwo">
-        <table className="w-full font-light text-left">
+        <table className="w-full text-left">
           <thead className="h-[2.8rem]">
             <tr>
               <th className="w-[5%]"></th>
-              <th className="w-[19%]">Asset</th>
-              <th className="w-[19%]">Name</th>
-              <th className="w-[10%]">Sub-account</th>
+              <th className="w-[19%]">
+                <span className="flex items-center">
+                  <p className="text-md">Asset</p>
+                  <SortIcon
+                    className="w-3 h-3 ml-1 cursor-pointer dark:fill-gray-color-6 fill-black-color"
+                    onClick={console.log}
+                  />
+                </span>
+              </th>
+              <th className="w-[19%]">
+                <span className="flex items-center">
+                  <p>Subaccount Name</p>
+                  <SortIcon
+                    className="w-3 h-3 ml-1 cursor-pointer dark:fill-gray-color-6 fill-black-color"
+                    onClick={console.log}
+                  />
+                </span>
+              </th>
+              <th className="w-[10%]">Subaccount</th>
               <th className="w-[37%]">Account Identifier</th>
               <th className="w-[13%]"></th>
             </tr>
@@ -61,53 +79,65 @@ export default function SubAccountTable({ contact }: { contact: Contact }) {
                     </div>
                   </td>
 
-                  <th className="w-[19%] flex items-center">
+                  <td className="w-[19%] flex items-center">
                     {getAssetIcon(IconTypeEnum.Values.ASSET, currentAsset.tokenSymbol, currentAsset.logo)}
                     <span className="ml-2">{currentAsset.symbol}</span>
-                  </th>
+                  </td>
 
-                  <th className="w-[19%]">
+                  <td className="w-[19%]">
                     <div className="flex items-center">
                       <AvatarEmpty title={currentAccount.name} />
                       <span className="ml-2">{currentAccount.name}</span>
                     </div>
-                  </th>
+                  </td>
 
-                  <th className="w-[10%]">
+                  <td className="w-[10%]">
                     <div className="flex items-center">
-                      <p className="mr-2">0x22</p>
-                      <CustomCopy size={"xSmall"} className="p-0" copyText={contact.principal} />
+                      <p className="mr-2">{currentAccount.subaccountId}</p>
+                      <CustomCopy size={"xSmall"} className="p-0" copyText={currentAccount.subaccountId} />
                     </div>
-                  </th>
+                  </td>
 
-                  <th className="w-[36%]">
+                  <td className="w-[36%]">
                     <div className="flex items-center w-full px-2">
-                      <p className="mr-2">{shortAddress(getSubAccount(contact.principal), 12, 10)}</p>
-                      <CustomCopy size={"xSmall"} className="p-0" copyText={getSubAccount(contact.principal)} />
+                      <p className="mr-2">
+                        {shortAddress(getSubAccount(contact.principal, currentAccount.subaccountId), 12, 10)}
+                      </p>
+                      <CustomCopy
+                        size={"xSmall"}
+                        className="p-0"
+                        copyText={getSubAccount(contact.principal, currentAccount.subaccountId)}
+                      />
                     </div>
-                  </th>
+                  </td>
 
-                  <th className="w-[14%]">
+                  <td className="w-[14%]">
                     <div className="flex items-center">
                       <DotsHorizontalIcon
                         className="w-5 h-5 opacity-50 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
                         onClick={onContactAction}
                       />
                     </div>
-                  </th>
+                  </td>
                 </tr>
               );
             })}
+            <tr>
+              <td colSpan={1}></td>
+              <td colSpan={5}>
+                <AddContactAccountRow contact={contact} />
+              </td>
+            </tr>
           </tbody>
         </table>
       </td>
     </tr>
   );
 
-  function getSubAccount(princ: string) {
+  function getSubAccount(principal: string, subaccount?: string) {
     return encodeIcrcAccount({
-      owner: Principal.fromText(princ || ""),
-      subaccount: hexToUint8Array("0x22" || "0"),
+      owner: Principal.fromText(principal),
+      subaccount: hexToUint8Array(subaccount || "0x0"),
     });
   }
 

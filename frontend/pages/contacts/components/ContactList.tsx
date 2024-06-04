@@ -2,6 +2,7 @@
 import { ReactComponent as CheckIcon } from "@assets/svg/files/edit-check.svg";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 import { ReactComponent as MoneyHandIcon } from "@assets/svg/files/money-hand.svg";
+import { ReactComponent as SortIcon } from "@assets/svg/files/sort.svg";
 // import DeleteContactModal from "./ICRC/DeleteContactModal";
 //
 import { Contact } from "@/@types/contacts";
@@ -20,10 +21,10 @@ import SubAccountTable from "./ICRC/SubAccountTable";
 interface ContactListProps {
   contactSearchKey: string;
   assetFilter: string[];
+  allowanceOnly: boolean;
 }
 
-export default function ContactList(props: ContactListProps) {
-  console.log(props);
+export default function ContactList({ allowanceOnly, assetFilter, contactSearchKey }: ContactListProps) {
   const { t } = useTranslation();
   const [contactDropdown, setContactDropdown] = useState<Contact | null>(null);
   const [contactEdited, setContactEdited] = useState<Contact | null>(null);
@@ -34,10 +35,14 @@ export default function ContactList(props: ContactListProps) {
       <table className="w-full text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md">
         <thead className="sticky top-0 border-b border-BorderColorTwoLight dark:border-BorderColorTwo text-PrimaryTextColor/70 z-[1]">
           <tr className="text-PrimaryTextColorLight dark:text-PrimaryTextColor">
-            <th className="p-2 text-left w-[30%] bg-PrimaryColorLight dark:bg-PrimaryColor ">
-              <p>{t("name")}</p>
+            <th className="p-2 text-left w-[40%] bg-PrimaryColorLight dark:bg-PrimaryColor flex items-center ">
+              <p>{t("contact.name")}</p>
+              <SortIcon
+                className="w-3 h-3 ml-1 cursor-pointer dark:fill-gray-color-6 fill-black-color"
+                onClick={console.log}
+              />
             </th>
-            <th className="p-2 text-left w-[55%] bg-PrimaryColorLight dark:bg-PrimaryColor">
+            <th className="p-2 text-left w-[45%] bg-PrimaryColorLight dark:bg-PrimaryColor">
               <p>{"Principal"}</p>
             </th>
             <th className="p-2 w-[12%] bg-PrimaryColorLight dark:bg-PrimaryColor">
@@ -52,6 +57,27 @@ export default function ContactList(props: ContactListProps) {
             const isContactExpanded = contactDropdown?.principal === contact.principal;
             const isContactEditable = contactEdited?.principal === contact.principal;
             const hasContactAllowance = contact.accounts.some((account) => account.allowance);
+
+            // --- filters ---
+            if (allowanceOnly && !hasContactAllowance) return null;
+
+            const include = contact.accounts
+              .map((account) => account.tokenSymbol)
+              .some((symbol) => assetFilter.includes(symbol));
+            if (!include && assetFilter.length > 0) return null;
+
+            const subAccountNames = contact.accounts.map((account) => account.name);
+            const subAccountIds = contact.accounts.map((account) => account.subaccountId);
+
+            if (contactSearchKey.trim() !== "") {
+              const searchTerm = contactSearchKey.trim().toLowerCase();
+              const nameMatch = contact.name.toLowerCase().includes(searchTerm);
+              const principalMatch = contact.principal.toLowerCase().includes(searchTerm);
+              const subAccountNameMatch = subAccountNames.some((name) => name.toLowerCase().includes(searchTerm));
+              const subAccountIdMatch = subAccountIds.some((id) => id.toLowerCase().includes(searchTerm));
+
+              if (!nameMatch && !principalMatch && !subAccountNameMatch && !subAccountIdMatch) return null;
+            }
 
             return (
               <Fragment key={`${contact.principal}-${index}`}>
@@ -98,9 +124,7 @@ export default function ContactList(props: ContactListProps) {
                           >
                             {contact.name}
                           </p>
-                          {hasContactAllowance && (
-                            <MoneyHandIcon className="relative w-5 h-5 cursor-pointer fill-RadioCheckColor" />
-                          )}
+                          {hasContactAllowance && <MoneyHandIcon className="relative w-5 h-5 fill-RadioCheckColor" />}
                         </div>
                       ) : null}
                     </div>
@@ -124,7 +148,7 @@ export default function ContactList(props: ContactListProps) {
                   </td>
 
                   <td className="p-2">
-                    <div className="flex items-center justify-center pl-2 rounded-md cursor-pointer bg-gray-color-2">
+                    <div className="flex items-center justify-center px-2.5 py-1 rounded-md cursor-pointer bg-gray-color-2">
                       <span className="text-md">{contact.accounts.length}</span>
                       {isContactExpanded ? (
                         <ChevronDownIcon className="w-4 h-4 ml-1" onClick={() => onOpenDropdown(contact)} />
@@ -273,6 +297,29 @@ const data: Contact[] = [
         name: "main",
         subaccount: "0",
         subaccountId: "0x0",
+        allowance: {
+          amount: "100000000",
+          expiration: "",
+        },
+      },
+      {
+        tokenSymbol: "ICP",
+        name: "savings",
+        subaccount: "1",
+        subaccountId: "0x1",
+      },
+    ],
+  },
+  {
+    name: "Jair",
+    principal: "jf4a3-wwwya-wnnvk-wiztu-tgafi-qn4is-swdmy-hrr4y-mrewg-2x5bl-hae",
+    accountIdentifier: "a922b4a0423f4f0bf08f0bc6966e640288588c3427f29fb9b67f580fbdbe091e",
+    accounts: [
+      {
+        tokenSymbol: "ICP",
+        name: "main",
+        subaccount: "0",
+        subaccountId: "0x0",
       },
       {
         tokenSymbol: "ICP",
@@ -288,81 +335,83 @@ const data: Contact[] = [
       },
       {
         tokenSymbol: "ICP",
-        name: "credit",
+        name: "investment",
         subaccount: "3",
         subaccountId: "0x3",
       },
       {
         tokenSymbol: "ICP",
-        name: "loan",
+        name: "retirement",
         subaccount: "4",
         subaccountId: "0x4",
       },
+    ],
+  },
+  {
+    name: "Will",
+    principal: "gjcgk-x4xlt-6dzvd-q3mrr-pvgj5-5bjoe-beege-n4b7d-7hna5-pa5uq-5qe",
+    accountIdentifier: "a922b4a0423f4f0bf08f0bc6966e640288588c3427f29fb9b67f580fbdbe091e",
+    accounts: [
       {
         tokenSymbol: "ICP",
-        name: "mortgage",
-        subaccount: "5",
-        subaccountId: "0x5",
+        name: "main",
+        subaccount: "0",
+        subaccountId: "0x0",
+      },
+      {
+        tokenSymbol: "ICP",
+        name: "savings",
+        subaccount: "1",
+        subaccountId: "0x1",
+      },
+      {
+        tokenSymbol: "ICP",
+        name: "checking",
+        subaccount: "2",
+        subaccountId: "0x2",
       },
       {
         tokenSymbol: "ICP",
         name: "investment",
-        subaccount: "6",
-        subaccountId: "0x6",
+        subaccount: "3",
+        subaccountId: "0x3",
       },
       {
         tokenSymbol: "ICP",
         name: "retirement",
-        subaccount: "7",
-        subaccountId: "0x7",
+        subaccount: "4",
+        subaccountId: "0x4",
+      },
+    ],
+  },
+  {
+    name: "Marcus",
+    principal: "fu2m3-wba2s-but7a-nh2mf-w6suf-f5wgs-66ypw-lk3sq-wmtwi-mulho-eqe",
+    accountIdentifier: "a922b4a0423f4f0bf08f0bc6966e640288588c3427f29fb9b67f580fbdbe091e",
+    accounts: [
+      {
+        tokenSymbol: "ICP",
+        name: "main",
+        subaccount: "0",
+        subaccountId: "0x0",
       },
       {
         tokenSymbol: "ICP",
-        name: "college",
-        subaccount: "8",
-        subaccountId: "0x8",
+        name: "savings",
+        subaccount: "1",
+        subaccountId: "0x1",
       },
       {
         tokenSymbol: "ICP",
-        name: "health",
-        subaccount: "9",
-        subaccountId: "0x9",
+        name: "checking",
+        subaccount: "2",
+        subaccountId: "0x2",
       },
       {
         tokenSymbol: "ICP",
-        name: "insurance",
-        subaccount: "10",
-        subaccountId: "0xa",
-      },
-      {
-        tokenSymbol: "ICP",
-        name: "tax",
-        subaccount: "11",
-        subaccountId: "0xb",
-      },
-      {
-        tokenSymbol: "ICP",
-        name: "payroll",
-        subaccount: "12",
-        subaccountId: "0xc",
-      },
-      {
-        tokenSymbol: "ICP",
-        name: "expense",
-        subaccount: "13",
-        subaccountId: "0xd",
-      },
-      {
-        tokenSymbol: "ICP",
-        name: "income",
-        subaccount: "14",
-        subaccountId: "0xe",
-      },
-      {
-        tokenSymbol: "ICP",
-        name: "equity",
-        subaccount: "15",
-        subaccountId: "0xf",
+        name: "investment",
+        subaccount: "3",
+        subaccountId: "0x3",
       },
     ],
   },
