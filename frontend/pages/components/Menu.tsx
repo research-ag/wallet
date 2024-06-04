@@ -1,9 +1,9 @@
 import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
 import { CustomButton } from "@components/button";
-import history from "@pages/history";
-import { CONTACTS, HOME, SERVICES } from "@pages/paths";
-import { useAppSelector } from "@redux/Store";
+import { useAppDispatch, useAppSelector } from "@redux/Store";
+import { setRoutingPath } from "@redux/auth/AuthReducer";
+import { RoutingPathEnum } from "@common/const";
 
 interface MenuProps {
   noMargin?: boolean;
@@ -12,6 +12,8 @@ interface MenuProps {
 
 const Menu = (props: MenuProps) => {
   const { noMargin, compClass } = props;
+  const dispatch = useAppDispatch();
+  const { route } = useAppSelector((state) => state.auth);
   const { contacts } = useAppSelector((state) => state.contacts);
   const { assets } = useAppSelector((state) => state.asset.list);
   const { services } = useAppSelector((state) => state.services);
@@ -21,25 +23,24 @@ const Menu = (props: MenuProps) => {
   const menuList = [
     {
       name: "Assets",
-      path: HOME,
+      path: RoutingPathEnum.Enum.HOME,
       label: `${assets?.length !== 1 ? t("assets") : t("asset")} (${assets?.length})`,
     },
     {
       name: "Allowances",
-      path: "/allowances",
+      path: RoutingPathEnum.Enum.ALLOWANCES,
       label: `${allowances?.length !== 1 ? t("allowance.allowances") : t("allowance.allowances")} (${
         allowances?.length
       })`,
     },
     {
       name: "Contacts",
-      path: CONTACTS,
+      path: RoutingPathEnum.Enum.CONTACTS,
       label: `${assets?.length !== 1 ? t("contacts") : t("contact")} (${contacts?.length})`,
     },
     {
       name: "Services",
-      path: SERVICES,
-      // TODO: get from the state
+      path: RoutingPathEnum.Enum.SERVICES,
       label: `${services?.length !== 1 ? t("services") : t("services")} (${services.length})`,
     },
   ];
@@ -60,7 +61,7 @@ const Menu = (props: MenuProps) => {
           >
             <p
               className={`!font-normal  mr-2 ${
-                window.location.pathname !== menu.path
+                route !== menu.path
                   ? " text-PrimaryTextColorLight/60 dark:text-PrimaryTextColor/60"
                   : "border-b border-SelectRowColor"
               }`}
@@ -74,9 +75,7 @@ const Menu = (props: MenuProps) => {
   );
 
   function handleMenuClic(path: string) {
-    if (window.location.pathname !== path) {
-      history.push(path);
-    }
+    dispatch(setRoutingPath(path));
   }
 };
 

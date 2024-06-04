@@ -1,3 +1,4 @@
+import { RoutingPathEnum } from "@common/const";
 import { isObjectValid } from "@pages/home/helpers/checkers";
 import { useAppSelector } from "@redux/Store";
 import { setSenderAssetAction, setSenderSubAccountAction } from "@redux/transaction/TransactionActions";
@@ -11,25 +12,30 @@ export default function SenderInitializer(props: SenderInitializerProps) {
   const { children } = props;
   const { selectedAsset, selectedAccount } = useAppSelector((state) => state.asset.helper);
   const { sender } = useAppSelector((state) => state.transaction);
+  const { route } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
-    const allowInitializeAsset =
-      selectedAsset && selectedAsset?.tokenName !== sender?.asset?.tokenName && !sender?.asset?.tokenName;
+    if (route !== RoutingPathEnum.Enum.SERVICES) {
+      const allowInitializeAsset =
+        selectedAsset && selectedAsset?.tokenName !== sender?.asset?.tokenName && !sender?.asset?.tokenName;
 
-    if (allowInitializeAsset) {
-      setSenderAssetAction(selectedAsset);
+      if (allowInitializeAsset) {
+        setSenderAssetAction(selectedAsset);
+      }
     }
   }, [selectedAsset]);
 
   useEffect(() => {
-    const allowInitializeSubAccount =
-      !isObjectValid(sender.newAllowanceContact) &&
-      !isObjectValid(sender.allowanceContactSubAccount) &&
-      !sender?.subAccount;
+    if (route !== RoutingPathEnum.Enum.SERVICES) {
+      const allowInitializeSubAccount =
+        !isObjectValid(sender.newAllowanceContact) &&
+        !isObjectValid(sender.allowanceContactSubAccount) &&
+        !sender?.subAccount;
 
-    if (selectedAccount) {
-      if (allowInitializeSubAccount) {
-        setSenderSubAccountAction(selectedAccount);
+      if (selectedAccount) {
+        if (allowInitializeSubAccount) {
+          setSenderSubAccountAction(selectedAccount);
+        }
       }
     }
   }, [selectedAccount]);

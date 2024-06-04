@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import SubAccountContactBook from "./SubAccountContactBook";
 import NewSender from "./NewSender";
 import { useTranslation } from "react-i18next";
+import ServiceTransferInfo from "./ServiceTransferInfo";
 
 export default function SenderDetail() {
   const { t } = useTranslation();
@@ -14,8 +15,16 @@ export default function SenderDetail() {
 
   return (
     <>
-      <p className="font-bold opacity-50 text-md text-start">{t("from")}</p>
-      {isSubAccountOrContactBook ? <SubAccountContactBook /> : <NewSender />}
+      <p className="font-bold opacity-50 text-md text-start text-PrimaryTextColorLight dark:text-PrimaryTextColor">
+        {`${t("from")} ${sender.serviceSubAccount.servicePrincipal ? t("service") : ""}`}
+      </p>
+      {sender.serviceSubAccount.servicePrincipal ? (
+        <ServiceTransferInfo service={sender.serviceSubAccount} />
+      ) : isSubAccountOrContactBook ? (
+        <SubAccountContactBook />
+      ) : (
+        <NewSender />
+      )}
     </>
   );
 }

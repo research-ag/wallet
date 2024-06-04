@@ -18,15 +18,18 @@ import { Fragment, useState } from "react";
 import { DeleteAssetServiceModal } from "./Modals/deleteAssetService";
 import { NotifyAssetModal } from "./Modals/notifyAsset";
 import { LoadingLoader } from "@components/loader";
+import { assetServiceToServiceSubAccount } from "@common/utils/service";
+import { useAppSelector } from "@redux/Store";
+import { Asset } from "@redux/models/AccountModels";
 
 interface ServiceAssetsListProps {
-  servicePrincipal: string;
   service: Service;
 }
 
-export default function ServiceAssetsList({ service, servicePrincipal }: ServiceAssetsListProps) {
+export default function ServiceAssetsList({ service }: ServiceAssetsListProps) {
   const { t } = useTranslation();
   const {
+    getAssetFromUserAssets,
     assetsToAdd,
     setAssetsToAdd,
     addAssetsToService,
@@ -34,7 +37,10 @@ export default function ServiceAssetsList({ service, servicePrincipal }: Service
     notifyAsset,
     notifyRes,
     setNotifyRes,
+    onDeposit,
+    onWithdraw,
   } = useServiceAsset();
+  const { authClient } = useAppSelector((state) => state.auth);
   const [openMore, setOpenMore] = useState(-1);
   const [deleteAsset, setDeleteAsset] = useState<ServiceAsset>();
   const [assetToNotify, setAssetToNotify] = useState<ServiceAsset>();
@@ -68,6 +74,7 @@ export default function ServiceAssetsList({ service, servicePrincipal }: Service
           {service.assets
             .filter((asst) => asst.visible)
             .map((asst, k) => {
+              const ast = getAssetFromUserAssets(asst.principal);
               return (
                 <tr key={k}>
                   <td className="h-full">
@@ -120,7 +127,12 @@ export default function ServiceAssetsList({ service, servicePrincipal }: Service
                         arrowFill="fill-SelectRowColor"
                         side="top"
                         trigger={
-                          <button className="flex w-10 h-10 justify-center items-center rounded-md bg-SelectRowColor p-0">
+                          <button
+                            onClick={() => {
+                              onActionClic(ast, asst, true);
+                            }}
+                            className="flex w-10 h-10 justify-center items-center rounded-md bg-SelectRowColor p-0"
+                          >
                             <DepositIcon />
                           </button>
                         }
@@ -134,7 +146,12 @@ export default function ServiceAssetsList({ service, servicePrincipal }: Service
                         arrowFill="fill-SelectRowColor"
                         side="top"
                         trigger={
-                          <button className="flex w-10 h-10 justify-center items-center rounded-md bg-SelectRowColor p-0">
+                          <button
+                            onClick={() => {
+                              onActionClic(ast, asst, false);
+                            }}
+                            className="flex w-10 h-10 justify-center items-center rounded-md bg-SelectRowColor p-0"
+                          >
                             <WithdrawIcon />
                           </button>
                         }
@@ -254,5 +271,19 @@ export default function ServiceAssetsList({ service, servicePrincipal }: Service
       setNotifyRes(undefined);
       setAssetToNotify(undefined);
     }
+  }
+
+  function onActionClic(ast: Asset | undefined, serviceAsset: ServiceAsset, isDeposit: boolean) {
+    if (ast)
+      if (isDeposit)
+        onDeposit(
+          ast,
+          assetServiceToServiceSubAccount(authClient, service.name, service.principal, serviceAsset, ast!),
+        );
+      else
+        onWithdraw(
+          ast,
+          assetServiceToServiceSubAccount(authClient, service.name, service.principal, serviceAsset, ast!),
+        );
   }
 }

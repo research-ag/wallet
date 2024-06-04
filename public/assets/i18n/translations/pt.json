@@ -24,6 +24,7 @@
   "fee": "Taxa",
   "all": "Tudo",
   "yes": "Sim",
+  "service": "Serviço",
   "supported.assets": "Ativos Suportados",
   "select.option": "Seleccione uma opção",
   "selected.all": "Selecionar Tudo",
@@ -185,6 +186,11 @@
   "allowance.search": "Pesquise por subconta ou gastador",
   "watchOnlyMode.title": "Modo Assistir-Apenas",
   "watchOnlyMode.delete.message": "Você está no modo de observação. Não é possível excluir contatos, subcontas ou ativos.",
+  "services": "Serviços",
+  "minimun.withdraw.is": "O saque mínimo é",
+  "minimun.deposit.is": "O depósito mínimo é",
+  "withdraw.fee": "Taxa de saque",
+  "deposit.fee": "Taxa de Depósito",
 
   "error.asset.empty": "O ativo está vazio",
   "error.sender.empty": "O remetente está vazio",
@@ -205,6 +211,8 @@
   "error.allowance.subaccount.not.enough": "Saldo da subconta da autorização insuficiente",
   "error.allowance.not.enough": "Autorização insuficiente",
   "error.allowance.not.exist": "Permissão não existe",
+  "error.lower.than.minimum.deposit": "Verificar o valor mínimo do depósito",
+  "error.lower.than.minimum.withdraw": "Verificar valor mínimo de retirada",
 
   "error.invalid.asset": "Recurso inválido",
   "error.invalid.expiration": "Expiração inválida",

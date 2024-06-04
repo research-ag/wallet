@@ -5,6 +5,7 @@ import OwnSubAccountCard from "./OwnSubAccountCard";
 import ReceiverThirdPartyCard from "./ReceiverThirdPartyCard";
 import { useMemo } from "react";
 import { toFullDecimal } from "@common/utils/amount";
+import ServiceTransferInfo from "./ServiceTransferInfo";
 
 export default function ReceiverDetail() {
   const { t } = useTranslation();
@@ -50,8 +51,12 @@ export default function ReceiverDetail() {
 
   return (
     <>
-      <p className="font-bold opacity-50 text-md text-start">{t("to")}</p>
-      {isReceiverOwnSubAccount ? (
+      <p className="font-bold opacity-50 text-md text-start text-PrimaryTextColorLight dark:text-PrimaryTextColor">
+        {`${t("to")} ${receiver.serviceSubAccount.servicePrincipal ? t("service") : ""}`}
+      </p>
+      {receiver.serviceSubAccount.servicePrincipal ? (
+        <ServiceTransferInfo service={receiver.serviceSubAccount} />
+      ) : isReceiverOwnSubAccount ? (
         <OwnSubAccountCard
           subAccountName={subAccountName || receiverSubAccount || "-"}
           balance={balance || getReceiverBalance() || "0"}

@@ -10,7 +10,7 @@ interface CustomHoverCardProps {
 
 const CustomHoverCard = ({ trigger, children, arrowFill, side = "top" }: CustomHoverCardProps) => {
   return (
-    <HoverCard.Root>
+    <HoverCard.Root openDelay={200} closeDelay={50}>
       <HoverCard.Trigger>{trigger}</HoverCard.Trigger>
       <HoverCard.Portal>
         <HoverCard.Content side={side} sideOffset={5} className="!z-[2000]">

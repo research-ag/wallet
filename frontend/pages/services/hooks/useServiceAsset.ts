@@ -1,8 +1,23 @@
+import {
+  ServiceSubAccount,
+  TransactionDrawer,
+  TransactionReceiverOptionEnum,
+  TransactionSenderOptionEnum,
+} from "@/@types/transactions";
 import { NotifyResponse } from "@candid/icrcx/service.did";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
+import { Asset } from "@redux/models/AccountModels";
 import { ServiceAsset } from "@redux/models/ServiceModels";
 import { notifyServiceAsset } from "@redux/services/ServiceActions";
 import { addServiceAsset, removeServiceAsset } from "@redux/services/ServiceReducer";
+import {
+  setReceiverOptionAction,
+  setReceiverServiceAction,
+  setSenderAssetAction,
+  setSenderOptionAction,
+  setSenderServiceAction,
+  setTransactionDrawerAction,
+} from "@redux/transaction/TransactionActions";
 import { useState } from "react";
 
 export default function useServiceAsset() {
@@ -13,8 +28,8 @@ export default function useServiceAsset() {
   const [assetsToAdd, setAssetsToAdd] = useState<ServiceAsset[]>([]);
   const [notifyRes, setNotifyRes] = useState<NotifyResponse>();
 
-  const getAssetFromUserAssets = (tokenSymbol: string) => {
-    return assets.find((ast) => ast.tokenSymbol === tokenSymbol);
+  const getAssetFromUserAssets = (assetPrincipal: string) => {
+    return assets.find((ast) => ast.address === assetPrincipal);
   };
 
   const addAssetsToService = (servicePrin: string, assets: ServiceAsset[]) => {
@@ -28,6 +43,19 @@ export default function useServiceAsset() {
     return await notifyServiceAsset(userAgent, servicePrincipal, assetPrincipal);
   };
 
+  const onDeposit = (selectedAsset: Asset, service: ServiceSubAccount) => {
+    setSenderAssetAction(selectedAsset);
+    setReceiverServiceAction(service);
+    setTransactionDrawerAction(TransactionDrawer.SEND);
+  };
+  const onWithdraw = (selectedAsset: Asset, service: ServiceSubAccount) => {
+    setSenderAssetAction(selectedAsset);
+    setSenderOptionAction(TransactionSenderOptionEnum.Enum.service);
+    setSenderServiceAction(service);
+    setReceiverOptionAction(TransactionReceiverOptionEnum.Enum.own);
+    setTransactionDrawerAction(TransactionDrawer.SEND);
+  };
+
   return {
     assetsToAdd,
     setAssetsToAdd,
@@ -37,5 +65,7 @@ export default function useServiceAsset() {
     addAssetsToService,
     deleteAssetsToService,
     notifyAsset,
+    onDeposit,
+    onWithdraw,
   };
 }

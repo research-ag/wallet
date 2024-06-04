@@ -13,6 +13,7 @@ export default function useSend() {
   const [transactionFee, setTransactionFee] = useState<string>("0");
   const { userPrincipal, userAgent } = useAppSelector((state) => state.auth);
   const { contacts } = useAppSelector((state) => state.contacts);
+  const { services } = useAppSelector((state) => state.services);
   const { assets } = useAppSelector((state) => state.asset.list);
   const { sender, receiver, amount, sendingStatus, errors, initTime, endTime } = useAppSelector(
     (state) => state.transaction,
@@ -74,6 +75,7 @@ export default function useSend() {
     if (sender?.allowanceContactSubAccount?.contactPrincipal)
       return sender?.allowanceContactSubAccount?.contactPrincipal;
     if (sender?.subAccount?.sub_account_id) return userPrincipal.toText();
+    if (sender?.serviceSubAccount?.servicePrincipal) return sender?.serviceSubAccount?.servicePrincipal;
     return "";
   }
 
@@ -89,6 +91,7 @@ export default function useSend() {
     if (sender?.newAllowanceContact?.subAccountId) return sender?.newAllowanceContact?.subAccountId;
     if (sender?.allowanceContactSubAccount?.subAccountId) return sender?.allowanceContactSubAccount?.subAccountId;
     if (sender?.subAccount?.sub_account_id) return sender?.subAccount?.sub_account_id;
+    if (sender?.serviceSubAccount?.subAccountId) return sender?.serviceSubAccount?.subAccountId;
     return "";
   }
 
@@ -120,6 +123,13 @@ export default function useSend() {
    */
   async function getSenderMaxAmount(): Promise<string> {
     try {
+      if (sender.senderOption === TransactionSenderOptionEnum.Values.service) {
+        const service = services.find((srv) => srv.principal === sender.serviceSubAccount.servicePrincipal);
+        if (service) {
+          const asset = service.assets.find((ast) => ast.principal === sender.asset.address);
+          if (asset) return toFullDecimal(asset?.balance || "0", Number(asset?.decimal));
+        }
+      }
       if (sender?.senderOption === TransactionSenderOptionEnum.Values.own) {
         return toFullDecimal(updateSubAccount?.amount || "0", Number(updateAsset?.decimal));
       }
@@ -249,6 +259,7 @@ export default function useSend() {
     if (receiver?.thirdContactSubAccount?.contactPrincipal) return receiver?.thirdContactSubAccount?.contactPrincipal;
     if (receiver?.thirdNewContact?.principal) return receiver?.thirdNewContact?.principal;
     if (receiver?.ownSubAccount?.sub_account_id) return userPrincipal.toText();
+    if (receiver?.serviceSubAccount?.servicePrincipal) return receiver?.serviceSubAccount?.servicePrincipal;
     return "";
   }
 
@@ -263,6 +274,7 @@ export default function useSend() {
     if (receiver?.thirdContactSubAccount?.subAccountId) return receiver?.thirdContactSubAccount?.subAccountId;
     if (receiver?.thirdNewContact?.subAccountId) return receiver?.thirdNewContact?.subAccountId;
     if (receiver?.ownSubAccount?.sub_account_id) return receiver?.ownSubAccount?.sub_account_id;
+    if (receiver?.serviceSubAccount?.subAccountId) return receiver?.serviceSubAccount?.subAccountId;
     return "";
   }
 

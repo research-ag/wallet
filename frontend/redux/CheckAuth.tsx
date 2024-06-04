@@ -8,6 +8,7 @@ import {
   setAuthenticated,
   setDbLocation,
   setDebugMode,
+  setRoutingPath,
   setUnauthenticated,
   setUserAgent,
   setUserPrincipal,
@@ -15,7 +16,7 @@ import {
 import { AuthClient } from "@dfinity/auth-client";
 import { clearDataAsset, setInitLoad } from "./assets/AssetReducer";
 import { AuthNetwork } from "./models/TokenModels";
-import { AuthNetworkTypeEnum } from "@/common/const";
+import { AuthNetworkTypeEnum, RoutingPathEnum } from "@/common/const";
 import { Ed25519KeyIdentity, DelegationIdentity } from "@dfinity/identity";
 import { clearDataContacts } from "./contacts/ContactsReducer";
 import { Principal } from "@dfinity/principal";
@@ -145,6 +146,8 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean,
   store.dispatch(setInitLoad(false));
   store.dispatch(setUserPrincipal(myPrincipal));
   store.dispatch(setAuthenticated(true, false, !!fixedPrincipal, principalString));
+
+  store.dispatch(setRoutingPath(RoutingPathEnum.Enum.HOME));
 };
 
 export const logout = async () => {

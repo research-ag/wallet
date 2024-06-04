@@ -1,4 +1,5 @@
-import { TransactionValidationErrorsEnum } from "@/@types/transactions";
+import { TransactionSenderOptionEnum, TransactionValidationErrorsEnum } from "@/@types/transactions";
+import { toFullDecimal } from "@common/utils/amount";
 import { LoadingLoader } from "@components/loader";
 import useTransactionAmount from "@pages/home/hooks/useTransactionAmount";
 import { useAppSelector } from "@redux/Store";
@@ -7,7 +8,7 @@ import { useTranslation } from "react-i18next";
 
 export default function TransactionAmount() {
   const { maxAmount, transactionFee, onChangeAmount, onMaxAmount } = useTransactionAmount();
-  const { sender, errors, amount } = useAppSelector((state) => state.transaction);
+  const { sender, receiver, errors, amount } = useAppSelector((state) => state.transaction);
   const { t } = useTranslation();
 
   return (
@@ -18,6 +19,8 @@ export default function TransactionAmount() {
           getAmountInputStyles(
             errors?.includes(TransactionValidationErrorsEnum.Values["error.invalid.amount"]) ||
               errors?.includes(TransactionValidationErrorsEnum.Values["error.allowance.not.enough"]) ||
+              errors?.includes(TransactionValidationErrorsEnum.Values["error.lower.than.minimum.deposit"]) ||
+              errors?.includes(TransactionValidationErrorsEnum.Values["error.lower.than.minimum.withdraw"]) ||
               false,
           ),
         )}
@@ -39,6 +42,33 @@ export default function TransactionAmount() {
           </button>
         )}
       </div>
+      {receiver.serviceSubAccount.servicePrincipal && (
+        <p
+          className={`text-sm text-start ${
+            errors?.includes(TransactionValidationErrorsEnum.Values["error.lower.than.minimum.deposit"])
+              ? "text-slate-color-error"
+              : "text-PrimaryTextColorLight dark:text-PrimaryTextColor"
+          }`}
+        >{`${t("minimun.deposit.is")} ${toFullDecimal(
+          receiver.serviceSubAccount.minDeposit,
+          Number(receiver.serviceSubAccount.assetDecimal || "8"),
+          Number(receiver.serviceSubAccount.assetShortDecimal || "8"),
+        )} ${receiver.serviceSubAccount.assetSymbol || ""}`}</p>
+      )}
+      {sender.senderOption === TransactionSenderOptionEnum.Values.service && (
+        <p
+          className={`text-sm text-start ${
+            errors?.includes(TransactionValidationErrorsEnum.Values["error.lower.than.minimum.withdraw"])
+              ? "text-slate-color-error"
+              : "text-PrimaryTextColorLight dark:text-PrimaryTextColor"
+          }`}
+        >{`${t("minimun.withdraw.is")} ${toFullDecimal(
+          sender.serviceSubAccount.minWithdraw,
+          Number(sender.serviceSubAccount.assetDecimal || "8"),
+          Number(sender.serviceSubAccount.assetShortDecimal || "8"),
+        )} ${sender.serviceSubAccount.assetSymbol || ""}`}</p>
+      )}
+
       <div className="flex items-center justify-between w-full">
         <div className="flex">
           {maxAmount.isAmountFromMax && !maxAmount.isLoading && (
@@ -56,12 +86,44 @@ export default function TransactionAmount() {
         </div>
 
         <div className="flex">
-          <p className="mr-1 text-sm text-gray-400 ">{t("fee")}</p>
+          <p className="mr-1 text-sm text-gray-400 ">{`${
+            receiver.serviceSubAccount.servicePrincipal ? "Ledger " : ""
+          }${t("fee")}`}</p>
           <p className="text-sm text-PrimaryTextColorLight dark:text-PrimaryTextColor">
             {transactionFee} {sender?.asset?.tokenSymbol || "-"}
           </p>
         </div>
       </div>
+      {receiver.serviceSubAccount.servicePrincipal && (
+        <div className="flex items-center justify-end w-full">
+          <div className="flex">
+            <p className="mr-1 text-sm text-gray-400 ">{t("deposit.fee")}</p>
+            <p className="text-sm text-PrimaryTextColorLight dark:text-PrimaryTextColor">
+              {toFullDecimal(
+                receiver.serviceSubAccount.depositFee,
+                Number(sender.serviceSubAccount.assetDecimal || "8"),
+                Number(sender.serviceSubAccount.assetShortDecimal || "8"),
+              )}{" "}
+              {sender?.asset?.tokenSymbol || "-"}
+            </p>
+          </div>
+        </div>
+      )}
+      {sender.senderOption === TransactionSenderOptionEnum.Values.service && (
+        <div className="flex items-center justify-end w-full">
+          <div className="flex">
+            <p className="mr-1 text-sm text-gray-400 ">{t("withdraw.fee")}</p>
+            <p className="text-sm text-PrimaryTextColorLight dark:text-PrimaryTextColor">
+              {toFullDecimal(
+                sender.serviceSubAccount.withdrawFee,
+                Number(sender.serviceSubAccount.assetDecimal || "8"),
+                Number(sender.serviceSubAccount.assetShortDecimal || "8"),
+              )}{" "}
+              {sender?.asset?.tokenSymbol || "-"}
+            </p>
+          </div>
+        </div>
+      )}
     </>
   );
 }

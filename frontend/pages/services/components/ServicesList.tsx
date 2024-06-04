@@ -166,7 +166,7 @@ export default function ServicesList({ services, newService, setNewService }: Se
                 {srv.principal === openService && (
                   <tr className="bg-SecondaryColorLight dark:bg-SecondaryColor">
                     <td colSpan={4} className="w-full h-4 border-BorderColorTwoLight dark:border-BorderColorTwo">
-                      <ServiceAssetsList servicePrincipal={srv.principal} service={srv} />
+                      <ServiceAssetsList service={srv} />
                     </td>
                   </tr>
                 )}

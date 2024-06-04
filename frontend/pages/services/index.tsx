@@ -3,6 +3,7 @@ import ServicesFilters from "@/pages/services/components/ServicesFilters";
 import ServicesList from "@/pages/services//components/ServicesList";
 import { useCallback } from "react";
 import useServices from "./hooks/useServices";
+import SendReceiveDrawer from "@pages/home/components/ICRC/transaction/SendReceiveDrawer";
 
 export default function Services() {
   const {
@@ -39,6 +40,7 @@ export default function Services() {
       <div className="flex flex-col items-start justify-start w-full h-full">
         <ServicesList services={serviceList} newService={newService} setNewService={setNewService} />
       </div>
+      <SendReceiveDrawer />
     </div>
   );
 

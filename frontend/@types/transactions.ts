@@ -228,6 +228,8 @@ export const TransactionValidationErrorsEnum = z.enum([
   "error.invalid.receiver",
   "error.invalid.amount",
   "error.not.enough.balance",
+  "error.lower.than.minimum.deposit",
+  "error.lower.than.minimum.withdraw",
   "error.allowance.subaccount.not.enough",
   "error.allowance.not.enough",
   "error.allowance.not.exist",

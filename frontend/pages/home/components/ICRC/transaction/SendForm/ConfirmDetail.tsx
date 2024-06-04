@@ -16,7 +16,7 @@ import {
   setFullErrorsAction,
 } from "@redux/transaction/TransactionActions";
 import { useTranslation } from "react-i18next";
-import { TransactionValidationErrorsEnum } from "@/@types/transactions";
+import { TransactionSenderOptionEnum, TransactionValidationErrorsEnum } from "@/@types/transactions";
 import { SendingStatusEnum } from "@/common/const";
 import { LoadingLoader } from "@components/loader";
 import reloadBallance from "@pages/helpers/reloadBalance";
@@ -27,6 +27,7 @@ import { Principal } from "@dfinity/principal";
 import { hexadecimalToUint8Array, hexToUint8Array } from "@common/utils/hexadecimal";
 import ICRC1Tranfer from "@common/libs/icrcledger/ICRC1Tranfer";
 import logger from "@/common/utils/logger";
+import ICRCXWithdraw from "@common/libs/icrcledger/ICRCXTransfer";
 
 interface ConfirmDetailProps {
   showConfirmationModal: Dispatch<SetStateAction<boolean>>;
@@ -34,7 +35,7 @@ interface ConfirmDetailProps {
 
 export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailProps) {
   const { t } = useTranslation();
-  const { sender, errors, isLoading } = useAppSelector((state) => state.transaction);
+  const { sender, receiver, errors, isLoading } = useAppSelector((state) => state.transaction);
   const { userAgent } = useAppSelector((state) => state.auth);
   const {
     receiverPrincipal,
@@ -80,7 +81,24 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
       return false;
     }
 
+    if (sender.senderOption === TransactionSenderOptionEnum.Values.service) {
+      const bigintMinAmount = BigInt(sender.serviceSubAccount.minWithdraw);
+      if (bigintMinAmount > bigintAmount) {
+        setErrorAction(TransactionValidationErrorsEnum.Values["error.lower.than.minimum.withdraw"]);
+        return false;
+      }
+    }
+    if (receiver.serviceSubAccount.servicePrincipal) {
+      const bigintMinAmount = BigInt(sender.serviceSubAccount.minDeposit);
+      if (bigintMinAmount > bigintAmount) {
+        setErrorAction(TransactionValidationErrorsEnum.Values["error.lower.than.minimum.deposit"]);
+        return false;
+      }
+    }
+
     removeErrorAction(TransactionValidationErrorsEnum.Values["error.not.enough.balance"]);
+    removeErrorAction(TransactionValidationErrorsEnum.Values["error.lower.than.minimum.withdraw"]);
+    removeErrorAction(TransactionValidationErrorsEnum.Values["error.lower.than.minimum.deposit"]);
     return true;
   }
 
@@ -121,9 +139,18 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
       throw new Error("error.allowance.subaccount.not.enough");
     }
 
+    if (receiver.serviceSubAccount.servicePrincipal) {
+      const bigintMinAmount = BigInt(sender.serviceSubAccount.minDeposit);
+      if (bigintMinAmount > bigintAmount) {
+        setErrorAction(TransactionValidationErrorsEnum.Values["error.lower.than.minimum.deposit"]);
+        return false;
+      }
+    }
+
     removeErrorAction(TransactionValidationErrorsEnum.Values["error.allowance.not.exist"]);
     removeErrorAction(TransactionValidationErrorsEnum.Values["error.allowance.not.enough"]);
     removeErrorAction(TransactionValidationErrorsEnum.Values["error.allowance.subaccount.not.enough"]);
+    removeErrorAction(TransactionValidationErrorsEnum.Values["error.lower.than.minimum.deposit"]);
   }
 
   async function handleTransaction() {
@@ -168,20 +195,28 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
             setSendingStatusAction(SendingStatusEnum.Values.sending);
             showConfirmationModal(true);
             setIsLoadingAction(true);
-
-            await ICRC1Tranfer({
-              canisterId: assetAddress,
-              agent: userAgent,
-              from_subaccount: hexadecimalToUint8Array(senderSubAccount),
-              to: {
-                owner: Principal.fromText(receiverPrincipal),
-                subaccount: [hexToUint8Array(receiverSubAccount)],
-              },
-              amount: toHoleBigInt(amount, Number(decimal)),
-              fee: [],
-              memo: [],
-              created_at_time: [],
-            });
+            if (sender.senderOption === TransactionSenderOptionEnum.Values.service) {
+              await ICRCXWithdraw({
+                agent: userAgent,
+                canisterId: sender.serviceSubAccount.servicePrincipal,
+                token: Principal.fromText(sender.serviceSubAccount.assetAddress || ""),
+                amount: toHoleBigInt(amount, Number(decimal)),
+                to_subaccount: [hexToUint8Array(receiverSubAccount)],
+              });
+            } else
+              await ICRC1Tranfer({
+                canisterId: assetAddress,
+                agent: userAgent,
+                from_subaccount: hexadecimalToUint8Array(senderSubAccount),
+                to: {
+                  owner: Principal.fromText(receiverPrincipal),
+                  subaccount: [hexToUint8Array(receiverSubAccount)],
+                },
+                amount: toHoleBigInt(amount, Number(decimal)),
+                fee: [],
+                memo: [],
+                created_at_time: [],
+              });
           }
           setSendingStatusAction(SendingStatusEnum.Values.done);
           setEndTxTime(new Date());
