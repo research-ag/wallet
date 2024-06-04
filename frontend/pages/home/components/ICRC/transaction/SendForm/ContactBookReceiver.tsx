@@ -20,40 +20,42 @@ export default function ContactBookReceiver() {
 
     for (let contactIndex = 0; contactIndex < contacts.length; contactIndex++) {
       const currentContact = contacts[contactIndex];
+      console.log({ senderPrincipal, senderSubAccount, isSenderAllowance, currentContact })
+      // TODO: asset info removed from contacts
 
-      const currentContactAsset = currentContact?.assets?.find(
-        (asset) => asset?.tokenSymbol === sender?.asset?.tokenSymbol,
-      );
+      // const currentContactAsset = currentContact?.assets?.find(
+      //   (asset) => asset?.tokenSymbol === sender?.asset?.tokenSymbol,
+      // );
 
-      currentContactAsset?.subaccounts?.forEach((subAccount) => {
-        const receiverContact = {
-          contactName: currentContact.name,
-          contactPrincipal: currentContact.principal,
-          contactAccountIdentifier: currentContact.accountIdentier,
-          assetLogo: currentContactAsset?.logo,
-          assetSymbol: currentContactAsset?.symbol,
-          assetTokenSymbol: currentContactAsset?.tokenSymbol,
-          assetAddress: currentContactAsset?.address,
-          assetDecimal: currentContactAsset?.decimal,
-          assetShortDecimal: currentContactAsset?.shortDecimal,
-          assetName: currentContactAsset?.symbol,
-          subAccountIndex: subAccount?.subaccount_index,
-          subAccountId: subAccount?.sub_account_id,
-          subAccountAllowance: subAccount?.allowance,
-          subAccountName: subAccount?.name,
-        };
+      // currentContactAsset?.subaccounts?.forEach((subAccount) => {
+      //   const receiverContact = {
+      //     contactName: currentContact.name,
+      //     contactPrincipal: currentContact.principal,
+      //     contactAccountIdentifier: currentContact.accountIdentifier,
+      //     assetLogo: currentContactAsset?.logo,
+      //     assetSymbol: currentContactAsset?.symbol,
+      //     assetTokenSymbol: currentContactAsset?.tokenSymbol,
+      //     assetAddress: currentContactAsset?.address,
+      //     assetDecimal: currentContactAsset?.decimal,
+      //     assetShortDecimal: currentContactAsset?.shortDecimal,
+      //     assetName: currentContactAsset?.symbol,
+      //     subAccountIndex: subAccount?.subaccount_index,
+      //     subAccountId: subAccount?.sub_account_id,
+      //     subAccountAllowance: subAccount?.allowance,
+      //     subAccountName: subAccount?.name,
+      //   };
 
-        if (isSenderAllowance()) {
-          const sameSenderAndReceiver =
-            senderPrincipal === currentContact.principal && senderSubAccount === subAccount?.sub_account_id;
+      //   if (isSenderAllowance()) {
+      //     const sameSenderAndReceiver =
+      //       senderPrincipal === currentContact.principal && senderSubAccount === subAccount?.sub_account_id;
 
-          if (!sameSenderAndReceiver) {
-            allowanceContacts.push(receiverContact);
-          }
-        } else {
-          allowanceContacts.push(receiverContact);
-        }
-      });
+      //     if (!sameSenderAndReceiver) {
+      //       allowanceContacts.push(receiverContact);
+      //     }
+      //   } else {
+      //     allowanceContacts.push(receiverContact);
+      //   }
+      // });
     }
     return allowanceContacts;
   }, [sender, contacts]);

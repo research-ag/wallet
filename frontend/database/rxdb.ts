@@ -31,10 +31,10 @@ import {
   updateReduxAsset,
 } from "@redux/assets/AssetReducer";
 import {
-  addReduxContact,
+  // addReduxContact,
   deleteReduxContact,
   setReduxContacts,
-  updateReduxContact,
+  // updateReduxContact,
 } from "@redux/contacts/ContactsReducer";
 import {
   addReduxAllowance,
@@ -352,26 +352,28 @@ export class RxdbDatabase extends IWalletDatabase {
   async addContact(contact: Contact, options?: DatabaseOptions): Promise<void> {
     try {
       const databaseContact = this._getStorableContact(contact);
+      console.log({ databaseContact, options });
+      // TODO: complete new contact type
 
-      await (
-        await this.contacts
-      )?.insert({
-        ...databaseContact,
-        accountIdentier: extractValueFromArray(databaseContact.accountIdentifier),
-        // TODO: modify to the new type
-        assets: databaseContact.assets.map((a) => ({
-          ...a,
-          logo: extractValueFromArray(a.logo),
-          subaccounts: a.subaccounts.map((sa) => ({
-            ...sa,
-            allowance: [sa.allowance],
-          })),
-        })),
-        deleted: false,
-        updatedAt: Date.now(),
-      });
+      // await (
+      //   await this.contacts
+      // )?.insert({
+      //   ...databaseContact,
+      //   accountIdentier: extractValueFromArray(databaseContact.accountIdentifier),
+      //   // TODO: modify to the new type
+      //   assets: databaseContact.assets.map((a) => ({
+      //     ...a,
+      //     logo: extractValueFromArray(a.logo),
+      //     subaccounts: a.subaccounts.map((sa) => ({
+      //       ...sa,
+      //       allowance: [sa.allowance],
+      //     })),
+      //   })),
+      //   deleted: false,
+      //   updatedAt: Date.now(),
+      // });
 
-      if (options?.sync) store.dispatch(addReduxContact(contact));
+      // if (options?.sync) store.dispatch(addReduxContact(contact));
     } catch (e) {
       logger.debug("RxDb AddContact", e);
     }
@@ -385,26 +387,32 @@ export class RxdbDatabase extends IWalletDatabase {
    */
   async updateContact(principal: string, newDoc: Contact, options?: DatabaseOptions): Promise<void> {
     try {
-      const databaseContact = this._getStorableContact(newDoc);
-      const document = await (await this.contacts)?.findOne(principal).exec();
+      console.log({
+        principal,
+        newDoc,
+        options,
+      })
+
+      // const databaseContact = this._getStorableContact(newDoc);
+      // const document = await (await this.contacts)?.findOne(principal).exec();
 
       // TODO: modify to the new type
-      document?.patch({
-        ...databaseContact,
-        accountIdentier: extractValueFromArray(databaseContact.accountIdentier),
-        assets: databaseContact.assets.map((a) => ({
-          ...a,
-          logo: extractValueFromArray(a.logo),
-          subaccounts: a.subaccounts.map((sa) => ({
-            ...sa,
-            allowance: [sa.allowance],
-          })),
-        })),
-        deleted: false,
-        updatedAt: Date.now(),
-      });
+      // document?.patch({
+      //   ...databaseContact,
+      //   accountIdentier: extractValueFromArray(databaseContact.accountIdentier),
+      //   assets: databaseContact.assets.map((a) => ({
+      //     ...a,
+      //     logo: extractValueFromArray(a.logo),
+      //     subaccounts: a.subaccounts.map((sa) => ({
+      //       ...sa,
+      //       allowance: [sa.allowance],
+      //     })),
+      //   })),
+      //   deleted: false,
+      //   updatedAt: Date.now(),
+      // });
 
-      if (options?.sync) store.dispatch(updateReduxContact(newDoc));
+      // if (options?.sync) store.dispatch(updateReduxContact(newDoc));
     } catch (e) {
       logger.debug("RxDb UpdateContact", e);
     }
@@ -417,28 +425,28 @@ export class RxdbDatabase extends IWalletDatabase {
   async updateContacts(newDocs: Contact[]): Promise<void> {
     try {
       const databaseContacts = newDocs.map((contact) => this._getStorableContact(contact));
+      console.log(databaseContacts);
 
       // TODO: modify to the new type
-      await (
-        await this.contacts
-      )?.bulkUpsert(
-        databaseContacts.map((doc) => ({
-          ...doc,
-          accountIdentier: extractValueFromArray(doc.accountIdentier),
-          assets: doc.assets.map((a) => ({
-            ...a,
-            logo: extractValueFromArray(a.logo),
-            subaccounts: a.subaccounts.map((sa) => ({
-              ...sa,
-              allowance: [sa.allowance],
-            })),
-          })),
-          deleted: false,
-          updatedAt: Date.now(),
-        })),
-      );
-
-      store.dispatch(setReduxContacts(newDocs));
+      // await (
+      //   await this.contacts
+      // )?.bulkUpsert(
+      //   databaseContacts.map((doc) => ({
+      //     ...doc,
+      //     accountIdentier: extractValueFromArray(doc.accountIdentier),
+      //     assets: doc.assets.map((a) => ({
+      //       ...a,
+      //       logo: extractValueFromArray(a.logo),
+      //       subaccounts: a.subaccounts.map((sa) => ({
+      //         ...sa,
+      //         allowance: [sa.allowance],
+      //       })),
+      //     })),
+      //     deleted: false,
+      //     updatedAt: Date.now(),
+      //   })),
+      // );
+      // store.dispatch(setReduxContacts(newDocs));
     } catch (e) {
       logger.debug("RxDb UpdateContacts", e);
     }

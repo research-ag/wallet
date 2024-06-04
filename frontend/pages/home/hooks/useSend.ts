@@ -124,22 +124,22 @@ export default function useSend() {
       }
 
       const principal = getSenderPrincipal();
-      const subAccount = getSenderSubAccount();
-
-      const assetAddress = sender?.asset?.address;
-
       const senderContact = contacts.find((contact) => contact.principal === principal);
+      // const subAccount = getSenderSubAccount();
+      // const assetAddress = sender?.asset?.address;
 
+      // TODO: complete new contact type
       if (senderContact) {
-        const contactAsset = senderContact.assets.find((asset) => asset.address === assetAddress);
-        if (contactAsset) {
-          const contactSubAccount = contactAsset.subaccounts.find(
-            (currentSubAccount) => currentSubAccount.sub_account_id === subAccount,
-          );
-          if (contactSubAccount && contactSubAccount.allowance?.allowance) {
-            return contactSubAccount.allowance.allowance;
-          }
-        }
+        // const contactAsset = senderContact.assets.find((asset) => asset.address === assetAddress);
+        // const contactAsset = senderContact.assets.find((asset) => asset.address === assetAddress);
+        // if (contactAsset) {
+        //   const contactSubAccount = contactAsset.subaccounts.find(
+        //     (currentSubAccount) => currentSubAccount.sub_account_id === subAccount,
+        //   );
+        //   if (contactSubAccount && contactSubAccount.allowance?.allowance) {
+        //     return contactSubAccount.allowance.allowance;
+        //   }
+        // }
       }
 
       const response = await getAllowanceAmount();
@@ -321,12 +321,12 @@ export default function useSend() {
     () =>
       Boolean(
         sender?.asset?.address &&
-          sender?.asset?.decimal &&
-          amount &&
-          getSenderSubAccount() &&
-          getSenderPrincipal() &&
-          getReceiverPrincipal() &&
-          getReceiverSubAccount(),
+        sender?.asset?.decimal &&
+        amount &&
+        getSenderSubAccount() &&
+        getSenderPrincipal() &&
+        getReceiverPrincipal() &&
+        getReceiverSubAccount(),
       ),
     [sender, receiver, amount],
   );

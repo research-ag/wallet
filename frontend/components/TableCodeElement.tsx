@@ -60,15 +60,16 @@ const CodeElement = ({ tx }: CodeElementProps) => {
     if (contact) {
       hasContactName = true;
       contactName = contact.name;
-      const symbolAsst = contact.assets.find((asst) => asst.tokenSymbol === tx?.symbol)?.subaccounts;
-      if (symbolAsst && symbolAsst?.length > 0) {
-        const subAcc = isTo ? tx.toSub || "0" : tx.fromSub || "0";
-        const subNameAux = symbolAsst.find((sa) => `0x${sa.subaccount_index}` === subAcc)?.name;
-        if (subNameAux) {
-          hasSubName = true;
-          subName = subNameAux;
-        }
-      }
+      // TODO: complete new contact type
+      // const symbolAsst = contact.assets.find((asst) => asst.tokenSymbol === tx?.symbol)?.subaccounts;
+      // if (symbolAsst && symbolAsst?.length > 0) {
+      //   const subAcc = isTo ? tx.toSub || "0" : tx.fromSub || "0";
+      //   const subNameAux = symbolAsst.find((sa) => `0x${sa.subaccount_index}` === subAcc)?.name;
+      //   if (subNameAux) {
+      //     hasSubName = true;
+      //     subName = subNameAux;
+      //   }
+      // }
     }
   } else {
     iAm = isICPWithSub ? true : false;
@@ -86,7 +87,7 @@ const CodeElement = ({ tx }: CodeElementProps) => {
       }
     }
 
-    const contact = contacts.find((cntc) => cntc.accountIdentier === (isTo ? tx.to || "" : tx.from || ""));
+    const contact = contacts.find((cntc) => cntc.accountIdentifier === (isTo ? tx.to || "" : tx.from || ""));
     if (contact) {
       hasContactName = true;
       contactName = contact.name;
@@ -133,13 +134,12 @@ const CodeElement = ({ tx }: CodeElementProps) => {
           {hasSub &&
             (subName.trim() === "" ? (
               <p className={`${accId} text-left break-words max-w-[20.5rem]`}>
-                {`${hasSubName ? subName + " -" : ""} ${
-                  isICPWithSub
-                    ? ICPSubaccounts.find((sub) => sub.legacy === (isTo ? tx.to : tx.from))?.sub_account_id || "0x0"
-                    : isTo
+                {`${hasSubName ? subName + " -" : ""} ${isICPWithSub
+                  ? ICPSubaccounts.find((sub) => sub.legacy === (isTo ? tx.to : tx.from))?.sub_account_id || "0x0"
+                  : isTo
                     ? tx.toSub || "0"
                     : tx.fromSub || "0"
-                } `}
+                  } `}
               </p>
             ) : (
               <p
@@ -150,8 +150,8 @@ const CodeElement = ({ tx }: CodeElementProps) => {
                   isICPWithSub
                     ? ICPSubaccounts.find((sub) => sub.legacy === (isTo ? tx.to : tx.from))?.sub_account_id || "0x0"
                     : isTo
-                    ? tx.toSub || "0"
-                    : tx.fromSub || "0"
+                      ? tx.toSub || "0"
+                      : tx.fromSub || "0"
                 }
               >
                 {subName}

@@ -23,7 +23,7 @@ export default function useContactTable() {
       pastPrincipal,
     });
     // TODO: no needed
-    
+
     // const contact = contacts.find((contact) => contact.principal === pastPrincipal);
     // contact &&
     //   (await db().updateContact(
@@ -42,7 +42,7 @@ export default function useContactTable() {
     console.log({
       principal,
       tokenSymbol,
-    })
+    });
     // contact &&
     //   (await db().updateContact(
     //     principal,
@@ -56,8 +56,8 @@ export default function useContactTable() {
 
   const removeSubacc = async (principal: string, tokenSymbol: string, subIndex: string) => {
     // TODO: no needed
-    console.log({ principal, tokenSymbol, subIndex});
-    
+    console.log({ principal, tokenSymbol, subIndex });
+
     // const contact = contacts.find((contact) => contact.principal === principal);
 
     // contact &&

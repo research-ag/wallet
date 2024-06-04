@@ -24,34 +24,35 @@ export default function AllowanceContactBookOptions(props: AllowanceContactBookO
 
     for (let contactIndex = 0; contactIndex < contacts.length; contactIndex++) {
       const currentContact = contacts[contactIndex];
-      const currentContactAsset = currentContact?.assets?.find(
-        (asset) => asset?.tokenSymbol === sender?.asset?.tokenSymbol,
-      );
+      console.log({ currentContact })
+      // const currentContactAsset = currentContact?.assets?.find(
+      //   (asset) => asset?.tokenSymbol === sender?.asset?.tokenSymbol,
+      // );
 
-      const subAccountsWithAllowances = currentContactAsset?.subaccounts?.filter((subAccount) => {
-        return subAccount?.allowance?.allowance;
-      });
+      // const subAccountsWithAllowances = currentContactAsset?.subaccounts?.filter((subAccount) => {
+      //   return subAccount?.allowance?.allowance;
+      // });
 
-      subAccountsWithAllowances?.forEach((subAccount) => {
-        const allowanceContact = {
-          contactName: currentContact.name,
-          contactPrincipal: currentContact.principal,
-          contactAccountIdentifier: currentContact.accountIdentier,
-          assetLogo: currentContactAsset?.logo,
-          assetSymbol: currentContactAsset?.symbol,
-          assetTokenSymbol: currentContactAsset?.tokenSymbol,
-          assetAddress: currentContactAsset?.address,
-          assetDecimal: currentContactAsset?.decimal,
-          assetShortDecimal: currentContactAsset?.shortDecimal,
-          assetName: currentContactAsset?.symbol,
-          subAccountIndex: subAccount?.subaccount_index,
-          subAccountId: subAccount?.sub_account_id,
-          subAccountAllowance: subAccount?.allowance,
-          subAccountName: subAccount?.name,
-        };
+      // subAccountsWithAllowances?.forEach((subAccount) => {
+      //   const allowanceContact = {
+      //     contactName: currentContact.name,
+      //     contactPrincipal: currentContact.principal,
+      //     contactAccountIdentifier: currentContact.accountIdentifier,
+      //     assetLogo: currentContactAsset?.logo,
+      //     assetSymbol: currentContactAsset?.symbol,
+      //     assetTokenSymbol: currentContactAsset?.tokenSymbol,
+      //     assetAddress: currentContactAsset?.address,
+      //     assetDecimal: currentContactAsset?.decimal,
+      //     assetShortDecimal: currentContactAsset?.shortDecimal,
+      //     assetName: currentContactAsset?.symbol,
+      //     subAccountIndex: subAccount?.subaccount_index,
+      //     subAccountId: subAccount?.sub_account_id,
+      //     subAccountAllowance: subAccount?.allowance,
+      //     subAccountName: subAccount?.name,
+      //   };
 
-        allowanceContacts.push(allowanceContact);
-      });
+      //   allowanceContacts.push(allowanceContact);
+      // });
     }
 
     if (!searchSubAccountValue) return allowanceContacts;

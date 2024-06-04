@@ -21,39 +21,47 @@ export default function ContactSuffix() {
     for (let contactIndex = 0; contactIndex < contacts.length; contactIndex++) {
       const currentContact = contacts[contactIndex];
 
-      const currentContactAsset = currentContact?.assets?.find(
-        (asset) => asset?.tokenSymbol === sender?.asset?.tokenSymbol,
-      );
+      console.log({
+        senderPrincipal,
+        senderSubAccount,
+        isSenderAllowance,
+        currentContact,
+      })
 
-      currentContactAsset?.subaccounts?.forEach((subAccount) => {
-        const receiverContact = {
-          contactName: currentContact.name,
-          contactPrincipal: currentContact.principal,
-          contactAccountIdentifier: currentContact.accountIdentier,
-          assetLogo: currentContactAsset?.logo,
-          assetSymbol: currentContactAsset?.symbol,
-          assetTokenSymbol: currentContactAsset?.tokenSymbol,
-          assetAddress: currentContactAsset?.address,
-          assetDecimal: currentContactAsset?.decimal,
-          assetShortDecimal: currentContactAsset?.shortDecimal,
-          assetName: currentContactAsset?.symbol,
-          subAccountIndex: subAccount?.subaccount_index,
-          subAccountId: subAccount?.sub_account_id,
-          subAccountAllowance: subAccount?.allowance,
-          subAccountName: subAccount?.name,
-        };
+      // TODO: complete new contact type
+      // const currentContactAsset = currentContact?.assets?.find(
+      //   (asset) => asset?.tokenSymbol === sender?.asset?.tokenSymbol,
+      // );
 
-        if (isSenderAllowance()) {
-          const sameSenderAndReceiver =
-            senderPrincipal === currentContact.principal && senderSubAccount === subAccount?.sub_account_id;
+      // currentContactAsset?.subaccounts?.forEach((subAccount) => {
+      //   const receiverContact = {
+      //     contactName: currentContact.name,
+      //     contactPrincipal: currentContact.principal,
+      //     contactAccountIdentifier: currentContact.accountIdentifier,
+      //     assetLogo: currentContactAsset?.logo,
+      //     assetSymbol: currentContactAsset?.symbol,
+      //     assetTokenSymbol: currentContactAsset?.tokenSymbol,
+      //     assetAddress: currentContactAsset?.address,
+      //     assetDecimal: currentContactAsset?.decimal,
+      //     assetShortDecimal: currentContactAsset?.shortDecimal,
+      //     assetName: currentContactAsset?.symbol,
+      //     subAccountIndex: subAccount?.subaccount_index,
+      //     subAccountId: subAccount?.sub_account_id,
+      //     subAccountAllowance: subAccount?.allowance,
+      //     subAccountName: subAccount?.name,
+      //   };
 
-          if (!sameSenderAndReceiver) {
-            allowanceContacts.push(receiverContact);
-          }
-        } else {
-          allowanceContacts.push(receiverContact);
-        }
-      });
+      //   if (isSenderAllowance()) {
+      //     const sameSenderAndReceiver =
+      //       senderPrincipal === currentContact.principal && senderSubAccount === subAccount?.sub_account_id;
+
+      //     if (!sameSenderAndReceiver) {
+      //       allowanceContacts.push(receiverContact);
+      //     }
+      //   } else {
+      //     allowanceContacts.push(receiverContact);
+      //   }
+      // });
     }
 
     return allowanceContacts;

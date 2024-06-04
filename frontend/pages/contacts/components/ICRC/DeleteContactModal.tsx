@@ -6,7 +6,7 @@ import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
 import { CustomButton } from "@components/button";
 import { useTranslation } from "react-i18next";
-import deleteContact from "@pages/contacts/services/deleteContact";
+// import deleteContact from "@pages/contacts/services/deleteContact";
 import logger from "@common/utils/logger";
 import { LoadingLoader } from "@components/loader";
 import { Contact } from "@/@types/contacts";
@@ -16,6 +16,7 @@ export default function DeleteContactModal({ contact }: { contact: Contact }) {
   const [open, setOpen] = useState(false);
   const [isLoading, setLoading] = useState(false);
   console.log(contact);
+  // TODO: complete new contact type
   // let ttlSub = 0;
   // contact.assets.map((asst) => {
   //   ttlSub = ttlSub + asst.subaccounts.length;
@@ -97,12 +98,12 @@ export default function DeleteContactModal({ contact }: { contact: Contact }) {
     </>
   );
 
-  function getDeleteMessage() {
-    // return {
-    //   msg1: t("delete.contact.contact.msg", { name: deleteObject.name }),
-    //   msg2: deleteObject.name,
-    // };
-  }
+  // function getDeleteMessage() {
+  // return {
+  //   msg1: t("delete.contact.contact.msg", { name: deleteObject.name }),
+  //   msg2: deleteObject.name,
+  // };
+  // }
 
   // function getDeleteMs() {
   //   let msg1 = "";

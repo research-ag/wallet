@@ -51,12 +51,14 @@ const DeleteAssetModal = () => {
     if (!assetMutated) return;
 
     await db().deleteAsset(assetMutated?.address, { sync: true }).then();
-    const updatedContacts = contacts.map((cntc) => {
-      const updatedAssets = cntc.assets.filter((ast) => ast.tokenSymbol !== assetMutated?.tokenSymbol);
-      return { ...cntc, assets: updatedAssets };
-    });
+    console.log(contacts);
+    // TODO: remove subaccounts from contacts
+    // const updatedContacts = contacts.map((cntc) => {
+    //   const updatedAssets = cntc.assets.filter((ast) => ast.tokenSymbol !== assetMutated?.tokenSymbol);
+    //   return { ...cntc, assets: updatedAssets };
+    // });
 
-    await db().updateContacts(updatedContacts, { sync: true }).then();
+    // await db().updateContacts(updatedContacts, { sync: true }).then();
 
     dispatch(setAssetMutationAction(AssetMutationAction.NONE));
     dispatch(setAssetMutation(undefined));
