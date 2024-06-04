@@ -48,22 +48,14 @@ export interface ContactDocument {
   principal: string;
   deleted: boolean;
   name: string;
-  assets: Array<{
-    subaccounts: Array<{
-      name: string;
-      sub_account_id: string;
-      subaccount_index: string;
-    }>;
-    logo: string;
-    tokenSymbol: string;
-    supportedStandards: Array<string>;
-    address: string;
-    shortDecimal: string;
-    decimal: string;
-    symbol: string;
-  }>;
   updatedAt: number;
-  accountIdentier: string;
+  accounts: Array<{
+    subaccountId: string;
+    name: string;
+    subaccount: string;
+    tokenSymbol: string;
+  }>;
+  accountIdentifier: string;
 }
 export interface WalletDatabase {
   doesStorageExist: ActorMethod<[], boolean>;
@@ -78,6 +70,6 @@ export interface WalletDatabase {
   pushAssets: ActorMethod<[Array<AssetDocument>], Array<AssetDocument>>;
   pushContacts: ActorMethod<[Array<ContactDocument>], Array<ContactDocument>>;
 }
-export type _SERVICE = WalletDatabase;
+export interface _SERVICE extends WalletDatabase {}
 export declare const idlFactory: IDL.InterfaceFactory;
 export declare const init: ({ IDL }: { IDL: IDL }) => IDL.Type[];

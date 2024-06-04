@@ -24,7 +24,7 @@ export default function AllowanceContactBookOptions(props: AllowanceContactBookO
 
     for (let contactIndex = 0; contactIndex < contacts.length; contactIndex++) {
       const currentContact = contacts[contactIndex];
-      console.log({ currentContact })
+      console.log({ currentContact });
       // const currentContactAsset = currentContact?.assets?.find(
       //   (asset) => asset?.tokenSymbol === sender?.asset?.tokenSymbol,
       // );

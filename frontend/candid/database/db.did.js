@@ -30,26 +30,16 @@ export const idlFactory = ({ IDL }) => {
     principal: IDL.Text,
     deleted: IDL.Bool,
     name: IDL.Text,
-    assets: IDL.Vec(
+    updatedAt: IDL.Nat32,
+    accounts: IDL.Vec(
       IDL.Record({
-        subaccounts: IDL.Vec(
-          IDL.Record({
-            name: IDL.Text,
-            sub_account_id: IDL.Text,
-            subaccount_index: IDL.Text,
-          }),
-        ),
-        logo: IDL.Text,
+        subaccountId: IDL.Text,
+        name: IDL.Text,
+        subaccount: IDL.Text,
         tokenSymbol: IDL.Text,
-        supportedStandards: IDL.Vec(IDL.Text),
-        address: IDL.Text,
-        shortDecimal: IDL.Text,
-        decimal: IDL.Text,
-        symbol: IDL.Text,
       }),
     ),
-    updatedAt: IDL.Nat32,
-    accountIdentier: IDL.Text,
+    accountIdentifier: IDL.Text,
   });
   const AllowanceDocument = IDL.Record({
     id: IDL.Text,

@@ -1,15 +1,14 @@
+export interface ContactAllowance {
+  expiration: string;
+  amount: string;
+}
+
 export interface ContactAccount {
   name: string;
-  // TODO: Is this necessary?
   subaccount: string;
   subaccountId: string;
   tokenSymbol: string;
   allowance?: ContactAllowance;
-}
-
-export interface ContactAllowance {
-  expiration: string;
-  amount: string;
 }
 
 export interface Contact {

@@ -26,7 +26,7 @@ export default function ContactSuffix() {
         senderSubAccount,
         isSenderAllowance,
         currentContact,
-      })
+      });
 
       // TODO: complete new contact type
       // const currentContactAsset = currentContact?.assets?.find(

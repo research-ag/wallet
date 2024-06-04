@@ -20,7 +20,7 @@ export default function ContactBookReceiver() {
 
     for (let contactIndex = 0; contactIndex < contacts.length; contactIndex++) {
       const currentContact = contacts[contactIndex];
-      console.log({ senderPrincipal, senderSubAccount, isSenderAllowance, currentContact })
+      console.log({ senderPrincipal, senderSubAccount, isSenderAllowance, currentContact });
       // TODO: asset info removed from contacts
 
       // const currentContactAsset = currentContact?.assets?.find(

@@ -321,12 +321,12 @@ export default function useSend() {
     () =>
       Boolean(
         sender?.asset?.address &&
-        sender?.asset?.decimal &&
-        amount &&
-        getSenderSubAccount() &&
-        getSenderPrincipal() &&
-        getReceiverPrincipal() &&
-        getReceiverSubAccount(),
+          sender?.asset?.decimal &&
+          amount &&
+          getSenderSubAccount() &&
+          getSenderPrincipal() &&
+          getReceiverPrincipal() &&
+          getReceiverSubAccount(),
       ),
     [sender, receiver, amount],
   );

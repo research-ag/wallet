@@ -134,12 +134,13 @@ const CodeElement = ({ tx }: CodeElementProps) => {
           {hasSub &&
             (subName.trim() === "" ? (
               <p className={`${accId} text-left break-words max-w-[20.5rem]`}>
-                {`${hasSubName ? subName + " -" : ""} ${isICPWithSub
-                  ? ICPSubaccounts.find((sub) => sub.legacy === (isTo ? tx.to : tx.from))?.sub_account_id || "0x0"
-                  : isTo
+                {`${hasSubName ? subName + " -" : ""} ${
+                  isICPWithSub
+                    ? ICPSubaccounts.find((sub) => sub.legacy === (isTo ? tx.to : tx.from))?.sub_account_id || "0x0"
+                    : isTo
                     ? tx.toSub || "0"
                     : tx.fromSub || "0"
-                  } `}
+                } `}
               </p>
             ) : (
               <p
@@ -150,8 +151,8 @@ const CodeElement = ({ tx }: CodeElementProps) => {
                   isICPWithSub
                     ? ICPSubaccounts.find((sub) => sub.legacy === (isTo ? tx.to : tx.from))?.sub_account_id || "0x0"
                     : isTo
-                      ? tx.toSub || "0"
-                      : tx.fromSub || "0"
+                    ? tx.toSub || "0"
+                    : tx.fromSub || "0"
                 }
               >
                 {subName}
