@@ -1,6 +1,5 @@
 import { ReactComponent as TrashIcon } from "@assets/svg/files/trash-icon.svg";
 import { BasicModal } from "@components/modal";
-import { Contact } from "@redux/models/ContactsModels";
 import { useState } from "react"; // svgs
 import { ReactComponent as WarningIcon } from "@assets/svg/files/warning.svg";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
@@ -10,28 +9,28 @@ import { useTranslation } from "react-i18next";
 import deleteContact from "@pages/contacts/services/deleteContact";
 import logger from "@common/utils/logger";
 import { LoadingLoader } from "@components/loader";
+import { Contact } from "@/@types/contacts";
 
 export default function DeleteContactModal({ contact }: { contact: Contact }) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [isLoading, setLoading] = useState(false);
+  console.log(contact);
+  // let ttlSub = 0;
+  // contact.assets.map((asst) => {
+  //   ttlSub = ttlSub + asst.subaccounts.length;
+  // });
 
-  let ttlSub = 0;
-
-  contact.assets.map((asst) => {
-    ttlSub = ttlSub + asst.subaccounts.length;
-  });
-
-  const deleteObject = {
-    principal: contact.principal,
-    name: contact.name,
-    tokenSymbol: "",
-    symbol: "",
-    subaccIdx: "",
-    subaccName: "",
-    totalAssets: contact.assets.length,
-    TotalSub: ttlSub,
-  };
+  // const deleteObject = {
+  //   principal: contact.principal,
+  //   name: contact.name,
+  //   tokenSymbol: "",
+  //   symbol: "",
+  //   subaccIdx: "",
+  //   subaccName: "",
+  //   totalAssets: contact.assets.length,
+  //   TotalSub: ttlSub,
+  // };
 
   return (
     <>
@@ -56,8 +55,8 @@ export default function DeleteContactModal({ contact }: { contact: Contact }) {
           </div>
           <div className="flex flex-col items-start justify-start w-full px-8">
             <p className="font-light text-left">
-              {getDeleteMessage().msg1}
-              <span className="ml-1 font-semibold break-all">{getDeleteMessage().msg2}</span>?
+              {/* {getDeleteMessage().msg1} */}
+              {/* <span className="ml-1 font-semibold break-all">{getDeleteMessage().msg2}</span>? */}
             </p>
           </div>
 
@@ -67,8 +66,8 @@ export default function DeleteContactModal({ contact }: { contact: Contact }) {
               <p>{t("total.subacc")}</p>
             </div>
             <div className="flex flex-col items-start justify-start">
-              <p className="font-semibold">{deleteObject.totalAssets}</p>
-              <p className="font-semibold">{deleteObject.TotalSub}</p>
+              {/* <p className="font-semibold">{deleteObject.totalAssets}</p>
+              <p className="font-semibold">{deleteObject.TotalSub}</p> */}
             </div>
           </div>
 
@@ -99,10 +98,10 @@ export default function DeleteContactModal({ contact }: { contact: Contact }) {
   );
 
   function getDeleteMessage() {
-    return {
-      msg1: t("delete.contact.contact.msg", { name: deleteObject.name }),
-      msg2: deleteObject.name,
-    };
+    // return {
+    //   msg1: t("delete.contact.contact.msg", { name: deleteObject.name }),
+    //   msg2: deleteObject.name,
+    // };
   }
 
   // function getDeleteMs() {
@@ -134,7 +133,7 @@ export default function DeleteContactModal({ contact }: { contact: Contact }) {
   async function handleConfirmButton() {
     try {
       setLoading(true);
-      await deleteContact(deleteObject.principal);
+      // await deleteContact(deleteObject.principal);
     } catch (error) {
       logger.debug(error);
     } finally {

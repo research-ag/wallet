@@ -1,5 +1,4 @@
 import { DatabaseOptions, IWalletDatabase } from "@/database/i-wallet-database";
-import { Contact } from "@redux/models/ContactsModels";
 import { TAllowance } from "@/@types/allowance";
 import { Identity } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
@@ -27,6 +26,7 @@ import {
   setReduxAllowances,
   updateReduxAllowance,
 } from "@redux/allowance/AllowanceReducer";
+import { Contact } from "@/@types/contacts";
 
 export class LocalStorageDatabase extends IWalletDatabase {
   // Singleton pattern
@@ -215,14 +215,11 @@ export class LocalStorageDatabase extends IWalletDatabase {
   private _getStorableContact(contact: Contact): Contact {
     return {
       ...contact,
-      assets: contact.assets.map((asset) => ({
-        ...asset,
-        subaccounts: asset.subaccounts.map((subaccount) => {
-          // eslint-disable-next-line
-          const { allowance, ...rest } = subaccount;
-          return { ...rest };
-        }),
-      })),
+      accounts: contact.accounts.map((account) => {
+        // eslint-disable-next-line
+        const { allowance, ...rest } = account;
+        return { ...rest };
+      }),
     };
   }
 

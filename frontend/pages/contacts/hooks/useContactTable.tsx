@@ -8,7 +8,6 @@ import {
   SubAccountContact,
   SubAccountContactErr,
 } from "@redux/models/ContactsModels";
-import { db } from "@/database/db";
 
 import { useState } from "react";
 import { useAppSelector } from "@redux/Store";
@@ -19,53 +18,66 @@ export default function useContactTable() {
   const { contacts } = useAppSelector((state) => state.contacts);
 
   const addAsset = async (asset: AssetContact[], pastPrincipal: string) => {
-    const contact = contacts.find((contact) => contact.principal === pastPrincipal);
-    contact &&
-      (await db().updateContact(
-        pastPrincipal,
-        {
-          ...contact,
-          assets: [...contact.assets, ...asset],
-        },
-        { sync: true },
-      ));
+    console.log({
+      asset,
+      pastPrincipal,
+    });
+    // TODO: no needed
+    
+    // const contact = contacts.find((contact) => contact.principal === pastPrincipal);
+    // contact &&
+    //   (await db().updateContact(
+    //     pastPrincipal,
+    //     {
+    //       ...contact,
+    //       assets: [...contact.assets, ...asset],
+    //     },
+    //     { sync: true },
+    //   ));
   };
 
   const removeAsset = async (principal: string, tokenSymbol: string) => {
-    const contact = contacts.find((contact) => contact.principal === principal);
-
-    contact &&
-      (await db().updateContact(
-        principal,
-        {
-          ...contact,
-          assets: contact.assets.filter((asst) => asst.tokenSymbol !== tokenSymbol),
-        },
-        { sync: true },
-      ));
+    // const contact = contacts.find((contact) => contact.principal === principal);
+    // TODO: not needed
+    console.log({
+      principal,
+      tokenSymbol,
+    })
+    // contact &&
+    //   (await db().updateContact(
+    //     principal,
+    //     {
+    //       ...contact,
+    //       assets: contact.assets.filter((asst) => asst.tokenSymbol !== tokenSymbol),
+    //     },
+    //     { sync: true },
+    //   ));
   };
 
   const removeSubacc = async (principal: string, tokenSymbol: string, subIndex: string) => {
-    const contact = contacts.find((contact) => contact.principal === principal);
+    // TODO: no needed
+    console.log({ principal, tokenSymbol, subIndex});
+    
+    // const contact = contacts.find((contact) => contact.principal === principal);
 
-    contact &&
-      (await db().updateContact(
-        principal,
-        {
-          ...contact,
-          assets: contact.assets.map((asset) => {
-            if (asset.tokenSymbol !== tokenSymbol) {
-              return asset;
-            } else {
-              return {
-                ...asset,
-                subaccounts: asset.subaccounts.filter((subAccount) => subAccount.subaccount_index !== subIndex),
-              };
-            }
-          }),
-        },
-        { sync: true },
-      ));
+    // contact &&
+    //   (await db().updateContact(
+    //     principal,
+    //     {
+    //       ...contact,
+    //       assets: contact.assets.map((asset) => {
+    //         if (asset.tokenSymbol !== tokenSymbol) {
+    //           return asset;
+    //         } else {
+    //           return {
+    //             ...asset,
+    //             subaccounts: asset.subaccounts.filter((subAccount) => subAccount.subaccount_index !== subIndex),
+    //           };
+    //         }
+    //       }),
+    //     },
+    //     { sync: true },
+    //   ));
   };
 
   const editCntctSubacc = async (

@@ -29,7 +29,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { getInitialFromName } from "@common/utils/strings";
 import { shortAddress } from "@common/utils/icrc";
-
+// TODO: unnused file
 interface TableContactRowsProps {
   changeName(value: string): void;
   setDeleteType(value: DeleteContactTypeEnum): void;

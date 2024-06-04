@@ -14,7 +14,6 @@ import { RxReplicationState } from "rxdb/plugins/replication";
 import { AnonymousIdentity, HttpAgent, Identity } from "@dfinity/agent";
 import { createActor } from "@/candid/database";
 // types
-import { Contact } from "@redux/models/ContactsModels";
 import { TAllowance } from "@/@types/allowance";
 import { SupportedStandardEnum } from "@/@types/icrc";
 import {
@@ -44,6 +43,7 @@ import {
   updateReduxAllowance,
 } from "@redux/allowance/AllowanceReducer";
 import logger from "@/common/utils/logger";
+import { Contact } from "@/@types/contacts";
 
 addRxPlugin(RxDBUpdatePlugin);
 addRxPlugin(RxDBMigrationPlugin);
@@ -357,7 +357,8 @@ export class RxdbDatabase extends IWalletDatabase {
         await this.contacts
       )?.insert({
         ...databaseContact,
-        accountIdentier: extractValueFromArray(databaseContact.accountIdentier),
+        accountIdentier: extractValueFromArray(databaseContact.accountIdentifier),
+        // TODO: modify to the new type
         assets: databaseContact.assets.map((a) => ({
           ...a,
           logo: extractValueFromArray(a.logo),
@@ -387,6 +388,7 @@ export class RxdbDatabase extends IWalletDatabase {
       const databaseContact = this._getStorableContact(newDoc);
       const document = await (await this.contacts)?.findOne(principal).exec();
 
+      // TODO: modify to the new type
       document?.patch({
         ...databaseContact,
         accountIdentier: extractValueFromArray(databaseContact.accountIdentier),
@@ -416,6 +418,7 @@ export class RxdbDatabase extends IWalletDatabase {
     try {
       const databaseContacts = newDocs.map((contact) => this._getStorableContact(contact));
 
+      // TODO: modify to the new type
       await (
         await this.contacts
       )?.bulkUpsert(
@@ -458,14 +461,11 @@ export class RxdbDatabase extends IWalletDatabase {
   private _getStorableContact(contact: Contact): Contact {
     return {
       ...contact,
-      assets: contact.assets.map((asset) => ({
-        ...asset,
-        subaccounts: asset.subaccounts.map((subaccount) => {
-          // eslint-disable-next-line
-          const { allowance, ...rest } = subaccount;
-          return { ...rest };
-        }),
-      })),
+      accounts: contact.accounts.map((account) => {
+        // eslint-disable-next-line
+        const { allowance, ...rest } = account;
+        return { ...rest };
+      }),
     };
   }
 
@@ -633,24 +633,19 @@ export class RxdbDatabase extends IWalletDatabase {
   }
 
   private _mapContactDoc(doc: RxDocument<ContactRxdbDocument>): Contact {
+    // TODO: modify to the new type
     return {
       name: doc.name,
       principal: doc.principal,
-      accountIdentier: doc.accountIdentier,
-      assets: doc.assets.map((a) => ({
-        symbol: a.symbol,
-        tokenSymbol: a.tokenSymbol,
-        logo: a.logo,
-        subaccounts: a.subaccounts.map((sa) => ({
-          name: sa.name,
-          subaccount_index: sa.subaccount_index,
-          sub_account_id: sa.sub_account_id,
-        })),
-        address: a.address,
-        decimal: a.decimal,
-        shortDecimal: a.shortDecimal,
-        supportedStandards: a.supportedStandards as typeof SupportedStandardEnum.options,
-      })),
+      // accountIdentifier: doc.accountIdentifier,
+      // accounts: doc.accounts.map((a) => ({
+      //   name: a.name,
+      //   subaccount: a.subaccount,
+      //   subaccountId: a.subaccountId,
+      //   tokenSymbol: a.tokenSymbol,
+      // })),
+      accountIdentifier: "",
+      accounts: [],
     };
   }
 
@@ -732,13 +727,13 @@ export class RxdbDatabase extends IWalletDatabase {
   private async _assetsPushHandler(items: any[]): Promise<AssetRxdbDocument[]> {
     const arg = items.map(
       (x) =>
-        ({
-          ...x,
-          sortIndex: x.sortIndex,
-          updatedAt: Math.floor(Date.now() / 1000),
-          logo: extractValueFromArray(x.logo),
-          index: extractValueFromArray(x.index),
-        } as AssetRxdbDocument),
+      ({
+        ...x,
+        sortIndex: x.sortIndex,
+        updatedAt: Math.floor(Date.now() / 1000),
+        logo: extractValueFromArray(x.logo),
+        index: extractValueFromArray(x.index),
+      } as AssetRxdbDocument),
     );
 
     await this.replicaCanister?.pushAssets(arg);
@@ -776,11 +771,11 @@ export class RxdbDatabase extends IWalletDatabase {
           allowance:
             !!s.allowance && !!s.allowance.allowance
               ? [
-                  {
-                    allowance: [s.allowance.allowance],
-                    expires_at: [s.allowance.expires_at],
-                  },
-                ]
+                {
+                  allowance: [s.allowance.allowance],
+                  expires_at: [s.allowance.expires_at],
+                },
+              ]
               : [],
         })),
       })),

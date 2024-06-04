@@ -1,6 +1,6 @@
-import { Contact } from "@redux/models/ContactsModels";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import logger from "@/common/utils/logger";
+import { Contact } from "@/@types/contacts";
 
 interface ContactsState {
   contacts: Contact[];

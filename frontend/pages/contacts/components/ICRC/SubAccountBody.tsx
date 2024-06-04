@@ -1,5 +1,5 @@
 // svg
-
+// TODO: unnused file
 import { ReactComponent as PencilIcon } from "@assets/svg/files/pencil.svg";
 import { ReactComponent as TrashIcon } from "@assets/svg/files/trash-icon.svg";
 import { ReactComponent as ChevIcon } from "@assets/svg/files/chev-icon.svg";

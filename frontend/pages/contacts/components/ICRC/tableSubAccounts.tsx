@@ -28,7 +28,7 @@ interface TableSubAccountsProps {
   setSubaccEditedErr(value: SubAccountContactErr): void;
   setDeleteObject(value: NewContactSubAccount): void;
 }
-
+// TODO: unnused file
 const TableSubAccounts = ({
   asst,
   addSub,

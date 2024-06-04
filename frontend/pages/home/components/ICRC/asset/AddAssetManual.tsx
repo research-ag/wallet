@@ -14,7 +14,6 @@ import { LoadingLoader } from "@components/loader";
 import { AccountHook } from "@pages/hooks/accountHook";
 import { getAssetDetails } from "@/common/libs/icrc";
 import { db } from "@/database/db";
-import { Contact } from "@redux/models/ContactsModels";
 import { getAssetIcon } from "@/common/utils/icons";
 import {
   AssetMutationAction,
@@ -29,6 +28,7 @@ import { useAppDispatch, useAppSelector } from "@redux/Store";
 import useAssetMutate, { assetMutateInitialState } from "@pages/home/hooks/useAssetMutate";
 import { toFullDecimal } from "@common/utils/amount";
 import logger from "@/common/utils/logger";
+import { Contact } from "@/@types/contacts";
 
 const AddAssetManual = () => {
   const { assetAction, assetMutated } = useAppSelector((state) => state.asset.mutation);
@@ -371,13 +371,14 @@ const AddAssetManual = () => {
         for (const contact of currentContacts) {
           let affected = false;
 
+          // TODO: asset affected by accounts
           const newDoc = {
             ...contact,
-            assets: contact.assets.map((currentAsset) => {
-              if (currentAsset.tokenSymbol === newAsset?.tokenSymbol) {
+            accounts: contact.accounts.map((currentAccount) => {
+              if (currentAccount.tokenSymbol === newAsset?.tokenSymbol) {
                 affected = true;
-                return { ...currentAsset, symbol: newAsset.symbol };
-              } else return currentAsset;
+                return { ...currentAccount, symbol: newAsset.symbol };
+              } else return currentAccount;
             }),
           };
 
