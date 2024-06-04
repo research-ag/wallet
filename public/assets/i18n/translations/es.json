@@ -71,6 +71,14 @@
   "delete.subacc.msg": "¿Está seguro de que desea eliminar",
   "name.sub.account": "Nombre de la Subcuenta",
   "account.indentifier": "Identificador de Cuenta",
+
+  "contact.error.invalid.name": "Nombre de contacto no válido",
+  "contact.error.invalid.principal": "Principal de contacto no válida",
+  "contact.error.duplicated.principal": "Principal de contacto duplicada",
+  "contact.error.invalid.account.id": "ID de cuenta de contacto no válida",
+  "contact.error.invalid.account.name": "Nombre de cuenta de contacto no válido",
+  "contact.error.account.exist": "La subcuenta de contacto ya existe",
+
   "copied": "Copiado!",
   "delete.asset.msg": "¿Estás seguro de que deseas eliminar el Activo",
   "empty.index.error": "El índice no puede estar vacío",

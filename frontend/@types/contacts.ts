@@ -33,4 +33,5 @@ export interface RetrieveSubAccountsWithAllowanceArgs {
 export interface NewContactErrors {
   name: boolean;
   principal: boolean;
+  message: string;
 }

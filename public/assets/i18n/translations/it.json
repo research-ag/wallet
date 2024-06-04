@@ -71,6 +71,14 @@
   "delete.subacc.msg": "Sei sicuro di voler eliminare",
   "name.sub.account": "Nome dell'Subaccount ",
   "account.indentifier": "Identificatore dell'Account",
+
+  "contact.error.invalid.name": "Nome contatto non valido",
+  "contact.error.invalid.principal": "Principale contatto non valido",
+  "contact.error.duplicated.principal": "Principale contatto duplicato",
+  "contact.error.invalid.account.id": "ID account contatto non valido",
+  "contact.error.invalid.account.name": "Nome account contatto non valido",
+  "contact.error.account.exist": "Sottoaccount contatto già esistente",
+
   "copied": "Copiato!",
   "delete.asset.msg": "Sei sicuro di voler eliminare la Risorsa",
   "empty.index.error": "L'indice non può essere vuoto",

@@ -15,8 +15,8 @@ const baseAccount: ContactAccount = {
 };
 
 export default function AddContactAccountRow(props: AddContactAccountRowProps) {
-  const [newAccount, setNewAccount] = useState<ContactAccount | null>(null);
   console.log(props);
+  const [newAccount, setNewAccount] = useState<ContactAccount | null>(null);
   return (
     <div className="h-10">
       {newAccount ? (

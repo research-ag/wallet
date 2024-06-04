@@ -9,6 +9,7 @@ import { LoadingLoader } from "@components/loader";
 import { CustomButton } from "@components/button";
 import ContactAssetDetails from "@/pages/contacts/components/ICRC/AddContact/ContactAssetDetails";
 import { useCreateContact } from "@pages/contacts/hooks/useCreateContact";
+import { useContactError } from "@pages/contacts/contexts/ContactErrorProvider";
 
 interface AddContactProps {
   onClose(): void;
@@ -16,7 +17,7 @@ interface AddContactProps {
 
 export default function AddContact({ onClose }: AddContactProps) {
   const { t } = useTranslation();
-
+  const { newContactErrors, subAccountError } = useContactError();
   const { newContact, onAddContact, onCheckAccountsAllowances, isAllowancesChecking, isCreating } = useCreateContact();
 
   // const isAssetICRC2Supported = false; TODO: if ICRC-2 is not supported what to do?
@@ -31,10 +32,7 @@ export default function AddContact({ onClose }: AddContactProps) {
       <ContactAssetDetails />
 
       <div className="flex flex-row items-center justify-end w-full gap-3">
-        <p className="text-TextErrorColor">
-          {/* TODO: display error messages */}
-          error
-        </p>
+        <p className="text-TextErrorColor">{newContactErrors?.message || subAccountError?.message}</p>
         {(isAllowancesChecking || isCreating) && (
           <LoadingLoader color="dark:border-secondary-color-1-light border-black-color" />
         )}

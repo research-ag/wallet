@@ -8,6 +8,7 @@ import { Dispatch, SetStateAction } from "react";
 import clsx from "clsx";
 import { Contact } from "@/@types/contacts";
 import { useContact } from "@pages/contacts/contexts/ContactProvider";
+import { useContactError } from "@pages/contacts/contexts/ContactErrorProvider";
 
 interface ContactAssetElementProps {
   contAst: Asset;
@@ -19,13 +20,10 @@ interface ContactAssetElementProps {
 const ContactAssetElement = (props: ContactAssetElementProps) => {
   const { contAst, interator, contactAssetSelected, setContactAssetSelected } = props;
   const { newContact, setNewContact } = useContact();
+  const { setSubAccountError } = useContactError();
 
   const isCurrentAssetSelected = contAst.tokenSymbol === contactAssetSelected;
-
-  const assetSubAccounts = newContact.accounts.filter((curr) => curr.tokenSymbol === contAst.tokenSymbol);
-  const isLastIncomplete = newContact.accounts.filter((curr) => !curr.name || !curr.subaccountId).length > 0;
-  const onSelectedCount = assetSubAccounts.length;
-  const onUnselectedCount = isLastIncomplete ? newContact.accounts.length - 1 : newContact.accounts.length;
+  const total = newContact.accounts.filter((curr) => curr.tokenSymbol === contAst.tokenSymbol).length;
 
   return (
     <div key={interator} onClick={onSelectContactAsset} className={assetElementStyles(isCurrentAssetSelected)}>
@@ -34,8 +32,7 @@ const ContactAssetElement = (props: ContactAssetElementProps) => {
         <p>{contAst.symbol}</p>
       </div>
       <div className="flex flex-row items-center justify-between h-8 rounded w-28 bg-black/10 dark:bg-white/10">
-        {/* TODO: text display on count */}
-        <p className="ml-2">{isCurrentAssetSelected ? onSelectedCount : onUnselectedCount} Subs</p>
+        <p className="ml-2">{isCurrentAssetSelected ? total : total} Subs</p>
 
         {contAst.tokenSymbol === contactAssetSelected && (
           <button
@@ -50,24 +47,33 @@ const ContactAssetElement = (props: ContactAssetElementProps) => {
   );
 
   function onSelectContactAsset() {
-    // TODO: do not allow change selected if sub-account name or id is beign edited (show error on valid data)
-    // TODO: remove all pending adding sub account if (empty name and sub account id)
     setContactAssetSelected(contAst.tokenSymbol);
+
+    setNewContact((prev: Contact) => {
+      const accounts = prev.accounts.filter((curr) => curr.name.length > 0 && curr.subaccountId.length > 0);
+      const activeAccount = {
+        name: "",
+        subaccount: "",
+        subaccountId: "",
+        tokenSymbol: contAst.tokenSymbol,
+      };
+
+      return {
+        ...prev,
+        accounts: [...accounts, activeAccount],
+      };
+    });
+
+    setSubAccountError(null);
   }
 
   function onAddSubaccountEnabled() {
-    const isNewSubAccountBeingAdded = newContact.accounts
-      .map((curr) => {
-        return !curr.tokenSymbol || !curr.name || !curr.subaccount || !curr.subaccountId;
-      })
-      .some((curr) => curr);
-
-    if (isNewSubAccountBeingAdded) return;
-
-    setNewContact((prev: Contact) => ({
-      ...prev,
-      accounts: [...prev.accounts, { name: "", subaccount: "", subaccountId: "", tokenSymbol: contAst.tokenSymbol }],
-    }));
+    setNewContact((prev: Contact) => {
+      return {
+        ...prev,
+        accounts: [...prev.accounts, { name: "", subaccount: "", subaccountId: "", tokenSymbol: contAst.tokenSymbol }],
+      };
+    });
   }
 };
 

@@ -1,13 +1,13 @@
 import { CustomInput } from "@components/input";
 import { ReactComponent as TrashIcon } from "@assets/svg/files/trash-empty.svg";
 import { useTranslation } from "react-i18next";
-import { checkHexString } from "@common/utils/hexadecimal";
 import { asciiHex } from "@pages/contacts/constants/asciiHex";
 import { Contact, ContactAccount } from "@/@types/contacts";
 import AllowanceTooltip from "../AllowanceTooltip";
 import logger from "@common/utils/logger";
 import { useContactError } from "@pages/contacts/contexts/ContactErrorProvider";
 import { useContact } from "@pages/contacts/contexts/ContactProvider";
+import { isContactSubaccountIdValid } from "@pages/contacts/helpers/validators";
 
 interface AddSubAccountOnCreateProps {
   contactAssetSelected: string;
@@ -31,7 +31,7 @@ export default function AddSubAccountOnCreate({ contactAssetSelected }: AddSubAc
 
             return (
               <div key={iterator} className="relative flex items-center justify-between w-full">
-                {newSA.allowance ? (
+                {newSA.allowance?.amount ? (
                   <AllowanceTooltip
                     amount={newSA?.allowance?.amount}
                     expiration={newSA?.allowance.expiration}
@@ -111,44 +111,47 @@ export default function AddSubAccountOnCreate({ contactAssetSelected }: AddSubAc
   }
 
   function onchangeSubIdx(value: string, iterator: number, subAccount: ContactAccount) {
-    if (checkHexString(value)) {
-      const duplicatedIdByAsset =
-        newContact.accounts.filter((sa) => {
-          return sa.subaccountId === value && sa.tokenSymbol === contactAssetSelected;
-        }).length >= 1;
+    setNewContact((prev: Contact) => {
+      // TODO: check if the subaccount is valid
+      const newSubAccount: ContactAccount = {
+        ...prev.accounts[iterator],
+        subaccount: value,
+        subaccountId: value.includes("0x") ? value.trim() : `0x${value.trim()}`,
+      };
 
-      setNewContact((prev: Contact) => {
-        const newSubAccount: ContactAccount = {
-          ...prev.accounts[iterator],
-          subaccountId: value,
-          subaccount: value.includes("0x") ? value.trim() : `0x${value.trim()}`,
-        };
+      return {
+        ...prev,
+        accounts: prev.accounts.map((sa, index) => {
+          return index === iterator ? newSubAccount : sa;
+        }),
+      };
+    });
 
-        return {
-          ...prev,
-          accounts: prev.accounts.map((sa, index) => {
-            return index === iterator ? newSubAccount : sa;
-          }),
-        };
-      });
-
-      if (duplicatedIdByAsset) {
-        setSubAccountError({
-          name: false,
-          subAccountId: true,
-          tokenSymbol: subAccount.tokenSymbol,
-          index: iterator,
-        });
-      } else {
-        setSubAccountError(null);
-      }
-    } else {
+    if (!isContactSubaccountIdValid(value)) {
       setSubAccountError({
         name: false,
         subAccountId: true,
         tokenSymbol: subAccount.tokenSymbol,
         index: iterator,
+        message: t("contact.error.invalid.account.id"),
       });
+    }
+
+    const duplicatedIdByAsset =
+      newContact.accounts.filter((sa) => {
+        return sa.subaccountId === value && sa.tokenSymbol === contactAssetSelected;
+      }).length >= 1;
+
+    if (duplicatedIdByAsset) {
+      setSubAccountError({
+        name: false,
+        subAccountId: true,
+        tokenSymbol: subAccount.tokenSymbol,
+        index: iterator,
+        message: t("contact.error.account.exist"),
+      });
+    } else {
+      setSubAccountError(null);
     }
   }
 

@@ -4,8 +4,9 @@ import { createContext, Dispatch, SetStateAction, useContext, useState } from "r
 export interface SubAccountError {
   name: boolean;
   subAccountId: boolean;
-  tokenSymbol: string;
   index: number;
+  tokenSymbol: string;
+  message: string;
 }
 
 type ContactErrorProviderProps = {
@@ -27,6 +28,7 @@ export default function ContactErrorProvider({ children }: ContactErrorProviderP
   const [newContactErrors, setNewContactErrors] = useState<NewContactErrors>({
     name: false,
     principal: false,
+    message: "",
   });
 
   return (

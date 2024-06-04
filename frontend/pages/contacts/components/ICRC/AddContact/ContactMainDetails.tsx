@@ -40,15 +40,37 @@ export default function ContactMainDetails() {
     setNewContact((prev: Contact) => ({ ...prev, principal: value }));
 
     if (!validatePrincipal(value)) {
-      setNewContactErrors((prev: NewContactErrors) => ({ ...prev, principal: true }));
+      setNewContactErrors((prev: NewContactErrors) => ({
+        ...prev,
+        principal: true,
+        name: false,
+        message: t("contact.error.invalid.principal"),
+      }));
     } else {
-      setNewContactErrors((prev: NewContactErrors) => ({ ...prev, principal: false }));
+      setNewContactErrors((prev: NewContactErrors) => ({
+        ...prev,
+        principal: false,
+        name: false,
+        message: "",
+      }));
     }
   }
 
   function onNameChange(value: string) {
     setNewContact((prev: Contact) => ({ ...prev, name: value }));
-    if (value.length === 0) setNewContactErrors((prev) => ({ ...prev, name: true }));
-    else setNewContactErrors((prev) => ({ ...prev, name: false }));
+    if (value.length === 0)
+      setNewContactErrors((prev) => ({
+        ...prev,
+        name: true,
+        principal: false,
+        message: t("contact.error.invalid.name"),
+      }));
+    else
+      setNewContactErrors((prev) => ({
+        ...prev,
+        name: false,
+        principal: false,
+        message: "",
+      }));
   }
 }
