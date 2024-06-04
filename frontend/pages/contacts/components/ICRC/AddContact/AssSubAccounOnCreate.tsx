@@ -74,7 +74,7 @@ export default function AddSubAccountOnCreate({ contactAssetSelected }: AddSubAc
                   placeholder={"Hex"}
                   value={newSA.subaccountId}
                   onChange={(e) => {
-                    onchangeSubIdx(e.target.value, iterator);
+                    onchangeSubIdx(e.target.value, iterator, newSA);
                   }}
                   onKeyDown={(e) => {
                     onKeyPressSubIdx(e, newSA);
@@ -110,7 +110,7 @@ export default function AddSubAccountOnCreate({ contactAssetSelected }: AddSubAc
     });
   }
 
-  function onchangeSubIdx(value: string, iterator: number) {
+  function onchangeSubIdx(value: string, iterator: number, subAccount: ContactAccount) {
     if (checkHexString(value)) {
       const duplicatedIdByAsset =
         newContact.accounts.filter((sa) => {
@@ -136,7 +136,7 @@ export default function AddSubAccountOnCreate({ contactAssetSelected }: AddSubAc
         setSubAccountError({
           name: false,
           subAccountId: true,
-          tokenSymbol: false,
+          tokenSymbol: subAccount.tokenSymbol,
           index: iterator,
         });
       } else {
@@ -146,7 +146,7 @@ export default function AddSubAccountOnCreate({ contactAssetSelected }: AddSubAc
       setSubAccountError({
         name: false,
         subAccountId: true,
-        tokenSymbol: false,
+        tokenSymbol: subAccount.tokenSymbol,
         index: iterator,
       });
     }

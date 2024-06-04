@@ -4,18 +4,24 @@ import { createContext, Dispatch, SetStateAction, useContext, useState } from "r
 export interface SubAccountError {
   name: boolean;
   subAccountId: boolean;
-  tokenSymbol: boolean;
+  tokenSymbol: string;
   index: number;
 }
 
-export const ContactErrorContext = createContext<{
+type ContactErrorProviderProps = {
+  children: JSX.Element;
+};
+
+type ContactErrorProviderType = {
   subAccountError: SubAccountError | null;
   setSubAccountError: Dispatch<SetStateAction<SubAccountError | null>>;
   newContactErrors: NewContactErrors;
   setNewContactErrors: Dispatch<SetStateAction<NewContactErrors>>;
-} | null>(null);
+};
 
-export default function ContactErrorProvider({ children }: { children: JSX.Element }) {
+export const ContactErrorContext = createContext<ContactErrorProviderType | null>(null);
+
+export default function ContactErrorProvider({ children }: ContactErrorProviderProps) {
   const [subAccountError, setSubAccountError] = useState<SubAccountError | null>(null);
 
   const [newContactErrors, setNewContactErrors] = useState<NewContactErrors>({

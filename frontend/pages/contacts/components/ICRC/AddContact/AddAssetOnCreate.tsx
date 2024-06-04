@@ -13,9 +13,9 @@ interface AddAssetOnCreateProps {
 }
 
 export default function AddAssetOnCreate(props: AddAssetOnCreateProps) {
+  const { contactAssetSelected, contactAssets, setContactAssets, setContactAssetSelected } = props;
   const assets = useAppSelector((state) => state.asset.list.assets);
   const { t } = useTranslation();
-  const { contactAssetSelected, contactAssets, setContactAssets, setContactAssetSelected } = props;
 
   const unselectedAssets = assets.filter(
     (currentAsset) => contactAssets.find((asset) => asset.tokenSymbol === currentAsset.tokenSymbol) === undefined,
@@ -47,61 +47,6 @@ export default function AddAssetOnCreate(props: AddAssetOnCreateProps) {
       </div>
     </div>
   );
-
-  // async function isValidSubacc() {
-  // TODO: remove the select asset logic to another function (OK)
-  // INFO: change asset tab
-  // setNewContact(auxContact);
-  // setSelAstContact(contAst.tokenSymbol);
-  // setNewSubaccounts(
-  //   contAst.subaccounts.length === 0
-  //     ? [{ name: "", subaccount_index: "", sub_account_id: "", allowance: { allowance: "", expires_at: "" } }]
-  //     : contAst.subaccounts,
-  // );
-  // TODO: after validation save data (PENDING)
-  // INFO: create contact into redux and local storage
-  // setIsCreating(true);
-  // const result = await retrieveAssetsWithAllowance({
-  //   accountPrincipal: newContact.principal,
-  //   assets: newContact.assets,
-  // });
-  // const reduxContact = {
-  //   ...auxContact,
-  //   assets: result,
-  //   accountIdentier: getAccountIdentifier(auxContact.principal, 0),
-  // };
-  // await db().addContact(reduxContact, { sync: true });
-  // setIsCreating(false);
-  // onClose();
-  // }
-
-  // function isAvailableAddContact() {
-  //   return true;
-  // TODO: move this logic to the respective compoent (PENDING)
-  //   let isAvailable = true;
-  //   const ids: string[] = [];
-
-  //   for (let index = 0; index < newSubAccounts.length; index++) {
-  //     const newSa = newSubAccounts[index];
-  //     let subAccIdx = "";
-  //     if (removeLeadingZeros(newSa.subaccount_index.trim()) === "") {
-  //       if (newSa.subaccount_index.length !== 0) subAccIdx = "0";
-  //     } else subAccIdx = removeLeadingZeros(newSa.subaccount_index.trim());
-
-  //     if (newSa.name.trim() === "") {
-  //       isAvailable = false;
-  //       break;
-  //     }
-
-  //     if (subAccIdx === "" || ids.includes(subAccIdx)) {
-  //       isAvailable = false;
-  //       break;
-  //     } else {
-  //       ids.push(subAccIdx);
-  //     }
-  //   }
-  //   return isAvailable;
-  // }
 
   function assetToAdd(data: Asset[]) {
     setContactAssets((prev: Asset[]) => [...prev, ...data]);

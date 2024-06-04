@@ -5,9 +5,6 @@ import { validatePrincipal } from "@common/utils/definityIdentity";
 import { useContactError } from "@pages/contacts/contexts/ContactErrorProvider";
 import { useContact } from "@pages/contacts/contexts/ContactProvider";
 
-// TODO: validate that the principal is a valid principal
-// TODO: validate the name length
-// TODO: validate that the principal does not already exist
 export default function ContactMainDetails() {
   const { newContact, setNewContact } = useContact();
   const { setNewContactErrors, newContactErrors } = useContactError();

@@ -14,6 +14,12 @@ export const isContactAccountNameValid = (name: string): boolean => {
   return name.trim() !== "" && name.length <= 50;
 };
 
+export const isContactSubaccountIdValid = (subaccountId: string): boolean => {
+  return subaccountId.trim() !== "" && checkHexString(subaccountId);
+};
+
 export const isContactAccountValid = (account: ContactAccount): boolean => {
-  return checkHexString(account.subaccountId) && isContactAccountNameValid(account.name);
+  const isValidSubaccount = isContactSubaccountIdValid(account.subaccountId);
+  const isValidSubaccountName = isContactAccountNameValid(account.name);
+  return isValidSubaccount && isValidSubaccountName;
 };

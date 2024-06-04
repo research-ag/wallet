@@ -1,12 +1,18 @@
 import { Contact } from "@/@types/contacts";
 import React, { createContext, useContext, useState } from "react";
 
-export const ContactContext = createContext<{
+type ContactProviderProps = {
+  children: JSX.Element;
+};
+
+type ContactProviderType = {
   newContact: Contact;
   setNewContact: React.Dispatch<React.SetStateAction<Contact>>;
-} | null>(null);
+};
 
-export default function ContactProvider({ children }: { children: JSX.Element }) {
+export const ContactContext = createContext<ContactProviderType | null>(null);
+
+export default function ContactProvider({ children }: ContactProviderProps) {
   const [newContact, setNewContact] = useState<Contact>({
     name: "",
     principal: "",
