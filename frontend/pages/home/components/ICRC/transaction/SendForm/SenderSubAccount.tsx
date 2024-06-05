@@ -16,7 +16,11 @@ export default function SenderSubAccount() {
     if (!searchSubAccountValue) return sender.asset?.subAccounts.map(formatSubAccount);
 
     return sender.asset?.subAccounts
-      .filter((subAccount) => subAccount?.name?.toLowerCase().includes(searchSubAccountValue.toLowerCase()))
+      .filter(
+        (subAccount) =>
+          subAccount?.name?.toLowerCase().includes(searchSubAccountValue.toLowerCase()) ||
+          searchSubAccountValue.trim() === "",
+      )
       .map(formatSubAccount);
   }, [sender, searchSubAccountValue]);
 
