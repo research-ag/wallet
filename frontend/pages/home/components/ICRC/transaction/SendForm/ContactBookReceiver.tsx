@@ -75,8 +75,8 @@ export default function ContactBookReceiver() {
       <BasicSelect
         onSelect={onSelect}
         options={formattedContacts}
-        initialValue={receiver?.thirdContactSubAccount?.subAccountId}
-        currentValue={receiver?.thirdContactSubAccount?.subAccountId}
+        initialValue={`${receiver.thirdContactSubAccount.contactPrincipal}-${receiver?.thirdContactSubAccount?.subAccountId}`}
+        currentValue={`${receiver.thirdContactSubAccount.contactPrincipal}-${receiver?.thirdContactSubAccount?.subAccountId}`}
         onSearch={onSearchChange}
         onOpenChange={onOpenChange}
         componentWidth="21rem"
@@ -86,7 +86,7 @@ export default function ContactBookReceiver() {
 
   function formatContact(contact: ContactSubAccount) {
     return {
-      value: contact.subAccountId,
+      value: `${contact.contactPrincipal}-${contact.subAccountId}`,
       label: `${contact.contactName} [${contact.subAccountName}]`,
       subLabel:
         contact.subAccountId.length > 20 ? middleTruncation(contact.subAccountId, 10, 10) : contact.subAccountId,
@@ -95,7 +95,9 @@ export default function ContactBookReceiver() {
   }
   function onSelect(option: SelectOption) {
     setSearchSubAccountValue(null);
-    const fullContact = filteredContacts?.find((contact) => contact.subAccountId === option.value);
+    const fullContact = filteredContacts?.find(
+      (contact) => `${contact.contactPrincipal}-${contact.subAccountId}` === option.value,
+    );
     if (fullContact) setReceiverContactAction(fullContact);
   }
   function onSearchChange(searchValue: string) {
