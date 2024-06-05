@@ -17,6 +17,8 @@ const getSizeClassByIconType = (type: IconType): string => {
       return "w-8 h-8";
     case IconTypeEnum.Enum.ALLOWANCE:
       return "w-7 h-7";
+    case IconTypeEnum.Enum.SELECT:
+      return "w-5 h-5";
     default:
       return "w-10 h-10";
   }

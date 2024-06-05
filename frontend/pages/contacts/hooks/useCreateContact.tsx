@@ -1,7 +1,7 @@
 import { Contact, ContactAccount } from "@/@types/contacts";
 import { useState } from "react";
 import { SubAccountError, useContactError } from "@/pages/contacts/contexts/ContactErrorProvider";
-import addAllowanceToSubaccounts, { RequestAccountAllowance } from "@pages/contacts/helpers/addAllowanceToSubaccounts";
+import addAllowanceToSubaccounts from "@pages/contacts/helpers/addAllowanceToSubaccounts";
 import { useAppSelector } from "@redux/Store";
 import { useContact } from "@pages/contacts/contexts/ContactProvider";
 import {
@@ -15,52 +15,28 @@ import {
 import logger from "@common/utils/logger";
 import { validatePrincipal } from "@common/utils/definityIdentity";
 import { useTranslation } from "react-i18next";
-import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
-import { Principal } from "@dfinity/principal";
-import { hexToUint8Array } from "@common/utils/hexadecimal";
+import { db } from "@/database/db";
+import { getAccountIdentifier } from "@common/utils/icrc";
+import contactAccountToAllowanceArgs from "../helpers/mappers";
 
-export const useCreateContact = () => {
+export const useCreateContact = (onClose: () => void) => {
   const { t } = useTranslation();
   const { newContact, setNewContact } = useContact();
-  console.log("newContact", newContact);
   const { setNewContactErrors, setSubAccountError } = useContactError();
-  const assets = useAppSelector((state) => state.asset.list.assets);
   const contacts = useAppSelector((state) => state.contacts.contacts);
   const userPrincipal = useAppSelector((state) => state.auth.userPrincipal);
   const [isAllowancesChecking, setIsAllowancesChecking] = useState<boolean>(false);
   const [isCreating, setIsCreating] = useState(false);
 
-  // --- functions ---
-
   async function includeAllowanceToAccounts(contactAccounts: ContactAccount[]): Promise<ContactAccount[]> {
     try {
-      const accounts = contactAccounts
-        .map((account) => {
-          return isContactAccountValid(account) ? account : null;
-        })
-        .filter((account) => account !== null);
+      const args = contactAccountToAllowanceArgs({
+        contactAccounts,
+        allocatorPrincipal: userPrincipal.toString(),
+        spenderPrincipal: newContact.principal,
+      });
 
-      const requestArgs: RequestAccountAllowance[] = accounts
-        .map((account) => {
-          const currentAsset = assets.find((asset) => asset.tokenSymbol === account?.tokenSymbol);
-
-          if (!currentAsset) {
-            logger.debug("onCheckAccountsAllowances: Asset not found", account?.tokenSymbol);
-            return;
-          }
-
-          return {
-            assetAddress: currentAsset?.address,
-            assetDecimal: currentAsset?.decimal,
-            spenderPrincipal: newContact.principal,
-            allocatorSubaccount: account?.subaccountId,
-            allocatorPrincipal: userPrincipal.toString(),
-            account,
-          };
-        })
-        .filter((item) => Boolean(item)) as RequestAccountAllowance[];
-
-      return await addAllowanceToSubaccounts(requestArgs);
+      return await addAllowanceToSubaccounts(args);
     } catch (error) {
       logger.debug("includeAllowanceToAccounts failed: ", error);
       return newContact.accounts;
@@ -178,29 +154,23 @@ export const useCreateContact = () => {
         accounts: newContact.accounts.filter((account) => account.name !== "" || account.subaccountId !== ""),
       };
 
-      // --- Validation ---
       if (!isContactValidOnCreate(toCreateContact)) throw new Error("Create contact validation failed");
 
-      // --- include allowaces ---
       const newSubAccounts = await includeAllowanceToAccounts(toCreateContact.accounts);
 
-      // --- save contact ---
-      console.log("save new contact", {
-        ...toCreateContact,
-        accounts: newSubAccounts,
-        accountIdentifier: encodeIcrcAccount({
-          owner: Principal.fromText(newContact.principal),
-          subaccount: hexToUint8Array("0x0"),
-        }),
-      });
-
-      // TODO: rxdb types and close on success (is it good?)
-      // await db().addContact({ ...toCreateContact, accounts: newSubAccounts, }, { sync: true });
-      // onClose();
+      await db().addContact(
+        {
+          ...toCreateContact,
+          accountIdentifier: getAccountIdentifier(toCreateContact.principal, 0),
+          accounts: newSubAccounts,
+        },
+        { sync: true },
+      );
     } catch (error) {
       logger.debug("onAddContact failed: ", error);
     } finally {
       setIsCreating(false);
+      onClose();
     }
   }
 
