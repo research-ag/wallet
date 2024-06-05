@@ -139,6 +139,39 @@ const servicesSlice = createSlice({
         return { payload: { service, serviceAsset } };
       },
     },
+    updateServiceAssetAmounts: {
+      reducer(
+        state: ServiceState,
+        {
+          payload,
+        }: PayloadAction<{
+          service: string;
+          serviceAsset: string;
+          credit: string | undefined;
+          deposit: string | undefined;
+        }>,
+      ) {
+        const { service, serviceAsset, credit, deposit } = payload;
+
+        const auxServices: Service[] = [];
+        state.services.map((srv) => {
+          if (srv.principal === service) {
+            const auxAssetService = srv.assets.map((asst) => {
+              if (asst.principal === serviceAsset) {
+                return { ...asst, credit: credit || asst.credit, balance: deposit || asst.balance };
+              } else return asst;
+            });
+
+            auxServices.push({ ...srv, assets: auxAssetService });
+          } else {
+            auxServices.push(srv);
+          }
+        });
+      },
+      prepare(service: string, serviceAsset: string, credit: string | undefined, deposit: string | undefined) {
+        return { payload: { service, serviceAsset, credit, deposit } };
+      },
+    },
     setServiceAssets(state, action: PayloadAction<ServiceAsset[]>) {
       state.serviceAssets = action.payload;
     },
@@ -169,6 +202,7 @@ export const {
   editServiceName,
   addServiceAsset,
   removeServiceAsset,
+  updateServiceAssetAmounts,
   setServiceAssets,
 } = servicesSlice.actions;
 export default servicesSlice.reducer;

@@ -1,5 +1,6 @@
 import { AssetSymbolEnum, SpecialTxTypeEnum } from "@/common/const";
 import { getAddress, shortAddress } from "@common/utils/icrc";
+import { middleTruncation } from "@common/utils/strings";
 import { AccountHook } from "@pages/hooks/accountHook";
 import { useAppSelector } from "@redux/Store";
 import { Transaction } from "@redux/models/AccountModels";
@@ -133,26 +134,30 @@ const CodeElement = ({ tx }: CodeElementProps) => {
           {hasSub &&
             (subName.trim() === "" ? (
               <p className={`${accId} text-left break-words max-w-[20.5rem]`}>
-                {`${hasSubName ? subName + " -" : ""} ${
+                {`${hasSubName ? subName + " -" : ""} ${middleTruncation(
                   isICPWithSub
                     ? ICPSubaccounts.find((sub) => sub.legacy === (isTo ? tx.to : tx.from))?.sub_account_id || "0x0"
                     : isTo
                     ? tx.toSub || "0"
-                    : tx.fromSub || "0"
-                } `}
+                    : tx.fromSub || "0",
+                  6,
+                  4,
+                )} `}
               </p>
             ) : (
               <p
                 className={`${accId} text-left break-words max-w-[20.5rem]`}
                 data-toggle="popover"
                 data-trigger="hover"
-                title={
+                title={middleTruncation(
                   isICPWithSub
                     ? ICPSubaccounts.find((sub) => sub.legacy === (isTo ? tx.to : tx.from))?.sub_account_id || "0x0"
                     : isTo
                     ? tx.toSub || "0"
-                    : tx.fromSub || "0"
-                }
+                    : tx.fromSub || "0",
+                  6,
+                  4,
+                )}
               >
                 {subName}
               </p>

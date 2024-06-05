@@ -118,7 +118,11 @@ export default function ServiceAssetsList({ service }: ServiceAssetsListProps) {
                         asst.minDeposit,
                         Number(asst.decimal || "8"),
                         Number(asst.shortDecimal || "8"),
-                      )} | ${asst.depositFee}`}</p>
+                      )} | ${toFullDecimal(
+                        asst.depositFee,
+                        Number(asst.decimal || "8"),
+                        Number(asst.shortDecimal || "8"),
+                      )}`}</p>
                     </div>
                   </td>
                   <td className="py-2 border-b border-BorderColorTwoLight dark:border-BorderColorTwo">
@@ -259,8 +263,7 @@ export default function ServiceAssetsList({ service }: ServiceAssetsListProps) {
   async function onNotify(asstPrincipal: string, asst: ServiceAsset) {
     if (!notifyLoading) {
       setNotifyLoading(true);
-      const resNotify = (await notifyAsset(service.principal, asstPrincipal)) as any;
-      console.log("resNotify", resNotify);
+      const resNotify = (await notifyAsset(service.principal, asstPrincipal, true)) as any;
       setNotifyRes(resNotify);
       setAssetToNotify(asst);
       setNotifyLoading(false);

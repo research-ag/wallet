@@ -8,8 +8,8 @@ import { NotifyResponse } from "@candid/icrcx/service.did";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { Asset } from "@redux/models/AccountModels";
 import { ServiceAsset } from "@redux/models/ServiceModels";
-import { notifyServiceAsset } from "@redux/services/ServiceActions";
-import { addServiceAsset, removeServiceAsset } from "@redux/services/ServiceReducer";
+import { getCreditBalance, notifyServiceAsset } from "@redux/services/ServiceActions";
+import { addServiceAsset, removeServiceAsset, updateServiceAssetAmounts } from "@redux/services/ServiceReducer";
 import {
   setReceiverOptionAction,
   setReceiverServiceAction,
@@ -39,8 +39,14 @@ export default function useServiceAsset() {
     dispatch(removeServiceAsset(servicePrin, asset));
   };
 
-  const notifyAsset = async (servicePrincipal: string, assetPrincipal: string) => {
-    return await notifyServiceAsset(userAgent, servicePrincipal, assetPrincipal);
+  const notifyAsset = async (servicePrincipal: string, assetPrincipal: string, update: boolean) => {
+    const res = await notifyServiceAsset(userAgent, servicePrincipal, assetPrincipal);
+    const isOk = (res as any).Ok ? true : false;
+    if (update && isOk) {
+      const data = await getCreditBalance(userAgent, servicePrincipal, assetPrincipal);
+      dispatch(updateServiceAssetAmounts(servicePrincipal, assetPrincipal, data.credit, data.balance));
+    }
+    return res;
   };
 
   const onDeposit = (selectedAsset: Asset, service: ServiceSubAccount) => {

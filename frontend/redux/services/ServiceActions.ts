@@ -33,7 +33,7 @@ export const getServicesData = async (myAgent: HttpAgent, principal: string) => 
               const asset = myAssets.find((myAst) => myAst.address === ast.toText());
               const snsAsset = snsAssets.find((myAst) => myAst.address === ast.toText());
               const assetData = assetsData.find((myAst) => myAst.principal === ast.toText());
-              const credit = credits.find((crd) => crd[0] === ast);
+              const credit = credits.find((crd) => crd[0].toText() === ast.toText());
 
               const serviceAsset: ServiceAsset = {
                 tokenSymbol: "",
@@ -52,6 +52,8 @@ export const getServicesData = async (myAgent: HttpAgent, principal: string) => 
               };
 
               const balance = (await serviceActor.icrcX_trackedDeposit(ast)) as any;
+              console.log("balance", balance);
+
               serviceAsset.balance = (balance.Ok as any) ? balance.Ok.toString() : "";
               if (assetData) {
                 serviceAsset.tokenSymbol = assetData.tokenSymbol;
@@ -211,5 +213,24 @@ export const notifyServiceAsset = async (myAgent: HttpAgent, servicePrincipal: s
   } catch (e) {
     console.error("Notify Err:", e);
     return { Err: { CallLedgerError: "Action Error" } };
+  }
+};
+
+export const getCreditBalance = async (
+  myAgent: HttpAgent,
+  servicePrincipal: string,
+  assetPrincipal: string,
+): Promise<{ credit: string | undefined; balance: string | undefined }> => {
+  try {
+    const serviceActor = Actor.createActor<IcrcxActor>(IcrcxIDLFactory, {
+      agent: myAgent,
+      canisterId: servicePrincipal,
+    });
+    const credit = await serviceActor.icrcX_credit(Principal.fromText(assetPrincipal));
+    const balance = (await serviceActor.icrcX_trackedDeposit(Principal.fromText(assetPrincipal))) as any;
+    return { credit: credit.toString(), balance: balance.Ok ? (balance.Ok.toString() as string) : undefined };
+  } catch (e) {
+    console.error("Notify Err:", e);
+    return { credit: undefined, balance: undefined };
   }
 };

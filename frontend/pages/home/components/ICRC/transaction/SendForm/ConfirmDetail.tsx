@@ -89,7 +89,7 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
       }
     }
     if (receiver.serviceSubAccount.servicePrincipal) {
-      const bigintMinAmount = BigInt(sender.serviceSubAccount.minDeposit);
+      const bigintMinAmount = BigInt(receiver.serviceSubAccount.minDeposit);
       if (bigintMinAmount > bigintAmount) {
         setErrorAction(TransactionValidationErrorsEnum.Values["error.lower.than.minimum.deposit"]);
         return false;
@@ -140,7 +140,7 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
     }
 
     if (receiver.serviceSubAccount.servicePrincipal) {
-      const bigintMinAmount = BigInt(sender.serviceSubAccount.minDeposit);
+      const bigintMinAmount = BigInt(receiver.serviceSubAccount.minDeposit);
       if (bigintMinAmount > bigintAmount) {
         setErrorAction(TransactionValidationErrorsEnum.Values["error.lower.than.minimum.deposit"]);
         return false;
@@ -203,7 +203,8 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
                 amount: toHoleBigInt(amount, Number(decimal)),
                 to_subaccount: [hexToUint8Array(receiverSubAccount)],
               });
-            } else
+            } else {
+              console.log("ICRC1Tranfer");
               await ICRC1Tranfer({
                 canisterId: assetAddress,
                 agent: userAgent,
@@ -217,6 +218,7 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
                 memo: [],
                 created_at_time: [],
               });
+            }
           }
           setSendingStatusAction(SendingStatusEnum.Values.done);
           setEndTxTime(new Date());
