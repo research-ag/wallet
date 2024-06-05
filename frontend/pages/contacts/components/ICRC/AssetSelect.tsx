@@ -65,6 +65,8 @@ const Content = (props: { options: Asset[]; selectedOption: Asset; onSelectAsset
 
 interface AssetSelectProps {
   onAssetChange: (tokenSymbol: string) => void;
+  error: boolean;
+  clearErrors: () => void;
 }
 
 export default function AssetSelect(props: AssetSelectProps) {
@@ -87,7 +89,7 @@ export default function AssetSelect(props: AssetSelectProps) {
 
   return (
     <DropdownMenu.Root open={open} onOpenChange={setOpen}>
-      <DropdownMenu.Trigger className="border rounded-md border-SvgColorLight">
+      <DropdownMenu.Trigger className={triggerStyles(props.error)}>
         <Trigger open={open} options={assets} selectedOption={selectedOption} onClick={() => setOpen(!open)} />
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>
@@ -99,8 +101,12 @@ export default function AssetSelect(props: AssetSelectProps) {
   );
 
   function onSelectAsset(asset: Asset) {
-    setSelectedOption(asset);
     props.onAssetChange(asset.tokenSymbol);
+    props.clearErrors();
+    setSelectedOption(asset);
     setOpen(false);
   }
 }
+
+const triggerStyles = (error: boolean) =>
+  clsx("border rounded-md", error ? "border-slate-color-error" : "border-BorderColorLight dark:border-BorderColor");

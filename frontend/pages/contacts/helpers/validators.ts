@@ -18,9 +18,14 @@ export const isContactSubaccountIdValid = (subaccountId: string): boolean => {
   return subaccountId.trim() !== "" && checkHexString(subaccountId);
 };
 
-// TODO: replace Contact from types instead of models
 export const isDuplicatedPrincipal = (principal: string, contacts: Contact[]) => {
   return contacts.some((contact) => contact.principal === principal);
+};
+
+export const isDuplicatedSubAccount = (account: ContactAccount, subAccounts: ContactAccount[]) => {
+  return subAccounts.some(
+    (subAccount) => subAccount.subaccountId === account.subaccountId && subAccount.tokenSymbol === account.tokenSymbol,
+  );
 };
 
 export const isContactAccountValid = (account: ContactAccount): boolean => {

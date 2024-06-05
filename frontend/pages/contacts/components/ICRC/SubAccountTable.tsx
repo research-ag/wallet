@@ -1,25 +1,16 @@
 import { ReactComponent as SortIcon } from "@assets/svg/files/sort.svg";
-import { Contact } from "@/@types/contacts";
-// import { Asset } from "@redux/models/AccountModels";
+import { Contact, ContactAccount } from "@/@types/contacts";
 import { useAppSelector } from "@redux/Store";
-// import { useState } from "react";
-// import { useTranslation } from "react-i18next";
-// import { IconTypeEnum } from "@common/const";
-// import { getAssetIcon } from "@common/utils/icons";
-// import { shortAddress } from "@common/utils/icrc";
-// import { AvatarEmpty } from "@components/avatar";
-// import Avatar from "@components/avatar/BasicAvatar";
-// import { CustomCopy } from "@components/tooltip";
-// import { assetMutateInitialState } from "@pages/home/hooks/useAssetMutate";
-// import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import logger from "@common/utils/logger";
 import AddContactAccountRow from "./AddContactAccountRow";
 import DisplayContactAccountRow from "../DisplayContactAccountRow";
+import { useState } from "react";
 
 export default function SubAccountTable({ contact }: { contact: Contact }) {
   // const { t } = useTranslation();
-  // const [newAsset, setNewAsset] = useState<Asset | null>(null);
   const assets = useAppSelector((state) => state.asset.list.assets);
+  const [errors, setErrors] = useState({ name: false });
+  const [updateAccount, setUpdateAccount] = useState<ContactAccount | null>(null);
 
   return (
     <tr className="bg-SecondaryColorLight dark:bg-SecondaryColor">
@@ -67,6 +58,10 @@ export default function SubAccountTable({ contact }: { contact: Contact }) {
                   currentAccount={currentAccount}
                   currentAsset={currentAsset}
                   index={index}
+                  setUpdateAccount={setUpdateAccount}
+                  updateAccount={updateAccount}
+                  errors={errors}
+                  setErrors={setErrors}
                 />
               );
             })}

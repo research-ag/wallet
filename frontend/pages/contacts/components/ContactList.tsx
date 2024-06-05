@@ -239,34 +239,6 @@ export default function ContactList({ allowanceOnly, assetFilter, contactSearchK
     if (contactDropdown && !isSelectedDifferent) setContactDropdown(null);
     else setContactDropdown(contact);
   }
-
-  // ---------------------- Sub Account Edit ----------------------
-  // function changeSubIdx(e: string) {
-  //   if (checkHexString(e)) {
-  //     setSubaccEdited((prev) => {
-  //       return { ...prev, subaccount_index: e.trim(), sub_account_id: `0x${e.trim()}` };
-  //     });
-  //     setSubaccEditedErr((prev) => {
-  //       return {
-  //         name: prev.name,
-  //         subaccount_index: false,
-  //       };
-  //     });
-  //   }
-  // }
-
-  // function changeName(e: string) {
-  //   setSubaccEdited((prev) => {
-  //     const newSubAccount = { ...prev, name: e };
-  //     return newSubAccount;
-  //   });
-  //   setSubaccEditedErr((prev) => {
-  //     return {
-  //       name: false,
-  //       subaccount_index: prev.subaccount_index,
-  //     };
-  //   });
-  // }
 }
 
 const getBodyRowStyles = (isContactExpanded: boolean, isContactEditable: boolean) => {
@@ -288,15 +260,15 @@ const getContactColor = (index: number) => {
 
 const data: Contact[] = [
   {
-    name: "Leonard",
-    principal: "ce6m3-3hfxb-sgpbh-xapbw-orgea-yigrb-brph5-zwlbb-cloez-dqe2i-5ae",
+    name: "Alex",
+    principal: "r4jkc-ykktj-k5y7l-fqule-ypybt-h2m5n-nzvlk-xov2a-ipgn7-wb5hx-yae",
     accountIdentifier: "a922b4a0423f4f0bf08f0bc6966e640288588c3427f29fb9b67f580fbdbe091e",
     accounts: [
       {
         tokenSymbol: "ICP",
         name: "main",
         subaccount: "0",
-        subaccountId: "0x0",
+        subaccountId: "0x3",
         allowance: {
           amount: "100000000",
           expiration: "",

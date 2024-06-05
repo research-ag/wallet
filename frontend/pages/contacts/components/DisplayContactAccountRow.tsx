@@ -1,3 +1,5 @@
+import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
+//
 import { IconTypeEnum } from "@common/const";
 import { getAssetIcon } from "@common/utils/icons";
 import { shortAddress } from "@common/utils/icrc";
@@ -9,15 +11,25 @@ import { Asset } from "@redux/models/AccountModels";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
 import { hexToUint8Array } from "@common/utils/hexadecimal";
+import { Dispatch, SetStateAction } from "react";
+import { CustomInput } from "@components/input";
+import { isContactAccountNameValid } from "../helpers/validators";
+import { CheckIcon } from "@radix-ui/react-icons";
 
 interface DisplayContactAccountRowProps {
   index: number;
   currentAccount: ContactAccount;
   currentAsset: Asset;
   contact: Contact;
+  updateAccount: ContactAccount | null;
+  setUpdateAccount: Dispatch<SetStateAction<ContactAccount | null>>;
+  errors: { name: boolean };
+  setErrors: Dispatch<SetStateAction<{ name: boolean }>>;
 }
 
 export default function DisplayContactAccountRow(props: DisplayContactAccountRowProps) {
+  const isCurrentUpdate = props.updateAccount?.subaccountId === props.currentAccount.subaccountId;
+
   return (
     <tr key={props.index} className="h-[2.8rem]">
       <td className="h-full w-[5%]">
@@ -37,10 +49,30 @@ export default function DisplayContactAccountRow(props: DisplayContactAccountRow
       </td>
 
       <td className="w-[20%]">
-        <div className="flex items-center">
-          <AvatarEmpty title={props.currentAccount.name} />
-          <span className="ml-2">{props.currentAccount.name}</span>
-        </div>
+        {isCurrentUpdate ? (
+          <div className="flex items-center gap-1 pr-1">
+            <CustomInput
+              placeholder="Subaccount name"
+              onChange={onAccountNameChange}
+              className="h-[2.2rem] "
+              border={props.errors.name ? "error" : undefined}
+            />
+
+            <CheckIcon
+              onClick={onSaveNewName}
+              className="w-6 h-6 opacity-50 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
+            />
+            <CloseIcon
+              onClick={() => props.setUpdateAccount(null)}
+              className="w-6 h-6 opacity-50 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
+            />
+          </div>
+        ) : (
+          <div className="flex items-center" onDoubleClick={onAccountNameUpdate}>
+            <AvatarEmpty title={props.currentAccount.name} />
+            <span className="ml-2">{props.currentAccount.name}</span>
+          </div>
+        )}
       </td>
 
       <td className="w-[20%]">
@@ -74,5 +106,35 @@ export default function DisplayContactAccountRow(props: DisplayContactAccountRow
       owner: Principal.fromText(principal),
       subaccount: hexToUint8Array(subaccount || "0x0"),
     });
+  }
+
+  function onAccountNameUpdate() {
+    props.setUpdateAccount({ ...props.currentAccount });
+  }
+
+  function onAccountNameChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const value = event.target.value;
+    props.setErrors({ ...props.errors, name: false });
+
+    if (!isContactAccountNameValid(value)) {
+      props.setErrors({ ...props.errors, name: true });
+      return;
+    }
+
+    props.setUpdateAccount((prev) => {
+      if (!prev)
+        return {
+          ...props.currentAccount,
+          name: value,
+        };
+
+      return { ...prev, name: value };
+    });
+  }
+
+  function onSaveNewName() {
+    // TODO: call the database to update the name
+
+    props.setUpdateAccount(null);
   }
 }

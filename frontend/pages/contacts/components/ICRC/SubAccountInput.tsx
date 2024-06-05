@@ -2,21 +2,23 @@ import { ContactAccount } from "@/@types/contacts";
 import { CustomButton } from "@components/button";
 import { CustomInput } from "@components/input";
 import { asciiHex } from "@pages/contacts/constants/asciiHex";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 
 interface SubAccountInputProps {
   newAccount: ContactAccount | null;
   setNewAccount: Dispatch<SetStateAction<ContactAccount | null>>;
+  isHexadecimal: boolean;
+  setIsHexadecimal: Dispatch<SetStateAction<boolean>>;
+  error: boolean;
+  clearErrors: () => void;
 }
 
 export default function SubAccountInput(props: SubAccountInputProps) {
-  const [isHexadecimal, setIsHexadecimal] = useState<boolean>(false);
-
   return (
     <div className="relative flex flex-row items-center w-full h-10 gap-1 pr-2">
       <CustomInput
         intent={"primary"}
-        // border={subaccEditedErr.subaccount_index ? "error" : "selected"}
+        border={props.error ? "error" : undefined}
         sizeComp={"xLarge"}
         sizeInput="small"
         inputClass="text-center"
@@ -25,13 +27,13 @@ export default function SubAccountInput(props: SubAccountInputProps) {
         onKeyDown={onKeyDownIndex}
       />
       <CustomButton size={"xSmall"} onClick={onSubaccountTypeChange}>
-        <p className="text-sm">{isHexadecimal ? "Principal" : "Hex"}</p>
+        <p className="text-sm">{props.isHexadecimal ? "Principal" : "Hex"}</p>
       </CustomButton>
     </div>
   );
 
   function onKeyDownIndex(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (!isHexadecimal) {
+    if (!props.isHexadecimal) {
       if (!asciiHex.includes(e.key)) {
         e.preventDefault();
       }
@@ -45,6 +47,7 @@ export default function SubAccountInput(props: SubAccountInputProps) {
 
   function onSubAccountChange(e: React.ChangeEvent<HTMLInputElement>) {
     // TODO: validate depending on isHexadecimal
+    props.clearErrors();
     const value = e.target.value;
 
     props.setNewAccount((prev) => {
@@ -58,7 +61,7 @@ export default function SubAccountInput(props: SubAccountInputProps) {
       };
     });
 
-    if (isHexadecimal) {
+    if (props.isHexadecimal) {
       // TODO: validate if hexadecimal is valid
     } else {
       // TODO: validate if principal is valid
@@ -66,6 +69,6 @@ export default function SubAccountInput(props: SubAccountInputProps) {
   }
 
   function onSubaccountTypeChange() {
-    setIsHexadecimal((prev) => !prev);
+    props.setIsHexadecimal((prev) => !prev);
   }
 }
