@@ -21,7 +21,8 @@ export default function AddContact({ onClose }: AddContactProps) {
   const { newContact, onAddContact, onCheckAccountsAllowances, isAllowancesChecking, isCreating } =
     useCreateContact(onClose);
 
-  // const isAssetICRC2Supported = false; TODO: if ICRC-2 is not supported what to do?
+  // const isAssetICRC2Supported = false;
+  // TODO: if ICRC-2 is not supported what to do?
   const enableAllowanceTest = newContact.accounts.length > 0;
 
   return (

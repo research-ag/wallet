@@ -7,9 +7,9 @@ import { CustomButton } from "@components/button";
 import { useTranslation } from "react-i18next";
 import logger from "@common/utils/logger";
 import { LoadingLoader } from "@components/loader";
-import { Contact } from "@/@types/contacts";
+import { Contact, ContactAccount } from "@/@types/contacts";
 
-export default function DeleteContactModal({ contact }: { contact: Contact }) {
+export default function DeleteContactAccountModal({ contact, account }: { contact: Contact; account: ContactAccount }) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [isLoading, setLoading] = useState(false);
@@ -36,16 +36,8 @@ export default function DeleteContactModal({ contact }: { contact: Contact }) {
           </div>
           <div className="flex flex-col items-start justify-start w-full px-8">
             <p className="font-light text-left">
-              Are you sure you want to delete <span className="font-semibold">{contact.name}</span>?
+              Are you sure you want to delete <span className="font-semibold">{account.name}</span> from {contact.name}?
             </p>
-          </div>
-
-          <div className="bg-SecondaryColorLight dark:bg-SecondaryColor px-[1rem] w-full h-[4rem] flex items-center">
-            <div className="">
-              <p>
-                {t("total.subacc")} : {contact.accounts.length}
-              </p>
-            </div>
           </div>
 
           <div className="flex flex-row items-center justify-end w-full px-8">
@@ -61,9 +53,9 @@ export default function DeleteContactModal({ contact }: { contact: Contact }) {
 
   async function handleConfirmButton() {
     try {
-      // TODO: delete contact with accounts
       setLoading(true);
-      // await deleteContact(deleteObject.principal);
+      // TODO: update contact removing the account
+      console.log("Deleting contact account", account);
     } catch (error) {
       logger.debug(error);
     } finally {

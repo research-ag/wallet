@@ -18,6 +18,8 @@ export default function AddSubAccountOnCreate({ contactAssetSelected }: AddSubAc
   const { t } = useTranslation();
   const { subAccountError, setSubAccountError } = useContactError();
 
+  // TODO: fix the issue with the subaccount id format 0 -> 0x0
+
   return (
     <div className="flex flex-col items-start justify-start w-full h-full gap-4 p-3 bg-SecondaryColorLight dark:bg-SecondaryColor">
       <p className="text-md">{`${t("sub-acc")} (${newContact.accounts.length})`}</p>

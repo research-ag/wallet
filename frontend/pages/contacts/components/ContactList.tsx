@@ -15,8 +15,9 @@ import logger from "@/common/utils/logger";
 import { getInitialFromName } from "@common/utils/strings";
 import { shortAddress } from "@common/utils/icrc";
 import { CustomCopy } from "@components/tooltip";
-import { ChevronDownIcon, ChevronLeftIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
+import { ChevronDownIcon, ChevronLeftIcon } from "@radix-ui/react-icons";
 import SubAccountTable from "./ICRC/SubAccountTable";
+import ContactAction from "./ICRC/ContactAction";
 
 interface ContactListProps {
   contactSearchKey: string;
@@ -139,11 +140,7 @@ export default function ContactList({ allowanceOnly, assetFilter, contactSearchK
 
                   <td className="py-2">
                     <div className="flex flex-row items-start justify-center w-full gap-4">
-                      {/* <DeleteContactModal contact={contact} /> */}
-                      <DotsHorizontalIcon
-                        className="w-5 h-5 opacity-50 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
-                        onClick={onContactAction}
-                      />
+                      <ContactAction contact={contact} />
                     </div>
                   </td>
 
@@ -195,31 +192,6 @@ export default function ContactList({ allowanceOnly, assetFilter, contactSearchK
     }
   }
 
-  // function getFilteredContacts() {
-  // const searchTerm = contactSearchKey.trim().toLowerCase();
-
-  // const filtedContacts = contacts.filter((currentContact) => {
-  //   const nameMatch = currentContact.name.toLowerCase().includes(searchTerm);
-  //   const principalMatch = currentContact.principal.toLowerCase().includes(searchTerm);
-
-  //   const subAccountNameMatch = currentContact.assets.some((asset) => {
-  //     return asset.subaccounts.some((subaccount) => {
-  //       return subaccount.name.toLowerCase().includes(searchTerm);
-  //     });
-  //   });
-
-  //   const assetFilterMatch =
-  //     assetFilter.length === 0 ||
-  //     currentContact.assets.some((asset) => {
-  //       return assetFilter.includes(asset.symbol);
-  //     });
-
-  //   return nameMatch || principalMatch || subAccountNameMatch || assetFilterMatch;
-  // });
-
-  // return filtedContacts;
-  // }
-
   function onCancelContactEdit() {
     setContactEdited(null);
     setContactNameInvalid(false);
@@ -228,10 +200,6 @@ export default function ContactList({ allowanceOnly, assetFilter, contactSearchK
   function onEditContact(contact: Contact) {
     setContactEdited(contact);
     setContactNameInvalid(false);
-  }
-
-  function onContactAction() {
-    console.log("Contact Action");
   }
 
   function onOpenDropdown(contact: Contact) {

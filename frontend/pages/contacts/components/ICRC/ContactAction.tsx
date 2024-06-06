@@ -1,14 +1,13 @@
-import { ContactAccount, Contact } from "@/@types/contacts";
-import { DotsHorizontalIcon } from "@radix-ui/react-icons";
+import { Contact } from "@/@types/contacts";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import DeleteContactAccountModal from "./DeleteContactAccountModal";
+import { DotsHorizontalIcon } from "@radix-ui/react-icons";
+import DeleteContactModal from "./DeleteContactModal";
 
-interface ComponentProps {
+interface ContactActionProps {
   contact: Contact;
-  account: ContactAccount;
 }
 
-export default function ContactAccountAction(props: ComponentProps) {
+export default function ContactAction(props: ContactActionProps) {
   return (
     <div className="grid w-full place-content-center">
       <DropdownMenu.Root>
@@ -19,8 +18,8 @@ export default function ContactAccountAction(props: ComponentProps) {
           />
         </DropdownMenu.Trigger>
         <DropdownMenu.Portal>
-          <DropdownMenu.Content className="flex flex-col bg-red-200 rounded-md">
-            <DeleteContactAccountModal contact={props.contact} account={props.account} />
+          <DropdownMenu.Content className="flex flex-col p-1 rounded-md dark:bg-level-1-color bg-secondary-color-2-light">
+            <DeleteContactModal contact={props.contact} />
           </DropdownMenu.Content>
         </DropdownMenu.Portal>
       </DropdownMenu.Root>
