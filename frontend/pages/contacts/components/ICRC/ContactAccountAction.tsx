@@ -19,7 +19,7 @@ export default function ContactAccountAction(props: ComponentProps) {
           />
         </DropdownMenu.Trigger>
         <DropdownMenu.Portal>
-          <DropdownMenu.Content className="flex flex-col bg-red-200 rounded-md">
+          <DropdownMenu.Content className="flex flex-col p-1 rounded-md dark:bg-level-1-color bg-secondary-color-2-light">
             <DeleteContactAccountModal contact={props.contact} account={props.account} />
           </DropdownMenu.Content>
         </DropdownMenu.Portal>

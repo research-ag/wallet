@@ -25,6 +25,7 @@ import { useAppSelector } from "@redux/Store";
 import addAllowanceToSubaccounts from "@pages/contacts/helpers/addAllowanceToSubaccounts";
 import { validatePrincipal } from "@common/utils/definityIdentity";
 import getAccountFromPrincipal from "@pages/contacts/helpers/getAccountFromPrincipal";
+import { db } from "@/database/db";
 
 interface AddContactAccountRowProps {
   contact: Contact;
@@ -80,7 +81,7 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
           </div>
           <div className=" w-[26.1%]">
             <div className="flex flex-row items-center w-full gap-2 px-2 opacity-70">
-              <p>{shortAddress(getSubAccount(props.contact.principal, newAccount.subaccountId), 14, 14)}</p>
+              <p>{shortAddress(getSubAccount(props.contact.principal, newAccount.subaccountId), 10, 10)}</p>
               <CustomCopy
                 size={"xSmall"}
                 className="p-0"
@@ -243,7 +244,6 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
 
     if (isAccountDuplicated(toStoreAccount)) {
       setIsLoading(false);
-      console.log("Account already exists");
       return;
     }
 
@@ -254,7 +254,7 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
     });
 
     const withAllowances = await addAllowanceToSubaccounts(allowanceArgs);
-    // TODO: do not include the variable accounts returned from the function
+    // TODO: do not include the variable "accounts" returned from the function
 
     setNewAccount((prev) => {
       if (prev) return { ...prev, ...withAllowances[0] };
@@ -271,7 +271,6 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
 
   async function onSaveSubAccount() {
     try {
-      console.log("------------------------- onSaveSubAccount -------------------------");
       setIsLoading(true);
 
       // --- validate ---
@@ -285,8 +284,6 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
         setIsLoading(false);
         return;
       }
-
-      // TODO: also convert the principal to hex
 
       const toStoreAccount: ContactAccount = {
         ...newAccount,
@@ -302,7 +299,6 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
 
       if (isAccountDuplicated(toStoreAccount)) {
         setIsLoading(false);
-        console.log("Account already exists");
         return;
       }
 
@@ -323,9 +319,9 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
 
       // --- save contact ---
 
-      console.log("update contact", updatedContact);
-
+      await db().updateContact(props.contact.principal, updatedContact, { sync: true });
       setIsLoading(false);
+
       setNewAccount(null);
     } catch (error) {
       logger.debug("onSaveSubAccount: error", error);

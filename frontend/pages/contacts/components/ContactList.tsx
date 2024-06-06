@@ -19,6 +19,8 @@ import { ChevronDownIcon, ChevronLeftIcon } from "@radix-ui/react-icons";
 import SubAccountTable from "./ICRC/SubAccountTable";
 import ContactAction from "./ICRC/ContactAction";
 import { useAppSelector } from "@redux/Store";
+import { isContactNameValid } from "../helpers/validators";
+import { db } from "@/database/db";
 
 interface ContactListProps {
   contactSearchKey: string;
@@ -59,7 +61,7 @@ export default function ContactList({ allowanceOnly, assetFilter, contactSearchK
           {contacts.map((contact, index) => {
             const isContactExpanded = contactDropdown?.principal === contact.principal;
             const isContactEditable = contactEdited?.principal === contact.principal;
-            const hasContactAllowance = contact.accounts.some((account) => account.allowance);
+            const hasContactAllowance = contact.accounts.some((account) => account.allowance?.amount);
 
             // --- filters ---
             if (allowanceOnly && !hasContactAllowance) return null;
@@ -147,12 +149,15 @@ export default function ContactList({ allowanceOnly, assetFilter, contactSearchK
                   </td>
 
                   <td className="p-2">
-                    <div className="flex items-center justify-center px-2.5 py-1 rounded-md cursor-pointer dark:bg-gray-color-2 bg-gray-color-7">
+                    <div
+                      className="flex items-center justify-center px-2.5 py-1 rounded-md cursor-pointer dark:bg-gray-color-2 bg-gray-color-7"
+                      onClick={() => onOpenDropdown(contact)}
+                    >
                       <span className="text-md">{contact.accounts.length}</span>
                       {isContactExpanded ? (
-                        <ChevronDownIcon className="w-4 h-4 ml-1" onClick={() => onOpenDropdown(contact)} />
+                        <ChevronDownIcon className="w-4 h-4 ml-1" />
                       ) : (
-                        <ChevronLeftIcon className="w-4 h-4 ml-1" onClick={() => onOpenDropdown(contact)} />
+                        <ChevronLeftIcon className="w-4 h-4 ml-1" />
                       )}
                     </div>
                   </td>
@@ -172,23 +177,20 @@ export default function ContactList({ allowanceOnly, assetFilter, contactSearchK
     });
   }
 
-  function onSaveContact() {
-    if (!contactEdited) return;
-    // TODO: validate name which is the only editable field
-    const isNameInValid = contactEdited.name.trim() === "";
-    setContactNameInvalid(isNameInValid);
-    if (isNameInValid) return;
-
+  async function onSaveContact() {
     try {
-      // const accountIdentifier = AccountIdentifier.fromPrincipal({
-      //   principal: Principal.fromText(contactEdited.principal),
-      // }).toHex();
-      // const updatedContact = { ...contactEdited };
-      // updateContact(updatedContact, contact.principal);
+      if (!contactEdited) return;
+      setContactNameInvalid(false);
+
+      if (!isContactNameValid(contactEdited.name)) {
+        setContactNameInvalid(true);
+        return;
+      }
+
+      await db().updateContact(contactEdited.principal, contactEdited, { sync: true });
+      setContactEdited(null);
     } catch (error) {
       logger.debug("Error saving contact", error);
-    } finally {
-      setContactEdited(null);
     }
   }
 

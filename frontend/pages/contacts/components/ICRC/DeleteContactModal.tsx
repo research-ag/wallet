@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import logger from "@common/utils/logger";
 import { LoadingLoader } from "@components/loader";
 import { Contact } from "@/@types/contacts";
+import { db } from "@/database/db";
 
 export default function DeleteContactModal({ contact }: { contact: Contact }) {
   const { t } = useTranslation();
@@ -50,7 +51,7 @@ export default function DeleteContactModal({ contact }: { contact: Contact }) {
 
           <div className="flex flex-row items-center justify-end w-full px-8">
             {isLoading && <LoadingLoader className="mr-2" />}
-            <CustomButton className="min-w-[5rem]" onClick={handleConfirmButton} size={"small"}>
+            <CustomButton className="min-w-[5rem]" onClick={handleConfirmButton} size={"small"} disabled={isLoading}>
               <p>{t("confirm")}</p>
             </CustomButton>
           </div>
@@ -61,14 +62,13 @@ export default function DeleteContactModal({ contact }: { contact: Contact }) {
 
   async function handleConfirmButton() {
     try {
-      // TODO: delete contact with accounts
       setLoading(true);
-      // await deleteContact(deleteObject.principal);
+      await db().deleteContact(contact.principal, { sync: true });
     } catch (error) {
       logger.debug(error);
     } finally {
-      setLoading(false);
       setOpen(false);
+      setLoading(false);
     }
   }
 }

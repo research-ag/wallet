@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import logger from "@common/utils/logger";
 import { LoadingLoader } from "@components/loader";
 import { Contact, ContactAccount } from "@/@types/contacts";
+import { db } from "@/database/db";
 
 export default function DeleteContactAccountModal({ contact, account }: { contact: Contact; account: ContactAccount }) {
   const { t } = useTranslation();
@@ -54,8 +55,17 @@ export default function DeleteContactAccountModal({ contact, account }: { contac
   async function handleConfirmButton() {
     try {
       setLoading(true);
-      // TODO: update contact removing the account
-      console.log("Deleting contact account", account);
+
+      const updatedContact = {
+        ...contact,
+        accounts: contact.accounts.filter((acc) => {
+          const isNotSameAccountId = acc.subaccountId !== account.subaccountId;
+          const isNotSameTokenSymbol = acc.tokenSymbol !== account.tokenSymbol;
+          return isNotSameAccountId && isNotSameTokenSymbol;
+        }),
+      };
+
+      await db().updateContact(contact.principal, updatedContact, { sync: true });
     } catch (error) {
       logger.debug(error);
     } finally {

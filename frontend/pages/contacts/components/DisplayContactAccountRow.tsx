@@ -15,6 +15,8 @@ import { Dispatch, SetStateAction } from "react";
 import { CustomInput } from "@components/input";
 import { isContactAccountNameValid } from "../helpers/validators";
 import { CheckIcon } from "@radix-ui/react-icons";
+import logger from "@common/utils/logger";
+import { db } from "@/database/db";
 
 interface DisplayContactAccountRowProps {
   index: number;
@@ -86,7 +88,7 @@ export default function DisplayContactAccountRow(props: DisplayContactAccountRow
       <td className="w-[20%]">
         <div className="flex items-center w-full px-2">
           <p className="mr-2">
-            {shortAddress(getSubAccount(props.contact.principal, props.currentAccount.subaccountId), 14, 14)}
+            {shortAddress(getSubAccount(props.contact.principal, props.currentAccount.subaccountId), 10, 10)}
           </p>
           <CustomCopy
             size={"xSmall"}
@@ -132,15 +134,33 @@ export default function DisplayContactAccountRow(props: DisplayContactAccountRow
     });
   }
 
-  function onSaveNewName() {
-    console.log("save new name");
-    props.setErrors({ ...props.errors, name: false });
+  async function onSaveNewName() {
+    try {
+      props.setErrors({ ...props.errors, name: false });
 
-    if (!isContactAccountNameValid(props.updateAccount?.name || "")) {
-      props.setErrors({ ...props.errors, name: true });
-      return;
+      if (!isContactAccountNameValid(props.updateAccount?.name || "")) {
+        props.setErrors({ ...props.errors, name: true });
+        return;
+      }
+
+      const updatedContact = {
+        ...props.contact,
+        accounts: props.contact.accounts.map((acc) => {
+          if (
+            acc.subaccountId === props.updateAccount?.subaccountId &&
+            acc.tokenSymbol === props.updateAccount?.tokenSymbol
+          ) {
+            return { ...acc, name: props.updateAccount?.name };
+          }
+
+          return acc;
+        }),
+      };
+
+      await db().updateContact(props.contact.principal, updatedContact, { sync: true });
+      props.setUpdateAccount(null);
+    } catch (error) {
+      logger.debug(error);
     }
-
-    props.setUpdateAccount(null);
   }
 }

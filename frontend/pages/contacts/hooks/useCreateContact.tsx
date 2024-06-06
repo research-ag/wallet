@@ -166,11 +166,12 @@ export const useCreateContact = (onClose: () => void) => {
         },
         { sync: true },
       );
+
+      onClose();
     } catch (error) {
       logger.debug("onAddContact failed: ", error);
     } finally {
       setIsCreating(false);
-      onClose();
     }
   }
 
