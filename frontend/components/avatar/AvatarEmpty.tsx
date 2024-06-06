@@ -9,7 +9,7 @@ export default function AvatarEmpty(props: AvatarEmptyProps) {
   const { className, title, figure, size, border, background, ...additionalProps } = props;
   return (
     <div className={avatarEmptyCVA({ figure, size, border, background, className })} {...additionalProps}>
-      <p>{title?.length > 0 ? title[0]?.toUpperCase() : "-"}</p>
+      <p className="text-white text-md">{title?.length > 0 ? title[0]?.toUpperCase() : "-"}</p>
     </div>
   );
 }
@@ -49,7 +49,7 @@ const avatarEmptyCVA = cva(["flex", "justify-center", "items-center", "font-bold
       success: "bg-success",
       info: "bg-info",
       inherit: "bg-inherit",
-      gray: "bg-gray-700",
+      gray: "bg-gray-600",
     },
   },
   defaultVariants: {

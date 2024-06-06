@@ -66,7 +66,6 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
               className="h-[2.2rem] "
               border={errors.name ? "error" : undefined}
             />
-
             {newAccount?.allowance?.amount && <MoneyHandIcon className="relative w-5 h-5 ml-1 fill-primary-color" />}
           </div>
           <div className=" w-[21.2%]">

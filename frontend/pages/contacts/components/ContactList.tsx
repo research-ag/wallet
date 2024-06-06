@@ -18,6 +18,7 @@ import { CustomCopy } from "@components/tooltip";
 import { ChevronDownIcon, ChevronLeftIcon } from "@radix-ui/react-icons";
 import SubAccountTable from "./ICRC/SubAccountTable";
 import ContactAction from "./ICRC/ContactAction";
+import { useAppSelector } from "@redux/Store";
 
 interface ContactListProps {
   contactSearchKey: string;
@@ -30,6 +31,7 @@ export default function ContactList({ allowanceOnly, assetFilter, contactSearchK
   const [contactDropdown, setContactDropdown] = useState<Contact | null>(null);
   const [contactEdited, setContactEdited] = useState<Contact | null>(null);
   const [contactNameInvalid, setContactNameInvalid] = useState(false);
+  const contacts = useAppSelector((state) => state.contacts.contacts);
 
   return (
     <div className="w-full h-full scroll-y-light max-h-[calc(100vh-12rem)]">
@@ -54,7 +56,7 @@ export default function ContactList({ allowanceOnly, assetFilter, contactSearchK
         </thead>
 
         <tbody>
-          {data.map((contact, index) => {
+          {contacts.map((contact, index) => {
             const isContactExpanded = contactDropdown?.principal === contact.principal;
             const isContactEditable = contactEdited?.principal === contact.principal;
             const hasContactAllowance = contact.accounts.some((account) => account.allowance);
@@ -145,7 +147,7 @@ export default function ContactList({ allowanceOnly, assetFilter, contactSearchK
                   </td>
 
                   <td className="p-2">
-                    <div className="flex items-center justify-center px-2.5 py-1 rounded-md cursor-pointer bg-gray-color-2">
+                    <div className="flex items-center justify-center px-2.5 py-1 rounded-md cursor-pointer dark:bg-gray-color-2 bg-gray-color-7">
                       <span className="text-md">{contact.accounts.length}</span>
                       {isContactExpanded ? (
                         <ChevronDownIcon className="w-4 h-4 ml-1" onClick={() => onOpenDropdown(contact)} />
@@ -168,8 +170,6 @@ export default function ContactList({ allowanceOnly, assetFilter, contactSearchK
     setContactEdited((prev: any) => {
       return { ...prev, name: e.target.value };
     });
-
-    setContactNameInvalid(false);
   }
 
   function onSaveContact() {
@@ -225,134 +225,3 @@ const getContactColor = (index: number) => {
     ["bg-ContactColor3"]: index % 3 === 2,
   });
 };
-
-const data: Contact[] = [
-  {
-    name: "Alex",
-    principal: "r4jkc-ykktj-k5y7l-fqule-ypybt-h2m5n-nzvlk-xov2a-ipgn7-wb5hx-yae",
-    accountIdentifier: "a922b4a0423f4f0bf08f0bc6966e640288588c3427f29fb9b67f580fbdbe091e",
-    accounts: [
-      {
-        tokenSymbol: "ICP",
-        name: "main",
-        subaccount: "0",
-        subaccountId: "0x3",
-        allowance: {
-          amount: "100000000",
-          expiration: "",
-        },
-      },
-      {
-        tokenSymbol: "ICP",
-        name: "savings",
-        subaccount: "1",
-        subaccountId: "0x1",
-      },
-    ],
-  },
-  {
-    name: "Jair",
-    principal: "jf4a3-wwwya-wnnvk-wiztu-tgafi-qn4is-swdmy-hrr4y-mrewg-2x5bl-hae",
-    accountIdentifier: "a922b4a0423f4f0bf08f0bc6966e640288588c3427f29fb9b67f580fbdbe091e",
-    accounts: [
-      {
-        tokenSymbol: "ICP",
-        name: "main",
-        subaccount: "0",
-        subaccountId: "0x0",
-      },
-      {
-        tokenSymbol: "ICP",
-        name: "savings",
-        subaccount: "1",
-        subaccountId: "0x1",
-      },
-      {
-        tokenSymbol: "ICP",
-        name: "checking",
-        subaccount: "2",
-        subaccountId: "0x2",
-      },
-      {
-        tokenSymbol: "ICP",
-        name: "investment",
-        subaccount: "3",
-        subaccountId: "0x3",
-      },
-      {
-        tokenSymbol: "ICP",
-        name: "retirement",
-        subaccount: "4",
-        subaccountId: "0x4",
-      },
-    ],
-  },
-  {
-    name: "Will",
-    principal: "gjcgk-x4xlt-6dzvd-q3mrr-pvgj5-5bjoe-beege-n4b7d-7hna5-pa5uq-5qe",
-    accountIdentifier: "a922b4a0423f4f0bf08f0bc6966e640288588c3427f29fb9b67f580fbdbe091e",
-    accounts: [
-      {
-        tokenSymbol: "ICP",
-        name: "main",
-        subaccount: "0",
-        subaccountId: "0x0",
-      },
-      {
-        tokenSymbol: "ICP",
-        name: "savings",
-        subaccount: "1",
-        subaccountId: "0x1",
-      },
-      {
-        tokenSymbol: "ICP",
-        name: "checking",
-        subaccount: "2",
-        subaccountId: "0x2",
-      },
-      {
-        tokenSymbol: "ICP",
-        name: "investment",
-        subaccount: "3",
-        subaccountId: "0x3",
-      },
-      {
-        tokenSymbol: "ICP",
-        name: "retirement",
-        subaccount: "4",
-        subaccountId: "0x4",
-      },
-    ],
-  },
-  {
-    name: "Marcus",
-    principal: "fu2m3-wba2s-but7a-nh2mf-w6suf-f5wgs-66ypw-lk3sq-wmtwi-mulho-eqe",
-    accountIdentifier: "a922b4a0423f4f0bf08f0bc6966e640288588c3427f29fb9b67f580fbdbe091e",
-    accounts: [
-      {
-        tokenSymbol: "ICP",
-        name: "main",
-        subaccount: "0",
-        subaccountId: "0x0",
-      },
-      {
-        tokenSymbol: "ICP",
-        name: "savings",
-        subaccount: "1",
-        subaccountId: "0x1",
-      },
-      {
-        tokenSymbol: "ICP",
-        name: "checking",
-        subaccount: "2",
-        subaccountId: "0x2",
-      },
-      {
-        tokenSymbol: "ICP",
-        name: "investment",
-        subaccount: "3",
-        subaccountId: "0x3",
-      },
-    ],
-  },
-];

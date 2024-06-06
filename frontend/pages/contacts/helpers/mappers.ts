@@ -1,5 +1,5 @@
 import { ContactAccount } from "@/@types/contacts";
-import { isContactAccountValid } from "./validators";
+import { isContactSubaccountIdValid } from "./validators";
 import { RequestAccountAllowance } from "./addAllowanceToSubaccounts";
 import store from "@redux/Store";
 
@@ -16,7 +16,7 @@ export default function contactAccountToAllowanceArgs(args: ContactAccountToAllo
   return contactAccounts
     .map((account) => {
       const currentAsset = assets.find((asset) => asset.tokenSymbol === account?.tokenSymbol);
-      if (isContactAccountValid(account) && currentAsset) {
+      if (isContactSubaccountIdValid(account.subaccountId) && currentAsset) {
         return {
           assetAddress: currentAsset?.address,
           assetDecimal: currentAsset?.decimal,

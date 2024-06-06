@@ -62,12 +62,12 @@ export const useCreateContact = (onClose: () => void) => {
           message: "",
         }));
 
+      const noTestableAccounts = newContact.accounts.filter(
+        (account) => !isContactSubaccountIdValid(account.subaccountId),
+      );
       const newSubAccounts = await includeAllowanceToAccounts(newContact.accounts);
 
-      // TODO: if no name set but id empty, it will be removed.
-      // TODO: if (no name) or (no name and no id) explit and include after test
-
-      setNewContact((prev) => ({ ...prev, accounts: newSubAccounts }));
+      setNewContact((prev) => ({ ...prev, accounts: [...newSubAccounts, ...noTestableAccounts] }));
       setSubAccountError(null);
     } catch (error) {
       logger.debug(error);

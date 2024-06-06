@@ -56,6 +56,7 @@ export default function DisplayContactAccountRow(props: DisplayContactAccountRow
               onChange={onAccountNameChange}
               className="h-[2.2rem] "
               border={props.errors.name ? "error" : undefined}
+              value={props.updateAccount?.name || ""}
             />
 
             <CheckIcon
@@ -118,7 +119,6 @@ export default function DisplayContactAccountRow(props: DisplayContactAccountRow
 
     if (!isContactAccountNameValid(value)) {
       props.setErrors({ ...props.errors, name: true });
-      return;
     }
 
     props.setUpdateAccount((prev) => {
@@ -133,7 +133,13 @@ export default function DisplayContactAccountRow(props: DisplayContactAccountRow
   }
 
   function onSaveNewName() {
-    // TODO: call the database to update the name
+    console.log("save new name");
+    props.setErrors({ ...props.errors, name: false });
+
+    if (!isContactAccountNameValid(props.updateAccount?.name || "")) {
+      props.setErrors({ ...props.errors, name: true });
+      return;
+    }
 
     props.setUpdateAccount(null);
   }

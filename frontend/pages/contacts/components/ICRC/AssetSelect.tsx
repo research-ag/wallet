@@ -12,7 +12,7 @@ import { useState } from "react";
 
 const Trigger = (props: { open: boolean; selectedOption: Asset; options: Asset[]; onClick: () => void }) => {
   return (
-    <div className="flex items-center justify-between w-[10rem] h-[1rem]" onClick={props.onClick}>
+    <div className="flex items-center justify-between w-[8rem] h-[1rem]" onClick={props.onClick}>
       {props.selectedOption.symbol ? (
         <div className="flex items-center">
           {getAssetIcon(IconTypeEnum.Enum.FILTER, props.selectedOption?.tokenSymbol, props.selectedOption?.logo)}
@@ -29,7 +29,7 @@ const Trigger = (props: { open: boolean; selectedOption: Asset; options: Asset[]
 const Content = (props: { options: Asset[]; selectedOption: Asset; onSelectAsset: (asset: Asset) => void }) => {
   return (
     <div className="">
-      <div className="p-1 bg-red-500">
+      <div className="p-1 rounded-t-lg dark:bg-level-1-color bg-gray-color-8">
         <CustomInput
           prefix={<img src={SearchIcon} className="mx-2 w-[1rem] h-[1rem]" alt="search-icon" />}
           onChange={handleSearchChange}
@@ -93,7 +93,10 @@ export default function AssetSelect(props: AssetSelectProps) {
         <Trigger open={open} options={assets} selectedOption={selectedOption} onClick={() => setOpen(!open)} />
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>
-        <DropdownMenu.Content className="rounded-lg w-[12rem] bg-PrimaryColorLight dark:bg-SecondaryColor text-PrimaryTextColorLight dark:text-PrimaryTextColor">
+        <DropdownMenu.Content
+          className="rounded-lg w-[10rem] bg-PrimaryColorLight dark:bg-SecondaryColor text-PrimaryTextColorLight dark:text-PrimaryTextColor border border-black-color shadow-lg"
+          sideOffset={2}
+        >
           <Content options={assets} selectedOption={selectedOption} onSelectAsset={onSelectAsset} />
         </DropdownMenu.Content>
       </DropdownMenu.Portal>
