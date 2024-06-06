@@ -48,9 +48,8 @@ const ContactAssetElement = (props: ContactAssetElementProps) => {
   );
 
   function onSelectContactAsset() {
-    if (lastSelectedAsset.current === contAst.tokenSymbol) return;
-
     setContactAssetSelected(contAst.tokenSymbol);
+
     setNewContact((prev: Contact) => {
       const accounts = prev.accounts.filter((curr) => curr.name.length > 0 && curr.subaccountId.length > 0);
       const activeAccount = {

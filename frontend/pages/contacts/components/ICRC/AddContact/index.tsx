@@ -28,6 +28,7 @@ export default function AddContact({ onClose }: AddContactProps) {
   const isNetworkSupported = assets
     .find((asset) => asset.tokenSymbol === contactAssetSelected)
     ?.supportedStandards.includes("ICRC-2");
+
   const enableAllowanceTest = newContact.accounts.length > 0 && isNetworkSupported;
 
   return (
