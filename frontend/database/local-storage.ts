@@ -149,6 +149,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
    */
   async _contactStateSync(newContacts?: Contact[]): Promise<void> {
     const contacts = newContacts || this._getContacts();
+    console.log("async _contactStateSync -> contacts", contacts);
     store.dispatch(setReduxContacts(contacts));
   }
 
@@ -318,8 +319,12 @@ export class LocalStorageDatabase extends IWalletDatabase {
   }
 
   private _getContacts(): Contact[] {
-    const contactsData = JSON.parse(localStorage.getItem(`contacts-${this.principalId}`) || "null");
-    return contactsData || [];
+    const stringContacts = localStorage.getItem(`contacts-${this.principalId}`);
+    console.log("STEP 1 (string): ", stringContacts);
+    const parsetContacts = JSON.parse(stringContacts || "null");
+    console.log("STEP 2 (array or null): ", parsetContacts);
+    const contacts = parsetContacts || [];
+    return contacts;
   }
 
   private _setContacts(contacts: Contact[]) {

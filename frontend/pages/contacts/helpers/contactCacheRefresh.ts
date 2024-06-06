@@ -10,6 +10,8 @@ export default async function contactCacheRefresh() {
   try {
     const contacts = await db().getContacts();
 
+    console.log("refreshing contacts", contacts)
+
     if (contacts) {
       const updatedContacts: Contact[] = [];
 
