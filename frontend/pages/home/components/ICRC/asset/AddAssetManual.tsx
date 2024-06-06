@@ -363,33 +363,31 @@ const AddAssetManual = () => {
         return;
       }
 
-      setTimeout(async () => {
-        const affectedContacts: Contact[] = [];
-        // FIXME: if contacts come from db will not include allowance in the state
-        const currentContacts = await db().getContacts();
+      const affectedContacts: Contact[] = [];
+      // FIXME: if contacts come from db will not include allowance in the state
+      const currentContacts = await db().getContacts();
 
-        for (const contact of currentContacts) {
-          let affected = false;
+      for (const contact of currentContacts) {
+        let affected = false;
 
-          const newDoc = {
-            ...contact,
-            assets: contact.assets.map((currentAsset) => {
-              if (currentAsset.tokenSymbol === newAsset?.tokenSymbol) {
-                affected = true;
-                return { ...currentAsset, symbol: newAsset.symbol };
-              } else return currentAsset;
-            }),
-          };
+        const newDoc = {
+          ...contact,
+          assets: contact.assets.map((currentAsset) => {
+            if (currentAsset.tokenSymbol === newAsset?.tokenSymbol) {
+              affected = true;
+              return { ...currentAsset, symbol: newAsset.symbol };
+            } else return currentAsset;
+          }),
+        };
 
-          if (affected) {
-            affectedContacts.push(newDoc);
-          }
+        if (affected) {
+          affectedContacts.push(newDoc);
         }
+      }
 
-        await Promise.all(
-          affectedContacts.map((contact) => db().updateContact(contact.principal, contact, { sync: true })),
-        );
-      }, 0);
+      await Promise.all(
+        affectedContacts.map((contact) => db().updateContact(contact.principal, contact, { sync: true })),
+      );
 
       const assetDB = await db().getAsset(newAsset.address);
 
@@ -435,6 +433,7 @@ const AddAssetManual = () => {
         customSymbol: newAsset.symbol,
         supportedStandard: newAsset.supportedStandards,
         sortIndex,
+        ledgerIndex: newAsset.index,
       });
 
       const assetToSave: Asset = { ...newAsset, ...updatedAsset, sortIndex };

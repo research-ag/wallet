@@ -29,6 +29,7 @@ export default function WorkersWrapper({ children }: { children: React.ReactNode
     dispatch(setICRC1SystemAssets([...erc20Tokens, ...snsTokens]));
 
     const dbAssets = await db().getAssets();
+
     await updateAllBalances({
       loading: true,
       fromLogin: true,
