@@ -176,7 +176,6 @@ export class LocalStorageDatabase extends IWalletDatabase {
     const contacts = this._getContacts();
     const databaseContact = this._getStorableContact(contact);
     this._setContacts([...contacts, databaseContact]);
-    console.log({ contacts, databaseContact });
     if (options?.sync) store.dispatch(addReduxContact(contact));
   }
 
