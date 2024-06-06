@@ -1,24 +1,4 @@
-export interface ContactAllowance {
-  expiration: string;
-  amount: string;
-}
-
-export interface ContactAccount {
-  name: string;
-  subaccount: string;
-  subaccountId: string;
-  tokenSymbol: string;
-  allowance?: ContactAllowance;
-}
-
-export interface Contact {
-  name: string;
-  principal: string;
-  accountIdentifier: string;
-  accounts: ContactAccount[];
-}
-
-// ----------------------------- Args -----------------------------
+import { ContactAccount } from "@redux/models/ContactsModels";
 
 export interface RetrieveSubAccountsWithAllowanceArgs {
   accountPrincipal: string;

@@ -1,4 +1,4 @@
-import { Contact, ContactAccount } from "@/@types/contacts";
+import { Contact, ContactAccount } from "@redux/models/ContactsModels";
 import { validatePrincipal } from "@common/utils/definityIdentity";
 import { checkHexString } from "@common/utils/hexadecimal";
 

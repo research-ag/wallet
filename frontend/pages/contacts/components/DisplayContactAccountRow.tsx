@@ -6,7 +6,7 @@ import { shortAddress } from "@common/utils/icrc";
 import { AvatarEmpty } from "@components/avatar";
 import { CustomCopy } from "@components/tooltip";
 import ContactAccountAction from "./ICRC/ContactAccountAction";
-import { Contact, ContactAccount } from "@/@types/contacts";
+import { Contact, ContactAccount } from "@redux/models/ContactsModels";
 import { Asset } from "@redux/models/AccountModels";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";

@@ -26,7 +26,7 @@ import {
   setReduxAllowances,
   updateReduxAllowance,
 } from "@redux/allowance/AllowanceReducer";
-import { Contact } from "@/@types/contacts";
+import { Contact } from "@redux/models/ContactsModels";
 
 export class LocalStorageDatabase extends IWalletDatabase {
   // Singleton pattern
@@ -320,10 +320,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
 
   private _getContacts(): Contact[] {
     const stringContacts = localStorage.getItem(`contacts-${this.principalId}`);
-    console.log("STEP 1 (string): ", stringContacts);
-    const parsetContacts = JSON.parse(stringContacts || "null");
-    console.log("STEP 2 (array or null): ", parsetContacts);
-    const contacts = parsetContacts || [];
+    const contacts = stringContacts ? JSON.parse(stringContacts) : [];
     return contacts;
   }
 

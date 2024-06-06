@@ -1,9 +1,10 @@
-import { Contact, NewContactErrors } from "@/@types/contacts";
+import { Contact } from "@redux/models/ContactsModels";
 import { CustomInput } from "@components/input";
 import { useTranslation } from "react-i18next";
 import { validatePrincipal } from "@common/utils/definityIdentity";
 import { useContactError } from "@pages/contacts/contexts/ContactErrorProvider";
 import { useContact } from "@pages/contacts/contexts/ContactProvider";
+import { NewContactErrors } from "@/@types/contacts";
 
 export default function ContactMainDetails() {
   const { newContact, setNewContact } = useContact();

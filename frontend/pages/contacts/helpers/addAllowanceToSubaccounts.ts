@@ -1,4 +1,4 @@
-import { ContactAccount } from "@/@types/contacts";
+import { ContactAccount } from "@redux/models/ContactsModels";
 import { getAllowanceDetails } from "@common/libs/icrc";
 
 export interface RequestAccountAllowance {

@@ -10,7 +10,7 @@ import { removeAllowanceErrorAction } from "@redux/allowance/AllowanceActions";
 import { initialAllowanceState } from "@redux/allowance/AllowanceReducer";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Contact } from "@/@types/contacts";
+import { Contact } from "@redux/models/ContactsModels";
 
 interface ISpenderFormItemProps {
   contacts: Contact[];

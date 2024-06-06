@@ -45,7 +45,7 @@ import {
   updateReduxAllowance,
 } from "@redux/allowance/AllowanceReducer";
 import logger from "@/common/utils/logger";
-import { Contact } from "@/@types/contacts";
+import { Contact } from "@redux/models/ContactsModels";
 
 addRxPlugin(RxDBUpdatePlugin);
 addRxPlugin(RxDBMigrationPlugin);

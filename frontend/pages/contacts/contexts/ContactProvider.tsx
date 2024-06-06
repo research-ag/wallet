@@ -1,4 +1,4 @@
-import { Contact } from "@/@types/contacts";
+import { Contact } from "@redux/models/ContactsModels";
 import React, { createContext, useContext, useState } from "react";
 
 type ContactProviderProps = {

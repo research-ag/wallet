@@ -4,13 +4,13 @@ import { setReduxContacts } from "@redux/contacts/ContactsReducer";
 import store from "@redux/Store";
 import contactAccountToAllowanceArgs from "./mappers";
 import addAllowanceToSubaccounts from "./addAllowanceToSubaccounts";
-import { Contact } from "@/@types/contacts";
+import { Contact } from "@redux/models/ContactsModels";
 
 export default async function contactCacheRefresh() {
   try {
     const contacts = await db().getContacts();
 
-    console.log("refreshing contacts", contacts)
+    console.log("refreshing contacts", contacts);
 
     if (contacts) {
       const updatedContacts: Contact[] = [];

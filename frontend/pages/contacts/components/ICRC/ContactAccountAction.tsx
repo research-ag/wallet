@@ -1,4 +1,4 @@
-import { ContactAccount, Contact } from "@/@types/contacts";
+import { ContactAccount, Contact } from "@redux/models/ContactsModels";
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import DeleteContactAccountModal from "./DeleteContactAccountModal";

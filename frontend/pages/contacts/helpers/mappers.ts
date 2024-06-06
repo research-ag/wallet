@@ -1,4 +1,4 @@
-import { ContactAccount } from "@/@types/contacts";
+import { ContactAccount } from "@redux/models/ContactsModels";
 import { isContactSubaccountIdValid } from "./validators";
 import { RequestAccountAllowance } from "./addAllowanceToSubaccounts";
 import store from "@redux/Store";

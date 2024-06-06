@@ -7,7 +7,7 @@ import { CustomButton } from "@components/button";
 import { useTranslation } from "react-i18next";
 import logger from "@common/utils/logger";
 import { LoadingLoader } from "@components/loader";
-import { Contact } from "@/@types/contacts";
+import { Contact } from "@redux/models/ContactsModels";
 import { db } from "@/database/db";
 
 export default function DeleteContactModal({ contact }: { contact: Contact }) {

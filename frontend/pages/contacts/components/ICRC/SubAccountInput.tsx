@@ -1,4 +1,4 @@
-import { ContactAccount } from "@/@types/contacts";
+import { ContactAccount } from "@redux/models/ContactsModels";
 import { CustomButton } from "@components/button";
 import { CustomInput } from "@components/input";
 import { asciiHex } from "@pages/contacts/constants/asciiHex";

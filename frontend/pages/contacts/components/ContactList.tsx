@@ -5,7 +5,7 @@ import { ReactComponent as MoneyHandIcon } from "@assets/svg/files/money-hand.sv
 import { ReactComponent as SortIcon } from "@assets/svg/files/sort.svg";
 // import DeleteContactModal from "./ICRC/DeleteContactModal";
 //
-import { Contact } from "@/@types/contacts";
+import { Contact } from "@redux/models/ContactsModels";
 import { CustomInput } from "@components/input";
 import clsx from "clsx";
 import { ChangeEvent, useState } from "react";

@@ -6,7 +6,7 @@ import { DB_Type } from "./db";
 import { LocalStorageKeyEnum } from "@/@types/localstorage";
 import { Themes } from "@/common/const";
 import { Asset } from "@redux/models/AccountModels";
-import { Contact } from "@/@types/contacts";
+import { Contact } from "@redux/models/ContactsModels";
 
 export interface DatabaseOptions {
   /**

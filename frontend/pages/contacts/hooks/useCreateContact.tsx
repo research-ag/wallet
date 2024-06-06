@@ -1,4 +1,4 @@
-import { Contact, ContactAccount } from "@/@types/contacts";
+import { Contact, ContactAccount } from "@redux/models/ContactsModels";
 import { useState } from "react";
 import { SubAccountError, useContactError } from "@/pages/contacts/contexts/ContactErrorProvider";
 import addAllowanceToSubaccounts from "@pages/contacts/helpers/addAllowanceToSubaccounts";

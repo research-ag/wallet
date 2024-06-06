@@ -1,7 +1,7 @@
 import { ReactComponent as MoneyHandIcon } from "@assets/svg/files/money-hand.svg";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
-import { Contact, ContactAccount } from "@/@types/contacts";
+import { Contact, ContactAccount } from "@redux/models/ContactsModels";
 import { CustomButton } from "@components/button";
 import { CheckIcon, PlusIcon } from "@radix-ui/react-icons";
 import { useState } from "react";

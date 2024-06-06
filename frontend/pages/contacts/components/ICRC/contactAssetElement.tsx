@@ -6,7 +6,7 @@ import { getAssetIcon } from "@/common/utils/icons";
 import { Asset } from "@redux/models/AccountModels";
 import { Dispatch, SetStateAction, useRef } from "react";
 import clsx from "clsx";
-import { Contact } from "@/@types/contacts";
+import { Contact } from "@redux/models/ContactsModels";
 import { useContact } from "@pages/contacts/contexts/ContactProvider";
 import { useContactError } from "@pages/contacts/contexts/ContactErrorProvider";
 
