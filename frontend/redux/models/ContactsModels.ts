@@ -1,4 +1,3 @@
-// TODO: add the zod types for the rest of the models
 import { z } from "zod";
 
 export const contactAllowanceSchema = z.object({

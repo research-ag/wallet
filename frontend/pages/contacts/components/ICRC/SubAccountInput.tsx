@@ -3,6 +3,9 @@ import { CustomButton } from "@components/button";
 import { CustomInput } from "@components/input";
 import { asciiHex } from "@pages/contacts/constants/asciiHex";
 import { Dispatch, SetStateAction } from "react";
+import { isContactSubaccountIdValid } from "@pages/contacts/helpers/validators";
+import { ContactAccountError } from "./AddContactAccountRow";
+import { validatePrincipal } from "@common/utils/definityIdentity";
 
 interface SubAccountInputProps {
   newAccount: ContactAccount | null;
@@ -10,7 +13,7 @@ interface SubAccountInputProps {
   isHexadecimal: boolean;
   setIsHexadecimal: Dispatch<SetStateAction<boolean>>;
   error: boolean;
-  clearErrors: () => void;
+  setErrors: Dispatch<SetStateAction<ContactAccountError>>;
 }
 
 export default function SubAccountInput(props: SubAccountInputProps) {
@@ -46,8 +49,7 @@ export default function SubAccountInput(props: SubAccountInputProps) {
   }
 
   function onSubAccountChange(e: React.ChangeEvent<HTMLInputElement>) {
-    // TODO: validate depending on isHexadecimal
-    props.clearErrors();
+    props.setErrors((prev) => ({ ...prev, subAccountId: false }));
     const value = e.target.value;
 
     props.setNewAccount((prev) => {
@@ -62,9 +64,13 @@ export default function SubAccountInput(props: SubAccountInputProps) {
     });
 
     if (props.isHexadecimal) {
-      // TODO: validate if hexadecimal is valid
+      if (isContactSubaccountIdValid(value)) {
+        props.setErrors((prev) => ({ ...prev, subAccountId: true }));
+      }
     } else {
-      // TODO: validate if principal is valid
+      if (!validatePrincipal(value)) {
+        props.setErrors((prev) => ({ ...prev, subAccountId: true }));
+      }
     }
   }
 

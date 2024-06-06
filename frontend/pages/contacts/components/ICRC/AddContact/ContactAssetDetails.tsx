@@ -1,12 +1,17 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import ContactAssetPop from "@/pages/contacts/components/ICRC/contactAssetPop";
 import { useAppSelector } from "@redux/Store";
 import { Asset } from "@redux/models/AccountModels";
 import SubAccountFormItem from "@pages/contacts/components/ICRC/AddContact/SubAccountFormItem";
 
-export default function ContactAssetDetails() {
+interface ContactAssetDetailsProps {
+  contactAssetSelected: string;
+  setContactAssetSelected: Dispatch<SetStateAction<string>>;
+}
+
+export default function ContactAssetDetails(props: ContactAssetDetailsProps) {
+  const { contactAssetSelected, setContactAssetSelected } = props;
   const assets = useAppSelector((state) => state.asset.list.assets);
-  const [contactAssetSelected, setContactAssetSelected] = useState("");
   const [contactAssets, setContactAssets] = useState<Asset[]>([]);
 
   return (

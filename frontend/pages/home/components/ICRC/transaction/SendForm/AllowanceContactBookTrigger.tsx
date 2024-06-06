@@ -37,7 +37,7 @@ export default function AllowanceContactBookTrigger({ isOpen }: AllowanceContact
                     alt={sender?.allowanceContactSubAccount?.assetSymbol}
                   />
                   <p className="text-md">
-                    {sender?.allowanceContactSubAccount?.subAccountAllowance?.allowance}{" "}
+                    {sender?.allowanceContactSubAccount?.subAccountAllowance?.amount}{" "}
                     {sender?.allowanceContactSubAccount?.assetSymbol}
                   </p>
                 </span>

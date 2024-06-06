@@ -4,33 +4,31 @@ import { setReduxContacts } from "@redux/contacts/ContactsReducer";
 import store from "@redux/Store";
 import contactAccountToAllowanceArgs from "./mappers";
 import addAllowanceToSubaccounts from "./addAllowanceToSubaccounts";
-import { Contact } from "@redux/models/ContactsModels";
 
 export default async function contactCacheRefresh() {
   try {
     const contacts = await db().getContacts();
+    const updatePromises = [];
 
-    console.log("refreshing contacts", contacts);
+    for (let i = 0; i < contacts.length; i++) {
+      const contact = contacts[i];
 
-    if (contacts) {
-      const updatedContacts: Contact[] = [];
+      const args = contactAccountToAllowanceArgs({
+        allocatorPrincipal: store.getState().auth.userPrincipal.toString(),
+        contactAccounts: contact.accounts,
+        spenderPrincipal: contact.principal,
+      });
 
-      for (const contact of contacts) {
-        contact.accounts = [];
+      const updatePromise = addAllowanceToSubaccounts(args).then((updatedAccounts) => ({
+        ...contact,
+        accounts: updatedAccounts,
+      }));
 
-        const args = contactAccountToAllowanceArgs({
-          allocatorPrincipal: store.getState().auth.userPrincipal.toString(),
-          contactAccounts: contact.accounts,
-          spenderPrincipal: contact.principal,
-        });
-
-        const updatedAccounts = await addAllowanceToSubaccounts(args);
-        contact.accounts.push(...updatedAccounts);
-        updatedContacts.push(contact);
-      }
-
-      store.dispatch(setReduxContacts(updatedContacts));
+      updatePromises.push(updatePromise);
     }
+
+    const updatedContacts = await Promise.all(updatePromises);
+    store.dispatch(setReduxContacts(updatedContacts));
   } catch (error) {
     logger.debug(error);
   }

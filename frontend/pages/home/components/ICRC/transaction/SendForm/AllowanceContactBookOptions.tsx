@@ -96,7 +96,7 @@ export default function AllowanceContactBookOptions(props: AllowanceContactBookO
                   <span className="flex">
                     <img className="w-5 h-5 mr-2" src={getIconSrc(assetLogo, assetSymbol)} alt={assetSymbol} />
                     <p className="">
-                      {subAccountAllowance?.allowance} {assetSymbol}
+                      {subAccountAllowance?.amount} {assetSymbol}
                     </p>
                   </span>
                 </div>

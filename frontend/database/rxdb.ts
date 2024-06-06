@@ -738,31 +738,22 @@ export class RxdbDatabase extends IWalletDatabase {
     }));
   }
 
-  private async _contactsPushHandler(items: any): Promise<ContactRxdbDocument[]> {
-    const arg = items.map((x: any) => ({
-      ...x,
-      updatedAt: Math.floor(Date.now() / 1000),
-      accountIdentier: extractValueFromArray(x.accountIdentier),
-      assets: x.assets.map((a: any) => ({
-        ...a,
-        logo: extractValueFromArray(a.logo),
-        subaccounts: a.subaccounts.map((s: any) => ({
-          ...s,
-          allowance:
-            !!s.allowance && !!s.allowance.allowance
-              ? [
-                  {
-                    allowance: [s.allowance.allowance],
-                    expires_at: [s.allowance.expires_at],
-                  },
-                ]
-              : [],
+  private async _contactsPushHandler(items: ContactRxdbDocument[]): Promise<ContactRxdbDocument[]> {
+    const arg: ContactRxdbDocument[] = items.map(
+      (currentContact: ContactRxdbDocument): ContactRxdbDocument => ({
+        ...currentContact,
+        accountIdentifier: extractValueFromArray(currentContact.accountIdentifier),
+        accounts: currentContact.accounts.map((account: any) => ({
+          name: account.name,
+          subaccount: account.subaccount,
+          subaccountId: account.subaccountId,
+          tokenSymbol: account.tokenSymbol,
         })),
-      })),
-    }));
+        updatedAt: Math.floor(Date.now() / 1000),
+      }),
+    );
 
     await this.replicaCanister?.pushContacts(arg);
-
     return arg;
   }
 
@@ -780,16 +771,17 @@ export class RxdbDatabase extends IWalletDatabase {
     return raw;
   }
 
-  private async _allowancesPushHandler(items: any): Promise<AllowanceRxdbDocument[]> {
-    const arg = items.map((x: any) => ({
-      ...x,
-      updatedAt: Math.floor(Date.now() / 1000),
-      expiration: extractValueFromArray(x.expiration),
-      asset: {
-        ...x.asset,
-        logo: extractValueFromArray(x.asset?.logo),
-      },
-    }));
+  private async _allowancesPushHandler(items: AllowanceRxdbDocument[]): Promise<AllowanceRxdbDocument[]> {
+    const arg = items.map(
+      (currentAllowance: AllowanceRxdbDocument): AllowanceRxdbDocument => ({
+        id: currentAllowance.id,
+        deleted: currentAllowance.deleted,
+        asset: currentAllowance.asset,
+        subAccountId: currentAllowance.subAccountId,
+        spender: currentAllowance.spender,
+        updatedAt: Math.floor(Date.now() / 1000),
+      }),
+    );
 
     await this.replicaCanister?.pushAllowances(arg);
 

@@ -365,13 +365,11 @@ const AddAssetManual = () => {
 
       setTimeout(async () => {
         const affectedContacts: Contact[] = [];
-        // FIXME: if contacts come from db will not include allowance in the state
         const currentContacts = await db().getContacts();
 
         for (const contact of currentContacts) {
           let affected = false;
 
-          // TODO: asset affected by accounts
           const newDoc = {
             ...contact,
             accounts: contact.accounts.map((currentAccount) => {

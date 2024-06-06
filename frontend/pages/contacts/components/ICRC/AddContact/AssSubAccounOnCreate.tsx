@@ -114,7 +114,6 @@ export default function AddSubAccountOnCreate({ contactAssetSelected }: AddSubAc
 
   function onchangeSubIdx(value: string, iterator: number, subAccount: ContactAccount) {
     setNewContact((prev: Contact) => {
-      // TODO: check if the subaccount is valid
       const newSubAccount: ContactAccount = {
         ...prev.accounts[iterator],
         subaccount: value,

@@ -31,7 +31,7 @@ interface AddContactAccountRowProps {
   contact: Contact;
 }
 
-interface ContactAccountError {
+export interface ContactAccountError {
   name: boolean;
   subaccount: boolean;
   subaccountId: boolean;
@@ -76,7 +76,7 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
               isHexadecimal={isHexadecimal}
               setIsHexadecimal={setIsHexadecimal}
               error={errors.subaccountId}
-              clearErrors={clearErrors}
+              setErrors={setErrors}
             />
           </div>
           <div className=" w-[26.1%]">
@@ -191,16 +191,13 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
       return false;
     }
 
-    // TODO: validate based on isHexadecimal
     if (isHexadecimal) {
       if (!isContactSubaccountIdValid(newAccount.subaccountId)) {
-        console.log("Invalid account id");
         setErrors((prev) => ({ ...prev, subaccountId: true }));
         return false;
       }
     } else {
       if (!validatePrincipal(newAccount.subaccountId)) {
-        console.log("Invalid principal");
         setErrors((prev) => ({ ...prev, subaccountId: true }));
         return false;
       }
