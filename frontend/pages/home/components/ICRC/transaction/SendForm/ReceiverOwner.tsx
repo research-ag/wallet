@@ -33,7 +33,8 @@ export default function ReceiverOwner() {
         .filter(
           (subAccount) =>
             subAccount?.name?.toLowerCase().includes(filterValue) ||
-            subAccount?.symbol?.toLocaleLowerCase().includes(filterValue),
+            subAccount?.symbol?.toLocaleLowerCase().includes(filterValue) ||
+            filterValue === "",
         )
         .map(formatSubAccount);
     }
@@ -42,7 +43,8 @@ export default function ReceiverOwner() {
       .filter(
         (subAccount) =>
           subAccount?.name?.toLowerCase().includes(filterValue) ||
-          subAccount?.symbol?.toLocaleLowerCase().includes(filterValue),
+          subAccount?.symbol?.toLocaleLowerCase().includes(filterValue) ||
+          filterValue === "",
       )
       .map(formatSubAccount);
   }, [sender, currentAsset, searchSubAccountValue]);

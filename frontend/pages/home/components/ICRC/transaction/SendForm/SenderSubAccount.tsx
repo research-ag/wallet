@@ -10,12 +10,17 @@ export default function SenderSubAccount() {
   const { t } = useTranslation();
   const { sender } = useAppSelector((state) => state.transaction);
   const [searchSubAccountValue, setSearchSubAccountValue] = useState<string | null>(null);
+  const { assets } = useAppSelector((state) => state.asset.list);
+
+  const currentAsset = useMemo(() => {
+    return assets.find((asset) => asset?.tokenSymbol === sender?.asset?.tokenSymbol);
+  }, [assets, sender]);
 
   const options = useMemo(() => {
-    if (!sender?.asset?.subAccounts) return [];
-    if (!searchSubAccountValue) return sender.asset?.subAccounts.map(formatSubAccount);
+    if (!currentAsset) return [];
+    if (!searchSubAccountValue) return currentAsset?.subAccounts.map(formatSubAccount);
 
-    return sender.asset?.subAccounts
+    return currentAsset?.subAccounts
       .filter(
         (subAccount) =>
           subAccount?.name?.toLowerCase().includes(searchSubAccountValue.toLowerCase()) ||
@@ -40,7 +45,7 @@ export default function SenderSubAccount() {
   );
 
   function onSelect(option: SelectOption) {
-    const subAccount = sender?.asset?.subAccounts?.find((subAccount) => subAccount?.sub_account_id === option.value);
+    const subAccount = currentAsset?.subAccounts?.find((subAccount) => subAccount?.sub_account_id === option.value);
     if (!subAccount) return;
     setSenderSubAccountAction(subAccount);
   }

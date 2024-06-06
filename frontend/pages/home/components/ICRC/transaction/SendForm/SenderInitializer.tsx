@@ -28,9 +28,7 @@ export default function SenderInitializer(props: SenderInitializerProps) {
   useEffect(() => {
     if (route !== RoutingPathEnum.Enum.SERVICES) {
       const allowInitializeSubAccount =
-        !isObjectValid(sender.newAllowanceContact) &&
-        !isObjectValid(sender.allowanceContactSubAccount) &&
-        !sender?.subAccount;
+        !isObjectValid(sender.newAllowanceContact) && !isObjectValid(sender.allowanceContactSubAccount);
 
       if (selectedAccount) {
         if (allowInitializeSubAccount) {
