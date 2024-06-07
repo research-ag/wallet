@@ -388,28 +388,29 @@ const AddAssetManual = () => {
         await Promise.all(
           affectedContacts.map((contact) => db().updateContact(contact.principal, contact, { sync: true })),
         );
+
+        const assetDB = await db().getAsset(newAsset.address);
+
+        if (assetDB) {
+          // INFO: update an asset
+          const updatedFull: Asset = {
+            ...newAsset,
+            decimal: Number(newAsset.decimal).toFixed(0),
+            shortDecimal:
+              newAsset.shortDecimal === ""
+                ? Number(newAsset.decimal).toFixed(0)
+                : Number(newAsset.shortDecimal).toFixed(0),
+          };
+          await db().updateAsset(assetDB.address, updatedFull, { sync: true });
+        }
+
+        dispatch(setSelectedAsset(newAsset));
+        dispatch(setAccordionAssetIdx([newAsset.tokenSymbol]));
+        setNewAsset(assetMutateInitialState);
+        dispatch(setAssetMutation(undefined));
+        dispatch(setAssetMutationAction(AssetMutationAction.NONE));
       }, 0);
 
-      const assetDB = await db().getAsset(newAsset.address);
-
-      if (assetDB) {
-        // INFO: update an asset
-        const updatedFull: Asset = {
-          ...newAsset,
-          decimal: Number(newAsset.decimal).toFixed(0),
-          shortDecimal:
-            newAsset.shortDecimal === ""
-              ? Number(newAsset.decimal).toFixed(0)
-              : Number(newAsset.shortDecimal).toFixed(0),
-        };
-        await db().updateAsset(assetDB.address, updatedFull, { sync: true });
-      }
-
-      dispatch(setSelectedAsset(newAsset));
-      dispatch(setAccordionAssetIdx([newAsset.tokenSymbol]));
-      setNewAsset(assetMutateInitialState);
-      dispatch(setAssetMutation(undefined));
-      dispatch(setAssetMutationAction(AssetMutationAction.NONE));
     } else if (await onTest(false)) addAssetToData();
   }
 
@@ -434,6 +435,7 @@ const AddAssetManual = () => {
         customSymbol: newAsset.symbol,
         supportedStandard: newAsset.supportedStandards,
         sortIndex,
+        ledgerIndex: newAsset.index,
       });
 
       const assetToSave: Asset = { ...newAsset, ...updatedAsset, sortIndex };
