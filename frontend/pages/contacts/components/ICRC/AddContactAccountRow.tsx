@@ -26,6 +26,7 @@ import addAllowanceToSubaccounts from "@pages/contacts/helpers/addAllowanceToSub
 import { validatePrincipal } from "@common/utils/definityIdentity";
 import getAccountFromPrincipal from "@pages/contacts/helpers/getAccountFromPrincipal";
 import { db } from "@/database/db";
+import AllowanceTooltip from "./AllowanceTooltip";
 
 interface AddContactAccountRowProps {
   contact: Contact;
@@ -42,6 +43,7 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
   const [newAccount, setNewAccount] = useState<ContactAccount | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isHexadecimal, setIsHexadecimal] = useState<boolean>(true);
+  const hasAllowance = newAccount?.allowance?.amount;
 
   const [errors, setErrors] = useState<ContactAccountError>({
     name: false,
@@ -63,7 +65,14 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
               className="h-[2.2rem] "
               border={errors.name ? "error" : undefined}
             />
-            {newAccount?.allowance?.amount && <MoneyHandIcon className="relative w-5 h-5 ml-1 fill-primary-color" />}
+
+            {hasAllowance && (
+              <AllowanceTooltip
+                amount={newAccount.allowance?.amount || "0"}
+                expiration={newAccount.allowance?.expiration || ""}
+                tokenSymbol={newAccount.tokenSymbol}
+              />
+            )}
           </div>
           <div className=" w-[21.2%]">
             <SubAccountInput
