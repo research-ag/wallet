@@ -18,7 +18,7 @@ export default function DeleteContactAccountModal({ contact, account }: { contac
   return (
     <>
       <CustomButton className="p-0" onClick={() => setOpen(true)} size={"small"} intent="error">
-        <p>Delete</p>
+        <p>{t("delete")}</p>
       </CustomButton>
 
       <BasicModal
@@ -58,11 +58,9 @@ export default function DeleteContactAccountModal({ contact, account }: { contac
 
       const updatedContact = {
         ...contact,
-        accounts: contact.accounts.filter((acc) => {
-          const isNotSameAccountId = acc.subaccountId !== account.subaccountId;
-          const isNotSameTokenSymbol = acc.tokenSymbol !== account.tokenSymbol;
-          return isNotSameAccountId && isNotSameTokenSymbol;
-        }),
+        accounts: contact.accounts.filter(
+          (acc) => !(acc.subaccountId === account.subaccountId && acc.tokenSymbol === account.tokenSymbol),
+        ),
       };
 
       await db().updateContact(contact.principal, updatedContact, { sync: true });

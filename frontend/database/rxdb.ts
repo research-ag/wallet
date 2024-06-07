@@ -378,12 +378,6 @@ export class RxdbDatabase extends IWalletDatabase {
    */
   async updateContact(principal: string, newDoc: Contact, options?: DatabaseOptions): Promise<void> {
     try {
-      console.log({
-        principal,
-        newDoc,
-        options,
-      });
-
       const databaseContact = this._getStorableContact(newDoc);
       const document = await (await this.contacts)?.findOne(principal).exec();
 
@@ -408,7 +402,6 @@ export class RxdbDatabase extends IWalletDatabase {
   async updateContacts(newDocs: Contact[]): Promise<void> {
     try {
       const databaseContacts = newDocs.map((contact) => this._getStorableContact(contact));
-      console.log(databaseContacts);
 
       await (
         await this.contacts

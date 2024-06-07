@@ -12,10 +12,7 @@ export default function ContactAction(props: ContactActionProps) {
     <div className="grid w-full place-content-center">
       <DropdownMenu.Root>
         <DropdownMenu.Trigger>
-          <DotsHorizontalIcon
-            className="w-5 h-5 mr-[1.5rem] opacity-50 stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor cursor-pointer"
-            onClick={console.log}
-          />
+          <DotsHorizontalIcon className="w-5 h-5 mr-[1.5rem] opacity-50 stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor cursor-pointer" />
         </DropdownMenu.Trigger>
         <DropdownMenu.Portal>
           <DropdownMenu.Content className="flex flex-col p-1 rounded-md dark:bg-level-1-color bg-secondary-color-2-light">

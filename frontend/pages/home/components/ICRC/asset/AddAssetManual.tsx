@@ -410,7 +410,6 @@ const AddAssetManual = () => {
         dispatch(setAssetMutation(undefined));
         dispatch(setAssetMutationAction(AssetMutationAction.NONE));
       }, 0);
-
     } else if (await onTest(false)) addAssetToData();
   }
 

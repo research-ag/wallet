@@ -225,8 +225,6 @@ export const useCreateContact = (onClose: () => void) => {
 
       if (!isContactValidOnCreate(toCreateContact)) throw new Error("Create contact validation failed");
       const newSubAccounts = await includeAllowanceToAccounts(toCreateContact.accounts);
-      // TODO: fix allowance not included
-      console.log("newSubAccounts: ", newSubAccounts);
 
       await db().addContact(
         {

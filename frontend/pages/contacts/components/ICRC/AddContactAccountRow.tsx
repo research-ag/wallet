@@ -33,7 +33,6 @@ interface AddContactAccountRowProps {
 
 export interface ContactAccountError {
   name: boolean;
-  subaccount: boolean;
   subaccountId: boolean;
   tokenSymbol: boolean;
 }
@@ -44,11 +43,8 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isHexadecimal, setIsHexadecimal] = useState<boolean>(true);
 
-  console.log("newAcciount", newAccount);
-
   const [errors, setErrors] = useState<ContactAccountError>({
     name: false,
-    subaccount: false,
     subaccountId: false,
     tokenSymbol: false,
   });
@@ -76,7 +72,7 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
               isHexadecimal={isHexadecimal}
               setIsHexadecimal={setIsHexadecimal}
               error={errors.subaccountId}
-              setErrors={setErrors}
+              clearErrors={clearErrors}
             />
           </div>
           <div className=" w-[26.1%]">
@@ -137,7 +133,6 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
   function clearErrors() {
     setErrors({
       name: false,
-      subaccount: false,
       subaccountId: false,
       tokenSymbol: false,
     });
@@ -178,10 +173,9 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
   }
 
   function isNewAccountValid(newAccount: ContactAccount): boolean {
-    setErrors({ name: false, subaccount: false, subaccountId: false, tokenSymbol: false });
+    setErrors({ name: false, subaccountId: false, tokenSymbol: false });
 
     if (newAccount.tokenSymbol.length === 0) {
-      console.log("No token symbol");
       setErrors((prev) => ({ ...prev, tokenSymbol: true }));
       return false;
     }
@@ -209,7 +203,6 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
   function isAccountDuplicated(newAccount: ContactAccount): boolean {
     if (isDuplicatedSubAccount(newAccount, props.contact.accounts)) {
       setErrors((prev) => ({ ...prev, subaccountId: true }));
-      console.log("Account already exists");
       return true;
     }
 
@@ -217,10 +210,7 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
   }
 
   async function onTestAccountAllowance() {
-    if (!newAccount) {
-      console.log("No new account to save");
-      return;
-    }
+    if (!newAccount) return;
 
     if (!isNewAccountValid(newAccount)) {
       setIsLoading(false);
@@ -271,11 +261,7 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
       setIsLoading(true);
 
       // --- validate ---
-
-      if (!newAccount) {
-        console.log("No new account to save");
-        return;
-      }
+      if (!newAccount) return;
 
       if (!isNewAccountValid(newAccount)) {
         setIsLoading(false);

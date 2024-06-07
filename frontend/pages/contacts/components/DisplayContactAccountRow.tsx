@@ -31,7 +31,9 @@ interface DisplayContactAccountRowProps {
 }
 
 export default function DisplayContactAccountRow(props: DisplayContactAccountRowProps) {
-  const isCurrentUpdate = props.updateAccount?.subaccountId === props.currentAccount.subaccountId;
+  const isCurrentUpdate =
+    props.updateAccount?.subaccountId === props.currentAccount.subaccountId &&
+    props.updateAccount?.tokenSymbol === props.currentAccount.tokenSymbol;
   const hasAllowance = props.currentAccount.allowance?.amount;
 
   return (
@@ -89,7 +91,11 @@ export default function DisplayContactAccountRow(props: DisplayContactAccountRow
 
       <td className="w-[20%]">
         <div className="flex items-center">
-          <p className="mr-2">{props.currentAccount.subaccountId}</p>
+          <p className="mr-2">
+            {props.currentAccount.subaccountId.length >= 20
+              ? shortAddress(props.currentAccount.subaccountId, 10, 10)
+              : props.currentAccount.subaccountId}
+          </p>
           <CustomCopy size={"xSmall"} className="p-0" copyText={props.currentAccount.subaccountId} />
         </div>
       </td>

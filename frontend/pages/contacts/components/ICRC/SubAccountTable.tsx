@@ -12,6 +12,14 @@ export default function SubAccountTable({ contact }: { contact: Contact }) {
   const [errors, setErrors] = useState({ name: false });
   const [updateAccount, setUpdateAccount] = useState<ContactAccount | null>(null);
 
+  const [subaccountSort, setSubaccountSort] = useState<{
+    sort: "asc" | "desc";
+    field: "subaccountName" | "subaccountId";
+  }>({
+    sort: "asc",
+    field: "subaccountName",
+  });
+
   return (
     <tr className="bg-SecondaryColorLight dark:bg-SecondaryColor">
       <td colSpan={4} className="w-full h-4 border-BorderColorTwoLight dark:border-BorderColorTwo">
@@ -76,4 +84,8 @@ export default function SubAccountTable({ contact }: { contact: Contact }) {
       </td>
     </tr>
   );
+
 }
+
+type SubAccountSortField = "name" | "subaccountId";
+type SubAccountSortOrder = "asc" | "desc";
