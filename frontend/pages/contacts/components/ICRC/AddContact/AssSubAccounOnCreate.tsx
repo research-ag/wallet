@@ -116,7 +116,7 @@ export default function AddSubAccountOnCreate({ contactAssetSelected }: AddSubAc
     setNewContact((prev: Contact) => {
       const newSubAccount: ContactAccount = {
         ...prev.accounts[iterator],
-        subaccount: value,
+        subaccount: value.trim(),
         subaccountId: value.includes("0x") ? value.trim() : `0x${value.trim()}`,
       };
 

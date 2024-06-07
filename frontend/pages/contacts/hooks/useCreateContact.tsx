@@ -138,6 +138,31 @@ export const useCreateContact = (onClose: () => void) => {
         return false;
       }
 
+      // --- validate subaccounts duplication ---
+
+      const subAccountIds = contact.accounts.map((account) => account.subaccountId);
+      const duplicatedSubAccount: SubAccountError[] = contact.accounts.map((account, index): SubAccountError | null => {
+
+        const duplicated = subAccountIds.filter((subAccountId) => subAccountId === account.subaccountId);
+
+        if (duplicated.length > 1) {
+          return {
+            index,
+            subAccountId: true,
+            message: t("contact.error.account.exist"),
+            name: false,
+            tokenSymbol: account.tokenSymbol,
+          };
+        };
+
+        return null;
+      }).filter((error) => error !== null);
+
+      if (duplicatedSubAccount.length > 0) {
+        setSubAccountError(duplicatedSubAccount[0]);
+        return false;
+      }
+
       return true;
     } catch (error) {
       logger.debug("isContactValidOnCreate failed: ", error);
