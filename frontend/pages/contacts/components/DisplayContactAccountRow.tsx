@@ -17,6 +17,7 @@ import { isContactAccountNameValid } from "../helpers/validators";
 import { CheckIcon } from "@radix-ui/react-icons";
 import logger from "@common/utils/logger";
 import { db } from "@/database/db";
+import AllowanceTooltip from "./ICRC/AllowanceTooltip";
 
 interface DisplayContactAccountRowProps {
   index: number;
@@ -31,6 +32,7 @@ interface DisplayContactAccountRowProps {
 
 export default function DisplayContactAccountRow(props: DisplayContactAccountRowProps) {
   const isCurrentUpdate = props.updateAccount?.subaccountId === props.currentAccount.subaccountId;
+  const hasAllowance = props.currentAccount.allowance?.amount;
 
   return (
     <tr key={props.index} className="h-[2.8rem]">
@@ -73,7 +75,14 @@ export default function DisplayContactAccountRow(props: DisplayContactAccountRow
         ) : (
           <div className="flex items-center" onDoubleClick={onAccountNameUpdate}>
             <AvatarEmpty title={props.currentAccount.name} />
-            <span className="ml-2">{props.currentAccount.name}</span>
+            <span className="mx-2">{props.currentAccount.name}</span>
+            {hasAllowance && (
+              <AllowanceTooltip
+                amount={props.currentAccount.allowance?.amount || "0"}
+                expiration={props.currentAccount.allowance?.expiration || ""}
+                tokenSymbol={props.currentAccount.tokenSymbol}
+              />
+            )}
           </div>
         )}
       </td>

@@ -47,24 +47,56 @@ export const useCreateContact = (onClose: () => void) => {
     try {
       setIsAllowancesChecking(true);
 
-      if (!validatePrincipal(newContact.principal))
+      if (!validatePrincipal(newContact.principal)) {
         setNewContactErrors((prev) => ({
           ...prev,
           name: false,
           principal: true,
           message: t("contact.error.invalid.principal"),
         }));
-      else
+
+        return;
+      } else {
         setNewContactErrors((prev) => ({
           ...prev,
           name: false,
           principal: false,
           message: "",
         }));
+      }
+
+      const duplicatedSubAccount = newContact.accounts
+        .map((account, index): SubAccountError | null => {
+          const duplicated = newContact.accounts.filter((sa) => {
+            const isEmptyAccountId = account.subaccountId === "";
+            const isSameToken = sa.tokenSymbol === account.tokenSymbol;
+            const isSameSubAccountId = sa.subaccountId === account.subaccountId;
+            return !isEmptyAccountId && isSameSubAccountId && isSameToken;
+          });
+
+          if (duplicated.length > 1) {
+            return {
+              index,
+              subAccountId: true,
+              message: t("contact.error.account.exist"),
+              name: false,
+              tokenSymbol: account.tokenSymbol,
+            };
+          }
+
+          return null;
+        })
+        .filter((error) => error !== null);
+
+      if (duplicatedSubAccount.length > 0) {
+        setSubAccountError(duplicatedSubAccount[0]);
+        return;
+      }
 
       const noTestableAccounts = newContact.accounts.filter(
         (account) => !isContactSubaccountIdValid(account.subaccountId),
       );
+
       const newSubAccounts = await includeAllowanceToAccounts(newContact.accounts);
 
       setNewContact((prev) => ({ ...prev, accounts: [...newSubAccounts, ...noTestableAccounts] }));
@@ -140,26 +172,38 @@ export const useCreateContact = (onClose: () => void) => {
 
       // --- validate subaccounts duplication ---
 
-      const subAccountIds = contact.accounts.map((account) => account.subaccountId);
-      const duplicatedSubAccount: SubAccountError[] = contact.accounts.map((account, index): SubAccountError | null => {
+      const subAccountIds = contact.accounts.map((account) => ({
+        subaccountId: account.subaccountId,
+        tokenSymbol: account.tokenSymbol,
+      }));
 
-        const duplicated = subAccountIds.filter((subAccountId) => subAccountId === account.subaccountId);
+      const duplicatedSubAccount: (SubAccountError | null)[] = contact.accounts.map(
+        (account, index): SubAccountError | null => {
+          const duplicated = subAccountIds.filter((subAccountId) => {
+            const isEmptyAccountId = account.subaccountId === "";
+            const isSameToken = subAccountId.tokenSymbol === account.tokenSymbol;
+            const isSameSubAccountId = subAccountId.subaccountId === account.subaccountId;
+            return !isEmptyAccountId && isSameSubAccountId && isSameToken;
+          });
 
-        if (duplicated.length > 1) {
-          return {
-            index,
-            subAccountId: true,
-            message: t("contact.error.account.exist"),
-            name: false,
-            tokenSymbol: account.tokenSymbol,
-          };
-        };
+          if (duplicated.length > 1) {
+            return {
+              index,
+              subAccountId: true,
+              message: t("contact.error.account.exist"),
+              name: false,
+              tokenSymbol: account.tokenSymbol,
+            };
+          }
 
-        return null;
-      }).filter((error) => error !== null);
+          return null;
+        },
+      );
 
-      if (duplicatedSubAccount.length > 0) {
-        setSubAccountError(duplicatedSubAccount[0]);
+      const noNulls = duplicatedSubAccount.filter((error) => error !== null);
+
+      if (noNulls.length > 0) {
+        setSubAccountError(noNulls[0]);
         return false;
       }
 
@@ -180,7 +224,6 @@ export const useCreateContact = (onClose: () => void) => {
       };
 
       if (!isContactValidOnCreate(toCreateContact)) throw new Error("Create contact validation failed");
-
       const newSubAccounts = await includeAllowanceToAccounts(toCreateContact.accounts);
       // TODO: fix allowance not included
       console.log("newSubAccounts: ", newSubAccounts);

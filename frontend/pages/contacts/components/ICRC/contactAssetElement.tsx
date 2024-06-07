@@ -4,7 +4,7 @@ import PlusIcon from "@assets/svg/files/plus-icon.svg";
 import { IconTypeEnum } from "@/common/const";
 import { getAssetIcon } from "@/common/utils/icons";
 import { Asset } from "@redux/models/AccountModels";
-import { Dispatch, SetStateAction, useRef } from "react";
+import { Dispatch, SetStateAction } from "react";
 import clsx from "clsx";
 import { Contact } from "@redux/models/ContactsModels";
 import { useContact } from "@pages/contacts/contexts/ContactProvider";
@@ -18,7 +18,6 @@ interface ContactAssetElementProps {
 }
 
 const ContactAssetElement = (props: ContactAssetElementProps) => {
-  const lastSelectedAsset = useRef<string>(props.contactAssetSelected);
   const { contAst, interator, contactAssetSelected, setContactAssetSelected } = props;
   const { newContact, setNewContact } = useContact();
   const { setSubAccountError } = useContactError();

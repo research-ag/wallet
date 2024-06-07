@@ -14,11 +14,9 @@ interface AddSubAccountOnCreateProps {
 }
 
 export default function AddSubAccountOnCreate({ contactAssetSelected }: AddSubAccountOnCreateProps) {
-  const { newContact, setNewContact } = useContact();
   const { t } = useTranslation();
+  const { newContact, setNewContact } = useContact();
   const { subAccountError, setSubAccountError } = useContactError();
-
-  // TODO: fix the issue with the subaccount id format 0 -> 0x0
 
   return (
     <div className="flex flex-col items-start justify-start w-full h-full gap-4 p-3 bg-SecondaryColorLight dark:bg-SecondaryColor">
@@ -74,7 +72,7 @@ export default function AddSubAccountOnCreate({ contactAssetSelected }: AddSubAc
                   intent={"primary"}
                   border={hasCurrentError ? "error" : undefined}
                   placeholder={"Hex"}
-                  value={newSA.subaccountId}
+                  value={newSA.subaccount}
                   onChange={(e) => {
                     onchangeSubIdx(e.target.value, iterator, newSA);
                   }}
@@ -112,12 +110,55 @@ export default function AddSubAccountOnCreate({ contactAssetSelected }: AddSubAc
     });
   }
 
+  function getSubAccountId(value: string | undefined) {
+    // undefined -> ""
+    if (!value) return "";
+
+    // "" -> ""
+    if (value.length === 0) return "";
+
+    // 0 -> 0x0
+    // 3 -> 0x3
+    // 54 -> 0x54
+    if (value.length === 1) return `0x${value}`;
+
+    // 0x -> 0x0
+    // 23 -> 0x23
+    // 54 -> 0x54
+    // 0X -> 0x0
+    if (value.length === 2) {
+      if (value.toLocaleLowerCase() === "0x") return "0x";
+      return `0x${value}`;
+    }
+
+    // 0x23 -> 0x23
+    // 0X23 -> 0x23
+    // 0x54234 -> 0x54234
+    // 0X54234 -> 0x54234
+    // 023120x -> 0x23120x
+    if (value.length > 2) {
+      if (value.slice(0, 2).toLocaleLowerCase() === "0x") return value;
+      return `0x${value}`;
+    }
+
+    return value;
+  }
+
+  function getSubAccount(value: string | undefined) {
+    if (!value || value.length === 0) return "";
+    if (value.length >= 2) {
+      if (value.slice(0, 2).toLocaleLowerCase() === "0x") return `0x${value.slice(2)}`;
+    }
+
+    return value;
+  }
+
   function onchangeSubIdx(value: string, iterator: number, subAccount: ContactAccount) {
     setNewContact((prev: Contact) => {
       const newSubAccount: ContactAccount = {
         ...prev.accounts[iterator],
-        subaccount: value.trim(),
-        subaccountId: value.includes("0x") ? value.trim() : `0x${value.trim()}`,
+        subaccount: getSubAccount(value.trim()),
+        subaccountId: getSubAccountId(value.trim()),
       };
 
       return {
@@ -140,7 +181,10 @@ export default function AddSubAccountOnCreate({ contactAssetSelected }: AddSubAc
 
     const duplicatedIdByAsset =
       newContact.accounts.filter((sa) => {
-        return sa.subaccountId === value && sa.tokenSymbol === contactAssetSelected;
+        const isSameToken = sa.tokenSymbol === contactAssetSelected;
+        const isSameId = sa.subaccountId === value;
+        const isIdEmpty = sa.subaccountId.length === 0;
+        return isSameToken && isSameId && !isIdEmpty;
       }).length >= 1;
 
     if (duplicatedIdByAsset) {
@@ -161,7 +205,7 @@ export default function AddSubAccountOnCreate({ contactAssetSelected }: AddSubAc
       e.preventDefault();
     }
 
-    if (newSA.subaccountId.includes("0x") || newSA.subaccountId.includes("0X")) {
+    if (newSA.subaccount.toLocaleLowerCase().includes("0x")) {
       if (e.key === "X" || e.key == "x") {
         e.preventDefault();
       }
