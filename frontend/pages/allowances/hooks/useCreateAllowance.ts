@@ -73,13 +73,7 @@ export default function useCreateAllowance() {
     const amountWithoutZeros = removeZeroesFromAmount(allowance.amount || "0");
     const amountBigint = toHoleBigInt(amountWithoutZeros, Number(asset.decimal));
     const formattedAmount = toFullDecimal(amountBigint, Number(asset.decimal));
-
     const formatted = { ...fullAllowance, amount: formattedAmount };
-
-    const params = createApproveAllowanceParams(formatted);
-    await submitAllowanceApproval(params, formatted.asset.address);
-    await refreshAllowance(formatted);
-
     const duplicated = await getDuplicatedAllowance(formatted);
 
     if (duplicated) {

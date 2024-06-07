@@ -15,8 +15,6 @@ import { setTransactionDrawerAction } from "@redux/transaction/TransactionAction
 import { TransactionDrawer } from "@/@types/transactions";
 import { setSelectedTransaction } from "@redux/transaction/TransactionReducer";
 
-const columns: string[] = ["type", "transactionID", "date", "amount"];
-
 export interface TransactionsTableProps {
   onScroll: (e: React.UIEvent<HTMLDivElement>) => void;
   transactions: Transaction[];
@@ -36,19 +34,30 @@ export default function TransactionsTable(props: TransactionsTableProps) {
       <table className="relative w-full text-black-color dark:text-gray-color-9 ">
         <thead className={headerStyles}>
           <tr>
-            {columns.map((currentColumn, index) => (
-              <th key={currentColumn} className={colStyle(index)}>
-                <div className={`flex items-center px-1 py-2 ${justifyCell(index)}`}>
-                  <p>{t(currentColumn)}</p>
-                  {currentColumn === columns[columns.length - 2] && (
-                    <SortIcon
-                      className="w-3 h-3 ml-1 cursor-pointer dark:fill-gray-color-6 fill-black-color"
-                      onClick={onSort}
-                    />
-                  )}
-                </div>
-              </th>
-            ))}
+            <th className="w-[8%]">
+              <div className="flex items-center px-1 py-2">
+                <p>{t("type")}</p>
+              </div>
+            </th>
+            <th className="w-[60%]">
+              <div className="flex items-center px-1 py-2">
+                <p>{t("transactionID")}</p>
+              </div>
+            </th>
+            <th className="w-[11%]">
+              <div className="flex items-center px-1 py-2">
+                <p>{t("date")}</p>
+                <SortIcon
+                  className="w-3 h-3 ml-1 cursor-pointer dark:fill-gray-color-6 fill-black-color"
+                  onClick={onSort}
+                />
+              </div>
+            </th>
+            <th className="w-[20%]">
+              <div className="flex items-center justify-end px-1 py-2">
+                <p>{t("amount")}</p>
+              </div>
+            </th>
           </tr>
         </thead>
 
@@ -96,39 +105,38 @@ export default function TransactionsTable(props: TransactionsTableProps) {
                 className="relative cursor-pointer"
                 onClick={() => onTransactionInpect(transaction)}
               >
-                <td className={colStyle(0)}>
+                <td className="w-[8%]">
                   {isCurrentSelected && <div className="absolute w-2 h-[4.05rem] left-0 bg-primary-color"></div>}
-                  <div className="flex justify-center w-full h-12 my-2">
-                    <div className="flex items-center justify-center p-2 border rounded-md border-BorderColorTwoLight dark:border-BorderColorTwo">
+                  <div className="flex h-full ">
+                    <div className="flex items-center justify-center border rounded-md border-BorderColorTwoLight dark:border-BorderColorTwo w-[2rem] h-[2rem]">
                       <img src={srcType} alt={transaction.kind} />
                     </div>
                   </div>
                 </td>
 
-                <td className={colStyle(1)}>
+                <td className="w-[60%]">
                   <CodeElement tx={transaction} />
                 </td>
 
-                <td className={colStyle(3)}>
-                  <div className="flex items-center justify-end">
+                <td className="w-[11%]">
+                  <div className="flex items-center">
                     <p className="text-md w-fit">{moment(transaction.timestamp).format("M/DD/YYYY")}</p>
                   </div>
                 </td>
 
-                <td className={colStyle(0)}>
-                  <div className="flex flex-col items-end justify-center w-full pr-5 my-2">
-                    <p
-                      className={`text-right whitespace-nowrap ${
-                        isTo ? "text-TextSendColor" : "text-TextReceiveColor"
-                      }`}
-                    >{`${isTo && !isApprove ? "-" : ""}${
-                      isTypeSend
+                <td className="w-[20%]">
+                  <div className="flex justify-end">
+                    <p className={amountTextStyles(isTo)}>
+                      {isTo && !isApprove ? "-" : ""}
+                      {isTypeSend
                         ? toFullDecimal(
-                            BigInt(transaction?.amount || "0") + BigInt(selectedAccount?.transaction_fee || "0"),
-                            selectedAccount?.decimal || 8,
-                          )
-                        : toFullDecimal(BigInt(transaction?.amount || "0"), selectedAccount?.decimal || 8)
-                    } ${getAssetSymbol(transaction?.symbol || selectedAsset?.symbol || "", assets)}`}</p>
+                          BigInt(transaction?.amount || "0") + BigInt(selectedAccount?.transaction_fee || "0"),
+                          selectedAccount?.decimal || 8,
+                        )
+                        : toFullDecimal(BigInt(transaction?.amount || "0"), selectedAccount?.decimal || 8)}
+                      {" "}
+                      {getAssetSymbol(transaction?.symbol || selectedAsset?.symbol || "", assets)}
+                    </p>
                   </div>
                 </td>
               </tr>
@@ -146,29 +154,6 @@ export default function TransactionsTable(props: TransactionsTableProps) {
 }
 
 // Tailwind CSS
-const colStyle = (idxTH: number) =>
-  clsx({
-    ["realtive"]: true,
-    ["w-[5rem] min-w-[5rem] max-w-[5rem]"]: idxTH === 0,
-    ["w-[calc(55%-5rem)] min-w-[calc(55%-5rem)] max-w-[calc(55%-5rem)]"]: idxTH === 1,
-    ["w-[20%] min-w-[20%] max-w-[20%]"]: idxTH === 2,
-    ["w-[25%] min-w-[25%] max-w-[25%]"]: idxTH === 3,
-  });
-
-function justifyCell(index: number) {
-  switch (index) {
-    case 0:
-      return "justify-start";
-    case 1:
-      return "justify-start";
-    case 2:
-      return "justify-end";
-    case 3:
-      return "justify-end";
-    default:
-      return "";
-  }
-}
 
 const headerStyles = clsx(
   "sticky top-0 z-10",
@@ -182,3 +167,6 @@ const bodyStyles = clsx(
   "text-md text-left text-black-color dark:text-gray-color-6",
   "divide-y dark:divide-gray-color-1 divide-gray-color-6",
 );
+
+const amountTextStyles = (isTo: boolean) =>
+  clsx("text-right whitespace-nowrap", isTo ? "text-TextSendColor" : "text-TextReceiveColor");
