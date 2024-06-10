@@ -78,6 +78,7 @@
   "contact.error.invalid.account.id": "ID da conta de contato inválida",
   "contact.error.invalid.account.name": "Nome da conta de contato inválido",
   "contact.error.account.exist": "Subconta de contato já existe",
+  "contact.error.principal.self": "Principal de contato não pode ser o mesmo que o principal da conta",
 
   "copied": "Copiado!",
   "delete.asset.msg": "Tem certeza que deseja excluir o Ativo",

@@ -31,7 +31,7 @@ export default function ContactMainDetails() {
           placeholder={""}
           border={newContactErrors.principal ? "error" : undefined}
           value={newContact.principal}
-          onChange={(e) => onPrincipalChange(e.target.value)}
+          onChange={(e) => onPrincipalChange(e.target.value.trim())}
         />
       </div>
     </div>

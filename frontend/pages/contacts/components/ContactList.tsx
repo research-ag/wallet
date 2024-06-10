@@ -3,7 +3,6 @@ import { ReactComponent as CheckIcon } from "@assets/svg/files/edit-check.svg";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 import { ReactComponent as MoneyHandIcon } from "@assets/svg/files/money-hand.svg";
 import { ReactComponent as SortIcon } from "@assets/svg/files/sort.svg";
-// import DeleteContactModal from "./ICRC/DeleteContactModal";
 //
 import { Contact } from "@redux/models/ContactsModels";
 import { CustomInput } from "@components/input";
@@ -12,7 +11,7 @@ import { ChangeEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Fragment } from "react/jsx-runtime";
 import logger from "@/common/utils/logger";
-import { getInitialFromName } from "@common/utils/strings";
+import { getInitialFromName, removeExtraSpaces } from "@common/utils/strings";
 import { shortAddress } from "@common/utils/icrc";
 import { CustomCopy } from "@components/tooltip";
 import { ChevronDownIcon, ChevronLeftIcon } from "@radix-ui/react-icons";
@@ -95,7 +94,7 @@ export default function ContactList({ allowanceOnly, assetFilter, contactSearchK
                 <tr className={getBodyRowStyles(isContactExpanded, isContactEditable)}>
                   <td>
                     <div className="relative flex flex-row items-center justify-start w-full gap-2 px-4 min-h-14">
-                      {isContactExpanded && <div className="absolute left-0 w-1 h-14 bg-SelectRowColor" />}
+                      {isContactExpanded && <div className="absolute left-0 w-1 h-14 bg-primary-color" />}
 
                       {isContactEditable ? (
                         <div className="flex items-center justify-between w-full gap-2">
@@ -106,6 +105,7 @@ export default function ContactList({ allowanceOnly, assetFilter, contactSearchK
                             sizeInput="small"
                             onChange={onContactNameChange}
                             value={contactEdited?.name || ""}
+                            autoFocus
                           />
 
                           {isContactEditable && (
@@ -178,23 +178,23 @@ export default function ContactList({ allowanceOnly, assetFilter, contactSearchK
   );
 
   function getSortedContacts(contacts: Contact[], sortDirection: SortDirection): Contact[] {
-    return contacts.sort((a, b) => {
+    return [...contacts].sort((a, b) => {
       if (sortDirection === SortDirection.Asc) {
         return a.name.localeCompare(b.name);
       } else {
         return b.name.localeCompare(a.name);
       }
     });
-  };
+  }
 
   function toggleSortDirection() {
     if (sortDirection === SortDirection.Asc) setSortDirection(SortDirection.Desc);
     else setSortDirection(SortDirection.Asc);
-  };
+  }
 
   function onContactNameChange(e: ChangeEvent<HTMLInputElement>) {
     setContactEdited((prev: any) => {
-      return { ...prev, name: e.target.value };
+      return { ...prev, name: removeExtraSpaces(e.target.value) };
     });
   }
 

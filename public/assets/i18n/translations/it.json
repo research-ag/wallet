@@ -78,6 +78,7 @@
   "contact.error.invalid.account.id": "ID account contatto non valido",
   "contact.error.invalid.account.name": "Nome account contatto non valido",
   "contact.error.account.exist": "Sottoaccount contatto già esistente",
+  "contact.error.principal.self": "Il principale contatto non può essere se stesso",
 
   "copied": "Copiato!",
   "delete.asset.msg": "Sei sicuro di voler eliminare la Risorsa",

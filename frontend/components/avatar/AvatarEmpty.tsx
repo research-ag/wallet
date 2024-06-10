@@ -1,5 +1,6 @@
 import { HTMLAttributes } from "react";
 import { cva, VariantProps } from "cva";
+import { getInitialFromName } from "@common/utils/strings";
 
 interface AvatarEmptyProps extends HTMLAttributes<HTMLDivElement>, VariantProps<typeof avatarEmptyCVA> {
   title: string;
@@ -9,7 +10,7 @@ export default function AvatarEmpty(props: AvatarEmptyProps) {
   const { className, title, figure, size, border, background, ...additionalProps } = props;
   return (
     <div className={avatarEmptyCVA({ figure, size, border, background, className })} {...additionalProps}>
-      <p className="text-white text-md">{title?.length > 0 ? title[0]?.toUpperCase() : "-"}</p>
+      <p className="text-white text-md">{getInitialFromName(title, 1)}</p>
     </div>
   );
 }

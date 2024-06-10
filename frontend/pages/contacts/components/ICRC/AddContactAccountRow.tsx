@@ -27,6 +27,8 @@ import { validatePrincipal } from "@common/utils/definityIdentity";
 import getAccountFromPrincipal from "@pages/contacts/helpers/getAccountFromPrincipal";
 import { db } from "@/database/db";
 import AllowanceTooltip from "./AllowanceTooltip";
+import { useTranslation } from "react-i18next";
+import { removeExtraSpaces } from "@common/utils/strings";
 
 interface AddContactAccountRowProps {
   contact: Contact;
@@ -39,6 +41,8 @@ export interface ContactAccountError {
 }
 
 export default function AddContactAccountRow(props: AddContactAccountRowProps) {
+  const { t } = useTranslation();
+  const [isAllowanceLoading, setIsAllowanceLoading] = useState<boolean>(false);
   const userPrincipal = useAppSelector((state) => state.auth.userPrincipal);
   const [newAccount, setNewAccount] = useState<ContactAccount | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -55,15 +59,16 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
     <div className="h-[3rem] flex items-center">
       {newAccount ? (
         <div className="flex items-center w-full">
-          <div className="w-[15.7%]">
+          <div className="w-[15.7%] pr-2">
             <AssetSelect onAssetChange={onAssetChange} error={errors.tokenSymbol} clearErrors={clearErrors} />
           </div>
           <div className="w-[21%] pr-4 flex items-center">
             <CustomInput
-              placeholder="Subaccount name"
+              placeholder={t("name.sub.account")}
+              inputClass="h-[2rem]"
               onChange={onAccountNameChange}
-              className="h-[2.2rem] "
-              border={errors.name ? "error" : undefined}
+              className="h-[2.2rem] dark:bg-level-2-color bg-gray-color-8 rounded-lg"
+              border={errors.name ? "error" : "selected"}
             />
 
             {hasAllowance && (
@@ -95,12 +100,16 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
             </div>
           </div>
           <div className=" w-[8%] flex justify-end">
-            <CustomButton intent="success" size="small" onClick={onTestAccountAllowance}>
-              <div className="flex p-0.5">
-                <MoneyHandIcon className="relative w-5 h-5 fill-PrimaryColorLight" />
-                <p className="ml-1 font-semibold text-md">Test</p>
-              </div>
-            </CustomButton>
+            {isAllowanceLoading ? (
+              <LoadingLoader />
+            ) : (
+              <CustomButton intent="success" size="small" onClick={onTestAccountAllowance}>
+                <div className="flex p-0.5">
+                  <MoneyHandIcon className="relative w-5 h-5 fill-PrimaryColorLight" />
+                  <p className="ml-1 font-semibold text-md">Test</p>
+                </div>
+              </CustomButton>
+            )}
           </div>
           <div className=" w-[8%]">
             <div className="flex items-center justify-center">
@@ -113,7 +122,7 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
                 />
               )}
               <CloseIcon
-                onClick={() => setNewAccount(null)}
+                onClick={onCancel}
                 className="w-6 h-6 opacity-50 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
               />
             </div>
@@ -133,13 +142,24 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
           className="flex items-center"
         >
           <PlusIcon className="w-4 h-4 mr-2 mb-0.5" />
-          <p className="mt-0.5 font-bold text-md">Sub-account</p>
+          <p className="mt-0.5 font-bold text-md">{t("sub-acc")}</p>
         </CustomButton>
       )}
     </div>
   );
 
   function clearErrors() {
+    setErrors({
+      name: false,
+      subaccountId: false,
+      tokenSymbol: false,
+    });
+  }
+
+  function onCancel() {
+    setIsAllowanceLoading(false);
+    setIsLoading(false);
+    setNewAccount(null);
     setErrors({
       name: false,
       subaccountId: false,
@@ -160,13 +180,13 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
     });
   }
 
-  function onAccountNameChange(e: React.ChangeEvent<HTMLInputElement>) {
+  function onAccountNameChange(event: React.ChangeEvent<HTMLInputElement>) {
     setErrors((prev) => ({ ...prev, name: false, subaccount: false, subaccountId: false, tokenSymbol: false }));
 
     setNewAccount((prev) => {
-      if (prev) return { ...prev, name: e.target.value };
+      if (prev) return { ...prev, name: removeExtraSpaces(event.target.value) };
       return {
-        name: e.target.value,
+        name: removeExtraSpaces(event.target.value),
         subaccount: "",
         subaccountId: "",
         tokenSymbol: "",
@@ -219,10 +239,11 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
   }
 
   async function onTestAccountAllowance() {
+    setIsAllowanceLoading(true);
     if (!newAccount) return;
 
     if (!isNewAccountValid(newAccount)) {
-      setIsLoading(false);
+      setIsAllowanceLoading(false);
       return;
     }
 
@@ -239,7 +260,7 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
     };
 
     if (isAccountDuplicated(toStoreAccount)) {
-      setIsLoading(false);
+      setIsAllowanceLoading(false);
       return;
     }
 
@@ -250,7 +271,6 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
     });
 
     const withAllowances = await addAllowanceToSubaccounts(allowanceArgs);
-    // TODO: do not include the variable "accounts" returned from the function
 
     setNewAccount((prev) => {
       if (prev) return { ...prev, ...withAllowances[0] };
@@ -263,6 +283,7 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
         accounts: [],
       };
     });
+    setIsAllowanceLoading(false);
   }
 
   async function onSaveSubAccount() {

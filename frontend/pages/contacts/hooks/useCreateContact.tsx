@@ -18,6 +18,7 @@ import { useTranslation } from "react-i18next";
 import { db } from "@/database/db";
 import { getAccountIdentifier } from "@common/utils/icrc";
 import contactAccountToAllowanceArgs from "../helpers/mappers";
+import { Principal } from "@dfinity/principal";
 
 export const useCreateContact = (onClose: () => void) => {
   const { t } = useTranslation();
@@ -124,6 +125,24 @@ export const useCreateContact = (onClose: () => void) => {
         return false;
       }
 
+      if (!isContactPrincipalValid(contact.principal)) {
+        setNewContactErrors((prev) => ({
+          ...prev,
+          principal: true,
+          message: t("contact.error.invalid.principal"),
+        }));
+        return false;
+      }
+
+      if (Principal.fromText(contact.principal).compareTo(userPrincipal) === "eq") {
+        setNewContactErrors((prev) => ({
+          ...prev,
+          principal: true,
+          message: t("contact.error.principal.self"),
+        }));
+        return false;
+      }
+
       if (isDuplicatedPrincipal(contact.principal, contacts)) {
         setNewContactErrors((prev) => ({
           ...prev,
@@ -131,15 +150,6 @@ export const useCreateContact = (onClose: () => void) => {
           message: t("contact.error.duplicated.principal"),
         }));
 
-        return false;
-      }
-
-      if (!isContactPrincipalValid(contact.principal)) {
-        setNewContactErrors((prev) => ({
-          ...prev,
-          principal: true,
-          message: t("contact.error.invalid.principal"),
-        }));
         return false;
       }
 

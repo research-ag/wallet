@@ -78,6 +78,7 @@
   "contact.error.invalid.account.id": "ID de cuenta de contacto no válida",
   "contact.error.invalid.account.name": "Nombre de cuenta de contacto no válido",
   "contact.error.account.exist": "La subcuenta de contacto ya existe",
+  "contact.error.principal.self": "No se permite el principal de contacto propio",
 
   "copied": "Copiado!",
   "delete.asset.msg": "¿Estás seguro de que deseas eliminar el Activo",

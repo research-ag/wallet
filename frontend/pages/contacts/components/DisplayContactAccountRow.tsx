@@ -18,6 +18,7 @@ import { CheckIcon } from "@radix-ui/react-icons";
 import logger from "@common/utils/logger";
 import { db } from "@/database/db";
 import AllowanceTooltip from "./ICRC/AllowanceTooltip";
+import { removeExtraSpaces } from "@common/utils/strings";
 
 interface DisplayContactAccountRowProps {
   index: number;
@@ -61,7 +62,7 @@ export default function DisplayContactAccountRow(props: DisplayContactAccountRow
               placeholder="Subaccount name"
               onChange={onAccountNameChange}
               className="h-[2.2rem] "
-              border={props.errors.name ? "error" : undefined}
+              border={props.errors.name ? "error" : "selected"}
               value={props.updateAccount?.name || ""}
             />
 
@@ -70,7 +71,7 @@ export default function DisplayContactAccountRow(props: DisplayContactAccountRow
               className="w-6 h-6 opacity-50 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
             />
             <CloseIcon
-              onClick={() => props.setUpdateAccount(null)}
+              onClick={onCancelUpdate}
               className="w-6 h-6 opacity-50 cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
             />
           </div>
@@ -119,6 +120,11 @@ export default function DisplayContactAccountRow(props: DisplayContactAccountRow
     </tr>
   );
 
+  function onCancelUpdate() {
+    props.setUpdateAccount(null);
+    props.setErrors({ ...props.errors, name: false });
+  }
+
   function getSubAccount(principal: string, subaccount?: string) {
     return encodeIcrcAccount({
       owner: Principal.fromText(principal),
@@ -131,7 +137,7 @@ export default function DisplayContactAccountRow(props: DisplayContactAccountRow
   }
 
   function onAccountNameChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const value = event.target.value;
+    const value = removeExtraSpaces(event.target.value);
     props.setErrors({ ...props.errors, name: false });
 
     if (!isContactAccountNameValid(value)) {

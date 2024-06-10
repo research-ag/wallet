@@ -5,6 +5,7 @@ import logger from "@common/utils/logger";
 import AddContactAccountRow from "./AddContactAccountRow";
 import DisplayContactAccountRow from "../DisplayContactAccountRow";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 enum SortOrder {
   ASC = "asc",
@@ -17,10 +18,12 @@ enum SortField {
 }
 
 export default function SubAccountTable({ contact }: { contact: Contact }) {
-  // const { t } = useTranslation();
+  const { t } = useTranslation();
   const assets = useAppSelector((state) => state.asset.list.assets);
+
   const [errors, setErrors] = useState({ name: false });
   const [updateAccount, setUpdateAccount] = useState<ContactAccount | null>(null);
+
   const [sortField, setSortField] = useState<SortField>(SortField.ASSET);
   const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.ASC);
 
@@ -33,7 +36,7 @@ export default function SubAccountTable({ contact }: { contact: Contact }) {
               <th className="w-[5%]"></th>
               <th className="w-[15%]">
                 <span className="flex items-center">
-                  <p className="text-md">Asset</p>
+                  <p className="text-md">{t("asset")}</p>
                   <SortIcon
                     className="w-3 h-3 ml-1 cursor-pointer dark:fill-gray-color-6 fill-black-color"
                     onClick={onAssetSortClick}
@@ -42,15 +45,15 @@ export default function SubAccountTable({ contact }: { contact: Contact }) {
               </th>
               <th className="w-[20%]">
                 <span className="flex items-center">
-                  <p>Subaccount Name</p>
+                  <p>{t("name.sub.account")}</p>
                   <SortIcon
                     className="w-3 h-3 ml-1 cursor-pointer dark:fill-gray-color-6 fill-black-color"
                     onClick={onSubAccountNameSortClick}
                   />
                 </span>
               </th>
-              <th className="w-[20%]">Subaccount</th>
-              <th className="w-[20%]">Account Identifier</th>
+              <th className="w-[20%]">{t("sub-acc")}</th>
+              <th className="w-[20%]">{t("account.indentifier")}</th>
               <th className="w-[20%]"></th>
             </tr>
           </thead>
@@ -77,7 +80,7 @@ export default function SubAccountTable({ contact }: { contact: Contact }) {
                 />
               );
             })}
-            <tr>
+            <tr className="bg-primary-color/30">
               <td colSpan={1}></td>
               <td colSpan={5}>
                 <AddContactAccountRow contact={contact} />
@@ -90,7 +93,6 @@ export default function SubAccountTable({ contact }: { contact: Contact }) {
   );
 
   function getSortedAccounts(accounts: ContactAccount[], sortField: SortField, sortOrder: SortOrder) {
-
     return [...accounts].sort((a, b) => {
       const sortValueA = sortField === SortField.ASSET ? a.tokenSymbol.toLowerCase() : a.name.toLowerCase();
       const sortValueB = sortField === SortField.ASSET ? b.tokenSymbol.toLowerCase() : b.name.toLowerCase();
@@ -109,7 +111,4 @@ export default function SubAccountTable({ contact }: { contact: Contact }) {
     setSortField(SortField.SUBACCOUNTNAME);
     setSortOrder(sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC);
   }
-
 }
-
-

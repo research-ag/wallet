@@ -1,6 +1,7 @@
 import SearchIcon from "@assets/svg/files/icon-search.svg";
 import { IconTypeEnum } from "@common/const";
 import { getAssetIcon } from "@common/utils/icons";
+import { removeExtraSpaces } from "@common/utils/strings";
 import { CustomInput } from "@components/input";
 //
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
@@ -9,17 +10,20 @@ import { Asset } from "@redux/models/AccountModels";
 import { useAppSelector } from "@redux/Store";
 import clsx from "clsx";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const Trigger = (props: { open: boolean; selectedOption: Asset; options: Asset[]; onClick: () => void }) => {
+  const { t } = useTranslation();
+
   return (
-    <div className="flex items-center justify-between w-[8rem] h-[1rem]" onClick={props.onClick}>
+    <div className="flex items-center justify-between w-full " onClick={props.onClick}>
       {props.selectedOption.symbol ? (
         <div className="flex items-center">
           {getAssetIcon(IconTypeEnum.Enum.FILTER, props.selectedOption?.tokenSymbol, props.selectedOption?.logo)}
           <p className="ml-2 text-md">{props.selectedOption.symbol}</p>
         </div>
       ) : (
-        <p className="text-md">Select Asset</p>
+        <p className="text-md">{t("adding.select")}</p>
       )}
       {props.open ? <ChevronDownIcon /> : <ChevronLeftIcon />}
     </div>
@@ -27,8 +31,10 @@ const Trigger = (props: { open: boolean; selectedOption: Asset; options: Asset[]
 };
 
 const Content = (props: { options: Asset[]; selectedOption: Asset; onSelectAsset: (asset: Asset) => void }) => {
+  const [search, setSearch] = useState("");
+
   return (
-    <div className="">
+    <div className="max-h-[10rem]  scroll-y-light">
       <div className="p-1 rounded-t-lg dark:bg-level-1-color bg-gray-color-8">
         <CustomInput
           prefix={<img src={SearchIcon} className="mx-2 w-[1rem] h-[1rem]" alt="search-icon" />}
@@ -41,25 +47,31 @@ const Content = (props: { options: Asset[]; selectedOption: Asset; onSelectAsset
       {props.options.map((option, index) => {
         const isLast = props.options.length - 1 === index;
 
+        if (search.length > 0) {
+          if (!option.symbol.toLowerCase().includes(search.toLowerCase())) {
+            return null;
+          }
+        }
+
         return (
-          <DropdownMenu.Item
+          <div
             key={option.address}
             className={clsx(
-              "flex items-center justify-between p-1 h-[2.2rem] cursor-pointer hover:bg-primary-color hover:text-white",
+              "flex items-center justify-between py-1 px-2 h-[2.2rem] cursor-pointer hover:bg-primary-color hover:text-white",
               { "rounded-b-lg": isLast },
             )}
             onClick={() => props.onSelectAsset(option)}
           >
             {getAssetIcon(IconTypeEnum.Enum.FILTER, option?.tokenSymbol, option?.logo)}
             <p className="text-md">{option.symbol}</p>
-          </DropdownMenu.Item>
+          </div>
         );
       })}
     </div>
   );
 
   function handleSearchChange(e: React.ChangeEvent<HTMLInputElement>) {
-    console.log(e.target.value);
+    setSearch(removeExtraSpaces(e.target.value));
   }
 };
 
@@ -94,7 +106,7 @@ export default function AssetSelect(props: AssetSelectProps) {
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>
         <DropdownMenu.Content
-          className="rounded-lg w-[10rem] bg-PrimaryColorLight dark:bg-SecondaryColor text-PrimaryTextColorLight dark:text-PrimaryTextColor border border-black-color shadow-lg"
+          className="rounded-lg w-[10rem] bg-PrimaryColorLight dark:bg-SecondaryColor text-PrimaryTextColorLight dark:text-PrimaryTextColor shadow-lg border border-primary-color"
           sideOffset={2}
         >
           <Content options={assets} selectedOption={selectedOption} onSelectAsset={onSelectAsset} />
@@ -112,4 +124,7 @@ export default function AssetSelect(props: AssetSelectProps) {
 }
 
 const triggerStyles = (error: boolean) =>
-  clsx("border rounded-md", error ? "border-slate-color-error" : "border-BorderColorLight dark:border-BorderColor");
+  clsx("border p-0 rounded-md dark:bg-level-2-color bg-gray-color-8 w-full max-w-[10rem] px-[0.2rem] h-[2.2rem]", {
+    "border-slate-color-error": error,
+    "border-primary-color": !error,
+  });

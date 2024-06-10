@@ -21,7 +21,7 @@ export default function AddSubAccountOnCreate({ contactAssetSelected }: AddSubAc
 
   return (
     <div className="flex flex-col items-start justify-start w-full h-full gap-4 p-3 bg-SecondaryColorLight dark:bg-SecondaryColor">
-      <p className="text-md">{`${t("sub-acc")} (${newContact.accounts.length})`}</p>
+      <p className="ml-7 text-md">{`${t("sub-acc")} (${newContact.accounts.length})`}</p>
       <div className="flex flex-row justify-start items-start w-full gap-2 max-h-[15rem] scroll-y-light">
         <div className="flex flex-col items-start justify-start w-full gap-2">
           <p className="ml-7 opacity-60">{t("name.sub.account")}</p>

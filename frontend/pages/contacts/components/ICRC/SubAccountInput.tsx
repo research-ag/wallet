@@ -19,7 +19,7 @@ export default function SubAccountInput(props: SubAccountInputProps) {
     <div className="relative flex flex-row items-center w-full h-10 gap-1 pr-2">
       <CustomInput
         intent={"primary"}
-        border={props.error ? "error" : undefined}
+        border={props.error ? "error" : "selected"}
         sizeComp={"xLarge"}
         sizeInput="small"
         inputClass="text-center"

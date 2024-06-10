@@ -130,11 +130,10 @@ export default function TransactionsTable(props: TransactionsTableProps) {
                       {isTo && !isApprove ? "-" : ""}
                       {isTypeSend
                         ? toFullDecimal(
-                          BigInt(transaction?.amount || "0") + BigInt(selectedAccount?.transaction_fee || "0"),
-                          selectedAccount?.decimal || 8,
-                        )
-                        : toFullDecimal(BigInt(transaction?.amount || "0"), selectedAccount?.decimal || 8)}
-                      {" "}
+                            BigInt(transaction?.amount || "0") + BigInt(selectedAccount?.transaction_fee || "0"),
+                            selectedAccount?.decimal || 8,
+                          )
+                        : toFullDecimal(BigInt(transaction?.amount || "0"), selectedAccount?.decimal || 8)}{" "}
                       {getAssetSymbol(transaction?.symbol || selectedAsset?.symbol || "", assets)}
                     </p>
                   </div>
