@@ -39,12 +39,14 @@ const AddAssetManual = () => {
   const dispatch = useAppDispatch();
   const { authClient } = AccountHook();
 
-  const [testLoading, setTestLoading] = useState(false);
   const [tested, setTested] = useState(false);
-  const [errShortDec, serErrShortDec] = useState(false);
+  const [testLoading, setTestLoading] = useState(false);
   const [validIndex, setValidIndex] = useState(false);
-  const [errIndex, setErrIndex] = useState("");
   const [validToken, setValidToken] = useState(false);
+  // 
+  const [errShortDec, serErrShortDec] = useState(false);
+  const [errIndex, setErrIndex] = useState("");
+
   const isUpdate = assetAction === AssetMutationAction.UPDATE;
 
   useEffect(() => {
@@ -304,6 +306,8 @@ const AddAssetManual = () => {
   async function onTest(override: boolean): Promise<boolean> {
     setTestLoading(true);
     let validData = false;
+
+    // function 2: check if asset address is already added
     if (checkAssetAdded(newAsset.address)) {
       setErrToken(t("adding.asset.already.imported"));
       setValidToken(false);
@@ -335,25 +339,27 @@ const AddAssetManual = () => {
         validData = false;
       }
     }
-    if (newAsset.index && newAsset.index !== "" && newAsset.shortDecimal !== "")
-      try {
-        const { getTransactions } = IcrcIndexCanister.create({
-          canisterId: newAsset.index as any,
-        });
-        await getTransactions({ max_results: BigInt(1), account: { owner: Principal.fromText(authClient) } });
-        setValidIndex(true);
-      } catch (error) {
-        logger.debug("Error getting index", error);
-        validData = false;
-        setErrIndex(t("add.index.import.error"));
-        setValidIndex(false);
-      }
-    else setValidIndex(false);
+    const isIndexValid = await isAssetIndexValid(newAsset.index);
+    if (!isIndexValid) validData = false;
+    setValidIndex(isIndexValid);
 
     setTestLoading(false);
     setTested(validData);
     return validData;
   }
+
+  async function isAssetIndexValid(indexAddress: string | undefined) {
+    try {
+      if (!indexAddress) return false;
+      const canisterId = Principal.fromText(indexAddress);
+      const { getTransactions } = IcrcIndexCanister.create({ canisterId });
+      await getTransactions({ max_results: BigInt(1), account: { owner: Principal.fromText(authClient) } });
+      return true;
+    } catch (error) {
+      logger.debug("Error getting index", error);
+      return false;
+    };
+  };
 
   async function onSave() {
     if (isUpdate) {
