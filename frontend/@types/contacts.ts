@@ -7,8 +7,6 @@ export interface RetrieveSubAccountsWithAllowanceArgs {
   assetDecimal: string;
 }
 
-// ----------------------------- Errors -----------------------------
-
 export interface NewContactErrors {
   name: boolean;
   principal: boolean;

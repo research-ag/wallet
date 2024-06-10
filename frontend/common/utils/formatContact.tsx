@@ -2,7 +2,6 @@ import { AvatarEmpty } from "@components/avatar";
 import { middleTruncation } from "@/common/utils/strings";
 import { Contact } from "@redux/models/ContactsModels";
 
-// WARNING: the contact arg is different type
 export default function formatContact(contact: Contact) {
   return {
     value: contact.principal,
