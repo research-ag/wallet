@@ -8,9 +8,9 @@ import { BasicSwitch } from "@components/switch";
 import { useAppSelector } from "@redux/Store";
 import { removeAllowanceErrorAction } from "@redux/allowance/AllowanceActions";
 import { initialAllowanceState } from "@redux/allowance/AllowanceReducer";
-import { Contact } from "@redux/models/ContactsModels";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Contact } from "@redux/models/ContactsModels";
 
 interface ISpenderFormItemProps {
   contacts: Contact[];

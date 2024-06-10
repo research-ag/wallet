@@ -61,10 +61,11 @@ const CodeElement = ({ tx }: CodeElementProps) => {
     if (contact) {
       hasContactName = true;
       contactName = contact.name;
-      const symbolAsst = contact.assets.find((asst) => asst.tokenSymbol === tx?.symbol)?.subaccounts;
+
+      const symbolAsst = contact.accounts.filter((acc) => acc.tokenSymbol === tx.symbol);
       if (symbolAsst && symbolAsst?.length > 0) {
         const subAcc = isTo ? tx.toSub || "0" : tx.fromSub || "0";
-        const subNameAux = symbolAsst.find((sa) => `0x${sa.subaccount_index}` === subAcc)?.name;
+        const subNameAux = symbolAsst.find((sa) => `0x${sa.subaccountId}` === subAcc)?.name;
         if (subNameAux) {
           hasSubName = true;
           subName = subNameAux;
@@ -87,7 +88,7 @@ const CodeElement = ({ tx }: CodeElementProps) => {
       }
     }
 
-    const contact = contacts.find((cntc) => cntc.accountIdentier === (isTo ? tx.to || "" : tx.from || ""));
+    const contact = contacts.find((cntc) => cntc.accountIdentifier === (isTo ? tx.to || "" : tx.from || ""));
     if (contact) {
       hasContactName = true;
       contactName = contact.name;

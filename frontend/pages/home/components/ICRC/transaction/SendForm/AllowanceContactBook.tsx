@@ -9,12 +9,14 @@ import { CustomInput } from "@components/input";
 import { ContactSubAccount } from "@/@types/transactions";
 import { setSenderContactAction } from "@redux/transaction/TransactionActions";
 import { useTranslation } from "react-i18next";
+import { Asset } from "@redux/models/AccountModels";
 
 export function AllowanceContactBook() {
   const { t } = useTranslation();
   const { sender } = useAppSelector((state) => state.transaction);
   const { contacts } = useAppSelector((state) => state.contacts);
   const [isOpen, setIsOpen] = useState(false);
+  const assets = useAppSelector((state) => state.asset.list.assets);
   const [searchSubAccountValue, setSearchSubAccountValue] = useState<string | null>(null);
 
   const options = useMemo(() => {
@@ -23,34 +25,30 @@ export function AllowanceContactBook() {
 
     for (let contactIndex = 0; contactIndex < contacts.length; contactIndex++) {
       const currentContact = contacts[contactIndex];
-      const currentContactAsset = currentContact?.assets?.find(
-        (asset) => asset?.tokenSymbol === sender?.asset?.tokenSymbol,
-      );
 
-      const subAccountsWithAllowances = currentContactAsset?.subaccounts?.filter((subAccount) => {
-        return subAccount?.allowance?.allowance;
-      });
+      const contactSubAccounts: ContactSubAccount[] = currentContact.accounts
+        .map((account) => {
+          const currentAsset = assets.find((asset) => asset.tokenSymbol === sender?.asset?.tokenSymbol) as Asset;
+          return {
+            contactName: currentContact.name,
+            contactPrincipal: currentContact.principal,
+            contactAccountIdentifier: currentContact.accountIdentifier,
+            assetLogo: currentAsset.logo,
+            assetSymbol: currentAsset.symbol,
+            assetTokenSymbol: currentAsset.tokenSymbol,
+            assetAddress: currentAsset.address,
+            assetDecimal: currentAsset.decimal,
+            assetShortDecimal: currentAsset?.shortDecimal,
+            assetName: currentAsset.symbol,
+            subAccountIndex: account.subaccount,
+            subAccountId: account.subaccountId,
+            subAccountAllowance: account.allowance,
+            subAccountName: account.name,
+          };
+        })
+        .filter((subAccount) => Boolean(subAccount?.subAccountAllowance?.amount));
 
-      subAccountsWithAllowances?.forEach((subAccount) => {
-        const allowanceContact = {
-          contactName: currentContact.name,
-          contactPrincipal: currentContact.principal,
-          contactAccountIdentifier: currentContact.accountIdentier,
-          assetLogo: currentContactAsset?.logo,
-          assetSymbol: currentContactAsset?.symbol,
-          assetTokenSymbol: currentContactAsset?.tokenSymbol,
-          assetAddress: currentContactAsset?.address,
-          assetDecimal: currentContactAsset?.decimal,
-          assetShortDecimal: currentContactAsset?.shortDecimal,
-          assetName: currentContactAsset?.symbol,
-          subAccountIndex: subAccount?.subaccount_index,
-          subAccountId: subAccount?.sub_account_id,
-          subAccountAllowance: subAccount?.allowance,
-          subAccountName: subAccount?.name,
-        };
-
-        allowanceContacts.push(allowanceContact);
-      });
+      allowanceContacts.push(...contactSubAccounts);
     }
 
     if (!searchSubAccountValue) return allowanceContacts;
@@ -92,7 +90,7 @@ export function AllowanceContactBook() {
                         alt={sender?.allowanceContactSubAccount?.assetSymbol}
                       />
                       <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
-                        {sender?.allowanceContactSubAccount?.subAccountAllowance?.allowance}{" "}
+                        {sender?.allowanceContactSubAccount?.subAccountAllowance?.amount}{" "}
                         {sender?.allowanceContactSubAccount?.assetSymbol}
                       </p>
                     </span>
@@ -139,7 +137,7 @@ export function AllowanceContactBook() {
                           alt={assetTokenSymbol}
                         />
                         <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
-                          {subAccountAllowance?.allowance} {assetSymbol}
+                          {subAccountAllowance?.amount} {assetSymbol}
                         </p>
                       </span>
                     </div>

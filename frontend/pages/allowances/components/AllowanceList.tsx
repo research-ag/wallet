@@ -76,11 +76,11 @@ export default function AllowanceList({ allowances, handleSortChange }: Allowanc
             const userDate = allowance?.expiration ? formatDateTime(allowance.expiration) : t("no.expiration");
 
             return (
-              <tr key={allowance.id} className="border-b dark:border-gray-color-1 border-gray-color-6">
+              <tr key={allowance.id}>
                 <td className="flex flex-col items-start justify-start">
-                  <div className="flex items-center justify-start">
+                  <div className="flex items-center justify-center">
                     {getAssetIcon(IconTypeEnum.Enum.ALLOWANCE, asset?.tokenSymbol, asset?.logo)}
-                    <div className="ml-2">
+                    <div className="mt-2 ml-2">
                       {subAccountName && <p>{subAccountName || subAccountName}</p>}
                       {subAccountId && (
                         <p className="text-sm dark:text-gray-color-4 text-gray-color-5">{subAccountId}</p>

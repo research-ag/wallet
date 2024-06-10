@@ -1,13 +1,10 @@
 import {
   CheckAllowanceParams,
-  HasAssetAllowanceParams,
-  HasSubAccountsParams,
   SupportedStandardEnum,
 } from "@/@types/icrc";
 import { Actor, HttpAgent } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import store from "@redux/Store";
-import { AssetContact } from "@redux/models/ContactsModels";
 //
 import { _SERVICE as LedgerActor } from "@candid/icrcLedger/icrcLedgerService";
 import { idlFactory as LedgerFactory } from "@candid/icrcLedger/icrcLedgerCandid.did";
@@ -33,8 +30,6 @@ function getCanister(options: CanisterOptions): IcrcLedgerCanister {
     canisterId,
   });
 }
-
-// TODO: move to allowance helper ---------------
 
 function calculateExpirationAsBigInt(
   expirationString: string | undefined,
@@ -71,7 +66,6 @@ export function createApproveAllowanceParams(allowance: TAllowance): ApprovePara
   const subAccountUint8Array = new Uint8Array(hexToUint8Array(allowanceSubAccountId));
   const amount: bigint = toHoleBigInt(allowanceAmount, Number(allowanceAssetDecimal));
   const expiration = calculateExpirationAsBigInt(allowance.expiration);
-
   return {
     spender: {
       owner,
@@ -99,12 +93,12 @@ export async function submitAllowanceApproval(
 
 export async function getAllowanceDetails(params: CheckAllowanceParams) {
   try {
-    const { spenderPrincipal, spenderSubaccount, accountPrincipal, assetAddress, assetDecimal } = params;
+    const { spenderPrincipal, allocatorSubaccount, allocatorPrincipal, assetAddress, assetDecimal } = params;
 
     const userPrincipal = store.getState().auth.userPrincipal;
     const agent = store.getState().auth.userAgent;
     const canisterId = Principal.fromText(assetAddress);
-    const subAccountUint8Array = new Uint8Array(hexToUint8Array(spenderSubaccount));
+    const subAccountUint8Array = new Uint8Array(hexToUint8Array(allocatorSubaccount));
 
     const ledgerActor = Actor.createActor<LedgerActor>(LedgerFactory, {
       agent,
@@ -117,73 +111,16 @@ export async function getAllowanceDetails(params: CheckAllowanceParams) {
         subaccount: [],
       },
       account: {
-        owner: accountPrincipal ? Principal.fromText(accountPrincipal) : userPrincipal,
+        owner: allocatorPrincipal ? Principal.fromText(allocatorPrincipal) : userPrincipal,
         subaccount: [subAccountUint8Array],
       },
     });
 
-    const allowance = Number(result.allowance) <= 0 ? "" : toFullDecimal(result.allowance, Number(assetDecimal));
-
-    const expires_at = result.expires_at.length <= 0 ? "" : dayjs(Number(result?.expires_at) / 1000000).format();
-
-    return { allowance, expires_at };
+    const amount = Number(result.allowance) <= 0 ? "" : toFullDecimal(result.allowance, Number(assetDecimal));
+    const expiration = result.expires_at.length <= 0 ? "" : dayjs(Number(result?.expires_at) / 1000000).format();
+    return { amount, expiration };
   } catch (e) {
     logger.debug(e);
-    return { allowance: "", expires_at: "" };
+    return { amount: "", expiration: "" };
   }
 }
-
-export async function retrieveSubAccountsWithAllowance(params: HasSubAccountsParams) {
-  const { accountPrincipal, subAccounts, assetAddress, assetDecimal } = params;
-
-  const subAccountsWithAllowance = await Promise.all(
-    subAccounts.map(async (subAccount) => {
-      const spenderSubaccount = subAccount?.sub_account_id;
-      const response = await getAllowanceDetails({
-        spenderSubaccount,
-        accountPrincipal,
-        assetAddress,
-        assetDecimal,
-      });
-
-      return {
-        ...subAccount,
-        allowance: response,
-      };
-    }),
-  );
-
-  return subAccountsWithAllowance;
-}
-
-export async function retrieveAssetsWithAllowance(params: HasAssetAllowanceParams): Promise<AssetContact[] | []> {
-  const { accountPrincipal, assets } = params;
-
-  const supportedAssets = assets?.filter((asset) =>
-    asset.supportedStandards?.includes(SupportedStandardEnum.Values["ICRC-2"]),
-  );
-
-  const noSupportedAssets = assets?.filter(
-    (asset) => !asset.supportedStandards?.includes(SupportedStandardEnum.Values["ICRC-2"]),
-  );
-
-  const assetsWithAllowance = await Promise.all(
-    supportedAssets.map(async (asset) => {
-      const subAccountsWithAllowance = await retrieveSubAccountsWithAllowance({
-        accountPrincipal,
-        subAccounts: asset.subaccounts,
-        assetAddress: asset.address,
-        assetDecimal: asset.decimal,
-      });
-
-      return {
-        ...asset,
-        subaccounts: subAccountsWithAllowance,
-      };
-    }),
-  );
-
-  return [...assetsWithAllowance, ...noSupportedAssets];
-}
-
-// ------------------------------------------------------------------------------------------------------------

@@ -112,15 +112,6 @@ export default function useSend() {
     return isHexadecimalValid(subaccount);
   }
 
-  /**
-   * Asynchronously retrieves the available balance for the transaction sender.
-   *
-   * In case of errors during the allowance request, it logs the error and returns "0" as a fallback.
-   *
-   * This function ensures accurate balance representation for the transaction sender, considering different sender setups.
-   *
-   * @returns {Promise<string>} A Promise that resolves to the sender's balance, formatted as a string.
-   */
   async function getSenderMaxAmount(): Promise<string> {
     try {
       if (sender.senderOption === TransactionSenderOptionEnum.Values.service) {
@@ -135,21 +126,19 @@ export default function useSend() {
       }
 
       const principal = getSenderPrincipal();
-      const subAccount = getSenderSubAccount();
-
-      const assetAddress = sender?.asset?.address;
-
       const senderContact = contacts.find((contact) => contact.principal === principal);
+      const subAccount = getSenderSubAccount();
+      const assetTokenSymbol = sender?.asset?.tokenSymbol;
 
       if (senderContact) {
-        const contactAsset = senderContact.assets.find((asset) => asset.address === assetAddress);
+        const contactAsset = assets.find((asset) => asset.tokenSymbol === assetTokenSymbol);
+
         if (contactAsset) {
-          const contactSubAccount = contactAsset.subaccounts.find(
-            (currentSubAccount) => currentSubAccount.sub_account_id === subAccount,
+          const contactSubAccount = senderContact.accounts.find(
+            (account) => account.subaccount === subAccount && account.tokenSymbol === assetTokenSymbol,
           );
-          if (contactSubAccount && contactSubAccount.allowance?.allowance) {
-            return contactSubAccount.allowance.allowance;
-          }
+
+          return contactSubAccount?.allowance?.amount || "0";
         }
       }
 
@@ -169,13 +158,13 @@ export default function useSend() {
       const decimal = sender?.asset?.decimal;
 
       const response = await getAllowanceDetails({
-        spenderSubaccount: subAccount,
-        accountPrincipal: principal,
+        allocatorSubaccount: subAccount,
+        allocatorPrincipal: principal,
         assetAddress,
         assetDecimal: decimal,
       });
 
-      return response?.allowance || "0";
+      return response?.amount || "0";
     } catch (error) {
       logger.debug("Error fetching sender balance:", error);
       return "0";

@@ -114,14 +114,14 @@ export default function CreateForm() {
       const response = await getAllowanceDetails({
         assetAddress: allowance.asset.address,
         assetDecimal: allowance.asset.decimal,
-        spenderSubaccount: allowance.subAccountId,
-        spenderPrincipal: allowance.spender,
+        allocatorSubaccount: allowance.subAccountId,
+        allocatorPrincipal: allowance.spender,
       });
 
       const newAllowance = {
         ...allowance,
-        amount: response?.allowance || "0",
-        expiration: response?.expires_at || "",
+        amount: response?.amount || "0",
+        expiration: response?.expiration || "",
         id: db().generateAllowancePrimaryKey(allowance),
       };
 

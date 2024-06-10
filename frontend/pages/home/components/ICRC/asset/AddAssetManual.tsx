@@ -13,7 +13,6 @@ import { Principal } from "@dfinity/principal";
 import { LoadingLoader } from "@components/loader";
 import { AccountHook } from "@pages/hooks/accountHook";
 import { db } from "@/database/db";
-import { Contact } from "@redux/models/ContactsModels";
 import { getAssetIcon } from "@/common/utils/icons";
 import {
   AssetMutationAction,
@@ -29,6 +28,7 @@ import useAssetMutate, { assetMutateInitialState } from "@pages/home/hooks/useAs
 import { toFullDecimal } from "@common/utils/amount";
 import getAssetDetails from "@pages/home/helpers/getAssetDetails";
 import logger from "@/common/utils/logger";
+import { Contact } from "@redux/models/ContactsModels";
 
 const AddAssetManual = () => {
   const { assetAction, assetMutated } = useAppSelector((state) => state.asset.mutation);
@@ -39,12 +39,14 @@ const AddAssetManual = () => {
   const dispatch = useAppDispatch();
   const { authClient } = AccountHook();
 
-  const [testLoading, setTestLoading] = useState(false);
   const [tested, setTested] = useState(false);
-  const [errShortDec, serErrShortDec] = useState(false);
+  const [testLoading, setTestLoading] = useState(false);
   const [validIndex, setValidIndex] = useState(false);
-  const [errIndex, setErrIndex] = useState("");
   const [validToken, setValidToken] = useState(false);
+  //
+  const [errShortDec, serErrShortDec] = useState(false);
+  const [errIndex, setErrIndex] = useState("");
+
   const isUpdate = assetAction === AssetMutationAction.UPDATE;
 
   useEffect(() => {
@@ -304,6 +306,8 @@ const AddAssetManual = () => {
   async function onTest(override: boolean): Promise<boolean> {
     setTestLoading(true);
     let validData = false;
+
+    // function 2: check if asset address is already added
     if (checkAssetAdded(newAsset.address)) {
       setErrToken(t("adding.asset.already.imported"));
       setValidToken(false);
@@ -335,24 +339,26 @@ const AddAssetManual = () => {
         validData = false;
       }
     }
-    if (newAsset.index && newAsset.index !== "" && newAsset.shortDecimal !== "")
-      try {
-        const { getTransactions } = IcrcIndexCanister.create({
-          canisterId: newAsset.index as any,
-        });
-        await getTransactions({ max_results: BigInt(1), account: { owner: Principal.fromText(authClient) } });
-        setValidIndex(true);
-      } catch (error) {
-        logger.debug("Error getting index", error);
-        validData = false;
-        setErrIndex(t("add.index.import.error"));
-        setValidIndex(false);
-      }
-    else setValidIndex(false);
+    const isIndexValid = await isAssetIndexValid(newAsset.index);
+    if (!isIndexValid) validData = false;
+    setValidIndex(isIndexValid);
 
     setTestLoading(false);
     setTested(validData);
     return validData;
+  }
+
+  async function isAssetIndexValid(indexAddress: string | undefined) {
+    try {
+      if (!indexAddress) return false;
+      const canisterId = Principal.fromText(indexAddress);
+      const { getTransactions } = IcrcIndexCanister.create({ canisterId });
+      await getTransactions({ max_results: BigInt(1), account: { owner: Principal.fromText(authClient) } });
+      return true;
+    } catch (error) {
+      logger.debug("Error getting index", error);
+      return false;
+    }
   }
 
   async function onSave() {
@@ -363,52 +369,53 @@ const AddAssetManual = () => {
         return;
       }
 
-      const affectedContacts: Contact[] = [];
-      // FIXME: if contacts come from db will not include allowance in the state
-      const currentContacts = await db().getContacts();
+      setTimeout(async () => {
+        const affectedContacts: Contact[] = [];
+        const currentContacts = await db().getContacts();
 
-      for (const contact of currentContacts) {
-        let affected = false;
+        for (const contact of currentContacts) {
+          let affected = false;
 
-        const newDoc = {
-          ...contact,
-          assets: contact.assets.map((currentAsset) => {
-            if (currentAsset.tokenSymbol === newAsset?.tokenSymbol) {
-              affected = true;
-              return { ...currentAsset, symbol: newAsset.symbol };
-            } else return currentAsset;
-          }),
-        };
+          const newDoc = {
+            ...contact,
+            accounts: contact.accounts.map((currentAccount) => {
+              if (currentAccount.tokenSymbol === newAsset?.tokenSymbol) {
+                affected = true;
+                return { ...currentAccount, symbol: newAsset.symbol };
+              } else return currentAccount;
+            }),
+          };
 
-        if (affected) {
-          affectedContacts.push(newDoc);
+          if (affected) {
+            affectedContacts.push(newDoc);
+          }
         }
-      }
 
-      await Promise.all(
-        affectedContacts.map((contact) => db().updateContact(contact.principal, contact, { sync: true })),
-      );
+        await Promise.all(
+          affectedContacts.map((contact) => db().updateContact(contact.principal, contact, { sync: true })),
+        );
 
-      const assetDB = await db().getAsset(newAsset.address);
+        const assetDB = await db().getAsset(newAsset.address);
 
-      if (assetDB) {
-        // INFO: update an asset
-        const updatedFull: Asset = {
-          ...newAsset,
-          decimal: Number(newAsset.decimal).toFixed(0),
-          shortDecimal:
-            newAsset.shortDecimal === ""
-              ? Number(newAsset.decimal).toFixed(0)
-              : Number(newAsset.shortDecimal).toFixed(0),
-        };
-        await db().updateAsset(assetDB.address, updatedFull, { sync: true });
-      }
+        if (assetDB) {
+          // INFO: update an asset
+          const updatedFull: Asset = {
+            ...newAsset,
+            decimal: Number(newAsset.decimal).toFixed(0),
+            shortDecimal:
+              newAsset.shortDecimal === ""
+                ? Number(newAsset.decimal).toFixed(0)
+                : Number(newAsset.shortDecimal).toFixed(0),
+          };
+          await db().updateAsset(assetDB.address, updatedFull, { sync: true });
+        }
 
-      dispatch(setSelectedAsset(newAsset));
-      dispatch(setAccordionAssetIdx([newAsset.tokenSymbol]));
-      setNewAsset(assetMutateInitialState);
-      dispatch(setAssetMutation(undefined));
-      dispatch(setAssetMutationAction(AssetMutationAction.NONE));
+        dispatch(setSelectedAsset(newAsset));
+        dispatch(setAccordionAssetIdx([newAsset.tokenSymbol]));
+        setNewAsset(assetMutateInitialState);
+        dispatch(setAssetMutation(undefined));
+        dispatch(setAssetMutationAction(AssetMutationAction.NONE));
+      }, 0);
     } else if (await onTest(false)) addAssetToData();
   }
 

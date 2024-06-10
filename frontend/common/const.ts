@@ -29,7 +29,7 @@ export type OperationType = z.infer<typeof OperationTypeEnum>;
 export const DrawerOptionEnum = z.enum(["SEND", "RECEIVE", "WRAP"]);
 export type DrawerOption = z.infer<typeof DrawerOptionEnum>;
 
-export const IconTypeEnum = z.enum(["ASSET", "HEADER", "FILTER", "ALLOWANCE"]);
+export const IconTypeEnum = z.enum(["ASSET", "HEADER", "FILTER", "ALLOWANCE", "SELECT"]);
 export type IconType = z.infer<typeof IconTypeEnum>;
 
 export const AssetSymbolEnum = z.enum(["ICP", "ckBTC", "CHAT", "KINIC", "SNS1", "HOT", "OGY"]);

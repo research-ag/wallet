@@ -43,24 +43,16 @@ actor class WalletDatabase() {
 
   type ContactDocument_v0 = {
     name : Text;
+    principal : Text;
+    accountIdentifier : Text;
+    accounts : [{
+      name : Text;
+      subaccount : Text;
+      subaccountId : Text;
+      tokenSymbol : Text;
+    }];
     updatedAt : Nat32;
     deleted : Bool;
-    principal : Text;
-    accountIdentier : Text;
-    assets : [{
-      symbol : Text;
-      tokenSymbol : Text;
-      logo : Text;
-      subaccounts : [{
-        name : Text;
-        subaccount_index : Text;
-        sub_account_id : Text;
-      }];
-      address : Text;
-      decimal : Text;
-      shortDecimal : Text;
-      supportedStandards : [Text];
-    }];
   };
 
   type AllowanceDocument_v0 = {

@@ -57,3 +57,7 @@ export function cleanAlphanumeric(text: string): string {
   if (text === " ") return "";
   return text.replace(/\s+/g, " ").trim();
 }
+
+export function removeExtraSpaces(text: string): string {
+  return text.replace(/\s+/g, " ");
+}

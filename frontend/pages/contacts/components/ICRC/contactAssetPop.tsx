@@ -1,17 +1,17 @@
 // svgsetassetsToAdd
-import { IconType, IconTypeEnum } from "@/common/const";
+import { IconTypeEnum } from "@/common/const";
 import { ReactComponent as PlusIcon } from "@assets/svg/files/plus.svg";
+import { getAssetIcon } from "@common/utils/icons";
 //
 import { CustomButton } from "@components/button";
 import { CustomCheck } from "@components/checkbox";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { Asset, AssetToAdd } from "@redux/models/AccountModels";
+import { Asset } from "@redux/models/AccountModels";
 import { Fragment, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 interface ContactAssetPopProps {
-  onAdd(data: AssetToAdd[]): void;
+  onAdd(data: Asset[]): void;
   assets: Asset[];
-  getAssetIcon(type: IconType, symbol?: string, logo?: string): JSX.Element;
   btnClass?: string;
   compClass?: string;
   onOpen?: any;
@@ -21,14 +21,13 @@ interface ContactAssetPopProps {
 const ContactAssetPop = ({
   onAdd,
   assets,
-  getAssetIcon,
   btnClass = "",
   compClass = "flex flex-row justify-center items-center w-full",
   onOpen,
   onClose,
 }: ContactAssetPopProps) => {
   const { t } = useTranslation();
-  const [assetsToAdd, setAssetsToAdd] = useState<AssetToAdd[]>([]);
+  const [assetsToAdd, setAssetsToAdd] = useState<Asset[]>([]);
   const [symbolToAdd, setSymbolsToAdd] = useState<string[]>([]);
   const [openDrop, setOpenDrop] = useState<boolean>(false);
 
@@ -111,7 +110,7 @@ const ContactAssetPop = ({
     </Fragment>
   );
 
-  function setToAdd(assets: AssetToAdd[], symbols: string[]) {
+  function setToAdd(assets: Asset[], symbols: string[]) {
     setAssetsToAdd(assets);
     setSymbolsToAdd(symbols);
   }
@@ -121,20 +120,8 @@ const ContactAssetPop = ({
       setToAdd([], []);
     } else {
       setToAdd(
-        assets.map((ast) => {
-          return {
-            symbol: ast.symbol,
-            tokenSymbol: ast.tokenSymbol,
-            logo: ast.logo,
-            address: ast.address,
-            decimal: ast.decimal,
-            shortDecimal: ast.shortDecimal,
-            supportedStandards: ast.supportedStandards,
-          };
-        }),
-        assets.map((ast) => {
-          return ast.tokenSymbol;
-        }),
+        assets,
+        assets.map((ast) => ast.tokenSymbol),
       );
     }
   }
@@ -146,21 +133,7 @@ const ContactAssetPop = ({
         symbolToAdd.filter((ast) => ast !== asset.tokenSymbol),
       );
     } else {
-      setToAdd(
-        [
-          ...assetsToAdd,
-          {
-            symbol: asset.symbol,
-            tokenSymbol: asset.tokenSymbol,
-            logo: asset.logo,
-            address: asset.address,
-            decimal: asset.decimal,
-            shortDecimal: asset.shortDecimal,
-            supportedStandards: asset.supportedStandards,
-          },
-        ],
-        [...symbolToAdd, asset.tokenSymbol],
-      );
+      setToAdd([...assetsToAdd, asset], [...symbolToAdd, asset.tokenSymbol]);
     }
   }
 

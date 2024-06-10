@@ -14,7 +14,6 @@ import { RxReplicationState } from "rxdb/plugins/replication";
 import { AnonymousIdentity, HttpAgent, Identity } from "@dfinity/agent";
 import { createActor } from "@/candid/database";
 // types
-import { Contact } from "@redux/models/ContactsModels";
 import { TAllowance } from "@/@types/allowance";
 import { SupportedStandardEnum } from "@/@types/icrc";
 import {
@@ -44,6 +43,7 @@ import {
   updateReduxAllowance,
 } from "@redux/allowance/AllowanceReducer";
 import logger from "@/common/utils/logger";
+import { Contact } from "@redux/models/ContactsModels";
 
 addRxPlugin(RxDBUpdatePlugin);
 addRxPlugin(RxDBMigrationPlugin);
@@ -352,20 +352,12 @@ export class RxdbDatabase extends IWalletDatabase {
   async addContact(contact: Contact, options?: DatabaseOptions): Promise<void> {
     try {
       const databaseContact = this._getStorableContact(contact);
-
       await (
         await this.contacts
       )?.insert({
         ...databaseContact,
-        accountIdentier: extractValueFromArray(databaseContact.accountIdentier),
-        assets: databaseContact.assets.map((a) => ({
-          ...a,
-          logo: extractValueFromArray(a.logo),
-          subaccounts: a.subaccounts.map((sa) => ({
-            ...sa,
-            allowance: [sa.allowance],
-          })),
-        })),
+        accountIdentifier: extractValueFromArray(databaseContact.accountIdentifier),
+        accounts: databaseContact.accounts,
         deleted: false,
         updatedAt: Date.now(),
       });
@@ -389,15 +381,8 @@ export class RxdbDatabase extends IWalletDatabase {
 
       document?.patch({
         ...databaseContact,
-        accountIdentier: extractValueFromArray(databaseContact.accountIdentier),
-        assets: databaseContact.assets.map((a) => ({
-          ...a,
-          logo: extractValueFromArray(a.logo),
-          subaccounts: a.subaccounts.map((sa) => ({
-            ...sa,
-            allowance: [sa.allowance],
-          })),
-        })),
+        accountIdentifier: extractValueFromArray(databaseContact.accountIdentifier),
+        accounts: databaseContact.accounts,
         deleted: false,
         updatedAt: Date.now(),
       });
@@ -421,20 +406,12 @@ export class RxdbDatabase extends IWalletDatabase {
       )?.bulkUpsert(
         databaseContacts.map((doc) => ({
           ...doc,
-          accountIdentier: extractValueFromArray(doc.accountIdentier),
-          assets: doc.assets.map((a) => ({
-            ...a,
-            logo: extractValueFromArray(a.logo),
-            subaccounts: a.subaccounts.map((sa) => ({
-              ...sa,
-              allowance: [sa.allowance],
-            })),
-          })),
+          accountIdentifier: extractValueFromArray(doc.accountIdentifier),
+          accounts: doc.accounts,
           deleted: false,
           updatedAt: Date.now(),
         })),
       );
-
       store.dispatch(setReduxContacts(newDocs));
     } catch (e) {
       logger.debug("RxDb UpdateContacts", e);
@@ -458,14 +435,11 @@ export class RxdbDatabase extends IWalletDatabase {
   private _getStorableContact(contact: Contact): Contact {
     return {
       ...contact,
-      assets: contact.assets.map((asset) => ({
-        ...asset,
-        subaccounts: asset.subaccounts.map((subaccount) => {
-          // eslint-disable-next-line
-          const { allowance, ...rest } = subaccount;
-          return { ...rest };
-        }),
-      })),
+      accounts: contact.accounts.map((account) => {
+        // eslint-disable-next-line
+        const { allowance, ...rest } = account;
+        return { ...rest };
+      }),
     };
   }
 
@@ -636,20 +610,12 @@ export class RxdbDatabase extends IWalletDatabase {
     return {
       name: doc.name,
       principal: doc.principal,
-      accountIdentier: doc.accountIdentier,
-      assets: doc.assets.map((a) => ({
-        symbol: a.symbol,
+      accountIdentifier: doc.accountIdentifier,
+      accounts: doc.accounts.map((a) => ({
+        name: a.name,
+        subaccount: a.subaccount,
+        subaccountId: a.subaccountId,
         tokenSymbol: a.tokenSymbol,
-        logo: a.logo,
-        subaccounts: a.subaccounts.map((sa) => ({
-          name: sa.name,
-          subaccount_index: sa.subaccount_index,
-          sub_account_id: sa.sub_account_id,
-        })),
-        address: a.address,
-        decimal: a.decimal,
-        shortDecimal: a.shortDecimal,
-        supportedStandards: a.supportedStandards as typeof SupportedStandardEnum.options,
       })),
     };
   }
@@ -763,31 +729,22 @@ export class RxdbDatabase extends IWalletDatabase {
     }));
   }
 
-  private async _contactsPushHandler(items: any): Promise<ContactRxdbDocument[]> {
-    const arg = items.map((x: any) => ({
-      ...x,
-      updatedAt: Math.floor(Date.now() / 1000),
-      accountIdentier: extractValueFromArray(x.accountIdentier),
-      assets: x.assets.map((a: any) => ({
-        ...a,
-        logo: extractValueFromArray(a.logo),
-        subaccounts: a.subaccounts.map((s: any) => ({
-          ...s,
-          allowance:
-            !!s.allowance && !!s.allowance.allowance
-              ? [
-                  {
-                    allowance: [s.allowance.allowance],
-                    expires_at: [s.allowance.expires_at],
-                  },
-                ]
-              : [],
+  private async _contactsPushHandler(items: ContactRxdbDocument[]): Promise<ContactRxdbDocument[]> {
+    const arg: ContactRxdbDocument[] = items.map(
+      (currentContact: ContactRxdbDocument): ContactRxdbDocument => ({
+        ...currentContact,
+        accountIdentifier: extractValueFromArray(currentContact.accountIdentifier),
+        accounts: currentContact.accounts.map((account: any) => ({
+          name: account.name,
+          subaccount: account.subaccount,
+          subaccountId: account.subaccountId,
+          tokenSymbol: account.tokenSymbol,
         })),
-      })),
-    }));
+        updatedAt: Math.floor(Date.now() / 1000),
+      }),
+    );
 
     await this.replicaCanister?.pushContacts(arg);
-
     return arg;
   }
 
@@ -805,16 +762,17 @@ export class RxdbDatabase extends IWalletDatabase {
     return raw;
   }
 
-  private async _allowancesPushHandler(items: any): Promise<AllowanceRxdbDocument[]> {
-    const arg = items.map((x: any) => ({
-      ...x,
-      updatedAt: Math.floor(Date.now() / 1000),
-      expiration: extractValueFromArray(x.expiration),
-      asset: {
-        ...x.asset,
-        logo: extractValueFromArray(x.asset?.logo),
-      },
-    }));
+  private async _allowancesPushHandler(items: AllowanceRxdbDocument[]): Promise<AllowanceRxdbDocument[]> {
+    const arg = items.map(
+      (currentAllowance: AllowanceRxdbDocument): AllowanceRxdbDocument => ({
+        id: currentAllowance.id,
+        deleted: currentAllowance.deleted,
+        asset: currentAllowance.asset,
+        subAccountId: currentAllowance.subAccountId,
+        spender: currentAllowance.spender,
+        updatedAt: Math.floor(Date.now() / 1000),
+      }),
+    );
 
     await this.replicaCanister?.pushAllowances(arg);
 

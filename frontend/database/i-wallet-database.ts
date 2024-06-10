@@ -1,5 +1,4 @@
 import { AuthNetwork } from "@redux/models/TokenModels";
-import { Contact } from "@redux/models/ContactsModels";
 import { TAllowance } from "@/@types/allowance";
 import { Identity } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
@@ -7,6 +6,7 @@ import { DB_Type } from "./db";
 import { LocalStorageKeyEnum } from "@/@types/localstorage";
 import { Themes } from "@/common/const";
 import { Asset } from "@redux/models/AccountModels";
+import { Contact } from "@redux/models/ContactsModels";
 
 export interface DatabaseOptions {
   /**

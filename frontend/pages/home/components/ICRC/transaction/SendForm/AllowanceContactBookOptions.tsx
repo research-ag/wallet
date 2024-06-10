@@ -7,6 +7,7 @@ import { getIconSrc } from "@/common/utils/icons";
 import { AvatarEmpty } from "@components/avatar";
 import SearchIcon from "@assets/svg/files/icon-search.svg";
 import { CustomInput } from "@components/input";
+import { Asset } from "@redux/models/AccountModels";
 
 interface AllowanceContactBookOptionsProps {
   searchSubAccountValue: string | null;
@@ -14,6 +15,7 @@ interface AllowanceContactBookOptionsProps {
 }
 
 export default function AllowanceContactBookOptions(props: AllowanceContactBookOptionsProps) {
+  const assets = useAppSelector((state) => state.asset.list.assets);
   const { searchSubAccountValue, setSearchSubAccountValue } = props;
   const { sender } = useAppSelector((state) => state.transaction);
   const { contacts } = useAppSelector((state) => state.contacts);
@@ -24,34 +26,28 @@ export default function AllowanceContactBookOptions(props: AllowanceContactBookO
 
     for (let contactIndex = 0; contactIndex < contacts.length; contactIndex++) {
       const currentContact = contacts[contactIndex];
-      const currentContactAsset = currentContact?.assets?.find(
-        (asset) => asset?.tokenSymbol === sender?.asset?.tokenSymbol,
-      );
 
-      const subAccountsWithAllowances = currentContactAsset?.subaccounts?.filter((subAccount) => {
-        return subAccount?.allowance?.allowance;
-      });
-
-      subAccountsWithAllowances?.forEach((subAccount) => {
-        const allowanceContact = {
+      const contactSubAccounts: ContactSubAccount[] = currentContact.accounts.map((account) => {
+        const currentAsset = assets.find((asset) => asset.tokenSymbol === sender?.asset?.tokenSymbol) as Asset;
+        return {
           contactName: currentContact.name,
           contactPrincipal: currentContact.principal,
-          contactAccountIdentifier: currentContact.accountIdentier,
-          assetLogo: currentContactAsset?.logo,
-          assetSymbol: currentContactAsset?.symbol,
-          assetTokenSymbol: currentContactAsset?.tokenSymbol,
-          assetAddress: currentContactAsset?.address,
-          assetDecimal: currentContactAsset?.decimal,
-          assetShortDecimal: currentContactAsset?.shortDecimal,
-          assetName: currentContactAsset?.symbol,
-          subAccountIndex: subAccount?.subaccount_index,
-          subAccountId: subAccount?.sub_account_id,
-          subAccountAllowance: subAccount?.allowance,
-          subAccountName: subAccount?.name,
+          contactAccountIdentifier: currentContact.accountIdentifier,
+          assetLogo: currentAsset.logo,
+          assetSymbol: currentAsset.symbol,
+          assetTokenSymbol: currentAsset.tokenSymbol,
+          assetAddress: currentAsset.address,
+          assetDecimal: currentAsset.decimal,
+          assetShortDecimal: currentAsset?.shortDecimal,
+          assetName: currentAsset.symbol,
+          subAccountIndex: account.subaccount,
+          subAccountId: account.subaccountId,
+          subAccountAllowance: account.allowance,
+          subAccountName: account.name,
         };
-
-        allowanceContacts.push(allowanceContact);
       });
+
+      allowanceContacts.push(...contactSubAccounts);
     }
 
     if (!searchSubAccountValue) return allowanceContacts;
@@ -95,7 +91,7 @@ export default function AllowanceContactBookOptions(props: AllowanceContactBookO
                   <span className="flex">
                     <img className="w-5 h-5 mr-2" src={getIconSrc(assetLogo, assetSymbol)} alt={assetSymbol} />
                     <p className="">
-                      {subAccountAllowance?.allowance} {assetSymbol}
+                      {subAccountAllowance?.amount} {assetSymbol}
                     </p>
                   </span>
                 </div>

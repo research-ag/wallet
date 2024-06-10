@@ -20,22 +20,13 @@ type WalletDatabase =
  };
 type ContactDocument = 
  record {
-   accountIdentier: text;
-   assets:
+   accountIdentifier: text;
+   accounts:
     vec
      record {
-       address: text;
-       decimal: text;
-       logo: text;
-       shortDecimal: text;
-       subaccounts:
-        vec record {
-              name: text;
-              sub_account_id: text;
-              subaccount_index: text;
-            };
-       supportedStandards: vec text;
-       symbol: text;
+       name: text;
+       subaccount: text;
+       subaccountId: text;
        tokenSymbol: text;
      };
    deleted: bool;

@@ -17,8 +17,8 @@ export const ContactSubAccountSchema = z.object({
   subAccountId: z.string(),
   subAccountAllowance: z
     .object({
-      allowance: z.string(),
-      expires_at: z.string(),
+      amount: z.string(),
+      expiration: z.string(),
     })
     .optional(),
   subAccountName: z.string(),

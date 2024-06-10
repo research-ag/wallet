@@ -55,7 +55,9 @@
   "asset": "Asset",
   "assets": "Assets",
   "agree": "Agree",
+
   "contact": "Contact",
+  "contact.name": "Contact Name",
   "contacts": "Contacts",
   "sending": "Sending",
   "network": "Network",
@@ -74,6 +76,15 @@
   "delete.subacc.msg": "Are you sure you want to delete",
   "name.sub.account": "Sub-account Name",
   "account.indentifier": "Account Identifier",
+
+  "contact.error.invalid.name": "Invalid Contact Name",
+  "contact.error.invalid.principal": "Invalid Contact Principal",
+  "contact.error.duplicated.principal": "Duplicated Contact Principal",
+  "contact.error.invalid.account.id": "Invalid Contact Account ID",
+  "contact.error.invalid.account.name": "Invalid Contact Account Name",
+  "contact.error.account.exist": "Contact Subaccount already exist",
+  "contact.error.principal.self": "Principal is the same as the account",
+
   "copied": "Copied!",
   "currently.have": "Currently have",
   "delete.service.confirmation": "Please confirm you want to delete",

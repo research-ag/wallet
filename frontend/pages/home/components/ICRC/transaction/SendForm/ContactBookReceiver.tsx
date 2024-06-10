@@ -7,11 +7,13 @@ import { setReceiverContactAction } from "@redux/transaction/TransactionActions"
 import { useAppSelector } from "@redux/Store";
 import useSend from "@pages/home/hooks/useSend";
 import { middleTruncation } from "@/common/utils/strings";
+import { Asset } from "@redux/models/AccountModels";
 
 export default function ContactBookReceiver() {
   const [searchSubAccountValue, setSearchSubAccountValue] = useState<string | null>(null);
   const { sender, receiver } = useAppSelector((state) => state.transaction);
   const { contacts } = useAppSelector((state) => state.contacts);
+  const assets = useAppSelector((state) => state.asset.list.assets);
   const { senderPrincipal, senderSubAccount, isSenderAllowance } = useSend();
 
   const filteredContacts: ContactSubAccount[] = useMemo(() => {
@@ -21,40 +23,41 @@ export default function ContactBookReceiver() {
     for (let contactIndex = 0; contactIndex < contacts.length; contactIndex++) {
       const currentContact = contacts[contactIndex];
 
-      const currentContactAsset = currentContact?.assets?.find(
-        (asset) => asset?.tokenSymbol === sender?.asset?.tokenSymbol,
-      );
+      const contactSubAccounts: (ContactSubAccount | null)[] = currentContact.accounts.map((account) => {
+        const sameSenderAndReceiver =
+          senderPrincipal === currentContact.principal && senderSubAccount === account?.subaccountId;
+        const currentAsset = assets.find((asset) => asset.tokenSymbol === sender?.asset?.tokenSymbol) as Asset;
 
-      currentContactAsset?.subaccounts?.forEach((subAccount) => {
-        const receiverContact = {
+        const data: ContactSubAccount = {
           contactName: currentContact.name,
           contactPrincipal: currentContact.principal,
-          contactAccountIdentifier: currentContact.accountIdentier,
-          assetLogo: currentContactAsset?.logo,
-          assetSymbol: currentContactAsset?.symbol,
-          assetTokenSymbol: currentContactAsset?.tokenSymbol,
-          assetAddress: currentContactAsset?.address,
-          assetDecimal: currentContactAsset?.decimal,
-          assetShortDecimal: currentContactAsset?.shortDecimal,
-          assetName: currentContactAsset?.symbol,
-          subAccountIndex: subAccount?.subaccount_index,
-          subAccountId: subAccount?.sub_account_id,
-          subAccountAllowance: subAccount?.allowance,
-          subAccountName: subAccount?.name,
+          contactAccountIdentifier: currentContact.accountIdentifier,
+          assetLogo: currentAsset.logo,
+          assetSymbol: currentAsset.symbol,
+          assetTokenSymbol: currentAsset.tokenSymbol,
+          assetAddress: currentAsset.address,
+          assetDecimal: currentAsset.decimal,
+          assetShortDecimal: currentAsset?.shortDecimal,
+          assetName: currentAsset.symbol,
+          subAccountIndex: account.subaccount,
+          subAccountId: account.subaccountId,
+          subAccountAllowance: account.allowance,
+          subAccountName: account.name,
         };
 
         if (isSenderAllowance()) {
-          const sameSenderAndReceiver =
-            senderPrincipal === currentContact.principal && senderSubAccount === subAccount?.sub_account_id;
-
-          if (!sameSenderAndReceiver) {
-            allowanceContacts.push(receiverContact);
-          }
+          if (!sameSenderAndReceiver) return data;
         } else {
-          allowanceContacts.push(receiverContact);
+          return data;
         }
+
+        return null;
       });
+
+      const noNullSubAccounts = contactSubAccounts.filter((subAccount) => subAccount !== null) as ContactSubAccount[];
+      allowanceContacts.push(...noNullSubAccounts);
     }
+
     return allowanceContacts;
   }, [sender, contacts]);
 

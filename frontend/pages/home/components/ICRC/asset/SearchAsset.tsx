@@ -45,8 +45,6 @@ export default function SearchAsset(props: SearchAssetProps) {
     }
   }, [searchKey]);
 
-  // TODO: add debounce to setSearchKey
-
   return (
     <input
       className="dark:bg-PrimaryColor bg-PrimaryColorLight text-PrimaryTextColorLight dark:text-PrimaryTextColor border-SearchInputBorderLight dark:border-SearchInputBorder w-full h-8 rounded-lg border-[1px] outline-none px-3 text-md"

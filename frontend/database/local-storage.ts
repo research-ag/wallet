@@ -1,5 +1,4 @@
 import { DatabaseOptions, IWalletDatabase } from "@/database/i-wallet-database";
-import { Contact } from "@redux/models/ContactsModels";
 import { TAllowance } from "@/@types/allowance";
 import { Identity } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
@@ -27,6 +26,7 @@ import {
   setReduxAllowances,
   updateReduxAllowance,
 } from "@redux/allowance/AllowanceReducer";
+import { Contact } from "@redux/models/ContactsModels";
 
 export class LocalStorageDatabase extends IWalletDatabase {
   // Singleton pattern
@@ -77,7 +77,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * @param newAssets Array of Asset objects
    */
   private async _assetStateSync(newAssets?: Asset[]): Promise<void> {
-    const assets = newAssets || this._getAssets();
+    const assets = newAssets || JSON.parse(localStorage.getItem(`assets-${this.principalId}`) || "[]");
     store.dispatch(setAssets(assets));
     assets[0].tokenSymbol && store.dispatch(setAccordionAssetIdx([assets[0].tokenSymbol]));
   }
@@ -148,7 +148,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * @param newContacts Array of Contact objects
    */
   async _contactStateSync(newContacts?: Contact[]): Promise<void> {
-    const contacts = newContacts || this._getContacts();
+    const contacts = newContacts || JSON.parse(localStorage.getItem(`contacts-${this.principalId}`) || "[]");
     store.dispatch(setReduxContacts(contacts));
   }
 
@@ -215,14 +215,11 @@ export class LocalStorageDatabase extends IWalletDatabase {
   private _getStorableContact(contact: Contact): Contact {
     return {
       ...contact,
-      assets: contact.assets.map((asset) => ({
-        ...asset,
-        subaccounts: asset.subaccounts.map((subaccount) => {
-          // eslint-disable-next-line
-          const { allowance, ...rest } = subaccount;
-          return { ...rest };
-        }),
-      })),
+      accounts: contact.accounts.map((account) => {
+        // eslint-disable-next-line
+        const { allowance, ...rest } = account;
+        return { ...rest };
+      }),
     };
   }
 
@@ -240,7 +237,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
    * This must not not include the last updated expiration or amount
    */
   private async _allowanceStateSync(newAllowances?: TAllowance[]): Promise<void> {
-    const allowances = newAllowances || this._getAllowances();
+    const allowances = newAllowances || JSON.parse(localStorage.getItem(`allowances-${this.principalId}`) || "[]");
     store.dispatch(setReduxAllowances(allowances));
   }
 
@@ -321,8 +318,9 @@ export class LocalStorageDatabase extends IWalletDatabase {
   }
 
   private _getContacts(): Contact[] {
-    const contactsData = JSON.parse(localStorage.getItem(`contacts-${this.principalId}`) || "null");
-    return contactsData || [];
+    const stringContacts = localStorage.getItem(`contacts-${this.principalId}`);
+    const contacts = stringContacts ? JSON.parse(stringContacts) : [];
+    return contacts;
   }
 
   private _setContacts(contacts: Contact[]) {

@@ -58,56 +58,26 @@
   "contacts": {
     "schema": {
       "type": "object",
-      "version": 0,
+      "version": 1,
       "primaryKey": "principal",
       "properties": {
         "principal": { "type": "string", "maxLength": 100 },
         "name": { "type": "string", "maxLength": 100 },
-        "accountIdentier": { "type": "string", "maxLength": 100 },
-        "assets": {
+        "accountIdentifier": { "type": "string", "maxLength": 100 },
+        "accounts": {
           "type": "array",
           "items": {
-            "type": "record",
+            "type": "object",
             "properties": {
-              "symbol": { "type": "string", "maxLength": 100 },
-              "tokenSymbol": { "type": "string", "maxLength": 100 },
-              "logo": { "type": "string", "maxLength": 1000 },
-              "subaccounts": {
-                "type": "array",
-                "items": {
-                  "type": "record",
-                  "properties": {
-                    "name": { "type": "string", "maxLength": 100 },
-                    "subaccount_index": { "type": "string", "maxLength": 100 },
-                    "sub_account_id": { "type": "string", "maxLength": 100 }
-                  },
-                  "required": ["name", "subaccount_index", "sub_account_id"]
-                }
-              },
-              "address": { "type": "string", "maxLength": 100 },
-              "decimal": { "type": "string", "maxLength": 100 },
-              "shortDecimal": { "type": "string", "maxLength": 100 },
-              "supportedStandards": {
-                "type": "array",
-                "items": { "type": "string", "maxLength": 100 }
-              }
-            },
-            "required": [
-              "symbol",
-              "tokenSymbol",
-              "logo",
-              "subaccounts",
-              "address",
-              "decimal",
-              "shortDecimal",
-              "supportedStandards"
-            ]
+              "name": { "type": "string" },
+              "subaccount": { "type": "string" },
+              "subaccountId": { "type": "string" },
+              "tokenSymbol": { "type": "string" }
+            }
           }
         }
-      },
-      "required": ["name", "accountIdentier", "assets"]
-    },
-    "migrationStrategies": {}
+      }
+    }
   },
   "allowances": {
     "schema": {

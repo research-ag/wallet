@@ -8,6 +8,7 @@ import { CustomButton } from "@components/button";
 import { db } from "@/database/db";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { AssetMutationAction, setAssetMutation, setAssetMutationAction } from "@redux/assets/AssetReducer";
+import { Contact } from "@redux/models/ContactsModels";
 
 const DeleteAssetModal = () => {
   const { t } = useTranslation();
@@ -51,9 +52,12 @@ const DeleteAssetModal = () => {
     if (!assetMutated) return;
 
     await db().deleteAsset(assetMutated?.address, { sync: true }).then();
-    const updatedContacts = contacts.map((cntc) => {
-      const updatedAssets = cntc.assets.filter((ast) => ast.tokenSymbol !== assetMutated?.tokenSymbol);
-      return { ...cntc, assets: updatedAssets };
+
+    const updatedContacts = contacts.map((contact): Contact => {
+      return {
+        ...contact,
+        accounts: contact.accounts.filter((account) => account.tokenSymbol !== assetMutated?.tokenSymbol),
+      };
     });
 
     await db().updateContacts(updatedContacts, { sync: true }).then();
