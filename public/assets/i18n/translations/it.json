@@ -202,6 +202,16 @@
   "withdraw.fee": "Commissione di prelievo",
   "deposit.fee": "Commissione di deposito",
 
+  "missing.assets": "Risorse mancanti",
+  "missing.assets.warning1": "Se Aggiungi tutto, gli asset mancanti verranno aggiunti anche al tuo portafoglio",
+  "missing.assets.warning2": "Se Aggiungi Mancante, gli asset verranno aggiunti anche al tuo portafoglio",
+  "missing.assets.msg": "Alcune risorse non sono elencate nel tuo Portafoglio, prima di aggiungerle a un servizio aggiungile all'elenco delle tue risorse.",
+  "missing.assets.to.add": "Risorse mancanti",
+  "assets.to.add": "Asset elencati",
+  "add.all": "Aggiungi tutto",
+  "add.missing": "Aggiungi Mancante",
+  "only.add.listed": "Aggiungi risorse elencate",
+
   "error.asset.empty": "L'asset è vuoto",
   "error.sender.empty": "Mittente vuoto",
   "error.receiver.empty": "Destinatario vuoto",

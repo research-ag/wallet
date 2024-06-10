@@ -5,6 +5,7 @@ import {
   TransactionSenderOptionEnum,
 } from "@/@types/transactions";
 import { NotifyResponse } from "@candid/icrcx/service.did";
+import { getAssetDetails } from "@common/libs/icrc";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { Asset } from "@redux/models/AccountModels";
 import { ServiceAsset } from "@redux/models/ServiceModels";
@@ -19,6 +20,7 @@ import {
   setTransactionDrawerAction,
 } from "@redux/transaction/TransactionActions";
 import { useState } from "react";
+import { db } from "@/database/db";
 
 export default function useServiceAsset() {
   const dispatch = useAppDispatch();
@@ -37,6 +39,31 @@ export default function useServiceAsset() {
   };
   const deleteAssetsToService = (servicePrin: string, asset: ServiceAsset) => {
     dispatch(removeServiceAsset(servicePrin, asset));
+  };
+
+  const addAssetsToWallet = async (serviceAssets: ServiceAsset[]) => {
+    const updatedAssets = await Promise.all(
+      serviceAssets.map(async (newAsset, k) => {
+        const idxSorting = assets.length > 0 ? [...assets].sort((a, b) => b.sortIndex - a.sortIndex) : [];
+        const sortIndex = (idxSorting.length > 0 ? idxSorting[0]?.sortIndex : 0) + 1 + k;
+        return await getAssetDetails({
+          canisterId: newAsset.principal,
+          includeDefault: true,
+          customName: newAsset.tokenName,
+          customSymbol: newAsset.tokenSymbol,
+          supportedStandard: undefined,
+          sortIndex,
+          ledgerIndex: undefined,
+        });
+      }),
+    );
+    await Promise.all(
+      updatedAssets.map(async (ast) => {
+        if (ast) {
+          await db().addAsset(ast, { sync: true });
+        }
+      }),
+    );
   };
 
   const notifyAsset = async (servicePrincipal: string, assetPrincipal: string, update: boolean) => {
@@ -69,6 +96,7 @@ export default function useServiceAsset() {
     setNotifyRes,
     getAssetFromUserAssets,
     addAssetsToService,
+    addAssetsToWallet,
     deleteAssetsToService,
     notifyAsset,
     onDeposit,

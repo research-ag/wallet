@@ -1,5 +1,6 @@
 import { useAppSelector } from "@redux/Store";
 import { Service, ServiceAsset } from "@redux/models/ServiceModels";
+import { saveServices } from "@redux/services/ServiceActions";
 import { useEffect, useState } from "react";
 
 // TODO: implement filtering
@@ -42,7 +43,7 @@ export default function useServices() {
   }, [supportedAssetsActive, serviceAssets]);
 
   useEffect(() => {
-    localStorage.setItem(`services-${authClient}`, JSON.stringify(servicesData));
+    saveServices(servicesData);
   }, [servicesData]);
 
   return {

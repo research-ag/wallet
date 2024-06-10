@@ -202,6 +202,16 @@
   "withdraw.fee": "Taxa de saque",
   "deposit.fee": "Taxa de Depósito",
 
+  "missing.assets": "Ativos ausentes",
+  "missing.assets.warning1": "Se adicionar tudo, os ativos ausentes também serão adicionados à sua carteira",
+  "missing.assets.warning2": "Se Adicionar Ausente, os ativos também serão adicionados à sua carteira",
+  "missing.assets.msg": "Alguns ativos não estão listados na sua carteira. Antes de adicioná-los a um serviço, adicione-os à sua lista de ativos.",
+  "missing.assets.to.add": "Ativos ausentes",
+  "assets.to.add": "Ativos listados",
+  "add.all": "Adicionar tudo",
+  "add.missing": "Adicionar Ausente",
+  "only.add.listed": "Adicionar ativos listados",
+
   "error.asset.empty": "O ativo está vazio",
   "error.sender.empty": "O remetente está vazio",
   "error.receiver.empty": "O destinatário está vazio",

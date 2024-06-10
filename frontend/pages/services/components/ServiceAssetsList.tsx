@@ -39,6 +39,7 @@ export default function ServiceAssetsList({ service }: ServiceAssetsListProps) {
     setNotifyRes,
     onDeposit,
     onWithdraw,
+    addAssetsToWallet,
   } = useServiceAsset();
   const { authClient } = useAppSelector((state) => state.auth);
   const [openMore, setOpenMore] = useState(-1);
@@ -226,6 +227,7 @@ export default function ServiceAssetsList({ service }: ServiceAssetsListProps) {
                     assetsToAdd={assetsToAdd}
                     setAssetsToAdd={setAssetsToAdd}
                     addAssetsToService={addAssetsToService}
+                    addAssetsToWallet={addAssetsToWallet}
                   />
                 </div>
               </td>
