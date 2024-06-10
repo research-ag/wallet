@@ -43,7 +43,7 @@ const AddAssetManual = () => {
   const [testLoading, setTestLoading] = useState(false);
   const [validIndex, setValidIndex] = useState(false);
   const [validToken, setValidToken] = useState(false);
-  // 
+  //
   const [errShortDec, serErrShortDec] = useState(false);
   const [errIndex, setErrIndex] = useState("");
 
@@ -358,8 +358,8 @@ const AddAssetManual = () => {
     } catch (error) {
       logger.debug("Error getting index", error);
       return false;
-    };
-  };
+    }
+  }
 
   async function onSave() {
     if (isUpdate) {

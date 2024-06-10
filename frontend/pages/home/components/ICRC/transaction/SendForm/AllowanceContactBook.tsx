@@ -26,25 +26,27 @@ export function AllowanceContactBook() {
     for (let contactIndex = 0; contactIndex < contacts.length; contactIndex++) {
       const currentContact = contacts[contactIndex];
 
-      const contactSubAccounts: ContactSubAccount[] = currentContact.accounts.map((account) => {
-        const currentAsset = assets.find((asset) => asset.tokenSymbol === sender?.asset?.tokenSymbol) as Asset;
-        return {
-          contactName: currentContact.name,
-          contactPrincipal: currentContact.principal,
-          contactAccountIdentifier: currentContact.accountIdentifier,
-          assetLogo: currentAsset.logo,
-          assetSymbol: currentAsset.symbol,
-          assetTokenSymbol: currentAsset.tokenSymbol,
-          assetAddress: currentAsset.address,
-          assetDecimal: currentAsset.decimal,
-          assetShortDecimal: currentAsset?.shortDecimal,
-          assetName: currentAsset.symbol,
-          subAccountIndex: account.subaccount,
-          subAccountId: account.subaccountId,
-          subAccountAllowance: account.allowance,
-          subAccountName: account.name,
-        };
-      });
+      const contactSubAccounts: ContactSubAccount[] = currentContact.accounts
+        .map((account) => {
+          const currentAsset = assets.find((asset) => asset.tokenSymbol === sender?.asset?.tokenSymbol) as Asset;
+          return {
+            contactName: currentContact.name,
+            contactPrincipal: currentContact.principal,
+            contactAccountIdentifier: currentContact.accountIdentifier,
+            assetLogo: currentAsset.logo,
+            assetSymbol: currentAsset.symbol,
+            assetTokenSymbol: currentAsset.tokenSymbol,
+            assetAddress: currentAsset.address,
+            assetDecimal: currentAsset.decimal,
+            assetShortDecimal: currentAsset?.shortDecimal,
+            assetName: currentAsset.symbol,
+            subAccountIndex: account.subaccount,
+            subAccountId: account.subaccountId,
+            subAccountAllowance: account.allowance,
+            subAccountName: account.name,
+          };
+        })
+        .filter((subAccount) => Boolean(subAccount?.subAccountAllowance?.amount));
 
       allowanceContacts.push(...contactSubAccounts);
     }
