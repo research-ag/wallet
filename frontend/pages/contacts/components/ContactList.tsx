@@ -28,11 +28,17 @@ interface ContactListProps {
   allowanceOnly: boolean;
 }
 
+enum SortDirection {
+  Asc = "asc",
+  Desc = "desc",
+}
+
 export default function ContactList({ allowanceOnly, assetFilter, contactSearchKey }: ContactListProps) {
   const { t } = useTranslation();
   const [contactDropdown, setContactDropdown] = useState<Contact | null>(null);
   const [contactEdited, setContactEdited] = useState<Contact | null>(null);
   const [contactNameInvalid, setContactNameInvalid] = useState(false);
+  const [sortDirection, setSortDirection] = useState<SortDirection>(SortDirection.Asc);
   const contacts = useAppSelector((state) => state.contacts.contacts);
 
   return (
@@ -44,7 +50,7 @@ export default function ContactList({ allowanceOnly, assetFilter, contactSearchK
               <p>{t("contact.name")}</p>
               <SortIcon
                 className="w-3 h-3 ml-1 cursor-pointer dark:fill-gray-color-6 fill-black-color"
-                onClick={console.log}
+                onClick={toggleSortDirection}
               />
             </th>
             <th className="p-2 text-left w-[45%] bg-PrimaryColorLight dark:bg-PrimaryColor">
@@ -58,7 +64,7 @@ export default function ContactList({ allowanceOnly, assetFilter, contactSearchK
         </thead>
 
         <tbody>
-          {contacts.map((contact, index) => {
+          {getSortedContacts(contacts, sortDirection).map((contact, index) => {
             const isContactExpanded = contactDropdown?.principal === contact.principal;
             const isContactEditable = contactEdited?.principal === contact.principal;
             const hasContactAllowance = contact.accounts.some((account) => account.allowance?.amount);
@@ -170,6 +176,21 @@ export default function ContactList({ allowanceOnly, assetFilter, contactSearchK
       </table>
     </div>
   );
+
+  function getSortedContacts(contacts: Contact[], sortDirection: SortDirection): Contact[] {
+    return contacts.sort((a, b) => {
+      if (sortDirection === SortDirection.Asc) {
+        return a.name.localeCompare(b.name);
+      } else {
+        return b.name.localeCompare(a.name);
+      }
+    });
+  };
+
+  function toggleSortDirection() {
+    if (sortDirection === SortDirection.Asc) setSortDirection(SortDirection.Desc);
+    else setSortDirection(SortDirection.Asc);
+  };
 
   function onContactNameChange(e: ChangeEvent<HTMLInputElement>) {
     setContactEdited((prev: any) => {

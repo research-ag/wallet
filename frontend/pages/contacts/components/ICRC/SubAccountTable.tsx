@@ -6,19 +6,23 @@ import AddContactAccountRow from "./AddContactAccountRow";
 import DisplayContactAccountRow from "../DisplayContactAccountRow";
 import { useState } from "react";
 
+enum SortOrder {
+  ASC = "asc",
+  DESC = "desc",
+}
+
+enum SortField {
+  ASSET = "tokenSymbol",
+  SUBACCOUNTNAME = "name",
+}
+
 export default function SubAccountTable({ contact }: { contact: Contact }) {
   // const { t } = useTranslation();
   const assets = useAppSelector((state) => state.asset.list.assets);
   const [errors, setErrors] = useState({ name: false });
   const [updateAccount, setUpdateAccount] = useState<ContactAccount | null>(null);
-
-  const [subaccountSort, setSubaccountSort] = useState<{
-    sort: "asc" | "desc";
-    field: "subaccountName" | "subaccountId";
-  }>({
-    sort: "asc",
-    field: "subaccountName",
-  });
+  const [sortField, setSortField] = useState<SortField>(SortField.ASSET);
+  const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.ASC);
 
   return (
     <tr className="bg-SecondaryColorLight dark:bg-SecondaryColor">
@@ -32,7 +36,7 @@ export default function SubAccountTable({ contact }: { contact: Contact }) {
                   <p className="text-md">Asset</p>
                   <SortIcon
                     className="w-3 h-3 ml-1 cursor-pointer dark:fill-gray-color-6 fill-black-color"
-                    onClick={console.log}
+                    onClick={onAssetSortClick}
                   />
                 </span>
               </th>
@@ -41,7 +45,7 @@ export default function SubAccountTable({ contact }: { contact: Contact }) {
                   <p>Subaccount Name</p>
                   <SortIcon
                     className="w-3 h-3 ml-1 cursor-pointer dark:fill-gray-color-6 fill-black-color"
-                    onClick={console.log}
+                    onClick={onSubAccountNameSortClick}
                   />
                 </span>
               </th>
@@ -51,7 +55,7 @@ export default function SubAccountTable({ contact }: { contact: Contact }) {
             </tr>
           </thead>
           <tbody>
-            {contact?.accounts.map((currentAccount, index) => {
+            {getSortedAccounts(contact.accounts, sortField, sortOrder).map((currentAccount, index) => {
               const currentAsset = assets.find((asset) => asset.tokenSymbol === currentAccount.tokenSymbol);
 
               if (!currentAsset) {
@@ -85,7 +89,27 @@ export default function SubAccountTable({ contact }: { contact: Contact }) {
     </tr>
   );
 
+  function getSortedAccounts(accounts: ContactAccount[], sortField: SortField, sortOrder: SortOrder) {
+
+    return [...accounts].sort((a, b) => {
+      const sortValueA = sortField === SortField.ASSET ? a.tokenSymbol.toLowerCase() : a.name.toLowerCase();
+      const sortValueB = sortField === SortField.ASSET ? b.tokenSymbol.toLowerCase() : b.name.toLowerCase();
+
+      const compared = sortValueA.localeCompare(sortValueB);
+      return sortOrder === SortOrder.ASC ? compared : -compared;
+    });
+  }
+
+  function onAssetSortClick() {
+    setSortField(SortField.ASSET);
+    setSortOrder(sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC);
+  }
+
+  function onSubAccountNameSortClick() {
+    setSortField(SortField.SUBACCOUNTNAME);
+    setSortOrder(sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC);
+  }
+
 }
 
-type SubAccountSortField = "name" | "subaccountId";
-type SubAccountSortOrder = "asc" | "desc";
+
