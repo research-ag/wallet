@@ -191,6 +191,16 @@
   "withdraw.fee": " Withdraw Fee",
   "deposit.fee": " Deposit Fee",
 
+  "missing.assets": "Missing Assets",
+  "missing.assets.warning1": "If Add All, missing assets will be added also to your wallet",
+  "missing.assets.warning2": "If Add Missing, the assets will be added also to your wallet",
+  "missing.assets.msg": "Some Assets are not listed in your Wallet, before adding it to a service please add it to your assets list.",
+  "missing.assets.to.add": "Missing Assets",
+  "assets.to.add": "Listed Assets",
+  "add.all": "Add All",
+  "add.missing": "Add Missing",
+  "only.add.listed": "Add Listed Assets",
+
   "error.asset.empty": "Asset is empty",
   "error.sender.empty": "From is empty",
   "error.receiver.empty": "To is empty",

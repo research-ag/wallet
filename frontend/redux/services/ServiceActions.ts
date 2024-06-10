@@ -234,3 +234,8 @@ export const getCreditBalance = async (
     return { credit: undefined, balance: undefined };
   }
 };
+
+export const saveServices = (services: ServiceData[]) => {
+  const authClient = store.getState().auth.authClient;
+  localStorage.setItem(`services-${authClient}`, JSON.stringify(services));
+};

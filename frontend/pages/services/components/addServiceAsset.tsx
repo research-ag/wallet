@@ -6,10 +6,12 @@ import { CustomButton } from "@components/button";
 import { CustomCheck } from "@components/checkbox";
 //
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import { useAppSelector } from "@redux/Store";
 import { ServiceAsset } from "@redux/models/ServiceModels";
 import { clsx } from "clsx";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { AddAssetWarning } from "./Modals/addAssetWarning";
 
 interface AddServiceassetProps {
   servicePrincipal: string;
@@ -17,62 +19,80 @@ interface AddServiceassetProps {
   assetsToAdd: ServiceAsset[];
   setAssetsToAdd(value: ServiceAsset[]): void;
   addAssetsToService(servicePrin: string, assets: ServiceAsset[]): void;
+  addAssetsToWallet(assets: ServiceAsset[]): void;
 }
 
 export const AddServiceAsset = (props: AddServiceassetProps) => {
-  const { servicePrincipal, assets, assetsToAdd, setAssetsToAdd, addAssetsToService } = props;
+  const userAssets = useAppSelector((state) => state.asset.list.assets);
+  const { servicePrincipal, assets, assetsToAdd, setAssetsToAdd, addAssetsToService, addAssetsToWallet } = props;
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
+  const [openAddModal, setOpenAddModal] = useState(false);
+  const [missingAssets, setMissingAssets] = useState<ServiceAsset[]>([]);
+  const [inListAssets, setInLsitAssets] = useState<ServiceAsset[]>([]);
 
   return (
-    <DropdownMenu.Root open={open} onOpenChange={onOpenChange}>
-      <DropdownMenu.Trigger asChild>
-        <button className="flex flex-row px-2 py-1 gap-1 justify-center items-center rounded-md bg-SelectRowColor">
-          <PlusIcon className="w-4 h-4" />
-          <p className="text-PrimaryTextColor">{t("asset")}</p>
-        </button>
-      </DropdownMenu.Trigger>
-      <DropdownMenu.Portal>
-        <DropdownMenu.Content className={contentContainerStyles} sideOffset={2} align="center">
-          <div
-            onClick={handleSelectAll}
-            className="flex flex-row items-center justify-between w-full px-3 py-2 hover:bg-secondary-color-1-light hover:dark:bg-HoverColor"
-          >
-            <p>{t("selected.all")}</p>
-            <CustomCheck
-              className="border-secondary-color-2-light dark:border-BorderColor"
-              checked={assets.length === assetsToAdd.length}
-            />
-          </div>
-          {assets.map((asset, k) => {
-            return (
-              <div
-                key={k}
-                className={assetStyle(k, assets)}
-                onClick={() => {
-                  handleSelectAsset(asset);
-                }}
-              >
-                <div className="flex items-center justify-start gap-2 flex-start">
-                  {getAssetIcon(IconTypeEnum.Enum.FILTER, asset.tokenSymbol, asset.logo)}
-                  <p>{asset.tokenSymbol}</p>
-                </div>
+    <Fragment>
+      <DropdownMenu.Root open={open} onOpenChange={onOpenChange}>
+        <DropdownMenu.Trigger asChild>
+          <button className="flex flex-row px-2 py-1 gap-1 justify-center items-center rounded-md bg-SelectRowColor">
+            <PlusIcon className="w-4 h-4" />
+            <p className="text-PrimaryTextColor">{t("asset")}</p>
+          </button>
+        </DropdownMenu.Trigger>
+        <DropdownMenu.Portal>
+          <DropdownMenu.Content className={contentContainerStyles} sideOffset={2} align="center">
+            <div
+              onClick={handleSelectAll}
+              className="flex flex-row items-center justify-between w-full px-3 py-2 hover:bg-secondary-color-1-light hover:dark:bg-HoverColor"
+            >
+              <p>{t("selected.all")}</p>
+              <CustomCheck
+                className="border-secondary-color-2-light dark:border-BorderColor"
+                checked={assets.length === assetsToAdd.length}
+              />
+            </div>
+            {assets.map((asset, k) => {
+              return (
+                <div
+                  key={k}
+                  className={assetStyle(k, assets)}
+                  onClick={() => {
+                    handleSelectAsset(asset);
+                  }}
+                >
+                  <div className="flex items-center justify-start gap-2 flex-start">
+                    {getAssetIcon(IconTypeEnum.Enum.FILTER, asset.tokenSymbol, asset.logo)}
+                    <p>{asset.tokenSymbol}</p>
+                  </div>
 
-                <CustomCheck
-                  className="border-BorderColorLight dark:border-BorderColor"
-                  checked={assetsToAdd.includes(asset)}
-                />
-              </div>
-            );
-          })}
-          <div className="flex justify-center items-center w-full py-2 px-4">
-            <CustomButton onClick={handleAddAssetButton} size={"small"} className="w-full">
-              <p>{t("add.asset")}</p>
-            </CustomButton>
-          </div>
-        </DropdownMenu.Content>
-      </DropdownMenu.Portal>
-    </DropdownMenu.Root>
+                  <CustomCheck
+                    className="border-BorderColorLight dark:border-BorderColor"
+                    checked={assetsToAdd.includes(asset)}
+                  />
+                </div>
+              );
+            })}
+            <div className="flex justify-center items-center w-full py-2 px-4">
+              <CustomButton onClick={handleAddAssetButton} size={"small"} className="w-full">
+                <p>{t("add.asset")}</p>
+              </CustomButton>
+            </div>
+          </DropdownMenu.Content>
+        </DropdownMenu.Portal>
+      </DropdownMenu.Root>
+      {openAddModal && (
+        <AddAssetWarning
+          open={openAddModal}
+          setOpen={setOpenAddModal}
+          service={servicePrincipal}
+          assetToAdd={inListAssets}
+          missingAsset={missingAssets}
+          addAssetsToService={addAssetsToService}
+          addAssetsToWallet={addAssetsToWallet}
+        />
+      )}
+    </Fragment>
   );
   function onOpenChange(value: boolean) {
     setOpen(value);
@@ -92,7 +112,19 @@ export const AddServiceAsset = (props: AddServiceassetProps) => {
   }
   function handleAddAssetButton() {
     if (assetsToAdd.length > 0) {
-      addAssetsToService(servicePrincipal, assetsToAdd);
+      const nonInList: ServiceAsset[] = [];
+      const inList: ServiceAsset[] = [];
+      assetsToAdd.map((ast) => {
+        const includeList = userAssets.find((asst) => asst.address === ast.principal);
+        if (includeList) inList.push(ast);
+        else nonInList.push(ast);
+      });
+      if (nonInList.length > 0) {
+        setMissingAssets(nonInList);
+        setInLsitAssets(inList);
+        setOpenAddModal(true);
+        setOpen(false);
+      } else addAssetsToService(servicePrincipal, assetsToAdd);
       setOpen(false);
     }
   }

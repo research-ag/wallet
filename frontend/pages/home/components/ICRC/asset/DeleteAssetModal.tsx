@@ -8,12 +8,14 @@ import { CustomButton } from "@components/button";
 import { db } from "@/database/db";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { AssetMutationAction, setAssetMutation, setAssetMutationAction } from "@redux/assets/AssetReducer";
+import { removeAssetFromServices } from "@redux/services/ServiceReducer";
 
 const DeleteAssetModal = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { assetMutated, assetAction } = useAppSelector((state) => state.asset.mutation);
   const { contacts } = useAppSelector((state) => state.contacts);
+  const { services } = useAppSelector((state) => state.services);
 
   const isModalOpen = assetAction === AssetMutationAction.DELETE;
 
@@ -57,6 +59,8 @@ const DeleteAssetModal = () => {
     });
 
     await db().updateContacts(updatedContacts, { sync: true }).then();
+
+    dispatch(removeAssetFromServices(assetMutated.address));
 
     dispatch(setAssetMutationAction(AssetMutationAction.NONE));
     dispatch(setAssetMutation(undefined));

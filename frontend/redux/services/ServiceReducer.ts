@@ -1,6 +1,7 @@
 import { assetsServiceToData } from "@common/utils/service";
 import { Service, ServiceAsset, ServiceAssetData, ServiceData } from "@redux/models/ServiceModels";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { saveServices } from "./ServiceActions";
 
 interface ServiceState {
   servicesData: ServiceData[];
@@ -172,6 +173,19 @@ const servicesSlice = createSlice({
         return { payload: { service, serviceAsset, credit, deposit } };
       },
     },
+    removeAssetFromServices(state, action: PayloadAction<string>) {
+      const auxServices = state.services.map((srv) => {
+        const updatedAssets = srv.assets.filter((ast) => ast.principal !== action.payload);
+        return { ...srv, assets: updatedAssets };
+      });
+      const auxServicesData = state.servicesData.map((srv) => {
+        const updatedAssets = srv.assets.filter((ast) => ast.principal !== action.payload);
+        return { ...srv, assets: updatedAssets };
+      });
+      state.services = auxServices;
+      state.servicesData = auxServicesData;
+      saveServices(auxServicesData);
+    },
     setServiceAssets(state, action: PayloadAction<ServiceAsset[]>) {
       state.serviceAssets = action.payload;
     },
@@ -203,6 +217,7 @@ export const {
   addServiceAsset,
   removeServiceAsset,
   updateServiceAssetAmounts,
+  removeAssetFromServices,
   setServiceAssets,
 } = servicesSlice.actions;
 export default servicesSlice.reducer;

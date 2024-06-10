@@ -192,6 +192,16 @@
   "withdraw.fee": " Tarifa de retiro ",
   "deposit.fee": " Tarifa de depósito",
 
+  "missing.assets": "Activos faltantes",
+  "missing.assets.warning1": "Con Agregar Todo, los activos faltantes también se agregarán a su billetera",
+  "missing.assets.warning2": "Con Agregar Faltantes, los activos también se agregarán a su billetera",
+  "missing.assets.msg": "Algunos activos no figuran en su billetera; antes de agregarlos a un servicio, agréguelos a su lista de activos.",
+  "missing.assets.to.add": "Activos faltantes",
+  "assets.to.add": "Activos listados",
+  "add.all": "Agregar Todo",
+  "add.missing": "Agregar Faltantes",
+  "only.add.listed": "Agregar activos listados",
+
   "error.asset.empty": "El activo está vacío",
   "error.sender.empty": "El remitente está vacío",
   "error.receiver.empty": "El destinatario está vacío",
