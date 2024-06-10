@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 
 // TODO: implement filtering
 export default function useServices() {
-  const { authClient } = useAppSelector((state) => state.auth);
   const { services, servicesData, serviceAssets } = useAppSelector((state) => state.services);
   const [serviceList, setServiceList] = useState<Service[]>([]);
   const [assetFilter, setAssetFilter] = useState<string[]>([]);
