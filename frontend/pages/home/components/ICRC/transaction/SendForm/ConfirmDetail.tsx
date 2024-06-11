@@ -188,6 +188,10 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
                 subaccount: [hexToUint8Array(receiverSubAccount)],
               },
               amount: toHoleBigInt(amount, Number(decimal)),
+              fee: [],
+              spender_subaccount: [],
+              memo: [],
+              created_at_time: [],
             });
           } else {
             const isValid = await validateBalance();
@@ -204,7 +208,6 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
                 to_subaccount: [hexToUint8Array(receiverSubAccount)],
               });
             } else {
-              console.log("ICRC1Tranfer");
               await ICRC1Tranfer({
                 canisterId: assetAddress,
                 agent: userAgent,

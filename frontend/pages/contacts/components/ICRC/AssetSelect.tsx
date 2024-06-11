@@ -35,7 +35,7 @@ const Content = (props: { options: Asset[]; selectedOption: Asset; onSelectAsset
 
   return (
     <div className="max-h-[10rem]  scroll-y-light">
-      <div className="p-1 rounded-t-lg dark:bg-level-1-color bg-gray-color-8">
+      <div className="p-1 rounded-tl-lg dark:bg-level-1-color bg-gray-color-8">
         <CustomInput
           prefix={<img src={SearchIcon} className="mx-2 w-[1rem] h-[1rem]" alt="search-icon" />}
           onChange={handleSearchChange}
@@ -124,7 +124,7 @@ export default function AssetSelect(props: AssetSelectProps) {
 }
 
 const triggerStyles = (error: boolean) =>
-  clsx("border p-0 rounded-md dark:bg-level-2-color bg-gray-color-8 w-full max-w-[10rem] px-[0.2rem] h-[2.2rem]", {
+  clsx("border p-0 rounded-md dark:bg-level-2-color bg-white w-full max-w-[10rem] px-[0.2rem] h-[2.2rem]", {
     "border-slate-color-error": error,
     "border-primary-color": !error,
   });

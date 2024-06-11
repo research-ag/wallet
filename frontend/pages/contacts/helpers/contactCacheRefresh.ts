@@ -14,9 +14,9 @@ export default async function contactCacheRefresh() {
       const contact = contacts[i];
 
       const args = contactAccountToAllowanceArgs({
-        allocatorPrincipal: store.getState().auth.userPrincipal.toString(),
+        allocatorPrincipal: contact.principal,
         contactAccounts: contact.accounts,
-        spenderPrincipal: contact.principal,
+        spenderPrincipal: store.getState().auth.userPrincipal.toString(),
       });
 
       const updatePromise = addAllowanceToSubaccounts(args).then((updatedAccounts) => ({

@@ -33,8 +33,8 @@ export const useCreateContact = (onClose: () => void) => {
     try {
       const args = contactAccountToAllowanceArgs({
         contactAccounts,
-        allocatorPrincipal: userPrincipal.toString(),
-        spenderPrincipal: newContact.principal,
+        allocatorPrincipal: newContact.principal,
+        spenderPrincipal: userPrincipal.toString(),
       });
 
       return await addAllowanceToSubaccounts(args);

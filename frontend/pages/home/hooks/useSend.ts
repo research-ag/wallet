@@ -162,6 +162,7 @@ export default function useSend() {
         allocatorPrincipal: principal,
         assetAddress,
         assetDecimal: decimal,
+        spenderPrincipal: userPrincipal.toText(),
       });
 
       return response?.amount || "0";

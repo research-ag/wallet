@@ -115,7 +115,7 @@ export default function CreateForm() {
         assetAddress: allowance.asset.address,
         assetDecimal: allowance.asset.decimal,
         allocatorSubaccount: allowance.subAccountId,
-        allocatorPrincipal: allowance.spender,
+        spenderPrincipal: allowance.spender,
       });
 
       const newAllowance = {

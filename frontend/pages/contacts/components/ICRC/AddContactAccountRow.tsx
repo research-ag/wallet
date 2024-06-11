@@ -65,11 +65,13 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
           </div>
           <div className="w-[21%] pr-4 flex items-center">
             <CustomInput
+              intent={"primary"}
               placeholder={t("name.sub.account")}
-              inputClass="h-[2rem]"
               onChange={onAccountNameChange}
-              className="h-[2.2rem] dark:bg-level-2-color bg-gray-color-8 rounded-lg"
+              className="h-[2.2rem] dark:bg-level-2-color bg-white rounded-lg"
               border={errors.name ? "error" : "selected"}
+              sizeComp={"xLarge"}
+              sizeInput="small"
             />
 
             {hasAllowance && (
@@ -139,7 +141,7 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
               subaccount: "",
               subaccountId: "",
               tokenSymbol: "",
-            })
+            });
           }}
           className="flex items-center"
         >
@@ -269,8 +271,8 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
 
     const allowanceArgs = contactAccountToAllowanceArgs({
       contactAccounts: [toStoreAccount],
-      spenderPrincipal: props.contact.principal,
-      allocatorPrincipal: userPrincipal.toString(),
+      spenderPrincipal: userPrincipal.toString(),
+      allocatorPrincipal: props.contact.principal,
     });
 
     const withAllowances = await addAllowanceToSubaccounts(allowanceArgs);
@@ -322,8 +324,8 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
 
       const allowanceArgs = contactAccountToAllowanceArgs({
         contactAccounts: [toStoreAccount],
-        spenderPrincipal: props.contact.principal,
-        allocatorPrincipal: userPrincipal.toString(),
+        spenderPrincipal: userPrincipal.toString(),
+        allocatorPrincipal: props.contact.principal,
       });
 
       const withAllowances = await addAllowanceToSubaccounts(allowanceArgs);

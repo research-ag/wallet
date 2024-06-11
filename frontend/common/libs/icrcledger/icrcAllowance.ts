@@ -1,7 +1,4 @@
-import {
-  CheckAllowanceParams,
-  SupportedStandardEnum,
-} from "@/@types/icrc";
+import { CheckAllowanceParams, SupportedStandardEnum } from "@/@types/icrc";
 import { Actor, HttpAgent } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import store from "@redux/Store";
@@ -115,6 +112,7 @@ export async function getAllowanceDetails(params: CheckAllowanceParams) {
         subaccount: [subAccountUint8Array],
       },
     });
+
 
     const amount = Number(result.allowance) <= 0 ? "" : toFullDecimal(result.allowance, Number(assetDecimal));
     const expiration = result.expires_at.length <= 0 ? "" : dayjs(Number(result?.expires_at) / 1000000).format();
