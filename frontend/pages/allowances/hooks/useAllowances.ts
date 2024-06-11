@@ -53,6 +53,7 @@ export default function useAllowances() {
     if (column === AllowancesTableColumnsEnum.Values.expiration) {
       return sortByExpiration(sorting, filtered || []);
     }
+    console.log("filtered", filtered);
 
     return filtered;
   }, [assetFilters, searchKey, sorting, column, rawAllowances, selectedAccount, selectedAsset]);
