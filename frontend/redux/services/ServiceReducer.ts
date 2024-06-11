@@ -173,18 +173,18 @@ const servicesSlice = createSlice({
         return { payload: { service, serviceAsset, credit, deposit } };
       },
     },
-    removeAssetFromServices(state, action: PayloadAction<string>) {
+    removeAssetFromServices(state, action: PayloadAction<{ addres: string; authClient: string }>) {
       const auxServices = state.services.map((srv) => {
-        const updatedAssets = srv.assets.filter((ast) => ast.principal !== action.payload);
+        const updatedAssets = srv.assets.filter((ast) => ast.principal !== action.payload.addres);
         return { ...srv, assets: updatedAssets };
       });
       const auxServicesData = state.servicesData.map((srv) => {
-        const updatedAssets = srv.assets.filter((ast) => ast.principal !== action.payload);
+        const updatedAssets = srv.assets.filter((ast) => ast.principal !== action.payload.addres);
         return { ...srv, assets: updatedAssets };
       });
       state.services = auxServices;
       state.servicesData = auxServicesData;
-      saveServices(auxServicesData);
+      saveServices(action.payload.authClient, auxServicesData);
     },
     setServiceAssets(state, action: PayloadAction<ServiceAsset[]>) {
       state.serviceAssets = action.payload;
