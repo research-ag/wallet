@@ -235,7 +235,6 @@ export const getCreditBalance = async (
   }
 };
 
-export const saveServices = (services: ServiceData[]) => {
-  const authClient = store.getState().auth.authClient;
+export const saveServices = (authClient: string, services: ServiceData[]) => {
   localStorage.setItem(`services-${authClient}`, JSON.stringify(services));
 };

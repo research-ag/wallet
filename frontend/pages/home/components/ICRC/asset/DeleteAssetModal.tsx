@@ -15,6 +15,7 @@ const DeleteAssetModal = () => {
   const dispatch = useAppDispatch();
   const { assetMutated, assetAction } = useAppSelector((state) => state.asset.mutation);
   const { contacts } = useAppSelector((state) => state.contacts);
+  const { authClient } = useAppSelector((state) => state.auth);
 
   const isModalOpen = assetAction === AssetMutationAction.DELETE;
 
@@ -59,7 +60,9 @@ const DeleteAssetModal = () => {
 
     await db().updateContacts(updatedContacts, { sync: true }).then();
 
-    dispatch(removeAssetFromServices(assetMutated.address));
+    console.log("assetMutated", assetMutated);
+
+    dispatch(removeAssetFromServices({ authClient, addres: assetMutated.address }));
 
     dispatch(setAssetMutationAction(AssetMutationAction.NONE));
     dispatch(setAssetMutation(undefined));
