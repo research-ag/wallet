@@ -12,13 +12,21 @@ interface NewServiceRowProps {
 
 export const NewServiceRow = (props: NewServiceRowProps) => {
   const { setAddService, setNewService } = props;
-  const { newService, newServiceErr, onServiceNameChange, onServicePrincipalChange, saveService } = useNewServices();
+  const {
+    newService,
+    newServiceErr,
+    onServiceNameChange,
+    onServicePrincipalChange,
+    saveService,
+    setNewServiceErr,
+    showDuplicate,
+    setShowDuplicate,
+  } = useNewServices();
   return (
     <tr className="border-b border-BorderColorTwoLight dark:border-BorderColorTwo bg-SelectRowColor/10">
       <td>
         <div className="relative flex flex-row items-center justify-start w-full gap-2 px-4 min-h-14">
           <div className="absolute left-0 w-1 h-14 bg-SelectRowColor"></div>
-
           <CustomInput
             intent={"primary"}
             border={newServiceErr.name ? "error" : "selected"}
@@ -38,6 +46,7 @@ export const NewServiceRow = (props: NewServiceRowProps) => {
           sizeInput="small"
           value={newService.principal}
           onChange={onServicePrincipalChange}
+          sufix={showDuplicate ? <p className="text-sm text-slate-color-error">Duplicate</p> : <></>}
         />
       </td>
       <td>
@@ -55,7 +64,25 @@ export const NewServiceRow = (props: NewServiceRowProps) => {
     setNewService(false);
   }
   async function onSave() {
-    await saveService();
-    onClose();
+    const res = await saveService();
+    console.log("res", res);
+
+    if (res.success) onClose();
+    else {
+      if (res.err === "service-name-data-err")
+        setNewServiceErr((prev: any) => {
+          return { name: true, principal: prev.principal };
+        });
+      else if (res.err === "service-principal-data-err")
+        setNewServiceErr((prev: any) => {
+          return { name: prev.name, principal: true };
+        });
+      else if (res.err === "service-duplicate-err") {
+        setNewServiceErr((prev: any) => {
+          return { name: prev.name, principal: true };
+        });
+        setShowDuplicate(true);
+      }
+    }
   }
 };

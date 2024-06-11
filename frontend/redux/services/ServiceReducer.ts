@@ -175,7 +175,11 @@ const servicesSlice = createSlice({
     },
     removeAssetFromServices(state, action: PayloadAction<{ addres: string; authClient: string }>) {
       const auxServices = state.services.map((srv) => {
-        const updatedAssets = srv.assets.filter((ast) => ast.principal !== action.payload.addres);
+        const updatedAssets = srv.assets.map((ast) => {
+          if (ast.principal !== action.payload.addres) {
+            return { ...ast, visible: false };
+          } else return ast;
+        });
         return { ...srv, assets: updatedAssets };
       });
       const auxServicesData = state.servicesData.map((srv) => {
