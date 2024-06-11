@@ -18,6 +18,7 @@ import ServiceAssetsList from "./ServiceAssetsList";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { DeleteServiceModal } from "./Modals/deleteService";
 import { NewServiceRow } from "./NewServiceRow";
+import { useAppSelector } from "@redux/Store";
 
 interface ServicesListProps {
   services: Service[];
@@ -41,6 +42,7 @@ export default function ServicesList({ services, newService, setNewService }: Se
     onSave,
     onDeleteService,
   } = useServicesList(newService);
+  const { watchOnlyMode } = useAppSelector((state) => state.auth);
   const [openMore, setOpenMore] = useState(-1);
   const [deleteService, setDeleteService] = useState<Service>();
 
@@ -67,7 +69,7 @@ export default function ServicesList({ services, newService, setNewService }: Se
                 <tr className={ServiceStyle(srv)}>
                   <td
                     onDoubleClick={() => {
-                      onEditService(srv);
+                      !watchOnlyMode && onEditService(srv);
                     }}
                   >
                     <div className="relative flex flex-row items-center justify-start w-full gap-2 px-4 min-h-14">
@@ -117,36 +119,38 @@ export default function ServicesList({ services, newService, setNewService }: Se
                   </td>
                   <td className="py-2">
                     <div className="relative flex items-center justify-center h-full">
-                      <DropdownMenu.Root
-                        open={openMore === k}
-                        onOpenChange={(e) => {
-                          onOpenMoreChange(k, e);
-                        }}
-                      >
-                        <DropdownMenu.Trigger>
-                          <MoreIcon className="cursor-pointer fill-PrimaryTextColorLight/70 dark:fill-PrimaryTextColor/70" />
-                        </DropdownMenu.Trigger>
-                        <DropdownMenu.Portal>
-                          <DropdownMenu.Content
-                            className=" w-[6rem] rounded-md bg-DeleteBackgroundColor !z-[999] text-PrimaryTextColorLight dark:text-PrimaryTextColor dark:border dark:border-BorderColorTwo shadow-md shadow-PrimaryColor/30 dark:shadow-black/20"
-                            sideOffset={5}
-                            align="end"
-                          >
-                            <div
-                              className="flex flex-row items-center justify-center gap-2 p-1 cursor-pointer hover:bg-TextErrorColor/20 rounded-b-md"
-                              onClick={() => {
-                                setNewService(false);
-                                setAddService(false);
-                                setOpenMore(-1);
-                                onDelete(srv);
-                              }}
+                      {!watchOnlyMode && (
+                        <DropdownMenu.Root
+                          open={openMore === k}
+                          onOpenChange={(e) => {
+                            onOpenMoreChange(k, e);
+                          }}
+                        >
+                          <DropdownMenu.Trigger>
+                            <MoreIcon className="cursor-pointer fill-PrimaryTextColorLight/70 dark:fill-PrimaryTextColor/70" />
+                          </DropdownMenu.Trigger>
+                          <DropdownMenu.Portal>
+                            <DropdownMenu.Content
+                              className=" w-[6rem] rounded-md bg-DeleteBackgroundColor !z-[999] text-PrimaryTextColorLight dark:text-PrimaryTextColor dark:border dark:border-BorderColorTwo shadow-md shadow-PrimaryColor/30 dark:shadow-black/20"
+                              sideOffset={5}
+                              align="end"
                             >
-                              <TrashIcon className="w-4 h-4 cursor-pointer fill-TextErrorColor" />
-                              <p className="text-TextErrorColor text-md">{t("delete")}</p>
-                            </div>
-                          </DropdownMenu.Content>
-                        </DropdownMenu.Portal>
-                      </DropdownMenu.Root>
+                              <div
+                                className="flex flex-row items-center justify-center gap-2 p-1 cursor-pointer hover:bg-TextErrorColor/20 rounded-b-md"
+                                onClick={() => {
+                                  setNewService(false);
+                                  setAddService(false);
+                                  setOpenMore(-1);
+                                  onDelete(srv);
+                                }}
+                              >
+                                <TrashIcon className="w-4 h-4 cursor-pointer fill-TextErrorColor" />
+                                <p className="text-TextErrorColor text-md">{t("delete")}</p>
+                              </div>
+                            </DropdownMenu.Content>
+                          </DropdownMenu.Portal>
+                        </DropdownMenu.Root>
+                      )}
                     </div>
                   </td>
                   <td className="py-2">

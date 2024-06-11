@@ -6,6 +6,7 @@ import { memo } from "react";
 import AssetFilter from "./AssetFilter";
 import { CustomInput } from "@components/input";
 import { ServiceAsset } from "@redux/models/ServiceModels";
+import { useAppSelector } from "@redux/Store";
 
 interface ServicesFiltersProps {
   onServiceKeyChange: (key: string) => void;
@@ -27,6 +28,8 @@ function ServicesFilters(props: ServicesFiltersProps) {
     filterAssets,
     setNewService,
   } = props;
+
+  const { watchOnlyMode } = useAppSelector((state) => state.auth);
   return (
     <div className="flex items-center justify-start w-full gap-3">
       <AssetFilter
@@ -46,7 +49,9 @@ function ServicesFilters(props: ServicesFiltersProps) {
         onChange={(e) => onServiceKeyChange(e.target.value)}
       />
 
-      <IconButton icon={<PlusIcon className="w-6 h-6" />} size="medium" onClick={() => setNewService(true)} />
+      {!watchOnlyMode && (
+        <IconButton icon={<PlusIcon className="w-6 h-6" />} size="medium" onClick={() => setNewService(true)} />
+      )}
     </div>
   );
 }

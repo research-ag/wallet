@@ -16,7 +16,6 @@ const DeleteAssetModal = () => {
   const dispatch = useAppDispatch();
   const { assetMutated, assetAction } = useAppSelector((state) => state.asset.mutation);
   const { contacts } = useAppSelector((state) => state.contacts);
-  const { services } = useAppSelector((state) => state.services);
 
   const isModalOpen = assetAction === AssetMutationAction.DELETE;
 

@@ -136,12 +136,10 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean,
 
   await db().setIdentity(authIdentity, myPrincipal);
 
-  if (!fixedPrincipal) {
-    const { services, serviceData, filterAssets } = await getServicesData(myAgent, principalString);
-    store.dispatch(setServices(services));
-    store.dispatch(setServicesData(serviceData));
-    store.dispatch(setServiceAssets(filterAssets));
-  }
+  const { services, serviceData, filterAssets } = await getServicesData(myAgent, principalString);
+  store.dispatch(setServices(services));
+  store.dispatch(setServicesData(serviceData));
+  store.dispatch(setServiceAssets(filterAssets));
 
   store.dispatch(setInitLoad(false));
   store.dispatch(setUserPrincipal(myPrincipal));

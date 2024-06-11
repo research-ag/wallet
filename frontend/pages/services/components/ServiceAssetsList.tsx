@@ -41,7 +41,7 @@ export default function ServiceAssetsList({ service }: ServiceAssetsListProps) {
     onWithdraw,
     addAssetsToWallet,
   } = useServiceAsset();
-  const { authClient } = useAppSelector((state) => state.auth);
+  const { authClient, watchOnlyMode } = useAppSelector((state) => state.auth);
   const [openMore, setOpenMore] = useState(-1);
   const [deleteAsset, setDeleteAsset] = useState<ServiceAsset>();
   const [assetToNotify, setAssetToNotify] = useState<ServiceAsset>();
@@ -81,7 +81,7 @@ export default function ServiceAssetsList({ service }: ServiceAssetsListProps) {
                   <td className="h-full">
                     <div className="relative flex flex-col items-center justify-center w-full h-full">
                       <div className="w-1 h-1 bg-SelectRowColor"></div>
-                      {k !== service.assets.length - 1 && (
+                      {k !== service.assets.filter((asst) => asst.visible).length - 1 && (
                         <div
                           style={{ height: "3.25rem" }}
                           className="absolute top-0 w-1 ml-[-0.75px] left-1/2 border-l border-dotted border-SelectRowColor"
@@ -127,96 +127,98 @@ export default function ServiceAssetsList({ service }: ServiceAssetsListProps) {
                     </div>
                   </td>
                   <td className="py-2 border-b border-BorderColorTwoLight dark:border-BorderColorTwo">
-                    <div className="flex flex-row justify-around items-center w-full px-10">
-                      <CustomHoverCard
-                        arrowFill="fill-SelectRowColor"
-                        side="top"
-                        trigger={
-                          <button
-                            onClick={() => {
-                              onActionClic(ast, asst, true);
-                            }}
-                            className="flex w-10 h-10 justify-center items-center rounded-md bg-SelectRowColor p-0"
-                          >
-                            <DepositIcon />
-                          </button>
-                        }
-                      >
-                        <div className=" p-1 rounded-md border border-SelectRowColor bg-SecondaryColorLight dark:bg-SecondaryColor">
-                          <p className="text-sm text-SelectRowColor">{t("deposit")}</p>
-                        </div>
-                      </CustomHoverCard>
-
-                      <CustomHoverCard
-                        arrowFill="fill-SelectRowColor"
-                        side="top"
-                        trigger={
-                          <button
-                            onClick={() => {
-                              onActionClic(ast, asst, false);
-                            }}
-                            className="flex w-10 h-10 justify-center items-center rounded-md bg-SelectRowColor p-0"
-                          >
-                            <WithdrawIcon />
-                          </button>
-                        }
-                      >
-                        <div className=" p-1 rounded-md border border-SelectRowColor bg-SecondaryColorLight dark:bg-SecondaryColor">
-                          <p className="text-sm text-SelectRowColor">{t("withdraw")}</p>
-                        </div>
-                      </CustomHoverCard>
-                      <CustomHoverCard
-                        arrowFill="fill-SelectRowColor"
-                        side="top"
-                        trigger={
-                          <button
-                            className="flex w-10 h-10 justify-center items-center rounded-md bg-SelectRowColor p-0"
-                            onClick={() => {
-                              onNotify(asst.principal, asst);
-                            }}
-                          >
-                            {notifyLoading ? <LoadingLoader /> : <NotifyIcon />}
-                          </button>
-                        }
-                      >
-                        <div className=" p-1 rounded-md border border-SelectRowColor bg-SecondaryColorLight dark:bg-SecondaryColor">
-                          <p className="text-sm text-SelectRowColor">{t("notify")}</p>
-                        </div>
-                      </CustomHoverCard>
-                      <DropdownMenu.Root
-                        open={openMore === k}
-                        onOpenChange={(e) => {
-                          onOpenMoreChange(k, e);
-                        }}
-                      >
-                        <DropdownMenu.Trigger className="p-0">
-                          <MoreIcon className="cursor-pointer fill-PrimaryTextColorLight/70 dark:fill-PrimaryTextColor/70" />
-                        </DropdownMenu.Trigger>
-                        <DropdownMenu.Portal>
-                          <DropdownMenu.Content
-                            className=" w-[6rem] rounded-md bg-DeleteBackgroundColor !z-[999] text-PrimaryTextColorLight dark:text-PrimaryTextColor dark:border dark:border-BorderColorTwo shadow-md shadow-PrimaryColor/30 dark:shadow-black/20"
-                            sideOffset={5}
-                            align="center"
-                          >
-                            <div
-                              className="flex flex-row items-center justify-center gap-2 p-1 cursor-pointer hover:bg-TextErrorColor/20 rounded-b-md"
+                    {!watchOnlyMode && (
+                      <div className="flex flex-row justify-around items-center w-full px-10">
+                        <CustomHoverCard
+                          arrowFill="fill-SelectRowColor"
+                          side="top"
+                          trigger={
+                            <button
                               onClick={() => {
-                                setDeleteAsset(asst);
-                                setOpenMore(-1);
+                                onActionClic(ast, asst, true);
+                              }}
+                              className="flex w-10 h-10 justify-center items-center rounded-md bg-SelectRowColor p-0"
+                            >
+                              <DepositIcon />
+                            </button>
+                          }
+                        >
+                          <div className=" p-1 rounded-md border border-SelectRowColor bg-SecondaryColorLight dark:bg-SecondaryColor">
+                            <p className="text-sm text-SelectRowColor">{t("deposit")}</p>
+                          </div>
+                        </CustomHoverCard>
+
+                        <CustomHoverCard
+                          arrowFill="fill-SelectRowColor"
+                          side="top"
+                          trigger={
+                            <button
+                              onClick={() => {
+                                onActionClic(ast, asst, false);
+                              }}
+                              className="flex w-10 h-10 justify-center items-center rounded-md bg-SelectRowColor p-0"
+                            >
+                              <WithdrawIcon />
+                            </button>
+                          }
+                        >
+                          <div className=" p-1 rounded-md border border-SelectRowColor bg-SecondaryColorLight dark:bg-SecondaryColor">
+                            <p className="text-sm text-SelectRowColor">{t("withdraw")}</p>
+                          </div>
+                        </CustomHoverCard>
+                        <CustomHoverCard
+                          arrowFill="fill-SelectRowColor"
+                          side="top"
+                          trigger={
+                            <button
+                              className="flex w-10 h-10 justify-center items-center rounded-md bg-SelectRowColor p-0"
+                              onClick={() => {
+                                onNotify(asst.principal, asst);
                               }}
                             >
-                              <TrashIcon className="w-4 h-4 cursor-pointer fill-TextErrorColor" />
-                              <p className="text-TextErrorColor text-md">{t("delete")}</p>
-                            </div>
-                          </DropdownMenu.Content>
-                        </DropdownMenu.Portal>
-                      </DropdownMenu.Root>
-                    </div>
+                              {notifyLoading ? <LoadingLoader /> : <NotifyIcon />}
+                            </button>
+                          }
+                        >
+                          <div className=" p-1 rounded-md border border-SelectRowColor bg-SecondaryColorLight dark:bg-SecondaryColor">
+                            <p className="text-sm text-SelectRowColor">{t("notify")}</p>
+                          </div>
+                        </CustomHoverCard>
+                        <DropdownMenu.Root
+                          open={openMore === k}
+                          onOpenChange={(e) => {
+                            onOpenMoreChange(k, e);
+                          }}
+                        >
+                          <DropdownMenu.Trigger className="p-0">
+                            <MoreIcon className="cursor-pointer fill-PrimaryTextColorLight/70 dark:fill-PrimaryTextColor/70" />
+                          </DropdownMenu.Trigger>
+                          <DropdownMenu.Portal>
+                            <DropdownMenu.Content
+                              className=" w-[6rem] rounded-md bg-DeleteBackgroundColor !z-[999] text-PrimaryTextColorLight dark:text-PrimaryTextColor dark:border dark:border-BorderColorTwo shadow-md shadow-PrimaryColor/30 dark:shadow-black/20"
+                              sideOffset={5}
+                              align="center"
+                            >
+                              <div
+                                className="flex flex-row items-center justify-center gap-2 p-1 cursor-pointer hover:bg-TextErrorColor/20 rounded-b-md"
+                                onClick={() => {
+                                  setDeleteAsset(asst);
+                                  setOpenMore(-1);
+                                }}
+                              >
+                                <TrashIcon className="w-4 h-4 cursor-pointer fill-TextErrorColor" />
+                                <p className="text-TextErrorColor text-md">{t("delete")}</p>
+                              </div>
+                            </DropdownMenu.Content>
+                          </DropdownMenu.Portal>
+                        </DropdownMenu.Root>
+                      </div>
+                    )}
                   </td>
                 </tr>
               );
             })}
-          {service.assets.filter((ast) => !ast.visible).length > 0 && (
+          {!watchOnlyMode && service.assets.filter((ast) => !ast.visible).length > 0 && (
             <tr>
               <td></td>
               <td colSpan={5}>
