@@ -1,7 +1,7 @@
 import store from "@redux/Store";
 import { SnsToken } from "@redux/models/TokenModels";
 import { IcrcTokenMetadataResponse } from "@dfinity/ledger-icrc";
-import { setTokenMarket, setICPSubaccounts, setAssets } from "@/redux/assets/AssetReducer";
+import { setTokenMarket, setICPSubaccounts, setAssets, setSelectedAsset, setSelectedAccount } from "./AssetReducer";
 import { AccountIdentifier, SubAccount as SubAccountNNS } from "@dfinity/ledger-icp";
 import { Asset, ICPSubAccount } from "@redux/models/AccountModels";
 import { UpdateAllBalances } from "@/@types/assets";
@@ -45,6 +45,18 @@ export const updateAllBalances: UpdateAllBalances = async (params) => {
   const newAssetsUpload = updateAssets.sort((a, b) => a.sortIndex - b.sortIndex);
   store.dispatch(setAssets(newAssetsUpload));
   const icpAsset = newAssetsUpload.find((asset) => asset.tokenSymbol === "ICP");
+
+  // 
+  const currentSelectedAsset = store.getState().asset.helper.selectedAsset;
+  const currentSelectedAccount = store.getState().asset.helper.selectedAccount;
+  const newSelectedAsset = newAssetsUpload.find((asset) => asset.tokenSymbol === currentSelectedAsset?.tokenSymbol);
+  const newSelectedAccount = newSelectedAsset?.subAccounts.find(
+    (subAccount) => subAccount.sub_account_id === currentSelectedAccount?.sub_account_id,
+  );
+
+  store.dispatch(setSelectedAsset(newSelectedAsset));
+  store.dispatch(setSelectedAccount(newSelectedAccount));
+  // 
 
   if (icpAsset) {
     const sub: ICPSubAccount[] = [];

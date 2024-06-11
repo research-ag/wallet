@@ -19,7 +19,7 @@ export default function DeleteContactModal({ contact }: { contact: Contact }) {
   return (
     <>
       <CustomButton className="flex items-center p-0" onClick={() => setOpen(true)} size={"small"} intent="error">
-        <TrashIcon className="w-5 h-5 mr-[0.2]" />
+        <TrashIcon className="w-4 h-4 mr-[0.2]" />
         <p className="text-md">{t("delete")}</p>
       </CustomButton>
 
