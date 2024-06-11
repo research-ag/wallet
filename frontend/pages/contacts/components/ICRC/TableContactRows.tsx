@@ -319,7 +319,6 @@ export default function TableContactRows(props: TableContactRowsProps) {
   }
 
   function onSave(cntc: Contact) {
-    console.log(cntc);
     setContactEditedErr({
       name: contactEdited.name.trim() === "",
       principal: contactEdited.principal !== cntc.principal && !checkPrincipalValid(contactEdited.principal),

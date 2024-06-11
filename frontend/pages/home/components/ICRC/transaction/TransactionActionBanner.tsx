@@ -3,7 +3,6 @@ import ArrowBottomLeftIcon from "@assets/svg/files/arrow-bottom-left-icon.svg";
 import ArrowTopRightIcon from "@assets/svg/files/arrow-top-right-icon.svg";
 //
 import { IconTypeEnum } from "@/common/const";
-import { GeneralHook } from "@pages/home/hooks/generalHook";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "@redux/Store";
 import { clsx } from "clsx";
@@ -13,7 +12,7 @@ import { getAssetIcon } from "@/common/utils/icons";
 import { toFullDecimal } from "@common/utils/amount";
 
 export default function ICRCSubaccountAction() {
-  const { selectedAsset, selectedAccount } = GeneralHook();
+  const { selectedAsset, selectedAccount } = useAppSelector((state) => state.asset.helper);
   const { watchOnlyMode } = useAppSelector((state) => state.auth);
   const { t } = useTranslation();
 
