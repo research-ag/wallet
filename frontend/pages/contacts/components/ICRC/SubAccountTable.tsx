@@ -26,6 +26,7 @@ export default function SubAccountTable({ contact }: { contact: Contact }) {
 
   const [sortField, setSortField] = useState<SortField>(SortField.ASSET);
   const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.ASC);
+  const [addAccount, setAddAccount] = useState(false);
 
   return (
     <tr className="bg-SecondaryColorLight dark:bg-SecondaryColor">
@@ -80,10 +81,10 @@ export default function SubAccountTable({ contact }: { contact: Contact }) {
                 />
               );
             })}
-            <tr className="bg-primary-color/30">
+            <tr className={getAddRowStyle(addAccount)}>
               <td colSpan={1}></td>
               <td colSpan={5}>
-                <AddContactAccountRow contact={contact} />
+                <AddContactAccountRow contact={contact} setAddAccount={setAddAccount} />
               </td>
             </tr>
           </tbody>
@@ -112,3 +113,7 @@ export default function SubAccountTable({ contact }: { contact: Contact }) {
     setSortOrder(sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC);
   }
 }
+
+const getAddRowStyle = (addAccount: boolean) => {
+  return addAccount ? "bg-primary-color/30" : "";
+};

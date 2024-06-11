@@ -4,7 +4,7 @@ import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 import { Contact, ContactAccount } from "@redux/models/ContactsModels";
 import { CustomButton } from "@components/button";
 import { CheckIcon, PlusIcon } from "@radix-ui/react-icons";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import AssetSelect from "./AssetSelect";
 import { CustomInput } from "@components/input";
 import SubAccountInput from "./SubAccountInput";
@@ -32,6 +32,7 @@ import { removeExtraSpaces } from "@common/utils/strings";
 
 interface AddContactAccountRowProps {
   contact: Contact;
+  setAddAccount: Dispatch<SetStateAction<boolean>>;
 }
 
 export interface ContactAccountError {
@@ -131,14 +132,15 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
       ) : (
         <CustomButton
           size="small"
-          onClick={() =>
+          onClick={() => {
+            props.setAddAccount(true);
             setNewAccount({
               name: "",
               subaccount: "",
               subaccountId: "",
               tokenSymbol: "",
             })
-          }
+          }}
           className="flex items-center"
         >
           <PlusIcon className="w-4 h-4 mr-2 mb-0.5" />
@@ -157,6 +159,7 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
   }
 
   function onCancel() {
+    props.setAddAccount(true);
     setIsAllowanceLoading(false);
     setIsLoading(false);
     setNewAccount(null);
@@ -334,6 +337,7 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
 
       await db().updateContact(props.contact.principal, updatedContact, { sync: true });
       setIsLoading(false);
+      props.setAddAccount(true);
 
       setNewAccount(null);
     } catch (error) {

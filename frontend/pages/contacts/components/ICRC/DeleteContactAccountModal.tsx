@@ -9,6 +9,7 @@ import logger from "@common/utils/logger";
 import { LoadingLoader } from "@components/loader";
 import { Contact, ContactAccount } from "@redux/models/ContactsModels";
 import { db } from "@/database/db";
+import { TrashIcon } from "@radix-ui/react-icons";
 
 export default function DeleteContactAccountModal({ contact, account }: { contact: Contact; account: ContactAccount }) {
   const { t } = useTranslation();
@@ -17,8 +18,9 @@ export default function DeleteContactAccountModal({ contact, account }: { contac
 
   return (
     <>
-      <CustomButton className="p-0" onClick={() => setOpen(true)} size={"small"} intent="error">
-        <p>{t("delete")}</p>
+      <CustomButton className="flex items-center p-0" onClick={() => setOpen(true)} size={"small"} intent="error">
+        <TrashIcon className="w-5 h-5 mr-[0.2]" />
+        <p className="text-md">{t("delete")}</p>
       </CustomButton>
 
       <BasicModal

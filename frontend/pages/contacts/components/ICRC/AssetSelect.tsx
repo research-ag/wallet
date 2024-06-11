@@ -16,7 +16,7 @@ const Trigger = (props: { open: boolean; selectedOption: Asset; options: Asset[]
   const { t } = useTranslation();
 
   return (
-    <div className="flex items-center justify-between w-full " onClick={props.onClick}>
+    <div className="flex items-center justify-between w-full pl-2" onClick={props.onClick}>
       {props.selectedOption.symbol ? (
         <div className="flex items-center">
           {getAssetIcon(IconTypeEnum.Enum.FILTER, props.selectedOption?.tokenSymbol, props.selectedOption?.logo)}
