@@ -12,6 +12,7 @@ import { clsx } from "clsx";
 import { Fragment, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { AddAssetWarning } from "./Modals/addAssetWarning";
+import useServiceAsset from "../hooks/useServiceAsset";
 
 interface AddServiceassetProps {
   servicePrincipal: string;
@@ -26,6 +27,7 @@ export const AddServiceAsset = (props: AddServiceassetProps) => {
   const userAssets = useAppSelector((state) => state.asset.list.assets);
   const { servicePrincipal, assets, assetsToAdd, setAssetsToAdd, addAssetsToService, addAssetsToWallet } = props;
   const { t } = useTranslation();
+  const { getAssetFromUserAssets } = useServiceAsset();
   const [open, setOpen] = useState(false);
   const [openAddModal, setOpenAddModal] = useState(false);
   const [missingAssets, setMissingAssets] = useState<ServiceAsset[]>([]);
@@ -53,6 +55,7 @@ export const AddServiceAsset = (props: AddServiceassetProps) => {
               />
             </div>
             {assets.map((asset, k) => {
+              const userAsset = getAssetFromUserAssets(asset.principal);
               return (
                 <div
                   key={k}
@@ -62,7 +65,7 @@ export const AddServiceAsset = (props: AddServiceassetProps) => {
                   }}
                 >
                   <div className="flex items-center justify-start gap-2 flex-start">
-                    {getAssetIcon(IconTypeEnum.Enum.FILTER, asset.tokenSymbol, asset.logo)}
+                    {getAssetIcon(IconTypeEnum.Enum.FILTER, userAsset?.tokenSymbol, asset.logo)}
                     <p>{asset.tokenSymbol}</p>
                   </div>
 
@@ -73,9 +76,9 @@ export const AddServiceAsset = (props: AddServiceassetProps) => {
                 </div>
               );
             })}
-            <div className="flex justify-center items-center w-full py-2 px-4">
-              <CustomButton onClick={handleAddAssetButton} size={"small"} className="w-full">
-                <p>{t("add.asset")}</p>
+            <div className="flex justify-end items-center w-full py-2 px-3">
+              <CustomButton onClick={handleAddAssetButton} size={"small"} className="w-1/3">
+                <p>{t("add")}</p>
               </CustomButton>
             </div>
           </DropdownMenu.Content>

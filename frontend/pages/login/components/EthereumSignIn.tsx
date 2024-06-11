@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import LoginButton from "./LoginButton";
 import { useSiweIdentity } from "ic-use-siwe-identity";
 import { useEffect } from "react";
-import { handleSiweAuthenticated } from "@redux/CheckAuth";
+import { cleanEthLogin, handleSiweAuthenticated } from "@redux/CheckAuth";
 
 export default function EthereumSignIn() {
   const { t } = useTranslation();
@@ -45,7 +45,8 @@ export default function EthereumSignIn() {
           {isConnected && (
             <button
               onClick={() => {
-                prepareLogin();
+                cleanEthLogin();
+                location.reload();
               }}
             >
               <img src={GoBackIcon} alt="" className="w-4" />
