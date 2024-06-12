@@ -18,8 +18,6 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 export const initialTransactionState: TransactionState = {
   scannerActiveOption: TransactionScannerOptionEnum.Values.none,
-  isInspectTransference: false,
-  sendingStatus: SendingStatusEnum.Values.none,
   isLoading: false,
   sender: {
     senderOption: TransactionSenderOptionEnum.Values.own,
@@ -44,6 +42,8 @@ export const initialTransactionState: TransactionState = {
   selectedTransaction: undefined,
   amount: "",
   errors: [],
+  sendingStatus: SendingStatusEnum.Values.none,
+  isInspectTransference: false,
   list: {
     transactions: [],
     txWorker: [],

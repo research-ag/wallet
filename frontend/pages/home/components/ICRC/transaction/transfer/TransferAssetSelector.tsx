@@ -24,7 +24,7 @@ export default function TransferAssetSelector() {
   })();
 
   return (
-    <div className="max-w-[23rem]">
+    <div className="max-w-[23rem] mx-auto">
       <p className="opacity-50 text-start text-black-color dark:text-white text-md">{t("asset")}</p>
       <BasicSelect
         onSelect={onAssetChange}

@@ -13,12 +13,14 @@ export default function ReceiverItem() {
   const { receiver, sender } = useAppSelector((state) => state.transaction);
   const { isReceiver } = useSend();
   const { t } = useTranslation();
+
   useEffect(() => {
     if (sender.senderOption == TransactionSenderOptionEnum.Enum.service) {
       setReceiverOptionAction(TransactionReceiverOptionEnum.Values.own);
       if (!receiver.ownSubAccount.address) clearReceiverAction();
     }
   }, [sender]);
+
   return (
     <div className="w-full mt-4 rounded-md bg-secondary-color-1-light dark:bg-level-1-color">
       <div className="w-full py-2 border-b border-opacity-25 border-gray-color-2">
@@ -50,6 +52,7 @@ export default function ReceiverItem() {
             )}
           </>
         )}
+
         {receiver.receiverOption === TransactionReceiverOptionEnum.Values.own &&
           (sender.senderOption !== TransactionSenderOptionEnum.Enum.service ? (
             <button onClick={onReceiverOptionChange}>

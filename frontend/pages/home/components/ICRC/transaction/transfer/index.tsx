@@ -1,26 +1,18 @@
 import TransferWrapper from "@pages/home/wrappers/TransferWrapper";
-import { useState } from "react";
 import TransferForm from "./TransferForm";
+import { TransferView, useTransferView } from "@pages/home/contexts/TransferViewProvider";
+import SenderQRScanner from "./SenderQRScanner";
+import ReceiverQRScanner from "./ReceiverQRScanner";
 
-interface TransferProps { }
-
-enum TransferView {
-  SEND_FORM,
-  CONFIRM_DETAIL,
-  SENDER_QR_SCANNER,
-  RECEIVER_QR_SCANNER,
-}
-
-function Transfer(props: TransferProps) {
-  const [view, setView] = useState<TransferView>(TransferView.SEND_FORM);
+function Transfer() {
+  const { view } = useTransferView();
 
   return (
-    // <div className="scroll-y-light">
     <div className="">
       {view === TransferView.SEND_FORM && <TransferForm />}
       {view === TransferView.CONFIRM_DETAIL && <div>Confirm Detail</div>}
-      {view === TransferView.SENDER_QR_SCANNER && <div>Sender QR Scanner</div>}
-      {view === TransferView.RECEIVER_QR_SCANNER && <div>Receiver QR Scanner</div>}
+      {view === TransferView.SENDER_QR_SCANNER && <SenderQRScanner />}
+      {view === TransferView.RECEIVER_QR_SCANNER && <ReceiverQRScanner />}
     </div>
   );
 }
