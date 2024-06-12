@@ -35,9 +35,12 @@ export default function CustomInput({
       {prefix && prefixPosition === "out" && prefix}
       <div
         lang="en-US"
-        className={`realtive flex flex-row justify-start items-center w-full px-1 cursor-text ${compInClass} ${inputComp(
-          { intent, border, sizeComp, className },
-        )}`}
+        className={`realtive flex flex-row justify-start items-center w-full px-1 cursor-text ${inputComp({
+          intent,
+          border,
+          sizeComp,
+          className,
+        })} ${compInClass}`}
       >
         {prefix && prefixPosition === "in" && prefix}
         <input

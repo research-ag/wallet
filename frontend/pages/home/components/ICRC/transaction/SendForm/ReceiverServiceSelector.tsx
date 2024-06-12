@@ -1,5 +1,5 @@
 // svg
-import { ReactComponent as ServiceIcon } from "@assets/svg/files/down-amount-icon.svg";
+import { ReactComponent as ServiceIcon } from "@assets/svg/files/service-icon.svg";
 import { AvatarEmpty } from "@components/avatar";
 import { Principal } from "@dfinity/principal";
 //
