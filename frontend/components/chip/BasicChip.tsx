@@ -13,15 +13,16 @@ export default function Chip(props: ChipProps) {
   );
 }
 
-const chipCVA = cva(["h-6", "rounded-md", "font-bold"], {
+const chipCVA = cva(["h-6", "rounded-md"], {
   variants: {
     type: {
-      gray: ["bg-[#7D7B91]"],
+      gray: ["text-PrimaryTextColorLight dark:text-PrimaryTextColor dark:bg-gray-color-4 bg-gray-color-7"],
     },
     size: {
-      small: ["text-sm", "px-2", "py-0.5"],
-      medium: ["text-md", "px-2", "py-0.5"],
-      large: ["text-lg", "px-2.5", "px-1"],
+      small: ["text-sm", "px-2", "py-0.5", "h-6"],
+      medium: ["text-md", "px-2", "py-0.5", "h-6"],
+      large: ["text-lg", "px-2.5", "py-1", "h-6"],
+      square: ["text-lg", "h-8", "w-8", "flex justify-center items-center"],
     },
   },
   defaultVariants: {

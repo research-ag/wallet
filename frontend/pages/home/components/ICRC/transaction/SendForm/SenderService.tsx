@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 import { CustomInput } from "@components/input";
 import { setSenderServiceAction } from "@redux/transaction/TransactionActions";
 import { Principal } from "@dfinity/principal";
+import { AvatarEmpty } from "@components/avatar";
 
 export default function SenderService() {
   const { t } = useTranslation();
@@ -33,9 +34,11 @@ export default function SenderService() {
             <div className="flex items-center mr-2">
               {sender.serviceSubAccount.servicePrincipal ? (
                 <div className="flex flex-row justify-start items-center gap-2 text-PrimaryTextColorLight dark:text-PrimaryTextColor">
-                  <div className="flex justify-center items-center w-10 h-10 rounded dark:bg-gray-color-4 bg-gray-color-7">
-                    <p className="">{sender.serviceSubAccount.serviceName[0] || ""}</p>
-                  </div>
+                  <AvatarEmpty
+                    title={sender.serviceSubAccount.serviceName}
+                    size="medium"
+                    className="mr-4 text-PrimaryTextColor"
+                  />
                   <div className="flex flex-col justify-center items-start">
                     <p className="text-start text-md ">{sender.serviceSubAccount.serviceName}</p>
                     <p className="text-start text-md font-light">{sender.serviceSubAccount.servicePrincipal}</p>
@@ -51,15 +54,17 @@ export default function SenderService() {
           </div>
         </DropdownMenu.Trigger>
         <DropdownMenu.Portal>
-          <DropdownMenu.Content className="bg-ThemeColorSelectorLight dark:bg-ThemeColorBack rounded-md border border-RadioCheckColor scroll-y-light z-[9999] w-[21rem] p-2">
-            <CustomInput
-              value={searchKey}
-              prefix={<img src={SearchIcon} className="mx-2 w-[1.2rem] h-[1rem]" alt="search-icon" />}
-              onChange={handleSearchChange}
-              placeholder="Search"
-              className="dark:bg-SideColor bg-PrimaryColorLight h-[2.5rem]"
-              inputClass="h-[2rem]"
-            />
+          <DropdownMenu.Content className="bg-ThemeColorSelectorLight dark:bg-ThemeColorBack rounded-md border border-RadioCheckColor scroll-y-light z-[9999] w-[21rem]">
+            <div className="flex justify-center items-center w-full px-2 pt-2">
+              <CustomInput
+                value={searchKey}
+                prefix={<img src={SearchIcon} className="mx-2 w-[1.2rem] h-[1rem]" alt="search-icon" />}
+                onChange={handleSearchChange}
+                placeholder="Search"
+                className="dark:bg-SideColor bg-PrimaryColorLight h-[2.5rem]"
+                inputClass="h-[2rem]"
+              />
+            </div>
             <div className="mt-2">
               {services
                 .filter((option) => {
@@ -73,10 +78,8 @@ export default function SenderService() {
                     }}
                     key={index}
                   >
-                    <div className="flex flex-row justify-start items-center gap-2 text-PrimaryTextColorLight dark:text-PrimaryTextColor cursor-pointer">
-                      <div className="flex justify-center items-center w-10 h-10 rounded dark:bg-gray-color-4 bg-gray-color-7">
-                        <p className="">{option.name[0] || ""}</p>
-                      </div>
+                    <div className="flex flex-row justify-start items-center gap-2 text-PrimaryTextColorLight dark:text-PrimaryTextColor cursor-pointer hover:bg-RadioCheckColor px-2 py-2">
+                      <AvatarEmpty title={option.name} size="medium" className="mr-4 text-PrimaryTextColor" />
                       <div className="flex flex-col justify-center items-start">
                         <p className="text-start text-md ">{option.name}</p>
                         <p className="text-start text-md font-light">{option.principal}</p>
