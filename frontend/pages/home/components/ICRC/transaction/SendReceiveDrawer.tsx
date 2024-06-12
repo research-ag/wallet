@@ -6,11 +6,11 @@ import { resetSendStateAction, setTransactionDrawerAction } from "@redux/transac
 import { useTranslation } from "react-i18next";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 import { DrawerOptionEnum } from "@/common/const";
-import DrawerSend from "@/pages/home/components/ICRC/transaction/DrawerSend";
 import DrawerReceive from "@/pages/home/components/ICRC/transaction/DrawerReceive";
 // eslint-disable-next-line
 import clsx from "clsx";
 import { useMemo } from "react";
+import Transfer from "./transfer";
 
 const selectedButton = "border-AccpetButtonColor";
 const unselectedButton = "text-PrimaryTextColorLight dark:text-PrimaryTextColor";
@@ -60,7 +60,7 @@ export default function SendReceiveDrawer() {
         />
       </div>
 
-      {transactionDrawer === DrawerOptionEnum.Enum.SEND && <DrawerSend />}
+      {transactionDrawer === DrawerOptionEnum.Enum.SEND && <Transfer />}
       {transactionDrawer === DrawerOptionEnum.Enum.RECEIVE && <DrawerReceive />}
     </BasicDrawer>
   );

@@ -113,7 +113,6 @@ export async function getAllowanceDetails(params: CheckAllowanceParams) {
       },
     });
 
-
     const amount = Number(result.allowance) <= 0 ? "" : toFullDecimal(result.allowance, Number(assetDecimal));
     const expiration = result.expires_at.length <= 0 ? "" : dayjs(Number(result?.expires_at) / 1000000).format();
     return { amount, expiration };
