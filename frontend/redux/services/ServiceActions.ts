@@ -183,8 +183,8 @@ export const getServiceData = async (myAgent: HttpAgent, servicePrincipal: strin
       );
     }
     return serviceAssets;
-  } catch {
-    return [];
+  } catch (e: any) {
+    return e;
   }
 };
 

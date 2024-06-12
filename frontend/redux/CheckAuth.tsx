@@ -153,6 +153,7 @@ export const logout = async () => {
   await authClient.logout();
   store.dispatch({ type: "USER_LOGGED_OUT" });
   await db().setIdentity(null);
+  cleanEthLogin();
   store.dispatch(clearDataContacts());
   store.dispatch(clearDataAsset());
   store.dispatch(clearDataAuth());
@@ -163,4 +164,23 @@ export const logout = async () => {
   store.dispatch(setServices([]));
   store.dispatch(setServicesData([]));
   store.dispatch(setTxWorker([]));
+};
+
+export const cleanEthLogin = () => {
+  localStorage.removeItem("wagmi.store");
+  localStorage.removeItem("network_type");
+  localStorage.removeItem("rk-latest-id");
+  localStorage.removeItem("rk-recent");
+  localStorage.removeItem("wagmi.wallet");
+  localStorage.removeItem("rk-version");
+  localStorage.removeItem("wagmi.metaMask.shimDisconnect");
+  localStorage.removeItem("wagmi.connected");
+  localStorage.removeItem("-walletlink:https://www.walletlink.org:version");
+  localStorage.removeItem("-walletlink:https://www.walletlink.org:session:id");
+  localStorage.removeItem("-walletlink:https://www.walletlink.org:session:secret");
+  localStorage.removeItem("-walletlink:https://www.walletlink.org:session:linked");
+  localStorage.removeItem("wagmi.cache");
+  localStorage.removeItem("WCM_VERSION");
+  indexedDB.deleteDatabase("WALLET_CONNECT_V2_INDEXED_DB");
+  indexedDB.deleteDatabase("auth-client-db");
 };
