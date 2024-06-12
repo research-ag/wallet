@@ -8,6 +8,9 @@ import { useState } from "react";
 import { CustomInput } from "@components/input";
 import { Service } from "@redux/models/ServiceModels";
 import { useTransfer } from "@pages/home/contexts/TransferProvider";
+import { useAppSelector } from "@redux/Store";
+import logger from "@common/utils/logger";
+import { t } from "i18next";
 // import { useAppSelector } from "@redux/Store";
 
 // TODO: complete service after get the feature details (SenderService)
@@ -15,10 +18,8 @@ import { useTransfer } from "@pages/home/contexts/TransferProvider";
 export default function SenderServiceSelector() {
   const [isOpen, setIsOpen] = useState(false);
   const [searchKey, setSearchKey] = useState<string>("");
-  const { setTransferState } = useTransfer();
-  // const { services } = useAppSelector((state) => state.services);
-  const princBytes = Principal.fromText(authClient).toUint8Array();
-  const princSubId = `0x${princBytes.length.toString(16) + Buffer.from(princBytes).toString("hex")}`;
+  const { setTransferState, transferState } = useTransfer();
+  const services = useAppSelector((state) => state.services.services);
 
   return (
     <div className="max-w-[21rem] mx-auto">
@@ -28,15 +29,15 @@ export default function SenderServiceSelector() {
           className="flex flex-row items-center justify-between h-12 px-4 py-2 border rounded-md cursor-pointer bg-ThemeColorSelectorLight dark:bg-SecondaryColor border-BorderColorLight dark:border-BorderColor"
         >
           <div className="flex items-center justify-center w-full ">
-            {/* <div className="flex items-center mr-2">
-              {sender.serviceSubAccount.servicePrincipal ? (
+            <div className="flex items-center mr-2">
+              {transferState.fromPrincipal ? (
                 <div className="flex flex-row items-center justify-start gap-2 text-PrimaryTextColorLight dark:text-PrimaryTextColor">
                   <div className="flex items-center justify-center w-10 h-10 rounded dark:bg-gray-color-4 bg-gray-color-7">
-                    <p className="">{sender.serviceSubAccount.serviceName[0] || ""}</p>
+                    <p className="">{getServiceName(transferState.fromPrincipal)[0]}</p>
                   </div>
                   <div className="flex flex-col items-start justify-center">
-                    <p className="text-start text-md ">{sender.serviceSubAccount.serviceName}</p>
-                    <p className="font-light text-start text-md">{sender.serviceSubAccount.servicePrincipal}</p>
+                    <p className="text-start text-md ">{getServiceName(transferState.fromPrincipal)}</p>
+                    <p className="font-light text-start text-md">{transferState.fromPrincipal}</p>
                   </div>
                 </div>
               ) : (
@@ -44,7 +45,7 @@ export default function SenderServiceSelector() {
                   {t("select.option")}
                 </p>
               )}
-            </div> */}
+            </div>
             <DropIcon className={`fill-gray-color-4 ${isOpen ? "-rotate-90" : ""}`} />
           </div>
         </DropdownMenu.Trigger>
@@ -58,10 +59,10 @@ export default function SenderServiceSelector() {
               className="dark:bg-SideColor bg-PrimaryColorLight h-[2.5rem]"
               inputClass="h-[2rem]"
             />
-            {/* <div className="mt-2">
+            <div className="mt-2">
               {services
                 .filter((option) => {
-                  return !!option.assets.find((ast) => ast.principal === sender.asset.address);
+                  return !!option.assets.find((ast) => ast.tokenSymbol === transferState.tokenSymbol);
                 })
                 .map((option, index) => (
                   <div
@@ -82,7 +83,7 @@ export default function SenderServiceSelector() {
                     </div>
                   </div>
                 ))}
-            </div> */}
+            </div>
           </DropdownMenu.Content>
         </DropdownMenu.Portal>
       </DropdownMenu.Root>
@@ -90,6 +91,12 @@ export default function SenderServiceSelector() {
   );
 
   function handleSelectOption(opt: Service) {
+    setTransferState((prev) => ({
+      ...prev,
+      fromPrincipal: opt.principal,
+      fromSubAccount: "0x0"
+    }));
+
     // const ast = opt.assets.find((asst) => asst.principal === sender.asset.address);
     // if (ast) {
     // setSenderServiceAction({
@@ -109,13 +116,13 @@ export default function SenderServiceSelector() {
     //   withdrawFee: ast.withdrawFee,
     // });
     // }
-
-    setTransferState((prev) => ({
-      ...prev,
-      fromSubAccount: princSubId,
-      fromPrincipal: opt.principal,
-    }));
   }
+
+  function getServiceName(principal: string) {
+    const service = services.find((srv) => srv.principal === principal);
+    if (!service) logger.debug("getServiceName: service not found");
+    return service ? service.name : "";
+  };
 
   function handleSearchChange(event: React.ChangeEvent<HTMLInputElement>) {
     setSearchKey(event.target.value);

@@ -76,14 +76,17 @@ export default function ServiceBookReceiver() {
       icon: <AvatarEmpty title={srv.serviceName} size="medium" className="mr-4" />,
     };
   }
+
   function onSelect(option: SelectOption) {
     setSearchSubAccountValue(null);
     const fullService = filteredServices?.find((srv) => srv.servicePrincipal === option.value);
     if (fullService) setReceiverServiceAction(fullService);
   }
+
   function onSearchChange(searchValue: string) {
     setSearchSubAccountValue(searchValue);
   }
+
   function onOpenChange() {
     setSearchSubAccountValue(null);
   }

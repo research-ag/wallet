@@ -6,13 +6,14 @@ import { ReactComponent as QRScanIcon } from "@assets/svg/files/qr.svg";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import useSend from "@pages/home/hooks/useSend";
 import { useAppSelector } from "@redux/Store";
-import { ContactSubAccount } from "@/@types/transactions";
+import { ContactSubAccount, ServiceSubAccount } from "@/@types/transactions";
 import { middleTruncation } from "@common/utils/strings";
 import { AvatarEmpty } from "@components/avatar";
 import { Asset } from "@redux/models/AccountModels";
 import { useTransfer } from "@pages/home/contexts/TransferProvider";
 import { Service } from "@redux/models/ServiceModels";
 import { TransferView, useTransferView } from "@pages/home/contexts/TransferViewProvider";
+import { useMemo, useState } from "react";
 // import { Principal } from "@dfinity/principal";
 
 export default function ThidInputSufix() {
@@ -126,9 +127,50 @@ function InputSufixContactBook() {
 }
 
 function InputSufixServiceBook() {
-  // TODO: implement after full details ReceiverServiceSelector
+  const [searchSubAccountValue, setSearchSubAccountValue] = useState<string | null>(null);
+  const { authClient } = useAppSelector((state) => state.auth);
   const { services } = useAppSelector((state) => state.services);
-  const { sender } = useAppSelector((state) => state.transaction);
+
+  const filteredServices: ServiceSubAccount[] = useMemo(() => {
+    if (!services || !services.length) return [];
+    const auxServices: ServiceSubAccount[] = [];
+
+    for (let serviceIndex = 0; serviceIndex < services.length; serviceIndex++) {
+      const currentService = services[serviceIndex];
+
+      const currentContactAsset = currentService?.assets?.find((asset) => asset?.principal === sender?.asset?.address);
+      const princBytes = Principal.fromText(authClient).toUint8Array();
+      const princSubId = `0x${princBytes.length.toString(16) + Buffer.from(princBytes).toString("hex")}`;
+      if (currentContactAsset)
+        auxServices.push({
+          serviceName: currentService.name,
+          servicePrincipal: currentService.principal,
+          assetLogo: sender.asset.logo,
+          assetSymbol: sender.asset.symbol,
+          assetTokenSymbol: sender.asset.tokenSymbol,
+          assetAddress: sender.asset.address,
+          assetDecimal: sender.asset.decimal,
+          assetShortDecimal: sender.asset.shortDecimal,
+          assetName: sender.asset.name,
+          subAccountId: princSubId,
+          minDeposit: currentContactAsset.minDeposit,
+          minWithdraw: currentContactAsset.minWithdraw,
+          depositFee: currentContactAsset.depositFee,
+          withdrawFee: currentContactAsset.withdrawFee,
+        });
+    }
+    return auxServices;
+  }, [sender, services]);
+
+  // const formattedContacts = useMemo(() => {
+  //   if (!searchSubAccountValue) return filteredServices.map(formatService);
+  //   return filteredServices
+  //     .filter((srv) => {
+  //       return srv.serviceName.toLocaleLowerCase().includes(searchSubAccountValue);
+  //     })
+  //     .map(formatService);
+  // }, [filteredServices, searchSubAccountValue]);
+
 
   return (
     <DropdownMenu.Root>
@@ -166,6 +208,7 @@ function InputSufixServiceBook() {
       </DropdownMenu.Portal>
     </DropdownMenu.Root>
   );
+
 
   function onSelectService(srv: Service) {
     // const princBytes = Principal.fromText(authClient).toUint8Array();
