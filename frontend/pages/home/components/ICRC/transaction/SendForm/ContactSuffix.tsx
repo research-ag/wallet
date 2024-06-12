@@ -62,7 +62,7 @@ export default function ContactSuffix() {
 
   return (
     <div className="relative flex flex-row items-center justify-center gap-2">
-      <ReceiverServiceSelector />
+      <ReceiverServiceSelector contactsExist={filteredContacts.length > 0} />
       {filteredContacts.length > 0 && (
         <DropdownMenu.Root>
           <DropdownMenu.Trigger asChild>

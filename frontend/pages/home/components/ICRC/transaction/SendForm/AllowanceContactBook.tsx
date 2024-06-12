@@ -70,7 +70,7 @@ export function AllowanceContactBook() {
       <DropdownMenu.Root modal={isOpen} onOpenChange={onOpenChange}>
         <DropdownMenu.Trigger
           asChild
-          className="flex w-[21rem] items-center justify-between h-12 p-2 px-4 mt-2 border rounded-md cursor-pointer bg-ThemeColorSelectorLight dark:bg-SecondaryColor"
+          className="flex w-[21rem] items-center justify-between h-12 p-2 px-4 mt-2 border rounded-md cursor-pointer border-BorderColorLight dark:border-BorderColor bg-ThemeColorSelectorLight dark:bg-SecondaryColor"
         >
           <div className="flex items-center justify-center">
             <div className="mr-2">
