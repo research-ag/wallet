@@ -6,7 +6,7 @@ import { useAccount, useNetwork } from "wagmi";
 export default function LoginButton() {
   const { isConnected } = useAccount();
   const { chain } = useNetwork();
-  const { login, isLoggingIn, isPrepareLoginSuccess, isPreparingLogin, clear } = useSiweIdentity();
+  const { login, isLoggingIn, isPrepareLoginSuccess, isPreparingLogin } = useSiweIdentity();
 
   function buttonText() {
     if (isLoggingIn) {

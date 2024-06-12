@@ -50,20 +50,19 @@ export default function useNewServices() {
   async function saveService() {
     if (!newServiceErr.name && !newServiceErr.principal) {
       const exist = services.find((srv) => srv.principal === newService.principal.trim());
-      if (!exist && (await testServicePrincipal(userAgent, newService.principal.trim()))) {
+      if (exist) return { success: false, err: "service-duplicate-err" };
+      if (await testServicePrincipal(userAgent, newService.principal.trim())) {
         const newAssets = await getServiceData(userAgent, newService.principal.trim());
         if (isArray(newAssets)) {
           dispatch(
             addService({ name: newService.name.trim(), principal: newService.principal.trim(), assets: newAssets }),
           );
-          return { success: true, err: "getServiceData-err" };
+          return { success: true, err: "" };
         } else {
           return { success: false, err: newAssets };
         }
-      }
-      return { success: false, err: "service-duplicate-err" };
-    }
-    return { success: true, err: newServiceErr.name ? "service-name-data-err" : "service-principal-data-err" };
+      } else return { success: false, err: "service-not-valid" };
+    } else return { success: false, err: newServiceErr.name ? "service-name-data-err" : "service-principal-data-err" };
   }
 
   return {

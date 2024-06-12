@@ -65,7 +65,7 @@ export const NewServiceRow = (props: NewServiceRowProps) => {
   }
   async function onSave() {
     const res = await saveService();
-    console.log("res", res);
+    console.log(res);
 
     if (res.success) onClose();
     else {
@@ -73,15 +73,13 @@ export const NewServiceRow = (props: NewServiceRowProps) => {
         setNewServiceErr((prev: any) => {
           return { name: true, principal: prev.principal };
         });
-      else if (res.err === "service-principal-data-err")
+      else {
         setNewServiceErr((prev: any) => {
           return { name: prev.name, principal: true };
         });
-      else if (res.err === "service-duplicate-err") {
-        setNewServiceErr((prev: any) => {
-          return { name: prev.name, principal: true };
-        });
-        setShowDuplicate(true);
+        if (res.err === "service-duplicate-err") {
+          setShowDuplicate(true);
+        }
       }
     }
   }
