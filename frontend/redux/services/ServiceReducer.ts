@@ -153,7 +153,6 @@ const servicesSlice = createSlice({
         }>,
       ) {
         const { service, serviceAsset, credit, deposit } = payload;
-
         const auxServices: Service[] = [];
         state.services.map((srv) => {
           if (srv.principal === service) {
@@ -168,6 +167,7 @@ const servicesSlice = createSlice({
             auxServices.push(srv);
           }
         });
+        state.services = auxServices;
       },
       prepare(service: string, serviceAsset: string, credit: string | undefined, deposit: string | undefined) {
         return { payload: { service, serviceAsset, credit, deposit } };
