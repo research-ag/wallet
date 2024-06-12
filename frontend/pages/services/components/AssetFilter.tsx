@@ -9,6 +9,7 @@ import { ServiceAsset } from "@redux/models/ServiceModels";
 import { clsx } from "clsx";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import useServiceAsset from "../hooks/useServiceAsset";
 
 interface AssetFilterProps {
   assetFilter: string[];
@@ -26,6 +27,7 @@ export default function AssetFilter({
   filterAssets,
 }: AssetFilterProps) {
   const { t } = useTranslation();
+  const { getAssetFromUserAssets } = useServiceAsset();
   const [open, setOpen] = useState(false);
 
   return (
@@ -73,6 +75,7 @@ export default function AssetFilter({
               />
             </div>
             {filterAssets.map((asset, k) => {
+              const ast = getAssetFromUserAssets(asset.principal);
               return (
                 <div
                   key={k}
@@ -82,8 +85,8 @@ export default function AssetFilter({
                   }}
                 >
                   <div className="flex items-center justify-start gap-2 flex-start">
-                    {getAssetIcon(IconTypeEnum.Enum.FILTER, asset.tokenSymbol, asset.logo)}
-                    <p>{asset.tokenSymbol}</p>
+                    {getAssetIcon(IconTypeEnum.Enum.FILTER, ast?.tokenSymbol, ast?.logo)}
+                    <p>{ast?.symbol}</p>
                   </div>
 
                   <CustomCheck
