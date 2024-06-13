@@ -3,12 +3,14 @@ import TransferForm from "./TransferForm";
 import { TransferView, useTransferView } from "@pages/home/contexts/TransferViewProvider";
 import SenderQRScanner from "./SenderQRScanner";
 import ReceiverQRScanner from "./ReceiverQRScanner";
+import TransferDetailsConfirmation from "./TransferDetailsConfirmation";
 
 function Transfer() {
   const { view } = useTransferView();
 
   return (
     <div className="">
+      <TransferDetailsConfirmation />
       {view === TransferView.SEND_FORM && <TransferForm />}
       {view === TransferView.CONFIRM_DETAIL && <div>Confirm Detail</div>}
       {view === TransferView.SENDER_QR_SCANNER && <SenderQRScanner />}
