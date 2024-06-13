@@ -29,28 +29,30 @@ export const NewServiceRow = (props: NewServiceRowProps) => {
           <div className="absolute left-0 w-1 h-14 bg-SelectRowColor"></div>
           <CustomInput
             intent={"primary"}
-            border={newServiceErr.name ? "error" : "selected"}
+            border={newServiceErr.name ? "error" : "primary"}
             sizeComp={"xLarge"}
             sizeInput="small"
             value={newService.name}
             onChange={onServiceNameChange}
             autoFocus
+            className="w-72"
           />
         </div>
       </td>
       <td>
         <CustomInput
           intent={"primary"}
-          border={newServiceErr.principal ? "error" : "selected"}
+          border={newServiceErr.principal ? "error" : "primary"}
           sizeComp={"xLarge"}
           sizeInput="small"
           value={newService.principal}
           onChange={onServicePrincipalChange}
           sufix={showDuplicate ? <p className="text-sm text-slate-color-error">Duplicate</p> : <></>}
+          className="w-72"
         />
       </td>
       <td>
-        <div className="flex flex-row justify-around items-center">
+        <div className="flex flex-row justify-center items-center gap-2">
           <CheckIcon onClick={onSave} className="w-4 h-4 opacity-50 cursor-pointer stroke-slate-color-success" />
           <CloseIcon onClick={onClose} className="w-5 h-5 opacity-50 cursor-pointer stroke-slate-color-error" />
         </div>
