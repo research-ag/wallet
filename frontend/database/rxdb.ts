@@ -224,7 +224,7 @@ export class RxdbDatabase extends IWalletDatabase {
     const result = (documents && documents.map(this._mapAssetDoc)) || [];
     const assets = newAssets || result || [];
     store.dispatch(setAssets(assets));
-    assets[0].tokenSymbol && store.dispatch(setAccordionAssetIdx([assets[0].tokenSymbol]));
+    assets[0]?.tokenSymbol && store.dispatch(setAccordionAssetIdx([assets[0].tokenSymbol]));
   }
 
   /**
