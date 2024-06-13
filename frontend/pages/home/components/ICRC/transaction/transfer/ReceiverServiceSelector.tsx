@@ -24,7 +24,9 @@ export default function ServiceBookReceiver() {
     for (let serviceIndex = 0; serviceIndex < services.length; serviceIndex++) {
       const currentService = services[serviceIndex];
 
-      const currentContactAsset = currentService?.assets?.find((asset) => asset?.tokenSymbol === transferState.tokenSymbol);
+      const currentContactAsset = currentService?.assets?.find(
+        (asset) => asset?.tokenSymbol === transferState.tokenSymbol,
+      );
       const princBytes = Principal.fromText(authClient).toUint8Array();
       const princSubId = `0x${princBytes.length.toString(16) + Buffer.from(princBytes).toString("hex")}`;
       const currentAsset = assets.find((asset) => asset.tokenSymbol === transferState.tokenSymbol) as Asset;
@@ -90,7 +92,7 @@ export default function ServiceBookReceiver() {
     if (!fullService) {
       logger.debug("ReceiverServiceSelector: onSelect: fullService is null");
       return;
-    };
+    }
 
     const princBytes = Principal.fromText(authClient).toUint8Array();
     const toSubaccount = `0x${princBytes.length.toString(16) + Buffer.from(princBytes).toString("hex")}`;

@@ -76,11 +76,12 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
 
     const bigintMaxAmount = bigintSenderMaxAmountBalance - bigintFee;
 
-    if (bigintAmount > bigintMaxAmount || bigintSenderMaxAmountBalance === BigInt(0)) {
-      setErrorAction(TransactionValidationErrorsEnum.Values["error.not.enough.balance"]);
-      return false;
+    if (sender.senderOption === TransactionSenderOptionEnum.Values.service) {
+      if (bigintAmount > bigintMaxAmount || bigintSenderMaxAmountBalance === BigInt(0)) {
+        setErrorAction(TransactionValidationErrorsEnum.Values["error.not.enough.balance"]);
+        return false;
+      }
     }
-
     if (sender.senderOption === TransactionSenderOptionEnum.Values.service) {
       const bigintMinAmount = BigInt(sender.serviceSubAccount.minWithdraw);
       if (bigintMinAmount > bigintAmount) {

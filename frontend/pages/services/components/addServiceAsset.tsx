@@ -1,18 +1,20 @@
 // svg
 import { ReactComponent as PlusIcon } from "@assets/svg/files/plus-icon.svg";
+import SearchIcon from "@assets/svg/files/icon-search.svg";
+//
 import { IconTypeEnum } from "@common/const";
 import { getAssetIcon } from "@common/utils/icons";
 import { CustomButton } from "@components/button";
 import { CustomCheck } from "@components/checkbox";
-//
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { useAppSelector } from "@redux/Store";
 import { ServiceAsset } from "@redux/models/ServiceModels";
 import { clsx } from "clsx";
-import { Fragment, useState } from "react";
+import { ChangeEvent, Fragment, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { AddAssetWarning } from "./Modals/addAssetWarning";
 import useServiceAsset from "../hooks/useServiceAsset";
+import { CustomInput } from "@components/input";
 
 interface AddServiceassetProps {
   servicePrincipal: string;
@@ -30,8 +32,23 @@ export const AddServiceAsset = (props: AddServiceassetProps) => {
   const { getAssetFromUserAssets } = useServiceAsset();
   const [open, setOpen] = useState(false);
   const [openAddModal, setOpenAddModal] = useState(false);
+  const [searchKey, setSearchKey] = useState("");
   const [missingAssets, setMissingAssets] = useState<ServiceAsset[]>([]);
   const [inListAssets, setInLsitAssets] = useState<ServiceAsset[]>([]);
+
+  const assetsToShow = useMemo(() => {
+    return assets.filter((ast) => {
+      const key = searchKey.trim().toLowerCase();
+      return key === "" || ast.tokenSymbol.toLowerCase().includes(key);
+    });
+  }, [searchKey, assets]);
+
+  useEffect(() => {
+    const auxSelected = assetsToAdd.filter((ast) => {
+      return !!assetsToShow.find((nl) => nl.principal === ast.principal);
+    });
+    if (auxSelected.length !== assetsToAdd.length) setAssetsToAdd(auxSelected);
+  }, [assetsToShow]);
 
   return (
     <Fragment>
@@ -43,44 +60,62 @@ export const AddServiceAsset = (props: AddServiceassetProps) => {
           </button>
         </DropdownMenu.Trigger>
         <DropdownMenu.Portal>
-          <DropdownMenu.Content className={contentContainerStyles} sideOffset={2} align="center">
-            <div
-              onClick={handleSelectAll}
-              className="flex flex-row items-center justify-between w-full px-3 py-2 hover:bg-secondary-color-1-light hover:dark:bg-HoverColor"
-            >
-              <p>{t("selected.all")}</p>
-              <CustomCheck
-                className="border-secondary-color-2-light dark:border-BorderColor"
-                checked={assets.length === assetsToAdd.length}
+          <DropdownMenu.Content className={contentContainerStyles} sideOffset={5} side="right" align="center">
+            <div className="flex justify-center items-center w-full px-3 py-2">
+              <CustomInput
+                sizeComp={"medium"}
+                sizeInput="medium"
+                value={searchKey}
+                onChange={onSearchChange}
+                autoFocus
+                placeholder={t("search")}
+                prefix={<img src={SearchIcon} className="w-5 h-5 mx-2" alt="search-icon" />}
+                compInClass="bg-white dark:bg-SecondaryColor"
               />
             </div>
-            {assets.map((asset, k) => {
-              const userAsset = getAssetFromUserAssets(asset.principal);
-              return (
+            <div className="flex flex-col justify-start items-center w-full rounded-lg bg-PrimaryColorLight dark:bg-SecondaryColor">
+              {assetsToShow.length > 0 && (
                 <div
-                  key={k}
-                  className={assetStyle(k, assets)}
-                  onClick={() => {
-                    handleSelectAsset(asset);
-                  }}
+                  onClick={handleSelectAll}
+                  className="flex flex-row items-center justify-between w-full px-3 py-2 hover:bg-secondary-color-1-light hover:dark:bg-HoverColor"
                 >
-                  <div className="flex items-center justify-start gap-2 flex-start">
-                    {getAssetIcon(IconTypeEnum.Enum.FILTER, userAsset?.tokenSymbol, asset.logo)}
-                    <p>{asset.tokenSymbol}</p>
-                  </div>
-
+                  <p>{t("selected.all")}</p>
                   <CustomCheck
-                    className="border-BorderColorLight dark:border-BorderColor"
-                    checked={assetsToAdd.includes(asset)}
+                    className="border-secondary-color-2-light dark:border-BorderColor"
+                    checked={assets.length === assetsToAdd.length}
                   />
                 </div>
-              );
-            })}
-            <div className="flex justify-end items-center w-full py-2 px-3">
-              <CustomButton onClick={handleAddAssetButton} size={"small"} className="w-1/3">
-                <p>{t("add")}</p>
-              </CustomButton>
+              )}
+              {assetsToShow.map((asset, k) => {
+                const userAsset = getAssetFromUserAssets(asset.principal);
+                return (
+                  <div
+                    key={k}
+                    className={assetStyle(k, assets)}
+                    onClick={() => {
+                      handleSelectAsset(asset);
+                    }}
+                  >
+                    <div className="flex items-center justify-start gap-2 flex-start">
+                      {getAssetIcon(IconTypeEnum.Enum.FILTER, userAsset?.tokenSymbol, asset.logo)}
+                      <p>{asset.tokenSymbol}</p>
+                    </div>
+
+                    <CustomCheck
+                      className="border-BorderColorLight dark:border-BorderColor"
+                      checked={assetsToAdd.includes(asset)}
+                    />
+                  </div>
+                );
+              })}
+              <div className="flex justify-end items-center w-full py-2 px-3">
+                <CustomButton onClick={handleAddAssetButton} size={"small"} className="w-1/3">
+                  <p>{t("add")}</p>
+                </CustomButton>
+              </div>
             </div>
+
+            <DropdownMenu.Arrow className="fill-BorderColorLight dark:fill-primary-color w-4 h-2" />
           </DropdownMenu.Content>
         </DropdownMenu.Portal>
       </DropdownMenu.Root>
@@ -101,10 +136,13 @@ export const AddServiceAsset = (props: AddServiceassetProps) => {
     setOpen(value);
     setAssetsToAdd([]);
   }
+  function onSearchChange(e: ChangeEvent<HTMLInputElement>) {
+    setSearchKey(e.target.value);
+  }
   function handleSelectAll() {
-    if (assets.length === assetsToAdd.length) setAssetsToAdd([]);
+    if (assetsToShow.length === assetsToAdd.length) setAssetsToAdd([]);
     else {
-      setAssetsToAdd(assets);
+      setAssetsToAdd(assetsToShow);
     }
   }
   function handleSelectAsset(asset: ServiceAsset) {
@@ -139,8 +177,8 @@ const assetStyle = (k: number, assets: any[]) =>
     ["rounded-b-lg"]: k === assets.length - 1,
   });
 const contentContainerStyles = clsx(
-  "text-md bg-PrimaryColorLight w-[12rem]",
-  "rounded-lg dark:bg-SecondaryColor scroll-y-light z-[999]",
+  "text-md bg-SecondaryColorLight w-[12rem]",
+  "rounded-lg dark:bg-level-2-color scroll-y-light z-[999]",
   "max-h-80 text-PrimaryTextColorLight dark:text-PrimaryTextColor shadow-sm shadow-BorderColorTwoLight",
-  "dark:shadow-BorderColorTwo border border-BorderColorLight dark:border-BorderColor/20",
+  "dark:shadow-BorderColorTwo border border-BorderColorLight dark:border-primary-color",
 );

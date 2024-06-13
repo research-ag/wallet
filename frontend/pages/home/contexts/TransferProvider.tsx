@@ -45,7 +45,6 @@ export type TransferProviderType = {
 export const TransferContext = createContext<TransferProviderType | null>(null);
 
 export default function TransferProvider({ children }: TransferProviderProps) {
-
   const [transferState, setTransferState] = useState<TransferStateType>({
     tokenSymbol: "",
     // Helpful to determine which validation must be applied

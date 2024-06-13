@@ -29,7 +29,7 @@ export default function ReceiverManual() {
           intent="secondary"
           placeholder={t("sub-acc")}
           onChange={onSubAccountChange}
-        // border={hasSubAccountError() ? "error" : "primary"}
+          // border={hasSubAccountError() ? "error" : "primary"}
         />
       </div>
     </div>

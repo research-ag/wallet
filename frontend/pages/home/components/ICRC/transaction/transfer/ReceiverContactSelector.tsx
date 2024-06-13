@@ -107,7 +107,7 @@ export default function ReceiverContactSelector() {
     if (!contact) {
       logger.debug("ReceiverContactSelector: onSelect: contact not found");
       return;
-    };
+    }
 
     const fullContact = contacts.find((c) => c.principal === contact.contactPrincipal);
     if (!fullContact) {
@@ -115,7 +115,9 @@ export default function ReceiverContactSelector() {
       return;
     }
 
-    const subAccount = fullContact.accounts.find((account) => account.subaccountId === contact.subAccountId && account.tokenSymbol === transferState.tokenSymbol);
+    const subAccount = fullContact.accounts.find(
+      (account) => account.subaccountId === contact.subAccountId && account.tokenSymbol === transferState.tokenSymbol,
+    );
 
     if (!subAccount) {
       logger.debug("ReceiverContactSelector: onSelect: subAccount not found");

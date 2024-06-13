@@ -41,7 +41,14 @@ export default function TransferAssetSelector() {
 
   function onAssetChange(option: SelectOption) {
     setSearchAsset(null);
-    setTransferState((prev) => ({ ...prev, tokenSymbol: option.value, fromPrincipal: "", toPrincipal: "", fromSubAccount: "", toSubAccount: "" }));
+    setTransferState((prev) => ({
+      ...prev,
+      tokenSymbol: option.value,
+      fromPrincipal: "",
+      toPrincipal: "",
+      fromSubAccount: "",
+      toSubAccount: "",
+    }));
   }
 
   function onSearchChange(searchValue: string) {

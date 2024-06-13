@@ -27,15 +27,15 @@ export default function ReceiverThird() {
     case TransferToTypeEnum.thirdPartyContact:
       return <ContactBookReceiver />;
     case TransferToTypeEnum.thirdPartyService:
-      return <ServiceBookReceiver />
+      return <ServiceBookReceiver />;
     default:
       return <ICRCInput />;
-  };
+  }
 }
 
 function ICRCInput() {
   const { t } = useTranslation();
-  const { transferState, setTransferState } = useTransfer();
+  const { setTransferState } = useTransfer();
   const [inputValue, setInputValue] = useState("");
 
   return (
@@ -83,7 +83,6 @@ function ICRCInput() {
   // }
   // }
 
-
   // function hasError() {
   //   return errors?.includes(TransactionValidationErrorsEnum.Values["invalid.receiver.identifier"]);
   // }
@@ -99,4 +98,4 @@ function ICRCInput() {
   //     return "";
   //   }
   // }
-};
+}

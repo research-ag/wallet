@@ -12,6 +12,7 @@ import { CustomInput } from "@components/input";
 import { Principal } from "@dfinity/principal";
 import { useTransfer } from "@pages/home/contexts/TransferProvider";
 import logger from "@/common/utils/logger";
+import { AvatarEmpty } from "@components/avatar";
 
 // SenderService
 export default function SenderServiceSelector() {
@@ -36,9 +37,11 @@ export default function SenderServiceSelector() {
             <div className="flex items-center mr-2">
               {transferState.fromPrincipal ? (
                 <div className="flex flex-row items-center justify-start gap-2 text-PrimaryTextColorLight dark:text-PrimaryTextColor">
-                  <div className="flex items-center justify-center w-10 h-10 rounded dark:bg-gray-color-4 bg-gray-color-7">
-                    <p className="">{getServiceName(transferState.fromPrincipal)[0] || ""}</p>
-                  </div>
+                  <AvatarEmpty
+                    title={getServiceName(transferState.fromPrincipal)}
+                    size="medium"
+                    className="mr-4 text-PrimaryTextColor"
+                  />
                   <div className="flex flex-col items-start justify-center">
                     <p className="text-start text-md ">{getServiceName(transferState.fromPrincipal)}</p>
                     <p className="font-light text-start text-md">{transferState.fromPrincipal}</p>
@@ -66,7 +69,7 @@ export default function SenderServiceSelector() {
             <div className="mt-2">
               {services
                 .filter((option) => {
-                  return !!option.assets.find((ast) => ast.tokenSymbol === transferState.tokenSymbol);
+                  return option.assets.find((ast) => ast.tokenSymbol === transferState.tokenSymbol);
                 })
                 .map((option, index) => (
                   <div
@@ -76,10 +79,8 @@ export default function SenderServiceSelector() {
                     }}
                     key={index}
                   >
-                    <div className="flex flex-row items-center justify-start gap-2 cursor-pointer text-PrimaryTextColorLight dark:text-PrimaryTextColor">
-                      <div className="flex items-center justify-center w-10 h-10 rounded dark:bg-gray-color-4 bg-gray-color-7">
-                        <p className="">{option.name[0] || ""}</p>
-                      </div>
+                    <div className="flex flex-row items-center justify-start gap-2 px-2 py-2 cursor-pointer text-PrimaryTextColorLight dark:text-PrimaryTextColor hover:bg-RadioCheckColor">
+                      <AvatarEmpty title={option.name} size="medium" className="mr-4 text-PrimaryTextColor" />
                       <div className="flex flex-col items-start justify-center">
                         <p className="text-start text-md ">{option.name}</p>
                         <p className="font-light text-start text-md">{option.principal}</p>
@@ -127,7 +128,7 @@ export default function SenderServiceSelector() {
     const service = services.find((srv) => srv.principal === principal);
     if (!service) logger.debug("getServiceName: service not found");
     return service?.name || "";
-  };
+  }
 
   function handleSearchChange(event: React.ChangeEvent<HTMLInputElement>) {
     setSearchKey(event.target.value);

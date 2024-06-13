@@ -13,7 +13,7 @@ export default function Sender() {
   const { assets } = useAppSelector((state) => state.asset.list);
   const { setTransferState, transferState } = useTransfer();
 
-  // 
+  //
   const senderType = transferState.fromType;
   const isFromOwn = senderType === TransferFromTypeEnum.own;
   const isFromAllowance = senderType === TransferFromTypeEnum.allowance;
@@ -27,11 +27,7 @@ export default function Sender() {
 
           <RadioGroup.Root value={senderType} onValueChange={onValueChange} className="flex items-center gap-x-2">
             <div className="flex items-center">
-              <RadioGroup.Item
-                className={getRadioGroupStyles(isFromOwn)}
-                value={TransferFromTypeEnum.own}
-                id="r-light"
-              >
+              <RadioGroup.Item className={getRadioGroupStyles(isFromOwn)} value={TransferFromTypeEnum.own} id="r-light">
                 <RadioGroup.Indicator className="flex items-center justify-center w-full h-full relative after:content-[''] after:block after:w-3 after:h-3 after:rounded-full after:bg-primary-color" />
               </RadioGroup.Item>
               <p className={getRadioTextStyles(isFromOwn)}>{t("own")}</p>
@@ -46,9 +42,7 @@ export default function Sender() {
                 >
                   <RadioGroup.Indicator className="flex items-center justify-center w-full h-full relative after:content-[''] after:block after:w-3 after:h-3 after:rounded-full after:bg-primary-color" />
                 </RadioGroup.Item>
-                <p className={getRadioTextStyles(isFromAllowance)}>
-                  {t("allowance")}
-                </p>
+                <p className={getRadioTextStyles(isFromAllowance)}>{t("allowance")}</p>
               </div>
             )}
 

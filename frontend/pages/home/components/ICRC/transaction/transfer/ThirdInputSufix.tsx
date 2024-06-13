@@ -203,7 +203,6 @@ function InputSufixContactBook() {
   }
 }
 
-
 function InputSufixScanner() {
   const { setView } = useTransferView();
   const { setTransferState } = useTransfer();

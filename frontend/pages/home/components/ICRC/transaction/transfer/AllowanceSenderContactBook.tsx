@@ -140,10 +140,13 @@ export default function AllowanceSenderContactBook() {
             subAccountAllowance: account.allowance,
             subAccountName: account.name,
           };
-        }).filter((subAccount) => Boolean(subAccount?.subAccountAllowance?.amount));
+        })
+        .filter((subAccount) => Boolean(subAccount?.subAccountAllowance?.amount));
 
-        const clean: ContactSubAccount[] = contactSubAccounts.filter((subAccount) => subAccount !== null && subAccount !== undefined) as ContactSubAccount[];
-        allowanceContacts.push(...clean);
+      const clean: ContactSubAccount[] = contactSubAccounts.filter(
+        (subAccount) => subAccount !== null && subAccount !== undefined,
+      ) as ContactSubAccount[];
+      allowanceContacts.push(...clean);
     }
 
     if (!searchKey) return allowanceContacts;
