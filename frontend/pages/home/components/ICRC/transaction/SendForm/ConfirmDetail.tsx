@@ -2,7 +2,7 @@ import { BasicButton } from "@components/button";
 import SenderDetail from "./SenderDetail";
 import ReceiverDetail from "./ReceiverDetail";
 import TransactionAmount from "./TransactionAmount";
-import { useAppSelector } from "@redux/Store";
+import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { Dispatch, SetStateAction } from "react";
 import useSend from "@pages/home/hooks/useSend";
 import {
@@ -28,6 +28,7 @@ import { hexadecimalToUint8Array, hexToUint8Array } from "@common/utils/hexadeci
 import ICRC1Tranfer from "@common/libs/icrcledger/ICRC1Tranfer";
 import logger from "@/common/utils/logger";
 import ICRCXWithdraw from "@common/libs/icrcledger/ICRCXTransfer";
+import { updateServiceAssetAmounts } from "@redux/services/ServiceReducer";
 
 interface ConfirmDetailProps {
   showConfirmationModal: Dispatch<SetStateAction<boolean>>;
@@ -37,6 +38,7 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
   const { t } = useTranslation();
   const { sender, receiver, errors, isLoading } = useAppSelector((state) => state.transaction);
   const { userAgent } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
   const {
     receiverPrincipal,
     receiverSubAccount,
@@ -76,7 +78,7 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
 
     const bigintMaxAmount = bigintSenderMaxAmountBalance - bigintFee;
 
-    if (sender.senderOption === TransactionSenderOptionEnum.Values.service) {
+    if (sender.senderOption !== TransactionSenderOptionEnum.Values.service) {
       if (bigintAmount > bigintMaxAmount || bigintSenderMaxAmountBalance === BigInt(0)) {
         setErrorAction(TransactionValidationErrorsEnum.Values["error.not.enough.balance"]);
         return false;
@@ -201,13 +203,23 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
             showConfirmationModal(true);
             setIsLoadingAction(true);
             if (sender.senderOption === TransactionSenderOptionEnum.Values.service) {
-              await ICRCXWithdraw({
+              const res = await ICRCXWithdraw({
                 agent: userAgent,
                 canisterId: sender.serviceSubAccount.servicePrincipal,
                 token: Principal.fromText(sender.serviceSubAccount.assetAddress || ""),
                 amount: toHoleBigInt(amount, Number(decimal)),
                 to_subaccount: [hexToUint8Array(receiverSubAccount)],
               });
+              if (res.data) {
+                dispatch(
+                  updateServiceAssetAmounts(
+                    sender.serviceSubAccount.servicePrincipal,
+                    sender.serviceSubAccount.assetAddress || "",
+                    res.data.credit,
+                    res.data.balance,
+                  ),
+                );
+              }
             } else {
               await ICRC1Tranfer({
                 canisterId: assetAddress,
