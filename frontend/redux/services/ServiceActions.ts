@@ -52,6 +52,8 @@ export const getServicesData = async (myAgent: HttpAgent, principal: string) => 
               };
 
               const balance = (await serviceActor.icrcX_trackedDeposit(ast)) as any;
+              console.log("balance", balance);
+              console.log("credit", credit);
 
               serviceAsset.balance = (balance.Ok as any) ? balance.Ok.toString() : "";
               if (assetData) {
