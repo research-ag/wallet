@@ -1,6 +1,6 @@
 import { CustomInput } from "@components/input";
 import { useTransfer } from "@pages/home/contexts/TransferProvider";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 export default function ReceiverManual() {
@@ -8,15 +8,9 @@ export default function ReceiverManual() {
   const { transferState, setTransferState } = useTransfer();
   const { t } = useTranslation();
 
-  // useEffect(() => {
-  //   if (receiver?.thirdNewContact?.subAccountId?.length > 0) {
-  //     const currentSubAccountId = receiver?.thirdNewContact?.subAccountId;
-
-  //     const newInputValue = currentSubAccountId?.startsWith("0x") ? currentSubAccountId.slice(2) : currentSubAccountId;
-
-  //     setInputValue(newInputValue);
-  //   }
-  // }, []);
+  useEffect(() => {
+    setInputValue(transferState.toSubAccount);
+  }, []);
 
   return (
     <div className="max-w-[21rem] mx-auto py-[1rem] space-y-1">
@@ -35,7 +29,7 @@ export default function ReceiverManual() {
           intent="secondary"
           placeholder={t("sub-acc")}
           onChange={onSubAccountChange}
-          // border={hasSubAccountError() ? "error" : "primary"}
+        // border={hasSubAccountError() ? "error" : "primary"}
         />
       </div>
     </div>

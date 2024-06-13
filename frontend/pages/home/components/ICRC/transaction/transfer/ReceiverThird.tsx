@@ -1,25 +1,42 @@
 import { ReactComponent as SearchIcon } from "@assets/svg/files/icon-search.svg";
-
-// icrc idenfier, contact book, services (not if sender is allowance), scanner
-
+import logger from "@/common/utils/logger";
 import { CustomInput } from "@components/input";
-// import { useAppSelector } from "@redux/Store";
 import { ChangeEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 import ThidInputSufix from "./ThirdInputSufix";
+import { decodeIcrcAccount } from "@dfinity/ledger";
+import { subUint8ArrayToHex } from "@common/utils/unitArray";
+import { TransferToTypeEnum, useTransfer } from "@pages/home/contexts/TransferProvider";
+import useReceiver from "@pages/home/hooks/useReceiver";
+import ReceiverManual from "./ReceiverManual";
+import ContactBookReceiver from "./ReceiverContactSelector";
+import ServiceBookReceiver from "./ReceiverServiceSelector";
 
 export default function ReceiverThird() {
+  const { isToFilled, toType } = useReceiver();
+
+  if (!isToFilled) {
+    return <ICRCInput />;
+  }
+
+  switch (toType) {
+    case TransferToTypeEnum.thirdPartyICRC:
+      return <ReceiverManual />;
+    case TransferToTypeEnum.thidPartyScanner:
+      return <ReceiverManual />;
+    case TransferToTypeEnum.thirdPartyContact:
+      return <ContactBookReceiver />;
+    case TransferToTypeEnum.thirdPartyService:
+      return <ServiceBookReceiver />
+    default:
+      return <ICRCInput />;
+  };
+}
+
+function ICRCInput() {
   const { t } = useTranslation();
+  const { transferState, setTransferState } = useTransfer();
   const [inputValue, setInputValue] = useState("");
-  // const { errors, receiver } = useAppSelector((state) => state.transaction);
-
-  // useEffect(() => {
-  //   if (receiver?.thirdNewContact?.subAccountId) {
-  //     initializeICRCIdentifier();
-  //   }
-  // }, []);
-
-  // if (toPrincipal and toSubaccount is selected) { display inputs or select based on the toType };
 
   return (
     <div className="max-w-[21rem] mx-auto py-[1rem]">
@@ -35,6 +52,28 @@ export default function ReceiverThird() {
     </div>
   );
 
+  function onInputChange(e: ChangeEvent<HTMLInputElement>) {
+    try {
+      const fullICRC = e.target.value?.trim();
+      setInputValue(fullICRC);
+      const decoded = decodeIcrcAccount(fullICRC);
+
+      const toPrincipal = decoded.owner.toText();
+      const toSubAccount = `0x${subUint8ArrayToHex(decoded.subaccount)}`;
+
+      setTransferState((prevState) => ({
+        ...prevState,
+        toPrincipal,
+        toSubAccount,
+        toType: TransferToTypeEnum.thirdPartyICRC,
+      }));
+
+      // TODO: manage error cases
+    } catch (error) {
+      logger.debug(error);
+    }
+  }
+
   // function initializeICRCIdentifier() {
   // const principal = receiver?.thirdNewContact?.principal;
   // const subAccountId = receiver?.thirdNewContact?.subAccountId;
@@ -44,25 +83,6 @@ export default function ReceiverThird() {
   // }
   // }
 
-  function onInputChange(e: ChangeEvent<HTMLInputElement>) {
-    console.log(e);
-    // try {
-    //   const fullICRC = e.target.value?.trim();
-    //   setInputValue(fullICRC);
-    //   const decoded = decodeIcrcAccount(fullICRC);
-
-    //   const icrcAccount = {
-    //     principal: decoded.owner.toText(),
-    //     subAccountId: `0x${subUint8ArrayToHex(decoded.subaccount)}`,
-    //   };
-
-    //   setReceiverNewContactAction(icrcAccount);
-    //   removeErrorAction(TransactionValidationErrorsEnum.Values["invalid.receiver.identifier"]);
-    // } catch (error) {
-    //   logger.debug(error);
-    //   setErrorAction(TransactionValidationErrorsEnum.Values["invalid.receiver.identifier"]);
-    // }
-  }
 
   // function hasError() {
   //   return errors?.includes(TransactionValidationErrorsEnum.Values["invalid.receiver.identifier"]);
@@ -79,4 +99,4 @@ export default function ReceiverThird() {
   //     return "";
   //   }
   // }
-}
+};

@@ -15,7 +15,6 @@ function TransferIntializer({ children }: { children: JSX.Element }) {
       return;
     }
 
-    console.log("TransferIntializer");
     setTransferState((prev) => ({
       ...prev,
       tokenSymbol: selectedAsset.tokenSymbol,

@@ -2,27 +2,31 @@
 import SearchIcon from "@assets/svg/files/icon-search.svg";
 import { ReactComponent as DropIcon } from "@assets/svg/files/chevron-right-icon.svg";
 //
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-// import { Service } from "@redux/models/ServiceModels";
-import { useState } from "react";
-import { CustomInput } from "@components/input";
-import { Service } from "@redux/models/ServiceModels";
-import { useTransfer } from "@pages/home/contexts/TransferProvider";
 import { useAppSelector } from "@redux/Store";
-import logger from "@common/utils/logger";
-import { t } from "i18next";
-// import { useAppSelector } from "@redux/Store";
+import { Buffer } from "buffer";
+import { useState } from "react";
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import { Service } from "@redux/models/ServiceModels";
+import { useTranslation } from "react-i18next";
+import { CustomInput } from "@components/input";
+import { Principal } from "@dfinity/principal";
+import { useTransfer } from "@pages/home/contexts/TransferProvider";
+import logger from "@/common/utils/logger";
 
-// TODO: complete service after get the feature details (SenderService)
-
+// SenderService
 export default function SenderServiceSelector() {
+  const { t } = useTranslation();
+  const { transferState, setTransferState } = useTransfer();
+  const { services } = useAppSelector((state) => state.services);
+  const { authClient } = useAppSelector((state) => state.auth);
   const [isOpen, setIsOpen] = useState(false);
   const [searchKey, setSearchKey] = useState<string>("");
-  const { setTransferState, transferState } = useTransfer();
-  const services = useAppSelector((state) => state.services.services);
+
+  const princBytes = Principal.fromText(authClient).toUint8Array();
+  const princSubId = `0x${princBytes.length.toString(16) + Buffer.from(princBytes).toString("hex")}`;
 
   return (
-    <div className="max-w-[21rem] mx-auto">
+    <div className="mx-4">
       <DropdownMenu.Root open={isOpen} onOpenChange={setIsOpen}>
         <DropdownMenu.Trigger
           asChild
@@ -33,7 +37,7 @@ export default function SenderServiceSelector() {
               {transferState.fromPrincipal ? (
                 <div className="flex flex-row items-center justify-start gap-2 text-PrimaryTextColorLight dark:text-PrimaryTextColor">
                   <div className="flex items-center justify-center w-10 h-10 rounded dark:bg-gray-color-4 bg-gray-color-7">
-                    <p className="">{getServiceName(transferState.fromPrincipal)[0]}</p>
+                    <p className="">{getServiceName(transferState.fromPrincipal)[0] || ""}</p>
                   </div>
                   <div className="flex flex-col items-start justify-center">
                     <p className="text-start text-md ">{getServiceName(transferState.fromPrincipal)}</p>
@@ -91,37 +95,38 @@ export default function SenderServiceSelector() {
   );
 
   function handleSelectOption(opt: Service) {
+    // TODO; verify if princSubId is required
     setTransferState((prev) => ({
       ...prev,
       fromPrincipal: opt.principal,
-      fromSubAccount: "0x0"
+      fromSubAccount: princSubId,
     }));
 
     // const ast = opt.assets.find((asst) => asst.principal === sender.asset.address);
     // if (ast) {
-    // setSenderServiceAction({
-    //   serviceName: opt.name,
-    //   servicePrincipal: opt.principal,
-    //   assetLogo: sender.asset.logo,
-    //   assetSymbol: sender.asset.symbol,
-    //   assetTokenSymbol: sender.asset.tokenSymbol,
-    //   assetAddress: sender.asset.address,
-    //   assetDecimal: sender.asset.decimal,
-    //   assetShortDecimal: sender.asset.shortDecimal,
-    //   assetName: sender.asset.name,
-    //   subAccountId: princSubId,
-    //   minDeposit: ast.minDeposit,
-    //   minWithdraw: ast.minWithdraw,
-    //   depositFee: ast.depositFee,
-    //   withdrawFee: ast.withdrawFee,
-    // });
+    //   setSenderServiceAction({
+    //     serviceName: opt.name,
+    //     servicePrincipal: opt.principal,
+    //     assetLogo: sender.asset.logo,
+    //     assetSymbol: sender.asset.symbol,
+    //     assetTokenSymbol: sender.asset.tokenSymbol,
+    //     assetAddress: sender.asset.address,
+    //     assetDecimal: sender.asset.decimal,
+    //     assetShortDecimal: sender.asset.shortDecimal,
+    //     assetName: sender.asset.name,
+    //     subAccountId: princSubId,
+    //     minDeposit: ast.minDeposit,
+    //     minWithdraw: ast.minWithdraw,
+    //     depositFee: ast.depositFee,
+    //     withdrawFee: ast.withdrawFee,
+    //   });
     // }
   }
 
   function getServiceName(principal: string) {
     const service = services.find((srv) => srv.principal === principal);
     if (!service) logger.debug("getServiceName: service not found");
-    return service ? service.name : "";
+    return service?.name || "";
   };
 
   function handleSearchChange(event: React.ChangeEvent<HTMLInputElement>) {

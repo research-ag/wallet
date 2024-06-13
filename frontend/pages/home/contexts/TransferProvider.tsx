@@ -8,7 +8,6 @@ type TransferProviderProps = {
 
 // sender: own, allowance (contact book, inputs, scanner) and services
 export enum TransferFromTypeEnum {
-  none = "NONE",
   own = "OWN",
   allowance = "ALLOWANCE",
   service = "SERVICE",
@@ -16,13 +15,12 @@ export enum TransferFromTypeEnum {
 
 // receiver: manual (no need select), own (their own select), third icrc or scanner (need inputs) and thid contact book or services (need select)
 export enum TransferToTypeEnum {
-  none = "NONE",
   own = "OWN",
   thirdPartyICRC = "THIRD_PARTY_ICRC",
   thidPartyScanner = "THIRD_PARTY_SCANNER",
   thirdPartyContact = "THIRD_PARTY_CONTACT",
   thirdPartyService = "THIRD_PARTY_SERVICE",
-  service = "SERVICE",
+  manual = "MANUAL",
 }
 
 export type TransferStateType = {
@@ -51,11 +49,11 @@ export default function TransferProvider({ children }: TransferProviderProps) {
   const [transferState, setTransferState] = useState<TransferStateType>({
     tokenSymbol: "",
     // Helpful to determine which validation must be applied
-    fromType: TransferFromTypeEnum.none,
+    fromType: TransferFromTypeEnum.own,
     fromPrincipal: "",
     fromSubAccount: "",
     // Helpful to determine which validation must be applied
-    toType: TransferToTypeEnum.none,
+    toType: TransferToTypeEnum.thirdPartyICRC,
     toPrincipal: "",
     toSubAccount: "",
   });

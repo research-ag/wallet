@@ -1,6 +1,6 @@
 import { ReactComponent as DownAmountIcon } from "@assets/svg/files/down-blue-arrow.svg";
 import { BasicSwitch } from "@components/switch";
-import { useTransfer } from "@pages/home/contexts/TransferProvider";
+import { TransferToTypeEnum, useTransfer } from "@pages/home/contexts/TransferProvider";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import ReceiverThird from "./ReceiverThird";
@@ -35,10 +35,7 @@ export default function Receiver() {
 
       <div>
         <div>
-          {/* inputs (principal and subaccount), scanner, icrc idenfier, contact book, services (not if sender is allowance) */}
-
           {isManual && <ReceiverManual />}
-
           {!isManual && (
             <>
               {receiverType === ReceiverType.third && <ReceiverThird />}
@@ -69,6 +66,12 @@ export default function Receiver() {
 
   function onCheckedChange(checked: boolean) {
     setIsManual(checked);
-    setTransferState((prev) => ({ ...prev, toPrincipal: "", toSubAccount: "" }));
+    setTransferState((prev) => ({
+      ...prev,
+      toPrincipal: "",
+      toSubAccount: "",
+      // INFO: will keep in manual after switch false, on select another receiver type, will set the right type
+      toType: checked ? TransferToTypeEnum.manual : prev.toType,
+    }));
   }
 }

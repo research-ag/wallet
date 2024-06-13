@@ -3,7 +3,7 @@ import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import QRscanner from "@pages/components/QRscanner";
 import logger from "@/common/utils/logger";
 import { TransferView, useTransferView } from "@pages/home/contexts/TransferViewProvider";
-import { useTransfer } from "@pages/home/contexts/TransferProvider";
+import { TransferToTypeEnum, useTransfer } from "@pages/home/contexts/TransferProvider";
 
 export default function ReceiverQRScanner() {
   const { setView } = useTransferView();
@@ -23,6 +23,7 @@ export default function ReceiverQRScanner() {
             ...prev,
             toPrincipal,
             toSubAccount,
+            toType: TransferToTypeEnum.thidPartyScanner,
           }));
 
           onGoBack();

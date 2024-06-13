@@ -19,7 +19,6 @@ export default function TransferForm() {
       <DownAmountIcon className="w-full mt-4" />
       <Receiver />
 
-
       <div className="flex items-center justify-end mt-6">
         <p className="mr-4 text-sm text-slate-color-error">
           {/* {t(getError())} */}
