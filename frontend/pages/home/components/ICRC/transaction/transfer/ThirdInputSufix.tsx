@@ -1,5 +1,5 @@
 // svg
-import { ReactComponent as ServiceIcon } from "@assets/svg/files/down-amount-icon.svg";
+import { ReactComponent as ServiceIcon } from "@assets/svg/files/service-icon.svg";
 import { ReactComponent as SendUserIcon } from "@assets/svg/files/send-user-icon.svg";
 import { ReactComponent as QRScanIcon } from "@assets/svg/files/qr.svg";
 //
@@ -10,17 +10,31 @@ import { ContactSubAccount } from "@/@types/transactions";
 import { middleTruncation } from "@common/utils/strings";
 import { AvatarEmpty } from "@components/avatar";
 import { Asset } from "@redux/models/AccountModels";
-import { TransferToTypeEnum, useTransfer } from "@pages/home/contexts/TransferProvider";
+import { TransferFromTypeEnum, TransferToTypeEnum, useTransfer } from "@pages/home/contexts/TransferProvider";
 import { Service } from "@redux/models/ServiceModels";
 import { TransferView, useTransferView } from "@pages/home/contexts/TransferViewProvider";
 import { Principal } from "@dfinity/principal";
-// import { Principal } from "@dfinity/principal";
 
 export default function ThidInputSufix() {
+  const { transferState } = useTransfer();
+  const contacts = useAppSelector((state) => state.contacts.contacts);
+  const services = useAppSelector((state) => state.services.services);
+
+  //
+  const hasContacts = contacts.length > 0;
+  const hasContactsAccounts = contacts.some((contact) => contact.accounts.length > 0);
+  const displayContact = hasContacts && hasContactsAccounts;
+
+  //
+  const isSenderAllowance = transferState.fromType === TransferFromTypeEnum.allowance;
+  const hasServices = services.length > 0;
+  const hasServicesAssets = services.some((service) => service.assets.length > 0);
+  const displayService = hasServices && hasServicesAssets && !isSenderAllowance;
+
   return (
     <div className="relative flex items-center justify-center gap-2">
-      <InputSufixServiceBook />
-      <InputSufixContactBook />
+      {displayService && <InputSufixServiceBook />}
+      {displayContact && <InputSufixContactBook />}
       <InputSufixScanner />
     </div>
   );

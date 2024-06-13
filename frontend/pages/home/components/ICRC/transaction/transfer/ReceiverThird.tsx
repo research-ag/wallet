@@ -35,8 +35,8 @@ export default function ReceiverThird() {
 
 function ICRCInput() {
   const { t } = useTranslation();
-  const { setTransferState } = useTransfer();
   const [inputValue, setInputValue] = useState("");
+  const { setTransferState } = useTransfer();
 
   return (
     <div className="max-w-[21rem] mx-auto py-[1rem]">

@@ -10,6 +10,7 @@ import { SelectOption } from "@/@types/components";
 export default function OwnSenderAccountSelector() {
   const { t } = useTranslation();
   const { assets } = useAppSelector((state) => state.asset.list);
+  const userPrincipal = useAppSelector((state) => state.auth.userPrincipal);
   const { transferState, setTransferState } = useTransfer();
   const [searchKey, setSearchKey] = useState<string | null>(null);
 
@@ -48,6 +49,7 @@ export default function OwnSenderAccountSelector() {
     setTransferState((prev) => ({
       ...prev,
       fromSubAccount: option.value,
+      fromPrincipal: userPrincipal.toString(),
     }));
 
     setSearchKey(null);
