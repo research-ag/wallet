@@ -1,5 +1,4 @@
 import { BasicButton } from "@components/button";
-import { LoadingLoader } from "@components/loader";
 import { TransferFromTypeEnum, TransferToTypeEnum, useTransfer } from "@pages/home/contexts/TransferProvider";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -9,9 +8,9 @@ import ReceiverDetails from "./ReceiverDetails";
 import AmountDetails from "./AmountDetails";
 import { toHoleBigInt, validateAmount } from "@common/utils/amount";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
-import ICRC1BalanceOf from "@common/libs/icrcledger/ICRC1BalanceOf";
 import { Principal } from "@dfinity/principal";
 import { hexadecimalToUint8Array, hexToUint8Array } from "@common/utils/hexadecimal";
+import ICRC1BalanceOf from "@common/libs/icrcledger/ICRC1BalanceOf";
 import ICRC2Allowance from "@common/libs/icrcledger/ICRC2Allowance";
 import ICRC1Tranfer from "@common/libs/icrcledger/ICRC1Tranfer";
 import ICRC2TransferForm from "@common/libs/icrcledger/ICRC2TransferForm";
@@ -20,6 +19,7 @@ import { updateServiceAssetAmounts } from "@redux/services/ServiceReducer";
 import { getElapsedSecond } from "@common/utils/datetimeFormaters";
 import { TransferStatus, useTransferStatus } from "@pages/home/contexts/TransferStatusProvider";
 import { TransferView, useTransferView } from "@pages/home/contexts/TransferViewProvider";
+import reloadBallance from "@pages/helpers/reloadBalance";
 
 export default function TransferDetailsConfirmation() {
   const { t } = useTranslation();
@@ -27,7 +27,6 @@ export default function TransferDetailsConfirmation() {
   const { setView } = useTransferView();
   const { setStatus } = useTransferStatus();
   const [errorMessage, setErrorMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useAppDispatch();
   //
   const { userAgent, userPrincipal } = useAppSelector((state) => state.auth);
@@ -51,7 +50,6 @@ export default function TransferDetailsConfirmation() {
 
       <div className="flex items-center justify-end mt-6 max-w-[23rem] mx-auto">
         <p className="mr-4 text-md text-slate-color-error">{errorMessage}</p>
-        {isLoading && <LoadingLoader color="dark:border-secondary-color-1-light border-black-color mr-2" />}
         <BasicButton className="w-1/6 mr-2 font-bold bg-secondary-color-2" onClick={onBack}>
           {t("back")}
         </BasicButton>
@@ -154,7 +152,6 @@ export default function TransferDetailsConfirmation() {
   async function transferFromAllowance() {
     const initTime = new Date();
     try {
-      setIsLoading(true);
       setErrorMessage("");
       await validateAllowanceAmount();
       setStatus(TransferStatus.SENDING);
@@ -186,7 +183,6 @@ export default function TransferDetailsConfirmation() {
       const endTime = new Date();
       const duration = getElapsedSecond(initTime, endTime);
       setTransferState((prev) => ({ ...prev, duration }));
-      setIsLoading(false);
     }
   }
 
@@ -229,7 +225,6 @@ export default function TransferDetailsConfirmation() {
   async function transferFromOwn() {
     const initTime = new Date();
     try {
-      setIsLoading(true);
       await validateOwnAmount();
 
       setStatus(TransferStatus.SENDING);
@@ -257,7 +252,7 @@ export default function TransferDetailsConfirmation() {
       const endTime = new Date();
       const duration = getElapsedSecond(initTime, endTime);
       setTransferState((prev) => ({ ...prev, duration }));
-      setIsLoading(false);
+      await reloadBallance();
     }
   }
 
@@ -279,7 +274,6 @@ export default function TransferDetailsConfirmation() {
   async function transferFromService() {
     const initTime = new Date();
     try {
-      setIsLoading(true);
       setErrorMessage("");
       await validateServiceAmount();
 
@@ -312,7 +306,6 @@ export default function TransferDetailsConfirmation() {
       const endTime = new Date();
       const duration = getElapsedSecond(initTime, endTime);
       setTransferState((prev) => ({ ...prev, duration }));
-      setIsLoading(false);
     }
   }
 }

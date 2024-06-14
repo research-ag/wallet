@@ -2,7 +2,7 @@ import { ChangeEvent, useState } from "react";
 import { TransferFromTypeEnum, useTransfer } from "../contexts/TransferProvider";
 import { useAppSelector } from "@redux/Store";
 import logger from "@/common/utils/logger";
-import { toFullDecimal, toHoleBigInt } from "@common/utils/amount";
+import { toFullDecimal } from "@common/utils/amount";
 import ICRC1BalanceOf from "@common/libs/icrcledger/ICRC1BalanceOf";
 import { Principal } from "@dfinity/principal";
 import { hexToUint8Array } from "@common/utils/hexadecimal";
