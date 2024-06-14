@@ -97,8 +97,8 @@ export const AddServiceAsset = (props: AddServiceassetProps) => {
                     }}
                   >
                     <div className="flex items-center justify-start gap-2 flex-start">
-                      {getAssetIcon(IconTypeEnum.Enum.FILTER, userAsset?.tokenSymbol, asset.logo)}
-                      <p>{userAsset?.symbol || ""}</p>
+                      {getAssetIcon(IconTypeEnum.Enum.FILTER, userAsset?.tokenSymbol || asset.tokenSymbol, asset.logo)}
+                      <p>{userAsset?.symbol || asset.tokenSymbol}</p>
                     </div>
 
                     <CustomCheck

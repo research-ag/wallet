@@ -85,8 +85,12 @@ export default function AssetFilter({
                   }}
                 >
                   <div className="flex items-center justify-start gap-2 flex-start">
-                    {getAssetIcon(IconTypeEnum.Enum.FILTER, ast?.tokenSymbol, ast?.logo)}
-                    <p>{ast?.symbol}</p>
+                    {getAssetIcon(
+                      IconTypeEnum.Enum.FILTER,
+                      ast?.tokenSymbol || asset.tokenSymbol,
+                      ast?.logo || asset.logo,
+                    )}
+                    <p>{ast?.symbol || asset.tokenSymbol}</p>
                   </div>
 
                   <CustomCheck
