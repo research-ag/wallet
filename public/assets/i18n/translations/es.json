@@ -96,6 +96,7 @@
   "increased.balance": "Saldo aumentado",
   "increased.credit": "Crédito aumentado",
   "delete.asset.msg": "¿Estás seguro de que deseas eliminar el Activo",
+  "delete.service.asset.msg": "Algunos servicios están usando el Activo, si lo eliminas también desaparecerá de la Lista de Servicios",
   "empty.index.error": "El índice no puede estar vacío",
   "empty.name.err": "El nombre no puede estar vacío",
   "already.used.index": "Índice ya utilizado",

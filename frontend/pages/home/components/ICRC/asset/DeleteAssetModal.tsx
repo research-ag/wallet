@@ -10,11 +10,12 @@ import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { AssetMutationAction, setAssetMutation, setAssetMutationAction } from "@redux/assets/AssetReducer";
 import { Contact } from "@redux/models/ContactsModels";
 import { removeAssetFromServices } from "@redux/services/ServiceReducer";
+import { toFullDecimal } from "@common/utils/amount";
 
 const DeleteAssetModal = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const { assetMutated, assetAction } = useAppSelector((state) => state.asset.mutation);
+  const { assetMutated, assetAction, extraData } = useAppSelector((state) => state.asset.mutation);
   const { contacts } = useAppSelector((state) => state.contacts);
   const { authClient } = useAppSelector((state) => state.auth);
 
@@ -35,6 +36,24 @@ const DeleteAssetModal = () => {
             onClick={() => dispatch(setAssetMutationAction(AssetMutationAction.NONE))}
           />
         </div>
+        {extraData?.deletedServicesAssets && (
+          <div className="flex flex-col justify-start items-start w-full px-8">
+            <p className="font-light text-left">{t("delete.service.asset.msg")}:</p>
+            {extraData?.deletedServicesAssets.map((ast: { name: string; credit: string; address: string }) => {
+              return (
+                <p key={ast.address}>{`• ${ast.name} ${
+                  BigInt(ast.credit) > 0
+                    ? `[${toFullDecimal(
+                        ast.credit,
+                        Number(assetMutated?.decimal || "8"),
+                        Number(assetMutated?.shortDecimal || "8"),
+                      )}} ${assetMutated?.symbol || ""}]`
+                    : ""
+                } `}</p>
+              );
+            })}
+          </div>
+        )}
         <div className="flex flex-col items-start justify-start w-full px-8">
           <p className="font-light text-left">
             {`${t("delete.asset.msg")}`}
@@ -63,8 +82,6 @@ const DeleteAssetModal = () => {
     });
 
     await db().updateContacts(updatedContacts, { sync: true }).then();
-
-    console.log("assetMutated", assetMutated);
 
     dispatch(removeAssetFromServices({ authClient, addres: assetMutated.address }));
 

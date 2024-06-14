@@ -95,6 +95,7 @@
   "increased.balance": "Increased Balance",
   "increased.credit": "Increased Credit",
   "delete.asset.msg": "Are you sure you want to delete the Asset",
+  "delete.service.asset.msg": "Some services are using the Asset, if you delete it will also disappear in Service List",
   "empty.index.err": "Index can't be empty",
   "empty.name.err": "Name can't be empty",
   "already.used.index": "Index already used",

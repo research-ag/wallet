@@ -96,6 +96,7 @@
   "increased.balance": "Aumento del saldo",
   "increased.credit": "Aumento del credito",
   "delete.asset.msg": "Sei sicuro di voler eliminare la Risorsa",
+  "delete.service.asset.msg": "Alcuni servizi stanno utilizzando la Risorsa, se la elimini scomparirà anche nell'elenco dei Servizi",
   "empty.index.error": "L'indice non può essere vuoto",
   "empty.name.err": "L'nome non può essere vuoto",
   "already.used.index": "Indice già utilizzato",
