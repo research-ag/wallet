@@ -4,6 +4,8 @@ import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
 import { CustomInput } from "@components/input";
 import useNewServices from "../hooks/useNewService";
+import { useState } from "react";
+import { LoadingLoader } from "@components/loader";
 
 interface NewServiceRowProps {
   setAddService(value: boolean): void;
@@ -22,6 +24,7 @@ export const NewServiceRow = (props: NewServiceRowProps) => {
     showDuplicate,
     setShowDuplicate,
   } = useNewServices();
+  const [loading, setLoading] = useState(false);
   return (
     <tr className="border-b border-BorderColorTwoLight dark:border-BorderColorTwo bg-SelectRowColor/10">
       <td>
@@ -35,7 +38,7 @@ export const NewServiceRow = (props: NewServiceRowProps) => {
             value={newService.name}
             onChange={onServiceNameChange}
             autoFocus
-            className="w-72"
+            className="w-[18rem]"
           />
         </div>
       </td>
@@ -48,14 +51,18 @@ export const NewServiceRow = (props: NewServiceRowProps) => {
           value={newService.principal}
           onChange={onServicePrincipalChange}
           sufix={showDuplicate ? <p className="text-sm text-slate-color-error">Duplicate</p> : <></>}
-          className="w-72"
+          className="!w-[18rem]"
         />
       </td>
       <td>
-        <div className="flex flex-row items-center justify-center gap-2">
-          <CheckIcon onClick={onSave} className="w-4 h-4 opacity-50 cursor-pointer stroke-slate-color-success" />
-          <CloseIcon onClick={onClose} className="w-5 h-5 opacity-50 cursor-pointer stroke-slate-color-error" />
-        </div>
+        {loading ? (
+          <LoadingLoader />
+        ) : (
+          <div className="flex flex-row items-center justify-center gap-2">
+            <CheckIcon onClick={onSave} className="w-4 h-4 opacity-50 cursor-pointer stroke-slate-color-success" />
+            <CloseIcon onClick={onClose} className="w-5 h-5 opacity-50 cursor-pointer stroke-slate-color-error" />
+          </div>
+        )}
       </td>
       <td></td>
     </tr>
@@ -66,22 +73,26 @@ export const NewServiceRow = (props: NewServiceRowProps) => {
     setNewService(false);
   }
   async function onSave() {
-    const res = await saveService();
-
-    if (res.success) onClose();
-    else {
-      if (res.err === "service-name-data-err")
-        setNewServiceErr((prev: any) => {
-          return { name: true, principal: prev.principal };
-        });
+    if (!loading) {
+      setLoading(true);
+      const res = await saveService();
+      if (res.success) onClose();
       else {
-        setNewServiceErr((prev: any) => {
-          return { name: prev.name, principal: true };
-        });
-        if (res.err === "service-duplicate-err") {
-          setShowDuplicate(true);
+        if (res.err === "service-name-data-err")
+          setNewServiceErr((prev: any) => {
+            return { name: true, principal: prev.principal };
+          });
+        else {
+          setNewServiceErr((prev: any) => {
+            return { name: prev.name, principal: true };
+          });
+          if (res.err === "service-duplicate-err") {
+            setShowDuplicate(true);
+          }
         }
       }
+
+      setLoading(false);
     }
   }
 };

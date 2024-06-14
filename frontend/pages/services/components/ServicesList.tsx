@@ -96,6 +96,7 @@ export default function ServicesList({ services, newService, setNewService }: Se
                               />
                             </div>
                           }
+                          className="w-[18rem]"
                         />
                       ) : (
                         <div className="flex flex-row items-center justify-start w-full gap-2">
