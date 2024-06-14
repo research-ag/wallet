@@ -11,7 +11,7 @@ import { Service, ServiceAsset } from "@redux/models/ServiceModels";
 import { useTranslation } from "react-i18next";
 import CustomHoverCard from "@components/HoverCard";
 import { toFullDecimal } from "@common/utils/amount";
-import { AddServiceAsset } from "./addServiceAsset";
+import { AddServiceAsset } from "./AddServiceAsset";
 import useServiceAsset from "../hooks/useServiceAsset";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { Fragment, useState } from "react";
@@ -45,7 +45,7 @@ export default function ServiceAssetsList({ service }: ServiceAssetsListProps) {
   const [openMore, setOpenMore] = useState(-1);
   const [deleteAsset, setDeleteAsset] = useState<ServiceAsset>();
   const [assetToNotify, setAssetToNotify] = useState<ServiceAsset>();
-  const [notifyLoading, setNotifyLoading] = useState(false);
+  const [notifyLoading, setNotifyLoading] = useState(-1);
 
   return (
     <Fragment>
@@ -175,10 +175,10 @@ export default function ServiceAssetsList({ service }: ServiceAssetsListProps) {
                             <button
                               className="flex w-10 h-10 justify-center items-center rounded-md bg-SelectRowColor p-0"
                               onClick={() => {
-                                onNotify(asst.principal, asst);
+                                onNotify(asst.principal, asst, k);
                               }}
                             >
-                              {notifyLoading ? <LoadingLoader /> : <NotifyIcon />}
+                              {notifyLoading === k ? <LoadingLoader /> : <NotifyIcon />}
                             </button>
                           }
                         >
@@ -271,13 +271,13 @@ export default function ServiceAssetsList({ service }: ServiceAssetsListProps) {
     if (!value) setDeleteAsset(undefined);
   }
 
-  async function onNotify(asstPrincipal: string, asst: ServiceAsset) {
-    if (!notifyLoading) {
-      setNotifyLoading(true);
+  async function onNotify(asstPrincipal: string, asst: ServiceAsset, k: number) {
+    if (notifyLoading === -1) {
+      setNotifyLoading(k);
       const resNotify = (await notifyAsset(service.principal, asstPrincipal, true)) as any;
       setNotifyRes(resNotify);
       setAssetToNotify(asst);
-      setNotifyLoading(false);
+      setNotifyLoading(-1);
     }
   }
   function onNotifyAssetChange(value: boolean) {
