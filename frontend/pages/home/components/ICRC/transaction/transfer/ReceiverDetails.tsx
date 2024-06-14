@@ -23,6 +23,13 @@ export default function ReceiverDetails() {
   const isICRC = transferState.toType === TransferToTypeEnum.thirdPartyICRC;
   const isReceiverManual = isManual || isScanner || isICRC;
 
+  console.log({
+    isReceiverService,
+    isReceiverContactBook,
+    isReceiverOwnAccount,
+    isReceiverManual,
+  })
+
   return (
     <div className="max-w-[23rem] mx-auto">
       <p className="font-bold opacity-50 text-md text-start text-PrimaryTextColorLight dark:text-PrimaryTextColor">

@@ -4,7 +4,7 @@ import { SelectOption } from "@/@types/components";
 import { BasicSelect } from "@components/select";
 import { useAppSelector } from "@redux/Store";
 import formatSubAccount from "@/common/utils/formatSubAccount";
-import { TransferFromTypeEnum, useTransfer } from "@pages/home/contexts/TransferProvider";
+import { TransferFromTypeEnum, TransferToTypeEnum, useTransfer } from "@pages/home/contexts/TransferProvider";
 
 export default function ReceiverOwner() {
   const { t } = useTranslation();
@@ -70,6 +70,7 @@ export default function ReceiverOwner() {
       ...prev,
       toSubAccount: option.value,
       toPrincipal: userPrincipal.toString(),
+      toType: TransferToTypeEnum.own,
     }));
   }
 

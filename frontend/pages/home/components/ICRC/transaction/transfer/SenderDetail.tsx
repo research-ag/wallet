@@ -75,7 +75,7 @@ function FromAllowanceManualDisplay() {
   return (
     <div className="px-4 py-2 border rounded-md border-gray-color-2 dark:bg-secondary-color-2 bg-secondary-color-1-light text-start">
       <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
-        {middleTruncation(transferState.fromPrincipal, 15, 15)} {transferState.fromSubAccount}
+        {middleTruncation(transferState.fromPrincipal, 15, 15)} [{transferState.fromSubAccount}]
       </p>
       <div className="flex items-center justify-start">
         <img src={getIconSrc(getAsset().logo, getAsset().tokenSymbol)} className="w-4 h-4 mr-2" alt="" />
@@ -145,7 +145,7 @@ function FromAllowanceContactDisplay() {
         <AvatarEmpty title={getSubaccount().name} className="mr-2" size="large" />
       </div>
       <div className="text-start text-black-color dark:text-secondary-color-1-light">
-        <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">{getSubaccount().name}</p>
+        <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor"> {getContact()?.name} [{getSubaccount().name}]</p>
         <div className="flex">
           <img src={getIconSrc(getAsset().logo, getAsset().symbol)} className="w-4 h-4 mr-2" alt="" />
           <p className="opacity-50 text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
@@ -180,7 +180,6 @@ function FromAllowanceContactDisplay() {
   }
 
   function getSubaccount(): ContactAccount {
-    // case 1: if to is own account
     if (!currentAsset) {
       logger.debug("ReceiverDetails: asset not found in assets list.");
       return defaultContactSubAccount;
@@ -204,6 +203,12 @@ function FromAllowanceContactDisplay() {
     }
 
     return subAccount;
+  }
+
+  function getContact() {
+    const contact = contacts.find((contact) => contact.principal === transferState.fromPrincipal);
+    if (!contact) logger.debug("Contact not found in contacts list.");
+    return contact;
   }
 }
 

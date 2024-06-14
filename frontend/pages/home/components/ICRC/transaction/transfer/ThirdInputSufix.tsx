@@ -27,12 +27,9 @@ export default function ThidInputSufix() {
   const displayContact = hasContacts && hasContactsAccounts;
 
   //
-  const isSenderAllowance =
-    transferState.fromType === TransferFromTypeEnum.allowanceManual ||
-    transferState.fromType === TransferFromTypeEnum.allowanceContactBook;
   const hasServices = services.length > 0;
   const hasServicesAssets = services.some((service) => service.assets.length > 0);
-  const displayService = hasServices && hasServicesAssets && !isSenderAllowance;
+  const displayService = hasServices && hasServicesAssets;
 
   return (
     <div className="relative flex items-center justify-center gap-2">
