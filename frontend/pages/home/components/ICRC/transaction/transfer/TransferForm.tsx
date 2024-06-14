@@ -123,14 +123,14 @@ export default function TransferForm() {
     }
 
     if (!isAmountGreaterThanFee(currentAsset, transferState.fromSubAccount)) {
-      setErrorMessage("Subaccount does not cover the fee");
+      setErrorMessage("FROM subaccount does not cover the fee");
       throw new Error("isAmountGreaterThanFee: subaccount amount must be greater than fee");
     }
 
     // --------------- OWN TO OWN SUB ACCOUNT ---------------
     if (transferState.toType === TransferToTypeEnum.own) {
       if (transferState.fromSubAccount === transferState.toSubAccount) {
-        setErrorMessage("Subaccounts must be different");
+        setErrorMessage("FROM and TO subaccounts must be different");
         throw new Error("fromOwnSubaccountValidations: sub accounts must be differents");
       }
 
@@ -153,7 +153,7 @@ export default function TransferForm() {
     if (isToManual || isToIcrc || isToScanner) {
       if (transferState.toPrincipal === userPrincipal.toString()) {
         if (transferState.fromSubAccount === transferState.toSubAccount) {
-          setErrorMessage("Subaccounts must be different");
+          setErrorMessage("FROM and TO subaccounts must be different");
           throw new Error("fromOwnSubaccountValidations: sub accounts must be differents");
         }
       }
