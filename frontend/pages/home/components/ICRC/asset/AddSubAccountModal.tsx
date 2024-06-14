@@ -228,12 +228,16 @@ export default function AddSubAccountModal({
               agent: userAgent,
               canisterId: Principal.fromText(currentAsset.address),
             });
-
-            const myBalance = await balance({
-              owner: userPrincipal,
-              subaccount: hexToUint8Array(`0x${subClean}`),
-              certified: false,
-            });
+            let myBalance = BigInt(0);
+            try {
+              myBalance = await balance({
+                owner: userPrincipal,
+                subaccount: hexToUint8Array(`0x${subClean}`),
+                certified: false,
+              });
+            } catch {
+              //
+            }
 
             const asset = assets[currentAssetIndex];
 
