@@ -18,10 +18,12 @@ import ICRC2TransferForm from "@common/libs/icrcledger/ICRC2TransferForm";
 import ICRCXWithdraw from "@common/libs/icrcledger/ICRCXTransfer";
 import { updateServiceAssetAmounts } from "@redux/services/ServiceReducer";
 import { getElapsedSecond } from "@common/utils/datetimeFormaters";
+import { TransferStatus, useTransferStatus } from "@pages/home/contexts/TransferStatusProvider";
 
 export default function TransferDetailsConfirmation() {
   const { t } = useTranslation();
   const { transferState, setTransferState } = useTransfer();
+  const { setStatus } = useTransferStatus();
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useAppDispatch();
@@ -89,7 +91,7 @@ export default function TransferDetailsConfirmation() {
       throw new Error("validateAllowanceAmount: Asset not found");
     }
 
-    const fee = toHoleBigInt(currentAsset.subAccounts[0].transaction_fee, Number(currentAsset?.decimal || "8"));
+    const fee = BigInt(currentAsset.subAccounts[0].transaction_fee);
     const amount = toHoleBigInt(transferState.amount, Number(currentAsset?.decimal || "8"));
 
     // allowance account balance
@@ -154,9 +156,7 @@ export default function TransferDetailsConfirmation() {
       setIsLoading(true);
       setErrorMessage("");
       validateAllowanceAmount();
-
-      // TODO: set transaction status
-      // TODO: display transaction modal
+      setStatus(TransferStatus.SENDING);
 
       // INFO: at this point the asset information is valid
       await ICRC2TransferForm({
@@ -177,12 +177,10 @@ export default function TransferDetailsConfirmation() {
         created_at_time: [],
       });
 
-      // TODO: set transaction status to success
-      // TODO: update transaction account (reload balance)
-      // TODO: update transaction list (reload balance)
+      setStatus(TransferStatus.DONE);
     } catch (error) {
       logger.debug(error);
-      // TODO: set transaction status to failed
+      setStatus(TransferStatus.ERROR);
     } finally {
       const endTime = new Date();
       const duration = getElapsedSecond(initTime, endTime);
@@ -202,7 +200,7 @@ export default function TransferDetailsConfirmation() {
     }
 
     const balance = toHoleBigInt(transferState.amount, Number(currentAsset?.decimal || "8"));
-    const fee = toHoleBigInt(currentSubAccount.transaction_fee, Number(currentAsset?.decimal || "8"));
+    const fee = BigInt(currentSubAccount.transaction_fee);
     const amount = toHoleBigInt(transferState.amount, Number(currentAsset?.decimal || "8"));
     if (amount + fee > balance) {
       setErrorMessage("Insufficient balance");
@@ -232,9 +230,7 @@ export default function TransferDetailsConfirmation() {
       setIsLoading(true);
       validateOwnAmount();
 
-      // TODO: init transaction time
-      // TODO: set transaction status
-      // TODO: display transaction modal
+      setStatus(TransferStatus.SENDING);
 
       // INFO: at this point the asset information is valid
       await ICRC1Tranfer({
@@ -251,12 +247,10 @@ export default function TransferDetailsConfirmation() {
         created_at_time: [],
       });
 
-      // TODO: set transaction status to success
-      // TODO: update transaction account (reload balance)
-      // TODO: update transaction list (reload balance)
+      setStatus(TransferStatus.DONE);
     } catch (error) {
       logger.debug(error);
-      // TODO: set transaction status to failed
+      setStatus(TransferStatus.ERROR);
     } finally {
       const endTime = new Date();
       const duration = getElapsedSecond(initTime, endTime);
@@ -287,9 +281,7 @@ export default function TransferDetailsConfirmation() {
       setErrorMessage("");
       validateServiceAmount();
 
-      // TODO: init transaction time
-      // TODO: set transaction status
-      // TODO: display transaction modal
+      setStatus(TransferStatus.SENDING);
 
       const res = await ICRCXWithdraw({
         agent: userAgent,
@@ -310,10 +302,10 @@ export default function TransferDetailsConfirmation() {
         );
       }
 
-      // TODO: set transaction status to success
+      setStatus(TransferStatus.DONE);
     } catch (error) {
       logger.debug(error);
-      // TODO: set transaction status to failed
+      setStatus(TransferStatus.ERROR);
     } finally {
       const endTime = new Date();
       const duration = getElapsedSecond(initTime, endTime);

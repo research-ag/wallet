@@ -8,14 +8,11 @@ interface SenderInitializerProps {
   children: JSX.Element;
 }
 
-// TODO: delete this component
-
 export default function SenderInitializer(props: SenderInitializerProps) {
   const { children } = props;
   const { selectedAsset, selectedAccount } = useAppSelector((state) => state.asset.helper);
   const { sender } = useAppSelector((state) => state.transaction);
   const { route } = useAppSelector((state) => state.auth);
-  // TODO: why the services validation?
 
   useEffect(() => {
     if (route !== RoutingPathEnum.Enum.SERVICES) {

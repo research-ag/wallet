@@ -3,8 +3,6 @@ import { Principal } from "@dfinity/principal";
 import { Asset } from "@redux/models/AccountModels";
 import logger from "@/common/utils/logger";
 import { toHoleBigInt } from "@common/utils/amount";
-import { getAllowanceDetails } from "@common/libs/icrcledger/icrcAllowance";
-import { CheckAllowanceParams } from "@/@types/icrc";
 // common
 
 export const isPrincipalValid = (principal: string): boolean => {
@@ -33,14 +31,7 @@ export const isAmountGreaterThanFee = (asset: Asset, subAccountId: string): bool
   }
 
   const amount = toHoleBigInt(currentAccount.amount, asset.decimal);
-  const fee = toHoleBigInt(currentAccount.transaction_fee, asset.decimal);
+  const fee = BigInt(asset.subAccounts[0].transaction_fee);
 
-  return amount > fee;
-};
-
-export const isAllowanceGreaterThanFree = async (asset: Asset, args: CheckAllowanceParams): Promise<boolean> => {
-  const allowance = await getAllowanceDetails(args);
-  const fee = toHoleBigInt(asset.subAccounts[0].transaction_fee, asset.decimal);
-  const amount = toHoleBigInt(allowance.amount, asset.decimal);
   return amount > fee;
 };

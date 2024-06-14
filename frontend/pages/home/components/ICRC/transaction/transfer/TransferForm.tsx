@@ -7,18 +7,16 @@ import { useTranslation } from "react-i18next";
 import { LoadingLoader } from "@components/loader";
 import { BasicButton } from "@components/button";
 import { useState } from "react";
-import {
-  isAllowanceGreaterThanFree,
-  isAmountGreaterThanFee,
-  isPrincipalValid,
-  isSubAccountIdValid,
-} from "@pages/home/helpers/validators";
+import { isAmountGreaterThanFee, isPrincipalValid, isSubAccountIdValid } from "@pages/home/helpers/validators";
 import { TransferFromTypeEnum, TransferToTypeEnum, useTransfer } from "@pages/home/contexts/TransferProvider";
 import { useAppSelector } from "@redux/Store";
 import logger from "@/common/utils/logger";
 import { setTransactionDrawerAction } from "@redux/transaction/TransactionActions";
 import { TransactionDrawer } from "@/@types/transactions";
 import { TransferView, useTransferView } from "@pages/home/contexts/TransferViewProvider";
+import ICRC2Allowance from "@common/libs/icrcledger/ICRC2Allowance";
+import { hexToUint8Array } from "@common/utils/hexadecimal";
+import { Principal } from "@dfinity/principal";
 
 export default function TransferForm() {
   const { t } = useTranslation();
@@ -26,8 +24,8 @@ export default function TransferForm() {
   const { transferState } = useTransfer();
   const { setView } = useTransferView();
   const assets = useAppSelector((state) => state.asset.list.assets);
-  const userPrincipal = useAppSelector((state) => state.auth.userPrincipal);
-  const [errorMessage, setErrorMessage] = useState<string>("no error");
+  const { userPrincipal, userAgent } = useAppSelector((state) => state.auth);
+  const [errorMessage, setErrorMessage] = useState<string>("");
   const currentAsset = assets.find((asset) => asset.tokenSymbol === transferState.tokenSymbol);
 
   return (
@@ -109,6 +107,11 @@ export default function TransferForm() {
       throw new Error("TransferForm: asset not found");
     }
 
+    if (Number(transferState.fromSubAccount) === 0) {
+      setErrorMessage("FROM subaccount has not balance");
+      throw new Error("fromOwnSubaccountValidations: from sub account must have balance");
+    }
+
     if (!isAmountGreaterThanFee(currentAsset, transferState.fromSubAccount)) {
       setErrorMessage("Subaccount does not cover the fee");
       throw new Error("isAmountGreaterThanFee: subaccount amount must be greater than fee");
@@ -162,15 +165,22 @@ export default function TransferForm() {
     }
 
     // case 2: allowance balance must be greater than the transaction fee
-    const isAllowanceGreater = await isAllowanceGreaterThanFree(currentAsset, {
-      allocatorPrincipal: transferState.fromPrincipal,
-      allocatorSubaccount: transferState.fromSubAccount,
-      assetAddress: currentAsset.address,
-      assetDecimal: currentAsset.decimal,
-      spenderPrincipal: userPrincipal.toString(),
+    const allowance = await ICRC2Allowance({
+      agent: userAgent,
+      canisterId: Principal.fromText(currentAsset.address),
+      account: {
+        owner: Principal.fromText(transferState.fromPrincipal),
+        subaccount: [new Uint8Array(hexToUint8Array(transferState.fromSubAccount))],
+      },
+      spender: {
+        owner: userPrincipal,
+        subaccount: [],
+      },
     });
 
-    if (!isAllowanceGreater) {
+    const fee = BigInt(currentAsset.subAccounts[0].transaction_fee);
+
+    if (fee > allowance.allowance) {
       setErrorMessage("Allowance does not cover the fee");
       throw new Error("isAllowanceGreaterThanFree: allowance amount must be greater than fee");
     }

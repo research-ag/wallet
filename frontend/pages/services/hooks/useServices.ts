@@ -3,7 +3,6 @@ import { Service, ServiceAsset } from "@redux/models/ServiceModels";
 import { saveServices } from "@redux/services/ServiceActions";
 import { useEffect, useState } from "react";
 
-// TODO: implement filtering
 export default function useServices() {
   const { services, servicesData, serviceAssets } = useAppSelector((state) => state.services);
   const { authClient } = useAppSelector((state) => state.auth);

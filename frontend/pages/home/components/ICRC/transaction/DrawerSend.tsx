@@ -9,7 +9,6 @@ import contactCacheRefresh from "@pages/contacts/helpers/contactCacheRefresh";
 function DrawerSend() {
   const [modal, showConfirmationModal] = useState(false);
 
-  // TODO: on open the drawer contact allowances and balances should be updated
   useEffect(() => {
     (async () => {
       await contactCacheRefresh();

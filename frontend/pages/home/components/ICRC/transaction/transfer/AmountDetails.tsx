@@ -1,14 +1,15 @@
-// import { LoadingLoader } from "@components/loader";
 import { TransferFromTypeEnum, TransferToTypeEnum, useTransfer } from "@pages/home/contexts/TransferProvider";
 import { useTranslation } from "react-i18next";
 import clsx from "clsx";
 import { useAppSelector } from "@redux/Store";
-import { ChangeEvent } from "react";
 import { toFullDecimal, validateAmount } from "@common/utils/amount";
+import useTransferMaxAmount from "@pages/home/hooks/useTransferMaxAmount";
+import { LoadingLoader } from "@components/loader";
 
 export default function AmountDetails() {
   const { t } = useTranslation();
-  const { transferState, setTransferState } = useTransfer();
+  const { transferState } = useTransfer();
+  const { maxAmount, onMaxAmount, onChangeAmount } = useTransferMaxAmount();
   const assets = useAppSelector((state) => state.asset.list.assets);
   const services = useAppSelector((state) => state.services.services);
   //
@@ -20,8 +21,13 @@ export default function AmountDetails() {
   //
   const isReceiverService = transferState.toType === TransferToTypeEnum.thirdPartyService;
   const isSenderService = transferState.fromType === TransferFromTypeEnum.service;
-  const isAmountValid =
-    !(transferState.amount === "") && validateAmount(transferState.amount, Number(currentAsset?.decimal || "8"));
+
+  const isAmountValid = (() => {
+    if (transferState.amount === "") return true;
+    if (transferState.amount === undefined) return true;
+    if (transferState.amount === "0") return false;
+    return validateAmount(transferState.amount, Number(currentAsset?.decimal || "8"));
+  })();
 
   return (
     <div className="max-w-[23rem] mx-auto space-y-[0.5rem]">
@@ -34,15 +40,15 @@ export default function AmountDetails() {
           onChange={onChangeAmount}
           value={transferState.amount}
         />
-        {/* {maxAmount.isLoading && <LoadingLoader className="mr-4" />} */}
-        {/* {!maxAmount.isLoading && (
+        {maxAmount.isLoading && <LoadingLoader className="mr-4" />}
+        {!maxAmount.isLoading && (
           <button
             className="flex items-center justify-center p-1 mr-2 rounded cursor-pointer bg-RadioCheckColor"
             onClick={onMaxAmount}
           >
             <p className="text-sm text-PrimaryTextColor">{t("max")}</p>
           </button>
-        )} */}
+        )}
       </div>
 
       {isReceiverService && (
@@ -81,18 +87,18 @@ export default function AmountDetails() {
 
       <div className="flex items-center justify-between w-full">
         <div className="flex">
-          {/* {maxAmount.isAmountFromMax && !maxAmount.isLoading && (
+          {!maxAmount.isLoading && maxAmount.isAmountFromMax && (
             <div className="flex">
               <p className="mr-1 text-sm text-primary-color">{t("max")}: </p>
-              <p className="mr-2 text-sm text-primary-color">{maxAmount.transactionAmountWithoutFee}</p>
+              <p className="mr-2 text-sm text-primary-color">{maxAmount.maxAmount}</p>
             </div>
           )}
 
-          {maxAmount.isAmountFromMax && !maxAmount.isLoading && maxAmount.showAvailable && (
+          {!maxAmount.isLoading && maxAmount.displayAvailable && maxAmount.isAmountFromMax && (
             <p className="text-sm text-primary-color">
-              ({maxAmount.allowanceSubAccountBalance} {t("available")})
+              ({maxAmount.availableAmount} {t("available")})
             </p>
-          )} */}
+          )}
         </div>
 
         <div className="flex">
@@ -100,7 +106,12 @@ export default function AmountDetails() {
             {isReceiverService ? "Ledger " : ""} {t("fee")}
           </p>
           <p className="text-sm text-PrimaryTextColorLight dark:text-PrimaryTextColor">
-            {/* {transactionFee} */} {currentAsset?.symbol || "-"}
+            {toFullDecimal(
+              currentAsset?.subAccounts?.[0]?.transaction_fee || "0",
+              Number(currentAsset?.decimal || "8"),
+              Number(currentAsset?.shortDecimal || "8"),
+            )}
+            {currentAsset?.symbol || "-"}
           </p>
         </div>
       </div>
@@ -138,11 +149,6 @@ export default function AmountDetails() {
       )}
     </div>
   );
-
-  function onChangeAmount(e: ChangeEvent<HTMLInputElement>) {
-    const amount = e.target.value.trim().replace(/[^0-9.]/g, "");
-    setTransferState({ ...transferState, amount });
-  }
 }
 
 function getAmountInputStyles(hasError: boolean) {

@@ -11,8 +11,6 @@ import { getIconSrc } from "@common/utils/icons";
 import { AvatarEmpty } from "@components/avatar";
 import { useTranslation } from "react-i18next";
 
-// TODO: refactor the function duplicated logic
-
 export default function AllowanceSenderContactBook() {
   const { t } = useTranslation();
   const contacts = useAppSelector((state) => state.contacts.contacts);
