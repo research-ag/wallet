@@ -36,6 +36,7 @@ export type TransferStateType = {
   toSubAccount: string;
 
   amount: string;
+  duration: string;
 };
 
 export type TransferProviderType = {
@@ -60,6 +61,7 @@ export default function TransferProvider({ children }: TransferProviderProps) {
     toSubAccount: "",
     //
     amount: "",
+    duration: "",
   });
 
   console.log("transferState: ", transferState);

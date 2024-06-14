@@ -3,6 +3,7 @@ import { useAppSelector } from "@redux/Store";
 import { useEffect } from "react";
 import logger from "@/common/utils/logger";
 import TransferViewProvider from "../contexts/TransferViewProvider";
+import TransferStatusProvider from "../contexts/TransferStatusProvider";
 
 function TransferIntializer({ children }: { children: JSX.Element }) {
   const { userPrincipal } = useAppSelector((state) => state.auth);
@@ -29,9 +30,11 @@ function TransferIntializer({ children }: { children: JSX.Element }) {
 export default function TransferWrapper({ children }: { children: JSX.Element }) {
   return (
     <TransferProvider>
-      <TransferIntializer>
-        <TransferViewProvider>{children}</TransferViewProvider>
-      </TransferIntializer>
+      <TransferStatusProvider>
+        <TransferIntializer>
+          <TransferViewProvider>{children}</TransferViewProvider>
+        </TransferIntializer>
+      </TransferStatusProvider>
     </TransferProvider>
   );
 }

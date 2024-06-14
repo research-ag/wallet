@@ -4,6 +4,7 @@ import { TransferView, useTransferView } from "@pages/home/contexts/TransferView
 import ReceiverQRScanner from "./ReceiverQRScanner";
 import TransferDetailsConfirmation from "./TransferDetailsConfirmation";
 import SenderAllowanceQRScanner from "./SenderAllowanceQRScanner";
+import TransferStatusModal from "./TransferStatusModal";
 
 function Transfer() {
   const { view } = useTransferView();
@@ -14,6 +15,7 @@ function Transfer() {
       {view === TransferView.CONFIRM_DETAIL && <TransferDetailsConfirmation />}
       {view === TransferView.SENDER_QR_SCANNER && <SenderAllowanceQRScanner />}
       {view === TransferView.RECEIVER_QR_SCANNER && <ReceiverQRScanner />}
+      <TransferStatusModal />
     </div>
   );
 }

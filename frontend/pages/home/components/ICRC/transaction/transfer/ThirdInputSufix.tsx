@@ -91,7 +91,6 @@ function InputSufixServiceBook() {
       toSubAccount: princSubId,
       toType: TransferToTypeEnum.thirdPartyService,
     }));
-
   }
 }
 

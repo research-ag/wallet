@@ -20,7 +20,8 @@ export default function AmountDetails() {
   //
   const isReceiverService = transferState.toType === TransferToTypeEnum.thirdPartyService;
   const isSenderService = transferState.fromType === TransferFromTypeEnum.service;
-  const isAmountValid = !(transferState.amount === "") && validateAmount(transferState.amount, Number(currentAsset?.decimal || "8"));
+  const isAmountValid =
+    !(transferState.amount === "") && validateAmount(transferState.amount, Number(currentAsset?.decimal || "8"));
 
   return (
     <div className="max-w-[23rem] mx-auto space-y-[0.5rem]">
