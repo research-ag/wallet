@@ -117,7 +117,11 @@ export default function TransferForm() {
       throw new Error("TransferForm: asset not found");
     }
 
-    if (Number(transferState.fromSubAccount) === 0) {
+    const subaccount = currentAsset.subAccounts.find(
+      (subAccount) => subAccount.sub_account_id === transferState.fromSubAccount,
+    );
+
+    if (Number(subaccount?.amount || "0") === 0) {
       setErrorMessage("FROM subaccount has not balance");
       throw new Error("fromOwnSubaccountValidations: from sub account must have balance");
     }

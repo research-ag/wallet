@@ -63,7 +63,7 @@ export default function TransferDetailsConfirmation() {
   );
 
   function onBack() {
-    setView(TransferView.SEND_FORM)
+    setView(TransferView.SEND_FORM);
   }
 
   function onTransfer() {
@@ -156,7 +156,7 @@ export default function TransferDetailsConfirmation() {
     try {
       setIsLoading(true);
       setErrorMessage("");
-      validateAllowanceAmount();
+      await validateAllowanceAmount();
       setStatus(TransferStatus.SENDING);
 
       // INFO: at this point the asset information is valid
@@ -200,9 +200,10 @@ export default function TransferDetailsConfirmation() {
       throw new Error("validateOwnAmount: Sub account not found");
     }
 
-    const balance = toHoleBigInt(transferState.amount, Number(currentAsset?.decimal || "8"));
+    const balance = BigInt(currentSubAccount.amount);
     const fee = BigInt(currentSubAccount.transaction_fee);
     const amount = toHoleBigInt(transferState.amount, Number(currentAsset?.decimal || "8"));
+
     if (amount + fee > balance) {
       setErrorMessage("Insufficient balance");
       throw new Error("validateOwnAmount: Insufficient balance");
@@ -229,7 +230,7 @@ export default function TransferDetailsConfirmation() {
     const initTime = new Date();
     try {
       setIsLoading(true);
-      validateOwnAmount();
+      await validateOwnAmount();
 
       setStatus(TransferStatus.SENDING);
 
@@ -280,7 +281,7 @@ export default function TransferDetailsConfirmation() {
     try {
       setIsLoading(true);
       setErrorMessage("");
-      validateServiceAmount();
+      await validateServiceAmount();
 
       setStatus(TransferStatus.SENDING);
 

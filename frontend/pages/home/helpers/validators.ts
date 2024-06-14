@@ -30,7 +30,7 @@ export const isAmountGreaterThanFee = (asset: Asset, subAccountId: string): bool
     return false;
   }
 
-  const amount = toHoleBigInt(currentAccount.amount, asset.decimal);
+  const amount = BigInt(currentAccount.amount);
   const fee = BigInt(asset.subAccounts[0].transaction_fee);
 
   return amount > fee;

@@ -57,8 +57,7 @@ export default function useTransferMaxAmount() {
       return;
     }
 
-    const balance = toHoleBigInt(subaccount.amount, Number(currentAsset.decimal));
-
+    const balance = BigInt(subaccount.amount);
     const fee = BigInt(currentAsset.subAccounts[0].transaction_fee);
 
     if (balance < fee) {

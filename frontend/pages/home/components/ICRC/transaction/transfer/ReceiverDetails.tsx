@@ -11,6 +11,7 @@ import { getIconSrc } from "@common/utils/icons";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { defaultSubAccount } from "@common/defaultTokens";
 import { TransferView, useTransferView } from "@pages/home/contexts/TransferViewProvider";
+import { toFullDecimal } from "@common/utils/amount";
 
 export default function ReceiverDetails() {
   const { t } = useTranslation();
@@ -149,7 +150,7 @@ function ToOwnDisplay() {
         <div className="flex">
           <img src={getIconSrc(getAsset().logo, getAsset().symbol)} className="w-4 h-4 mr-2" alt="" />
           <p className="opacity-50 text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
-            {getSubaccount().amount} {getAsset().symbol}
+            {toFullDecimal(getSubaccount().amount, Number(currentAsset?.decimal))} {getAsset().symbol}
           </p>
         </div>
       </div>

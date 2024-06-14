@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { getAllowanceDetails } from "@common/libs/icrcledger/icrcAllowance";
 import { ContactAccount, defaultContactSubAccount } from "@redux/models/ContactsModels";
 import { defaultSubAccount } from "@common/defaultTokens";
+import { toFullDecimal } from "@common/utils/amount";
 
 export default function SenderDetails() {
   const { t } = useTranslation();
@@ -230,7 +231,7 @@ function FromOwnDisplay() {
         <div className="flex">
           <img src={getIconSrc(getAsset().logo, getAsset().symbol)} className="w-4 h-4 mr-2" alt="" />
           <p className="opacity-50 text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
-            {getSubaccount().amount} {getAsset().symbol}
+            {toFullDecimal(getSubaccount().amount, Number(getAsset().decimal))} {getAsset().symbol}
           </p>
         </div>
       </div>
