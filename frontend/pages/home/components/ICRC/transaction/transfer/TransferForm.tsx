@@ -18,11 +18,13 @@ import { useAppSelector } from "@redux/Store";
 import logger from "@/common/utils/logger";
 import { setTransactionDrawerAction } from "@redux/transaction/TransactionActions";
 import { TransactionDrawer } from "@/@types/transactions";
+import { TransferView, useTransferView } from "@pages/home/contexts/TransferViewProvider";
 
 export default function TransferForm() {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const { transferState } = useTransfer();
+  const { setView } = useTransferView();
   const assets = useAppSelector((state) => state.asset.list.assets);
   const userPrincipal = useAppSelector((state) => state.auth.userPrincipal);
   const [errorMessage, setErrorMessage] = useState<string>("no error");
@@ -53,10 +55,15 @@ export default function TransferForm() {
       setIsLoading(false);
       setErrorMessage("");
 
+      const isAllowanceContact = transferState.fromType === TransferFromTypeEnum.allowanceContactBook;
+      const isAllowanceManual = transferState.fromType === TransferFromTypeEnum.allowanceManual;
+
       commonValidations();
       if (transferState.fromType === TransferFromTypeEnum.own) fromOwnSubaccountValidations();
-      if (transferState.fromType === TransferFromTypeEnum.allowance) await fromAllowanceValidations();
+      if (isAllowanceContact || isAllowanceManual) await fromAllowanceValidations();
       if (transferState.fromType === TransferFromTypeEnum.service) fromServiceValidations();
+
+      setView(TransferView.CONFIRM_DETAIL);
     } catch (error) {
       logger.debug(error);
     } finally {

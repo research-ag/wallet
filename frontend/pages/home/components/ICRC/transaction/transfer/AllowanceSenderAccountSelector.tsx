@@ -1,8 +1,7 @@
 import { ReactComponent as QRScanIcon } from "@assets/svg/files/qr.svg";
 //
 import { BasicSwitch } from "@components/switch";
-import { useTransfer } from "@pages/home/contexts/TransferProvider";
-import { useState } from "react";
+import { TransferFromTypeEnum, useTransfer } from "@pages/home/contexts/TransferProvider";
 import { useTranslation } from "react-i18next";
 import AllowanceSenderContactBook from "./AllowanceSenderContactBook";
 import AllownaceSenderInputs from "./AllowanceSenderInputs";
@@ -11,8 +10,9 @@ import { TransferView, useTransferView } from "@pages/home/contexts/TransferView
 export default function AllowanceSenderAccountSelector() {
   const { setView } = useTransferView();
   const { t } = useTranslation();
-  const { setTransferState } = useTransfer();
-  const [isSenderNew, setIsSenderNew] = useState(false);
+  const { setTransferState, transferState } = useTransfer();
+
+  const isManual = transferState.fromType === TransferFromTypeEnum.allowanceManual;
 
   return (
     <div>
@@ -21,24 +21,24 @@ export default function AllowanceSenderAccountSelector() {
           <p className="mr-1 opacity-50 text-md text-start text-PrimaryTextColorLight dark:text-PrimaryTextColor">
             {t("contact.book")}
           </p>
-          <BasicSwitch checked={isSenderNew} onChange={onContactBookChange} disabled={false} />
+          <BasicSwitch checked={isManual} onChange={onContactBookChange} disabled={false} />
           <p className="ml-1 opacity-50 text-start text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
             {t("new")}
           </p>
         </div>
-        {isSenderNew && <QRScanIcon onClick={onSenderScannerShow} className="cursor-pointer" />}
+        {isManual && <QRScanIcon onClick={onSenderScannerShow} className="cursor-pointer" />}
       </label>
-      {isSenderNew && <AllownaceSenderInputs />}
-      {!isSenderNew && <AllowanceSenderContactBook />}
+      {isManual && <AllownaceSenderInputs />}
+      {!isManual && <AllowanceSenderContactBook />}
     </div>
   );
 
   function onContactBookChange(checked: boolean) {
-    setIsSenderNew(checked);
     setTransferState((prev) => ({
       ...prev,
       fromSubAccount: "",
       fromPrincipal: "",
+      fromType: checked ? TransferFromTypeEnum.allowanceManual : TransferFromTypeEnum.allowanceContactBook,
     }));
   }
 

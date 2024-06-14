@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import logger from "@/common/utils/logger";
 import SenderDetails from "./SenderDetail";
 import ReceiverDetails from "./ReceiverDetails";
+// import AmountDetails from "./AmountDetails";
 
 export default function TransferDetailsConfirmation() {
   const { t } = useTranslation();
@@ -14,11 +15,12 @@ export default function TransferDetailsConfirmation() {
   const [isLoading, setIsLoading] = useState(false);
 
   return (
-    <div>
+    <div className="space-y-[1rem] mt-[3rem]">
       <SenderDetails />
       <ReceiverDetails />
+      {/* <AmountDetails /> */}
 
-      <div className="flex items-center justify-end mt-6">
+      <div className="flex items-center justify-end mt-6 max-w-[23rem] mx-auto">
         <p className="mr-4 text-md text-slate-color-error">{errorMessage}</p>
         {isLoading && <LoadingLoader color="dark:border-secondary-color-1-light border-black-color mr-2" />}
         <BasicButton className="w-1/6 mr-2 font-bold bg-secondary-color-2" onClick={onBack}>
@@ -41,7 +43,10 @@ export default function TransferDetailsConfirmation() {
     // validate amout is more than 0
 
     // case 1: if fromType is allowance
-    if (transferState.fromType === TransferFromTypeEnum.allowance) {
+    if (
+      transferState.fromType === TransferFromTypeEnum.allowanceManual ||
+      transferState.fromType === TransferFromTypeEnum.allowanceContactBook
+    ) {
       transferFromAllowance();
     }
 

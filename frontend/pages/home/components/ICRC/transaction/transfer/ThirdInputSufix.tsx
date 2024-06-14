@@ -14,6 +14,7 @@ import { TransferFromTypeEnum, TransferToTypeEnum, useTransfer } from "@pages/ho
 import { Service } from "@redux/models/ServiceModels";
 import { TransferView, useTransferView } from "@pages/home/contexts/TransferViewProvider";
 import { Principal } from "@dfinity/principal";
+import { Buffer } from "buffer";
 
 export default function ThidInputSufix() {
   const { transferState } = useTransfer();
@@ -26,7 +27,9 @@ export default function ThidInputSufix() {
   const displayContact = hasContacts && hasContactsAccounts;
 
   //
-  const isSenderAllowance = transferState.fromType === TransferFromTypeEnum.allowance;
+  const isSenderAllowance =
+    transferState.fromType === TransferFromTypeEnum.allowanceManual ||
+    transferState.fromType === TransferFromTypeEnum.allowanceContactBook;
   const hasServices = services.length > 0;
   const hasServicesAssets = services.some((service) => service.assets.length > 0);
   const displayService = hasServices && hasServicesAssets && !isSenderAllowance;
@@ -54,7 +57,7 @@ function InputSufixServiceBook() {
       </DropdownMenu.Trigger>
 
       <DropdownMenu.Portal>
-        <DropdownMenu.Content className="absolute w-[21rem] max-h-[24vh] bg-secondary-color-1-light dark:bg-level-1-color border border-primary-color  z-[1000] -right-12 mt-4 scroll-y-light rounded-lg  shadow-sm ">
+        <DropdownMenu.Content className="absolute w-[21rem] max-h-[24vh] bg-secondary-color-1-light dark:bg-level-1-color border border-primary-color  z-[1000] -right-[5rem] mt-4 scroll-y-light rounded-lg  shadow-sm">
           {services
             .filter((srv) => {
               return !!srv.assets.find((ast) => ast.tokenSymbol === transferState.tokenSymbol);

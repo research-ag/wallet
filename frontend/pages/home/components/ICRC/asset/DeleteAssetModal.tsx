@@ -64,8 +64,6 @@ const DeleteAssetModal = () => {
 
     await db().updateContacts(updatedContacts, { sync: true }).then();
 
-    console.log("assetMutated", assetMutated);
-
     dispatch(removeAssetFromServices({ authClient, addres: assetMutated.address }));
 
     dispatch(setAssetMutationAction(AssetMutationAction.NONE));

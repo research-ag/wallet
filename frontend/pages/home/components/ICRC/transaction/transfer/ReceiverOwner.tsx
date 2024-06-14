@@ -1,20 +1,19 @@
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { SelectOption } from "@/@types/components";
 import { BasicSelect } from "@components/select";
 import { useAppSelector } from "@redux/Store";
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
 import formatSubAccount from "@/common/utils/formatSubAccount";
-import { useTransfer } from "@pages/home/contexts/TransferProvider";
+import { TransferFromTypeEnum, useTransfer } from "@pages/home/contexts/TransferProvider";
 
 export default function ReceiverOwner() {
   const { t } = useTranslation();
-  const { setTransferState } = useTransfer();
+  const { setTransferState, transferState } = useTransfer();
   const assets = useAppSelector((state) => state.asset.list.assets);
-  const { sender, receiver } = useAppSelector((state) => state.transaction);
   const userPrincipal = useAppSelector((state) => state.auth.userPrincipal);
   const [searchKey, setSearchKey] = useState<string | null>(null);
 
-  const currentAsset = assets.find((asset) => asset?.tokenSymbol === sender?.asset?.tokenSymbol);
+  const currentAsset = assets.find((asset) => asset?.tokenSymbol === transferState.tokenSymbol);
 
   return (
     <div className="max-w-[21rem] mx-auto py-[1rem]">
@@ -23,8 +22,8 @@ export default function ReceiverOwner() {
         <BasicSelect
           onSelect={onSelect}
           options={getSubAccountOptions()}
-          initialValue={receiver?.ownSubAccount?.sub_account_id}
-          currentValue={receiver?.ownSubAccount?.sub_account_id || ""}
+          initialValue={transferState.toSubAccount}
+          currentValue={transferState.toSubAccount}
           onSearch={onSearchChange}
           onOpenChange={onOpenChange}
           componentWidth="21rem"
@@ -39,11 +38,11 @@ export default function ReceiverOwner() {
 
     if (!subAccounts) return [];
 
-    const isSenderOwnSubAccount = sender?.subAccount?.address;
+    const isSenderOwnSubAccount = transferState.fromType === TransferFromTypeEnum.own;
 
     if (isSenderOwnSubAccount) {
       const filteredSubAccounts = subAccounts.filter(
-        (subAccount) => subAccount?.sub_account_id !== sender?.subAccount?.sub_account_id,
+        (subAccount) => subAccount?.sub_account_id !== transferState.fromSubAccount,
       );
 
       return filteredSubAccounts

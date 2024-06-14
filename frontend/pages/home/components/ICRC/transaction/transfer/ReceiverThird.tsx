@@ -1,16 +1,17 @@
 import { ReactComponent as SearchIcon } from "@assets/svg/files/icon-search.svg";
 import logger from "@/common/utils/logger";
 import { CustomInput } from "@components/input";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import ThidInputSufix from "./ThirdInputSufix";
-import { decodeIcrcAccount } from "@dfinity/ledger";
+import { decodeIcrcAccount, encodeIcrcAccount } from "@dfinity/ledger";
 import { subUint8ArrayToHex } from "@common/utils/unitArray";
 import { TransferToTypeEnum, useTransfer } from "@pages/home/contexts/TransferProvider";
 import useReceiver from "@pages/home/hooks/useReceiver";
-import ReceiverManual from "./ReceiverManual";
 import ContactBookReceiver from "./ReceiverContactSelector";
 import ServiceBookReceiver from "./ReceiverServiceSelector";
+import { Principal } from "@dfinity/principal";
+import { hexToUint8Array } from "@common/utils/hexadecimal";
 
 export default function ReceiverThird() {
   const { isToFilled, toType } = useReceiver();
@@ -20,10 +21,12 @@ export default function ReceiverThird() {
   }
 
   switch (toType) {
-    case TransferToTypeEnum.thirdPartyICRC:
-      return <ReceiverManual />;
-    case TransferToTypeEnum.thidPartyScanner:
-      return <ReceiverManual />;
+    // TODO: must keep the inputs
+    // case TransferToTypeEnum.thirdPartyICRC:
+    //   return <ReceiverManual />;
+    // TODO: must show the icrc input
+    // case TransferToTypeEnum.thidPartyScanner:
+    //   return <ReceiverManual />;
     case TransferToTypeEnum.thirdPartyContact:
       return <ContactBookReceiver />;
     case TransferToTypeEnum.thirdPartyService:
@@ -36,7 +39,25 @@ export default function ReceiverThird() {
 function ICRCInput() {
   const { t } = useTranslation();
   const [inputValue, setInputValue] = useState("");
-  const { setTransferState } = useTransfer();
+  const { setTransferState, transferState } = useTransfer();
+
+  useEffect(() => {
+    const isICRC = transferState.toType === TransferToTypeEnum.thirdPartyICRC;
+    const isScanner = transferState.toType === TransferToTypeEnum.thidPartyScanner;
+    const isNotEmpty = transferState.toPrincipal && transferState.toSubAccount;
+
+    if ((isICRC || isScanner) && isNotEmpty) {
+      const principal = transferState.toPrincipal;
+      const subAccountId = transferState.toSubAccount;
+
+      const encodedICRCIdentifier = encodeIcrcAccount({
+        owner: Principal.fromText(principal),
+        subaccount: hexToUint8Array(subAccountId),
+      });
+
+      setInputValue(encodedICRCIdentifier);
+    }
+  }, []);
 
   return (
     <div className="max-w-[21rem] mx-auto py-[1rem]">

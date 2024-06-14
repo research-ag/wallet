@@ -50,7 +50,7 @@ export const NewServiceRow = (props: NewServiceRowProps) => {
         />
       </td>
       <td>
-        <div className="flex flex-row justify-around items-center">
+        <div className="flex flex-row items-center justify-around">
           <CheckIcon onClick={onSave} className="w-4 h-4 opacity-50 cursor-pointer stroke-slate-color-success" />
           <CloseIcon onClick={onClose} className="w-5 h-5 opacity-50 cursor-pointer stroke-slate-color-error" />
         </div>
@@ -65,7 +65,6 @@ export const NewServiceRow = (props: NewServiceRowProps) => {
   }
   async function onSave() {
     const res = await saveService();
-    console.log(res);
 
     if (res.success) onClose();
     else {

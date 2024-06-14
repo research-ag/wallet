@@ -10,9 +10,8 @@ function Transfer() {
 
   return (
     <div className="">
-      <TransferDetailsConfirmation />
       {view === TransferView.SEND_FORM && <TransferForm />}
-      {view === TransferView.CONFIRM_DETAIL && <div>Confirm Detail</div>}
+      {view === TransferView.CONFIRM_DETAIL && <TransferDetailsConfirmation />}
       {view === TransferView.SENDER_QR_SCANNER && <SenderQRScanner />}
       {view === TransferView.RECEIVER_QR_SCANNER && <ReceiverQRScanner />}
     </div>

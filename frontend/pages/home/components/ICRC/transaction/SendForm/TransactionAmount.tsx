@@ -42,6 +42,7 @@ export default function TransactionAmount() {
           </button>
         )}
       </div>
+
       {receiver.serviceSubAccount.servicePrincipal && (
         <p
           className={`text-sm text-start ${
@@ -55,6 +56,7 @@ export default function TransactionAmount() {
           Number(receiver.serviceSubAccount.assetShortDecimal || "8"),
         )} ${receiver.serviceSubAccount.assetSymbol || ""}`}</p>
       )}
+
       {sender.senderOption === TransactionSenderOptionEnum.Values.service && (
         <p
           className={`text-sm text-start ${
@@ -94,6 +96,7 @@ export default function TransactionAmount() {
           </p>
         </div>
       </div>
+
       {receiver.serviceSubAccount.servicePrincipal && (
         <div className="flex items-center justify-end w-full">
           <div className="flex">
@@ -109,6 +112,7 @@ export default function TransactionAmount() {
           </div>
         </div>
       )}
+
       {sender.senderOption === TransactionSenderOptionEnum.Values.service && (
         <div className="flex items-center justify-end w-full">
           <div className="flex">

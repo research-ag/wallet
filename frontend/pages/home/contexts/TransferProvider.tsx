@@ -9,7 +9,8 @@ type TransferProviderProps = {
 // sender: own, allowance (contact book, inputs, scanner) and services
 export enum TransferFromTypeEnum {
   own = "OWN",
-  allowance = "ALLOWANCE",
+  allowanceContactBook = "ALLOWANCE_CONTACT_BOOK",
+  allowanceManual = "ALLOWANCE_MANUAL",
   service = "SERVICE",
 }
 
@@ -58,6 +59,7 @@ export default function TransferProvider({ children }: TransferProviderProps) {
   });
 
   console.log("transferState: ", transferState);
+
   const value = { transferState, setTransferState };
   return <TransferContext.Provider value={{ ...value }}>{children}</TransferContext.Provider>;
 }
