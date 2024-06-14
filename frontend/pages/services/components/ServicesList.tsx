@@ -88,11 +88,11 @@ export default function ServicesList({ services, newService, setNewService }: Se
                             <div className="flex flex-row justify-start items-center">
                               <CheckIcon
                                 onClick={onSave}
-                                className="w-4 h-4 opacity-50 cursor-pointer stroke-slate-color-success"
+                                className="w-4 h-4 opacity-80 cursor-pointer dark:stroke-secondary-color-1-light stroke-secondary-color-2"
                               />
                               <CloseIcon
                                 onClick={onClose}
-                                className="w-5 h-5 opacity-50 cursor-pointer stroke-slate-color-error"
+                                className="w-5 h-5 opacity-80 cursor-pointer dark:stroke-secondary-color-1-light stroke-secondary-color-2"
                               />
                             </div>
                           }

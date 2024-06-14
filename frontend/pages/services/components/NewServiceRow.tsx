@@ -59,8 +59,14 @@ export const NewServiceRow = (props: NewServiceRowProps) => {
           <LoadingLoader />
         ) : (
           <div className="flex flex-row justify-center items-center gap-2">
-            <CheckIcon onClick={onSave} className="w-4 h-4 opacity-50 cursor-pointer stroke-slate-color-success" />
-            <CloseIcon onClick={onClose} className="w-5 h-5 opacity-50 cursor-pointer stroke-slate-color-error" />
+            <CheckIcon
+              onClick={onSave}
+              className="w-4 h-4 opacity-80 cursor-pointer dark:stroke-secondary-color-1-light stroke-secondary-color-2"
+            />
+            <CloseIcon
+              onClick={onClose}
+              className="w-5 h-5 opacity-80 cursor-pointer dark:stroke-secondary-color-1-light stroke-secondary-color-2"
+            />
           </div>
         )}
       </td>
