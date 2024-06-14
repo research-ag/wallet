@@ -7,7 +7,7 @@ import { BasicSwitch } from "@components/switch";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { ServiceAsset } from "@redux/models/ServiceModels";
 import { clsx } from "clsx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import useServiceAsset from "../hooks/useServiceAsset";
 
@@ -29,6 +29,20 @@ export default function AssetFilter({
   const { t } = useTranslation();
   const { getAssetFromUserAssets } = useServiceAsset();
   const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState<{ symbol: string; logo: string; tokenSymbol: string }>();
+  useEffect(() => {
+    if (assetFilter.length === 1) {
+      const ast = getAssetFromUserAssets(assetFilter[0]);
+      const serviceAst = filterAssets.find((ast) => ast.principal === assetFilter[0]);
+      setSelected({
+        symbol: ast?.symbol || serviceAst?.tokenSymbol || "",
+        logo: ast?.logo || serviceAst?.logo || "",
+        tokenSymbol: ast?.tokenSymbol || serviceAst?.tokenSymbol || "",
+      });
+    } else {
+      setSelected(undefined);
+    }
+  }, [assetFilter]);
 
   return (
     <div className="flex items-center justify-center">
@@ -39,14 +53,10 @@ export default function AssetFilter({
             <div className="flex flex-row items-center justify-between w-full">
               {assetFilter.length === 0 || assetFilter.length === filterAssets.length ? (
                 <p className="text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("all")}</p>
-              ) : assetFilter.length === 1 ? (
+              ) : assetFilter.length === 1 && selected ? (
                 <div className="flex items-center justify-start gap-2 flex-start">
-                  {getAssetIcon(
-                    IconTypeEnum.Enum.FILTER,
-                    filterAssets.find((ast) => ast.tokenSymbol === assetFilter[0])?.tokenSymbol,
-                    filterAssets.find((ast) => ast.tokenSymbol === assetFilter[0])?.logo,
-                  )}
-                  <p className="text-PrimaryTextColorLight dark:text-PrimaryTextColor">{assetFilter[0]}</p>
+                  {getAssetIcon(IconTypeEnum.Enum.FILTER, selected.tokenSymbol, selected.logo)}
+                  <p className="text-PrimaryTextColorLight dark:text-PrimaryTextColor">{selected.symbol}</p>
                 </div>
               ) : (
                 <p className="text-PrimaryTextColorLight dark:text-PrimaryTextColor">{`${assetFilter.length} ${t(
@@ -95,7 +105,7 @@ export default function AssetFilter({
 
                   <CustomCheck
                     className="border-BorderColorLight dark:border-BorderColor"
-                    checked={assetFilter.includes(asset.tokenSymbol)}
+                    checked={assetFilter.includes(asset.principal)}
                   />
                 </div>
               );
@@ -114,17 +124,17 @@ export default function AssetFilter({
     if (assetFilter.length === filterAssets.length) onAssetFilterChange([]);
     else {
       const symbols = filterAssets.map((currentAsset) => {
-        return currentAsset.tokenSymbol;
+        return currentAsset.principal;
       });
       onAssetFilterChange(symbols);
     }
   }
 
   function handleSelectAsset(asset: ServiceAsset) {
-    if (assetFilter.includes(asset.tokenSymbol)) {
-      const auxSymbols = assetFilter.filter((currentAsset) => currentAsset !== asset.tokenSymbol);
+    if (assetFilter.includes(asset.principal)) {
+      const auxSymbols = assetFilter.filter((currentAsset) => currentAsset !== asset.principal);
       onAssetFilterChange(auxSymbols);
-    } else onAssetFilterChange([...assetFilter, asset.tokenSymbol]);
+    } else onAssetFilterChange([...assetFilter, asset.principal]);
   }
 
   function onCheckedChange(checked: boolean) {

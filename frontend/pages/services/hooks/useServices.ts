@@ -22,12 +22,18 @@ export default function useServices() {
       const matchSearchKey =
         srv.name.toLowerCase().includes(searchKey) || srv.principal.toLowerCase().includes(searchKey);
 
-      const auxAssets = srv.assets.map((ast) => ast.tokenSymbol);
-      const matchAssets = auxAssets.find((ast) => assetFilter.includes(ast)) ? true : false || assetFilter.length === 0;
-      return matchSearchKey && matchAssets;
+      let isChecked = true;
+      assetFilter.map((astFil) => {
+        const find = srv.assets.find((ast) => (supportedAssetsActive || ast.visible) && astFil === ast.principal);
+        if (!find) {
+          isChecked = false;
+        }
+      });
+
+      return matchSearchKey && isChecked;
     });
     setServiceList(auxServices);
-  }, [serviceSearchkey, assetFilter, services]);
+  }, [serviceSearchkey, assetFilter, services, filterAssets]);
 
   useEffect(() => {
     const auxFilterAssets = serviceAssets.filter((ast) => supportedAssetsActive || ast.visible);
@@ -35,7 +41,7 @@ export default function useServices() {
     if (!supportedAssetsActive) {
       const auxFilter: string[] = [];
       assetFilter.map((astFil) => {
-        const auxAsst = auxFilterAssets.find((auxF) => auxF.tokenSymbol === astFil);
+        const auxAsst = auxFilterAssets.find((auxF) => auxF.principal === astFil);
         if (auxAsst) auxFilter.push(astFil);
       });
       setAssetFilter(auxFilter);
