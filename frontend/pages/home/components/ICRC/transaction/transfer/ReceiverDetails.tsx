@@ -10,6 +10,7 @@ import { AvatarEmpty } from "@components/avatar";
 import { getIconSrc } from "@common/utils/icons";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { defaultSubAccount } from "@common/defaultTokens";
+import { TransferView, useTransferView } from "@pages/home/contexts/TransferViewProvider";
 
 export default function ReceiverDetails() {
   const { t } = useTranslation();
@@ -66,8 +67,8 @@ function ToServiceDisplay() {
 }
 
 function ToManualDisplay() {
-  const { transferState } = useTransfer();
-
+  const { transferState, setTransferState } = useTransfer();
+  const { setView } = useTransferView();
   return (
     <div className="relative flex px-3 py-2 border rounded-md text-black-color dark:text-secondary-color-1-light border-slate-color-success dark:bg-secondary-color-2 bg-secondary-color-1-light">
       <CloseIcon
@@ -91,14 +92,14 @@ function ToManualDisplay() {
   );
 
   function onRemoveReceiver() {
-    // TODO: clear receiver details and return to the TransferForm
-    // clearReceiverAction();
-    // setIsInspectDetailAction(false);
+    setTransferState((prev) => ({ ...prev, toPrincipal: "", toSubAccount: "" }));
+    setView(TransferView.SEND_FORM);
   }
 }
 
 function ToContactDisplay() {
-  const { transferState } = useTransfer();
+  const { transferState, setTransferState } = useTransfer();
+  const { setView } = useTransferView();
   const contacts = useAppSelector((state) => state.contacts.contacts);
 
   return (
@@ -128,7 +129,8 @@ function ToContactDisplay() {
   }
 
   function onRemoveReceiver() {
-    // TODO: clear receiver details and return to the TransferForm
+    setTransferState((prev) => ({ ...prev, toPrincipal: "", toSubAccount: "" }));
+    setView(TransferView.SEND_FORM);
   }
 }
 

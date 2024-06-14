@@ -21,7 +21,7 @@ import { Principal } from "@dfinity/principal";
 export default function TransferForm() {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
-  const { transferState } = useTransfer();
+  const { transferState, setTransferState } = useTransfer();
   const { setView } = useTransferView();
   const assets = useAppSelector((state) => state.asset.list.assets);
   const { userPrincipal, userAgent } = useAppSelector((state) => state.auth);
@@ -70,8 +70,18 @@ export default function TransferForm() {
   }
 
   function onCancel() {
+    setTransferState({
+      tokenSymbol: "",
+      fromType: TransferFromTypeEnum.own,
+      fromPrincipal: "",
+      fromSubAccount: "",
+      toType: TransferToTypeEnum.thirdPartyICRC,
+      toPrincipal: "",
+      toSubAccount: "",
+      amount: "",
+      duration: "",
+    });
     setTransactionDrawerAction(TransactionDrawer.NONE);
-    // TODO: reset state of transfer form
   }
 
   function commonValidations() {
@@ -200,21 +210,9 @@ export default function TransferForm() {
         }
       }
     }
-
-    // -------------- ALLOWANCE TO THIRD SERVICE ---------------
   }
 
   function fromServiceValidations() {
-    // -------------- SERVICE COMMON VALIDATIONS ---------------
-    //
-    // case 1: service account balance must be greater than the transaction fee
-    // -------------- SERVICE TO OWN ---------------
-    //
-    // above validations are enough
-    // No manual allowed
-    // No third icrc allowed
-    // No third scanner allowed
-    // No third contact allowed
-    // No third service allowed
+    // TODO: case 1: service account balance must be greater than the transaction fee
   }
 }

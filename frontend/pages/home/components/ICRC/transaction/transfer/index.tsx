@@ -10,7 +10,7 @@ function Transfer() {
   const { view } = useTransferView();
 
   return (
-    <div className="">
+    <div>
       {view === TransferView.SEND_FORM && <TransferForm />}
       {view === TransferView.CONFIRM_DETAIL && <TransferDetailsConfirmation />}
       {view === TransferView.SENDER_QR_SCANNER && <SenderAllowanceQRScanner />}

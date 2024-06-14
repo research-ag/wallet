@@ -19,10 +19,12 @@ import ICRCXWithdraw from "@common/libs/icrcledger/ICRCXTransfer";
 import { updateServiceAssetAmounts } from "@redux/services/ServiceReducer";
 import { getElapsedSecond } from "@common/utils/datetimeFormaters";
 import { TransferStatus, useTransferStatus } from "@pages/home/contexts/TransferStatusProvider";
+import { TransferView, useTransferView } from "@pages/home/contexts/TransferViewProvider";
 
 export default function TransferDetailsConfirmation() {
   const { t } = useTranslation();
   const { transferState, setTransferState } = useTransfer();
+  const { setView } = useTransferView();
   const { setStatus } = useTransferStatus();
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -61,8 +63,7 @@ export default function TransferDetailsConfirmation() {
   );
 
   function onBack() {
-    // clear the details amout errors
-    // return to the TransferForm
+    setView(TransferView.SEND_FORM)
   }
 
   function onTransfer() {

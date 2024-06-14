@@ -14,7 +14,6 @@ import { useTransfer } from "@pages/home/contexts/TransferProvider";
 import logger from "@/common/utils/logger";
 import { AvatarEmpty } from "@components/avatar";
 
-// SenderService
 export default function SenderServiceSelector() {
   const { t } = useTranslation();
   const { transferState, setTransferState } = useTransfer();
@@ -96,32 +95,11 @@ export default function SenderServiceSelector() {
   );
 
   function handleSelectOption(opt: Service) {
-    // TODO; verify if princSubId is required
     setTransferState((prev) => ({
       ...prev,
       fromPrincipal: opt.principal,
       fromSubAccount: princSubId,
     }));
-
-    // const ast = opt.assets.find((asst) => asst.principal === sender.asset.address);
-    // if (ast) {
-    //   setSenderServiceAction({
-    //     serviceName: opt.name,
-    //     servicePrincipal: opt.principal,
-    //     assetLogo: sender.asset.logo,
-    //     assetSymbol: sender.asset.symbol,
-    //     assetTokenSymbol: sender.asset.tokenSymbol,
-    //     assetAddress: sender.asset.address,
-    //     assetDecimal: sender.asset.decimal,
-    //     assetShortDecimal: sender.asset.shortDecimal,
-    //     assetName: sender.asset.name,
-    //     subAccountId: princSubId,
-    //     minDeposit: ast.minDeposit,
-    //     minWithdraw: ast.minWithdraw,
-    //     depositFee: ast.depositFee,
-    //     withdrawFee: ast.withdrawFee,
-    //   });
-    // }
   }
 
   function getServiceName(principal: string) {
