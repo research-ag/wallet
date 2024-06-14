@@ -56,10 +56,10 @@ export default function ServiceAssetsList({ service }: ServiceAssetsListProps) {
             <th className="p-2 text-left w-[17%] border-b border-BorderColorTwoLight dark:border-BorderColorTwo font-normal opacity-60">
               <p>{t("asset")}</p>
             </th>
-            <th className="p-2 text-left w-[15%] border-b border-BorderColorTwoLight dark:border-BorderColorTwo font-normal opacity-60">
+            <th className="p-2 text-left w-[13%] border-b border-BorderColorTwoLight dark:border-BorderColorTwo font-normal opacity-60">
               <p>{t("deposit")}</p>
             </th>
-            <th className="p-2 text-left w-[15%] border-b border-BorderColorTwoLight dark:border-BorderColorTwo font-normal opacity-60">
+            <th className="p-2 text-left w-[13%] border-b border-BorderColorTwoLight dark:border-BorderColorTwo font-normal opacity-60">
               <p>{t("credit")}</p>
             </th>
             <th className="p-2 text-left w-[18%] border-b border-BorderColorTwoLight dark:border-BorderColorTwo font-normal opacity-60">
@@ -68,7 +68,9 @@ export default function ServiceAssetsList({ service }: ServiceAssetsListProps) {
                 <p>{`${t("minimun")} | ${t("fee")}`}</p>
               </div>
             </th>
-            <th className="p-2 w-[30%] border-b border-BorderColorTwoLight dark:border-BorderColorTwo font-normal"></th>
+            <th className="p-2 w-[24%] border-b border-BorderColorTwoLight dark:border-BorderColorTwo font-normal"></th>
+            <th className="p-2 w-[5%] border-b border-BorderColorTwoLight dark:border-BorderColorTwo font-normal"></th>
+            <th className="p-2 w-[5%] border-b border-BorderColorTwoLight dark:border-BorderColorTwo font-normal"></th>
           </tr>
         </thead>
         <tbody>
@@ -92,7 +94,7 @@ export default function ServiceAssetsList({ service }: ServiceAssetsListProps) {
                   <td className="py-2 border-b border-BorderColorTwoLight dark:border-BorderColorTwo">
                     <div className="flex flex-row items-center justify-start w-full gap-4 px-2">
                       {getAssetIcon(IconTypeEnum.Enum.ASSET, ast?.tokenSymbol, asst.logo)}
-                      <p>{`${asst.tokenSymbol || ""}`}</p>
+                      <p>{`${ast?.symbol || ""}`}</p>
                     </div>
                   </td>
                   <td className="py-2 border-b border-BorderColorTwoLight dark:border-BorderColorTwo px-2">
@@ -128,7 +130,7 @@ export default function ServiceAssetsList({ service }: ServiceAssetsListProps) {
                   </td>
                   <td className="py-2 border-b border-BorderColorTwoLight dark:border-BorderColorTwo">
                     {!watchOnlyMode && (
-                      <div className="flex flex-row justify-around items-center w-full px-10">
+                      <div className="flex flex-row justify-center items-center w-full px-10 gap-2">
                         <CustomHoverCard
                           arrowFill="fill-SelectRowColor"
                           side="top"
@@ -184,44 +186,49 @@ export default function ServiceAssetsList({ service }: ServiceAssetsListProps) {
                             <p className="text-sm text-SelectRowColor">{t("notify")}</p>
                           </div>
                         </CustomHoverCard>
-                        <DropdownMenu.Root
-                          open={openMore === k}
-                          onOpenChange={(e) => {
-                            onOpenMoreChange(k, e);
-                          }}
-                        >
-                          <DropdownMenu.Trigger className="p-0">
-                            <MoreIcon className="cursor-pointer fill-PrimaryTextColorLight/70 dark:fill-PrimaryTextColor/70" />
-                          </DropdownMenu.Trigger>
-                          <DropdownMenu.Portal>
-                            <DropdownMenu.Content
-                              className=" w-[6rem] rounded-md bg-DeleteBackgroundColor !z-[999] text-PrimaryTextColorLight dark:text-PrimaryTextColor dark:border dark:border-BorderColorTwo shadow-md shadow-PrimaryColor/30 dark:shadow-black/20"
-                              sideOffset={5}
-                              align="center"
-                            >
-                              <div
-                                className="flex flex-row items-center justify-center gap-2 p-1 cursor-pointer hover:bg-TextErrorColor/20 rounded-b-md"
-                                onClick={() => {
-                                  setDeleteAsset(asst);
-                                  setOpenMore(-1);
-                                }}
-                              >
-                                <TrashIcon className="w-4 h-4 cursor-pointer fill-TextErrorColor" />
-                                <p className="text-TextErrorColor text-md">{t("delete")}</p>
-                              </div>
-                            </DropdownMenu.Content>
-                          </DropdownMenu.Portal>
-                        </DropdownMenu.Root>
                       </div>
                     )}
                   </td>
+                  <td className="">
+                    <div className="flex justify-center items-center w-full h-full">
+                      <DropdownMenu.Root
+                        open={openMore === k}
+                        onOpenChange={(e) => {
+                          onOpenMoreChange(k, e);
+                        }}
+                      >
+                        <DropdownMenu.Trigger>
+                          <MoreIcon className="w-5 h-5 cursor-pointer fill-PrimaryTextColorLight/70 dark:fill-PrimaryTextColor/70" />
+                        </DropdownMenu.Trigger>
+                        <DropdownMenu.Portal>
+                          <DropdownMenu.Content
+                            className=" w-[6rem] rounded-md bg-DeleteBackgroundColor !z-[999] text-PrimaryTextColorLight dark:text-PrimaryTextColor dark:border dark:border-BorderColorTwo shadow-md shadow-PrimaryColor/30 dark:shadow-black/20"
+                            sideOffset={5}
+                            align="center"
+                          >
+                            <div
+                              className="flex flex-row items-center justify-center gap-2 p-1 cursor-pointer hover:bg-TextErrorColor/20 rounded-b-md"
+                              onClick={() => {
+                                setDeleteAsset(asst);
+                                setOpenMore(-1);
+                              }}
+                            >
+                              <TrashIcon className="w-4 h-4 cursor-pointer fill-TextErrorColor" />
+                              <p className="text-TextErrorColor text-md">{t("delete")}</p>
+                            </div>
+                          </DropdownMenu.Content>
+                        </DropdownMenu.Portal>
+                      </DropdownMenu.Root>
+                    </div>
+                  </td>
+                  <td></td>
                 </tr>
               );
             })}
           {!watchOnlyMode && service.assets.filter((ast) => !ast.visible).length > 0 && (
             <tr>
               <td></td>
-              <td colSpan={5}>
+              <td colSpan={7}>
                 <div className="flex flex-row justify-start items-center py-2">
                   <AddServiceAsset
                     servicePrincipal={service.principal}

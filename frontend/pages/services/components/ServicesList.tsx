@@ -51,14 +51,14 @@ export default function ServicesList({ services, newService, setNewService }: Se
       <table className="w-full text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md mt-2">
         <thead className="sticky top-0 border-b border-BorderColorTwoLight dark:border-BorderColorTwo text-PrimaryTextColor/70 z-[1]">
           <tr className="text-PrimaryTextColorLight dark:text-PrimaryTextColor">
-            <th className="p-2 text-left w-[30%] bg-PrimaryColorLight dark:bg-PrimaryColor ">
+            <th className="p-2 text-left w-[35%] bg-PrimaryColorLight dark:bg-PrimaryColor ">
               <p>{t("name")}</p>
             </th>
             <th className="p-2 text-left w-[55%] bg-PrimaryColorLight dark:bg-PrimaryColor">
               <p>{"Principal"}</p>
             </th>
-            <th className="p-2 w-[12%] bg-PrimaryColorLight dark:bg-PrimaryColor"></th>
-            <th className="w-[3%] bg-PrimaryColorLight dark:bg-PrimaryColor"></th>
+            <th className="p-2 w-[5%] bg-PrimaryColorLight dark:bg-PrimaryColor"></th>
+            <th className="w-[5%] bg-PrimaryColorLight dark:bg-PrimaryColor"></th>
           </tr>
         </thead>
         <tbody>
@@ -127,13 +127,13 @@ export default function ServicesList({ services, newService, setNewService }: Se
                           }}
                         >
                           <DropdownMenu.Trigger>
-                            <MoreIcon className="cursor-pointer fill-PrimaryTextColorLight/70 dark:fill-PrimaryTextColor/70" />
+                            <MoreIcon className="w-5 h-5 cursor-pointer fill-PrimaryTextColorLight/70 dark:fill-PrimaryTextColor/70" />
                           </DropdownMenu.Trigger>
                           <DropdownMenu.Portal>
                             <DropdownMenu.Content
                               className=" w-[6rem] rounded-md bg-DeleteBackgroundColor !z-[999] text-PrimaryTextColorLight dark:text-PrimaryTextColor dark:border dark:border-BorderColorTwo shadow-md shadow-PrimaryColor/30 dark:shadow-black/20"
                               sideOffset={5}
-                              align="end"
+                              align="center"
                             >
                               <div
                                 className="flex flex-row items-center justify-center gap-2 p-1 cursor-pointer hover:bg-TextErrorColor/20 rounded-b-md"
