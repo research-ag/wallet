@@ -28,10 +28,10 @@ export default function ReceiverDetails() {
     isReceiverContactBook,
     isReceiverOwnAccount,
     isReceiverManual,
-  })
+  });
 
   return (
-    <div className="max-w-[23rem] mx-auto">
+    <div className="max-w-[23rem] mx-auto space-y-[0.5rem]">
       <p className="font-bold opacity-50 text-md text-start text-PrimaryTextColorLight dark:text-PrimaryTextColor">
         {`${t("to")} ${isReceiverService ? t("service") : ""}`}
       </p>

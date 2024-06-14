@@ -10,7 +10,7 @@ import {
 } from "@redux/transaction/TransactionActions";
 import logger from "@/common/utils/logger";
 
-export default function SenderQRScanner() {
+export default function SenderAllowanceQRScanner() {
   return (
     <QRscanner
       setQRview={onGoBack}

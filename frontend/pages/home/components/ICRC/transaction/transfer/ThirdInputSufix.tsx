@@ -10,14 +10,13 @@ import { ContactSubAccount } from "@/@types/transactions";
 import { middleTruncation } from "@common/utils/strings";
 import { AvatarEmpty } from "@components/avatar";
 import { Asset } from "@redux/models/AccountModels";
-import { TransferFromTypeEnum, TransferToTypeEnum, useTransfer } from "@pages/home/contexts/TransferProvider";
+import { TransferToTypeEnum, useTransfer } from "@pages/home/contexts/TransferProvider";
 import { Service } from "@redux/models/ServiceModels";
 import { TransferView, useTransferView } from "@pages/home/contexts/TransferViewProvider";
 import { Principal } from "@dfinity/principal";
 import { Buffer } from "buffer";
 
 export default function ThidInputSufix() {
-  const { transferState } = useTransfer();
   const contacts = useAppSelector((state) => state.contacts.contacts);
   const services = useAppSelector((state) => state.services.services);
 
@@ -93,26 +92,6 @@ function InputSufixServiceBook() {
       toType: TransferToTypeEnum.thirdPartyService,
     }));
 
-    // ReceiverServiceSelector
-    // const asst = srv.assets.find((ast) => ast.principal === sender.asset.address);
-    // if (asst) {
-    //   setReceiverServiceAction({
-    //     serviceName: srv.name,
-    //     servicePrincipal: srv.principal,
-    //     assetLogo: sender.asset.logo,
-    //     assetSymbol: sender.asset.symbol,
-    //     assetTokenSymbol: sender.asset.tokenSymbol,
-    //     assetAddress: sender.asset.address,
-    //     assetDecimal: sender.asset.decimal,
-    //     assetShortDecimal: sender.asset.shortDecimal,
-    //     assetName: sender.asset.name,
-    //     subAccountId: princSubId,
-    //     minDeposit: asst.minDeposit,
-    //     minWithdraw: asst.minWithdraw,
-    //     depositFee: asst.depositFee,
-    //     withdrawFee: asst.withdrawFee,
-    //   });
-    // }
   }
 }
 

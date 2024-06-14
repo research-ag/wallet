@@ -55,13 +55,13 @@ export default function TransferForm() {
       setIsLoading(false);
       setErrorMessage("");
 
-      // const isAllowanceContact = transferState.fromType === TransferFromTypeEnum.allowanceContactBook;
-      // const isAllowanceManual = transferState.fromType === TransferFromTypeEnum.allowanceManual;
+      const isAllowanceContact = transferState.fromType === TransferFromTypeEnum.allowanceContactBook;
+      const isAllowanceManual = transferState.fromType === TransferFromTypeEnum.allowanceManual;
 
-      // commonValidations();
-      // if (transferState.fromType === TransferFromTypeEnum.own) fromOwnSubaccountValidations();
-      // if (isAllowanceContact || isAllowanceManual) await fromAllowanceValidations();
-      // if (transferState.fromType === TransferFromTypeEnum.service) fromServiceValidations();
+      commonValidations();
+      if (transferState.fromType === TransferFromTypeEnum.own) fromOwnSubaccountValidations();
+      if (isAllowanceContact || isAllowanceManual) await fromAllowanceValidations();
+      if (transferState.fromType === TransferFromTypeEnum.service) fromServiceValidations();
 
       setView(TransferView.CONFIRM_DETAIL);
     } catch (error) {

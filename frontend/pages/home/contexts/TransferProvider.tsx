@@ -34,6 +34,8 @@ export type TransferStateType = {
   toType: TransferToTypeEnum;
   toPrincipal: string;
   toSubAccount: string;
+
+  amount: string;
 };
 
 export type TransferProviderType = {
@@ -56,6 +58,8 @@ export default function TransferProvider({ children }: TransferProviderProps) {
     toType: TransferToTypeEnum.thirdPartyICRC,
     toPrincipal: "",
     toSubAccount: "",
+    //
+    amount: "",
   });
 
   console.log("transferState: ", transferState);

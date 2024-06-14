@@ -5,7 +5,7 @@ import logger from "@/common/utils/logger";
 import { useTransfer } from "@pages/home/contexts/TransferProvider";
 import { TransferView, useTransferView } from "@pages/home/contexts/TransferViewProvider";
 
-export default function SenderQRScanner() {
+export default function SenderAllowanceQRScanner() {
   const { setView } = useTransferView();
   const { setTransferState } = useTransfer();
 
@@ -24,6 +24,7 @@ export default function SenderQRScanner() {
             fromPrincipal,
             fromSubAccount,
           }));
+
           onGoBack();
         } catch (error) {
           logger.debug(error);

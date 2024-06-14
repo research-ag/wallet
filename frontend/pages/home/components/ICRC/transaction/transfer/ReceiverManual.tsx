@@ -1,5 +1,6 @@
 import { CustomInput } from "@components/input";
 import { useTransfer } from "@pages/home/contexts/TransferProvider";
+import { isPrincipalValid, isSubAccountIdValid } from "@pages/home/helpers/validators";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -9,8 +10,13 @@ export default function ReceiverManual() {
   const { t } = useTranslation();
 
   useEffect(() => {
-    setInputValue(transferState.toSubAccount);
+    if (transferState.toSubAccount.length > 0) {
+      setInputValue(transferState.toSubAccount);
+    }
   }, []);
+
+  const principalError = !(transferState.toPrincipal === "") && !isPrincipalValid(transferState.toPrincipal);
+  const subAccountError = !(transferState.toSubAccount === "") && !isSubAccountIdValid(transferState.toSubAccount);
 
   return (
     <div className="max-w-[21rem] mx-auto py-[1rem] space-y-1">
@@ -19,7 +25,7 @@ export default function ReceiverManual() {
         value={transferState.toPrincipal}
         intent="secondary"
         placeholder={t("principal")}
-        // border={hasPrincipalError() ? "error" : "primary"}
+        border={principalError ? "error" : "primary"}
         onChange={onPrincipalChange}
       />
       <div className="w-[8rem]">
@@ -29,7 +35,7 @@ export default function ReceiverManual() {
           intent="secondary"
           placeholder={t("sub-acc")}
           onChange={onSubAccountChange}
-          // border={hasSubAccountError() ? "error" : "primary"}
+          border={subAccountError ? "error" : "primary"}
         />
       </div>
     </div>
@@ -41,18 +47,6 @@ export default function ReceiverManual() {
       ...prev,
       toPrincipal: principalValue,
     }));
-
-    // const contact: NewContact = {
-    //   ...receiver.thirdNewContact,
-    //   principal: principalValue,
-    // };
-    // setReceiverNewContactAction(contact);
-
-    // if (!validatePrincipal(principalValue)) {
-    //   setErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.receiver.principal"]);
-    // } else {
-    //   removeErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.receiver.principal"]);
-    // }
   }
 
   function onSubAccountChange(event: any) {
@@ -63,27 +57,5 @@ export default function ReceiverManual() {
       ...prev,
       toSubAccount: subAccountIndex?.startsWith("0x") ? subAccountIndex : `0x${subAccountIndex}`,
     }));
-
-    // const contact: NewContact = {
-    //   ...receiver.thirdNewContact,
-    //   subAccountId: subAccountIndex?.startsWith("0x") ? subAccountIndex : `0x${subAccountIndex}`,
-    // };
-
-    // setReceiverNewContactAction(contact);
-
-    // if (!isHexadecimalValid(subAccountIndex)) {
-    //   setErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.receiver.subaccount"]);
-    //   return;
-    // } else {
-    //   removeErrorAction(TransactionValidationErrorsEnum.Values["error.invalid.receiver.subaccount"]);
-    // }
   }
-
-  // function hasPrincipalError() {
-  //   return errors?.includes(TransactionValidationErrorsEnum.Values["error.invalid.receiver.principal"]);
-  // }
-
-  // function hasSubAccountError() {
-  //   return errors?.includes(TransactionValidationErrorsEnum.Values["error.invalid.receiver.subaccount"]);
-  // }
 }

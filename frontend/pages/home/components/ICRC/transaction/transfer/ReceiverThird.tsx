@@ -15,18 +15,9 @@ import { hexToUint8Array } from "@common/utils/hexadecimal";
 
 export default function ReceiverThird() {
   const { isToFilled, toType } = useReceiver();
-
-  if (!isToFilled) {
-    return <ICRCInput />;
-  }
+  if (!isToFilled) return <ICRCInput />;
 
   switch (toType) {
-    // TODO: must keep the inputs
-    // case TransferToTypeEnum.thirdPartyICRC:
-    //   return <ReceiverManual />;
-    // TODO: must show the icrc input
-    // case TransferToTypeEnum.thidPartyScanner:
-    //   return <ReceiverManual />;
     case TransferToTypeEnum.thirdPartyContact:
       return <ContactBookReceiver />;
     case TransferToTypeEnum.thirdPartyService:
@@ -59,6 +50,8 @@ function ICRCInput() {
     }
   }, []);
 
+  const icrcError = !(inputValue === "") && !isIcrcValid(inputValue);
+
   return (
     <div className="max-w-[21rem] mx-auto py-[1rem]">
       <CustomInput
@@ -66,7 +59,7 @@ function ICRCInput() {
         sufix={<ThidInputSufix />}
         intent="secondary"
         value={inputValue}
-        // border={hasError() ? "error" : "primary"}
+        border={icrcError ? "error" : "primary"}
         placeholder={t("icrc.account")}
         onChange={onInputChange}
       />
@@ -88,35 +81,17 @@ function ICRCInput() {
         toSubAccount,
         toType: TransferToTypeEnum.thirdPartyICRC,
       }));
-
-      // TODO: manage error cases
     } catch (error) {
       logger.debug(error);
     }
   }
 
-  // function initializeICRCIdentifier() {
-  // const principal = receiver?.thirdNewContact?.principal;
-  // const subAccountId = receiver?.thirdNewContact?.subAccountId;
-  // if (isHexadecimalValid(subAccountId) && validatePrincipal(principal)) {
-  //   const encodedICRCIdentifier = getICRCIdentifier(principal, subAccountId);
-  //   setInputValue(encodedICRCIdentifier);
-  // }
-  // }
-
-  // function hasError() {
-  //   return errors?.includes(TransactionValidationErrorsEnum.Values["invalid.receiver.identifier"]);
-  // }
-
-  // function getICRCIdentifier(principal: string, subAccountId: string) {
-  //   try {
-  //     return encodeIcrcAccount({
-  //       owner: Principal.fromText(principal),
-  //       subaccount: hexToUint8Array(subAccountId),
-  //     });
-  //   } catch (error) {
-  //     setErrorAction(TransactionValidationErrorsEnum.Values["invalid.receiver.identifier"]);
-  //     return "";
-  //   }
-  // }
+  function isIcrcValid(icrc: string) {
+    try {
+      decodeIcrcAccount(icrc);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
 }

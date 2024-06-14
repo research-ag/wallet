@@ -78,12 +78,15 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
 
     const bigintMaxAmount = bigintSenderMaxAmountBalance - bigintFee;
 
+    // case 1: no service
     if (sender.senderOption !== TransactionSenderOptionEnum.Values.service) {
       if (bigintAmount > bigintMaxAmount || bigintSenderMaxAmountBalance === BigInt(0)) {
         setErrorAction(TransactionValidationErrorsEnum.Values["error.not.enough.balance"]);
         return false;
       }
     }
+
+    // case 2: service is sender
     if (sender.senderOption === TransactionSenderOptionEnum.Values.service) {
       const bigintMinAmount = BigInt(sender.serviceSubAccount.minWithdraw);
       if (bigintMinAmount > bigintAmount) {
@@ -91,6 +94,8 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
         return false;
       }
     }
+
+    // case 3: service is receiver
     if (receiver.serviceSubAccount.servicePrincipal) {
       const bigintMinAmount = BigInt(receiver.serviceSubAccount.minDeposit);
       if (bigintMinAmount > bigintAmount) {

@@ -20,7 +20,7 @@ export default function SenderDetails() {
   const isSenderOwn = transferState.fromType === TransferFromTypeEnum.own;
 
   return (
-    <div className="max-w-[23rem] mx-auto">
+    <div className="max-w-[23rem] mx-auto space-y-[0.5rem]">
       <p className="font-bold opacity-50 text-md text-start text-PrimaryTextColorLight dark:text-PrimaryTextColor">
         {`${t("from")} ${isSenderService ? t("service") : ""}`}
       </p>
@@ -145,7 +145,10 @@ function FromAllowanceContactDisplay() {
         <AvatarEmpty title={getSubaccount().name} className="mr-2" size="large" />
       </div>
       <div className="text-start text-black-color dark:text-secondary-color-1-light">
-        <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor"> {getContact()?.name} [{getSubaccount().name}]</p>
+        <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
+          {" "}
+          {getContact()?.name} [{getSubaccount().name}]
+        </p>
         <div className="flex">
           <img src={getIconSrc(getAsset().logo, getAsset().symbol)} className="w-4 h-4 mr-2" alt="" />
           <p className="opacity-50 text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">

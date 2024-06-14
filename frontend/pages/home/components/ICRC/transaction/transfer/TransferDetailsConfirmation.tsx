@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import logger from "@/common/utils/logger";
 import SenderDetails from "./SenderDetail";
 import ReceiverDetails from "./ReceiverDetails";
-// import AmountDetails from "./AmountDetails";
+import AmountDetails from "./AmountDetails";
 
 export default function TransferDetailsConfirmation() {
   const { t } = useTranslation();
@@ -18,7 +18,7 @@ export default function TransferDetailsConfirmation() {
     <div className="space-y-[1rem] mt-[3rem]">
       <SenderDetails />
       <ReceiverDetails />
-      {/* <AmountDetails /> */}
+      <AmountDetails />
 
       <div className="flex items-center justify-end mt-6 max-w-[23rem] mx-auto">
         <p className="mr-4 text-md text-slate-color-error">{errorMessage}</p>
@@ -41,6 +41,7 @@ export default function TransferDetailsConfirmation() {
   function onTransfer() {
     // validate amout was filled
     // validate amout is more than 0
+    // validate amount is valid (decimal, numeric, no spaces, etc.)
 
     // case 1: if fromType is allowance
     if (
@@ -66,11 +67,11 @@ export default function TransferDetailsConfirmation() {
     // allowance amount assigned
     // free
     // user input amount
-    // case 1: allowance amount assigned === 0
-    // case 2: user input amount + fee <= allowance account assigned
-    // case 3: user input amount + free <= allowance account balance
-    // CASE SERVICE
-    // case 1: if receiver is service, verify cover the minimun amount deposit
+    //
+    // case 1: allowance amount assigned === 0 (allowance not assigned or expired)
+    // case 2: user input amount + fee <= allowance account assigned (allowance is not enough)
+    // case 3: user input amount + free <= allowance account balance (allowance sub account balance is not enough)
+    // case 4: (receiver service) user input amount => min deposit amount (more equal than or more than)
   }
 
   async function transferFromAllowance() {
@@ -87,8 +88,7 @@ export default function TransferDetailsConfirmation() {
 
   async function validateOwnAmount() {
     // case 1: input user amount + fee <= own subaccount balance
-    // CASE SERVICE
-    // case 3 if (receiver is service) verify cover the minimun amount deposit
+    // case 3 (receiver service) if user input amount >= min deposit amount (more equal than or more than)
   }
 
   async function transferFromOwn() {
@@ -105,8 +105,7 @@ export default function TransferDetailsConfirmation() {
 
   async function validateServiceAmount() {
     // case 1: input user amount + fee <= own subaccount balance
-    // CASE SERVICE
-    // case 1 if (sender is service) verify cover the minimun amount deposit
+    // case 2: if user input amount >= min withdraw amount (more equal than or more than)
   }
 
   async function transferFromService() {
