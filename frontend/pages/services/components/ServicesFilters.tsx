@@ -3,7 +3,7 @@ import { IconButton } from "@components/button";
 import { ReactComponent as PlusIcon } from "@assets/svg/files/plus-icon.svg";
 //
 import { memo } from "react";
-import AssetFilter from "./AssetFilter";
+import AssetFilter from "@/pages/services/components/AssetFilter";
 import { CustomInput } from "@components/input";
 import { ServiceAsset } from "@redux/models/ServiceModels";
 import { useAppSelector } from "@redux/Store";

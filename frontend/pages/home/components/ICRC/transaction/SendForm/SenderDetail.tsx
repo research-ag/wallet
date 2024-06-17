@@ -1,9 +1,9 @@
 import { useAppSelector } from "@redux/Store";
 import { useMemo } from "react";
-import SubAccountContactBook from "./SubAccountContactBook";
-import NewSender from "./NewSender";
+import SubAccountContactBook from "@/pages/home/components/ICRC/transaction/SendForm/SubAccountContactBook";
+import NewSender from "@/pages/home/components/ICRC/transaction/SendForm/NewSender";
 import { useTranslation } from "react-i18next";
-import ServiceTransferInfo from "./ServiceTransferInfo";
+import ServiceTransferInfo from "@/pages/home/components/ICRC/transaction/SendForm/ServiceTransferInfo";
 
 export default function SenderDetail() {
   const { t } = useTranslation();

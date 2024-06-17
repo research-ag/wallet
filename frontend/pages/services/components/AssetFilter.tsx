@@ -9,7 +9,7 @@ import { ServiceAsset } from "@redux/models/ServiceModels";
 import { clsx } from "clsx";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import useServiceAsset from "../hooks/useServiceAsset";
+import useServiceAsset from "@/pages/services/hooks/useServiceAsset";
 
 interface AssetFilterProps {
   assetFilter: string[];
@@ -70,7 +70,7 @@ export default function AssetFilter({
         </DropdownMenu.Trigger>
         <DropdownMenu.Portal>
           <DropdownMenu.Content className={contentContainerStyles} sideOffset={2} align="end">
-            <div className="flex flex-row justify-between items-center w-full px-3 py-2 hover:bg-secondary-color-1-light hover:dark:bg-HoverColor">
+            <div className="flex flex-row items-center justify-between w-full px-3 py-2 hover:bg-secondary-color-1-light hover:dark:bg-HoverColor">
               <p>{t("supported.assets")}</p>
               <BasicSwitch checked={supportedAssetsActive} onChange={onCheckedChange} />
             </div>

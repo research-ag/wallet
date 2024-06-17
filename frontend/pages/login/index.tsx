@@ -6,7 +6,7 @@ import { ReactComponent as LoginLogoIcon } from "@/assets/svg/files/login-logo.s
 import { ThemeHook } from "@hooks/themeHook";
 import { Fragment, useEffect } from "react";
 import { ThemesEnum } from "@/common/const";
-import AuthMethods from "./components/AuthMethods";
+import AuthMethods from "@/pages/login/components/AuthMethods";
 import { DB_LOCATION_AUTH } from "@pages/components/topbar/dbLocationModal";
 import { db, DB_Type } from "@/database/db";
 import { useAppDispatch } from "@redux/Store";

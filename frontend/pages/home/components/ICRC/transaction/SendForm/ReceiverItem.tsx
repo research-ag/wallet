@@ -1,6 +1,6 @@
-import ReceiverType from "./ReceiverType";
-import ReceiverOwner from "./ReceiverOwner";
-import ReceiverThird from "./ReceiverThird";
+import ReceiverType from "@/pages/home/components/ICRC/transaction/SendForm/ReceiverType";
+import ReceiverOwner from "@/pages/home/components/ICRC/transaction/SendForm/ReceiverOwner";
+import ReceiverThird from "@/pages/home/components/ICRC/transaction/SendForm/ReceiverThird";
 import { useAppSelector } from "@redux/Store";
 import { clearReceiverAction, setReceiverOptionAction } from "@redux/transaction/TransactionActions";
 import { ReactComponent as DownAmountIcon } from "@assets/svg/files/down-blue-arrow.svg";

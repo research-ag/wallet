@@ -1,8 +1,8 @@
 import { BasicSwitch } from "@components/switch";
 import { useTranslation } from "react-i18next";
 import { ReactComponent as QRScanIcon } from "@assets/svg/files/qr.svg";
-import { AllowanceContactBook } from "./AllowanceContactBook";
-import SenderNewContact from "./SenderNewContact";
+import { AllowanceContactBook } from "@/pages/home/components/ICRC/transaction/SendForm/AllowanceContactBook";
+import SenderNewContact from "@/pages/home/components/ICRC/transaction/SendForm/SenderNewContact";
 import {
   clearSenderAction,
   setIsNewSenderAction,

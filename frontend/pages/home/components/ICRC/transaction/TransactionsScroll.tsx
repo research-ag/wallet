@@ -1,4 +1,4 @@
-import TransactionsTable from "./TransactionsTable";
+import TransactionsTable from "@/pages/home/components/ICRC/transaction/TransactionsTable";
 import { useAppSelector } from "@redux/Store";
 import { deChunkTransactions } from "@pages/home/helpers/mappers";
 import { useEffect, useRef, useState } from "react";

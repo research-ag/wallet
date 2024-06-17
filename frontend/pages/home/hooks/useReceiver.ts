@@ -1,4 +1,4 @@
-import { useTransfer } from "../contexts/TransferProvider";
+import { useTransfer } from "@/pages/home/contexts/TransferProvider";
 
 export default function useReceiver() {
   const { transferState } = useTransfer();

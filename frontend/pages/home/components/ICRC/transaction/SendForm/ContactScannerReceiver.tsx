@@ -4,7 +4,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { removeErrorAction, setErrorAction, setReceiverNewContactAction } from "@redux/transaction/TransactionActions";
 import { useTranslation } from "react-i18next";
 import { decodeIcrcAccount, encodeIcrcAccount } from "@dfinity/ledger-icrc";
-import ContactSuffix from "./ContactSuffix";
+import ContactSuffix from "@/pages/home/components/ICRC/transaction/SendForm/ContactSuffix";
 import { TransactionValidationErrorsEnum } from "@/@types/transactions";
 import { useAppSelector } from "@redux/Store";
 import { validatePrincipal } from "@/common/utils/definityIdentity";

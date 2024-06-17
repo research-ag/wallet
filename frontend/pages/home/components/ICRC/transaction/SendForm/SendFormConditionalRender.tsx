@@ -1,10 +1,10 @@
 import useSend from "@pages/home/hooks/useSend";
 import { useAppSelector } from "@redux/Store";
 import { Dispatch, SetStateAction, useMemo } from "react";
-import ConfirmDetail from "./ConfirmDetail";
+import ConfirmDetail from "@/pages/home/components/ICRC/transaction/SendForm/ConfirmDetail";
 import { TransactionScannerOptionEnum } from "@/@types/transactions";
-import SenderQRScanner from "./SenderQRScanner";
-import ReceiverQRScanner from "./ReceiverQRScanner";
+import SenderQRScanner from "@/pages/home/components/ICRC/transaction/SendForm/SenderQRScanner";
+import ReceiverQRScanner from "@/pages/home/components/ICRC/transaction/SendForm/ReceiverQRScanner";
 
 interface SendFormConditionalRenderProps {
   showConfirmationModal: Dispatch<SetStateAction<boolean>>;

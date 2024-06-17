@@ -3,7 +3,7 @@ import { ReactComponent as CheckIcon } from "@assets/svg/files/edit-check.svg";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 //
 import { CustomInput } from "@components/input";
-import useNewServices from "../hooks/useNewService";
+import useNewServices from "@/pages/services/hooks/useNewService";
 import { useState } from "react";
 import { LoadingLoader } from "@components/loader";
 

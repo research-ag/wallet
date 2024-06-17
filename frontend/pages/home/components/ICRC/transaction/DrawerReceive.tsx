@@ -1,4 +1,4 @@
-import { GeneralHook } from "../../../hooks/generalHook";
+import { GeneralHook } from "@/pages/home/hooks/generalHook";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
 import QRCode from "react-qr-code";

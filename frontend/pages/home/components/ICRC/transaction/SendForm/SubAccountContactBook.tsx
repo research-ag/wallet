@@ -1,7 +1,7 @@
 import { useAppSelector } from "@redux/Store";
 import { useEffect, useMemo, useState } from "react";
 import useSend from "@pages/home/hooks/useSend";
-import OwnSubAccountCard from "./OwnSubAccountCard";
+import OwnSubAccountCard from "@/pages/home/components/ICRC/transaction/SendForm/OwnSubAccountCard";
 
 export default function SubAccountContactBook() {
   const [balance, setBalance] = useState("");

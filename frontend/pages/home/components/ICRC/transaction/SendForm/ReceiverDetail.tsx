@@ -1,11 +1,11 @@
 import { useAppSelector } from "@redux/Store";
 import { useTranslation } from "react-i18next";
 import useSend from "@pages/home/hooks/useSend";
-import OwnSubAccountCard from "./OwnSubAccountCard";
-import ReceiverThirdPartyCard from "./ReceiverThirdPartyCard";
+import OwnSubAccountCard from "@/pages/home/components/ICRC/transaction/SendForm/OwnSubAccountCard";
+import ReceiverThirdPartyCard from "@/pages/home/components/ICRC/transaction/SendForm/ReceiverThirdPartyCard";
 import { useMemo } from "react";
 import { toFullDecimal } from "@common/utils/amount";
-import ServiceTransferInfo from "./ServiceTransferInfo";
+import ServiceTransferInfo from "@/pages/home/components/ICRC/transaction/SendForm/ServiceTransferInfo";
 
 export default function ReceiverDetail() {
   const { t } = useTranslation();

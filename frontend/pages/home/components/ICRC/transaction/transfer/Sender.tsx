@@ -4,9 +4,9 @@ import * as RadioGroup from "@radix-ui/react-radio-group";
 import { useAppSelector } from "@redux/Store";
 import { clsx } from "clsx";
 import { useTranslation } from "react-i18next";
-import OwnSenderAccountSelector from "./OwnSenderAccountSelector";
-import AllowanceSenderAccountSelector from "./AllowanceSenderAccountSelector";
-import SenderServiceSelector from "./ServiceSenderSelector";
+import OwnSenderAccountSelector from "@/pages/home/components/ICRC/transaction/transfer/OwnSenderAccountSelector";
+import AllowanceSenderAccountSelector from "@/pages/home/components/ICRC/transaction/transfer/AllowanceSenderAccountSelector";
+import SenderServiceSelector from "@/pages/home/components/ICRC/transaction/transfer/ServiceSenderSelector";
 
 export default function Sender() {
   const { t } = useTranslation();

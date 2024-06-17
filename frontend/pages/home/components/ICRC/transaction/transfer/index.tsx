@@ -1,10 +1,10 @@
 import TransferWrapper from "@pages/home/wrappers/TransferWrapper";
-import TransferForm from "./TransferForm";
+import TransferForm from "@/pages/home/components/ICRC/transaction/transfer/TransferForm";
 import { TransferView, useTransferView } from "@pages/home/contexts/TransferViewProvider";
-import ReceiverQRScanner from "./ReceiverQRScanner";
-import TransferDetailsConfirmation from "./TransferDetailsConfirmation";
-import SenderAllowanceQRScanner from "./SenderAllowanceQRScanner";
-import TransferStatusModal from "./TransferStatusModal";
+import ReceiverQRScanner from "@/pages/home/components/ICRC/transaction/transfer/ReceiverQRScanner";
+import TransferDetailsConfirmation from "@/pages/home/components/ICRC/transaction/transfer/TransferDetailsConfirmation";
+import SenderAllowanceQRScanner from "@/pages/home/components/ICRC/transaction/transfer/SenderAllowanceQRScanner";
+import TransferStatusModal from "@/pages/home/components/ICRC/transaction/transfer/TransferStatusModal";
 
 function Transfer() {
   const { view } = useTransferView();

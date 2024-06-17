@@ -1,6 +1,6 @@
 import { CheckIcon, Cross1Icon, Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
 import { Dispatch, SetStateAction } from "react";
-import { WatchOnlyItem } from "./WatchOnlyInput";
+import { WatchOnlyItem } from "@/pages/login/components/WatchOnlyInput";
 import clsx from "clsx";
 import { CustomInput } from "@components/input";
 import { EditWatchOnlyItem } from "@pages/components/topbar/WatchOnlyRecords";

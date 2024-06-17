@@ -10,7 +10,7 @@ import DrawerReceive from "@/pages/home/components/ICRC/transaction/DrawerReceiv
 // eslint-disable-next-line
 import clsx from "clsx";
 import { useMemo } from "react";
-import Transfer from "./transfer";
+import Transfer from "@/pages/home/components/ICRC/transaction/transfer";
 
 const selectedButton = "border-AccpetButtonColor";
 const unselectedButton = "text-PrimaryTextColorLight dark:text-PrimaryTextColor";

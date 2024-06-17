@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from "react";
-import { TransferFromTypeEnum, useTransfer } from "../contexts/TransferProvider";
+import { TransferFromTypeEnum, useTransfer } from "@pages/home/contexts/TransferProvider";
 import { useAppSelector } from "@redux/Store";
 import logger from "@/common/utils/logger";
 import { toFullDecimal } from "@common/utils/amount";

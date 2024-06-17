@@ -3,9 +3,9 @@ import { BasicSwitch } from "@components/switch";
 import { TransferFromTypeEnum, TransferToTypeEnum, useTransfer } from "@pages/home/contexts/TransferProvider";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import ReceiverThird from "./ReceiverThird";
-import ReceiverManual from "./ReceiverManual";
-import ReceiverOwner from "./ReceiverOwner";
+import ReceiverThird from "@/pages/home/components/ICRC/transaction/transfer/ReceiverThird";
+import ReceiverManual from "@/pages/home/components/ICRC/transaction/transfer/ReceiverManual";
+import ReceiverOwner from "@/pages/home/components/ICRC/transaction/transfer/ReceiverOwner";
 
 export default function Receiver() {
   const { t } = useTranslation();

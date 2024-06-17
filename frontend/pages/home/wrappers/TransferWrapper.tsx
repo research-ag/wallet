@@ -2,8 +2,8 @@ import TransferProvider, { useTransfer } from "@pages/home/contexts/TransferProv
 import { useAppSelector } from "@redux/Store";
 import { useEffect } from "react";
 import logger from "@/common/utils/logger";
-import TransferViewProvider from "../contexts/TransferViewProvider";
-import TransferStatusProvider from "../contexts/TransferStatusProvider";
+import TransferViewProvider from "@/pages/home/contexts/TransferViewProvider";
+import TransferStatusProvider from "@/pages/home/contexts/TransferStatusProvider";
 
 function TransferIntializer({ children }: { children: JSX.Element }) {
   const { userPrincipal } = useAppSelector((state) => state.auth);

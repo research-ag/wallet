@@ -13,11 +13,11 @@ import { Service } from "@redux/models/ServiceModels";
 import { clsx } from "clsx";
 import { Fragment, useState } from "react";
 import { useTranslation } from "react-i18next";
-import useServicesList from "../hooks/useServiceList";
-import ServiceAssetsList from "./ServiceAssetsList";
+import useServicesList from "@/pages/services/hooks/useServiceList";
+import ServiceAssetsList from "@/pages/services/components/ServiceAssetsList";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { DeleteServiceModal } from "./Modals/deleteService";
-import { NewServiceRow } from "./NewServiceRow";
+import { DeleteServiceModal } from "@/pages/services/components/Modals/deleteService";
+import { NewServiceRow } from "@/pages/services/components/NewServiceRow";
 import { useAppSelector } from "@redux/Store";
 
 interface ServicesListProps {
@@ -48,7 +48,7 @@ export default function ServicesList({ services, newService, setNewService }: Se
 
   return (
     <Fragment>
-      <table className="w-full text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md mt-2">
+      <table className="w-full mt-2 text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md">
         <thead className="sticky top-0 border-b border-BorderColorTwoLight dark:border-BorderColorTwo text-PrimaryTextColor/70 z-[1]">
           <tr className="text-PrimaryTextColorLight dark:text-PrimaryTextColor">
             <th className="p-2 text-left w-[35%] bg-PrimaryColorLight dark:bg-PrimaryColor ">
@@ -85,14 +85,14 @@ export default function ServicesList({ services, newService, setNewService }: Se
                           value={editedService.name}
                           onChange={onContactNameChange}
                           sufix={
-                            <div className="flex flex-row justify-start items-center">
+                            <div className="flex flex-row items-center justify-start">
                               <CheckIcon
                                 onClick={onSave}
-                                className="w-4 h-4 opacity-80 cursor-pointer dark:stroke-secondary-color-1-light stroke-secondary-color-2"
+                                className="w-4 h-4 cursor-pointer opacity-80 dark:stroke-secondary-color-1-light stroke-secondary-color-2"
                               />
                               <CloseIcon
                                 onClick={onClose}
-                                className="w-5 h-5 opacity-80 cursor-pointer dark:stroke-secondary-color-1-light stroke-secondary-color-2"
+                                className="w-5 h-5 cursor-pointer opacity-80 dark:stroke-secondary-color-1-light stroke-secondary-color-2"
                               />
                             </div>
                           }

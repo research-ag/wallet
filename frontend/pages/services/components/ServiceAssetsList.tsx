@@ -11,12 +11,12 @@ import { Service, ServiceAsset } from "@redux/models/ServiceModels";
 import { useTranslation } from "react-i18next";
 import CustomHoverCard from "@components/HoverCard";
 import { toFullDecimal } from "@common/utils/amount";
-import { AddServiceAsset } from "./AddServiceAsset";
-import useServiceAsset from "../hooks/useServiceAsset";
+import { AddServiceAsset } from "@/pages/services/components/AddServiceAsset";
+import useServiceAsset from "@/pages/services/hooks/useServiceAsset";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { Fragment, useState } from "react";
-import { DeleteAssetServiceModal } from "./Modals/deleteAssetService";
-import { NotifyAssetModal } from "./Modals/notifyAsset";
+import { DeleteAssetServiceModal } from "@/pages/services/components/Modals/deleteAssetService";
+import { NotifyAssetModal } from "@/pages/services/components/Modals/notifyAsset";
 import { LoadingLoader } from "@components/loader";
 import { assetServiceToServiceSubAccount } from "@common/utils/service";
 import { useAppSelector } from "@redux/Store";
@@ -51,7 +51,7 @@ export default function ServiceAssetsList({ service }: ServiceAssetsListProps) {
     <Fragment>
       <table className="w-full text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md ">
         <thead>
-          <tr className="text-PrimaryTextColorLight dark:text-PrimaryTextColor border-b border-BorderColorTwoLight dark:border-BorderColorTwo ">
+          <tr className="border-b text-PrimaryTextColorLight dark:text-PrimaryTextColor border-BorderColorTwoLight dark:border-BorderColorTwo ">
             <th className="p-2 text-left w-[5%]"></th>
             <th className="p-2 text-left w-[17%] border-b border-BorderColorTwoLight dark:border-BorderColorTwo font-normal opacity-60">
               <p>{t("asset")}</p>
@@ -63,7 +63,7 @@ export default function ServiceAssetsList({ service }: ServiceAssetsListProps) {
               <p>{t("credit")}</p>
             </th>
             <th className="p-2 text-left w-[18%] border-b border-BorderColorTwoLight dark:border-BorderColorTwo font-normal opacity-60">
-              <div className="flex flex-col justify-center items-center">
+              <div className="flex flex-col items-center justify-center">
                 <p>{t("deposit")}</p>
                 <p>{`${t("minimun")} | ${t("fee")}`}</p>
               </div>
@@ -101,8 +101,8 @@ export default function ServiceAssetsList({ service }: ServiceAssetsListProps) {
                       <p>{`${ast?.symbol || asst.tokenSymbol}`}</p>
                     </div>
                   </td>
-                  <td className="py-2 border-b border-BorderColorTwoLight dark:border-BorderColorTwo px-2">
-                    <div className="flex flex-row justify-start items-center w-full">
+                  <td className="px-2 py-2 border-b border-BorderColorTwoLight dark:border-BorderColorTwo">
+                    <div className="flex flex-row items-center justify-start w-full">
                       <p>{`${toFullDecimal(
                         asst.balance,
                         Number(asst.decimal || "8"),
@@ -110,8 +110,8 @@ export default function ServiceAssetsList({ service }: ServiceAssetsListProps) {
                       )}`}</p>
                     </div>
                   </td>
-                  <td className="py-2 border-b border-BorderColorTwoLight dark:border-BorderColorTwo px-2">
-                    <div className="flex flex-row justify-start items-center w-full">
+                  <td className="px-2 py-2 border-b border-BorderColorTwoLight dark:border-BorderColorTwo">
+                    <div className="flex flex-row items-center justify-start w-full">
                       <p>{`${toFullDecimal(
                         asst.credit,
                         Number(asst.decimal || "8"),
@@ -119,8 +119,8 @@ export default function ServiceAssetsList({ service }: ServiceAssetsListProps) {
                       )}`}</p>
                     </div>
                   </td>
-                  <td className="py-2 border-b border-BorderColorTwoLight dark:border-BorderColorTwo px-2">
-                    <div className="flex flex-row justify-center items-center w-full">
+                  <td className="px-2 py-2 border-b border-BorderColorTwoLight dark:border-BorderColorTwo">
+                    <div className="flex flex-row items-center justify-center w-full">
                       <p>{`${toFullDecimal(
                         asst.minDeposit,
                         Number(asst.decimal || "8"),
@@ -134,7 +134,7 @@ export default function ServiceAssetsList({ service }: ServiceAssetsListProps) {
                   </td>
                   <td className="py-2 border-b border-BorderColorTwoLight dark:border-BorderColorTwo">
                     {!watchOnlyMode && (
-                      <div className="flex flex-row justify-center items-center w-full px-10 gap-2">
+                      <div className="flex flex-row items-center justify-center w-full gap-2 px-10">
                         <CustomHoverCard
                           arrowFill="fill-SelectRowColor"
                           side="top"
@@ -143,13 +143,13 @@ export default function ServiceAssetsList({ service }: ServiceAssetsListProps) {
                               onClick={() => {
                                 onActionClic(ast, asst, true);
                               }}
-                              className="flex w-10 h-10 justify-center items-center rounded-md bg-SelectRowColor p-0"
+                              className="flex items-center justify-center w-10 h-10 p-0 rounded-md bg-SelectRowColor"
                             >
                               <DepositIcon />
                             </button>
                           }
                         >
-                          <div className=" p-1 rounded-md border border-SelectRowColor bg-SecondaryColorLight dark:bg-SecondaryColor">
+                          <div className="p-1 border rounded-md border-SelectRowColor bg-SecondaryColorLight dark:bg-SecondaryColor">
                             <p className="text-sm text-SelectRowColor">{t("deposit")}</p>
                           </div>
                         </CustomHoverCard>
@@ -162,13 +162,13 @@ export default function ServiceAssetsList({ service }: ServiceAssetsListProps) {
                               onClick={() => {
                                 onActionClic(ast, asst, false);
                               }}
-                              className="flex w-10 h-10 justify-center items-center rounded-md bg-SelectRowColor p-0"
+                              className="flex items-center justify-center w-10 h-10 p-0 rounded-md bg-SelectRowColor"
                             >
                               <WithdrawIcon />
                             </button>
                           }
                         >
-                          <div className=" p-1 rounded-md border border-SelectRowColor bg-SecondaryColorLight dark:bg-SecondaryColor">
+                          <div className="p-1 border rounded-md border-SelectRowColor bg-SecondaryColorLight dark:bg-SecondaryColor">
                             <p className="text-sm text-SelectRowColor">{t("withdraw")}</p>
                           </div>
                         </CustomHoverCard>
@@ -177,7 +177,7 @@ export default function ServiceAssetsList({ service }: ServiceAssetsListProps) {
                           side="top"
                           trigger={
                             <button
-                              className="flex w-10 h-10 justify-center items-center rounded-md bg-SelectRowColor p-0"
+                              className="flex items-center justify-center w-10 h-10 p-0 rounded-md bg-SelectRowColor"
                               onClick={() => {
                                 onNotify(asst.principal, asst, k);
                               }}
@@ -186,7 +186,7 @@ export default function ServiceAssetsList({ service }: ServiceAssetsListProps) {
                             </button>
                           }
                         >
-                          <div className=" p-1 rounded-md border border-SelectRowColor bg-SecondaryColorLight dark:bg-SecondaryColor">
+                          <div className="p-1 border rounded-md border-SelectRowColor bg-SecondaryColorLight dark:bg-SecondaryColor">
                             <p className="text-sm text-SelectRowColor">{t("notify")}</p>
                           </div>
                         </CustomHoverCard>
@@ -194,7 +194,7 @@ export default function ServiceAssetsList({ service }: ServiceAssetsListProps) {
                     )}
                   </td>
                   <td className="">
-                    <div className="flex justify-center items-center w-full h-full">
+                    <div className="flex items-center justify-center w-full h-full">
                       <DropdownMenu.Root
                         open={openMore === k}
                         onOpenChange={(e) => {
@@ -233,7 +233,7 @@ export default function ServiceAssetsList({ service }: ServiceAssetsListProps) {
             <tr>
               <td></td>
               <td colSpan={7}>
-                <div className="flex flex-row justify-start items-center py-2">
+                <div className="flex flex-row items-center justify-start py-2">
                   <AddServiceAsset
                     servicePrincipal={service.principal}
                     assets={service.assets.filter((ast) => !ast.visible)}

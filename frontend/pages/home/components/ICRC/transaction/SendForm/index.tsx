@@ -1,6 +1,6 @@
-import SenderItem from "./SenderItem";
+import SenderItem from "@/pages/home/components/ICRC/transaction/SendForm/SenderItem";
 import { ReactComponent as DownAmountIcon } from "@assets/svg/files/down-blue-arrow.svg";
-import ReceiverItem from "./ReceiverItem";
+import ReceiverItem from "@/pages/home/components/ICRC/transaction/SendForm/ReceiverItem";
 import {
   removeErrorAction,
   resetSendStateAction,
@@ -11,7 +11,7 @@ import {
 } from "@redux/transaction/TransactionActions";
 import { BasicButton } from "@components/button";
 import useSend from "@pages/home/hooks/useSend";
-import SenderAsset from "./SenderAsset";
+import SenderAsset from "@/pages/home/components/ICRC/transaction/SendForm/SenderAsset";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "@redux/Store";
 import { TransactionDrawer, TransactionValidationErrorsEnum, transactionErrors } from "@/@types/transactions";

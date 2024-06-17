@@ -8,7 +8,7 @@ import { useMemo } from "react";
 import { AvatarEmpty } from "@components/avatar";
 import useSend from "@pages/home/hooks/useSend";
 import { middleTruncation } from "@/common/utils/strings";
-import { ReceiverServiceSelector } from "./ReceiverServiceSelector";
+import { ReceiverServiceSelector } from "@/pages/home/components/ICRC/transaction/SendForm/ReceiverServiceSelector";
 import { Asset } from "@redux/models/AccountModels";
 
 export default function ContactSuffix() {

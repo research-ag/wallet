@@ -2,7 +2,7 @@ import Menu from "@pages/components/Menu";
 import ServicesFilters from "@/pages/services/components/ServicesFilters";
 import ServicesList from "@/pages/services//components/ServicesList";
 import { useCallback } from "react";
-import useServices from "./hooks/useServices";
+import useServices from "@/pages/services/hooks/useServices";
 import SendReceiveDrawer from "@pages/home/components/ICRC/transaction/SendReceiveDrawer";
 
 export default function Services() {
@@ -24,7 +24,7 @@ export default function Services() {
 
   return (
     <div className="flex flex-col w-full pt-[1rem] px-[2.25rem]">
-      <div className="flex flex-col justify-start items-start w-full">
+      <div className="flex flex-col items-start justify-start w-full">
         <Menu />
         <ServicesFilters
           onServiceKeyChange={onServiceKeyChange}

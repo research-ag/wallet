@@ -1,7 +1,7 @@
 import { BasicButton } from "@components/button";
-import SenderDetail from "./SenderDetail";
-import ReceiverDetail from "./ReceiverDetail";
-import TransactionAmount from "./TransactionAmount";
+import SenderDetail from "@/pages/home/components/ICRC/transaction/SendForm/SenderDetail";
+import ReceiverDetail from "@/pages/home/components/ICRC/transaction/SendForm/ReceiverDetail";
+import TransactionAmount from "@/pages/home/components/ICRC/transaction/SendForm/TransactionAmount";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { Dispatch, SetStateAction } from "react";
 import useSend from "@pages/home/hooks/useSend";

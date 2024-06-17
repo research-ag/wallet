@@ -3,7 +3,7 @@ import { AccountIdentifier, SubAccount as SubAccountNNS } from "@dfinity/ledger-
 import { Principal } from "@dfinity/principal";
 import { GetAllTransactionsICPParams } from "@/@types/assets";
 import { hexToUint8Array } from "@common/utils/hexadecimal";
-import { formatckBTCTransaccion, formatIcpTransaccion } from "./mappers";
+import { formatckBTCTransaccion, formatIcpTransaccion } from "@/pages/home/helpers/mappers";
 import { Actor } from "@dfinity/agent";
 import { _SERVICE as LedgerActor } from "@candid/IcrcIndex/icrc_index";
 import { idlFactory as LedgerFactory } from "@candid/IcrcIndex/icrc_index.idl";

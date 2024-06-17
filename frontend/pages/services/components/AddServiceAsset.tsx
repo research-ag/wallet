@@ -12,8 +12,8 @@ import { ServiceAsset } from "@redux/models/ServiceModels";
 import { clsx } from "clsx";
 import { ChangeEvent, Fragment, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { AddAssetWarning } from "./Modals/addAssetWarning";
-import useServiceAsset from "../hooks/useServiceAsset";
+import { AddAssetWarning } from "@/pages/services/components/Modals/addAssetWarning";
+import useServiceAsset from "@/pages/services/hooks/useServiceAsset";
 import { CustomInput } from "@components/input";
 
 interface AddServiceassetProps {
@@ -54,14 +54,14 @@ export const AddServiceAsset = (props: AddServiceassetProps) => {
     <Fragment>
       <DropdownMenu.Root open={open} onOpenChange={onOpenChange}>
         <DropdownMenu.Trigger asChild>
-          <button className="flex flex-row px-2 py-1 gap-1 justify-center items-center rounded-md bg-SelectRowColor">
+          <button className="flex flex-row items-center justify-center gap-1 px-2 py-1 rounded-md bg-SelectRowColor">
             <PlusIcon className="w-4 h-4" />
             <p className="text-PrimaryTextColor">{t("asset")}</p>
           </button>
         </DropdownMenu.Trigger>
         <DropdownMenu.Portal>
           <DropdownMenu.Content className={contentContainerStyles} sideOffset={5} side="right" align="center">
-            <div className="flex justify-center items-center w-full px-3 py-2">
+            <div className="flex items-center justify-center w-full px-3 py-2">
               <CustomInput
                 sizeComp={"medium"}
                 sizeInput="medium"
@@ -73,7 +73,7 @@ export const AddServiceAsset = (props: AddServiceassetProps) => {
                 compInClass="bg-white dark:bg-SecondaryColor"
               />
             </div>
-            <div className="flex flex-col justify-start items-center w-full rounded-lg bg-PrimaryColorLight dark:bg-SecondaryColor">
+            <div className="flex flex-col items-center justify-start w-full rounded-lg bg-PrimaryColorLight dark:bg-SecondaryColor">
               {assetsToShow.length > 0 && (
                 <div
                   onClick={handleSelectAll}
@@ -108,14 +108,14 @@ export const AddServiceAsset = (props: AddServiceassetProps) => {
                   </div>
                 );
               })}
-              <div className="flex justify-end items-center w-full py-2 px-3">
+              <div className="flex items-center justify-end w-full px-3 py-2">
                 <CustomButton onClick={handleAddAssetButton} size={"small"} className="w-1/3">
                   <p>{t("add")}</p>
                 </CustomButton>
               </div>
             </div>
 
-            <DropdownMenu.Arrow className="fill-BorderColorLight dark:fill-primary-color w-4 h-2" />
+            <DropdownMenu.Arrow className="w-4 h-2 fill-BorderColorLight dark:fill-primary-color" />
           </DropdownMenu.Content>
         </DropdownMenu.Portal>
       </DropdownMenu.Root>

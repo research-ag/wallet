@@ -1,8 +1,8 @@
 import { ReactComponent as DownAmountIcon } from "@assets/svg/files/down-blue-arrow.svg";
 //
-import Receiver from "./Receiver";
-import Sender from "./Sender";
-import TransferAssetSelector from "./TransferAssetSelector";
+import Receiver from "@/pages/home/components/ICRC/transaction/transfer/Receiver";
+import Sender from "@/pages/home/components/ICRC/transaction/transfer/Sender";
+import TransferAssetSelector from "@/pages/home/components/ICRC/transaction/transfer/TransferAssetSelector";
 import { useTranslation } from "react-i18next";
 import { LoadingLoader } from "@components/loader";
 import { BasicButton } from "@components/button";

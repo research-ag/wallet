@@ -1,7 +1,7 @@
 // svgs
 import { ReactComponent as ChevIcon } from "@/assets/svg/files/chev-icon.svg";
 //
-import FlagSelector from "./flagSelector";
+import FlagSelector from "@/pages/login/components/flagSelector";
 import { useState } from "react";
 
 export default function LanguageSwitcher() {

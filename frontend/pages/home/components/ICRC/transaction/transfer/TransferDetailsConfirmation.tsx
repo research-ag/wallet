@@ -3,9 +3,9 @@ import { TransferFromTypeEnum, TransferToTypeEnum, useTransfer } from "@pages/ho
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import logger from "@/common/utils/logger";
-import SenderDetails from "./SenderDetail";
-import ReceiverDetails from "./ReceiverDetails";
-import AmountDetails from "./AmountDetails";
+import SenderDetails from "@/pages/home/components/ICRC/transaction/transfer/SenderDetail";
+import ReceiverDetails from "@/pages/home/components/ICRC/transaction/transfer/ReceiverDetails";
+import AmountDetails from "@/pages/home/components/ICRC/transaction/transfer/AmountDetails";
 import { toHoleBigInt, validateAmount } from "@common/utils/amount";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { Principal } from "@dfinity/principal";

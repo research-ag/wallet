@@ -1,9 +1,9 @@
-import SenderType from "./SenderType";
-import SenderSubAccount from "./SenderSubAccount";
-import SenderAllowanceContact from "./SenderAllowanceContact";
+import SenderType from "@/pages/home/components/ICRC/transaction/SendForm/SenderType";
+import SenderSubAccount from "@/pages/home/components/ICRC/transaction/SendForm/SenderSubAccount";
+import SenderAllowanceContact from "@/pages/home/components/ICRC/transaction/SendForm/SenderAllowanceContact";
 import { useAppSelector } from "@redux/Store";
 import { TransactionSenderOptionEnum } from "@/@types/transactions";
-import SenderService from "./SenderService";
+import SenderService from "@/pages/home/components/ICRC/transaction/SendForm/SenderService";
 
 export default function SenderItem() {
   const { sender } = useAppSelector((state) => state.transaction);

@@ -9,7 +9,7 @@ import { Principal } from "@dfinity/principal";
 import ICRC1BalanceOf from "@/common/libs/icrcledger/ICRC1BalanceOf";
 import ICRC1SupportedStandards from "@/common/libs/icrcledger/ICRC1SupportedStandards";
 import { hexToUint8Array } from "@common/utils/hexadecimal";
-import { assetMutateInitialState } from "../hooks/useAssetMutate";
+import { assetMutateInitialState } from "@/pages/home/hooks/useAssetMutate";
 
 interface DetailsParams {
   canisterId: Principal | string;

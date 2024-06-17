@@ -3,13 +3,13 @@ import logger from "@/common/utils/logger";
 import { CustomInput } from "@components/input";
 import { ChangeEvent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import ThidInputSufix from "./ThirdInputSufix";
+import ThidInputSufix from "@/pages/home/components/ICRC/transaction/transfer/ThirdInputSufix";
 import { decodeIcrcAccount, encodeIcrcAccount } from "@dfinity/ledger";
 import { subUint8ArrayToHex } from "@common/utils/unitArray";
 import { TransferToTypeEnum, useTransfer } from "@pages/home/contexts/TransferProvider";
 import useReceiver from "@pages/home/hooks/useReceiver";
-import ContactBookReceiver from "./ReceiverContactSelector";
-import ServiceBookReceiver from "./ReceiverServiceSelector";
+import ContactBookReceiver from "@/pages/home/components/ICRC/transaction/transfer/ReceiverContactSelector";
+import ServiceBookReceiver from "@/pages/home/components/ICRC/transaction/transfer/ReceiverServiceSelector";
 import { Principal } from "@dfinity/principal";
 import { hexToUint8Array } from "@common/utils/hexadecimal";
 

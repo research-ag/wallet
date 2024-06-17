@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { TransactionSenderOptionEnum } from "@/@types/transactions";
 import { validatePrincipal } from "@/common/utils/definityIdentity";
 import { Asset } from "@redux/models/AccountModels";
-import { isHexadecimalValid } from "../helpers/checkers";
+import { isHexadecimalValid } from "@pages/home/helpers/checkers";
 import { toFullDecimal } from "@common/utils/amount";
 import ICRC1Fee from "@common/libs/icrcledger/ICRC1Fee";
 import { getAllowanceDetails } from "@common/libs/icrcledger/icrcAllowance";
