@@ -820,13 +820,13 @@ export class RxdbDatabase extends IWalletDatabase {
   private async _assetsPushHandler(items: any[]): Promise<AssetRxdbDocument[]> {
     const arg = items.map(
       (x) =>
-        ({
-          ...x,
-          sortIndex: x.sortIndex,
-          updatedAt: Math.floor(Date.now() / 1000),
-          logo: extractValueFromArray(x.logo),
-          index: extractValueFromArray(x.index),
-        } as AssetRxdbDocument),
+      ({
+        ...x,
+        sortIndex: x.sortIndex,
+        updatedAt: Math.floor(Date.now() / 1000),
+        logo: extractValueFromArray(x.logo),
+        index: extractValueFromArray(x.index),
+      } as AssetRxdbDocument),
     );
 
     await this.replicaCanister?.pushAssets(arg);
