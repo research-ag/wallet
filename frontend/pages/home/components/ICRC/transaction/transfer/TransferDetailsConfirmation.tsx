@@ -20,6 +20,8 @@ import { getElapsedSecond } from "@common/utils/datetimeFormaters";
 import { TransferStatus, useTransferStatus } from "@pages/home/contexts/TransferStatusProvider";
 import { TransferView, useTransferView } from "@pages/home/contexts/TransferViewProvider";
 import reloadBallance from "@pages/helpers/reloadBalance";
+import { LoadingLoader } from "@components/loader";
+import contactCacheRefresh from "@pages/contacts/helpers/contactCacheRefresh";
 
 export default function TransferDetailsConfirmation() {
   const { t } = useTranslation();
@@ -28,6 +30,7 @@ export default function TransferDetailsConfirmation() {
   const { setStatus } = useTransferStatus();
   const [errorMessage, setErrorMessage] = useState("");
   const dispatch = useAppDispatch();
+  const [isLoading, setIsLoading] = useState(false);
   //
   const { userAgent, userPrincipal } = useAppSelector((state) => state.auth);
   //
@@ -49,11 +52,13 @@ export default function TransferDetailsConfirmation() {
       <AmountDetails />
 
       <div className="flex items-center justify-end mt-6 max-w-[23rem] mx-auto">
-        <p className="mr-4 text-md text-slate-color-error">{errorMessage}</p>
-        <BasicButton className="w-1/6 mr-2 font-bold bg-secondary-color-2" onClick={onBack}>
+        {!isLoading && <p className="mr-4 text-md text-slate-color-error">{errorMessage}</p>}
+        {isLoading && <LoadingLoader />}
+
+        <BasicButton className="w-1/6 mr-2 font-bold bg-secondary-color-2" onClick={onBack} disabled={isLoading}>
           {t("back")}
         </BasicButton>
-        <BasicButton className="w-1/6 font-bold bg-primary-color" onClick={onTransfer}>
+        <BasicButton className="w-1/6 font-bold bg-primary-color" onClick={onTransfer} disabled={isLoading}>
           {t("submit")}
         </BasicButton>
       </div>
@@ -152,8 +157,10 @@ export default function TransferDetailsConfirmation() {
   async function transferFromAllowance() {
     const initTime = new Date();
     try {
+      setIsLoading(true);
       setErrorMessage("");
       await validateAllowanceAmount();
+      setIsLoading(false);
       setStatus(TransferStatus.SENDING);
 
       // INFO: at this point the asset information is valid
@@ -178,11 +185,13 @@ export default function TransferDetailsConfirmation() {
       setStatus(TransferStatus.DONE);
     } catch (error) {
       logger.debug(error);
+      setIsLoading(false);
       setStatus(TransferStatus.ERROR);
     } finally {
       const endTime = new Date();
       const duration = getElapsedSecond(initTime, endTime);
       setTransferState((prev) => ({ ...prev, duration }));
+      await contactCacheRefresh();
     }
   }
 
@@ -225,7 +234,10 @@ export default function TransferDetailsConfirmation() {
   async function transferFromOwn() {
     const initTime = new Date();
     try {
+      setIsLoading(true);
+      setErrorMessage("");
       await validateOwnAmount();
+      setIsLoading(false);
 
       setStatus(TransferStatus.SENDING);
 
@@ -247,6 +259,7 @@ export default function TransferDetailsConfirmation() {
       setStatus(TransferStatus.DONE);
     } catch (error) {
       logger.debug(error);
+      setIsLoading(false);
       setStatus(TransferStatus.ERROR);
     } finally {
       const endTime = new Date();
@@ -274,8 +287,10 @@ export default function TransferDetailsConfirmation() {
   async function transferFromService() {
     const initTime = new Date();
     try {
+      setIsLoading(true);
       setErrorMessage("");
       await validateServiceAmount();
+      setIsLoading(false);
 
       setStatus(TransferStatus.SENDING);
 
@@ -301,6 +316,7 @@ export default function TransferDetailsConfirmation() {
       setStatus(TransferStatus.DONE);
     } catch (error) {
       logger.debug(error);
+      setIsLoading(false);
       setStatus(TransferStatus.ERROR);
     } finally {
       const endTime = new Date();
