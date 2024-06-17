@@ -58,7 +58,7 @@
   "contacts": {
     "schema": {
       "type": "object",
-      "version": 1,
+      "version": 0,
       "primaryKey": "principal",
       "properties": {
         "principal": { "type": "string", "maxLength": 100 },
