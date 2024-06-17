@@ -188,7 +188,7 @@ const servicesSlice = createSlice({
       });
       state.services = auxServices;
       state.servicesData = auxServicesData;
-      saveServices(action.payload.authClient, auxServicesData);
+      saveServices(auxServicesData);
     },
     setServiceAssets(state, action: PayloadAction<ServiceAsset[]>) {
       state.serviceAssets = action.payload;

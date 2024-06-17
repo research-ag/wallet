@@ -7,6 +7,7 @@ import { LocalStorageKeyEnum } from "@/@types/localstorage";
 import { Themes } from "@/common/const";
 import { Asset } from "@redux/models/AccountModels";
 import { Contact } from "@redux/models/ContactsModels";
+import { ServiceData } from "@redux/models/ServiceModels";
 
 export interface DatabaseOptions {
   /**
@@ -258,4 +259,17 @@ export abstract class IWalletDatabase {
    * @param id Primary Key
    */
   abstract deleteAllowance(id: string, options?: DatabaseOptions): Promise<void>;
+
+  /**
+   * Get all Services objects from active agent.
+   * @returns Array of found Services objects or an empty
+   * array if no Services object were found
+   */
+  abstract getServices(): Promise<ServiceData[]>;
+
+  /**
+   * Set Services objects to active User.
+   * @param services Services array
+   */
+  abstract setServices(services: ServiceData[]): Promise<void>;
 }

@@ -6,11 +6,12 @@ import { ServiceAsset, ServiceData } from "@redux/models/ServiceModels";
 import { IcrcLedgerCanister } from "@dfinity/ledger-icrc";
 import { getMetadataInfo } from "@common/utils/icrc";
 import { Principal } from "@dfinity/principal";
+import { db } from "@/database/db";
 
 export const getServicesData = async (myAgent: HttpAgent, principal: string) => {
   const myAssets = store.getState().asset.list.assets;
   const snsAssets = store.getState().asset.utilData.icr1SystemAssets;
-  const serviceData = (JSON.parse(localStorage.getItem(`services-${principal}`) || "null") as ServiceData[]) || [];
+  const serviceData = await db().getServices();
 
   const filterAssets: ServiceAsset[] = [];
   const services = await Promise.all(
@@ -234,6 +235,6 @@ export const getCreditBalance = async (
   }
 };
 
-export const saveServices = (authClient: string, services: ServiceData[]) => {
-  localStorage.setItem(`services-${authClient}`, JSON.stringify(services));
+export const saveServices = async (services: ServiceData[]) => {
+  await db().setServices(services);
 };

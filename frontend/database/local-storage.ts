@@ -27,6 +27,7 @@ import {
   updateReduxAllowance,
 } from "@redux/allowance/AllowanceReducer";
 import { Contact } from "@redux/models/ContactsModels";
+import { ServiceData } from "@redux/models/ServiceModels";
 
 export class LocalStorageDatabase extends IWalletDatabase {
   // Singleton pattern
@@ -301,6 +302,14 @@ export class LocalStorageDatabase extends IWalletDatabase {
     if (options?.sync) store.dispatch(deleteReduxAllowance(id));
   }
 
+  async getServices(): Promise<ServiceData[]> {
+    return this._getServices();
+  }
+
+  async setServices(services: ServiceData[]): Promise<void> {
+    this._setServices(services);
+  }
+
   private _getStorableAllowance(allowance: TAllowance): Pick<TAllowance, "id" | "asset" | "subAccountId" | "spender"> {
     // eslint-disable-next-line
     const { amount, expiration, ...rest } = allowance;
@@ -336,6 +345,16 @@ export class LocalStorageDatabase extends IWalletDatabase {
     localStorage.setItem(`allowances-${this.principalId}`, JSON.stringify(allowances));
   }
 
+  private _getServices(): ServiceData[] {
+    const stringServices = localStorage.getItem(`services-${this.principalId}`);
+    const services = stringServices ? JSON.parse(stringServices) : [];
+    return services;
+  }
+
+  private _setServices(services: ServiceData[]) {
+    localStorage.setItem(`services-${this.principalId}`, JSON.stringify(services));
+  }
+
   /**
    * Check if the record by principal exist in the local storage.
    * If not, initialize the local storage with default values.
@@ -346,9 +365,11 @@ export class LocalStorageDatabase extends IWalletDatabase {
     const assetExist = !!localStorage.getItem(`assets-${this.principalId}`);
     const contactExist = !!localStorage.getItem(`contacts-${this.principalId}`);
     const allowanceExist = !!localStorage.getItem(`allowances-${this.principalId}`);
+    const servicesExist = !!localStorage.getItem(`services-${this.principalId}`);
 
     if (!assetExist) this._setAssets([...defaultTokens]);
     if (!contactExist) this._setContacts([]);
     if (!allowanceExist) this._setAllowances([]);
+    if (!servicesExist) this._setServices([]);
   }
 }
