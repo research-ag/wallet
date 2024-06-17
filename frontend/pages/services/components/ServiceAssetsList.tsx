@@ -93,8 +93,12 @@ export default function ServiceAssetsList({ service }: ServiceAssetsListProps) {
                   </td>
                   <td className="py-2 border-b border-BorderColorTwoLight dark:border-BorderColorTwo">
                     <div className="flex flex-row items-center justify-start w-full gap-4 px-2">
-                      {getAssetIcon(IconTypeEnum.Enum.ASSET, ast?.tokenSymbol, asst.logo)}
-                      <p>{`${ast?.symbol || ""}`}</p>
+                      {getAssetIcon(
+                        IconTypeEnum.Enum.ASSET,
+                        ast?.tokenSymbol || asst.tokenSymbol,
+                        ast?.logo || asst.logo,
+                      )}
+                      <p>{`${ast?.symbol || asst.tokenSymbol}`}</p>
                     </div>
                   </td>
                   <td className="py-2 border-b border-BorderColorTwoLight dark:border-BorderColorTwo px-2">

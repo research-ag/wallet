@@ -96,6 +96,7 @@
   "increased.balance": "Saldo aumentado",
   "increased.credit": "Aumento de crédito",
   "delete.asset.msg": "Tem certeza que deseja excluir o Ativo",
+  "delete.service.asset.msg": "Alguns serviços estão usando o Ativo, se você excluí-lo ele também desaparecerá da Lista de Serviços",
   "empty.index.error": "O índice não pode estar vazio",
   "empty.name.err": "O noma não pode estar vazio",
   "already.used.index": "Índice já utilizado",

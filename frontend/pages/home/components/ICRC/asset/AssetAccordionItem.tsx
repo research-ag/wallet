@@ -9,6 +9,7 @@ import {
   AssetMutationAction,
   setAssetMutation,
   setAssetMutationAction,
+  setExtraDataMuatation,
   setSelectedAccount,
   setSelectedAsset,
 } from "@redux/assets/AssetReducer";
@@ -32,6 +33,7 @@ export default function AssetAccordionItem(props: AssetAccordionItemProps) {
   const [isAddSubAccountOpen, setAddSubAccountOpen] = useState(false);
   const { selectedAsset, accordionIndex, selectedAccount } = useAppSelector((state) => state.asset.helper);
   const { isAppDataFreshing } = useAppSelector((state) => state.common);
+  const { services } = useAppSelector((state) => state.services);
   const { tokensMarket } = useAppSelector((state) => state.asset.utilData);
   const [usedIdxs, setUsedIdxs] = useState<string[]>([]);
   const dispatch = useAppDispatch();
@@ -186,6 +188,15 @@ export default function AssetAccordionItem(props: AssetAccordionItemProps) {
   }
 
   function onDeleteAsset() {
+    const auxServices = services
+      .filter((srv) => {
+        return !!srv.assets.find((ast) => ast.visible && ast.principal === currentAsset.address);
+      })
+      .map((srv) => {
+        const findAsset = srv.assets.find((ast) => ast.visible && ast.principal === currentAsset.address);
+        return { name: srv.name, credit: findAsset?.credit || "0", address: currentAsset.address };
+      });
+    dispatch(setExtraDataMuatation(auxServices.length > 0 ? { deletedServicesAssets: auxServices } : undefined));
     dispatch(setAssetMutation(currentAsset));
     dispatch(setAssetMutationAction(AssetMutationAction.DELETE));
   }
