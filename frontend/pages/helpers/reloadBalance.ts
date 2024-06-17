@@ -6,7 +6,7 @@ import { setAppDataRefreshing } from "@redux/common/CommonReducer";
 import store from "@redux/Store";
 import { transactionCacheRefresh } from "@pages/home/helpers/cache";
 import logger from "@/common/utils/logger";
-import { getServicesData } from "@redux/services/ServiceActions";
+import serviceCacheRefresh from "@pages/contacts/helpers/serviceCacheRefresh";
 
 export default async function reloadBallance() {
   try {
@@ -24,7 +24,7 @@ export default async function reloadBallance() {
     await transactionCacheRefresh(store.getState().asset.list.assets);
     await allowanceCacheRefresh();
     await contactCacheRefresh();
-    await getServicesData();
+    await serviceCacheRefresh();
 
     store.dispatch(setAppDataRefreshing(false));
   } catch (e) {

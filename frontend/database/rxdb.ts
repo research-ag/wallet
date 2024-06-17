@@ -165,8 +165,8 @@ export class RxdbDatabase extends IWalletDatabase {
         allowancesReplication;
 
       const servicesReplication = await setupReplication<ServiceRxdbDocument, string>(
-        contacts,
-        `contacts-${this.principalId}`,
+        services,
+        `services-${this.principalId}`,
         "principal",
         (items) => this._servicesPushHandler(items),
         (minTimestamp, lastId, batchSize) => this._servicesPullHandler(minTimestamp, lastId, batchSize),
@@ -607,6 +607,7 @@ export class RxdbDatabase extends IWalletDatabase {
    * array if no Contact object were found
    */
   async getServices(): Promise<ServiceData[]> {
+    console.log("service-find().exec()");
     try {
       const documents = await (await this.services)?.find().exec();
       return (documents && documents.map(this._mapserviceDoc)) || [];
@@ -617,6 +618,8 @@ export class RxdbDatabase extends IWalletDatabase {
   }
 
   async setServices(services: ServiceData[]): Promise<void> {
+    console.log("service-bulkUpsert");
+
     try {
       await (
         await this.services
@@ -893,7 +896,7 @@ export class RxdbDatabase extends IWalletDatabase {
       }),
     );
 
-    await this.replicaCanister?.pushContacts(arg);
+    await this.replicaCanister?.pushServices(arg);
     return arg;
   }
 
@@ -902,7 +905,7 @@ export class RxdbDatabase extends IWalletDatabase {
     lastId: string | null,
     batchSize: number,
   ): Promise<ServiceRxdbDocument[]> {
-    const raw = (await this.replicaCanister?.pullservices(
+    const raw = (await this.replicaCanister?.pullServices(
       minTimestamp,
       lastId ? [lastId] : [],
       BigInt(batchSize),

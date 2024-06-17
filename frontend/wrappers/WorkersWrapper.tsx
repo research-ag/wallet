@@ -8,6 +8,7 @@ import contactCacheRefresh from "@pages/contacts/helpers/contactCacheRefresh";
 import { setICRC1SystemAssets } from "@redux/assets/AssetReducer";
 import { transactionCacheRefresh } from "@pages/home/helpers/cache";
 import { getckERC20Tokens } from "@common/utils/ckERC20";
+import serviceCacheRefresh from "@pages/contacts/helpers/serviceCacheRefresh";
 
 const WORKER_INTERVAL = 10 * 60 * 1000; // 10 minutes
 
@@ -60,6 +61,7 @@ export default function WorkersWrapper({ children }: { children: React.ReactNode
       await transactionCacheRefresh(assets);
       await allowanceCacheRefresh();
       await contactCacheRefresh();
+      await serviceCacheRefresh();
 
       dispatch(setAppDataRefreshing(false));
     }
