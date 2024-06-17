@@ -74,7 +74,7 @@ export default function TransferDetailsConfirmation() {
 
     const isAmountValid = validateAmount(transferState.amount, Number(currentAsset?.decimal || "8"));
     if (transferState.amount === "" && !isAmountValid) {
-      setErrorMessage("Invalid amount");
+      setErrorMessage(t("error.transfer.invalid.amount"));
       throw new Error("onTransfer: Amount format is invalid");
     }
 
@@ -91,7 +91,7 @@ export default function TransferDetailsConfirmation() {
 
   async function validateAllowanceAmount() {
     if (!currentAsset) {
-      setErrorMessage("Invalid asset");
+      setErrorMessage(t("error.transfer.invalid.asset"));
       throw new Error("validateAllowanceAmount: Asset not found");
     }
 
@@ -123,32 +123,32 @@ export default function TransferDetailsConfirmation() {
 
     // case 1: allowance amount assigned === 0 (allowance not assigned or expired)
     if (allowanceAmount === BigInt(0)) {
-      setErrorMessage("Allowance not assigned or expired");
+      setErrorMessage(t("error.transfer.allowance.not.exist.expired"));
       throw new Error("validateAllowanceAmount: Allowance not assigned or expired");
     }
 
     // case 2: user input amount + fee <= allowance account assigned (allowance is not enough)
     if (amount + fee > allowanceAmount) {
-      setErrorMessage("Insufficient allowance");
+      setErrorMessage(t("error.transfer.allowance.insufficient"));
       throw new Error("validateAllowanceAmount: Insufficient allowance");
     }
 
     // case 3: user input amount + free <= allowance account balance (allowance sub account balance is not enough)
     if (amount + fee > balance) {
-      setErrorMessage("Insufficient balance");
+      setErrorMessage(t("error.transfer.allowance.subaccount.balance.insufficient"));
       throw new Error("validateAllowanceAmount: Insufficient balance");
     }
 
     // case 4: (receiver service) user input amount => min deposit amount (more equal than or more than)
     if (transferState.toType === TransferToTypeEnum.thirdPartyService) {
       if (!serviceReceiverAsset) {
-        setErrorMessage("TO service is not valid");
+        setErrorMessage(t("error.transfer.to.service.invalid"));
         throw new Error("validateAllowanceAmount: Receiver service not found");
       }
 
       const minDeposit = BigInt(serviceReceiverAsset.minDeposit);
       if (amount < minDeposit) {
-        setErrorMessage("Amount is less than min deposit");
+        setErrorMessage(t("error.transfer.amount.less.minimun.deposit"));
         throw new Error("validateAllowanceAmount: Amount is less than min deposit");
       }
     }
@@ -201,7 +201,7 @@ export default function TransferDetailsConfirmation() {
       (subAccount) => subAccount.sub_account_id === transferState.fromSubAccount,
     );
     if (!currentSubAccount) {
-      setErrorMessage("Invalid FROM sub account");
+      setErrorMessage(t("error.transfer.from.invalid"));
       throw new Error("validateOwnAmount: Sub account not found");
     }
 
@@ -210,14 +210,14 @@ export default function TransferDetailsConfirmation() {
     const amount = toHoleBigInt(transferState.amount, Number(currentAsset?.decimal || "8"));
 
     if (amount + fee > balance) {
-      setErrorMessage("Insufficient balance");
+      setErrorMessage(t("error.transfer.from.no.balance"));
       throw new Error("validateOwnAmount: Insufficient balance");
     }
 
     // case 3 (receiver service) if user input amount >= min deposit amount (more equal than or more than)
     if (transferState.toType === TransferToTypeEnum.thirdPartyService) {
       if (!serviceReceiverAsset) {
-        setErrorMessage("TO service is not valid");
+        setErrorMessage(t("error.transfer.to.service.invalid"));
         throw new Error("validateOwnAmount: Receiver service not found");
       }
 
@@ -225,7 +225,7 @@ export default function TransferDetailsConfirmation() {
       const amount = toHoleBigInt(transferState.amount, Number(currentAsset?.decimal || "8"));
 
       if (amount < minDeposit) {
-        setErrorMessage("Amount is less than min deposit");
+        setErrorMessage(t("error.transfer.amount.less.minimun.deposit"));
         throw new Error("validateOwnAmount: Amount is less than min deposit");
       }
     }
@@ -272,14 +272,14 @@ export default function TransferDetailsConfirmation() {
   async function validateServiceAmount() {
     // case 1: if user input amount >= min withdraw amount (more equal than or more than)
     if (!serviceSenderAsset) {
-      setErrorMessage("FROM service is not valid");
+      setErrorMessage(t("error.transfer.from.service.invalid"));
       throw new Error("validateServiceAmount: Sender service not found");
     }
 
     const minWithdraw = BigInt(serviceSenderAsset.minWithdraw);
     const amount = toHoleBigInt(transferState.amount, Number(currentAsset?.decimal || "8"));
     if (amount < minWithdraw) {
-      setErrorMessage("Amount is less than min withdraw");
+      setErrorMessage(t("error.transfer.amount.less.minimun.withdrawl"));
       throw new Error("validateServiceAmount: Amount is less than min withdraw");
     }
   }

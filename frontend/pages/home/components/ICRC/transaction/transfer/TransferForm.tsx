@@ -87,34 +87,34 @@ export default function TransferForm() {
 
   function commonValidations() {
     if (!transferState.tokenSymbol) {
-      setErrorMessage("Asset must be selected");
+      setErrorMessage(t("error.transfer.asset.empty"));
       throw new Error("Token symbol must be selected");
     }
 
     if (!isPrincipalValid(transferState.fromPrincipal)) {
-      setErrorMessage("Invalid FROM details");
+      setErrorMessage(t("error.transfer.from.invalid"));
       throw new Error("isPrincipalValid: from principal must be valid and no empty");
     }
 
     if (!isPrincipalValid(transferState.toPrincipal)) {
-      setErrorMessage("Invalid TO details");
+      setErrorMessage(t("error.transfer.to.invalid"));
       throw new Error("isPrincipalValid: to principal must be valid and no empty");
     }
 
     if (!isSubAccountIdValid(transferState.fromSubAccount)) {
-      setErrorMessage("Invalid FROM details");
+      setErrorMessage(t("error.transfer.from.invalid"));
       throw new Error("isSubAccountIdValid: from sub account must be valid and no empty");
     }
 
     if (!isSubAccountIdValid(transferState.toSubAccount)) {
-      setErrorMessage("Invalid TO details");
+      setErrorMessage(t("error.transfer.to.invalid"));
       throw new Error("isSubAccountIdValid: to sub account must be valid and no empty");
     }
   }
 
   function fromOwnSubaccountValidations() {
     if (!currentAsset) {
-      setErrorMessage("Invalid asset selected");
+      setErrorMessage(t("error.transfer.asset.empty"));
       throw new Error("TransferForm: asset not found");
     }
 
@@ -123,29 +123,29 @@ export default function TransferForm() {
     );
 
     if (Number(subaccount?.amount || "0") === 0) {
-      setErrorMessage("FROM subaccount has not balance");
+      setErrorMessage(t("error.transfer.from.no.balance"));
       throw new Error("fromOwnSubaccountValidations: from sub account must have balance");
     }
 
     if (!isAmountGreaterThanFee(currentAsset, transferState.fromSubAccount)) {
-      setErrorMessage("FROM subaccount does not cover the fee");
+      setErrorMessage(t("error.transfer.from.no.cover.fee"));
       throw new Error("isAmountGreaterThanFee: subaccount amount must be greater than fee");
     }
 
     // --------------- OWN TO OWN SUB ACCOUNT ---------------
     if (transferState.toType === TransferToTypeEnum.own) {
       if (transferState.fromSubAccount === transferState.toSubAccount) {
-        setErrorMessage("FROM and TO subaccounts must be different");
+        setErrorMessage(t("error.transfer.from.to.subaccounts.must.different"));
         throw new Error("fromOwnSubaccountValidations: sub accounts must be differents");
       }
 
       if (transferState.fromPrincipal !== transferState.toPrincipal) {
-        setErrorMessage("From and To principals must be the same");
+        setErrorMessage(t("error.transfer.from.to.principal.must.same"));
         throw new Error("fromOwnSubaccountValidations: principals must be same");
       }
 
       if (transferState.fromPrincipal !== userPrincipal.toString()) {
-        setErrorMessage("From principal must be the session principal");
+        setErrorMessage(t("error.transfer.from.principal.must.session"));
         throw new Error("fromOwnSubaccountValidations: from principal must be the session principal");
       }
     }
@@ -158,7 +158,7 @@ export default function TransferForm() {
     if (isToManual || isToIcrc || isToScanner) {
       if (transferState.toPrincipal === userPrincipal.toString()) {
         if (transferState.fromSubAccount === transferState.toSubAccount) {
-          setErrorMessage("FROM and TO subaccounts must be different");
+          setErrorMessage(t("error.transfer.from.to.subaccounts.must.different"));
           throw new Error("fromOwnSubaccountValidations: sub accounts must be differents");
         }
       }
@@ -167,13 +167,13 @@ export default function TransferForm() {
 
   async function fromAllowanceValidations() {
     if (!currentAsset) {
-      setErrorMessage("Invalid asset selected");
+      setErrorMessage(t("error.transfer.asset.empty"));
       throw new Error("TransferForm: asset not found");
     }
 
     // case 1: from principal must be different to the session principal
     if (transferState.fromPrincipal === userPrincipal.toString()) {
-      setErrorMessage("Self allowance not allowed");
+      setErrorMessage(t("error.transfer.to.self.allowance"));
       throw new Error("fromAllowanceValidations: from principal must be different to session principal");
     }
 
@@ -192,7 +192,7 @@ export default function TransferForm() {
     });
 
     if (allowance.allowance === BigInt(0)) {
-      setErrorMessage("Allowance does not exist or expired");
+      setErrorMessage(t("error.transfer.allowance.not.exist.expired"));
       throw new Error("fromAllowanceValidations: allowance does not exist or expired");
     }
 
@@ -200,7 +200,7 @@ export default function TransferForm() {
     const fee = BigInt(currentAsset.subAccounts[0].transaction_fee);
 
     if (fee > allowance.allowance) {
-      setErrorMessage("Allowance does not cover the fee");
+      setErrorMessage(t("error.transfer.allowance.not.cover.fee"));
       throw new Error("isAllowanceGreaterThanFree: allowance amount must be greater than fee");
     }
 
@@ -214,7 +214,7 @@ export default function TransferForm() {
       // case 2: from principal is different the session principal, but both are same. Sub account must be different
       if (transferState.fromPrincipal === transferState.toPrincipal) {
         if (transferState.fromSubAccount === transferState.toSubAccount) {
-          setErrorMessage("FROM subaccount and TO subaccount must be different");
+          setErrorMessage(t("error.transfer.from.to.subaccounts.must.different"));
           throw new Error("fromAllowanceValidations: sub accounts must be differents");
         }
       }
@@ -223,49 +223,49 @@ export default function TransferForm() {
 
   function fromServiceValidations() {
     if (!currentAsset) {
-      setErrorMessage("Invalid asset selected");
+      setErrorMessage(t("error.transfer.asset.empty"));
       throw new Error("TransferForm: asset not found");
     }
 
     const currentService = services.find((service) => service.principal === transferState.fromPrincipal);
 
     if (!currentService) {
-      setErrorMessage("Invalid service selected");
+      setErrorMessage(t("error.transfer.from.service.invalid"));
       throw new Error("TransferForm: service not found");
     }
 
     const serviceAccount = currentService.assets.find((asset) => asset.tokenSymbol === transferState.tokenSymbol);
 
     if (!serviceAccount) {
-      setErrorMessage("Invalid asset selected");
+      setErrorMessage(t("error.transfer.asset.empty"));
       throw new Error("TransferForm: asset not found");
     }
 
     const balance = BigInt(serviceAccount.balance);
     // case 1: service account balance must have balance
     if (balance === BigInt(0)) {
-      setErrorMessage("Service account has not balance");
+      setErrorMessage(t("error.transfer.from.service.not.balance"));
       throw new Error("fromServiceValidations: service account must have balance");
     }
 
     // case 2: service account balance must be greater than the transaction fee
     const fee = BigInt(currentAsset.subAccounts[0].transaction_fee);
     if (balance < fee) {
-      setErrorMessage("Service account does not cover the fee");
+      setErrorMessage(t("error.transfer.from.service.no.fee"));
       throw new Error("fromServiceValidations: service account balance must be greater than fee");
     }
 
     // case 3: service min withrawal
     const minWithdrawal = BigInt(serviceAccount.minWithdraw);
     if (balance < minWithdrawal) {
-      setErrorMessage("Service account balance is less than the min withdrawal");
+      setErrorMessage(t("error.transfer.from.service.less.withdraw.minimun"));
       throw new Error("fromServiceValidations: service account balance must be greater than min withdrawal");
     }
 
     // case 4: min withdrawal + fee must be less or equal to balance
     if (balance < minWithdrawal + fee) {
       setErrorMessage("Service account balance is less than the min withdrawal plus fee");
-      throw new Error("fromServiceValidations: service account balance must be greater than min withdrawal plus fee");
+      throw new Error(t("error.transfer.from.service.less.withdraw.minimun.plus.fee"));
     }
   }
 }
