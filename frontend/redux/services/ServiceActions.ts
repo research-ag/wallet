@@ -8,10 +8,12 @@ import { getMetadataInfo } from "@common/utils/icrc";
 import { Principal } from "@dfinity/principal";
 import { db } from "@/database/db";
 
-export const getServicesData = async (myAgent: HttpAgent, principal: string) => {
+export const getServicesData = async (userAgent?: HttpAgent) => {
   const myAssets = store.getState().asset.list.assets;
   const snsAssets = store.getState().asset.utilData.icr1SystemAssets;
   const serviceData = await db().getServices();
+
+  const myAgent = userAgent || store.getState().auth.userAgent;
 
   const filterAssets: ServiceAsset[] = [];
   const services = await Promise.all(

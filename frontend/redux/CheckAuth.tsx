@@ -136,7 +136,7 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean,
 
   await db().setIdentity(authIdentity, myPrincipal);
 
-  const { services, serviceData, filterAssets } = await getServicesData(myAgent, principalString);
+  const { services, serviceData, filterAssets } = await getServicesData(myAgent);
   store.dispatch(setServices(services));
   store.dispatch(setServicesData(serviceData));
   store.dispatch(setServiceAssets(filterAssets));
