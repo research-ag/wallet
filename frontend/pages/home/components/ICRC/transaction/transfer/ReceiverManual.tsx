@@ -1,6 +1,7 @@
+import { checkHexString } from "@common/utils/hexadecimal";
 import { CustomInput } from "@components/input";
 import { useTransfer } from "@pages/home/contexts/TransferProvider";
-import { isPrincipalValid, isSubAccountIdValid } from "@pages/home/helpers/validators";
+import { isValidInputPrincipal } from "@pages/home/helpers/validators";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -15,8 +16,8 @@ export default function ReceiverManual() {
     }
   }, []);
 
-  const principalError = !(transferState.toPrincipal === "") && !isPrincipalValid(transferState.toPrincipal);
-  const subAccountError = !(transferState.toSubAccount === "") && !isSubAccountIdValid(transferState.toSubAccount);
+  const principalError = !isValidInputPrincipal(transferState.fromPrincipal);
+  const subAccountError = !checkHexString(transferState.toSubAccount);
 
   return (
     <div className="max-w-[21rem] mx-auto py-[1rem] space-y-1">

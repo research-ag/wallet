@@ -24,6 +24,7 @@ export default function TransferForm() {
   const { transferState, setTransferState } = useTransfer();
   const { setView } = useTransferView();
   const assets = useAppSelector((state) => state.asset.list.assets);
+  const services = useAppSelector((state) => state.services.services);
   const { userPrincipal, userAgent } = useAppSelector((state) => state.auth);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const currentAsset = assets.find((asset) => asset.tokenSymbol === transferState.tokenSymbol);
@@ -162,8 +163,6 @@ export default function TransferForm() {
         }
       }
     }
-
-    // -------------- OWN TO THIRD SERVICE ---------------
   }
 
   async function fromAllowanceValidations() {
@@ -178,7 +177,7 @@ export default function TransferForm() {
       throw new Error("fromAllowanceValidations: from principal must be different to session principal");
     }
 
-    // case 2: allowance balance must be greater than the transaction fee
+    // case 2: allowance not exist or expired
     const allowance = await ICRC2Allowance({
       agent: userAgent,
       canisterId: Principal.fromText(currentAsset.address),
@@ -192,6 +191,12 @@ export default function TransferForm() {
       },
     });
 
+    if (allowance.allowance === BigInt(0)) {
+      setErrorMessage("Allowance does not exist or expired");
+      throw new Error("fromAllowanceValidations: allowance does not exist or expired");
+    }
+
+    // case 3: allowance balance must be greater than the transaction fee
     const fee = BigInt(currentAsset.subAccounts[0].transaction_fee);
 
     if (fee > allowance.allowance) {
@@ -206,7 +211,7 @@ export default function TransferForm() {
     const isToContact = transferState.toType === TransferToTypeEnum.thirdPartyContact;
 
     if (isToManual || isToIcrc || isToScanner || isToContact) {
-      // case 1: fromPrincipal must be different to toPrincipal
+      // case 2: from principal is different the session principal, but both are same. Sub account must be different
       if (transferState.fromPrincipal === transferState.toPrincipal) {
         if (transferState.fromSubAccount === transferState.toSubAccount) {
           setErrorMessage("FROM subaccount and TO subaccount must be different");
@@ -217,6 +222,50 @@ export default function TransferForm() {
   }
 
   function fromServiceValidations() {
-    // TODO: case 1: service account balance must be greater than the transaction fee
+    if (!currentAsset) {
+      setErrorMessage("Invalid asset selected");
+      throw new Error("TransferForm: asset not found");
+    }
+
+    const currentService = services.find((service) => service.principal === transferState.fromPrincipal);
+
+    if (!currentService) {
+      setErrorMessage("Invalid service selected");
+      throw new Error("TransferForm: service not found");
+    }
+
+    const serviceAccount = currentService.assets.find((asset) => asset.tokenSymbol === transferState.tokenSymbol);
+
+    if (!serviceAccount) {
+      setErrorMessage("Invalid asset selected");
+      throw new Error("TransferForm: asset not found");
+    }
+
+    const balance = BigInt(serviceAccount.balance);
+    // case 1: service account balance must have balance
+    if (balance === BigInt(0)) {
+      setErrorMessage("Service account has not balance");
+      throw new Error("fromServiceValidations: service account must have balance");
+    }
+
+    // case 2: service account balance must be greater than the transaction fee
+    const fee = BigInt(currentAsset.subAccounts[0].transaction_fee);
+    if (balance < fee) {
+      setErrorMessage("Service account does not cover the fee");
+      throw new Error("fromServiceValidations: service account balance must be greater than fee");
+    }
+
+    // case 3: service min withrawal
+    const minWithdrawal = BigInt(serviceAccount.minWithdraw);
+    if (balance < minWithdrawal) {
+      setErrorMessage("Service account balance is less than the min withdrawal");
+      throw new Error("fromServiceValidations: service account balance must be greater than min withdrawal");
+    }
+
+    // case 4: min withdrawal + fee must be less or equal to balance
+    if (balance < minWithdrawal + fee) {
+      setErrorMessage("Service account balance is less than the min withdrawal plus fee");
+      throw new Error("fromServiceValidations: service account balance must be greater than min withdrawal plus fee");
+    }
   }
 }

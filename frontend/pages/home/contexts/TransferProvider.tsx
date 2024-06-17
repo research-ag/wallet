@@ -6,7 +6,6 @@ type TransferProviderProps = {
   children: JSX.Element;
 };
 
-// sender: own, allowance (contact book, inputs, scanner) and services
 export enum TransferFromTypeEnum {
   own = "OWN",
   allowanceContactBook = "ALLOWANCE_CONTACT_BOOK",
@@ -14,7 +13,6 @@ export enum TransferFromTypeEnum {
   service = "SERVICE",
 }
 
-// receiver: manual (no need select), own (their own select), third icrc or scanner (need inputs) and thid contact book or services (need select)
 export enum TransferToTypeEnum {
   own = "OWN",
   thirdPartyICRC = "THIRD_PARTY_ICRC",
@@ -51,11 +49,11 @@ export const TransferContext = createContext<TransferProviderType | null>(null);
 export default function TransferProvider({ children }: TransferProviderProps) {
   const [transferState, setTransferState] = useState<TransferStateType>({
     tokenSymbol: "",
-    // Helpful to determine which validation must be applied
+    // Helpful to determine which validation
     fromType: TransferFromTypeEnum.own,
     fromPrincipal: "",
     fromSubAccount: "",
-    // Helpful to determine which validation must be applied
+    // Helpful to determine which validation
     toType: TransferToTypeEnum.thirdPartyICRC,
     toPrincipal: "",
     toSubAccount: "",
@@ -65,6 +63,7 @@ export default function TransferProvider({ children }: TransferProviderProps) {
   });
 
   const value = { transferState, setTransferState };
+  console.log(transferState);
   return <TransferContext.Provider value={{ ...value }}>{children}</TransferContext.Provider>;
 }
 

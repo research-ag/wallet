@@ -34,3 +34,13 @@ export const isAmountGreaterThanFee = (asset: Asset, subAccountId: string): bool
 
   return amount > fee;
 };
+
+export const isValidInputPrincipal = (principal: string): boolean => {
+  try {
+    if (!principal || principal === "") return true;
+    Principal.fromText(principal);
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
