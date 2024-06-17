@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 
 export default function useServices() {
   const { services, servicesData, serviceAssets } = useAppSelector((state) => state.services);
-  const { authClient } = useAppSelector((state) => state.auth);
   const [serviceList, setServiceList] = useState<Service[]>([]);
   const [assetFilter, setAssetFilter] = useState<string[]>([]);
   const [serviceSearchkey, setServiceSearchKey] = useState("");
@@ -48,7 +47,7 @@ export default function useServices() {
   }, [supportedAssetsActive, serviceAssets]);
 
   useEffect(() => {
-    saveServices(authClient, servicesData);
+    saveServices(servicesData);
   }, [servicesData]);
 
   return {

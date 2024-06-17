@@ -643,7 +643,12 @@ export class RxdbDatabase extends IWalletDatabase {
    * @returns Array of Assets and Contacts objects pulled from the DB
    */
   subscribeOnPulling(): Observable<boolean> {
-    return combineLatest([this.pullingAssets$, this.pullingContacts$, this.pullingAllowances$]).pipe(
+    return combineLatest([
+      this.pullingAssets$,
+      this.pullingContacts$,
+      this.pullingAllowances$,
+      this.pullingServices$,
+    ]).pipe(
       map(([a, b]) => a || b),
       distinctUntilChanged(),
     );
@@ -655,7 +660,12 @@ export class RxdbDatabase extends IWalletDatabase {
    * to the DB
    */
   subscribeOnPushing(): Observable<boolean> {
-    return combineLatest([this.pushingAssets$, this.pushingContacts$, this.pushingAllowances$]).pipe(
+    return combineLatest([
+      this.pushingAssets$,
+      this.pushingContacts$,
+      this.pushingAllowances$,
+      this.pushingServices$,
+    ]).pipe(
       map(([a, b]) => a || b),
       distinctUntilChanged(),
     );
