@@ -41,7 +41,11 @@ export default function OwnSenderAccountSelector() {
     if (!searchKey || searchKey.trim() == "") return selectedAsset.subAccounts.map(formatSubAccount);
 
     return selectedAsset.subAccounts
-      .filter((subAccount) => subAccount?.name?.toLowerCase().includes(searchKey.toLowerCase()))
+      .filter(
+        (subAccount) =>
+          subAccount?.name?.toLowerCase().includes(searchKey.toLowerCase()) ||
+          subAccount?.sub_account_id?.toLowerCase().includes(searchKey.toLowerCase()),
+      )
       .map(formatSubAccount);
   }
 

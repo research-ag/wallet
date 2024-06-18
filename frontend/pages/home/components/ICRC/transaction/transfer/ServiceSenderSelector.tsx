@@ -56,13 +56,13 @@ export default function SenderServiceSelector() {
           </div>
         </DropdownMenu.Trigger>
         <DropdownMenu.Portal>
-          <DropdownMenu.Content className="bg-ThemeColorSelectorLight dark:bg-ThemeColorBack rounded-md border border-RadioCheckColor scroll-y-light z-[9999] w-[21rem] p-2">
+          <DropdownMenu.Content className="bg-ThemeColorSelectorLight dark:bg-ThemeColorBack rounded-md border border-RadioCheckColor scroll-y-light z-[9999] w-[21rem]">
             <CustomInput
               value={searchKey}
               prefix={<img src={SearchIcon} className="mx-2 w-[1.2rem] h-[1rem]" alt="search-icon" />}
               onChange={handleSearchChange}
               placeholder="Search"
-              className="dark:bg-SideColor bg-PrimaryColorLight h-[2.5rem]"
+              className="dark:bg-SideColor bg-PrimaryColorLight h-[2.5rem] mx-2 mt-2"
               inputClass="h-[2rem]"
             />
             <div className="mt-2">

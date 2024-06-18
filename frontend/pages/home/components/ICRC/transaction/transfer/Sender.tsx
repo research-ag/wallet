@@ -17,11 +17,14 @@ export default function Sender() {
   const senderType = transferState.fromType;
   const isFromOwn = senderType === TransferFromTypeEnum.own;
   const isFromService = senderType === TransferFromTypeEnum.service;
-  // 
+  //
   const isFromAllowanceContact = senderType === TransferFromTypeEnum.allowanceContactBook;
   const isFromAllowanceManual = senderType === TransferFromTypeEnum.allowanceManual;
   const isFromAllowance = isFromAllowanceContact || isFromAllowanceManual;
-  const radioButtonValue = isFromAllowanceContact ? TransferFromTypeEnum.allowanceContactBook : TransferFromTypeEnum.allowanceManual;
+
+  const radioButtonValue = isFromAllowanceManual
+    ? TransferFromTypeEnum.allowanceManual
+    : TransferFromTypeEnum.allowanceContactBook;
 
   return (
     <div className="rounded-md bg-secondary-color-1-light dark:bg-level-1-color max-w-[23rem] mx-auto">
@@ -39,11 +42,7 @@ export default function Sender() {
 
             {isSupportedICRC2() && (
               <div className="flex items-center">
-                <RadioGroup.Item
-                  className={getRadioGroupStyles(isFromAllowance)}
-                  value={radioButtonValue}
-                  id="r-light"
-                >
+                <RadioGroup.Item className={getRadioGroupStyles(isFromAllowance)} value={radioButtonValue} id="r-light">
                   <RadioGroup.Indicator className="flex items-center justify-center w-full h-full relative after:content-[''] after:block after:w-3 after:h-3 after:rounded-full after:bg-primary-color" />
                 </RadioGroup.Item>
                 <p className={getRadioTextStyles(isFromAllowance)}>{t("allowance")}</p>

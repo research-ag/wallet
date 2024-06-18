@@ -72,7 +72,7 @@ export default function AllowanceSenderContactBook() {
                 contact;
 
               return (
-                <DropdownMenu.Item
+                <div
                   onSelect={() => onSelect(contact)}
                   key={`${contact.contactPrincipal}-${contact.subAccountIndex}`}
                   className="flex items-center justify-start px-2 py-2 bg-opacity-50 cursor-pointer hover:bg-RadioCheckColor"
@@ -95,7 +95,7 @@ export default function AllowanceSenderContactBook() {
                       </span>
                     </div>
                   </div>
-                </DropdownMenu.Item>
+                </div>
               );
             })}
           </DropdownMenu.Group>
