@@ -17,9 +17,11 @@ export default function InputSufixServiceBook() {
   const { t } = useTranslation();
   const { services } = useAppSelector((state) => state.services);
   const { authClient } = useAppSelector((state) => state.auth);
+  const assets = useAppSelector((state) => state.asset.list.assets);
   const { transferState, setTransferState } = useTransfer();
   //
   const [searchKey, setSearchKey] = useState("");
+  const currentAsset = assets.find((asset) => asset.tokenSymbol === transferState.tokenSymbol);
 
   return (
     <DropdownMenu.Root>
@@ -50,7 +52,12 @@ export default function InputSufixServiceBook() {
               const key = searchKey.trim().toLowerCase();
               const isServiceNameIncluded = srv.name.toLowerCase().includes(key);
               const isServicePrincipalIncluded = srv.principal.toLowerCase().includes(key);
-              const isSameAsset = !!srv.assets.find((ast) => ast.tokenSymbol === transferState.tokenSymbol);
+
+              let isSameAsset = false;
+
+              if (currentAsset) {
+                isSameAsset = !!srv.assets.find((asset) => asset.principal === currentAsset.address);
+              };
 
               return isSameAsset && (key === "" || isServiceNameIncluded || isServicePrincipalIncluded);
             })
