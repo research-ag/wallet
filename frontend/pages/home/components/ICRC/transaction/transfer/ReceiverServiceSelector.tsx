@@ -20,18 +20,17 @@ export default function ServiceBookReceiver() {
   const filteredServices: ServiceSubAccount[] = useMemo(() => {
     if (!services || !services.length) return [];
     const auxServices: ServiceSubAccount[] = [];
+    const currentAsset = assets.find((asset) => asset.tokenSymbol === transferState.tokenSymbol) as Asset;
 
     for (let serviceIndex = 0; serviceIndex < services.length; serviceIndex++) {
       const currentService = services[serviceIndex];
 
-      const currentContactAsset = currentService?.assets?.find(
-        (asset) => asset?.tokenSymbol === transferState.tokenSymbol,
-      );
+      const currentServiceAsset = currentService?.assets?.find((asset) => asset.principal === currentAsset.address);
+
       const princBytes = Principal.fromText(authClient).toUint8Array();
       const princSubId = `0x${princBytes.length.toString(16) + Buffer.from(princBytes).toString("hex")}`;
-      const currentAsset = assets.find((asset) => asset.tokenSymbol === transferState.tokenSymbol) as Asset;
 
-      if (currentContactAsset)
+      if (currentServiceAsset)
         auxServices.push({
           serviceName: currentService.name,
           servicePrincipal: currentService.principal,
@@ -43,16 +42,16 @@ export default function ServiceBookReceiver() {
           assetShortDecimal: currentAsset.shortDecimal,
           assetName: currentAsset.name,
           subAccountId: princSubId,
-          minDeposit: currentContactAsset.minDeposit,
-          minWithdraw: currentContactAsset.minWithdraw,
-          depositFee: currentContactAsset.depositFee,
-          withdrawFee: currentContactAsset.withdrawFee,
+          minDeposit: currentServiceAsset.minDeposit,
+          minWithdraw: currentServiceAsset.minWithdraw,
+          depositFee: currentServiceAsset.depositFee,
+          withdrawFee: currentServiceAsset.withdrawFee,
         });
     }
     return auxServices;
   }, [transferState, services]);
 
-  const formattedContacts = useMemo(() => {
+  const formattedServices = useMemo(() => {
     if (!searchSubAccountValue) return filteredServices.map(formatService);
     return filteredServices
       .filter((srv) => {
@@ -61,11 +60,13 @@ export default function ServiceBookReceiver() {
       .map(formatService);
   }, [filteredServices, searchSubAccountValue]);
 
+  console.log(formattedServices);
+
   return (
     <div className="mx-4">
       <BasicSelect
         onSelect={onSelect}
-        options={formattedContacts}
+        options={formattedServices}
         initialValue={transferState.toPrincipal}
         currentValue={transferState.toPrincipal}
         onSearch={onSearchChange}

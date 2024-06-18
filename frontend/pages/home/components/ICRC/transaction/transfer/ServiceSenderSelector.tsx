@@ -21,6 +21,9 @@ export default function SenderServiceSelector() {
   const { authClient } = useAppSelector((state) => state.auth);
   const [isOpen, setIsOpen] = useState(false);
   const [searchKey, setSearchKey] = useState<string>("");
+  const assets = useAppSelector((state) => state.asset.list.assets);
+
+  const currentAsset = assets.find((asset) => asset.tokenSymbol === transferState.tokenSymbol);
 
   const princBytes = Principal.fromText(authClient).toUint8Array();
   const princSubId = `0x${princBytes.length.toString(16) + Buffer.from(princBytes).toString("hex")}`;
@@ -76,9 +79,7 @@ export default function SenderServiceSelector() {
                     key === "" ||
                     option.name.toLowerCase().includes(key) ||
                     option.principal.toLowerCase().includes(key);
-                  return (
-                    option.assets.find((ast) => ast.tokenSymbol === transferState.tokenSymbol) && isSearchKeyIncluded
-                  );
+                  return option.assets.find((ast) => ast.principal === currentAsset?.address) && isSearchKeyIncluded;
                 })
                 .map((option, index) => (
                   <div

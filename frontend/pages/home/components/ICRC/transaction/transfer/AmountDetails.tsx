@@ -12,12 +12,13 @@ export default function AmountDetails() {
   const { maxAmount, onMaxAmount, onChangeAmount } = useTransferMaxAmount();
   const assets = useAppSelector((state) => state.asset.list.assets);
   const services = useAppSelector((state) => state.services.services);
-  //
   const currentAsset = assets.find((asset) => asset.tokenSymbol === transferState.tokenSymbol);
+  //
   const senderService = services.find((service) => service.principal === transferState.fromPrincipal);
-  const senderServiceAsset = senderService?.assets.find((asset) => asset.tokenSymbol === transferState.tokenSymbol);
+  const senderServiceAsset = senderService?.assets.find((asset) => asset.principal === currentAsset?.address);
+
   const receiverService = services.find((service) => service.principal === transferState.toPrincipal);
-  const receiverServiceAsset = receiverService?.assets.find((asset) => asset.tokenSymbol === transferState.tokenSymbol);
+  const receiverServiceAsset = receiverService?.assets.find((asset) => asset.principal === currentAsset?.address);
   //
   const isReceiverService = transferState.toType === TransferToTypeEnum.thirdPartyService;
   const isSenderService = transferState.fromType === TransferFromTypeEnum.service;

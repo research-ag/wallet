@@ -57,7 +57,7 @@ export default function InputSufixServiceBook() {
 
               if (currentAsset) {
                 isSameAsset = !!srv.assets.find((asset) => asset.principal === currentAsset.address);
-              };
+              }
 
               return isSameAsset && (key === "" || isServiceNameIncluded || isServicePrincipalIncluded);
             })

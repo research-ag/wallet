@@ -38,10 +38,10 @@ export default function TransferDetailsConfirmation() {
   //
   const services = useAppSelector((state) => state.services.services);
   const serviceReceiver = services.find((service) => service.principal === transferState.toPrincipal);
-  const serviceReceiverAsset = serviceReceiver?.assets.find((asset) => asset.tokenSymbol === transferState.tokenSymbol);
+  const serviceReceiverAsset = serviceReceiver?.assets.find((asset) => asset.principal === currentAsset?.address);
 
   const serviceSender = services.find((service) => service.principal === transferState.fromPrincipal);
-  const serviceSenderAsset = serviceSender?.assets.find((asset) => asset.tokenSymbol === transferState.tokenSymbol);
+  const serviceSenderAsset = serviceSender?.assets.find((asset) => asset.principal === currentAsset?.address);
   //
 
   return (
