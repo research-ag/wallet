@@ -27,7 +27,7 @@ export default function SenderServiceSelector() {
 
   return (
     <div className="mx-4">
-      <DropdownMenu.Root open={isOpen} onOpenChange={setIsOpen}>
+      <DropdownMenu.Root open={isOpen} onOpenChange={onOpenChange}>
         <DropdownMenu.Trigger
           asChild
           className="flex flex-row items-center justify-between h-12 px-4 py-2 border rounded-md cursor-pointer bg-ThemeColorSelectorLight dark:bg-SecondaryColor border-BorderColorLight dark:border-BorderColor"
@@ -121,4 +121,10 @@ export default function SenderServiceSelector() {
   function handleSearchChange(event: React.ChangeEvent<HTMLInputElement>) {
     setSearchKey(event.target.value);
   }
+
+  function onOpenChange(open: boolean) {
+    setIsOpen(open);
+    setSearchKey("")
+  };
+
 }

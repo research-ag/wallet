@@ -58,21 +58,22 @@ export default function AllowanceSenderContactBook() {
           </div>
         </DropdownMenu.Trigger>
         <DropdownMenu.Content className="w-[21rem] z-50 mt-1 bg-ThemeColorSelectorLight dark:bg-ThemeColorBack rounded-md border border-RadioCheckColor">
-          <DropdownMenu.Group className="p-2">
+          <div className="p-2">
             <CustomInput
               prefix={<img src={SearchIcon} className="mx-2" alt="search-icon" />}
               onChange={onSearchChange}
               placeholder="Search"
               className="dark:bg-SideColor bg-PrimaryColorLight"
+              onKeyDown={(e) => e.stopPropagation()}
             />
-          </DropdownMenu.Group>
-          <DropdownMenu.Group>
+          </div>
+          <div>
             {getOptions().map((contact) => {
               const { contactName, assetLogo, assetSymbol, subAccountAllowance, subAccountName, assetTokenSymbol } =
                 contact;
 
               return (
-                <div
+                <DropdownMenu.Item
                   onSelect={() => onSelect(contact)}
                   key={`${contact.contactPrincipal}-${contact.subAccountIndex}`}
                   className="flex items-center justify-start px-2 py-2 bg-opacity-50 cursor-pointer hover:bg-RadioCheckColor"
@@ -95,10 +96,10 @@ export default function AllowanceSenderContactBook() {
                       </span>
                     </div>
                   </div>
-                </div>
+                </DropdownMenu.Item>
               );
             })}
-          </DropdownMenu.Group>
+          </div>
         </DropdownMenu.Content>
       </DropdownMenu.Root>
     </div>
