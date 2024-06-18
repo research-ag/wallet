@@ -28,6 +28,7 @@ import {
 } from "@redux/allowance/AllowanceReducer";
 import { Contact } from "@redux/models/ContactsModels";
 import { ServiceData } from "@redux/models/ServiceModels";
+import logger from "@/common/utils/logger";
 
 export class LocalStorageDatabase extends IWalletDatabase {
   // Singleton pattern
@@ -311,6 +312,7 @@ export class LocalStorageDatabase extends IWalletDatabase {
   }
 
   async deleteService(principal: string): Promise<void> {
+    logger.debug(principal);
     //
   }
 
