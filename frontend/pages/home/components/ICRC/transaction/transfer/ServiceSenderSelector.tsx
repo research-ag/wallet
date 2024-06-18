@@ -56,7 +56,10 @@ export default function SenderServiceSelector() {
           </div>
         </DropdownMenu.Trigger>
         <DropdownMenu.Portal>
-          <DropdownMenu.Content className="bg-ThemeColorSelectorLight dark:bg-ThemeColorBack rounded-md border border-RadioCheckColor scroll-y-light z-[9999] w-[21rem]">
+          <DropdownMenu.Content
+            className="bg-ThemeColorSelectorLight dark:bg-ThemeColorBack rounded-md border border-RadioCheckColor scroll-y-light z-[9999] w-[21rem]"
+            sideOffset={2}
+          >
             <CustomInput
               value={searchKey}
               prefix={<img src={SearchIcon} className="mx-2 w-[1.2rem] h-[1rem]" alt="search-icon" />}
@@ -68,7 +71,14 @@ export default function SenderServiceSelector() {
             <div className="mt-2">
               {services
                 .filter((option) => {
-                  return option.assets.find((ast) => ast.tokenSymbol === transferState.tokenSymbol);
+                  const key = searchKey.trim().toLowerCase();
+                  const isSearchKeyIncluded =
+                    key === "" ||
+                    option.name.toLowerCase().includes(key) ||
+                    option.principal.toLowerCase().includes(key);
+                  return (
+                    option.assets.find((ast) => ast.tokenSymbol === transferState.tokenSymbol) && isSearchKeyIncluded
+                  );
                 })
                 .map((option, index) => (
                   <div
