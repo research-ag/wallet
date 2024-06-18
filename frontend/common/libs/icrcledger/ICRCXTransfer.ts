@@ -1,11 +1,14 @@
 import { Actor, HttpAgent } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
-import { _SERVICE as IcrcxActor, WithdrawArgs } from "@candid/icrcx/service.did";
+import { Account, _SERVICE as IcrcxActor } from "@candid/icrcx/service.did";
 import { idlFactory as IcrcxIDLFactory } from "@candid/icrcx/candid.did";
 import { getCreditBalance } from "@redux/services/ServiceActions";
 import { isString } from "lodash";
 
-interface ICRCXWithdrawArgs extends WithdrawArgs {
+interface ICRCXWithdrawArgs {
+  to: Account;
+  token: Principal;
+  amount: bigint;
   canisterId: string | Principal;
   agent: HttpAgent;
 }
@@ -16,7 +19,7 @@ export default async function ICRCXWithdraw(args: ICRCXWithdrawArgs) {
     agent: agent,
     canisterId: canisterId,
   });
-  const res = await serviceActor.icrcX_withdraw(params);
+  const res = await serviceActor.icrc84_withdraw(params);
 
   if ((res as any).Ok) {
     const servicePrincipal = isString(canisterId) ? canisterId : canisterId.toText();

@@ -2,6 +2,7 @@ import { useAppDispatch } from "@redux/Store";
 import { Service } from "@redux/models/ServiceModels";
 import { editServiceName, removeService } from "@redux/services/ServiceReducer";
 import { ChangeEvent, useEffect, useState } from "react";
+import { db } from "@/database/db";
 
 export default function useServicesList(newService: boolean) {
   const dispatch = useAppDispatch();
@@ -41,7 +42,8 @@ export default function useServicesList(newService: boolean) {
     setEditedService(undefined);
     setSelectedService("");
   }
-  function onDeleteService(srv: Service) {
+  async function onDeleteService(srv: Service) {
+    await db().deleteService(srv.principal);
     dispatch(removeService(srv.principal));
   }
   function onChevIconClic(srv: Service) {

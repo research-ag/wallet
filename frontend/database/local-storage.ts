@@ -310,6 +310,10 @@ export class LocalStorageDatabase extends IWalletDatabase {
     this._setServices(services);
   }
 
+  async deleteService(principal: string): Promise<void> {
+    //
+  }
+
   private _getStorableAllowance(allowance: TAllowance): Pick<TAllowance, "id" | "asset" | "subAccountId" | "spender"> {
     // eslint-disable-next-line
     const { amount, expiration, ...rest } = allowance;

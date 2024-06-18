@@ -272,4 +272,10 @@ export abstract class IWalletDatabase {
    * @param services Services array
    */
   abstract setServices(services: ServiceData[]): Promise<void>;
+
+  /**
+   * Find and remove a Service object by its Principal ID.
+   * @param principal Principal ID
+   */
+  abstract deleteService(principal: string): Promise<void>;
 }

@@ -26,12 +26,12 @@ export const getServicesData = async (userAgent?: HttpAgent) => {
 
       let serviceAssets: ServiceAsset[] = [];
       try {
-        const supportedAssets = await serviceActor.icrcX_supported_tokens();
+        const supportedAssets = await serviceActor.icrc84_supported_tokens();
         if (supportedAssets.length > 0) {
-          const credits = await serviceActor.icrcX_all_credits();
+          const credits = await serviceActor.icrc84_all_credits();
           serviceAssets = await Promise.all(
             supportedAssets.map(async (ast) => {
-              const tokenInfo = await serviceActor.icrcX_token_info(ast);
+              const tokenInfo = await serviceActor.icrc84_token_info(ast);
 
               const asset = myAssets.find((myAst) => myAst.address === ast.toText());
               const snsAsset = snsAssets.find((myAst) => myAst.address === ast.toText());
@@ -54,7 +54,7 @@ export const getServicesData = async (userAgent?: HttpAgent) => {
                 visible: false,
               };
 
-              const balance = (await serviceActor.icrcX_trackedDeposit(ast)) as any;
+              const balance = (await serviceActor.icrc84_trackedDeposit(ast)) as any;
 
               serviceAsset.balance = (balance.Ok as any) ? balance.Ok.toString() : "";
               if (assetData) {
@@ -124,14 +124,14 @@ export const getServiceData = async (myAgent: HttpAgent, servicePrincipal: strin
       agent: myAgent,
       canisterId: servicePrincipal,
     });
-    const supportedAssets = await serviceActor.icrcX_supported_tokens();
+    const supportedAssets = await serviceActor.icrc84_supported_tokens();
 
     let serviceAssets: ServiceAsset[] = [];
     if (supportedAssets.length > 0) {
-      const credits = await serviceActor.icrcX_all_credits();
+      const credits = await serviceActor.icrc84_all_credits();
       serviceAssets = await Promise.all(
         supportedAssets.map(async (ast) => {
-          const tokenInfo = await serviceActor.icrcX_token_info(ast);
+          const tokenInfo = await serviceActor.icrc84_token_info(ast);
 
           const asset = myAssets.find((myAst) => myAst.address === ast.toText());
           const snsAsset = snsAssets.find((myAst) => myAst.address === ast.toText());
@@ -153,7 +153,7 @@ export const getServiceData = async (myAgent: HttpAgent, servicePrincipal: strin
             visible: false,
           };
 
-          const balance = (await serviceActor.icrcX_trackedDeposit(ast)) as any;
+          const balance = (await serviceActor.icrc84_trackedDeposit(ast)) as any;
           serviceAsset.balance = (balance.Ok as any) ? balance.Ok.toString() : "";
           if (asset) {
             serviceAsset.tokenSymbol = asset.symbol;
@@ -197,7 +197,7 @@ export const testServicePrincipal = async (myAgent: HttpAgent, servicePrincipal:
       agent: myAgent,
       canisterId: servicePrincipal,
     });
-    await serviceActor.icrcX_supported_tokens();
+    await serviceActor.icrc84_supported_tokens();
     return true;
   } catch {
     return false;
@@ -210,7 +210,7 @@ export const notifyServiceAsset = async (myAgent: HttpAgent, servicePrincipal: s
       agent: myAgent,
       canisterId: servicePrincipal,
     });
-    const res = await serviceActor.icrcX_notify({ token: Principal.fromText(assetPrincipal) });
+    const res = await serviceActor.icrc84_notify({ token: Principal.fromText(assetPrincipal) });
     return res;
   } catch (e) {
     console.error("Notify Err:", e);
@@ -228,8 +228,8 @@ export const getCreditBalance = async (
       agent: myAgent,
       canisterId: servicePrincipal,
     });
-    const credit = await serviceActor.icrcX_credit(Principal.fromText(assetPrincipal));
-    const balance = (await serviceActor.icrcX_trackedDeposit(Principal.fromText(assetPrincipal))) as any;
+    const credit = await serviceActor.icrc84_credit(Principal.fromText(assetPrincipal));
+    const balance = (await serviceActor.icrc84_trackedDeposit(Principal.fromText(assetPrincipal))) as any;
     return { credit: credit.toString(), balance: balance.Ok ? (balance.Ok.toString() as string) : undefined };
   } catch (e) {
     console.error("Notify Err:", e);

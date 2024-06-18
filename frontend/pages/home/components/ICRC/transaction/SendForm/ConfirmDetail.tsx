@@ -37,7 +37,7 @@ interface ConfirmDetailProps {
 export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailProps) {
   const { t } = useTranslation();
   const { sender, receiver, errors, isLoading } = useAppSelector((state) => state.transaction);
-  const { userAgent } = useAppSelector((state) => state.auth);
+  const { userAgent, authClient } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const {
     receiverPrincipal,
@@ -213,7 +213,7 @@ export default function ConfirmDetail({ showConfirmationModal }: ConfirmDetailPr
                 canisterId: sender.serviceSubAccount.servicePrincipal,
                 token: Principal.fromText(sender.serviceSubAccount.assetAddress || ""),
                 amount: toHoleBigInt(amount, Number(decimal)),
-                to_subaccount: [hexToUint8Array(receiverSubAccount)],
+                to: { owner: Principal.fromText(authClient), subaccount: [hexToUint8Array(receiverSubAccount)] },
               });
               if (res.data) {
                 dispatch(

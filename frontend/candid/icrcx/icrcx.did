@@ -1,92 +1,83 @@
-// REFERENCE: https://github.com/research-ag/icrcX/blob/main/icrcX.did
-
-type Token = principal;
-type Amount = nat;
-
+type WithdrawResult = variant {
+  Err : variant {
+    AmountBelowMinimum : record {};
+    CallLedgerError : record { message : text };
+    InsufficientCredit : record {};
+  };
+  Ok : record {
+    amount : nat;
+    txid : nat;
+  };
+};
 type TokenInfo = record {
-  min_deposit : Amount;
-  min_withdrawal : Amount;
-  deposit_fee : Amount;
-  withdrawal_fee : Amount;
+  deposit_fee : nat;
+  min_deposit : nat;
+  min_withdrawal : nat;
+  withdrawal_fee : nat;
 };
-
-type Subaccount = blob;
-
-type NotifyArg = record {
-  token : Token;
-};
-
-type NotifyResult = record {
-  deposit_inc : Amount;
-  credit_inc : Amount;
-};
-
-type NotifyResponse = variant {
-  Ok : NotifyResult;
+type NotifyResult = variant {
   Err : variant {
-    CallLedgerError : text;
-    NotAvailable : text;
+    CallLedgerError : record { message : text };
+    NotAvailable : record { message : text };
   };
-};
-
-type BalanceResponse = variant {
-  Ok : Amount;
-  Err : variant {
-    NotAvailable : text;
-  };
-};
-
-type WithdrawArgs = record {
-  to_subaccount : opt Subaccount;
-  amount : Amount;
-  token : Token;
-};
-
-type WithdrawResponse = variant {
   Ok : record {
-    txid : nat;
-    amount : Amount;
-  };
-  Err : variant {
-    CallLedgerError : text;
-    InsufficientCredit;
-    AmountBelowMinimum;
+    credit : int;
+    credit_inc : nat;
+    deposit_inc : nat;
   };
 };
-
-type DepositArgs = record {
-  token : Token;
-  amount : Amount;
-  subaccount : opt Subaccount; // subaccount of the caller which has the allowance
-};
-
 type DepositResponse = variant {
-  Ok : record {
-    txid : nat;
-    credit_inc : Amount;
-  };
   Err : variant {
-    AmountBelowMinimum;
-    CallLedgerError : text;
-    TransferError : text; // insufficient allowance or insufficient funds
+    AmountBelowMinimum : record {};
+    CallLedgerError : record { message : text };
+    TransferError : record { message : text };
+  };
+  Ok : record {
+    credit : int;
+    credit_inc : nat;
+    txid : nat;
   };
 };
-
-service : () -> {
-  // helper function
+type DepositArgs = record {
+  amount : nat;
+  from : Account;
+  token : principal;
+};
+type Account = record {
+  owner : principal;
+  subaccount : opt blob;
+};
+service : {
+  icrc84_all_credits : () -> (
+    vec record {
+      principal;
+      int;
+    }
+  ) query;
+  icrc84_credit : (principal) -> (int) query;
+  icrc84_deposit : (DepositArgs) -> (DepositResponse);
+  icrc84_notify : (record { token : principal }) -> (NotifyResult);
+  icrc84_supported_tokens : () -> (vec principal) query;
+  icrc84_token_info : (principal) -> (TokenInfo) query;
+  icrc84_trackedDeposit : (principal) -> (
+    variant {
+      Err : variant { NotAvailable : record { message : text } };
+      Ok : nat;
+    }
+  ) query;
+  icrc84_withdraw : (
+    record {
+      amount : nat;
+      to : Account;
+      token : principal;
+    }
+  ) -> (WithdrawResult);
+  init : () -> ();
   principalToSubaccount : (principal) -> (opt blob) query;
-
-  // public queries
-  icrcX_supported_tokens : () -> (vec Token) query;
-  icrcX_token_info : (Token) -> (TokenInfo) query;
-
-  // private queries
-  icrcX_credit : (Token) -> (int) query;
-  icrcX_all_credits : () -> (vec record { Token; int }) query;
-  icrcX_trackedDeposit : (Token) -> (BalanceResponse) query;
-
-  // updates
-  icrcX_notify : (NotifyArg) -> (NotifyResponse);
-  icrcX_deposit : (DepositArgs) -> (DepositResponse);
-  icrcX_withdraw : (WithdrawArgs) -> (WithdrawResponse);
+  registerAsset : (principal) -> (
+    variant {
+      Err : variant { AlreadyRegistered : nat };
+      Ok : nat;
+    }
+  );
 };

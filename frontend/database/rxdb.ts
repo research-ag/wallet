@@ -632,6 +632,19 @@ export class RxdbDatabase extends IWalletDatabase {
     }
   }
 
+  /**
+   * Find and remove a Service object by its Principal ID.
+   * @param principal Principal ID
+   */
+  async deleteService(principal: string): Promise<void> {
+    try {
+      const document = await (await this.services)?.findOne(principal).exec();
+      await document?.remove();
+    } catch (e) {
+      logger.debug("RxDb DeleteContact", e);
+    }
+  }
+
   private _getStorableAllowance(allowance: TAllowance): Pick<TAllowance, "id" | "asset" | "subAccountId" | "spender"> {
     // eslint-disable-next-line
     const { amount, expiration, ...rest } = allowance;

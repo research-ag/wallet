@@ -1,67 +1,108 @@
 export const idlFactory = ({ IDL }) => {
-  const Token = IDL.Principal;
-  const Subaccount = IDL.Vec(IDL.Nat8);
-  const Amount = IDL.Nat;
+  const Account = IDL.Record({
+    "owner" : IDL.Principal,
+    "subaccount" : IDL.Opt(IDL.Vec(IDL.Nat8)),
+  });
   const DepositArgs = IDL.Record({
-    token: Token,
-    subaccount: IDL.Opt(Subaccount),
-    amount: Amount,
+    "token" : IDL.Principal,
+    "from" : Account,
+    "amount" : IDL.Nat,
   });
   const DepositResponse = IDL.Variant({
-    Ok: IDL.Record({ credit_inc: Amount, txid: IDL.Nat }),
-    Err: IDL.Variant({
-      TransferError: IDL.Text,
-      AmountBelowMinimum: IDL.Null,
-      CallLedgerError: IDL.Text,
+    "Ok" : IDL.Record({
+      "credit_inc" : IDL.Nat,
+      "txid" : IDL.Nat,
+      "credit" : IDL.Int,
+    }),
+    "Err" : IDL.Variant({
+      "TransferError" : IDL.Record({ "message" : IDL.Text }),
+      "AmountBelowMinimum" : IDL.Record({}),
+      "CallLedgerError" : IDL.Record({ "message" : IDL.Text }),
     }),
   });
-  const NotifyArg = IDL.Record({ token: Token });
-  const NotifyResult = IDL.Record({
-    credit_inc: Amount,
-    deposit_inc: Amount,
-  });
-  const NotifyResponse = IDL.Variant({
-    Ok: NotifyResult,
-    Err: IDL.Variant({
-      NotAvailable: IDL.Text,
-      CallLedgerError: IDL.Text,
+  const NotifyResult = IDL.Variant({
+    "Ok" : IDL.Record({
+      "credit_inc" : IDL.Nat,
+      "credit" : IDL.Int,
+      "deposit_inc" : IDL.Nat,
+    }),
+    "Err" : IDL.Variant({
+      "NotAvailable" : IDL.Record({ "message" : IDL.Text }),
+      "CallLedgerError" : IDL.Record({ "message" : IDL.Text }),
     }),
   });
   const TokenInfo = IDL.Record({
-    min_deposit: Amount,
-    min_withdrawal: Amount,
-    withdrawal_fee: Amount,
-    deposit_fee: Amount,
+    "min_deposit" : IDL.Nat,
+    "min_withdrawal" : IDL.Nat,
+    "withdrawal_fee" : IDL.Nat,
+    "deposit_fee" : IDL.Nat,
   });
-  const BalanceResponse = IDL.Variant({
-    Ok: Amount,
-    Err: IDL.Variant({ NotAvailable: IDL.Text }),
-  });
-  const WithdrawArgs = IDL.Record({
-    token: Token,
-    to_subaccount: IDL.Opt(Subaccount),
-    amount: Amount,
-  });
-  const WithdrawResponse = IDL.Variant({
-    Ok: IDL.Record({ txid: IDL.Nat, amount: Amount }),
-    Err: IDL.Variant({
-      AmountBelowMinimum: IDL.Null,
-      InsufficientCredit: IDL.Null,
-      CallLedgerError: IDL.Text,
+  const WithdrawResult = IDL.Variant({
+    "Ok" : IDL.Record({ "txid" : IDL.Nat, "amount" : IDL.Nat }),
+    "Err" : IDL.Variant({
+      "AmountBelowMinimum" : IDL.Record({}),
+      "InsufficientCredit" : IDL.Record({}),
+      "CallLedgerError" : IDL.Record({ "message" : IDL.Text }),
     }),
   });
   return IDL.Service({
-    icrcX_all_credits: IDL.Func([], [IDL.Vec(IDL.Tuple(Token, IDL.Int))], ["query"]),
-    icrcX_credit: IDL.Func([Token], [IDL.Int], ["query"]),
-    icrcX_deposit: IDL.Func([DepositArgs], [DepositResponse], []),
-    icrcX_notify: IDL.Func([NotifyArg], [NotifyResponse], []),
-    icrcX_supported_tokens: IDL.Func([], [IDL.Vec(Token)], ["query"]),
-    icrcX_token_info: IDL.Func([Token], [TokenInfo], ["query"]),
-    icrcX_trackedDeposit: IDL.Func([Token], [BalanceResponse], ["query"]),
-    icrcX_withdraw: IDL.Func([WithdrawArgs], [WithdrawResponse], []),
-    principalToSubaccount: IDL.Func([IDL.Principal], [IDL.Opt(IDL.Vec(IDL.Nat8))], ["query"]),
+    "icrc84_all_credits" : IDL.Func(
+        [],
+        [IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Int))],
+        ["query"],
+      ),
+    "icrc84_credit" : IDL.Func([IDL.Principal], [IDL.Int], ["query"]),
+    "icrc84_deposit" : IDL.Func([DepositArgs], [DepositResponse], []),
+    "icrc84_notify" : IDL.Func(
+        [IDL.Record({ "token" : IDL.Principal })],
+        [NotifyResult],
+        [],
+      ),
+    "icrc84_supported_tokens" : IDL.Func(
+        [],
+        [IDL.Vec(IDL.Principal)],
+        ["query"],
+      ),
+    "icrc84_token_info" : IDL.Func([IDL.Principal], [TokenInfo], ["query"]),
+    "icrc84_trackedDeposit" : IDL.Func(
+        [IDL.Principal],
+        [
+          IDL.Variant({
+            "Ok" : IDL.Nat,
+            "Err" : IDL.Variant({
+              "NotAvailable" : IDL.Record({ "message" : IDL.Text }),
+            }),
+          }),
+        ],
+        ["query"],
+      ),
+    "icrc84_withdraw" : IDL.Func(
+        [
+          IDL.Record({
+            "to" : Account,
+            "token" : IDL.Principal,
+            "amount" : IDL.Nat,
+          }),
+        ],
+        [WithdrawResult],
+        [],
+      ),
+    "init" : IDL.Func([], [], []),
+    "principalToSubaccount" : IDL.Func(
+        [IDL.Principal],
+        [IDL.Opt(IDL.Vec(IDL.Nat8))],
+        ["query"],
+      ),
+    "registerAsset" : IDL.Func(
+        [IDL.Principal],
+        [
+          IDL.Variant({
+            "Ok" : IDL.Nat,
+            "Err" : IDL.Variant({ "AlreadyRegistered" : IDL.Nat }),
+          }),
+        ],
+        [],
+      ),
   });
 };
-export const init = ({ IDL }) => {
-  return [];
-};
+export const init = ({ IDL }) => { return []; };

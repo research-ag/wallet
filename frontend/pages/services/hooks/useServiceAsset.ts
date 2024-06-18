@@ -4,7 +4,7 @@ import {
   TransactionReceiverOptionEnum,
   TransactionSenderOptionEnum,
 } from "@/@types/transactions";
-import { NotifyResponse } from "@candid/icrcx/service.did";
+import { NotifyResult } from "@candid/icrcx/service.did";
 import { getAssetDetails } from "@common/libs/icrc";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { Asset } from "@redux/models/AccountModels";
@@ -28,7 +28,7 @@ export default function useServiceAsset() {
   const { userAgent } = useAppSelector((state) => state.auth);
 
   const [assetsToAdd, setAssetsToAdd] = useState<ServiceAsset[]>([]);
-  const [notifyRes, setNotifyRes] = useState<NotifyResponse>();
+  const [notifyRes, setNotifyRes] = useState<NotifyResult>();
 
   const getAssetFromUserAssets = (assetPrincipal: string) => {
     return assets.find((ast) => ast.address === assetPrincipal);
