@@ -607,7 +607,6 @@ export class RxdbDatabase extends IWalletDatabase {
    * array if no Contact object were found
    */
   async getServices(): Promise<ServiceData[]> {
-    console.log("service-find().exec()");
     try {
       const documents = await (await this.services)?.find().exec();
       return (documents && documents.map(this._mapserviceDoc)) || [];
@@ -618,8 +617,6 @@ export class RxdbDatabase extends IWalletDatabase {
   }
 
   async setServices(services: ServiceData[]): Promise<void> {
-    console.log("service-bulkUpsert");
-
     try {
       await (
         await this.services

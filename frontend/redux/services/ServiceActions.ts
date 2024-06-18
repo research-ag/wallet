@@ -12,7 +12,6 @@ export const getServicesData = async (userAgent?: HttpAgent) => {
   const myAssets = store.getState().asset.list.assets;
   const snsAssets = store.getState().asset.utilData.icr1SystemAssets;
   const serviceData = await db().getServices();
-  console.log("serviceData", serviceData);
 
   const myAgent = userAgent || store.getState().auth.userAgent;
 
@@ -239,7 +238,5 @@ export const getCreditBalance = async (
 };
 
 export const saveServices = async (services: ServiceData[]) => {
-  console.log("setServices", services);
-
   await db().setServices(services);
 };

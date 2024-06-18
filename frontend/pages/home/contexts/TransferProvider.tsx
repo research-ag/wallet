@@ -63,7 +63,6 @@ export default function TransferProvider({ children }: TransferProviderProps) {
   });
 
   const value = { transferState, setTransferState };
-  console.log(transferState);
   return <TransferContext.Provider value={{ ...value }}>{children}</TransferContext.Provider>;
 }
 
