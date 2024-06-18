@@ -77,6 +77,7 @@
   "delete.subacc.msg": "Tem certeza que deseja deletar",
   "name.sub.account": "Nome da Subconta",
   "account.indentifier": "Identificador de Conta",
+  "allowances.only": "Apenas permissões",
 
   "contact.error.invalid.name": "Nome de contato inválido",
   "contact.error.invalid.principal": "Principal de contato inválido",

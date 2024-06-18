@@ -49,8 +49,9 @@ const DbLocationModal = ({ setOpen }: DbLocationModalProps) => {
           <RadioGroup.Root value={dbLocation} onChange={handleSelectStorage}>
             <div className="flex flex-row items-center p-3">
               <RadioGroup.Item
-                className={`w-5 h-5 rounded-full border-2  outline-none p-0 ${theme === ThemesEnum.enum.light ? "border-RadioCheckColor" : "border-RadioNoCheckColorLight"
-                  }`}
+                className={`w-5 h-5 rounded-full border-2  outline-none p-0 ${
+                  theme === ThemesEnum.enum.light ? "border-RadioCheckColor" : "border-RadioNoCheckColorLight"
+                }`}
                 value={DB_Type.LOCAL}
                 id="r-local"
               >
@@ -71,8 +72,9 @@ const DbLocationModal = ({ setOpen }: DbLocationModalProps) => {
           <RadioGroup.Root value={dbLocation} onChange={handleSelectRxdb}>
             <div className="flex flex-row items-center p-3">
               <RadioGroup.Item
-                className={`w-5 h-5 rounded-full border-2  outline-none p-0 ${theme === ThemesEnum.enum.light ? "border-RadioCheckColor" : "border-RadioNoCheckColorLight"
-                  }`}
+                className={`w-5 h-5 rounded-full border-2  outline-none p-0 ${
+                  theme === ThemesEnum.enum.light ? "border-RadioCheckColor" : "border-RadioNoCheckColorLight"
+                }`}
                 value={DB_Type.CANISTER}
                 id="r-rxdb"
               >
@@ -94,7 +96,6 @@ const DbLocationModal = ({ setOpen }: DbLocationModalProps) => {
             border={(canisterIdErr && "error") || undefined}
           />
         )}
-
       </div>
       {dbLocation === DB_Type.CANISTER && (
         <CustomButton className="self-end w-fit" onClick={saveStorageType} size={"small"}>
@@ -129,7 +130,7 @@ const DbLocationModal = ({ setOpen }: DbLocationModalProps) => {
     db().setCustomDbCanisterId(canisterId);
     store.dispatch(setCustomDbCanisterId(canisterId));
     setOpen(false);
-  };
+  }
 
   function onChangeCanisterId({ target: { value } }: React.ChangeEvent<HTMLInputElement>) {
     setCanisterId(value);

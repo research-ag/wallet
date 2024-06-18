@@ -43,7 +43,9 @@ const Contacts = () => {
             <AddContactModal />
           </div>
           <div className="flex items-center justify-end w-2/12">
-            <p className="mr-2 place-self-end text-md">Allowances Only</p>
+            <p className="mr-2 place-self-end text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
+              {t("allowances.only")}
+            </p>
             <Switch checked={allowanceOnly} onChange={() => setAllowanceOnly(!allowanceOnly)} />
           </div>
         </div>

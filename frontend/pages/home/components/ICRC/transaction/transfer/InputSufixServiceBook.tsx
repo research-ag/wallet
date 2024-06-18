@@ -20,7 +20,9 @@ export default function InputSufixServiceBook() {
   const { authClient } = useAppSelector((state) => state.auth);
   const assets = useAppSelector((state) => state.asset.list.assets);
   const { transferState, setTransferState } = useTransfer();
-  const hasContacts = useAppSelector((state) => state.contacts.contacts).some((contact) => contact.accounts.some((account) => account.tokenSymbol === transferState.tokenSymbol));
+  const hasContacts = useAppSelector((state) => state.contacts.contacts).some((contact) =>
+    contact.accounts.some((account) => account.tokenSymbol === transferState.tokenSymbol),
+  );
   //
   const [searchKey, setSearchKey] = useState("");
   const currentAsset = assets.find((asset) => asset.tokenSymbol === transferState.tokenSymbol);
@@ -34,13 +36,15 @@ export default function InputSufixServiceBook() {
       </DropdownMenu.Trigger>
 
       <DropdownMenu.Portal>
-        <DropdownMenu.Content className={clsx(
-          "absolute w-[21rem] max-h-[24vh] bg-secondary-color-1-light dark:bg-level-1-color border border-primary-color  z-[1000] mt-4 scroll-y-light rounded-lg  shadow-sm",
-          {
-            "-right-[5rem]": hasContacts,
-            "-right-[3rem]": !hasContacts
-          }
-        )}>
+        <DropdownMenu.Content
+          className={clsx(
+            "absolute w-[21rem] max-h-[24vh] bg-secondary-color-1-light dark:bg-level-1-color border border-primary-color  z-[1000] mt-4 scroll-y-light rounded-lg  shadow-sm",
+            {
+              "-right-[5rem]": hasContacts,
+              "-right-[3rem]": !hasContacts,
+            },
+          )}
+        >
           <div className="flex items-center justify-center w-full px-2 py-2">
             <CustomInput
               sizeComp={"medium"}

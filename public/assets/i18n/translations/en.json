@@ -76,6 +76,7 @@
   "delete.subacc.msg": "Are you sure you want to delete",
   "name.sub.account": "Sub-account Name",
   "account.indentifier": "Account Identifier",
+  "allowances.only": "Allowances Only",
 
   "contact.error.invalid.name": "Invalid Contact Name",
   "contact.error.invalid.principal": "Invalid Contact Principal",

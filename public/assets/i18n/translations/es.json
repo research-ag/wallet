@@ -77,6 +77,7 @@
   "delete.subacc.msg": "¿Está seguro de que desea eliminar",
   "name.sub.account": "Nombre de la Subcuenta",
   "account.indentifier": "Identificador de Cuenta",
+  "allowances.only": "Solo Asignaciones",
 
   "contact.error.invalid.name": "Nombre de contacto no válido",
   "contact.error.invalid.principal": "Principal de contacto no válida",
