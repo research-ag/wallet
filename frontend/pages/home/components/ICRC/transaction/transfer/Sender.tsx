@@ -81,6 +81,8 @@ export default function Sender() {
         ...prevState,
         fromPrincipal: "",
         fromSubAccount: "",
+        toPrincipal: selected === TransferFromTypeEnum.service ? "" : prevState.toPrincipal,
+        toSubAccount: selected === TransferFromTypeEnum.service ? "" : prevState.toSubAccount,
         fromType: selected,
       }));
     }

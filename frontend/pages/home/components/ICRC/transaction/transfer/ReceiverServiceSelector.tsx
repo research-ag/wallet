@@ -60,8 +60,6 @@ export default function ServiceBookReceiver() {
       .map(formatService);
   }, [filteredServices, searchSubAccountValue]);
 
-  console.log(formattedServices);
-
   return (
     <div className="mx-4">
       <BasicSelect

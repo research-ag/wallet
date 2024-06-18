@@ -12,7 +12,7 @@ export default function Receiver() {
   const { setTransferState, transferState } = useTransfer();
   const [isManual, setIsManual] = useState<boolean>(false);
 
-  const isService = transferState.fromType === TransferFromTypeEnum.service;
+  const isSenderService = transferState.fromType === TransferFromTypeEnum.service;
   const isTransferToOwn = transferState.toType === TransferToTypeEnum.own;
 
   //
@@ -21,7 +21,7 @@ export default function Receiver() {
       <div className="w-full py-2 border-b border-opacity-25 border-gray-color-2">
         <div className="flex items-center justify-between w-full px-4 py-1">
           <p className="font-bold opacity-50 text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md">To</p>
-          {!isTransferToOwn && !isService && (
+          {!isTransferToOwn && !isSenderService && (
             <div className="flex items-center justify-center">
               <p className="mr-2 text-black-color text-md dark:text-white">{t("manual")}</p>
               <BasicSwitch checked={isManual} onChange={onCheckedChange} />
@@ -32,12 +32,12 @@ export default function Receiver() {
 
       <div>
         <div>
-          {isManual && <ReceiverManual />}
+          {isManual && !isSenderService && <ReceiverManual />}
+          {(isTransferToOwn || isSenderService) && <ReceiverOwner />}
           {!isManual && (
             <>
-              {!isTransferToOwn && !isService && <ReceiverThird />}
-              {(isTransferToOwn || isService) && <ReceiverOwner />}
-              {!isService && (
+              {!isTransferToOwn && !isSenderService && <ReceiverThird />}
+              {!isSenderService && (
                 <div className="max-w-[21rem] text-start">
                   {isTransferToOwn ? (
                     <button onClick={onChangeToThird}>
