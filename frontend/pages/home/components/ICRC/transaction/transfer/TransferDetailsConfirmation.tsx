@@ -21,7 +21,6 @@ import { TransferStatus, useTransferStatus } from "@pages/home/contexts/Transfer
 import { TransferView, useTransferView } from "@pages/home/contexts/TransferViewProvider";
 import reloadBallance from "@pages/helpers/reloadBalance";
 import { LoadingLoader } from "@components/loader";
-import contactCacheRefresh from "@pages/contacts/helpers/contactCacheRefresh";
 
 export default function TransferDetailsConfirmation() {
   const { t } = useTranslation();
@@ -191,7 +190,7 @@ export default function TransferDetailsConfirmation() {
       const endTime = new Date();
       const duration = getElapsedSecond(initTime, endTime);
       setTransferState((prev) => ({ ...prev, duration }));
-      await contactCacheRefresh();
+      await reloadBallance();
     }
   }
 

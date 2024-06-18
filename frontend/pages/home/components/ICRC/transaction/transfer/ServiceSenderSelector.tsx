@@ -124,7 +124,6 @@ export default function SenderServiceSelector() {
 
   function onOpenChange(open: boolean) {
     setIsOpen(open);
-    setSearchKey("")
-  };
-
+    setSearchKey("");
+  }
 }

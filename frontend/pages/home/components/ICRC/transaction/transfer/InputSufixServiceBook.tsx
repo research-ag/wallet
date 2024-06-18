@@ -41,6 +41,7 @@ export default function InputSufixServiceBook() {
               placeholder={t("search")}
               prefix={<img src={SearchIcon} className="w-5 h-5 mx-2" alt="search-icon" />}
               compInClass="bg-white dark:bg-SecondaryColor"
+              onKeyDown={(e) => e.stopPropagation()}
             />
           </div>
 
@@ -56,7 +57,7 @@ export default function InputSufixServiceBook() {
             .map((srv, index) => {
               const { name, principal } = srv;
               return (
-                <div
+                <DropdownMenu.Item
                   className="flex items-center justify-start px-2 py-2 bg-opacity-50 cursor-pointer hover:bg-primary-color"
                   key={`${principal}-${index}`}
                   onSelect={() => onSelectService(srv)}
@@ -68,7 +69,7 @@ export default function InputSufixServiceBook() {
                       <p className="text-left opacity-50 text-md text-black-color dark:text-white">{srv.principal}</p>
                     </div>
                   </div>
-                </div>
+                </DropdownMenu.Item>
               );
             })}
         </DropdownMenu.Content>

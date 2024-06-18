@@ -272,7 +272,7 @@ const AddAssetManual = () => {
 
   function onChangeName(e: ChangeEvent<HTMLInputElement>) {
     setNewAsset((prev: Asset) => {
-      return { ...prev, name: e.target.value };
+      return { ...prev, name: e.target.value.slice(0, 30) };
     });
   }
 

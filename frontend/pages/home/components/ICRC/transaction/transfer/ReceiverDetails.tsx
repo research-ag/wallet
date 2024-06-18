@@ -148,7 +148,7 @@ function ToOwnDisplay() {
       <div className="text-start text-black-color dark:text-secondary-color-1-light">
         <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">{getSubaccount().name}</p>
         <div className="flex">
-          <img src={getIconSrc(getAsset().logo, getAsset().symbol)} className="w-4 h-4 mr-2" alt="" />
+          <img src={getIconSrc(getAsset().logo, getAsset().tokenSymbol)} className="w-4 h-4 mr-2" alt="" />
           <p className="opacity-50 text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
             {toFullDecimal(getSubaccount().amount, Number(currentAsset?.decimal))} {getAsset().symbol}
           </p>

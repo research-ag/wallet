@@ -59,7 +59,7 @@ export default function ContactMainDetails() {
 
   function onNameChange(value: string) {
     setNewContact((prev: Contact) => ({ ...prev, name: value }));
-    if (value.length === 0)
+    if (value.length === 0 || value.length > 15)
       setNewContactErrors((prev) => ({
         ...prev,
         name: true,
