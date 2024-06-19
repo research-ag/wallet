@@ -23,6 +23,7 @@ const CodeElement = ({ tx }: CodeElementProps) => {
   const { selectedAccount } = useAppSelector((state) => state.asset.helper);
 
   const { contacts } = useAppSelector((state) => state.contacts);
+  const { services } = useAppSelector((state) => state.services);
 
   const isTo = getAddress(
     tx.type,
@@ -70,6 +71,12 @@ const CodeElement = ({ tx }: CodeElementProps) => {
           hasSubName = true;
           subName = subNameAux;
         }
+      }
+    } else {
+      const service = services.find((cntc) => cntc.principal === (isTo ? tx.to || "" : tx.from || ""));
+      if (service) {
+        hasContactName = true;
+        contactName = service.name;
       }
     }
   } else {
