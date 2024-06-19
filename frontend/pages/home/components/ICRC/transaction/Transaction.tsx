@@ -12,6 +12,7 @@ import { hexToUint8Array } from "@common/utils/hexadecimal";
 import { getAssetSymbol, getICRC1Acc, shortAddress } from "@common/utils/icrc";
 import { toFullDecimal } from "@common/utils/amount";
 import logger from "@/common/utils/logger";
+import { middleTruncation } from "@common/utils/strings";
 
 const DrawerTransaction = () => {
   const { t } = useTranslation();
@@ -36,9 +37,8 @@ const DrawerTransaction = () => {
             <div className="flex flex-row items-center justify-between w-full font-normal">
               <p>{`${t("acc.principal")}`}</p>
               <div className="flex flex-row items-center justify-start gap-2">
-                <p>{`${
-                  hasSub(false) && getPrincipal(false) ? shortAddress(getPrincipal(false) || "", 12, 12) : t("unknown")
-                }`}</p>
+                <p>{`${hasSub(false) && getPrincipal(false) ? shortAddress(getPrincipal(false) || "", 12, 12) : t("unknown")
+                  }`}</p>
                 <CustomCopy
                   size={"small"}
                   copyText={getPrincipal(false)}
@@ -107,9 +107,8 @@ const DrawerTransaction = () => {
             <div className="flex flex-row items-center justify-between w-full font-normal">
               <p>{`${t("acc.principal")}`}</p>
               <div className="flex flex-row items-center justify-start gap-2">
-                <p>{`${
-                  hasSub(true) && getPrincipal(true) ? shortAddress(getPrincipal(true) || "", 12, 12) : t("unknown")
-                }`}</p>
+                <p>{`${hasSub(true) && getPrincipal(true) ? shortAddress(getPrincipal(true) || "", 12, 12) : t("unknown")
+                  }`}</p>
                 <CustomCopy
                   size={"small"}
                   copyText={getPrincipal(true) || t("unknown")}
@@ -211,14 +210,16 @@ const DrawerTransaction = () => {
     return undefined;
   }
 
+  function formatLargeSubaccount(subaccount: string) {
+    return subaccount.length > 15 ? middleTruncation(subaccount, 10, 10) : subaccount;
+  };
+
   function getSub(to: boolean) {
     if (isICPWithSub(to)) {
-      return (
-        ICPSubaccounts.find((sub) => sub.legacy === (to ? selectedTransaction?.to : selectedTransaction?.from))
-          ?.sub_account_id || "0x0"
-      );
-    } else if (to) return selectedTransaction?.toSub || "0x0";
-    else return selectedTransaction?.fromSub || "0x0";
+      const subaccount = ICPSubaccounts.find((sub) => sub.legacy === (to ? selectedTransaction?.to : selectedTransaction?.from))?.sub_account_id;
+      return subaccount || "0x0";
+    } else if (to) return formatLargeSubaccount(selectedTransaction?.toSub || "0x0");
+    else return formatLargeSubaccount(selectedTransaction?.fromSub || "0x0");
   }
 
   function getICRCAccount(to: boolean): string {
