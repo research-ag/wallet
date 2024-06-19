@@ -2,17 +2,15 @@
 import { ReactComponent as SendUserIcon } from "@assets/svg/files/send-user-icon.svg";
 //
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import useSend from "@pages/home/hooks/useSend";
 import { useAppSelector } from "@redux/Store";
 import { ContactSubAccount } from "@/@types/transactions";
 import { middleTruncation } from "@common/utils/strings";
 import { AvatarEmpty } from "@components/avatar";
 import { Asset } from "@redux/models/AccountModels";
-import { TransferToTypeEnum, useTransfer } from "@pages/home/contexts/TransferProvider";
+import { TransferFromTypeEnum, TransferToTypeEnum, useTransfer } from "@pages/home/contexts/TransferProvider";
 
 export default function InputSufixContactBook() {
   const { setTransferState, transferState } = useTransfer();
-  const { senderPrincipal, senderSubAccount, isSenderAllowance } = useSend();
   const assets = useAppSelector((state) => state.asset.list.assets);
   const { sender } = useAppSelector((state) => state.transaction);
   const { contacts } = useAppSelector((state) => state.contacts);
@@ -69,8 +67,7 @@ export default function InputSufixContactBook() {
       const currentContact = filteredContacts[contactIndex];
 
       const contactSubAccounts: (ContactSubAccount | null)[] = currentContact.accounts.map((account) => {
-        const sameSenderAndReceiver =
-          senderPrincipal === currentContact.principal && senderSubAccount === account?.subaccountId;
+        const sameSenderAndReceiver = transferState.fromPrincipal === currentContact.principal && transferState.fromSubAccount === account?.subaccountId;
         const currentAsset = assets.find((asset) => asset.tokenSymbol === sender?.asset?.tokenSymbol) as Asset;
 
         const data: ContactSubAccount = {
@@ -90,7 +87,8 @@ export default function InputSufixContactBook() {
           subAccountName: account.name,
         };
 
-        if (isSenderAllowance()) {
+
+        if (transferState.fromType === TransferFromTypeEnum.allowanceContactBook || transferState.fromType === TransferFromTypeEnum.allowanceManual) {
           if (!sameSenderAndReceiver) return data;
         } else {
           return data;
