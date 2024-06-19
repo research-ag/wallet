@@ -22,6 +22,11 @@ import { TransferView, useTransferView } from "@pages/home/contexts/TransferView
 import reloadBallance from "@pages/helpers/reloadBalance";
 import { LoadingLoader } from "@components/loader";
 
+interface ErrorResult {
+  isError: boolean;
+  message: string;
+};
+
 export default function TransferDetailsConfirmation() {
   const { t } = useTranslation();
   const { transferState, setTransferState } = useTransfer();
@@ -88,77 +93,108 @@ export default function TransferDetailsConfirmation() {
     if (transferState.fromType === TransferFromTypeEnum.service) transferFromService();
   }
 
-  async function validateAllowanceAmount() {
-    if (!currentAsset) {
-      setErrorMessage(t("error.transfer.invalid.asset"));
-      throw new Error("validateAllowanceAmount: Asset not found");
-    }
+  // ------------------ ALLOWANCE ------------------
 
-    const fee = BigInt(currentAsset.subAccounts[0].transaction_fee);
-    const amount = toHoleBigInt(transferState.amount, Number(currentAsset?.decimal || "8"));
 
-    // allowance account balance
-    const balance = await ICRC1BalanceOf({
-      agent: userAgent,
-      canisterId: Principal.fromText(currentAsset.address),
-      owner: Principal.fromText(transferState.fromPrincipal),
-      subaccount: [new Uint8Array(hexToUint8Array(transferState.fromSubAccount))],
-    });
+  async function validateAllowanceAmount(): Promise<ErrorResult> {
+    try {
 
-    // allowance amount assigned
-    const allowance = await ICRC2Allowance({
-      agent: userAgent,
-      canisterId: Principal.fromText(currentAsset.address),
-      account: {
+      if (!currentAsset) {
+        return {
+          isError: true,
+          message: t("error.transfer.invalid.asset")
+        };
+      }
+
+      const fee = BigInt(currentAsset.subAccounts[0].transaction_fee);
+      const amount = toHoleBigInt(transferState.amount, Number(currentAsset?.decimal || "8"));
+
+      // allowance account balance
+      const balance = await ICRC1BalanceOf({
+        agent: userAgent,
+        canisterId: Principal.fromText(currentAsset.address),
         owner: Principal.fromText(transferState.fromPrincipal),
         subaccount: [new Uint8Array(hexToUint8Array(transferState.fromSubAccount))],
-      },
-      spender: {
-        owner: userPrincipal,
-        subaccount: [],
-      },
-    });
-    const allowanceAmount = allowance.allowance;
+      });
 
-    // case 1: allowance amount assigned === 0 (allowance not assigned or expired)
-    if (allowanceAmount === BigInt(0)) {
-      setErrorMessage(t("error.transfer.allowance.not.exist.expired"));
-      throw new Error("validateAllowanceAmount: Allowance not assigned or expired");
-    }
+      // allowance amount assigned
+      const allowance = await ICRC2Allowance({
+        agent: userAgent,
+        canisterId: Principal.fromText(currentAsset.address),
+        account: {
+          owner: Principal.fromText(transferState.fromPrincipal),
+          subaccount: [new Uint8Array(hexToUint8Array(transferState.fromSubAccount))],
+        },
+        spender: {
+          owner: userPrincipal,
+          subaccount: [],
+        },
+      });
+      const allowanceAmount = allowance.allowance;
 
-    // case 2: user input amount + fee <= allowance account assigned (allowance is not enough)
-    if (amount + fee > allowanceAmount) {
-      setErrorMessage(t("error.transfer.allowance.insufficient"));
-      throw new Error("validateAllowanceAmount: Insufficient allowance");
-    }
-
-    // case 3: user input amount + free <= allowance account balance (allowance sub account balance is not enough)
-    if (amount + fee > balance) {
-      setErrorMessage(t("error.transfer.allowance.subaccount.balance.insufficient"));
-      throw new Error("validateAllowanceAmount: Insufficient balance");
-    }
-
-    // case 4: (receiver service) user input amount => min deposit amount (more equal than or more than)
-    if (transferState.toType === TransferToTypeEnum.thirdPartyService) {
-      if (!serviceReceiverAsset) {
-        setErrorMessage(t("error.transfer.to.service.invalid"));
-        throw new Error("validateAllowanceAmount: Receiver service not found");
+      // case 1: allowance amount assigned === 0 (allowance not assigned or expired)
+      if (allowanceAmount === BigInt(0)) {
+        return {
+          isError: true,
+          message: t("error.transfer.allowance.not.exist.expired")
+        };
       }
 
-      const minDeposit = BigInt(serviceReceiverAsset.minDeposit);
-      if (amount < minDeposit) {
-        setErrorMessage(t("error.transfer.amount.less.minimun.deposit"));
-        throw new Error("validateAllowanceAmount: Amount is less than min deposit");
+      // case 2: user input amount + fee <= allowance account assigned (allowance is not enough)
+      if (amount + fee > allowanceAmount) {
+        return {
+          isError: true,
+          message: t("error.transfer.allowance.insufficient")
+        };
       }
-    }
+
+      // case 3: user input amount + free <= allowance account balance (allowance sub account balance is not enough)
+      if (amount + fee > balance) {
+        return {
+          isError: true,
+          message: t("error.transfer.allowance.subaccount.balance.insufficient"),
+        };
+      }
+
+      // case 4: (receiver service) user input amount => min deposit amount (more equal than or more than)
+      if (transferState.toType === TransferToTypeEnum.thirdPartyService) {
+        if (!serviceReceiverAsset) {
+          return {
+            isError: true,
+            message: t("error.transfer.to.service.invalid"),
+          };
+        }
+
+        const minDeposit = BigInt(serviceReceiverAsset.minDeposit);
+        if (amount < minDeposit) {
+          return {
+            isError: true,
+            message: t("error.transfer.amount.less.minimun.deposit"),
+          };
+        }
+      }
+
+      return { isError: false, message: "" };
+
+    } catch (error) {
+      logger.debug(error);
+      return { isError: true, message: "" };
+    };
   }
 
   async function transferFromAllowance() {
     const initTime = new Date();
+    setIsLoading(true);
+    setErrorMessage("");
+    const validationResult = await validateAllowanceAmount();
+
     try {
-      setIsLoading(true);
-      setErrorMessage("");
-      await validateAllowanceAmount();
+
+      if (validationResult.isError) {
+        setErrorMessage(validationResult.message);
+        throw new Error(validationResult.message);
+      }
+
       setIsLoading(false);
       setStatus(TransferStatus.SENDING);
 
@@ -185,7 +221,9 @@ export default function TransferDetailsConfirmation() {
     } catch (error) {
       logger.debug(error);
       setIsLoading(false);
-      setStatus(TransferStatus.ERROR);
+
+      const isUserVisibleError = validationResult.message.length > 0 && validationResult.isError;
+      if (!isUserVisibleError) setStatus(TransferStatus.ERROR);
     } finally {
       const endTime = new Date();
       const duration = getElapsedSecond(initTime, endTime);
@@ -194,50 +232,74 @@ export default function TransferDetailsConfirmation() {
     }
   }
 
-  async function validateOwnAmount() {
-    // case 1: input user amount + fee <= own subaccount balance
-    const currentSubAccount = currentAsset?.subAccounts.find(
-      (subAccount) => subAccount.sub_account_id === transferState.fromSubAccount,
-    );
-    if (!currentSubAccount) {
-      setErrorMessage(t("error.transfer.from.invalid"));
-      throw new Error("validateOwnAmount: Sub account not found");
-    }
+  // ------------------ OWN SUB ACCOUNT ------------------
 
-    const balance = BigInt(currentSubAccount.amount);
-    const fee = BigInt(currentSubAccount.transaction_fee);
-    const amount = toHoleBigInt(transferState.amount, Number(currentAsset?.decimal || "8"));
+  async function validateOwnAmount(): Promise<ErrorResult> {
+    try {
 
-    if (amount + fee > balance) {
-      setErrorMessage(t("error.transfer.from.no.balance"));
-      throw new Error("validateOwnAmount: Insufficient balance");
-    }
-
-    // case 3 (receiver service) if user input amount >= min deposit amount (more equal than or more than)
-    if (transferState.toType === TransferToTypeEnum.thirdPartyService) {
-      if (!serviceReceiverAsset) {
-        setErrorMessage(t("error.transfer.to.service.invalid"));
-        throw new Error("validateOwnAmount: Receiver service not found");
+      // case 1: input user amount + fee <= own subaccount balance
+      const currentSubAccount = currentAsset?.subAccounts.find(
+        (subAccount) => subAccount.sub_account_id === transferState.fromSubAccount,
+      );
+      if (!currentSubAccount) {
+        return {
+          isError: true,
+          message: t("error.transfer.from.invalid"),
+        };
       }
 
-      const minDeposit = BigInt(serviceReceiverAsset.minDeposit);
+      const balance = BigInt(currentSubAccount.amount);
+      const fee = BigInt(currentSubAccount.transaction_fee);
       const amount = toHoleBigInt(transferState.amount, Number(currentAsset?.decimal || "8"));
 
-      if (amount < minDeposit) {
-        setErrorMessage(t("error.transfer.amount.less.minimun.deposit"));
-        throw new Error("validateOwnAmount: Amount is less than min deposit");
+      if (amount + fee > balance) {
+        return {
+          isError: true,
+          message: t("error.transfer.from.no.enough.balance"),
+        }
       }
-    }
+
+      // case 3 (receiver service) if user input amount >= min deposit amount (more equal than or more than)
+      if (transferState.toType === TransferToTypeEnum.thirdPartyService) {
+        if (!serviceReceiverAsset) {
+          return {
+            isError: true,
+            message: t("error.transfer.to.service.invalid"),
+          };
+        }
+
+        const minDeposit = BigInt(serviceReceiverAsset.minDeposit);
+        const amount = toHoleBigInt(transferState.amount, Number(currentAsset?.decimal || "8"));
+
+        if (amount < minDeposit) {
+          return {
+            isError: true,
+            message: t("error.transfer.amount.less.minimun.deposit"),
+          };
+        }
+      }
+
+      return { isError: false, message: "" };
+
+    } catch (error) {
+      logger.debug(error);
+      return { isError: true, message: "" }
+    };
   }
 
   async function transferFromOwn() {
     const initTime = new Date();
-    try {
-      setIsLoading(true);
-      setErrorMessage("");
-      await validateOwnAmount();
-      setIsLoading(false);
+    setIsLoading(true);
+    setErrorMessage("");
+    const validationResult = await validateOwnAmount();
 
+    try {
+      if (validationResult.isError) {
+        setErrorMessage(validationResult.message);
+        throw new Error(validationResult.message);
+      }
+
+      setIsLoading(false);
       setStatus(TransferStatus.SENDING);
 
       // INFO: at this point the asset information is valid
@@ -259,7 +321,9 @@ export default function TransferDetailsConfirmation() {
     } catch (error) {
       logger.debug(error);
       setIsLoading(false);
-      setStatus(TransferStatus.ERROR);
+
+      const isUserVisibleError = validationResult.message.length > 0 && validationResult.isError;
+      if (!isUserVisibleError) setStatus(TransferStatus.ERROR);
     } finally {
       const endTime = new Date();
       const duration = getElapsedSecond(initTime, endTime);
@@ -268,29 +332,38 @@ export default function TransferDetailsConfirmation() {
     }
   }
 
-  async function validateServiceAmount() {
+  // ------------------ SERVICE ------------------
+
+  async function validateServiceAmount(): Promise<ErrorResult> {
     // case 1: if user input amount >= min withdraw amount (more equal than or more than)
     if (!serviceSenderAsset) {
-      setErrorMessage(t("error.transfer.from.service.invalid"));
-      throw new Error("validateServiceAmount: Sender service not found");
+      return { isError: true, message: t("error.transfer.from.service.invalid") };
     }
 
     const minWithdraw = BigInt(serviceSenderAsset.minWithdraw);
     const amount = toHoleBigInt(transferState.amount, Number(currentAsset?.decimal || "8"));
     if (amount < minWithdraw) {
-      setErrorMessage(t("error.transfer.amount.less.minimun.withdrawl"));
-      throw new Error("validateServiceAmount: Amount is less than min withdraw");
+      return { isError: true, message: t("error.transfer.amount.less.minimun.withdrawl") };
     }
+
+    return { isError: false, message: "" };
   }
 
   async function transferFromService() {
     const initTime = new Date();
-    try {
-      setIsLoading(true);
-      setErrorMessage("");
-      await validateServiceAmount();
-      setIsLoading(false);
 
+
+    setIsLoading(true);
+    setErrorMessage("");
+    const validationResult = await validateServiceAmount();
+
+    try {
+      if (validationResult.isError) {
+        setErrorMessage(validationResult.message);
+        throw new Error(validationResult.message);
+      }
+
+      setIsLoading(false);
       setStatus(TransferStatus.SENDING);
 
       const res = await ICRCXWithdraw({
@@ -316,7 +389,9 @@ export default function TransferDetailsConfirmation() {
     } catch (error) {
       logger.debug(error);
       setIsLoading(false);
-      setStatus(TransferStatus.ERROR);
+
+      const isUserVisibleError = validationResult.message.length > 0 && validationResult.isError;
+      if (!isUserVisibleError) setStatus(TransferStatus.ERROR);
     } finally {
       const endTime = new Date();
       const duration = getElapsedSecond(initTime, endTime);

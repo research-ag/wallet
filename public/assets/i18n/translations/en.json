@@ -250,6 +250,7 @@
   "error.transfer.from.invalid": "FROM is not valid",
   "error.transfer.to.invalid": "TO is not valid",
   "error.transfer.from.no.balance": "FROM has no balance",
+  "error.transfer.from.no.enough.balance": "FROM has no enough balance",
   "error.transfer.from.no.cover.fee": "FROM has no balance to cover fee",
   "error.transfer.from.to.subaccounts.must.different": "FROM and TO subaccounts must be different",
   "error.transfer.from.to.principal.must.same": "FROM and TO subaccounts must be different",

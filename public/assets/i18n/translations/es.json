@@ -250,6 +250,7 @@
   "error.transfer.from.invalid": "DE no es válido",
   "error.transfer.to.invalid": "PARA no es válido",
   "error.transfer.from.no.balance": "DE no tiene saldo",
+  "error.transfer.from.no.enough.balance": "DE no tiene saldo suficiente",
   "error.transfer.from.no.cover.fee": "DE no tiene saldo para cubrir la tarifa",
   "error.transfer.from.to.subaccounts.must.different": "Las subcuentas DE y PARA deben ser diferentes",
   "error.transfer.from.to.principal.must.same": "Las subcuentas DE y PARA deben ser iguales (solo para transferencias entre cuentas principales)",

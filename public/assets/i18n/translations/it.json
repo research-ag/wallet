@@ -250,6 +250,7 @@
   "error.transfer.from.invalid": "DA non è valido",
   "error.transfer.to.invalid": "A non è valido",
   "error.transfer.from.no.balance": "DA non ha saldo",
+  "error.transfer.from.no.enough.balance": "DA non ha saldo sufficiente",
   "error.transfer.from.no.cover.fee": "DA non ha saldo sufficiente per coprire la commissione",
   "error.transfer.from.to.subaccounts.must.different": "Le sottoclassi DA e A devono essere diverse",
   "error.transfer.from.to.principal.must.same": "Le sottoclassi DA e A devono essere uguali (solo per trasferimenti tra conti principali)",
