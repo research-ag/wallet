@@ -8,23 +8,29 @@ import InputSufixContactBook from "@/pages/home/components/ICRC/transaction/tran
 import InputSufixServiceBook from "@/pages/home/components/ICRC/transaction/transfer/InputSufixServiceBook";
 
 export default function ThidInputSufix() {
+  const { transferState } = useTransfer();
   const contacts = useAppSelector((state) => state.contacts.contacts);
   const services = useAppSelector((state) => state.services.services);
+  const assets = useAppSelector((state) => state.asset.list.assets);
 
   //
-  const hasContacts = contacts.length > 0;
-  const hasContactsAccounts = contacts.some((contact) => contact.accounts.length > 0);
-  const displayContact = hasContacts && hasContactsAccounts;
+  const hasContactsAccounts = contacts.some((contact) =>
+    contact.accounts.some((account) => account.tokenSymbol === transferState.tokenSymbol),
+  );
 
   //
-  const hasServices = services.length > 0;
-  const hasServicesAssets = services.some((service) => service.assets.length > 0);
-  const displayService = hasServices && hasServicesAssets;
+  const currentAsset = assets.find((asset) => asset.tokenSymbol === transferState.tokenSymbol);
+
+  const hasServicesAssets = services.some((service) =>
+    service.assets.some((asset) => {
+      return asset.principal === currentAsset?.address;
+    }),
+  );
 
   return (
     <div className="relative flex items-center justify-center gap-2">
-      {displayService && <InputSufixServiceBook />}
-      {displayContact && <InputSufixContactBook />}
+      {hasServicesAssets && <InputSufixServiceBook />}
+      {hasContactsAccounts && <InputSufixContactBook />}
       <InputSufixScanner />
     </div>
   );

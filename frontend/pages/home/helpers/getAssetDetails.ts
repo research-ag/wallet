@@ -10,6 +10,7 @@ import ICRC1BalanceOf from "@/common/libs/icrcledger/ICRC1BalanceOf";
 import ICRC1SupportedStandards from "@/common/libs/icrcledger/ICRC1SupportedStandards";
 import { hexToUint8Array } from "@common/utils/hexadecimal";
 import { assetMutateInitialState } from "@/pages/home/hooks/useAssetMutate";
+import logger from "@/common/utils/logger";
 
 interface DetailsParams {
   canisterId: Principal | string;
@@ -92,7 +93,7 @@ export default async function getAssetDetails(params: DetailsParams): Promise<As
 
     return asset;
   } catch (error) {
-    console.error(error);
+    logger.debug(error);
     return assetMutateInitialState;
   }
 }
