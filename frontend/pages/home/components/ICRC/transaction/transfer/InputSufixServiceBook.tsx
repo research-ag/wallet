@@ -69,7 +69,7 @@ export default function InputSufixServiceBook(props: InputSufixServiceBookProps)
               let isSameAsset = false;
 
               if (currentAsset) {
-                isSameAsset = !!srv.assets.find((asset) => asset.principal === currentAsset.address);
+                isSameAsset = !!srv.assets.find((asset) => asset.principal === currentAsset.address && asset.visible);
               }
 
               return isSameAsset && (key === "" || isServiceNameIncluded || isServicePrincipalIncluded);
