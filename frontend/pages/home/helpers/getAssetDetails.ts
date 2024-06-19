@@ -94,6 +94,6 @@ export default async function getAssetDetails(params: DetailsParams): Promise<As
     return asset;
   } catch (error) {
     logger.debug(error);
-    return assetMutateInitialState;
+    return undefined;
   }
 }

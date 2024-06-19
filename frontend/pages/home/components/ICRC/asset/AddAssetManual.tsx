@@ -322,17 +322,18 @@ const AddAssetManual = () => {
           ledgerIndex: newAsset.index,
           sortIndex: newAsset.sortIndex,
         });
+        if (newAssetUpdated)
+          setNewAsset((prev: Asset) => {
+            const newAsset: Asset = {
+              ...prev,
+              ...newAssetUpdated,
+            };
+            return newAsset;
+          });
+        else setErrToken(t("add.asset.import.error"));
 
-        setNewAsset((prev: Asset) => {
-          const newAsset: Asset = {
-            ...prev,
-            ...newAssetUpdated,
-          };
-          return newAsset;
-        });
-
-        setValidToken(true);
-        validData = true;
+        setValidToken(!!newAssetUpdated);
+        validData = !!newAssetUpdated;
       } catch (e) {
         setErrToken(t("add.asset.import.error"));
         setValidToken(false);
@@ -340,6 +341,7 @@ const AddAssetManual = () => {
       }
     }
     const isIndexValid = await isAssetIndexValid(newAsset.index);
+
     if (!isIndexValid) validData = false;
     setValidIndex(isIndexValid);
 
