@@ -2,7 +2,7 @@ import { TransactionDrawer } from "@/@types/transactions";
 import { CustomButton } from "@components/button";
 import { BasicDrawer } from "@components/drawer";
 import { useAppSelector } from "@redux/Store";
-import { resetSendStateAction, setTransactionDrawerAction } from "@redux/transaction/TransactionActions";
+import { setTransactionDrawerAction } from "@redux/transaction/TransactionActions";
 import { useTranslation } from "react-i18next";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 import { DrawerOptionEnum } from "@/common/const";
@@ -11,11 +11,13 @@ import DrawerReceive from "@/pages/home/components/ICRC/transaction/DrawerReceiv
 import clsx from "clsx";
 import { useMemo } from "react";
 import Transfer from "@/pages/home/components/ICRC/transaction/transfer";
+import { TransferFromTypeEnum, TransferToTypeEnum, useTransfer } from "@pages/home/contexts/TransferProvider";
 
 const selectedButton = "border-AccpetButtonColor";
 const unselectedButton = "text-PrimaryTextColorLight dark:text-PrimaryTextColor";
 
 export default function SendReceiveDrawer() {
+  const { setTransferState } = useTransfer();
   const { transactionDrawer } = useAppSelector((state) => state.transaction);
   const { watchOnlyMode } = useAppSelector((state) => state.auth);
   const { t } = useTranslation();
@@ -54,8 +56,18 @@ export default function SendReceiveDrawer() {
         <CloseIcon
           className="cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"
           onClick={() => {
+            setTransferState({
+              tokenSymbol: "",
+              fromType: TransferFromTypeEnum.own,
+              fromPrincipal: "",
+              fromSubAccount: "",
+              toType: TransferToTypeEnum.thirdPartyICRC,
+              toPrincipal: "",
+              toSubAccount: "",
+              amount: "",
+              duration: "",
+            });
             setTransactionDrawerAction(TransactionDrawer.NONE);
-            resetSendStateAction();
           }}
         />
       </div>

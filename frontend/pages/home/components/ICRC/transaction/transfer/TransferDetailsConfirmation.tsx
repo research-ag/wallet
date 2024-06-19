@@ -25,7 +25,7 @@ import { LoadingLoader } from "@components/loader";
 interface ErrorResult {
   isError: boolean;
   message: string;
-};
+}
 
 export default function TransferDetailsConfirmation() {
   const { t } = useTranslation();
@@ -95,14 +95,12 @@ export default function TransferDetailsConfirmation() {
 
   // ------------------ ALLOWANCE ------------------
 
-
   async function validateAllowanceAmount(): Promise<ErrorResult> {
     try {
-
       if (!currentAsset) {
         return {
           isError: true,
-          message: t("error.transfer.invalid.asset")
+          message: t("error.transfer.invalid.asset"),
         };
       }
 
@@ -136,7 +134,7 @@ export default function TransferDetailsConfirmation() {
       if (allowanceAmount === BigInt(0)) {
         return {
           isError: true,
-          message: t("error.transfer.allowance.not.exist.expired")
+          message: t("error.transfer.allowance.not.exist.expired"),
         };
       }
 
@@ -144,7 +142,7 @@ export default function TransferDetailsConfirmation() {
       if (amount + fee > allowanceAmount) {
         return {
           isError: true,
-          message: t("error.transfer.allowance.insufficient")
+          message: t("error.transfer.allowance.insufficient"),
         };
       }
 
@@ -175,11 +173,10 @@ export default function TransferDetailsConfirmation() {
       }
 
       return { isError: false, message: "" };
-
     } catch (error) {
       logger.debug(error);
       return { isError: true, message: "" };
-    };
+    }
   }
 
   async function transferFromAllowance() {
@@ -189,7 +186,6 @@ export default function TransferDetailsConfirmation() {
     const validationResult = await validateAllowanceAmount();
 
     try {
-
       if (validationResult.isError) {
         setErrorMessage(validationResult.message);
         throw new Error(validationResult.message);
@@ -236,7 +232,6 @@ export default function TransferDetailsConfirmation() {
 
   async function validateOwnAmount(): Promise<ErrorResult> {
     try {
-
       // case 1: input user amount + fee <= own subaccount balance
       const currentSubAccount = currentAsset?.subAccounts.find(
         (subAccount) => subAccount.sub_account_id === transferState.fromSubAccount,
@@ -256,7 +251,7 @@ export default function TransferDetailsConfirmation() {
         return {
           isError: true,
           message: t("error.transfer.from.no.enough.balance"),
-        }
+        };
       }
 
       // case 3 (receiver service) if user input amount >= min deposit amount (more equal than or more than)
@@ -280,11 +275,10 @@ export default function TransferDetailsConfirmation() {
       }
 
       return { isError: false, message: "" };
-
     } catch (error) {
       logger.debug(error);
-      return { isError: true, message: "" }
-    };
+      return { isError: true, message: "" };
+    }
   }
 
   async function transferFromOwn() {
@@ -351,7 +345,6 @@ export default function TransferDetailsConfirmation() {
 
   async function transferFromService() {
     const initTime = new Date();
-
 
     setIsLoading(true);
     setErrorMessage("");

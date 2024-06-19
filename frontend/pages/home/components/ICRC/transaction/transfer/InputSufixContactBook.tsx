@@ -12,7 +12,6 @@ import { TransferFromTypeEnum, TransferToTypeEnum, useTransfer } from "@pages/ho
 export default function InputSufixContactBook() {
   const { setTransferState, transferState } = useTransfer();
   const assets = useAppSelector((state) => state.asset.list.assets);
-  const { sender } = useAppSelector((state) => state.transaction);
   const { contacts } = useAppSelector((state) => state.contacts);
 
   return (
@@ -67,8 +66,10 @@ export default function InputSufixContactBook() {
       const currentContact = filteredContacts[contactIndex];
 
       const contactSubAccounts: (ContactSubAccount | null)[] = currentContact.accounts.map((account) => {
-        const sameSenderAndReceiver = transferState.fromPrincipal === currentContact.principal && transferState.fromSubAccount === account?.subaccountId;
-        const currentAsset = assets.find((asset) => asset.tokenSymbol === sender?.asset?.tokenSymbol) as Asset;
+        const sameSenderAndReceiver =
+          transferState.fromPrincipal === currentContact.principal &&
+          transferState.fromSubAccount === account?.subaccountId;
+        const currentAsset = assets.find((asset) => asset.tokenSymbol === transferState.tokenSymbol) as Asset;
 
         const data: ContactSubAccount = {
           contactName: currentContact.name,
@@ -87,8 +88,10 @@ export default function InputSufixContactBook() {
           subAccountName: account.name,
         };
 
-
-        if (transferState.fromType === TransferFromTypeEnum.allowanceContactBook || transferState.fromType === TransferFromTypeEnum.allowanceManual) {
+        if (
+          transferState.fromType === TransferFromTypeEnum.allowanceContactBook ||
+          transferState.fromType === TransferFromTypeEnum.allowanceManual
+        ) {
           if (!sameSenderAndReceiver) return data;
         } else {
           return data;

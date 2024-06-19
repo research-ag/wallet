@@ -4,10 +4,9 @@ import { ContactSubAccount } from "@/@types/transactions";
 import { AvatarEmpty } from "@components/avatar";
 import { SelectOption } from "@/@types/components";
 import { useAppSelector } from "@redux/Store";
-import useSend from "@pages/home/hooks/useSend";
 import { middleTruncation } from "@/common/utils/strings";
 import { Asset } from "@redux/models/AccountModels";
-import { TransferToTypeEnum, useTransfer } from "@pages/home/contexts/TransferProvider";
+import { TransferFromTypeEnum, TransferToTypeEnum, useTransfer } from "@pages/home/contexts/TransferProvider";
 import logger from "@/common/utils/logger";
 
 export default function ReceiverContactSelector() {
@@ -15,7 +14,6 @@ export default function ReceiverContactSelector() {
   const [searchSubAccountValue, setSearchSubAccountValue] = useState<string | null>(null);
   const { contacts } = useAppSelector((state) => state.contacts);
   const assets = useAppSelector((state) => state.asset.list.assets);
-  const { senderPrincipal, senderSubAccount, isSenderAllowance } = useSend();
 
   const filteredContacts: ContactSubAccount[] = (() => {
     if (!contacts || !contacts.length) return [];
@@ -26,7 +24,8 @@ export default function ReceiverContactSelector() {
 
       const contactSubAccounts: (ContactSubAccount | null)[] = currentContact.accounts.map((account) => {
         const sameSenderAndReceiver =
-          senderPrincipal === currentContact.principal && senderSubAccount === account?.subaccountId;
+          transferState.fromPrincipal === currentContact.principal &&
+          transferState.fromSubAccount === account?.subaccountId;
         const currentAsset = assets.find((asset) => asset.tokenSymbol === transferState.tokenSymbol) as Asset;
 
         const data: ContactSubAccount = {
@@ -46,7 +45,10 @@ export default function ReceiverContactSelector() {
           subAccountName: account.name,
         };
 
-        if (isSenderAllowance()) {
+        if (
+          transferState.fromType === TransferFromTypeEnum.allowanceContactBook ||
+          transferState.fromType === TransferFromTypeEnum.allowanceManual
+        ) {
           if (!sameSenderAndReceiver) return data;
         } else {
           return data;

@@ -8,6 +8,7 @@ import { useAppSelector } from "@redux/Store";
 import Loader from "./components/Loader";
 import WorkersWrapper from "@/wrappers/WorkersWrapper";
 import { RoutingPathEnum } from "@common/const";
+import TransferProvider from "./home/contexts/TransferProvider";
 
 const Login = lazy(() => import("@/pages/login"));
 const Home = lazy(() => import("@/pages/home"));
@@ -27,19 +28,21 @@ const SwitchRoute = () => {
         {/* NORMAL USERS */}
         {!superAdmin && authenticated && (
           <WorkersWrapper>
-            {/* eslint-disable-next-line jsx-a11y/aria-role */}
-            <LayoutComponent role={1} history={history} isLoginPage={false}>
-              <Switch>
-                <PrivateRoute
-                  exact
-                  path="/"
-                  authenticated={authenticated}
-                  allowByRole={true}
-                  Component={getComponentAuth()}
-                />
-                <Redirect to={"/"} />
-              </Switch>
-            </LayoutComponent>
+            <TransferProvider>
+              {/* eslint-disable-next-line jsx-a11y/aria-role */}
+              <LayoutComponent role={1} history={history} isLoginPage={false}>
+                <Switch>
+                  <PrivateRoute
+                    exact
+                    path="/"
+                    authenticated={authenticated}
+                    allowByRole={true}
+                    Component={getComponentAuth()}
+                  />
+                  <Redirect to={"/"} />
+                </Switch>
+              </LayoutComponent>
+            </TransferProvider>
           </WorkersWrapper>
         )}
 
