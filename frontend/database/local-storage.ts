@@ -29,6 +29,7 @@ import {
 import { Contact } from "@redux/models/ContactsModels";
 import { ServiceData } from "@redux/models/ServiceModels";
 import logger from "@/common/utils/logger";
+import { resetAssetAmount } from "@pages/home/helpers/assets";
 
 export class LocalStorageDatabase extends IWalletDatabase {
   // Singleton pattern
@@ -80,7 +81,8 @@ export class LocalStorageDatabase extends IWalletDatabase {
    */
   private async _assetStateSync(newAssets?: Asset[]): Promise<void> {
     const assets = newAssets || JSON.parse(localStorage.getItem(`assets-${this.principalId}`) || "[]");
-    store.dispatch(setAssets(assets));
+    const noBalanceAssets = resetAssetAmount(assets);
+    store.dispatch(setAssets(noBalanceAssets));
     assets[0].tokenSymbol && store.dispatch(setAccordionAssetIdx([assets[0].tokenSymbol]));
   }
 

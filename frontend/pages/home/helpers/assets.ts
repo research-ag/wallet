@@ -126,3 +126,14 @@ export async function refreshAssetBalances(assets: Asset[], options: RefreshOpti
   const result = await Promise.all(assets.map((asset: Asset) => refreshAsset(asset, options)));
   return result;
 }
+
+export function resetAssetAmount(assets: Asset[]) {
+  return assets.map((asset) => ({
+    ...asset,
+    subAccounts: asset.subAccounts.map((subaccount) => ({
+      ...subaccount,
+      amount: "0",
+      currency_amount: "0"
+    }))
+  }))
+};

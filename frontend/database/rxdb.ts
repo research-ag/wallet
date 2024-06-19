@@ -247,7 +247,17 @@ export class RxdbDatabase extends IWalletDatabase {
     const documents = await (await this.assets)?.find().exec();
     const result = (documents && documents.map(this._mapAssetDoc)) || [];
     const assets = newAssets || result || [];
-    store.dispatch(setAssets(assets));
+
+    const noBalanceAssets = assets.map((asset) => ({
+      ...asset,
+      subAccounts: asset.subAccounts.map((subaccount) => ({
+        ...subaccount,
+        amount: "0",
+        currency_amount: "0"
+      }))
+    }))
+
+    store.dispatch(setAssets(noBalanceAssets));
     assets[0]?.tokenSymbol && store.dispatch(setAccordionAssetIdx([assets[0].tokenSymbol]));
   }
 
@@ -800,13 +810,13 @@ export class RxdbDatabase extends IWalletDatabase {
   private async _assetsPushHandler(items: any[]): Promise<AssetRxdbDocument[]> {
     const arg = items.map(
       (x) =>
-        ({
-          ...x,
-          sortIndex: x.sortIndex,
-          updatedAt: Math.floor(Date.now() / 1000),
-          logo: extractValueFromArray(x.logo),
-          index: extractValueFromArray(x.index),
-        } as AssetRxdbDocument),
+      ({
+        ...x,
+        sortIndex: x.sortIndex,
+        updatedAt: Math.floor(Date.now() / 1000),
+        logo: extractValueFromArray(x.logo),
+        index: extractValueFromArray(x.index),
+      } as AssetRxdbDocument),
     );
 
     await this.replicaCanister?.pushAssets(arg);
