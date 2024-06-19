@@ -66,7 +66,7 @@ const TopBarComponent = ({ isLoginPage }: { isLoginPage: boolean }) => {
           )}
           {!isLoginPage && (
             <div className="flex flex-row items-center justify-start gap-3">
-              {identity && <Pill text={address as string} start={6} end={4} icon={ethUrl} />}
+              {identity && <Pill text={(address as string) || ""} start={6} end={4} icon={ethUrl} />}
               {!watchOnlyMode && <Pill text={authClient} start={12} end={10} icon={icUrl} />}
               {watchOnlyMode && <WatchOnlyPill text={authClient} icon={icUrl} />}
               <CustomCopy size={"small"} copyText={authClient} />

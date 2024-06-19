@@ -926,25 +926,29 @@ export class RxdbDatabase extends IWalletDatabase {
 
   private async _doesRecordByPrincipalExist() {
     // Look for entry record by current principal ID
-    const exist: boolean = await this.replicaCanister?.doesStorageExist();
+    try {
+      const exist: boolean = await this.replicaCanister?.doesStorageExist();
 
-    // If does not exist it means that this is a brand new account
-    if (!exist) {
-      try {
-        await (
-          await this.assets
-        )?.bulkInsert(
-          defaultTokens.map((dT) => ({
-            ...dT,
-            index: extractValueFromArray(dT.index),
-            logo: extractValueFromArray(dT.logo),
-            deleted: false,
-            updatedAt: Date.now(),
-          })),
-        );
-      } catch (e) {
-        logger.debug("RxDb DoesDBExist:", e);
+      // If does not exist it means that this is a brand new account
+      if (!exist) {
+        try {
+          await (
+            await this.assets
+          )?.bulkInsert(
+            defaultTokens.map((dT) => ({
+              ...dT,
+              index: extractValueFromArray(dT.index),
+              logo: extractValueFromArray(dT.logo),
+              deleted: false,
+              updatedAt: Date.now(),
+            })),
+          );
+        } catch (e) {
+          logger.debug("RxDb DoesDBExist:", e);
+        }
       }
+    } catch (e) {
+      logger.debug("RxDb DoesDBExist:", e);
     }
   }
 }

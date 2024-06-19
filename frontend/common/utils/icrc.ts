@@ -24,7 +24,7 @@ export const getICRC1Acc = ({ owner, subaccount }: IcrcAccount): string => {
 };
 
 export const shortAddress = (address: string, digitsL: number, digitsR: number, prefix?: string, sufix?: string) => {
-  if (address.length > digitsL + digitsR)
+  if (address?.length || 0 > digitsL + digitsR)
     return `${prefix ? prefix : ""}${address.slice(0, digitsL)} ... ${address.slice(-digitsR)}${sufix ? sufix : ""}`;
   else return address;
 };
