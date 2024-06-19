@@ -124,7 +124,7 @@ export default function AssetSelect(props: AssetSelectProps) {
 }
 
 const triggerStyles = (error: boolean) =>
-  clsx("border p-0 rounded-md dark:bg-level-2-color bg-white w-full max-w-[10rem] px-[0.2rem] h-[2.2rem]", {
+  clsx("border-[2px] p-0 rounded-md dark:bg-level-2-color bg-white w-full max-w-[10rem] px-[0.2rem] h-[2.2rem]", {
     "border-slate-color-error": error,
     "border-primary-color": !error,
   });

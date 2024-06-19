@@ -25,8 +25,7 @@ import { db, DB_Type } from "@/database/db";
 import { setTransactions, setTxWorker } from "@/redux/transaction/TransactionReducer";
 import { addWatchOnlySessionToLocal } from "@pages/helpers/watchOnlyStorage";
 import watchOnlyRefresh from "@pages/helpers/watchOnlyRefresh";
-import { getServicesData } from "@/redux/services/ServiceActions";
-import { setServiceAssets, setServices, setServicesData } from "@/redux/services/ServiceReducer";
+import { setServices, setServicesData } from "@/redux/services/ServiceReducer";
 
 const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${
   import.meta.env.VITE_APP_LOGO

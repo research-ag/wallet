@@ -68,7 +68,8 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
               intent={"primary"}
               placeholder={t("name.sub.account")}
               onChange={onAccountNameChange}
-              className="h-[2.2rem] dark:bg-level-2-color bg-white rounded-lg"
+              className="h-[2.2rem] dark:bg-level-2-color bg-white rounded-lg border-[2px]"
+              inputClass="h-[2rem]"
               border={errors.name ? "error" : "selected"}
               sizeComp={"xLarge"}
               sizeInput="small"
@@ -90,6 +91,7 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
               setIsHexadecimal={setIsHexadecimal}
               error={errors.subaccountId}
               clearErrors={clearErrors}
+              setErrors={setErrors}
             />
           </div>
           <div className=" w-[26.1%]">

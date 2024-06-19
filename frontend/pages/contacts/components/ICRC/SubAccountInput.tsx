@@ -4,6 +4,8 @@ import { CustomInput } from "@components/input";
 import { asciiHex } from "@pages/contacts/constants/asciiHex";
 import { Dispatch, SetStateAction } from "react";
 import { getSubAccount, getSubAccountId } from "@pages/contacts/helpers/formatters";
+import { ContactAccountError } from "./AddContactAccountRow";
+import { validatePrincipal } from "@common/utils/definityIdentity";
 
 interface SubAccountInputProps {
   newAccount: ContactAccount | null;
@@ -12,6 +14,7 @@ interface SubAccountInputProps {
   setIsHexadecimal: Dispatch<SetStateAction<boolean>>;
   error: boolean;
   clearErrors: () => void;
+  setErrors: Dispatch<SetStateAction<ContactAccountError>>;
 }
 
 export default function SubAccountInput(props: SubAccountInputProps) {
@@ -22,13 +25,14 @@ export default function SubAccountInput(props: SubAccountInputProps) {
         border={props.error ? "error" : "selected"}
         sizeComp={"xLarge"}
         sizeInput="small"
-        inputClass="text-center"
         value={props.newAccount?.subaccount}
         onChange={onSubAccountChange}
         onKeyDown={onKeyDownIndex}
+        className="h-[2.2rem] dark:bg-level-2-color bg-white rounded-lg border-[2px]"
+        inputClass="h-[2rem] text-center"
       />
       <CustomButton size={"xSmall"} onClick={onSubaccountTypeChange}>
-        <p className="text-sm">{props.isHexadecimal ? "Principal" : "Hex"}</p>
+        <p className="text-sm">{props.isHexadecimal ? "Hex" : "Principal"}</p>
       </CustomButton>
     </div>
   );
@@ -63,6 +67,13 @@ export default function SubAccountInput(props: SubAccountInputProps) {
         tokenSymbol: "",
       };
     });
+
+    if (!props.isHexadecimal) {
+      props.setErrors((prev) => ({
+        ...prev,
+        subaccountId: !validatePrincipal(value),
+      }));
+    }
   }
 
   function onSubaccountTypeChange() {

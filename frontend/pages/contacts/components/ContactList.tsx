@@ -105,6 +105,8 @@ export default function ContactList({ allowanceOnly, assetFilter, contactSearchK
                             sizeInput="small"
                             onChange={onContactNameChange}
                             value={contactEdited?.name || ""}
+                            className="h-[2.2rem] dark:bg-level-2-color bg-white rounded-lg border-[2px]"
+                            inputClass="h-[1.5rem]"
                             autoFocus
                           />
 
