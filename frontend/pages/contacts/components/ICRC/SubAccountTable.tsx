@@ -53,8 +53,8 @@ export default function SubAccountTable({ contact }: { contact: Contact }) {
                   />
                 </span>
               </th>
-              <th className="w-[20%]">{t("sub-acc")}</th>
-              <th className="w-[20%]">{t("account.indentifier")}</th>
+              <th className="w-[25%]">{t("sub-acc")}</th>
+              <th className="w-[15%] pl-3">{t("account.indentifier")}</th>
               <th className="w-[20%]"></th>
             </tr>
           </thead>

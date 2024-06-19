@@ -55,7 +55,7 @@ export default function ContactList({ allowanceOnly, assetFilter, contactSearchK
             <th className="p-2 text-left w-[45%] bg-PrimaryColorLight dark:bg-PrimaryColor">
               <p>{"Principal"}</p>
             </th>
-            <th className="p-2 w-[12%] bg-PrimaryColorLight dark:bg-PrimaryColor">
+            <th className="pr-2 py-2 w-[12%] bg-PrimaryColorLight dark:bg-PrimaryColor">
               <p>{t("action")}</p>
             </th>
             <th className="w-[3%] bg-PrimaryColorLight dark:bg-PrimaryColor"></th>
@@ -137,7 +137,7 @@ export default function ContactList({ allowanceOnly, assetFilter, contactSearchK
                           >
                             {contact.name}
                           </p>
-                          {hasContactAllowance && <MoneyHandIcon className="relative w-5 h-5 fill-RadioCheckColor" />}
+                          {hasContactAllowance && <MoneyHandIcon className="relative w-6 h-6  dark:fill-slate-color-success fill-[#26A17B]" />}
                         </div>
                       ) : null}
                     </div>

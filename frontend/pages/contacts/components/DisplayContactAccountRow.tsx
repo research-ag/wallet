@@ -91,7 +91,7 @@ export default function DisplayContactAccountRow(props: DisplayContactAccountRow
         )}
       </td>
 
-      <td className="w-[20%]">
+      <td className="w-[25%]">
         <div className="flex items-center">
           <p className="mr-2">
             {props.currentAccount.subaccountId.length >= 20
@@ -102,7 +102,7 @@ export default function DisplayContactAccountRow(props: DisplayContactAccountRow
         </div>
       </td>
 
-      <td className="w-[20%]">
+      <td className="w-[15%]">
         <div className="flex items-center w-full px-2">
           <p className="mr-2">
             {shortAddress(getSubAccount(props.contact.principal, props.currentAccount.subaccountId), 10, 10)}

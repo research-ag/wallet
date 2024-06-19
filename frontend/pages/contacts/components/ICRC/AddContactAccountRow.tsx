@@ -63,13 +63,13 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
           <div className="w-[15.7%] pr-2">
             <AssetSelect onAssetChange={onAssetChange} error={errors.tokenSymbol} clearErrors={clearErrors} />
           </div>
-          <div className="w-[21%] pr-4 flex items-center">
+          <div className="w-[21%] pr-6 flex items-center">
             <CustomInput
               intent={"primary"}
               placeholder={t("name.sub.account")}
               onChange={onAccountNameChange}
               className="h-[2.2rem] dark:bg-level-2-color bg-white rounded-lg border-[2px]"
-              inputClass="h-[2rem]"
+              inputClass="h-[1.5rem]"
               border={errors.name ? "error" : "selected"}
               sizeComp={"xLarge"}
               sizeInput="small"
@@ -83,7 +83,7 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
               />
             )}
           </div>
-          <div className=" w-[21.2%]">
+          <div className=" w-[26.2%]">
             <SubAccountInput
               newAccount={newAccount}
               setNewAccount={setNewAccount}
@@ -94,7 +94,7 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
               setErrors={setErrors}
             />
           </div>
-          <div className=" w-[26.1%]">
+          <div className=" w-[21.1%]">
             <div className="flex flex-row items-center w-full gap-2 px-2 opacity-70">
               <p>{shortAddress(getSubAccount(props.contact.principal, newAccount.subaccountId), 10, 10)}</p>
               <CustomCopy

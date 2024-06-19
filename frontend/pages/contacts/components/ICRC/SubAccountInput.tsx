@@ -1,11 +1,11 @@
 import { ContactAccount } from "@redux/models/ContactsModels";
-import { CustomButton } from "@components/button";
 import { CustomInput } from "@components/input";
 import { asciiHex } from "@pages/contacts/constants/asciiHex";
 import { Dispatch, SetStateAction } from "react";
 import { getSubAccount, getSubAccountId } from "@pages/contacts/helpers/formatters";
 import { ContactAccountError } from "./AddContactAccountRow";
 import { validatePrincipal } from "@common/utils/definityIdentity";
+import Switch from "@components/switch/BasicSwitch";
 
 interface SubAccountInputProps {
   newAccount: ContactAccount | null;
@@ -29,11 +29,31 @@ export default function SubAccountInput(props: SubAccountInputProps) {
         onChange={onSubAccountChange}
         onKeyDown={onKeyDownIndex}
         className="h-[2.2rem] dark:bg-level-2-color bg-white rounded-lg border-[2px]"
-        inputClass="h-[2rem] text-center"
+        inputClass="h-[1.5rem]"
+        placeholder={props.isHexadecimal ? "Hexadecimal" : "Principal"}
       />
-      <CustomButton size={"xSmall"} onClick={onSubaccountTypeChange}>
-        <p className="text-sm">{props.isHexadecimal ? "Hex" : "Principal"}</p>
-      </CustomButton>
+
+      <div className="flex items-center ml-1 mr-[1rem]">
+        <p className="mr-2 text-md">{props.isHexadecimal ? "Hex" : "Principal"}</p>
+        <Switch checked={props.isHexadecimal} size="medium" onChange={() => {
+          props.setIsHexadecimal((prev) => (!prev))
+          props.setErrors((prev) => ({
+            ...prev,
+            subaccountId: false,
+          }))
+          props.setNewAccount((prev) => {
+
+            if (!prev) return {
+              name: "",
+              subaccount: "",
+              subaccountId: "",
+              tokenSymbol: "",
+            };
+
+            return { ...prev, subaccountId: "", subaccount: "" };
+          })
+        }} />
+      </div>
     </div>
   );
 
@@ -76,8 +96,4 @@ export default function SubAccountInput(props: SubAccountInputProps) {
     }
   }
 
-  function onSubaccountTypeChange() {
-    props.setIsHexadecimal((prev) => !prev);
-    props.clearErrors();
-  }
 }
