@@ -29,7 +29,9 @@ export default function ThidInputSufix() {
   const hasServicesAssets = useMemo(() => {
     const assetAccounts: ServiceAsset[] = [];
     services.map((service) => {
-      const accounts = service.assets.filter((account) => account.tokenSymbol === transferState.tokenSymbol);
+      const accounts = service.assets.filter(
+        (account) => account.tokenSymbol === transferState.tokenSymbol && account.visible,
+      );
 
       assetAccounts.push(...accounts);
     });
