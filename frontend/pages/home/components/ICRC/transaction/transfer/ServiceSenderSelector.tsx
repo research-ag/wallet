@@ -79,7 +79,10 @@ export default function SenderServiceSelector() {
                     key === "" ||
                     option.name.toLowerCase().includes(key) ||
                     option.principal.toLowerCase().includes(key);
-                  return option.assets.find((ast) => ast.principal === currentAsset?.address) && isSearchKeyIncluded;
+                  return (
+                    option.assets.find((ast) => ast.principal === currentAsset?.address && ast.visible) &&
+                    isSearchKeyIncluded
+                  );
                 })
                 .map((option, index) => (
                   <div
