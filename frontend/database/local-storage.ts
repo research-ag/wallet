@@ -313,7 +313,6 @@ export class LocalStorageDatabase extends IWalletDatabase {
 
   async deleteService(principal: string): Promise<void> {
     logger.debug(principal);
-    //
   }
 
   private _getStorableAllowance(allowance: TAllowance): Pick<TAllowance, "id" | "asset" | "subAccountId" | "spender"> {

@@ -6,31 +6,49 @@ import { useTransfer } from "@pages/home/contexts/TransferProvider";
 import { TransferView, useTransferView } from "@pages/home/contexts/TransferViewProvider";
 import InputSufixContactBook from "@/pages/home/components/ICRC/transaction/transfer/InputSufixContactBook";
 import InputSufixServiceBook from "@/pages/home/components/ICRC/transaction/transfer/InputSufixServiceBook";
+import { useMemo } from "react";
+import { ContactAccount } from "@redux/models/ContactsModels";
+import { ServiceAsset } from "@redux/models/ServiceModels";
 
 export default function ThidInputSufix() {
-  const { transferState } = useTransfer();
   const contacts = useAppSelector((state) => state.contacts.contacts);
   const services = useAppSelector((state) => state.services.services);
-  const assets = useAppSelector((state) => state.asset.list.assets);
+  const { transferState } = useTransfer();
+
+  const hasContactsAccounts = useMemo(() => {
+    const assetAccounts: ContactAccount[] = [];
+    contacts.map((contact) => {
+      const accounts = contact.accounts.filter((account) => account.tokenSymbol === transferState.tokenSymbol);
+
+      assetAccounts.push(...accounts);
+    });
+    if (assetAccounts.length > 0) return true;
+    else return false;
+  }, [transferState.tokenSymbol]);
+
+  const hasServicesAssets = useMemo(() => {
+    const assetAccounts: ServiceAsset[] = [];
+    services.map((service) => {
+      const accounts = service.assets.filter((account) => account.tokenSymbol === transferState.tokenSymbol);
+
+      assetAccounts.push(...accounts);
+    });
+    if (assetAccounts.length > 0) return true;
+    else return false;
+  }, [transferState.tokenSymbol]);
 
   //
-  const hasContactsAccounts = contacts.some((contact) =>
-    contact.accounts.some((account) => account.tokenSymbol === transferState.tokenSymbol),
-  );
+  const hasContacts = contacts.length > 0;
+  const displayContact = hasContacts && hasContactsAccounts;
 
   //
-  const currentAsset = assets.find((asset) => asset.tokenSymbol === transferState.tokenSymbol);
-
-  const hasServicesAssets = services.some((service) =>
-    service.assets.some((asset) => {
-      return asset.principal === currentAsset?.address;
-    }),
-  );
+  const hasServices = services.length > 0;
+  const displayService = hasServices && hasServicesAssets;
 
   return (
     <div className="relative flex items-center justify-center gap-2">
-      {hasServicesAssets && <InputSufixServiceBook />}
-      {hasContactsAccounts && <InputSufixContactBook />}
+      {displayService && <InputSufixServiceBook hasContacts={displayContact} />}
+      {displayContact && <InputSufixContactBook />}
       <InputSufixScanner />
     </div>
   );

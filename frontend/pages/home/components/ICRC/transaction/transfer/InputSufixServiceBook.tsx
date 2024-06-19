@@ -12,18 +12,19 @@ import { Buffer } from "buffer";
 import { CustomInput } from "@components/input";
 import { ChangeEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
-import clsx from "clsx";
+import { clsx } from "clsx";
 
-export default function InputSufixServiceBook() {
+interface InputSufixServiceBookProps {
+  hasContacts: boolean;
+}
+
+export default function InputSufixServiceBook(props: InputSufixServiceBookProps) {
+  const { hasContacts } = props;
   const { t } = useTranslation();
   const { services } = useAppSelector((state) => state.services);
   const { authClient } = useAppSelector((state) => state.auth);
   const assets = useAppSelector((state) => state.asset.list.assets);
   const { transferState, setTransferState } = useTransfer();
-  const hasContacts = useAppSelector((state) => state.contacts.contacts).some((contact) =>
-    contact.accounts.some((account) => account.tokenSymbol === transferState.tokenSymbol),
-  );
-  //
   const [searchKey, setSearchKey] = useState("");
   const currentAsset = assets.find((asset) => asset.tokenSymbol === transferState.tokenSymbol);
 
