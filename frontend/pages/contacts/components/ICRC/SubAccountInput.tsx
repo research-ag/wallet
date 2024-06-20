@@ -51,9 +51,10 @@ export default function SubAccountInput(props: SubAccountInputProps) {
                   subaccount: "",
                   subaccountId: "",
                   tokenSymbol: "",
+                  allowance: undefined,
                 };
 
-              return { ...prev, subaccountId: "", subaccount: "" };
+              return { ...prev, subaccountId: "", subaccount: "", allowance: undefined };
             });
           }}
         />

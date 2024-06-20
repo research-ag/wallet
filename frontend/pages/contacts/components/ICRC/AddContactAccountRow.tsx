@@ -211,26 +211,33 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
   function isNewAccountValid(newAccount: ContactAccount): boolean {
     setErrors({ name: false, subaccountId: false, tokenSymbol: false });
 
+    const errors: ContactAccountError = {
+      name: false,
+      subaccountId: false,
+      tokenSymbol: false,
+    };
+
     if (newAccount.tokenSymbol.length === 0) {
-      setErrors((prev) => ({ ...prev, tokenSymbol: true }));
-      return false;
+      errors.tokenSymbol = true;
     }
 
     if (!isContactAccountNameValid(newAccount.name)) {
-      setErrors((prev) => ({ ...prev, name: true }));
-      return false;
+      errors.name = true;
     }
 
     if (isHexadecimal) {
       if (!isContactSubaccountIdValid(newAccount.subaccountId)) {
-        setErrors((prev) => ({ ...prev, subaccountId: true }));
-        return false;
+        errors.subaccountId = true;
       }
     } else {
       if (!validatePrincipal(newAccount.subaccountId)) {
-        setErrors((prev) => ({ ...prev, subaccountId: true }));
-        return false;
+        errors.subaccountId = true;
       }
+    }
+
+    if (errors.name || errors.subaccountId || errors.tokenSymbol) {
+      setErrors(errors);
+      return false;
     }
 
     return true;
@@ -300,10 +307,12 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
       // --- validate ---
       if (!newAccount) return;
 
+
       if (!isNewAccountValid(newAccount)) {
         setIsLoading(false);
         return;
       }
+      console.log("runnning: ", newAccount);
 
       const toStoreAccount: ContactAccount = {
         ...newAccount,
