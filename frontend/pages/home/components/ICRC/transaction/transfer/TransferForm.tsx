@@ -247,7 +247,7 @@ export default function TransferForm() {
       throw new Error("TransferForm: asset not found");
     }
 
-    const balance = BigInt(serviceAccount.balance);
+    const balance = BigInt(serviceAccount.credit);
     // case 1: service account balance must have balance
     if (balance === BigInt(0)) {
       setErrorMessage(t("error.transfer.from.service.not.balance"));
