@@ -37,8 +37,9 @@ const DrawerTransaction = () => {
             <div className="flex flex-row items-center justify-between w-full font-normal">
               <p>{`${t("acc.principal")}`}</p>
               <div className="flex flex-row items-center justify-start gap-2">
-                <p>{`${hasSub(false) && getPrincipal(false) ? shortAddress(getPrincipal(false) || "", 12, 12) : t("unknown")
-                  }`}</p>
+                <p>{`${
+                  hasSub(false) && getPrincipal(false) ? shortAddress(getPrincipal(false) || "", 12, 12) : t("unknown")
+                }`}</p>
                 <CustomCopy
                   size={"small"}
                   copyText={getPrincipal(false)}
@@ -107,8 +108,9 @@ const DrawerTransaction = () => {
             <div className="flex flex-row items-center justify-between w-full font-normal">
               <p>{`${t("acc.principal")}`}</p>
               <div className="flex flex-row items-center justify-start gap-2">
-                <p>{`${hasSub(true) && getPrincipal(true) ? shortAddress(getPrincipal(true) || "", 12, 12) : t("unknown")
-                  }`}</p>
+                <p>{`${
+                  hasSub(true) && getPrincipal(true) ? shortAddress(getPrincipal(true) || "", 12, 12) : t("unknown")
+                }`}</p>
                 <CustomCopy
                   size={"small"}
                   copyText={getPrincipal(true) || t("unknown")}
@@ -212,11 +214,13 @@ const DrawerTransaction = () => {
 
   function formatLargeSubaccount(subaccount: string) {
     return subaccount.length > 15 ? middleTruncation(subaccount, 10, 10) : subaccount;
-  };
+  }
 
   function getSub(to: boolean) {
     if (isICPWithSub(to)) {
-      const subaccount = ICPSubaccounts.find((sub) => sub.legacy === (to ? selectedTransaction?.to : selectedTransaction?.from))?.sub_account_id;
+      const subaccount = ICPSubaccounts.find(
+        (sub) => sub.legacy === (to ? selectedTransaction?.to : selectedTransaction?.from),
+      )?.sub_account_id;
       return subaccount || "0x0";
     } else if (to) return formatLargeSubaccount(selectedTransaction?.toSub || "0x0");
     else return formatLargeSubaccount(selectedTransaction?.fromSub || "0x0");

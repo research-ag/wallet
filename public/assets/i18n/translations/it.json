@@ -171,6 +171,7 @@
   "transaction.destinationAccount": "Conto di Destinazione",
   "transaction.shippingAccount": "Conto di Spedizione",
   "transaction.transactions": "Transazioni",
+  "no.transactions": "Nessuna transazione",
   "transaction.amount": "Quantità",
   "drawer.send.account.error": "L'indirizzo non è valido",
   "add.asset.import.error": "Interfaccia registro non riconosciuta",

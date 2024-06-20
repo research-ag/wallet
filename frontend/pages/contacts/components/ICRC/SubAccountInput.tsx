@@ -35,24 +35,28 @@ export default function SubAccountInput(props: SubAccountInputProps) {
 
       <div className="flex items-center ml-1 mr-[1rem]">
         <p className="mr-2 text-md">{props.isHexadecimal ? "Hex" : "Principal"}</p>
-        <Switch checked={props.isHexadecimal} size="medium" onChange={() => {
-          props.setIsHexadecimal((prev) => (!prev))
-          props.setErrors((prev) => ({
-            ...prev,
-            subaccountId: false,
-          }))
-          props.setNewAccount((prev) => {
+        <Switch
+          checked={props.isHexadecimal}
+          size="medium"
+          onChange={() => {
+            props.setIsHexadecimal((prev) => !prev);
+            props.setErrors((prev) => ({
+              ...prev,
+              subaccountId: false,
+            }));
+            props.setNewAccount((prev) => {
+              if (!prev)
+                return {
+                  name: "",
+                  subaccount: "",
+                  subaccountId: "",
+                  tokenSymbol: "",
+                };
 
-            if (!prev) return {
-              name: "",
-              subaccount: "",
-              subaccountId: "",
-              tokenSymbol: "",
-            };
-
-            return { ...prev, subaccountId: "", subaccount: "" };
-          })
-        }} />
+              return { ...prev, subaccountId: "", subaccount: "" };
+            });
+          }}
+        />
       </div>
     </div>
   );
@@ -95,5 +99,4 @@ export default function SubAccountInput(props: SubAccountInputProps) {
       }));
     }
   }
-
 }

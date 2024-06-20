@@ -1,6 +1,7 @@
 import { ReactComponent as SortIcon } from "@assets/svg/files/sort.svg";
 import UpAmountIcon from "@assets/svg/files/up-amount-icon.svg";
 import DownAmountIcon from "@assets/svg/files/down-amount-icon.svg";
+import { ReactComponent as NoTransactions } from "@assets/svg/files/no-transactions.svg";
 //
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { clsx } from "clsx";
@@ -14,7 +15,7 @@ import { Transaction } from "@redux/models/AccountModels";
 import { setTransactionDrawerAction } from "@redux/transaction/TransactionActions";
 import { TransactionDrawer } from "@/@types/transactions";
 import { setSelectedTransaction } from "@redux/transaction/TransactionReducer";
-
+import { LoadingLoader } from "@components/loader";
 export interface TransactionsTableProps {
   onScroll: (e: React.UIEvent<HTMLDivElement>) => void;
   transactions: Transaction[];
@@ -27,6 +28,7 @@ export default function TransactionsTable(props: TransactionsTableProps) {
   const { selectedTransaction } = useAppSelector((state) => state.transaction);
   const { selectedAccount, selectedAsset } = useAppSelector((state) => state.asset.helper);
   const { assets } = useAppSelector((state) => state.asset.list);
+  const { isAppDataFreshing } = useAppSelector((state) => state.common);
   const dispatch = useAppDispatch();
 
   return (
@@ -61,87 +63,112 @@ export default function TransactionsTable(props: TransactionsTableProps) {
           </tr>
         </thead>
 
-        <tbody className={bodyStyles}>
-          {transactions.map((transaction, index) => {
-            // TYPE
-            const isSelectedByHash = selectedTransaction?.hash && selectedTransaction?.hash === transaction.hash;
-            const isSelectedByIdx = selectedTransaction?.idx && selectedTransaction?.idx === transaction.idx;
-            const isCurrentSelected = isSelectedByHash || isSelectedByIdx;
+        {transactions.length === 0 && isAppDataFreshing && (
+          <tbody>
+            <tr>
+              <td colSpan={4} className="pt-[2rem]">
+                <LoadingLoader />
+              </td>
+            </tr>
+          </tbody>
+        )}
 
-            const isBurn = transaction.kind === SpecialTxTypeEnum.Enum.burn;
-            const isMint = transaction.kind === SpecialTxTypeEnum.Enum.mint;
-            const isSend = getAddress(
-              transaction.type,
-              transaction.from || "",
-              transaction.fromSub || "",
-              selectedAccount?.address || "",
-              selectedAccount?.sub_account_id || "",
-            );
+        {transactions.length === 0 && !isAppDataFreshing && (
+          <tbody>
+            <tr>
+              <td colSpan={4} className="pt-[2rem]">
+                <p className="mb-2 text-center text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
+                  {t("no.transactions")}
+                </p>
+                <NoTransactions className="w-[3rem] h-[3rem] mx-auto" />
+              </td>
+            </tr>
+          </tbody>
+        )}
 
-            let srcType;
+        {transactions.length > 0 && !isAppDataFreshing && (
+          <tbody className={bodyStyles}>
+            {transactions.map((transaction, index) => {
+              // TYPE
+              const isSelectedByHash = selectedTransaction?.hash && selectedTransaction?.hash === transaction.hash;
+              const isSelectedByIdx = selectedTransaction?.idx && selectedTransaction?.idx === transaction.idx;
+              const isCurrentSelected = isSelectedByHash || isSelectedByIdx;
 
-            switch (true) {
-              case isBurn:
-                srcType = UpAmountIcon;
-                break;
-              case isMint:
-                srcType = DownAmountIcon;
-                break;
-              case isSend:
-                srcType = UpAmountIcon;
-                break;
-              default:
-                srcType = DownAmountIcon;
-            }
+              const isBurn = transaction.kind === SpecialTxTypeEnum.Enum.burn;
+              const isMint = transaction.kind === SpecialTxTypeEnum.Enum.mint;
+              const isSend = getAddress(
+                transaction.type,
+                transaction.from || "",
+                transaction.fromSub || "",
+                selectedAccount?.address || "",
+                selectedAccount?.sub_account_id || "",
+              );
 
-            // AMOUNT
-            const isTo = transaction.kind !== SpecialTxTypeEnum.Enum.mint && isSend;
-            const isApprove = transaction.kind?.toUpperCase() === TransactionTypeEnum.Enum.APPROVE;
-            const isTypeSend = transaction?.type === TransactionTypeEnum.Enum.SEND;
+              let srcType;
 
-            return (
-              <tr
-                key={`${transaction.hash}-${index}-${transaction.canisterId}`}
-                className="relative cursor-pointer"
-                onClick={() => onTransactionInpect(transaction)}
-              >
-                <td className="w-[8%]">
-                  {isCurrentSelected && <div className="absolute w-2 h-[4.05rem] left-0 bg-primary-color"></div>}
-                  <div className="flex h-full ">
-                    <div className="flex items-center justify-center border rounded-md border-BorderColorTwoLight dark:border-BorderColorTwo w-[2rem] h-[2rem]">
-                      <img src={srcType} alt={transaction.kind} />
+              switch (true) {
+                case isBurn:
+                  srcType = UpAmountIcon;
+                  break;
+                case isMint:
+                  srcType = DownAmountIcon;
+                  break;
+                case isSend:
+                  srcType = UpAmountIcon;
+                  break;
+                default:
+                  srcType = DownAmountIcon;
+              }
+
+              // AMOUNT
+              const isTo = transaction.kind !== SpecialTxTypeEnum.Enum.mint && isSend;
+              const isApprove = transaction.kind?.toUpperCase() === TransactionTypeEnum.Enum.APPROVE;
+              const isTypeSend = transaction?.type === TransactionTypeEnum.Enum.SEND;
+
+              return (
+                <tr
+                  key={`${transaction.hash}-${index}-${transaction.canisterId}`}
+                  className="relative cursor-pointer"
+                  onClick={() => onTransactionInpect(transaction)}
+                >
+                  <td className="w-[8%]">
+                    {isCurrentSelected && <div className="absolute w-2 h-[4.05rem] left-0 bg-primary-color"></div>}
+                    <div className="flex h-full ">
+                      <div className="flex items-center justify-center border rounded-md border-BorderColorTwoLight dark:border-BorderColorTwo w-[2rem] h-[2rem]">
+                        <img src={srcType} alt={transaction.kind} />
+                      </div>
                     </div>
-                  </div>
-                </td>
+                  </td>
 
-                <td className="w-[60%]">
-                  <CodeElement tx={transaction} />
-                </td>
+                  <td className="w-[60%]">
+                    <CodeElement tx={transaction} />
+                  </td>
 
-                <td className="w-[11%]">
-                  <div className="flex items-center">
-                    <p className="text-md w-fit">{moment(transaction.timestamp).format("M/DD/YYYY")}</p>
-                  </div>
-                </td>
+                  <td className="w-[11%]">
+                    <div className="flex items-center">
+                      <p className="text-md w-fit">{moment(transaction.timestamp).format("M/DD/YYYY")}</p>
+                    </div>
+                  </td>
 
-                <td className="w-[20%]">
-                  <div className="flex justify-end">
-                    <p className={amountTextStyles(isTo)}>
-                      {isTo && !isApprove ? "-" : ""}
-                      {isTypeSend
-                        ? toFullDecimal(
-                            BigInt(transaction?.amount || "0") + BigInt(selectedAccount?.transaction_fee || "0"),
-                            selectedAccount?.decimal || 8,
-                          )
-                        : toFullDecimal(BigInt(transaction?.amount || "0"), selectedAccount?.decimal || 8)}{" "}
-                      {getAssetSymbol(transaction?.symbol || selectedAsset?.symbol || "", assets)}
-                    </p>
-                  </div>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
+                  <td className="w-[20%]">
+                    <div className="flex justify-end">
+                      <p className={amountTextStyles(isTo)}>
+                        {isTo && !isApprove ? "-" : ""}
+                        {isTypeSend
+                          ? toFullDecimal(
+                              BigInt(transaction?.amount || "0") + BigInt(selectedAccount?.transaction_fee || "0"),
+                              selectedAccount?.decimal || 8,
+                            )
+                          : toFullDecimal(BigInt(transaction?.amount || "0"), selectedAccount?.decimal || 8)}{" "}
+                        {getAssetSymbol(transaction?.symbol || selectedAsset?.symbol || "", assets)}
+                      </p>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        )}
       </table>
     </div>
   );

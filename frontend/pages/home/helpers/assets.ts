@@ -133,7 +133,7 @@ export function resetAssetAmount(assets: Asset[]) {
     subAccounts: asset.subAccounts.map((subaccount) => ({
       ...subaccount,
       amount: "0",
-      currency_amount: "0"
-    }))
-  }))
-};
+      currency_amount: "0",
+    })),
+  }));
+}

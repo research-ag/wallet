@@ -170,6 +170,7 @@
   "transaction.destinationAccount": "Destination Account",
   "transaction.shippingAccount": "Shipping Account",
   "transaction.transactions": "Transactions",
+  "no.transactions": "No transactions",
   "transaction.amount": "Amount",
   "drawer.send.account.error": "Address is not valid",
   "add.asset.import.error": "Ledger interface not recognized",

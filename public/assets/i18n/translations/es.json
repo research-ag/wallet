@@ -171,6 +171,7 @@
   "transaction.destinationAccount": "Cuenta de Destino",
   "transaction.shippingAccount": "Cuenta de Envío",
   "transaction.transactions": "Transacciones",
+  "no.transactions": "No hay transacciones",
   "transaction.amount": "Cantidad",
   "drawer.send.account.error": "La dirección no es válida",
   "add.asset.import.error": "La interfaz del libro mayor no reconoce",

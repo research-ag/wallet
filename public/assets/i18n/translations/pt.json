@@ -171,6 +171,7 @@
   "transaction.destinationAccount": "Conta de Destino",
   "transaction.shippingAccount": "Conta de Envio",
   "transaction.transactions": "Transações",
+  "no.transactions": "Sem transações",
   "transaction.amount": "Quantia",
   "drawer.send.account.error": "O endereço não é válido",
   "add.asset.import.error": "Interface do razão não reconhecida",

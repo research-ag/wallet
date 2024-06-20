@@ -137,7 +137,9 @@ export default function ContactList({ allowanceOnly, assetFilter, contactSearchK
                           >
                             {contact.name}
                           </p>
-                          {hasContactAllowance && <MoneyHandIcon className="relative w-6 h-6  dark:fill-slate-color-success fill-[#26A17B]" />}
+                          {hasContactAllowance && (
+                            <MoneyHandIcon className="relative w-6 h-6  dark:fill-slate-color-success fill-[#26A17B]" />
+                          )}
                         </div>
                       ) : null}
                     </div>
