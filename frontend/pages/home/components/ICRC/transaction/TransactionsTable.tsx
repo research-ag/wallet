@@ -1,7 +1,6 @@
 import { ReactComponent as SortIcon } from "@assets/svg/files/sort.svg";
 import UpAmountIcon from "@assets/svg/files/up-amount-icon.svg";
 import DownAmountIcon from "@assets/svg/files/down-amount-icon.svg";
-import { ReactComponent as NoTransactions } from "@assets/svg/files/no-transactions.svg";
 //
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { clsx } from "clsx";
@@ -68,19 +67,6 @@ export default function TransactionsTable(props: TransactionsTableProps) {
             <tr>
               <td colSpan={4} className="pt-[2rem]">
                 <LoadingLoader />
-              </td>
-            </tr>
-          </tbody>
-        )}
-
-        {transactions.length === 0 && !isAppDataFreshing && (
-          <tbody>
-            <tr>
-              <td colSpan={4} className="pt-[2rem]">
-                <p className="mb-2 text-center text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
-                  {t("no.transactions")}
-                </p>
-                <NoTransactions className="w-[3rem] h-[3rem] mx-auto" />
               </td>
             </tr>
           </tbody>
