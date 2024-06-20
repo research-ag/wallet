@@ -27,35 +27,38 @@ import { addWatchOnlySessionToLocal } from "@pages/helpers/watchOnlyStorage";
 import watchOnlyRefresh from "@pages/helpers/watchOnlyRefresh";
 import { setServices, setServicesData } from "@/redux/services/ServiceReducer";
 
-const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${
-  import.meta.env.VITE_APP_LOGO
-}#authorize`;
+const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${import.meta.env.VITE_APP_LOGO
+  }#authorize`;
 
 const NETWORK_AUTHORIZE_PATH = "https://identity.ic0.app/#authorize";
 const HTTP_AGENT_HOST = "https://identity.ic0.app";
 
 export const handleAuthenticated = async (opt: AuthNetwork) => {
-  const authClient = await AuthClient.create();
-  await new Promise<void>((resolve, reject) => {
-    authClient.login({
-      maxTimeToLive: BigInt(24 * 60 * 60 * 1000 * 1000 * 1000),
-      identityProvider:
-        !!opt?.type && opt?.type === AuthNetworkTypeEnum.Values.NFID
-          ? opt?.network + AUTH_PATH
-          : NETWORK_AUTHORIZE_PATH,
-      onSuccess: () => {
-        handleLoginApp(authClient.getIdentity());
-        store.dispatch(setDebugMode(false));
-        resolve();
-      },
-      onError: (e) => {
-        logger.debug("onError", e);
-        store.dispatch(setUnauthenticated());
-        store.dispatch(setDebugMode(false));
-        reject();
-      },
+  try {
+    const authClient = await AuthClient.create();
+    await new Promise<void>((resolve, reject) => {
+      authClient.login({
+        maxTimeToLive: BigInt(24 * 60 * 60 * 1000 * 1000 * 1000),
+        identityProvider:
+          !!opt?.type && opt?.type === AuthNetworkTypeEnum.Values.NFID
+            ? opt?.network + AUTH_PATH
+            : NETWORK_AUTHORIZE_PATH,
+        onSuccess: () => {
+          handleLoginApp(authClient.getIdentity());
+          store.dispatch(setDebugMode(false));
+          resolve();
+        },
+        onError: (e) => {
+          logger.debug("onError", e);
+          store.dispatch(setUnauthenticated());
+          store.dispatch(setDebugMode(false));
+          reject();
+        },
+      });
     });
-  });
+  } catch (error) {
+    logger.debug(error)
+  };
 };
 
 export const handleSiweAuthenticated = async (identity: DelegationIdentity) => {

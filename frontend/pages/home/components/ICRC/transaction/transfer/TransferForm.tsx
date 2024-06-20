@@ -17,6 +17,7 @@ import { TransferView, useTransferView } from "@pages/home/contexts/TransferView
 import ICRC2Allowance from "@common/libs/icrcledger/ICRC2Allowance";
 import { hexToUint8Array } from "@common/utils/hexadecimal";
 import { Principal } from "@dfinity/principal";
+import ICRC1BalanceOf from "@common/libs/icrcledger/ICRC1BalanceOf";
 
 export default function TransferForm() {
   const { t } = useTranslation();
@@ -58,7 +59,7 @@ export default function TransferForm() {
       const isAllowanceManual = transferState.fromType === TransferFromTypeEnum.allowanceManual;
 
       commonValidations();
-      if (transferState.fromType === TransferFromTypeEnum.own) fromOwnSubaccountValidations();
+      if (transferState.fromType === TransferFromTypeEnum.own) await fromOwnSubaccountValidations();
       if (isAllowanceContact || isAllowanceManual) await fromAllowanceValidations();
       if (transferState.fromType === TransferFromTypeEnum.service) fromServiceValidations();
 
@@ -112,24 +113,29 @@ export default function TransferForm() {
     }
   }
 
-  function fromOwnSubaccountValidations() {
+  async function fromOwnSubaccountValidations() {
     if (!currentAsset) {
       setErrorMessage(t("error.transfer.asset.empty"));
       throw new Error("TransferForm: asset not found");
     }
 
-    const subaccount = currentAsset.subAccounts.find(
-      (subAccount) => subAccount.sub_account_id === transferState.fromSubAccount,
-    );
+    const amount = await ICRC1BalanceOf({
+      canisterId: currentAsset.address,
+      agent: userAgent,
+      owner: userPrincipal,
+      subaccount: [hexToUint8Array(transferState.fromSubAccount)],
+    });
 
-    if (Number(subaccount?.amount || "0") === 0) {
+    if (amount === BigInt(0)) {
       setErrorMessage(t("error.transfer.from.no.balance"));
       throw new Error("fromOwnSubaccountValidations: from sub account must have balance");
     }
 
-    if (!isAmountGreaterThanFee(currentAsset, transferState.fromSubAccount)) {
+    const fee = BigInt(currentAsset.subAccounts[0].transaction_fee);
+
+    if (amount <= fee) {
       setErrorMessage(t("error.transfer.from.no.cover.fee"));
-      throw new Error("isAmountGreaterThanFee: subaccount amount must be greater than fee");
+      throw new Error("isAmountGreaterThanFee: balance amount must be greater than fee");
     }
 
     // --------------- OWN TO OWN SUB ACCOUNT ---------------
