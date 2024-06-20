@@ -236,14 +236,22 @@ export default function TransferDetailsConfirmation() {
       const currentSubAccount = currentAsset?.subAccounts.find(
         (subAccount) => subAccount.sub_account_id === transferState.fromSubAccount,
       );
-      if (!currentSubAccount) {
+
+      if (!currentSubAccount || !currentAsset) {
         return {
           isError: true,
           message: t("error.transfer.from.invalid"),
         };
       }
 
-      const balance = BigInt(currentSubAccount.amount);
+      // allowance account balance
+      const balance = await ICRC1BalanceOf({
+        agent: userAgent,
+        canisterId: Principal.fromText(currentAsset.address),
+        owner: Principal.fromText(transferState.fromPrincipal),
+        subaccount: [new Uint8Array(hexToUint8Array(transferState.fromSubAccount))],
+      });
+
       const fee = BigInt(currentSubAccount.transaction_fee);
       const amount = toHoleBigInt(transferState.amount, Number(currentAsset?.decimal || "8"));
 
