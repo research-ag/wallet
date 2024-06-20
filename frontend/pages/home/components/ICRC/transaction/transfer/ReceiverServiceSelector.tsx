@@ -27,10 +27,14 @@ export default function ServiceBookReceiver() {
 
       const currentServiceAsset = currentService?.assets?.find((asset) => asset.principal === currentAsset.address);
 
+      const isAssetVisible = currentService.assets.find(
+        (ast) => ast.principal === currentAsset?.address && ast.visible
+      )
+
       const princBytes = Principal.fromText(authClient).toUint8Array();
       const princSubId = `0x${princBytes.length.toString(16) + Buffer.from(princBytes).toString("hex")}`;
 
-      if (currentServiceAsset)
+      if (currentServiceAsset && isAssetVisible)
         auxServices.push({
           serviceName: currentService.name,
           servicePrincipal: currentService.principal,
