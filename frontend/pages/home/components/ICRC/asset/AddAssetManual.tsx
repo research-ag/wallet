@@ -340,10 +340,10 @@ const AddAssetManual = () => {
         validData = false;
       }
     }
-    const isIndexValid = await isAssetIndexValid(newAsset.index);
+    const isIndexValid = (await isAssetIndexValid(newAsset.index)) || newAsset.index === "";
 
     if (!isIndexValid) validData = false;
-    setValidIndex(isIndexValid);
+    setValidIndex(newAsset.index !== "" && isIndexValid);
 
     setTestLoading(false);
     setTested(validData);
