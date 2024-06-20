@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import { LoadingLoader } from "@components/loader";
 import { BasicButton } from "@components/button";
 import { useState } from "react";
-import { isAmountGreaterThanFee, isPrincipalValid, isSubAccountIdValid } from "@pages/home/helpers/validators";
+import { isPrincipalValid, isSubAccountIdValid } from "@pages/home/helpers/validators";
 import { TransferFromTypeEnum, TransferToTypeEnum, useTransfer } from "@pages/home/contexts/TransferProvider";
 import { useAppSelector } from "@redux/Store";
 import logger from "@/common/utils/logger";
