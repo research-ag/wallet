@@ -72,7 +72,7 @@ export default function TransactionsTable(props: TransactionsTableProps) {
           </tbody>
         )}
 
-        {transactions.length > 0 && !isAppDataFreshing && (
+        {transactions.length > 0 && (
           <tbody className={bodyStyles}>
             {transactions.map((transaction, index) => {
               // TYPE

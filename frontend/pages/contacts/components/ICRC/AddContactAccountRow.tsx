@@ -312,7 +312,6 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
         setIsLoading(false);
         return;
       }
-      console.log("runnning: ", newAccount);
 
       const toStoreAccount: ContactAccount = {
         ...newAccount,
