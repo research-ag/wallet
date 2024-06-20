@@ -265,8 +265,8 @@
   "error.transfer.from.service.less.withdraw.minimun.plus.fee": "El servicio DE tiene menos del mínimo de retiro más la tarifa",
   "error.transfer.invalid.amount": "El monto no es válido",
   "error.transfer.invalid.asset": "El activo no es válido",
-  "error.transfer.allowance.insufficient": "La autorización es insuficiente",
-  "error.transfer.allowance.subaccount.balance.insufficient": "El saldo de la subcuenta de autorización es insuficiente",
+  "error.transfer.allowance.insufficient": "FROM no tiene saldo suficiente",
+  "error.transfer.allowance.subaccount.balance.insufficient": "FROM no tiene saldo suficiente",
   "error.transfer.to.service.invalid": "El servicio PARA no es válido",
   "error.transfer.amount.less.minimun.deposit": "El monto es menor al mínimo de depósito",
   "error.transfer.amount.less.minimun.withdrawl": "El monto es menor al mínimo de retiro"

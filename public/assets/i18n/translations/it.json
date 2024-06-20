@@ -265,8 +265,8 @@
   "error.transfer.from.service.less.withdraw.minimun.plus.fee": "Il servizio DA ha un importo inferiore al minimo di prelievo più la commissione",
   "error.transfer.invalid.amount": "Importo non valido",
   "error.transfer.invalid.asset": "Asset non valido",
-  "error.transfer.allowance.insufficient": "Autorizzazione insufficiente",
-  "error.transfer.allowance.subaccount.balance.insufficient": "Saldo della sottoclassi di autorizzazione insufficiente",
+  "error.transfer.allowance.insufficient": "FROM non ha saldo sufficiente",
+  "error.transfer.allowance.subaccount.balance.insufficient": "FROM non ha saldo sufficiente",
   "error.transfer.to.service.invalid": "Il servizio A non è valido",
   "error.transfer.amount.less.minimun.deposit": "L'importo è inferiore al deposito minimo",
   "error.transfer.amount.less.minimun.withdrawl": "L'importo è inferiore al prelievo minimo"
