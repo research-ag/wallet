@@ -28,8 +28,8 @@ async function refreshAsset(asset: Asset, options: RefreshOptions) {
     });
 
     const [myMetadata, myTransactionFee] = await Promise.all([
-      metadata({ certified: true }),
-      transactionFee({ certified: true }),
+      metadata({ certified: false }),
+      transactionFee({ certified: false }),
     ]);
 
     const { decimals, name, symbol, logo } = getMetadataInfo(myMetadata);
