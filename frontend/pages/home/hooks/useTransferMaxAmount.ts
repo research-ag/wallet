@@ -64,7 +64,7 @@ export default function useTransferMaxAmount() {
       setMaxAmount({
         maxAmount: "0",
         availableAmount: toFullDecimal(balance, Number(currentAsset.decimal)),
-        displayAvailable: true,
+        displayAvailable: false,
         isLoading: false,
         isAmountFromMax: true,
       });
@@ -76,10 +76,11 @@ export default function useTransferMaxAmount() {
     setMaxAmount({
       maxAmount: toFullDecimal(balance - fee, Number(currentAsset.decimal)),
       availableAmount: toFullDecimal(balance, Number(currentAsset.decimal)),
-      displayAvailable: true,
+      displayAvailable: false,
       isLoading: false,
       isAmountFromMax: true,
     });
+
     setTransferState((prev) => ({
       ...prev,
       amount: toFullDecimal(balance - fee, Number(currentAsset.decimal)),
@@ -153,8 +154,8 @@ export default function useTransferMaxAmount() {
       if (allowanceAmount < fee) {
         setMaxAmount({
           maxAmount: "0",
-          availableAmount: toFullDecimal(balance, Number(currentAsset?.decimal || "8")),
-          displayAvailable: true,
+          availableAmount: "0",
+          displayAvailable: false,
           isLoading: false,
           isAmountFromMax: true,
         });
@@ -202,7 +203,7 @@ export default function useTransferMaxAmount() {
       setMaxAmount({
         maxAmount: "0",
         availableAmount: toFullDecimal(balance, Number(currentAsset?.decimal || "8")),
-        displayAvailable: true,
+        displayAvailable: false,
         isLoading: false,
         isAmountFromMax: true,
       });
@@ -217,7 +218,7 @@ export default function useTransferMaxAmount() {
     setMaxAmount({
       maxAmount: toFullDecimal(balance - fee, Number(currentAsset?.decimal || "8")),
       availableAmount: toFullDecimal(balance, Number(currentAsset?.decimal || "8")),
-      displayAvailable: true,
+      displayAvailable: false,
       isLoading: false,
       isAmountFromMax: true,
     });
