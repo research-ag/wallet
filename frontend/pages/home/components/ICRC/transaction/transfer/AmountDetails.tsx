@@ -22,6 +22,10 @@ export default function AmountDetails() {
   //
   const isReceiverService = transferState.toType === TransferToTypeEnum.thirdPartyService;
   const isSenderService = transferState.fromType === TransferFromTypeEnum.service;
+  // 
+  const isToContact = transferState.toType === TransferToTypeEnum.thirdPartyContact;
+  const isToOwnSubaccount = transferState.toType === TransferToTypeEnum.own;
+
 
   const isAmountValid = (() => {
     if (transferState.amount === "") return true;
@@ -104,7 +108,7 @@ export default function AmountDetails() {
 
         <div className="flex">
           <p className="mr-1 text-sm text-gray-400 ">
-            {isReceiverService ? "Ledger " : ""} {t("fee")}
+            {isReceiverService || isToContact || isToOwnSubaccount ? "Ledger " : ""} {t("fee")}
           </p>
           <p className="text-sm text-PrimaryTextColorLight dark:text-PrimaryTextColor">
             {toFullDecimal(

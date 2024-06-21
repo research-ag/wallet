@@ -118,8 +118,8 @@ function ToContactDisplay() {
         <p className="text-md">
           {getContact()?.name} [
           {transferState.toSubAccount.length > 10
-            ? middleTruncation(transferState.toPrincipal, 15, 20)
-            : transferState.toPrincipal}
+            ? middleTruncation(transferState.toSubAccount, 15, 20)
+            : transferState.toSubAccount}
           ]
         </p>
         <p className="opacity-50 text-md">{middleTruncation(transferState.toPrincipal, 20, 20)}</p>

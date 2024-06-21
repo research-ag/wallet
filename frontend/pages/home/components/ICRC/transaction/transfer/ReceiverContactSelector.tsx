@@ -23,9 +23,13 @@ export default function ReceiverContactSelector() {
       const currentContact = contacts[contactIndex];
 
       const contactSubAccounts: (ContactSubAccount | null)[] = currentContact.accounts.map((account) => {
+
+        if (account.tokenSymbol !== transferState.tokenSymbol) return null;
+
         const sameSenderAndReceiver =
           transferState.fromPrincipal === currentContact.principal &&
           transferState.fromSubAccount === account?.subaccountId;
+
         const currentAsset = assets.find((asset) => asset.tokenSymbol === transferState.tokenSymbol) as Asset;
 
         const data: ContactSubAccount = {
