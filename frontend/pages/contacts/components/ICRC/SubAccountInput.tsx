@@ -6,6 +6,8 @@ import { getSubAccount, getSubAccountId } from "@pages/contacts/helpers/formatte
 import { ContactAccountError } from "./AddContactAccountRow";
 import { validatePrincipal } from "@common/utils/definityIdentity";
 import Switch from "@components/switch/BasicSwitch";
+import { useAppSelector } from "@redux/Store";
+import { t } from "i18next";
 
 interface SubAccountInputProps {
   newAccount: ContactAccount | null;
@@ -18,6 +20,8 @@ interface SubAccountInputProps {
 }
 
 export default function SubAccountInput(props: SubAccountInputProps) {
+  const contacts = useAppSelector((state) => state.contacts.contacts);
+
   return (
     <div className="relative flex flex-row items-center w-full h-10 gap-1 pr-2">
       <CustomInput
@@ -31,6 +35,7 @@ export default function SubAccountInput(props: SubAccountInputProps) {
         className="h-[2.2rem] dark:bg-level-2-color bg-white rounded-lg border-[2px]"
         inputClass="h-[1.5rem]"
         placeholder={props.isHexadecimal ? "Hexadecimal" : "Principal"}
+        sufix={props.error && isSubaccountDuplicated(props.newAccount?.subaccountId || undefined) ? <p className="text-sm capitalize text-slate-color-error">{t("duplicated")}</p> : undefined}
       />
 
       <div className="flex items-center ml-1 mr-[1rem]">
@@ -61,6 +66,12 @@ export default function SubAccountInput(props: SubAccountInputProps) {
       </div>
     </div>
   );
+
+  function isSubaccountDuplicated(subaccount: string | undefined) {
+    if (!subaccount) return false;
+    const subaccountId = subaccount.startsWith("0x") ? subaccount : `0x${subaccount}`;
+    return contacts.some((contact) => contact.accounts.some((account) => account.subaccountId === subaccountId && account.tokenSymbol === props.newAccount?.tokenSymbol));
+  };
 
   function onKeyDownIndex(e: React.KeyboardEvent<HTMLInputElement>) {
     if (!props.isHexadecimal) {

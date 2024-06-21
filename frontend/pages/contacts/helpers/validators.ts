@@ -15,7 +15,7 @@ export const isContactAccountNameValid = (name: string): boolean => {
 };
 
 export const isContactSubaccountIdValid = (subaccountId: string): boolean => {
-  return subaccountId.trim() !== "" && checkHexString(subaccountId);
+  return subaccountId.trim() !== "" && subaccountId.trim() !== "0x" && checkHexString(subaccountId);
 };
 
 export const isDuplicatedPrincipal = (principal: string, contacts: Contact[]) => {
