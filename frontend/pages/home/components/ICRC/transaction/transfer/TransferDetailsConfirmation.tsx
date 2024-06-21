@@ -20,10 +20,7 @@ import { getElapsedSecond } from "@common/utils/datetimeFormaters";
 import { TransferStatus, useTransferStatus } from "@pages/home/contexts/TransferStatusProvider";
 import { TransferView, useTransferView } from "@pages/home/contexts/TransferViewProvider";
 import { LoadingLoader } from "@components/loader";
-import { updateAllBalances } from "@redux/assets/AssetActions";
-import { transactionCacheRefresh } from "@pages/home/helpers/cache";
-import { allowanceCacheRefresh } from "@pages/allowances/helpers/cache";
-import serviceCacheRefresh from "@pages/contacts/helpers/serviceCacheRefresh";
+import reloadBallance from "@pages/helpers/reloadBalance";
 
 interface ErrorResult {
   isError: boolean;
@@ -227,16 +224,7 @@ export default function TransferDetailsConfirmation() {
       const endTime = new Date();
       const duration = getElapsedSecond(initTime, endTime);
       setTransferState((prev) => ({ ...prev, duration }));
-      await updateAllBalances({
-        loading: true,
-        myAgent: userAgent,
-        assets,
-        fromLogin: true,
-        basicSearch: true,
-      });
-
-      await transactionCacheRefresh(assets);
-      await allowanceCacheRefresh();
+      await reloadBallance();
     }
   }
 
@@ -342,15 +330,7 @@ export default function TransferDetailsConfirmation() {
       const endTime = new Date();
       const duration = getElapsedSecond(initTime, endTime);
       setTransferState((prev) => ({ ...prev, duration }));
-      await updateAllBalances({
-        loading: true,
-        myAgent: userAgent,
-        assets,
-        fromLogin: true,
-        basicSearch: true,
-      });
-
-      await transactionCacheRefresh(assets);
+      await reloadBallance();
     }
   }
 
@@ -417,16 +397,7 @@ export default function TransferDetailsConfirmation() {
       const endTime = new Date();
       const duration = getElapsedSecond(initTime, endTime);
       setTransferState((prev) => ({ ...prev, duration }));
-      await updateAllBalances({
-        loading: true,
-        myAgent: userAgent,
-        assets,
-        fromLogin: true,
-        basicSearch: true,
-      });
-
-      await transactionCacheRefresh(assets);
-      await serviceCacheRefresh();
+      await reloadBallance();
     }
   }
 }
