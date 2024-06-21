@@ -11,8 +11,11 @@ export default function Receiver() {
   const { setTransferState, transferState } = useTransfer();
 
   const isSenderService = transferState.fromType === TransferFromTypeEnum.service;
+
+  const isToManual = transferState.toType === TransferToTypeEnum.manual;
   const isTransferToOwn = transferState.toType === TransferToTypeEnum.own;
-  const isManual = transferState.toType === TransferToTypeEnum.manual;
+  const isToContact = transferState.toType === TransferToTypeEnum.thirdPartyContact;
+  const istToService = transferState.toType === TransferToTypeEnum.thirdPartyService;
 
   //
   return (
@@ -23,7 +26,7 @@ export default function Receiver() {
           {!isTransferToOwn && !isSenderService && (
             <div className="flex items-center justify-center">
               <p className="mr-2 text-black-color text-md dark:text-white">{t("manual")}</p>
-              <BasicSwitch checked={isManual} onChange={onCheckedChange} />
+              <BasicSwitch checked={isToManual} onChange={onCheckedChange} />
             </div>
           )}
         </div>
@@ -31,14 +34,14 @@ export default function Receiver() {
 
       <div>
         <div>
-          {isManual && !isSenderService && <ReceiverManual />}
+          {isToManual && !isSenderService && <ReceiverManual />}
           {(isTransferToOwn || isSenderService) && <ReceiverOwner />}
-          {!isManual && (
+          {!isToManual && (
             <>
               {!isTransferToOwn && !isSenderService && <ReceiverThird />}
               {!isSenderService && (
                 <div className="max-w-[21rem] text-start">
-                  {isTransferToOwn ? (
+                  {isTransferToOwn || isToContact || istToService ? (
                     <button onClick={onChangeToThird}>
                       <p className="flex items-center justify-center text-md text-primary-color text-start">
                         <DownAmountIcon className="relative mt-4 rotate-90 bottom-2 right-2" />
