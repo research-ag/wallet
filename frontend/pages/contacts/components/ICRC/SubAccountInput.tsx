@@ -35,7 +35,7 @@ export default function SubAccountInput(props: SubAccountInputProps) {
         className="h-[2.2rem] dark:bg-level-2-color bg-white rounded-lg border-[2px]"
         inputClass="h-[1.5rem]"
         placeholder={props.isHexadecimal ? "Hexadecimal" : "Principal"}
-        sufix={props.error && isSubaccountDuplicated(props.newAccount?.subaccountId || undefined) ? <p className="text-sm capitalize text-slate-color-error">{t("duplicated")}</p> : undefined}
+        sufix={props.error && isSubaccountDuplicated(props.newAccount?.subaccountId || undefined) ? <p className="text-sm capitalize text-slate-color-error">{t("duplicate")}</p> : undefined}
       />
 
       <div className="flex items-center ml-1 mr-[1rem]">
