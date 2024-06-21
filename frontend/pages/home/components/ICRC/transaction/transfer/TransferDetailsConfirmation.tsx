@@ -21,6 +21,10 @@ import { TransferStatus, useTransferStatus } from "@pages/home/contexts/Transfer
 import { TransferView, useTransferView } from "@pages/home/contexts/TransferViewProvider";
 import reloadBallance from "@pages/helpers/reloadBalance";
 import { LoadingLoader } from "@components/loader";
+import { updateAllBalances } from "@redux/assets/AssetActions";
+import { transactionCacheRefresh } from "@pages/home/helpers/cache";
+import { allowanceCacheRefresh } from "@pages/allowances/helpers/cache";
+import serviceCacheRefresh from "@pages/contacts/helpers/serviceCacheRefresh";
 
 interface ErrorResult {
   isError: boolean;
@@ -224,7 +228,16 @@ export default function TransferDetailsConfirmation() {
       const endTime = new Date();
       const duration = getElapsedSecond(initTime, endTime);
       setTransferState((prev) => ({ ...prev, duration }));
-      await reloadBallance();
+      await updateAllBalances({
+        loading: true,
+        myAgent: userAgent,
+        assets,
+        fromLogin: true,
+        basicSearch: true,
+      });
+
+      await transactionCacheRefresh(assets);
+      await allowanceCacheRefresh();
     }
   }
 
@@ -330,7 +343,15 @@ export default function TransferDetailsConfirmation() {
       const endTime = new Date();
       const duration = getElapsedSecond(initTime, endTime);
       setTransferState((prev) => ({ ...prev, duration }));
-      await reloadBallance();
+      await updateAllBalances({
+        loading: true,
+        myAgent: userAgent,
+        assets,
+        fromLogin: true,
+        basicSearch: true,
+      });
+
+      await transactionCacheRefresh(assets);
     }
   }
 
@@ -397,6 +418,16 @@ export default function TransferDetailsConfirmation() {
       const endTime = new Date();
       const duration = getElapsedSecond(initTime, endTime);
       setTransferState((prev) => ({ ...prev, duration }));
+      await updateAllBalances({
+        loading: true,
+        myAgent: userAgent,
+        assets,
+        fromLogin: true,
+        basicSearch: true,
+      });
+
+      await transactionCacheRefresh(assets);
+      await serviceCacheRefresh();
     }
   }
 }
