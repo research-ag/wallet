@@ -156,8 +156,8 @@ const TopBarComponent = ({ isLoginPage }: { isLoginPage: boolean }) => {
                   <DropdownMenu.Item
                     className={clsx(gearPopItem, "!justify-between", "rounded-b-lg")}
                     onSelect={() => {
-                      logout();
                       clearSiweIdentity();
+                      logout();
                     }}
                   >
                     <p className="text-LockColor">{t("lock")}</p>

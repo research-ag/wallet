@@ -145,21 +145,10 @@ export const handleLoginApp = async (authIdentity: Identity, fromSeed?: boolean,
 };
 
 export const logout = async () => {
-  const authClient = await AuthClient.create();
-  await authClient.logout();
   store.dispatch({ type: "USER_LOGGED_OUT" });
   await db().setIdentity(null);
   cleanEthLogin();
-  store.dispatch(clearDataContacts());
-  store.dispatch(clearDataAsset());
-  store.dispatch(clearDataAuth());
-  store.dispatch(setUnauthenticated());
-  store.dispatch(setUserAgent(undefined));
-  store.dispatch(setUserPrincipal(undefined));
-  store.dispatch(setTransactions([]));
-  store.dispatch(setServices([]));
-  store.dispatch(setServicesData([]));
-  store.dispatch(setTxWorker([]));
+  window.location.reload();
 };
 
 export const cleanEthLogin = () => {
