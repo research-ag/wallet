@@ -195,7 +195,7 @@ export default function useTransferMaxAmount() {
       return;
     }
 
-    const balance = BigInt(asset.balance);
+    const balance = BigInt(asset.credit);
     const fee = BigInt(currentAsset?.subAccounts[0].transaction_fee || "0");
 
     if (balance < fee) {
