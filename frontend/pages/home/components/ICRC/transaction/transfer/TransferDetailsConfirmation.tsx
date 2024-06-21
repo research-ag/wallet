@@ -19,7 +19,6 @@ import { updateServiceAssetAmounts } from "@redux/services/ServiceReducer";
 import { getElapsedSecond } from "@common/utils/datetimeFormaters";
 import { TransferStatus, useTransferStatus } from "@pages/home/contexts/TransferStatusProvider";
 import { TransferView, useTransferView } from "@pages/home/contexts/TransferViewProvider";
-import reloadBallance from "@pages/helpers/reloadBalance";
 import { LoadingLoader } from "@components/loader";
 import { updateAllBalances } from "@redux/assets/AssetActions";
 import { transactionCacheRefresh } from "@pages/home/helpers/cache";
