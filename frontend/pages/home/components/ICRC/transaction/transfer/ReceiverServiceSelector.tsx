@@ -28,8 +28,8 @@ export default function ServiceBookReceiver() {
       const currentServiceAsset = currentService?.assets?.find((asset) => asset.principal === currentAsset.address);
 
       const isAssetVisible = currentService.assets.find(
-        (ast) => ast.principal === currentAsset?.address && ast.visible
-      )
+        (ast) => ast.principal === currentAsset?.address && ast.visible,
+      );
 
       const princBytes = Principal.fromText(authClient).toUint8Array();
       const princSubId = `0x${princBytes.length.toString(16) + Buffer.from(princBytes).toString("hex")}`;

@@ -1,9 +1,9 @@
 // svgs
-import { ReactComponent as TrashIcon } from "@assets/svg/files/trash-icon.svg";
 import { ReactComponent as ChevIcon } from "@assets/svg/files/chev-icon.svg";
 import { ReactComponent as MoreIcon } from "@assets/svg/files/more-alt.svg";
 import { ReactComponent as CheckIcon } from "@assets/svg/files/edit-check.svg";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
+import { TrashIcon } from "@radix-ui/react-icons";
 //
 import { shortAddress } from "@common/utils/icrc";
 import { getInitialFromName } from "@common/utils/strings";
@@ -19,6 +19,7 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { DeleteServiceModal } from "@/pages/services/components/Modals/deleteService";
 import { NewServiceRow } from "@/pages/services/components/NewServiceRow";
 import { useAppSelector } from "@redux/Store";
+import { CustomButton } from "@components/button";
 
 interface ServicesListProps {
   services: Service[];
@@ -132,22 +133,24 @@ export default function ServicesList({ services, newService, setNewService }: Se
                           </DropdownMenu.Trigger>
                           <DropdownMenu.Portal>
                             <DropdownMenu.Content
-                              className=" w-[6rem] rounded-md bg-DeleteBackgroundColor !z-[999] text-PrimaryTextColorLight dark:text-PrimaryTextColor dark:border dark:border-BorderColorTwo shadow-md shadow-PrimaryColor/30 dark:shadow-black/20"
+                              className="flex flex-col p-1 rounded-md dark:bg-level-1-color bg-secondary-color-2-light"
                               sideOffset={5}
                               align="center"
                             >
-                              <div
-                                className="flex flex-row items-center justify-center gap-2 p-1 cursor-pointer hover:bg-TextErrorColor/20 rounded-b-md"
+                              <CustomButton
+                                className="flex items-center p-0"
                                 onClick={() => {
                                   setNewService(false);
                                   setAddService(false);
                                   setOpenMore(-1);
                                   onDelete(srv);
                                 }}
+                                size={"small"}
+                                intent="error"
                               >
-                                <TrashIcon className="w-4 h-4 cursor-pointer fill-TextErrorColor" />
-                                <p className="text-TextErrorColor text-md">{t("delete")}</p>
-                              </div>
+                                <TrashIcon className="w-5 h-5 mr-[0.2]" />
+                                <p className="text-md">{t("delete")}</p>
+                              </CustomButton>
                             </DropdownMenu.Content>
                           </DropdownMenu.Portal>
                         </DropdownMenu.Root>

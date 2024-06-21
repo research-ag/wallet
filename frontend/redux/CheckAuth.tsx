@@ -3,7 +3,6 @@ import { AnonymousIdentity, HttpAgent, Identity } from "@dfinity/agent";
 import logger from "@/common/utils/logger";
 import store from "@/redux/Store";
 import {
-  clearDataAuth,
   setAuthLoading,
   setAuthenticated,
   setDbLocation,
@@ -14,18 +13,15 @@ import {
   setUserPrincipal,
 } from "@/redux/auth/AuthReducer";
 import { AuthClient } from "@dfinity/auth-client";
-import { clearDataAsset, setInitLoad } from "@/redux/assets/AssetReducer";
+import { setInitLoad } from "@/redux/assets/AssetReducer";
 import { AuthNetwork } from "@/redux/models/TokenModels";
 import { AuthNetworkTypeEnum, RoutingPathEnum } from "@/common/const";
 import { Ed25519KeyIdentity, DelegationIdentity } from "@dfinity/identity";
-import { clearDataContacts } from "@/redux/contacts/ContactsReducer";
 import { Principal } from "@dfinity/principal";
 import { Secp256k1KeyIdentity } from "@dfinity/identity-secp256k1";
 import { db, DB_Type } from "@/database/db";
-import { setTransactions, setTxWorker } from "@/redux/transaction/TransactionReducer";
 import { addWatchOnlySessionToLocal } from "@pages/helpers/watchOnlyStorage";
 import watchOnlyRefresh from "@pages/helpers/watchOnlyRefresh";
-import { setServices, setServicesData } from "@/redux/services/ServiceReducer";
 
 const AUTH_PATH = `/authenticate/?applicationName=${import.meta.env.VITE_APP_NAME}&applicationLogo=${import.meta.env.VITE_APP_LOGO
   }#authorize`;
@@ -57,8 +53,8 @@ export const handleAuthenticated = async (opt: AuthNetwork) => {
       });
     });
   } catch (error) {
-    logger.debug(error)
-  };
+    logger.debug(error);
+  }
 };
 
 export const handleSiweAuthenticated = async (identity: DelegationIdentity) => {
