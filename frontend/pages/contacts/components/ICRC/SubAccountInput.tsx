@@ -5,9 +5,11 @@ import { Dispatch, SetStateAction } from "react";
 import { getSubAccount, getSubAccountId } from "@pages/contacts/helpers/formatters";
 import { ContactAccountError } from "./AddContactAccountRow";
 import { validatePrincipal } from "@common/utils/definityIdentity";
-import Switch from "@components/switch/BasicSwitch";
 import { useAppSelector } from "@redux/Store";
 import { t } from "i18next";
+import * as RadixSwitch from "@radix-ui/react-switch";
+import clsx from "clsx";
+import { isHexadecimalValid } from "@pages/home/helpers/checkers";
 
 interface SubAccountInputProps {
   newAccount: ContactAccount | null;
@@ -39,11 +41,10 @@ export default function SubAccountInput(props: SubAccountInputProps) {
       />
 
       <div className="flex items-center ml-1 mr-[1rem]">
-        <p className="mr-2 text-md">{props.isHexadecimal ? "Hex" : "Principal"}</p>
-        <Switch
+        <RadixSwitch.Root
+          id=""
           checked={props.isHexadecimal}
-          size="medium"
-          onChange={() => {
+          onCheckedChange={() => {
             props.setIsHexadecimal((prev) => !prev);
             props.setErrors((prev) => ({
               ...prev,
@@ -62,7 +63,28 @@ export default function SubAccountInput(props: SubAccountInputProps) {
               return { ...prev, subaccountId: "", subaccount: "", allowance: undefined };
             });
           }}
-        />
+          className="rounded-md bg-level-2-color min-h-[2rem] min-w-[7rem] relative"
+        >
+          <p className={clsx(
+            "absolute  text-white top-2 text-sm transition-all duration-300",
+            {
+              "left-0 ml-2": !props.isHexadecimal,
+              "right-0 mr-2": props.isHexadecimal,
+            }
+          )}>
+            {!props.isHexadecimal ? "Hex" : "Principal"}
+          </p>
+
+          <RadixSwitch.Thumb className={clsx(
+            "bg-primary-color absolute top-0 left-0 w-6/12 h-full rounded-md transition-all duration-300 flex items-center justify-center",
+            { "translate-x-full": !props.isHexadecimal }
+          )}>
+            <p className="text-sm font-bold text-white">
+              {props.isHexadecimal ? "Hex" : "Principal"}
+            </p>
+          </RadixSwitch.Thumb>
+
+        </RadixSwitch.Root>
       </div>
     </div>
   );
@@ -105,7 +127,12 @@ export default function SubAccountInput(props: SubAccountInputProps) {
       };
     });
 
-    if (!props.isHexadecimal) {
+    if (props.isHexadecimal) {
+      props.setErrors((prev) => ({
+        ...prev,
+        subaccountId: !isHexadecimalValid(value),
+      }));
+    } else {
       props.setErrors((prev) => ({
         ...prev,
         subaccountId: !validatePrincipal(value),
