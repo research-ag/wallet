@@ -30,6 +30,10 @@ function removeLoadingZerosFromNumber(value: string) {
     return value;
   }
 
+  if (value.length === 2 && value.split("").every((char) => char === "0")) {
+    return "0";
+  }
+
   let i = 0;
   while (i < value.length && value[i] === "0") {
     i++;
