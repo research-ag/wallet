@@ -1,6 +1,6 @@
 import { Contact, ContactAccount } from "@redux/models/ContactsModels";
 import { validatePrincipal } from "@common/utils/definityIdentity";
-import { checkHexString } from "@common/utils/hexadecimal";
+import { isHexadecimalValid } from "@pages/home/helpers/checkers";
 
 export const isContactNameValid = (name: string): boolean => {
   return name.trim() !== "" && name.length <= 15;
@@ -15,7 +15,7 @@ export const isContactAccountNameValid = (name: string): boolean => {
 };
 
 export const isContactSubaccountIdValid = (subaccountId: string): boolean => {
-  return subaccountId.trim() !== "" && subaccountId.trim() !== "0x" && checkHexString(subaccountId);
+  return subaccountId.trim() !== "" && subaccountId.trim() !== "0x" && isHexadecimalValid(subaccountId);
 };
 
 export const isDuplicatedPrincipal = (principal: string, contacts: Contact[]) => {

@@ -75,6 +75,7 @@ export function getSubAccountId(value: string | undefined): string {
   // 023120x -> 0x23120x
   if (value.length > 2) {
     if (value.slice(0, 2).toLocaleLowerCase() === "0x") {
+      if (value.length === 3 && value[2] === "0") return value;
       return removeLeadingZerosFromHex(value);
     };
     return `0x${removeLoadingZerosFromNumber(value)}`;
@@ -88,6 +89,7 @@ export function getSubAccount(value: string | undefined) {
 
   if (value.length >= 2) {
     if (value.slice(0, 2).toLocaleLowerCase() === "0x") {
+      if (value.length === 3 && value[2] === "0") return value;
       return removeLeadingZerosFromHex(value);
     };
 

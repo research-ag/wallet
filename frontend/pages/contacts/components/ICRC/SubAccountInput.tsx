@@ -109,7 +109,7 @@ function SubAccountInput(props: SubAccountInputProps, testRef: any) {
   }
 
   function onSubAccountChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const value = e.target.value;
+    const value = e.target.value.trim().toLowerCase();
     testRef.current = false;
 
     props.setNewAccount((prev) => {
