@@ -8,7 +8,7 @@ import { BasicDrawer } from "@components/drawer";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { setTransactionDrawerAction } from "@redux/transaction/TransactionActions";
 import { useMemo } from "react";
-import DrawerTransaction from "./Transaction";
+import DrawerTransaction from "@/pages/home/components/ICRC/transaction/Transaction";
 import { SpecialTxTypeEnum, TransactionTypeEnum } from "@/common/const";
 import { useTranslation } from "react-i18next";
 import { GeneralHook } from "@pages/home/hooks/generalHook";

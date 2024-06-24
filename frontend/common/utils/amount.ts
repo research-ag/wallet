@@ -40,11 +40,13 @@ export const toFullDecimal = (numb: bigint | string, decimal: number, maxDecimal
   }
 };
 
-export const toHoleBigInt = (numb: string, decimal: number) => {
+export const toHoleBigInt = (numb: string, decimal: number | string) => {
+  const numericDecimal = Number(decimal);
+
   const parts = numb.split(".");
   if (parts.length === 1 || parts[1] === "") {
     let addZeros = "";
-    for (let index = 0; index < decimal; index++) {
+    for (let index = 0; index < numericDecimal; index++) {
       addZeros = "0" + addZeros;
     }
     return BigInt(parts[0].replace(/,/g, "") + addZeros);
@@ -52,7 +54,7 @@ export const toHoleBigInt = (numb: string, decimal: number) => {
     const hole = parts[0].replace(/,/g, "");
     const dec = parts[1];
     let addZeros = "";
-    for (let index = 0; index < decimal - dec.length; index++) {
+    for (let index = 0; index < numericDecimal - dec.length; index++) {
       addZeros = "0" + addZeros;
     }
     return BigInt(hole + dec + addZeros);

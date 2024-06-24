@@ -12,9 +12,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { Principal } from "@dfinity/principal";
 import { LoadingLoader } from "@components/loader";
 import { AccountHook } from "@pages/hooks/accountHook";
-import { getAssetDetails } from "@/common/libs/icrc";
 import { db } from "@/database/db";
-import { Contact } from "@redux/models/ContactsModels";
 import { getAssetIcon } from "@/common/utils/icons";
 import {
   AssetMutationAction,
@@ -28,7 +26,9 @@ import {
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import useAssetMutate, { assetMutateInitialState } from "@pages/home/hooks/useAssetMutate";
 import { toFullDecimal } from "@common/utils/amount";
+import getAssetDetails from "@pages/home/helpers/getAssetDetails";
 import logger from "@/common/utils/logger";
+import { Contact } from "@redux/models/ContactsModels";
 
 const AddAssetManual = () => {
   const { assetAction, assetMutated } = useAppSelector((state) => state.asset.mutation);
@@ -43,7 +43,7 @@ const AddAssetManual = () => {
   const [testLoading, setTestLoading] = useState(false);
   const [validIndex, setValidIndex] = useState(false);
   const [validToken, setValidToken] = useState(false);
-  // 
+  //
   const [errShortDec, serErrShortDec] = useState(false);
   const [errIndex, setErrIndex] = useState("");
 
@@ -272,7 +272,7 @@ const AddAssetManual = () => {
 
   function onChangeName(e: ChangeEvent<HTMLInputElement>) {
     setNewAsset((prev: Asset) => {
-      return { ...prev, name: e.target.value };
+      return { ...prev, name: e.target.value.slice(0, 30) };
     });
   }
 
@@ -322,26 +322,28 @@ const AddAssetManual = () => {
           ledgerIndex: newAsset.index,
           sortIndex: newAsset.sortIndex,
         });
+        if (newAssetUpdated)
+          setNewAsset((prev: Asset) => {
+            const newAsset: Asset = {
+              ...prev,
+              ...newAssetUpdated,
+            };
+            return newAsset;
+          });
+        else setErrToken(t("add.asset.import.error"));
 
-        setNewAsset((prev: Asset) => {
-          const newAsset: Asset = {
-            ...prev,
-            ...newAssetUpdated,
-          };
-          return newAsset;
-        });
-
-        setValidToken(true);
-        validData = true;
+        setValidToken(!!newAssetUpdated);
+        validData = !!newAssetUpdated;
       } catch (e) {
         setErrToken(t("add.asset.import.error"));
         setValidToken(false);
         validData = false;
       }
     }
-    const isIndexValid = await isAssetIndexValid(newAsset.index);
+    const isIndexValid = (await isAssetIndexValid(newAsset.index)) || newAsset.index === "";
+
     if (!isIndexValid) validData = false;
-    setValidIndex(isIndexValid);
+    setValidIndex(newAsset.index !== "" && isIndexValid);
 
     setTestLoading(false);
     setTested(validData);
@@ -358,8 +360,8 @@ const AddAssetManual = () => {
     } catch (error) {
       logger.debug("Error getting index", error);
       return false;
-    };
-  };
+    }
+  }
 
   async function onSave() {
     if (isUpdate) {
@@ -369,52 +371,53 @@ const AddAssetManual = () => {
         return;
       }
 
-      const affectedContacts: Contact[] = [];
-      // FIXME: if contacts come from db will not include allowance in the state
-      const currentContacts = await db().getContacts();
+      setTimeout(async () => {
+        const affectedContacts: Contact[] = [];
+        const currentContacts = await db().getContacts();
 
-      for (const contact of currentContacts) {
-        let affected = false;
+        for (const contact of currentContacts) {
+          let affected = false;
 
-        const newDoc = {
-          ...contact,
-          assets: contact.assets.map((currentAsset) => {
-            if (currentAsset.tokenSymbol === newAsset?.tokenSymbol) {
-              affected = true;
-              return { ...currentAsset, symbol: newAsset.symbol };
-            } else return currentAsset;
-          }),
-        };
+          const newDoc = {
+            ...contact,
+            accounts: contact.accounts.map((currentAccount) => {
+              if (currentAccount.tokenSymbol === newAsset?.tokenSymbol) {
+                affected = true;
+                return { ...currentAccount, symbol: newAsset.symbol };
+              } else return currentAccount;
+            }),
+          };
 
-        if (affected) {
-          affectedContacts.push(newDoc);
+          if (affected) {
+            affectedContacts.push(newDoc);
+          }
         }
-      }
 
-      await Promise.all(
-        affectedContacts.map((contact) => db().updateContact(contact.principal, contact, { sync: true })),
-      );
+        await Promise.all(
+          affectedContacts.map((contact) => db().updateContact(contact.principal, contact, { sync: true })),
+        );
 
-      const assetDB = await db().getAsset(newAsset.address);
+        const assetDB = await db().getAsset(newAsset.address);
 
-      if (assetDB) {
-        // INFO: update an asset
-        const updatedFull: Asset = {
-          ...newAsset,
-          decimal: Number(newAsset.decimal).toFixed(0),
-          shortDecimal:
-            newAsset.shortDecimal === ""
-              ? Number(newAsset.decimal).toFixed(0)
-              : Number(newAsset.shortDecimal).toFixed(0),
-        };
-        await db().updateAsset(assetDB.address, updatedFull, { sync: true });
-      }
+        if (assetDB) {
+          // INFO: update an asset
+          const updatedFull: Asset = {
+            ...newAsset,
+            decimal: Number(newAsset.decimal).toFixed(0),
+            shortDecimal:
+              newAsset.shortDecimal === ""
+                ? Number(newAsset.decimal).toFixed(0)
+                : Number(newAsset.shortDecimal).toFixed(0),
+          };
+          await db().updateAsset(assetDB.address, updatedFull, { sync: true });
+        }
 
-      dispatch(setSelectedAsset(newAsset));
-      dispatch(setAccordionAssetIdx([newAsset.tokenSymbol]));
-      setNewAsset(assetMutateInitialState);
-      dispatch(setAssetMutation(undefined));
-      dispatch(setAssetMutationAction(AssetMutationAction.NONE));
+        dispatch(setSelectedAsset(newAsset));
+        dispatch(setAccordionAssetIdx([newAsset.tokenSymbol]));
+        setNewAsset(assetMutateInitialState);
+        dispatch(setAssetMutation(undefined));
+        dispatch(setAssetMutationAction(AssetMutationAction.NONE));
+      }, 0);
     } else if (await onTest(false)) addAssetToData();
   }
 

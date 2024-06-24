@@ -23,7 +23,7 @@ export default function SearchAsset(props: SearchAssetProps) {
         assets[0].subAccounts.length > 0 && dispatch(setSelectedAccount(assets[0].subAccounts[0]));
         dispatch(setAccordionAssetIdx([assets[0].tokenSymbol]));
       }
-    };
+    }
 
     if (searchKey.trim().length > 0) {
       const searchKeyLower = searchKey.toLowerCase();
@@ -56,7 +56,7 @@ export default function SearchAsset(props: SearchAssetProps) {
           dispatch(setAccordionAssetIdx([assets[0].tokenSymbol]));
         }
       }
-    };
+    }
   }, [searchKey]);
 
   return (

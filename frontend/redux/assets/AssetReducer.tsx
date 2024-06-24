@@ -16,6 +16,7 @@ interface AssetStateMutation {
   assetAction: AssetMutationAction;
   assetResult: AssetMutationResult;
   subAccountMutation: SubAccount | undefined;
+  extraData: any;
 }
 
 interface AssetStateUtilData {
@@ -61,6 +62,7 @@ const initialState: AssetState = {
     assetAction: AssetMutationAction.NONE,
     assetResult: AssetMutationResult.NONE,
     subAccountMutation: undefined,
+    extraData: undefined,
   },
   ICPSubaccounts: [],
   accounts: [],
@@ -92,6 +94,9 @@ const assetSlice = createSlice({
     },
     setAssetMutationAction(state, action: PayloadAction<AssetMutationAction>) {
       state.mutation.assetAction = action.payload;
+    },
+    setExtraDataMuatation(state, action: PayloadAction<any>) {
+      state.mutation.extraData = action.payload;
     },
     setICRC1SystemAssets(state, action: PayloadAction<Asset[]>) {
       state.utilData.icr1SystemAssets = [...ICRC1systemAssets, ...action.payload];
@@ -194,6 +199,7 @@ export const {
   updateSubAccountBalance,
   setAssetMutation,
   setAssetMutationResult,
+  setExtraDataMuatation,
 } = assetSlice.actions;
 
 export default assetSlice.reducer;

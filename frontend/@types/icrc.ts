@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { AssetContactSchema, SubAccountContactSchema } from "@redux/models/ContactsModels";
 
 const TransferTokensParamsSchema = z.object({
   receiverPrincipal: z.string(),
@@ -17,20 +16,6 @@ const TransferFromAllowanceParamsSchema = TransferTokensParamsSchema.extend({
 });
 export type TransferFromAllowanceParams = z.infer<typeof TransferFromAllowanceParamsSchema>;
 
-const HasAssetAllowanceParamsSchema = z.object({
-  accountPrincipal: z.string(),
-  subAccounts: z.array(SubAccountContactSchema),
-  assetAddress: z.string(),
-  assetDecimal: z.string(),
-});
-export type HasSubAccountsParams = z.infer<typeof HasAssetAllowanceParamsSchema>;
-
-const HasAssetAllowanceParamSchema = z.object({
-  accountPrincipal: z.string(),
-  assets: z.array(AssetContactSchema),
-});
-export type HasAssetAllowanceParams = z.infer<typeof HasAssetAllowanceParamSchema>;
-
 const GetBalanceParamsSchema = z.object({
   principal: z.string().optional(),
   subAccount: z.string(),
@@ -41,8 +26,8 @@ export type GetBalanceParams = z.infer<typeof GetBalanceParamsSchema>;
 
 const CheckAllowanceParamsSchema = z.object({
   spenderPrincipal: z.string().optional(),
-  spenderSubaccount: z.string(),
-  accountPrincipal: z.string().optional(),
+  allocatorSubaccount: z.string(),
+  allocatorPrincipal: z.string().optional(),
   assetAddress: z.string(),
   assetDecimal: z.string(),
 });

@@ -2,13 +2,13 @@ import { useTranslation } from "react-i18next";
 import { AuthNetwork } from "@redux/models/TokenModels";
 import { AuthNetworkType, AuthNetworkTypeEnum } from "@/common/const";
 import { handleAuthenticated } from "@redux/CheckAuth";
-import SeedInput from "./SeedInput";
-import WatchOnlyInput from "./WatchOnlyInput";
-import MnemonicInput from "./MnemonicInput";
+import SeedInput from "@/pages/login/components/SeedInput";
+import WatchOnlyInput from "@/pages/login/components/WatchOnlyInput";
+import MnemonicInput from "@/pages/login/components/MnemonicInput";
 import { db } from "@/database/db";
-import EthereumSignIn from "./EthereumSignIn";
+import EthereumSignIn from "@/pages/login/components/EthereumSignIn";
 import { useState } from "react";
-import loginOpts from "./loginOptions";
+import loginOpts from "@/pages/login/components/loginOptions";
 
 export default function AuthMethodRender() {
   const { t } = useTranslation();

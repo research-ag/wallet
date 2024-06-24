@@ -1,5 +1,5 @@
 import { TAllowance } from "@/@types/allowance";
-import { getAllowanceDetails } from "@/common/libs/icrc/";
+import { getAllowanceDetails } from "@/common/libs/icrcledger/icrcAllowance";
 import { db } from "@/database/db";
 import store from "@redux/Store";
 import { setReduxAllowances } from "@redux/allowance/AllowanceReducer";
@@ -25,15 +25,15 @@ export async function allowanceCacheRefresh() {
         ) {
           const response = await getAllowanceDetails({
             spenderPrincipal,
-            spenderSubaccount,
+            allocatorSubaccount: spenderSubaccount,
             assetAddress,
             assetDecimal,
           });
 
           return {
             ...allowance,
-            amount: response?.allowance ? response?.allowance : "0",
-            expiration: response?.expires_at ? response?.expires_at : "",
+            amount: response?.amount || "0",
+            expiration: response?.expiration || "",
           };
         }
 

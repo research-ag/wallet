@@ -1,14 +1,14 @@
 import GoBackIcon from "@/assets/svg/files/go-back-icon.svg";
 import { useAccount, useNetwork } from "wagmi";
-import ConnectButton from "./ConnectButton";
-import AddressPill from "./AddressPill";
+import ConnectButton from "@/pages/login/components/ConnectButton";
+import AddressPill from "@/pages/login/components/AddressPill";
 import { isChainIdSupported } from "@/config/wagmi";
 import { CustomButton } from "@components/button";
 import { useTranslation } from "react-i18next";
-import LoginButton from "./LoginButton";
+import LoginButton from "@/pages/login/components/LoginButton";
 import { useSiweIdentity } from "ic-use-siwe-identity";
 import { useEffect } from "react";
-import { handleSiweAuthenticated } from "@redux/CheckAuth";
+import { cleanEthLogin, handleSiweAuthenticated } from "@redux/CheckAuth";
 
 export default function EthereumSignIn() {
   const { t } = useTranslation();
@@ -45,7 +45,8 @@ export default function EthereumSignIn() {
           {isConnected && (
             <button
               onClick={() => {
-                prepareLogin();
+                cleanEthLogin();
+                location.reload();
               }}
             >
               <img src={GoBackIcon} alt="" className="w-4" />

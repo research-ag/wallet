@@ -1,5 +1,4 @@
 import { AllowanceValidationErrorsEnum, TAllowance } from "@/@types/allowance";
-import { submitAllowanceApproval, createApproveAllowanceParams, getSubAccountBalance } from "@/common/libs/icrc";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { useMutation } from "@tanstack/react-query";
 import { useCallback, useState } from "react";
@@ -18,11 +17,15 @@ import { refreshAllowance } from "../helpers/refresh";
 // eslint-disable-next-line import/named
 import { throttle } from "lodash";
 import { removeZeroesFromAmount, toFullDecimal, toHoleBigInt } from "@common/utils/amount";
+import { createApproveAllowanceParams, submitAllowanceApproval } from "@common/libs/icrcledger/icrcAllowance";
+import ICRC1BalanceOf from "@common/libs/icrcledger/ICRC1BalanceOf";
+import { hexToUint8Array } from "@common/utils/hexadecimal";
 
 export function useUpdateAllowance() {
   const dispatch = useAppDispatch();
   const { onCloseUpdateAllowanceDrawer } = useAllowanceDrawer();
   const { allowances } = useAppSelector((state) => state.allowance.list);
+  const { userAgent, userPrincipal } = useAppSelector((state) => state.auth);
   const { selectedAllowance } = useAppSelector((state) => state.allowance);
   const { assets } = useAppSelector((state) => state.asset.list);
   const [allowance, setAllowance] = useState<TAllowance>(selectedAllowance);
@@ -74,11 +77,14 @@ export function useUpdateAllowance() {
 
   const onSuccess = async () => {
     setIsLoadingAllowanceAction(false);
-    const refreshParams = {
-      subAccount: allowance.subAccountId,
-      assetAddress: allowance.asset.address,
-    };
-    const amount = await getSubAccountBalance(refreshParams);
+
+    const amount = await ICRC1BalanceOf({
+      canisterId: allowance.asset.address,
+      agent: userAgent,
+      owner: userPrincipal,
+      subaccount: [hexToUint8Array(allowance.subAccountId)],
+    });
+
     const balance = amount ? amount.toString() : "0";
     dispatch(updateSubAccountBalance(allowance.asset.tokenSymbol, allowance.subAccountId, balance));
     onCloseUpdateAllowanceDrawer();

@@ -1,9 +1,9 @@
-import { getIcrcActor } from "@/common/libs/icrc";
 import { SupportedStandard } from "@/@types/icrc";
 import { HttpAgent } from "@dfinity/agent";
 import { extend } from "dayjs";
 import utc from "dayjs/plugin/utc";
 import logger from "@/common/utils/logger";
+import { getIcrcActor } from "./getIcrcActor";
 extend(utc);
 //
 

@@ -1,11 +1,17 @@
 import store from "@redux/Store";
 import { SnsToken } from "@redux/models/TokenModels";
 import { IcrcTokenMetadataResponse } from "@dfinity/ledger-icrc";
-import { setTokenMarket, setICPSubaccounts, setAssets, setSelectedAsset, setSelectedAccount } from "./AssetReducer";
+import {
+  setTokenMarket,
+  setICPSubaccounts,
+  setAssets,
+  setSelectedAsset,
+  setSelectedAccount,
+} from "@/redux/assets/AssetReducer";
 import { AccountIdentifier, SubAccount as SubAccountNNS } from "@dfinity/ledger-icp";
 import { Asset, ICPSubAccount } from "@redux/models/AccountModels";
 import { UpdateAllBalances } from "@/@types/assets";
-import { getICRCSupportedStandards } from "@/common/libs/icrc";
+import ICRC1SupportedStandards from "@/common/libs/icrcledger/ICRC1SupportedStandards";
 import { HttpAgent } from "@dfinity/agent";
 import { getETHRate, getTokensFromMarket } from "@/common/utils/market";
 import { refreshAssetBalances } from "@pages/home/helpers/assets";
@@ -46,7 +52,7 @@ export const updateAllBalances: UpdateAllBalances = async (params) => {
   store.dispatch(setAssets(newAssetsUpload));
   const icpAsset = newAssetsUpload.find((asset) => asset.tokenSymbol === "ICP");
 
-  // 
+  //
   const currentSelectedAsset = store.getState().asset.helper.selectedAsset;
   const currentSelectedAccount = store.getState().asset.helper.selectedAccount;
   const newSelectedAsset = newAssetsUpload.find((asset) => asset.tokenSymbol === currentSelectedAsset?.tokenSymbol);
@@ -56,7 +62,7 @@ export const updateAllBalances: UpdateAllBalances = async (params) => {
 
   store.dispatch(setSelectedAsset(newSelectedAsset));
   store.dispatch(setSelectedAccount(newSelectedAccount));
-  // 
+  //
 
   if (icpAsset) {
     const sub: ICPSubAccount[] = [];
@@ -115,8 +121,8 @@ export const getSNSTokens = async (agent: HttpAgent): Promise<Asset[]> => {
       if (!symbolsAdded.includes(metadata.symbol)) {
         symbolsAdded.push(metadata.symbol);
 
-        const supportedStandards = await getICRCSupportedStandards({
-          assetAddress: tkn.canister_ids.ledger_canister_id,
+        const supportedStandards = await ICRC1SupportedStandards({
+          canisterId: tkn.canister_ids.ledger_canister_id,
           agent: agent,
         });
 

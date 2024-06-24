@@ -92,6 +92,7 @@ module.exports = {
       ContactColor2: "#61A0BE",
       ContactColor3: "#5F8E88",
       TooltipBackground: "#1F2B55",
+      DeleteBackgroundColor: "#FFE3EB",
 
       // WARNING: These colors MUST be used in new feature, which are part of new design system provided.
       // MAIN COLORS

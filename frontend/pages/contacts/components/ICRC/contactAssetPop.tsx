@@ -1,17 +1,17 @@
 // svgsetassetsToAdd
-import { IconType, IconTypeEnum } from "@/common/const";
+import { IconTypeEnum } from "@/common/const";
 import { ReactComponent as PlusIcon } from "@assets/svg/files/plus.svg";
+import { getAssetIcon } from "@common/utils/icons";
 //
 import { CustomButton } from "@components/button";
 import { CustomCheck } from "@components/checkbox";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { Asset, AssetToAdd } from "@redux/models/AccountModels";
+import { Asset } from "@redux/models/AccountModels";
 import { Fragment, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 interface ContactAssetPopProps {
-  onAdd(data: AssetToAdd[]): void;
+  onAdd(data: Asset[]): void;
   assets: Asset[];
-  getAssetIcon(type: IconType, symbol?: string, logo?: string): JSX.Element;
   btnClass?: string;
   compClass?: string;
   onOpen?: any;
@@ -21,14 +21,13 @@ interface ContactAssetPopProps {
 const ContactAssetPop = ({
   onAdd,
   assets,
-  getAssetIcon,
   btnClass = "",
   compClass = "flex flex-row justify-center items-center w-full",
   onOpen,
   onClose,
 }: ContactAssetPopProps) => {
   const { t } = useTranslation();
-  const [assetsToAdd, setAssetsToAdd] = useState<AssetToAdd[]>([]);
+  const [assetsToAdd, setAssetsToAdd] = useState<Asset[]>([]);
   const [symbolToAdd, setSymbolsToAdd] = useState<string[]>([]);
   const [openDrop, setOpenDrop] = useState<boolean>(false);
 
@@ -55,11 +54,11 @@ const ContactAssetPop = ({
           </DropdownMenu.Trigger>
           <DropdownMenu.Portal>
             <DropdownMenu.Content
-              className="text-md bg-PrimaryColorLight w-[10rem] rounded-lg dark:bg-SecondaryColor scroll-y-light z-[9999] max-h-80 text-PrimaryTextColorLight dark:text-PrimaryTextColor shadow-sm shadow-BorderColorTwoLight dark:shadow-BorderColorTwo border border-BorderColorLight dark:border-BorderColor/20"
+              className="text-md bg-PrimaryColorLight rounded-lg dark:bg-SecondaryColor scroll-y-light z-[9999] text-PrimaryTextColorLight dark:text-PrimaryTextColor shadow-sm shadow-BorderColorTwoLight dark:shadow-BorderColorTwo border border-BorderColorLight dark:border-BorderColor/20"
               sideOffset={2}
               align="end"
             >
-              <div className="flex flex-col justify-start items-start  dark:bg-SecondaryColor rounded-lg w-40 border border-BorderColorLight/20 dark:border-BorderColor/20 shadow max-h-64 z-[2000]">
+              <div className="flex flex-col justify-start items-start  dark:bg-SecondaryColor rounded-lg min-w-40 border border-BorderColorLight/20 dark:border-BorderColor/20 shadow max-h-64 z-[2000]">
                 <div className="flex flex-col w-full scroll-y-light">
                   <div
                     className="flex flex-row items-center justify-between w-full px-3 py-2 rounded-t-lg hover:bg-secondary-color-1-light hover:dark:bg-HoverColor"
@@ -75,7 +74,7 @@ const ContactAssetPop = ({
                     return (
                       <div
                         key={k}
-                        className={`flex flex-row justify-between items-center px-3 py-2 w-full hover:bg-secondary-color-1-light hover:dark:bg-HoverColor ${
+                        className={`flex flex-row justify-between items-center px-3 mr-1 py-2 w-full hover:bg-secondary-color-1-light hover:dark:bg-HoverColor ${
                           symbolToAdd.includes(asset.tokenSymbol) && assetsToAdd.length !== assets.length
                             ? "bg-HoverColorLight dark:bg-HoverColor"
                             : ""
@@ -111,7 +110,7 @@ const ContactAssetPop = ({
     </Fragment>
   );
 
-  function setToAdd(assets: AssetToAdd[], symbols: string[]) {
+  function setToAdd(assets: Asset[], symbols: string[]) {
     setAssetsToAdd(assets);
     setSymbolsToAdd(symbols);
   }
@@ -121,20 +120,8 @@ const ContactAssetPop = ({
       setToAdd([], []);
     } else {
       setToAdd(
-        assets.map((ast) => {
-          return {
-            symbol: ast.symbol,
-            tokenSymbol: ast.tokenSymbol,
-            logo: ast.logo,
-            address: ast.address,
-            decimal: ast.decimal,
-            shortDecimal: ast.shortDecimal,
-            supportedStandards: ast.supportedStandards,
-          };
-        }),
-        assets.map((ast) => {
-          return ast.tokenSymbol;
-        }),
+        assets,
+        assets.map((ast) => ast.tokenSymbol),
       );
     }
   }
@@ -146,21 +133,7 @@ const ContactAssetPop = ({
         symbolToAdd.filter((ast) => ast !== asset.tokenSymbol),
       );
     } else {
-      setToAdd(
-        [
-          ...assetsToAdd,
-          {
-            symbol: asset.symbol,
-            tokenSymbol: asset.tokenSymbol,
-            logo: asset.logo,
-            address: asset.address,
-            decimal: asset.decimal,
-            shortDecimal: asset.shortDecimal,
-            supportedStandards: asset.supportedStandards,
-          },
-        ],
-        [...symbolToAdd, asset.tokenSymbol],
-      );
+      setToAdd([...assetsToAdd, asset], [...symbolToAdd, asset.tokenSymbol]);
     }
   }
 

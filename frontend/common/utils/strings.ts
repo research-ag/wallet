@@ -8,6 +8,7 @@ export function toTitleCase(title: string | undefined) {
 
 export function middleTruncation(text: string | undefined, startSize: number, endSize: number) {
   if (!text) return "-";
+  if (startSize + endSize >= text.length) return text;
   const startText = text.substring(0, startSize);
   const endText = text.substring(text.length - endSize, text.length);
   return `${startText}...${endText}`;
@@ -55,4 +56,8 @@ export const removeLeadingZeros = (text: string): string => text.replace(/^0+/, 
 export function cleanAlphanumeric(text: string): string {
   if (text === " ") return "";
   return text.replace(/\s+/g, " ").trim();
+}
+
+export function removeExtraSpaces(text: string): string {
+  return text.replace(/\s+/g, " ");
 }

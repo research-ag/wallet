@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
-import AuthMethodRender from "./AuthMethodRender";
-import LanguageSwitcher from "./LanguageSwitcher";
+import AuthMethodRender from "@/pages/login/components/AuthMethodRender";
+import LanguageSwitcher from "@/pages/login/components/LanguageSwitcher";
 
 export default function AuthMethods() {
   const { t } = useTranslation();

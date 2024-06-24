@@ -4,8 +4,10 @@ import { useAppSelector } from "@redux/Store";
 import { useMemo, useState } from "react";
 import { filterByAsset, filterBySpenderAndSubAccount } from "../helpers/filters";
 import { sortByAmount, sortByExpiration, sortBySpender, sortBySubAccount } from "../helpers/sorters";
+import { RoutingPathEnum } from "@common/const";
 
 export default function useAllowances() {
+  const { route } = useAppSelector((state) => state.auth);
   const { allowances: rawAllowances } = useAppSelector((state) => state.allowance.list);
   const { selectedAccount, selectedAsset } = useAppSelector((state) => state.asset.helper);
   const [searchKey, setSearchKey] = useState<string>("");
@@ -25,7 +27,7 @@ export default function useAllowances() {
   };
 
   const allowances = useMemo(() => {
-    const isHomeInPath = window.location.pathname.includes("home");
+    const isHomeInPath = route === RoutingPathEnum.Enum.HOME;
 
     const finalAssetFilter = isHomeInPath ? [selectedAsset?.tokenSymbol || ""] : assetFilters || [];
     const filteredByAssets =

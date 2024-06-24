@@ -1,4 +1,3 @@
-import { submitAllowanceApproval, createApproveAllowanceParams, getSubAccountBalance } from "@/common/libs/icrc";
 import { useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { updateSubAccountBalance } from "@redux/assets/AssetReducer";
@@ -12,11 +11,15 @@ import { AllowanceValidationErrorsEnum } from "@/@types/allowance";
 import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { refreshAllowance } from "../helpers/refresh";
 import { initialAllowanceState } from "@redux/allowance/AllowanceReducer";
+import { createApproveAllowanceParams, submitAllowanceApproval } from "@common/libs/icrcledger/icrcAllowance";
+import ICRC1BalanceOf from "@common/libs/icrcledger/ICRC1BalanceOf";
+import { hexToUint8Array } from "@common/utils/hexadecimal";
 import logger from "@/common/utils/logger";
 
 export default function useDeleteAllowance() {
   const dispatch = useAppDispatch();
   const { selectedAllowance } = useAppSelector((state) => state.allowance);
+  const { userAgent, userPrincipal } = useAppSelector((state) => state.auth);
   const { assets } = useAppSelector((state) => state.asset.list);
   const [isPending, setIsPending] = useState(false);
 
@@ -39,11 +42,13 @@ export default function useDeleteAllowance() {
       await submitAllowanceApproval(params, selectedAllowance.asset.address);
       await refreshAllowance(selectedAllowance, true);
 
-      const refreshParams = {
-        subAccount: selectedAllowance.subAccountId,
-        assetAddress: selectedAllowance.asset.address,
-      };
-      const amount = await getSubAccountBalance(refreshParams);
+      const amount = await ICRC1BalanceOf({
+        canisterId: selectedAllowance.asset.address,
+        agent: userAgent,
+        owner: userPrincipal,
+        subaccount: [hexToUint8Array(selectedAllowance.subAccountId)],
+      });
+
       const balance = amount ? amount.toString() : "0";
       dispatch(updateSubAccountBalance(selectedAllowance.asset.tokenSymbol, selectedAllowance.subAccountId, balance));
 

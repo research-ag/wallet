@@ -2,12 +2,12 @@ import { Fragment, useState } from "react";
 import ICRCSubaccountAction from "@/pages/home/components/ICRC/transaction/TransactionActionBanner";
 import SendReceiveDrawer from "@/pages/home/components/ICRC/transaction/SendReceiveDrawer";
 import TransactionInspectDrawer from "@/pages/home/components/ICRC/transaction/TransactionInpectDrawer";
-import TransactionsFiltering from "./TransactionsFiltering";
+import TransactionsFiltering from "@/pages/home/components/ICRC/transaction/TransactionsFiltering";
 import TransactionsScroll from "@/pages/home/components/ICRC/transaction/TransactionsScroll";
 import { useAppSelector } from "@redux/Store";
-import { SupportedStandardEnum } from "../../../../../@types/icrc";
-import TablesTab from "./TablesTab";
-import AllowancesTable from "./AllowancesTable";
+import { SupportedStandardEnum } from "@/@types/icrc";
+import TablesTab from "@/pages/home/components/ICRC/transaction/TablesTab";
+import AllowancesTable from "@/pages/home/components/ICRC/transaction/AllowancesTable";
 
 export enum TabOption {
   TRANSACTIONS = "Transactions",

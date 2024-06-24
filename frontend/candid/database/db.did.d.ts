@@ -1,6 +1,5 @@
 import type { Principal } from "@dfinity/principal";
 import type { ActorMethod } from "@dfinity/agent";
-import type { IDL } from "@dfinity/candid";
 
 export interface AllowanceDocument {
   id: string;
@@ -48,22 +47,28 @@ export interface ContactDocument {
   principal: string;
   deleted: boolean;
   name: string;
+  updatedAt: number;
+  accounts: Array<{
+    subaccountId: string;
+    name: string;
+    subaccount: string;
+    tokenSymbol: string;
+  }>;
+  accountIdentifier: string;
+}
+export interface ServiceDocument {
+  principal: string;
+  deleted: boolean;
+  name: string;
   assets: Array<{
-    subaccounts: Array<{
-      name: string;
-      sub_account_id: string;
-      subaccount_index: string;
-    }>;
+    principal: string;
     logo: string;
     tokenSymbol: string;
-    supportedStandards: Array<string>;
-    address: string;
+    tokenName: string;
     shortDecimal: string;
     decimal: string;
-    symbol: string;
   }>;
   updatedAt: number;
-  accountIdentier: string;
 }
 export interface WalletDatabase {
   doesStorageExist: ActorMethod<[], boolean>;
@@ -74,10 +79,10 @@ export interface WalletDatabase {
   pullAllowances: ActorMethod<[number, [] | [string], bigint], Array<AllowanceDocument>>;
   pullAssets: ActorMethod<[number, [] | [string], bigint], Array<AssetDocument>>;
   pullContacts: ActorMethod<[number, [] | [string], bigint], Array<ContactDocument>>;
+  pullServices: ActorMethod<[number, [] | [string], bigint], Array<ServiceDocument>>;
   pushAllowances: ActorMethod<[Array<AllowanceDocument>], Array<AllowanceDocument>>;
   pushAssets: ActorMethod<[Array<AssetDocument>], Array<AssetDocument>>;
   pushContacts: ActorMethod<[Array<ContactDocument>], Array<ContactDocument>>;
+  pushServices: ActorMethod<[Array<ServiceDocument>], Array<ServiceDocument>>;
 }
-export type _SERVICE = WalletDatabase;
-export declare const idlFactory: IDL.InterfaceFactory;
-export declare const init: ({ IDL }: { IDL: IDL }) => IDL.Type[];
+export interface _SERVICE extends WalletDatabase {}

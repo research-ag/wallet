@@ -224,7 +224,6 @@ function transferMapper(transfer: Transfer[], initial: Transaction, options: Map
     let subaccFrom: SubAccountNNS | undefined = undefined;
     try {
       if (current.to.subaccount.length) {
-        // TODO: verify if this is the best approach and value if right value if to.subaccount instead of from.subaccount
         subaccFrom = SubAccountNNS.fromBytes((current.to.subaccount as [Uint8Array])[0]) as SubAccountNNS;
       } else {
         subaccFrom = undefined;

@@ -18,7 +18,7 @@ import { db } from "@/database/db";
 import { LoadingLoader } from "@components/loader";
 import { refreshAllowance } from "@pages/allowances/helpers/refresh";
 import { getDuplicatedAllowance } from "@pages/allowances/helpers/validators";
-import { getAllowanceDetails } from "@/common/libs/icrc";
+import { getAllowanceDetails } from "@/common/libs/icrcledger/icrcAllowance";
 import { isHexadecimalValid } from "@pages/home/helpers/checkers";
 import logger from "@/common/utils/logger";
 
@@ -114,14 +114,14 @@ export default function CreateForm() {
       const response = await getAllowanceDetails({
         assetAddress: allowance.asset.address,
         assetDecimal: allowance.asset.decimal,
-        spenderSubaccount: allowance.subAccountId,
+        allocatorSubaccount: allowance.subAccountId,
         spenderPrincipal: allowance.spender,
       });
 
       const newAllowance = {
         ...allowance,
-        amount: response?.allowance || "0",
-        expiration: response?.expires_at || "",
+        amount: response?.amount || "0",
+        expiration: response?.expiration || "",
         id: db().generateAllowancePrimaryKey(allowance),
       };
 

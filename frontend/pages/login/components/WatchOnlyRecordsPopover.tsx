@@ -1,7 +1,7 @@
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import clsx from "clsx";
 import { CustomInput } from "@components/input";
-import HistoricalItem from "./HistoricalItem";
+import HistoricalItem from "@/pages/login/components/HistoricalItem";
 import useWatchOnly from "@pages/hooks/useWatchOnly";
 import { useTranslation } from "react-i18next";
 

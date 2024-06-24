@@ -14,6 +14,7 @@ import { db, DB_Type } from "@/database/db";
 import store from "@/redux/Store";
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import logger from "@/common/utils/logger";
+import { CustomButton } from "@components/button";
 
 interface DbLocationModalProps {
   setOpen(value: boolean): void;
@@ -96,6 +97,11 @@ const DbLocationModal = ({ setOpen }: DbLocationModalProps) => {
           />
         )}
       </div>
+      {dbLocation === DB_Type.CANISTER && (
+        <CustomButton className="self-end w-fit" onClick={saveStorageType} size={"small"}>
+          <p>{t("save")}</p>
+        </CustomButton>
+      )}
     </Fragment>
   );
 
@@ -116,10 +122,14 @@ const DbLocationModal = ({ setOpen }: DbLocationModalProps) => {
 
   function onKeyUp(e: React.KeyboardEvent<HTMLInputElement>) {
     if (!canisterIdErr && e.nativeEvent.key === "Enter") {
-      db().setCustomDbCanisterId(canisterId);
-      store.dispatch(setCustomDbCanisterId(canisterId));
-      setOpen(false);
+      saveStorageType();
     }
+  }
+
+  function saveStorageType() {
+    db().setCustomDbCanisterId(canisterId);
+    store.dispatch(setCustomDbCanisterId(canisterId));
+    setOpen(false);
   }
 
   function onChangeCanisterId({ target: { value } }: React.ChangeEvent<HTMLInputElement>) {

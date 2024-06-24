@@ -15,7 +15,11 @@ export default function AllowanceTooltip(props: AllowanceTooltipProps) {
 
   return (
     <div className="grid mr-2 place-items-center">
-      <BasicToolTip trigger={<MoneyHandIcon className="relative w-5 h-5 cursor-pointer fill-RadioCheckColor" />}>
+      <BasicToolTip
+        trigger={
+          <MoneyHandIcon className="relative ml-1  w-6 h-6 cursor-pointer dark:fill-slate-color-success fill-[#26A17B]" />
+        }
+      >
         <div className="h-[7rem] w-[9rem]">
           <h2 className="text-lg dark:text-PrimaryTextColor/50 text-PrimaryTextColorLight/50">{t("amount")}</h2>
           <h2 className="text-lg dark:text-PrimaryTextColor text-PrimaryTextColorLight">

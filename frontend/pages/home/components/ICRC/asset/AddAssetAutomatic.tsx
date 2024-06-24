@@ -21,8 +21,8 @@ import { useAppDispatch, useAppSelector } from "@redux/Store";
 import useCreateUpdateAsset from "@pages/home/hooks/useCreateUpdateAsset";
 import { useState } from "react";
 import useAssetMutate, { assetMutateInitialState } from "@pages/home/hooks/useAssetMutate";
-import { getAssetDetails } from "@/common/libs/icrc";
 import { db } from "@/database/db";
+import getAssetDetails from "@pages/home/helpers/getAssetDetails";
 import logger from "@/common/utils/logger";
 
 const AddAssetAutomatic = () => {

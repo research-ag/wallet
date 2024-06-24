@@ -21,8 +21,10 @@ export default function LoginButton() {
   const disabled = !isChainIdSupported(chain?.id) || isLoggingIn || !isConnected || !isPrepareLoginSuccess;
 
   return (
-    <CustomButton disabled={disabled} className="disabled:opacity-50 w-36" onClick={login}>
-      {buttonText()}
-    </CustomButton>
+    <>
+      <CustomButton disabled={disabled} className="disabled:opacity-50 w-36" onClick={login}>
+        {buttonText()}
+      </CustomButton>
+    </>
   );
 }

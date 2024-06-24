@@ -1,8 +1,8 @@
 import { handlePrincipalAuthenticated } from "@redux/CheckAuth";
 import { ChangeEvent, useRef, useState } from "react";
 import { validatePrincipal } from "@/common/utils/definityIdentity";
-import WatchOnlyInputSuffix from "./WatchOnlyInputSuffix";
-import WatchOnlyRecordsPopover from "./WatchOnlyRecordsPopover";
+import WatchOnlyInputSuffix from "@/pages/login/components/WatchOnlyInputSuffix";
+import WatchOnlyRecordsPopover from "@/pages/login/components/WatchOnlyRecordsPopover";
 import { useAppSelector } from "@redux/Store";
 
 export default function WatchOnlyInput() {

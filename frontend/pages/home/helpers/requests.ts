@@ -3,11 +3,12 @@ import { AccountIdentifier, SubAccount as SubAccountNNS } from "@dfinity/ledger-
 import { Principal } from "@dfinity/principal";
 import { GetAllTransactionsICPParams } from "@/@types/assets";
 import { hexToUint8Array } from "@common/utils/hexadecimal";
-import { formatckBTCTransaccion, formatIcpTransaccion } from "./mappers";
+import { formatckBTCTransaccion, formatIcpTransaccion } from "@/pages/home/helpers/mappers";
 import { Actor } from "@dfinity/agent";
 import { _SERVICE as LedgerActor } from "@candid/IcrcIndex/icrc_index";
 import { idlFactory as LedgerFactory } from "@candid/IcrcIndex/icrc_index.idl";
 import logger from "@/common/utils/logger";
+import { SpecialTxTypeEnum } from "@common/const";
 
 export const getAllTransactionsICP = async (params: GetAllTransactionsICPParams) => {
   const { subaccount_index, isOGY } = params;
@@ -76,7 +77,6 @@ export const getAllTransactionsICRC1 = async (params: GetAllTransactionsICRCPara
 
     const myAgent = store.getState().auth.userAgent;
     const myPrincipal = store.getState().auth.userPrincipal;
-
     const actor = Actor.createActor<LedgerActor>(LedgerFactory, {
       agent: myAgent,
       canisterId,
@@ -90,18 +90,20 @@ export const getAllTransactionsICRC1 = async (params: GetAllTransactionsICRCPara
 
     if (!result?.Ok?.transactions) return [];
 
-    return result?.Ok?.transactions.map(({ transaction, id }) => {
-      const formatresult = formatckBTCTransaccion({
-        ckBTCTransaction: transaction,
-        id,
-        principal: myPrincipal?.toString(),
-        symbol: assetSymbol,
-        canister,
-        subNumber,
-      });
+    return result?.Ok?.transactions
+      .filter((tx) => tx.transaction.kind !== SpecialTxTypeEnum.Enum.approve)
+      .map(({ transaction, id }) => {
+        const formatresult = formatckBTCTransaccion({
+          ckBTCTransaction: transaction,
+          id,
+          principal: myPrincipal?.toString(),
+          symbol: assetSymbol,
+          canister,
+          subNumber,
+        });
 
-      return formatresult;
-    });
+        return formatresult;
+      });
   } catch (error) {
     logger.debug("Error getting transactions", error);
     return [];

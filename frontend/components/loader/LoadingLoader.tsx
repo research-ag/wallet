@@ -11,7 +11,7 @@ export default function LoadingLoader({
   width = "w-4",
   height = "h-4",
   className = "",
-  color = "border-secondary-color-1-light",
+  color = "border-secondary-color-2 dark:border-secondary-color-1-light",
 }: LoadingLoaderProps) {
   return (
     <span

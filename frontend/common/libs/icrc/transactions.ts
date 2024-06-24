@@ -1,4 +1,3 @@
-import { getIcrcActor, getICRCSupportedStandards } from "@/common/libs/icrc";
 import {
   GetBalanceParams,
   TransactionFeeParams,
@@ -6,7 +5,6 @@ import {
   TransferTokensParams,
   SupportedStandard,
 } from "@/@types/icrc";
-import { getCanister } from "./getIcrcCanister";
 import { Principal } from "@dfinity/principal";
 import { IcrcLedgerCanister, TransferFromParams } from "@dfinity/ledger-icrc";
 import store from "@redux/Store";
@@ -16,6 +14,9 @@ import { hexadecimalToUint8Array, hexToUint8Array } from "@common/utils/hexadeci
 import { getUSDFromToken, toFullDecimal, toHoleBigInt } from "@common/utils/amount";
 import { getMetadataInfo } from "@common/utils/icrc";
 import logger from "@common/utils/logger";
+import { getCanister } from "./getIcrcCanister";
+import { getIcrcActor } from "./getIcrcActor";
+import { getICRCSupportedStandards } from "./getICRCSupportedStandards";
 
 export async function getTransactionFeeFromLedger(params: TransactionFeeParams) {
   try {
