@@ -123,6 +123,8 @@ export default function AllowanceSenderContactBook() {
             return null;
           }
 
+          if (account.tokenSymbol !== transferState.tokenSymbol) return null;
+
           return {
             contactName: currentContact.name,
             contactPrincipal: currentContact.principal,
