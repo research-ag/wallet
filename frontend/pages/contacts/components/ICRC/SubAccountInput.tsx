@@ -1,7 +1,7 @@
 import { ContactAccount } from "@redux/models/ContactsModels";
 import { CustomInput } from "@components/input";
 import { asciiHex } from "@pages/contacts/constants/asciiHex";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, forwardRef, SetStateAction } from "react";
 import { getSubAccount, getSubAccountId } from "@pages/contacts/helpers/formatters";
 import { ContactAccountError } from "./AddContactAccountRow";
 import { validatePrincipal } from "@common/utils/definityIdentity";
@@ -21,7 +21,7 @@ interface SubAccountInputProps {
   setErrors: Dispatch<SetStateAction<ContactAccountError>>;
 }
 
-export default function SubAccountInput(props: SubAccountInputProps) {
+function SubAccountInput(props: SubAccountInputProps, testRef: any) {
   const contacts = useAppSelector((state) => state.contacts.contacts);
 
   return (
@@ -110,6 +110,7 @@ export default function SubAccountInput(props: SubAccountInputProps) {
 
   function onSubAccountChange(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
+    testRef.current = false;
 
     props.setNewAccount((prev) => {
       if (prev)
@@ -141,3 +142,5 @@ export default function SubAccountInput(props: SubAccountInputProps) {
 
   }
 }
+
+export default forwardRef(SubAccountInput);

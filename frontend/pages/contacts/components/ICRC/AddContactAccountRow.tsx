@@ -4,7 +4,7 @@ import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 import { Contact, ContactAccount } from "@redux/models/ContactsModels";
 import { CustomButton } from "@components/button";
 import { CheckIcon, PlusIcon } from "@radix-ui/react-icons";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useRef, useState } from "react";
 import AssetSelect from "./AssetSelect";
 import { CustomInput } from "@components/input";
 import SubAccountInput from "./SubAccountInput";
@@ -29,6 +29,7 @@ import { db } from "@/database/db";
 import AllowanceTooltip from "./AllowanceTooltip";
 import { useTranslation } from "react-i18next";
 import { removeExtraSpaces } from "@common/utils/strings";
+import { ReactComponent as NoAllowanceIcon } from "@assets/svg/files/no-allowance.svg"
 
 interface AddContactAccountRowProps {
   contact: Contact;
@@ -49,6 +50,7 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isHexadecimal, setIsHexadecimal] = useState<boolean>(true);
   const hasAllowance = newAccount?.allowance?.amount;
+  const testRef = useRef<boolean>(false);
 
   const [errors, setErrors] = useState<ContactAccountError>({
     name: false,
@@ -75,6 +77,12 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
               sizeInput="small"
             />
 
+            {testRef.current && !hasAllowance && (
+              <div>
+                <NoAllowanceIcon className="relative ml-1  w-6 h-6 dark:fill-gray-color-5 fill-gray-color-2" />
+              </div>
+            )}
+
             {hasAllowance && (
               <AllowanceTooltip
                 amount={newAccount.allowance?.amount || "0"}
@@ -92,6 +100,7 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
               error={errors.subaccountId}
               clearErrors={clearErrors}
               setErrors={setErrors}
+              ref={testRef}
             />
           </div>
           <div className=" w-[21.1%]">
@@ -254,6 +263,7 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
 
   async function onTestAccountAllowance() {
     setIsAllowanceLoading(true);
+
     if (!newAccount) return;
 
     if (!isNewAccountValid(newAccount)) {
@@ -297,6 +307,9 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
         accounts: [],
       };
     });
+
+    testRef.current = true;
+
     setIsAllowanceLoading(false);
   }
 
