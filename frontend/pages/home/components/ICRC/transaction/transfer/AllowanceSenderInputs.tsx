@@ -1,6 +1,7 @@
-import { checkHexString } from "@common/utils/hexadecimal";
 import { CustomInput } from "@components/input";
+import { getSubAccountId } from "@pages/contacts/helpers/formatters";
 import { useTransfer } from "@pages/home/contexts/TransferProvider";
+import { isHexadecimalValid } from "@pages/home/helpers/checkers";
 import { isValidInputPrincipal } from "@pages/home/helpers/validators";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -17,7 +18,7 @@ export default function AllownaceSenderInputs() {
   }, []);
 
   const principalError = !isValidInputPrincipal(transferState.fromPrincipal);
-  const subAccountError = !checkHexString(transferState.toSubAccount);
+  const subAccountError = !isHexadecimalValid(transferState.fromSubAccount) && transferState.fromSubAccount.length > 0;
 
   return (
     <div className="flex flex-col gap-2 mx-4 mb-2">
@@ -43,7 +44,7 @@ export default function AllownaceSenderInputs() {
   );
 
   function onPrincipalChange(event: any) {
-    const principalValue = event.target.value.trim();
+    const principalValue = event.target.value?.trim()?.toLowerCase() as string;
 
     setTransferState((prev) => ({
       ...prev,
@@ -52,12 +53,12 @@ export default function AllownaceSenderInputs() {
   }
 
   function onSubAccountChange(event: any) {
-    const subAccountIndex = event.target.value.trim() as string;
+    const subAccountIndex = event.target.value.trim()?.toLowerCase() as string;
     setInputValue(subAccountIndex);
 
     setTransferState((prev) => ({
       ...prev,
-      fromSubAccount: subAccountIndex?.startsWith("0x") ? subAccountIndex : `0x${subAccountIndex}`,
+      fromSubAccount: getSubAccountId(subAccountIndex),
     }));
   }
 }

@@ -1,6 +1,7 @@
-import { checkHexString } from "@common/utils/hexadecimal";
 import { CustomInput } from "@components/input";
+import { getSubAccountId } from "@pages/contacts/helpers/formatters";
 import { useTransfer } from "@pages/home/contexts/TransferProvider";
+import { isHexadecimalValid } from "@pages/home/helpers/checkers";
 import { isValidInputPrincipal } from "@pages/home/helpers/validators";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -16,8 +17,8 @@ export default function ReceiverManual() {
     }
   }, []);
 
-  const principalError = !isValidInputPrincipal(transferState.fromPrincipal);
-  const subAccountError = !checkHexString(transferState.toSubAccount);
+  const principalError = !isValidInputPrincipal(transferState.toPrincipal);
+  const subAccountError = !isHexadecimalValid(transferState.toSubAccount) && transferState.toSubAccount.length > 0;
 
   return (
     <div className="max-w-[21rem] mx-auto py-[1rem] space-y-1">
@@ -43,7 +44,7 @@ export default function ReceiverManual() {
   );
 
   function onPrincipalChange(event: any) {
-    const principalValue = event.target.value.trim();
+    const principalValue = event.target.value.trim()?.toLowerCase();
     setTransferState((prev) => ({
       ...prev,
       toPrincipal: principalValue,
@@ -51,12 +52,12 @@ export default function ReceiverManual() {
   }
 
   function onSubAccountChange(event: any) {
-    const subAccountIndex = event.target.value.trim();
+    const subAccountIndex = event.target.value.trim()?.toLowerCase() as string;
     setInputValue(subAccountIndex);
 
     setTransferState((prev) => ({
       ...prev,
-      toSubAccount: subAccountIndex?.startsWith("0x") ? subAccountIndex : `0x${subAccountIndex}`,
+      toSubAccount: getSubAccountId(subAccountIndex),
     }));
   }
 }
