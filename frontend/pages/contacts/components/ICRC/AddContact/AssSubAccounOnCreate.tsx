@@ -75,7 +75,7 @@ export default function AddSubAccountOnCreate({ contactAssetSelected }: AddSubAc
                   placeholder={"Hex"}
                   value={newSA.subaccount}
                   onChange={(e) => {
-                    onchangeSubIdx(e.target.value, iterator, newSA);
+                    onchangeSubIdx(e.target.value.toLocaleLowerCase().trim(), iterator, newSA);
                   }}
                   onKeyDown={(e) => {
                     onKeyPressSubIdx(e, newSA);
