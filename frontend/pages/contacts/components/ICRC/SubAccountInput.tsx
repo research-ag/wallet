@@ -88,6 +88,7 @@ export default function SubAccountInput(props: SubAccountInputProps) {
 
   function onSubAccountChange(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
+
     props.setNewAccount((prev) => {
       if (prev)
         return {
@@ -110,5 +111,6 @@ export default function SubAccountInput(props: SubAccountInputProps) {
         subaccountId: !validatePrincipal(value),
       }));
     }
+
   }
 }
