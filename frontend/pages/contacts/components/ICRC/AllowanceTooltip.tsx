@@ -17,7 +17,7 @@ export default function AllowanceTooltip(props: AllowanceTooltipProps) {
     <div className="grid mr-2 place-items-center">
       <BasicToolTip
         trigger={
-          <MoneyHandIcon className="relative ml-1  w-6 h-6 cursor-pointer dark:fill-slate-color-success fill-[#26A17B]" />
+          <MoneyHandIcon className="relative w-6 h-6 ml-1 cursor-pointer fill-primary-color" />
         }
       >
         <div className="h-[7rem] w-[9rem]">
