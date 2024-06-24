@@ -119,7 +119,6 @@ export default function useTransferMaxAmount() {
     const allowanceAmount = allowance.allowance;
 
     if (balance >= allowanceAmount) {
-
       if (allowanceAmount <= fee) {
         setMaxAmount({
           maxAmount: "0",
@@ -214,9 +213,9 @@ export default function useTransferMaxAmount() {
     }
 
     const balance = BigInt(asset.credit);
-    const fee = BigInt(currentAsset?.subAccounts[0].transaction_fee || "0");
+    const minWithdraw = BigInt(asset?.minWithdraw || "0");
 
-    if (balance < fee) {
+    if (balance < minWithdraw) {
       setMaxAmount({
         maxAmount: "0",
         availableAmount: toFullDecimal(balance, Number(currentAsset?.decimal || "8")),
@@ -233,7 +232,7 @@ export default function useTransferMaxAmount() {
     }
 
     setMaxAmount({
-      maxAmount: toFullDecimal(balance - fee, Number(currentAsset?.decimal || "8")),
+      maxAmount: toFullDecimal(balance, Number(currentAsset?.decimal || "8")),
       availableAmount: toFullDecimal(balance, Number(currentAsset?.decimal || "8")),
       displayAvailable: false,
       isLoading: false,
@@ -241,7 +240,7 @@ export default function useTransferMaxAmount() {
     });
     setTransferState((prev) => ({
       ...prev,
-      amount: toFullDecimal(balance - fee, Number(currentAsset?.decimal || "8")),
+      amount: toFullDecimal(balance, Number(currentAsset?.decimal || "8")),
     }));
   }
 
