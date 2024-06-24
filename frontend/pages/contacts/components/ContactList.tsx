@@ -7,7 +7,7 @@ import { ReactComponent as SortIcon } from "@assets/svg/files/sort.svg";
 import { Contact } from "@redux/models/ContactsModels";
 import { CustomInput } from "@components/input";
 import clsx from "clsx";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Fragment } from "react/jsx-runtime";
 import logger from "@/common/utils/logger";
@@ -40,6 +40,36 @@ export default function ContactList({ allowanceOnly, assetFilter, contactSearchK
   const [sortDirection, setSortDirection] = useState<SortDirection>(SortDirection.Asc);
   const contacts = useAppSelector((state) => state.contacts.contacts);
 
+  const contactsToShow = useMemo(() => {
+    const sortedContacts = getSortedContacts(contacts, sortDirection);
+
+    const filteredContacts = sortedContacts.filter((contact) => {
+      const hasContactAllowance = contact.accounts.some((account) => account.allowance?.amount);
+      if (allowanceOnly && !hasContactAllowance) return false;
+
+      const include = contact.accounts
+        .map((account) => account.tokenSymbol)
+        .some((symbol) => assetFilter.includes(symbol));
+      if (!include && assetFilter.length > 0) return false;
+
+      const subAccountNames = contact.accounts.map((account) => account.name);
+      const subAccountIds = contact.accounts.map((account) => account.subaccountId);
+
+      if (contactSearchKey.trim() !== "") {
+        const searchTerm = contactSearchKey.trim().toLowerCase();
+        const nameMatch = contact.name.toLowerCase().includes(searchTerm);
+        const principalMatch = contact.principal.toLowerCase().includes(searchTerm);
+        const subAccountNameMatch = subAccountNames.some((name) => name.toLowerCase().includes(searchTerm));
+        const subAccountIdMatch = subAccountIds.some((id) => id.toLowerCase().includes(searchTerm));
+
+        if (!nameMatch && !principalMatch && !subAccountNameMatch && !subAccountIdMatch) return false;
+      }
+      return true;
+    });
+
+    return filteredContacts;
+  }, [contacts, sortDirection, contactDropdown, contactEdited]);
+
   return (
     <div className="w-full h-full scroll-y-light max-h-[calc(100vh-12rem)]">
       <table className="w-full text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md">
@@ -63,31 +93,10 @@ export default function ContactList({ allowanceOnly, assetFilter, contactSearchK
         </thead>
 
         <tbody>
-          {getSortedContacts(contacts, sortDirection).map((contact, index) => {
+          {contactsToShow.map((contact, index) => {
             const isContactExpanded = contactDropdown?.principal === contact.principal;
             const isContactEditable = contactEdited?.principal === contact.principal;
             const hasContactAllowance = contact.accounts.some((account) => account.allowance?.amount);
-
-            // --- filters ---
-            if (allowanceOnly && !hasContactAllowance) return null;
-
-            const include = contact.accounts
-              .map((account) => account.tokenSymbol)
-              .some((symbol) => assetFilter.includes(symbol));
-            if (!include && assetFilter.length > 0) return null;
-
-            const subAccountNames = contact.accounts.map((account) => account.name);
-            const subAccountIds = contact.accounts.map((account) => account.subaccountId);
-
-            if (contactSearchKey.trim() !== "") {
-              const searchTerm = contactSearchKey.trim().toLowerCase();
-              const nameMatch = contact.name.toLowerCase().includes(searchTerm);
-              const principalMatch = contact.principal.toLowerCase().includes(searchTerm);
-              const subAccountNameMatch = subAccountNames.some((name) => name.toLowerCase().includes(searchTerm));
-              const subAccountIdMatch = subAccountIds.some((id) => id.toLowerCase().includes(searchTerm));
-
-              if (!nameMatch && !principalMatch && !subAccountNameMatch && !subAccountIdMatch) return null;
-            }
 
             return (
               <Fragment key={`${contact.principal}-${index}`}>

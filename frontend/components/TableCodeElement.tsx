@@ -142,30 +142,14 @@ const CodeElement = ({ tx }: CodeElementProps) => {
           {hasSub &&
             (subName.trim() === "" ? (
               <p className={`${accId} text-left break-words max-w-[20.5rem]`}>
-                {`${hasSubName ? subName + " -" : ""} ${middleTruncation(
-                  isICPWithSub
-                    ? ICPSubaccounts.find((sub) => sub.legacy === (isTo ? tx.to : tx.from))?.sub_account_id || "0x0"
-                    : isTo
-                    ? tx.toSub || "0"
-                    : tx.fromSub || "0",
-                  6,
-                  4,
-                )} `}
+                {`${hasSubName ? subName + " -" : ""} ${getTitle()} `}
               </p>
             ) : (
               <p
                 className={`${accId} text-left break-words max-w-[20.5rem]`}
                 data-toggle="popover"
                 data-trigger="hover"
-                title={middleTruncation(
-                  isICPWithSub
-                    ? ICPSubaccounts.find((sub) => sub.legacy === (isTo ? tx.to : tx.from))?.sub_account_id || "0x0"
-                    : isTo
-                    ? tx.toSub || "0"
-                    : tx.fromSub || "0",
-                  6,
-                  4,
-                )}
+                title={getTitle()}
               >
                 {subName}
               </p>
@@ -174,6 +158,18 @@ const CodeElement = ({ tx }: CodeElementProps) => {
       )}
     </Fragment>
   );
+
+  function getTitle() {
+    return middleTruncation(
+      isICPWithSub
+        ? ICPSubaccounts.find((sub) => sub.legacy === (isTo ? tx.to : tx.from))?.sub_account_id || "0x0"
+        : isTo
+        ? tx.toSub || "0"
+        : tx.fromSub || "0",
+      6,
+      4,
+    );
+  }
 };
 
 export default CodeElement;
