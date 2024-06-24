@@ -29,7 +29,7 @@ import { db } from "@/database/db";
 import AllowanceTooltip from "./AllowanceTooltip";
 import { useTranslation } from "react-i18next";
 import { removeExtraSpaces } from "@common/utils/strings";
-import { ReactComponent as NoAllowanceIcon } from "@assets/svg/files/no-allowance.svg"
+import { ReactComponent as NoAllowanceIcon } from "@assets/svg/files/no-allowance.svg";
 
 interface AddContactAccountRowProps {
   contact: Contact;
@@ -79,7 +79,7 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
 
             {testRef.current && !hasAllowance && (
               <div>
-                <NoAllowanceIcon className="relative ml-1  w-6 h-6 dark:fill-gray-color-5 fill-gray-color-2" />
+                <NoAllowanceIcon className="relative w-6 h-6 ml-1 dark:fill-gray-color-5 fill-gray-color-2" />
               </div>
             )}
 
@@ -104,8 +104,8 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
             />
           </div>
           <div className=" w-[21.1%]">
-            <div className="flex flex-row items-center w-full gap-2 px-2 opacity-70">
-              <p>{shortAddress(getSubAccount(props.contact.principal, newAccount.subaccountId), 10, 10)}</p>
+            <div className="flex flex-row items-center w-full gap-2 px-2 opacity-70 text-nowrap">
+              <p>{shortAddress(getSubAccount(props.contact.principal, newAccount.subaccountId), 7, 7)}</p>
               <CustomCopy
                 size={"xSmall"}
                 className="p-0"

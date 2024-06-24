@@ -1,14 +1,12 @@
 import logger from "@/common/utils/logger";
 
-
-
 function removeLeadingZerosFromHex(value: string) {
   // 0x002001 -> 0x2001
   // 0x000401 -> 0x401
   // 0x040000 -> 0x40000
   // 0x102000 -> 0x102000
   if (!value.startsWith("0x")) {
-    logger.debug(`removeLeadingZerosFromHex: value does not start with 0x: ${value}`)
+    logger.debug(`removeLeadingZerosFromHex: value does not start with 0x: ${value}`);
     return value;
   }
 
@@ -18,7 +16,7 @@ function removeLeadingZerosFromHex(value: string) {
   }
 
   return `0x${value.slice(i)}`;
-};
+}
 
 function removeLoadingZerosFromNumber(value: string) {
   // 002001 -> 2001
@@ -26,7 +24,7 @@ function removeLoadingZerosFromNumber(value: string) {
   // 040000 -> 40000
   // 102000 -> 102000
   if (value.startsWith("0x")) {
-    logger.debug(`removeLoadingZerosFromNumber: value starts with 0x: ${value}`)
+    logger.debug(`removeLoadingZerosFromNumber: value starts with 0x: ${value}`);
     return value;
   }
 
@@ -40,7 +38,7 @@ function removeLoadingZerosFromNumber(value: string) {
   }
 
   return value.slice(i);
-};
+}
 
 export function getSubAccountId(value: string | undefined): string {
   // undefined -> ""
@@ -56,7 +54,7 @@ export function getSubAccountId(value: string | undefined): string {
   if (value.length === 1) {
     if (value.toLowerCase() === "x") return "0x";
     return `0x${value}`;
-  };
+  }
 
   // 0x -> 0x0
   // 23 -> 0x23
@@ -75,10 +73,16 @@ export function getSubAccountId(value: string | undefined): string {
   // 023120x -> 0x23120x
   if (value.length > 2) {
     if (value === "0x0") return "0x0";
-    if (value.slice(2).split("").every((char) => char === "0")) return "0x0";
+    if (
+      value
+        .slice(2)
+        .split("")
+        .every((char) => char === "0")
+    )
+      return "0x0";
     if (value.slice(0, 2).toLocaleLowerCase() === "0x") {
       return removeLeadingZerosFromHex(value);
-    };
+    }
 
     return `0x${removeLoadingZerosFromNumber(value)}`;
   }
@@ -93,7 +97,7 @@ export function getSubAccount(value: string | undefined) {
     if (value.slice(0, 2).toLocaleLowerCase() === "0x") {
       if (value.length === 3 && value[2] === "0") return value;
       return removeLeadingZerosFromHex(value);
-    };
+    }
 
     return removeLoadingZerosFromNumber(value);
   }

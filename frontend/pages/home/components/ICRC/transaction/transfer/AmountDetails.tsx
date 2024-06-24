@@ -22,10 +22,9 @@ export default function AmountDetails() {
   //
   const isReceiverService = transferState.toType === TransferToTypeEnum.thirdPartyService;
   const isSenderService = transferState.fromType === TransferFromTypeEnum.service;
-  // 
+  //
   const isToContact = transferState.toType === TransferToTypeEnum.thirdPartyContact;
   const isToOwnSubaccount = transferState.toType === TransferToTypeEnum.own;
-
 
   const isAmountValid = (() => {
     if (transferState.amount === "") return true;

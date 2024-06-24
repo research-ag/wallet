@@ -5,7 +5,7 @@ import { getAssetIcon } from "@common/utils/icons";
 import { shortAddress } from "@common/utils/icrc";
 import { AvatarEmpty } from "@components/avatar";
 import { CustomCopy } from "@components/tooltip";
-import ContactAccountAction from "./ICRC/ContactAccountAction";
+import ContactAccountAction from "./ContactAccountAction";
 import { Contact, ContactAccount } from "@redux/models/ContactsModels";
 import { Asset } from "@redux/models/AccountModels";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
@@ -13,11 +13,11 @@ import { Principal } from "@dfinity/principal";
 import { hexToUint8Array } from "@common/utils/hexadecimal";
 import { Dispatch, SetStateAction } from "react";
 import { CustomInput } from "@components/input";
-import { isContactAccountNameValid } from "../helpers/validators";
+import { isContactAccountNameValid } from "../../helpers/validators";
 import { CheckIcon } from "@radix-ui/react-icons";
 import logger from "@common/utils/logger";
 import { db } from "@/database/db";
-import AllowanceTooltip from "./ICRC/AllowanceTooltip";
+import AllowanceTooltip from "./AllowanceTooltip";
 import { removeExtraSpaces } from "@common/utils/strings";
 
 interface DisplayContactAccountRowProps {
@@ -93,7 +93,7 @@ export default function DisplayContactAccountRow(props: DisplayContactAccountRow
 
       <td className="w-[25%]">
         <div className="flex items-center">
-          <p className="mr-2">
+          <p className="mr-2 text-nowrap">
             {props.currentAccount.subaccountId.length >= 20
               ? shortAddress(props.currentAccount.subaccountId, 10, 10)
               : props.currentAccount.subaccountId}
@@ -104,8 +104,8 @@ export default function DisplayContactAccountRow(props: DisplayContactAccountRow
 
       <td className="w-[15%]">
         <div className="flex items-center w-full px-2">
-          <p className="mr-2">
-            {shortAddress(getSubAccount(props.contact.principal, props.currentAccount.subaccountId), 10, 10)}
+          <p className="mr-2 text-nowrap">
+            {shortAddress(getSubAccount(props.contact.principal, props.currentAccount.subaccountId), 7, 7)}
           </p>
           <CustomCopy
             size={"xSmall"}

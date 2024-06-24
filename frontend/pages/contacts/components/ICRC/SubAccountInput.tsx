@@ -37,7 +37,11 @@ function SubAccountInput(props: SubAccountInputProps, testRef: any) {
         className="h-[2.2rem] dark:bg-level-2-color bg-white rounded-lg border-[2px]"
         inputClass="h-[1.5rem]"
         placeholder={props.isHexadecimal ? "Hexadecimal" : "Principal"}
-        sufix={props.error && isSubaccountDuplicated(props.newAccount?.subaccountId || undefined) ? <p className="text-sm capitalize text-slate-color-error">{t("duplicate")}</p> : undefined}
+        sufix={
+          props.error && isSubaccountDuplicated(props.newAccount?.subaccountId || undefined) ? (
+            <p className="text-sm capitalize text-slate-color-error">{t("duplicate")}</p>
+          ) : undefined
+        }
       />
 
       <div className="flex items-center ml-1 mr-[1rem]">
@@ -65,25 +69,23 @@ function SubAccountInput(props: SubAccountInputProps, testRef: any) {
           }}
           className="rounded-md bg-level-2-color min-h-[2rem] min-w-[7rem] relative"
         >
-          <p className={clsx(
-            "absolute  text-white top-2 text-sm transition-all duration-300",
-            {
+          <p
+            className={clsx("absolute  text-white top-2 text-sm transition-all duration-300", {
               "left-0 ml-2": !props.isHexadecimal,
               "right-0 mr-2": props.isHexadecimal,
-            }
-          )}>
+            })}
+          >
             {!props.isHexadecimal ? "Hex" : "Principal"}
           </p>
 
-          <RadixSwitch.Thumb className={clsx(
-            "bg-primary-color absolute top-0 left-0 w-6/12 h-full rounded-md transition-all duration-300 flex items-center justify-center",
-            { "translate-x-full": !props.isHexadecimal }
-          )}>
-            <p className="text-sm font-bold text-white">
-              {props.isHexadecimal ? "Hex" : "Principal"}
-            </p>
+          <RadixSwitch.Thumb
+            className={clsx(
+              "bg-primary-color absolute top-0 left-0 w-6/12 h-full rounded-md transition-all duration-300 flex items-center justify-center",
+              { "translate-x-full": !props.isHexadecimal },
+            )}
+          >
+            <p className="text-sm font-bold text-white">{props.isHexadecimal ? "Hex" : "Principal"}</p>
           </RadixSwitch.Thumb>
-
         </RadixSwitch.Root>
       </div>
     </div>
@@ -92,8 +94,12 @@ function SubAccountInput(props: SubAccountInputProps, testRef: any) {
   function isSubaccountDuplicated(subaccount: string | undefined) {
     if (!subaccount) return false;
     const subaccountId = subaccount.startsWith("0x") ? subaccount : `0x${subaccount}`;
-    return contacts.some((contact) => contact.accounts.some((account) => account.subaccountId === subaccountId && account.tokenSymbol === props.newAccount?.tokenSymbol));
-  };
+    return contacts.some((contact) =>
+      contact.accounts.some(
+        (account) => account.subaccountId === subaccountId && account.tokenSymbol === props.newAccount?.tokenSymbol,
+      ),
+    );
+  }
 
   function onKeyDownIndex(e: React.KeyboardEvent<HTMLInputElement>) {
     if (!props.isHexadecimal) {
@@ -139,7 +145,6 @@ function SubAccountInput(props: SubAccountInputProps, testRef: any) {
         subaccountId: !validatePrincipal(value),
       }));
     }
-
   }
 }
 

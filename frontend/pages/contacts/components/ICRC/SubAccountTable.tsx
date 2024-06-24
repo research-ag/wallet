@@ -3,7 +3,7 @@ import { Contact, ContactAccount } from "@redux/models/ContactsModels";
 import { useAppSelector } from "@redux/Store";
 import logger from "@common/utils/logger";
 import AddContactAccountRow from "./AddContactAccountRow";
-import DisplayContactAccountRow from "../DisplayContactAccountRow";
+import DisplayContactAccountRow from "./DisplayContactAccountRow";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
