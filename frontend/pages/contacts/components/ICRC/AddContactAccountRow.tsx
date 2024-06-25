@@ -79,7 +79,7 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
 
             {testRef.current && !hasAllowance && (
               <div>
-                <NoAllowanceIcon className="relative w-6 h-6 ml-1 dark:fill-gray-color-5 fill-gray-color-2" />
+                <NoAllowanceIcon className="w-6 h-6 ml-1 dark:fill-no-allowance-icon fill-gray-color-5" />
               </div>
             )}
 

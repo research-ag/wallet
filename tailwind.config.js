@@ -94,7 +94,6 @@ module.exports = {
       TooltipBackground: "#1F2B55",
       DeleteBackgroundColor: "#FFE3EB",
 
-      // WARNING: These colors MUST be used in new feature, which are part of new design system provided.
       // MAIN COLORS
       "gold-color": "#805E0C",
       "primary-color": "#33B2EF",
@@ -126,7 +125,8 @@ module.exports = {
       "slate-color-warning": "#E2B93B",
       "slate-color-error": "#E2507A",
       // COMPONENT
-      "switch-principa-bg": "#161434",
+      "switch-principal": "#161434",
+      "no-allowance-icon": "#BFBFBF",
 
       black: colors.black,
       white: colors.white,

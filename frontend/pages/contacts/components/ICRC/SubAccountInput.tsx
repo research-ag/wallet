@@ -67,10 +67,10 @@ function SubAccountInput(props: SubAccountInputProps, testRef: any) {
               return { ...prev, subaccountId: "", subaccount: "", allowance: undefined };
             });
           }}
-          className="rounded-md bg-switch-principa-bg min-h-[1.8rem] min-w-[7rem] relative"
+          className="rounded-md bg-secondary-color-1-light dark:bg-switch-principal min-h-[1.8rem] min-w-[7rem] relative"
         >
           <p
-            className={clsx("absolute  text-gray-color-4 top-[0.4rem] text-sm transition-all duration-300", {
+            className={clsx("absolute font-medium text-gray-color-4/60 top-[0.4rem] text-sm transition-all duration-300", {
               "left-0 ml-2": !props.isHexadecimal,
               "right-0 mr-2": props.isHexadecimal,
             })}
@@ -80,7 +80,7 @@ function SubAccountInput(props: SubAccountInputProps, testRef: any) {
 
           <RadixSwitch.Thumb
             className={clsx(
-              "bg-primary-color absolute -top-[0.1rem] left-0  h-[1.9rem] rounded-md transition-all duration-300 flex items-center justify-center",
+              "bg-primary-color absolute -top-[0.1rem] left-0 h-[1.9rem] rounded-md transition-all duration-300 flex items-center justify-center",
               {
                 "translate-x-[2.4rem]": !props.isHexadecimal,
                 "-translate-x-[0.1rem]": props.isHexadecimal,
