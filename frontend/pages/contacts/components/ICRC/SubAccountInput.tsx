@@ -142,12 +142,12 @@ function SubAccountInput(props: SubAccountInputProps, testRef: any) {
     if (props.isHexadecimal) {
       props.setErrors((prev) => ({
         ...prev,
-        subaccountId: !isHexadecimalValid(value),
+        subaccountId: !isHexadecimalValid(value) && value !== "",
       }));
     } else {
       props.setErrors((prev) => ({
         ...prev,
-        subaccountId: !validatePrincipal(value),
+        subaccountId: !validatePrincipal(value) && value !== "",
       }));
     }
   }

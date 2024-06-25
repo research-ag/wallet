@@ -116,6 +116,11 @@ export default function AllowanceSenderContactBook() {
 
       const contactSubAccounts: (ContactSubAccount | null)[] = currentContact.accounts
         .map((account) => {
+          const isAccountIdSelected = account.subaccountId === transferState.fromSubAccount;
+          const isPrincipalSelected = currentContact.principal === transferState.fromPrincipal;
+
+          if (isAccountIdSelected && isPrincipalSelected) return null;
+
           const currentAsset = assets.find((asset) => asset.tokenSymbol === transferState?.tokenSymbol);
 
           if (!currentAsset) {
