@@ -125,6 +125,8 @@ module.exports = {
       "slate-color-success": "#50E2C2",
       "slate-color-warning": "#E2B93B",
       "slate-color-error": "#E2507A",
+      // COMPONENT
+      "switch-principa-bg": "#161434",
 
       black: colors.black,
       white: colors.white,

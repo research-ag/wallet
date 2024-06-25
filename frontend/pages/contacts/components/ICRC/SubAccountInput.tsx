@@ -67,10 +67,10 @@ function SubAccountInput(props: SubAccountInputProps, testRef: any) {
               return { ...prev, subaccountId: "", subaccount: "", allowance: undefined };
             });
           }}
-          className="rounded-md bg-level-2-color min-h-[2rem] min-w-[7rem] relative"
+          className="rounded-md bg-switch-principa-bg min-h-[1.8rem] min-w-[7rem] relative"
         >
           <p
-            className={clsx("absolute  text-white top-2 text-sm transition-all duration-300", {
+            className={clsx("absolute  text-gray-color-4 top-[0.4rem] text-sm transition-all duration-300", {
               "left-0 ml-2": !props.isHexadecimal,
               "right-0 mr-2": props.isHexadecimal,
             })}
@@ -80,8 +80,13 @@ function SubAccountInput(props: SubAccountInputProps, testRef: any) {
 
           <RadixSwitch.Thumb
             className={clsx(
-              "bg-primary-color absolute top-0 left-0 w-6/12 h-full rounded-md transition-all duration-300 flex items-center justify-center",
-              { "translate-x-full": !props.isHexadecimal },
+              "bg-primary-color absolute -top-[0.1rem] left-0  h-[1.9rem] rounded-md transition-all duration-300 flex items-center justify-center",
+              {
+                "translate-x-[2.4rem]": !props.isHexadecimal,
+                "-translate-x-[0.1rem]": props.isHexadecimal,
+                "w-8/12": !props.isHexadecimal,
+                "w-6/12": props.isHexadecimal,
+              },
             )}
           >
             <p className="text-sm font-bold text-white">{props.isHexadecimal ? "Hex" : "Principal"}</p>
