@@ -79,9 +79,11 @@ export default function SenderServiceSelector() {
                     key === "" ||
                     option.name.toLowerCase().includes(key) ||
                     option.principal.toLowerCase().includes(key);
+
+                  const isSelected = option.principal === transferState.fromPrincipal;
+
                   return (
-                    option.assets.find((ast) => ast.principal === currentAsset?.address && ast.visible) &&
-                    isSearchKeyIncluded
+                    option.assets.find((ast) => ast.principal === currentAsset?.address && ast.visible) && isSearchKeyIncluded && !isSelected
                   );
                 })
                 .map((option, index) => (
