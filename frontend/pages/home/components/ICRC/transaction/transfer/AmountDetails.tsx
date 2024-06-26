@@ -10,7 +10,7 @@ import { useEffect } from "react";
 export default function AmountDetails() {
   const { t } = useTranslation();
   const { transferState } = useTransfer();
-  const { maxAmount, onMaxAmount, onChangeAmount, getMaxAmount } = useTransferMaxAmount();
+  const { maxAmount, onMaxAmount, onChangeAmount } = useTransferMaxAmount();
   const assets = useAppSelector((state) => state.asset.list.assets);
   const services = useAppSelector((state) => state.services.services);
   const currentAsset = assets.find((asset) => asset.tokenSymbol === transferState.tokenSymbol);
@@ -35,7 +35,7 @@ export default function AmountDetails() {
   })();
 
   useEffect(() => {
-    getMaxAmount();
+    onMaxAmount(true);
   }, []);
 
   return (
@@ -53,7 +53,9 @@ export default function AmountDetails() {
         {!maxAmount.isLoading && (
           <button
             className="flex items-center justify-center p-1 mr-2 rounded cursor-pointer bg-RadioCheckColor"
-            onClick={onMaxAmount}
+            onClick={() => {
+              onMaxAmount();
+            }}
           >
             <p className="text-sm text-PrimaryTextColor">{t("max")}</p>
           </button>

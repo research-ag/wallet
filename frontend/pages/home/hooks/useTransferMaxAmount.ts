@@ -33,22 +33,13 @@ export default function useTransferMaxAmount() {
   const assets = useAppSelector((state) => state.asset.list.assets);
   const currentAsset = assets.find((asset) => asset.tokenSymbol === transferState.tokenSymbol);
 
-  async function onMaxAmount() {
+  async function onMaxAmount(noMax?: boolean) {
     const isManualAllowance = transferState.fromType === TransferFromTypeEnum.allowanceManual;
     const isContactAllowance = transferState.fromType === TransferFromTypeEnum.allowanceContactBook;
     //
-    if (isManualAllowance || isContactAllowance) await fromAllowanceMaxAmount();
-    if (transferState.fromType === TransferFromTypeEnum.own) fromOwnBalanceMaxAmount();
-    if (transferState.fromType === TransferFromTypeEnum.service) fromServiceMaxAmount();
-  }
-
-  async function getMaxAmount() {
-    const isManualAllowance = transferState.fromType === TransferFromTypeEnum.allowanceManual;
-    const isContactAllowance = transferState.fromType === TransferFromTypeEnum.allowanceContactBook;
-    //
-    if (isManualAllowance || isContactAllowance) await fromAllowanceMaxAmount(true);
-    if (transferState.fromType === TransferFromTypeEnum.own) fromOwnBalanceMaxAmount(true);
-    if (transferState.fromType === TransferFromTypeEnum.service) fromServiceMaxAmount(true);
+    if (isManualAllowance || isContactAllowance) await fromAllowanceMaxAmount(noMax);
+    if (transferState.fromType === TransferFromTypeEnum.own) fromOwnBalanceMaxAmount(noMax);
+    if (transferState.fromType === TransferFromTypeEnum.service) fromServiceMaxAmount(noMax);
   }
 
   function fromOwnBalanceMaxAmount(noMax?: boolean) {
@@ -267,5 +258,5 @@ export default function useTransferMaxAmount() {
     setTransferState({ ...transferState, amount });
   }
 
-  return { maxAmount, onMaxAmount, setMaxAmount, onChangeAmount, getMaxAmount };
+  return { maxAmount, onMaxAmount, setMaxAmount, onChangeAmount };
 }
