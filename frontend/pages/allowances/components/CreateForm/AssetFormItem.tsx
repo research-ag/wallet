@@ -45,7 +45,7 @@ export default function AssetFormItem(props: AssetFormItemProps) {
   }, [search, assets]);
 
   return (
-    <div className="mt-4">
+    <div className="mx-auto mt-4 w-[22rem]">
       <label htmlFor="asset" className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
         {t("asset")}
       </label>
@@ -58,7 +58,7 @@ export default function AssetFormItem(props: AssetFormItemProps) {
         border={isError() ? "error" : undefined}
         onSearch={onSearchChange}
         onOpenChange={onOpenChange}
-        componentWidth="23rem"
+        componentWidth="22rem"
       />
     </div>
   );

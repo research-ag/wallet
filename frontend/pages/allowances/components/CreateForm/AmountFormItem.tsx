@@ -37,7 +37,7 @@ export default function AmountFormItem(props: IAmountFormItemProps) {
   }, [allowance, assets]);
 
   return (
-    <div className="mt-4">
+    <div className="mx-auto mt-4 w-[22rem]">
       <label htmlFor="Amount" className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
         {t("amount")}
       </label>

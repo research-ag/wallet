@@ -3,7 +3,6 @@ import { useMutation } from "@tanstack/react-query";
 
 import { AllowanceValidationErrorsEnum, TAllowance } from "@/@types/allowance";
 import { submitAllowanceApproval, createApproveAllowanceParams } from "@/common/libs/icrcledger/icrcAllowance";
-import useAllowanceDrawer from "./useAllowanceDrawer";
 // eslint-disable-next-line import/named
 import { throttle } from "lodash";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
@@ -25,10 +24,15 @@ import { removeZeroesFromAmount, toFullDecimal, toHoleBigInt } from "@common/uti
 import ICRC1BalanceOf from "@common/libs/icrcledger/ICRC1BalanceOf";
 import { hexToUint8Array } from "@common/utils/hexadecimal";
 
+export enum CreateResult {
+  SUCCESS = "success",
+  ERROR = "error",
+};
+
 export default function useCreateAllowance() {
+  const [result, setResult] = useState<CreateResult | null>(null);
   const dispatch = useAppDispatch();
   const [isLoading, setLoading] = useState(false);
-  const { onCloseCreateAllowanceDrawer } = useAllowanceDrawer();
   const { assets } = useAppSelector((state) => state.asset.list);
   const { selectedAsset, selectedAccount } = useAppSelector((state) => state.asset.helper);
   const { userAgent, userPrincipal } = useAppSelector((state) => state.auth);
@@ -58,6 +62,7 @@ export default function useCreateAllowance() {
 
   const mutationFn = useCallback(async () => {
     setIsLoadingAllowanceAction(true);
+    setResult(null)
     setFullAllowanceErrorsAction([]);
 
     const asset = assets.find((asset) => asset.tokenSymbol === allowance.asset.tokenSymbol) as Asset;
@@ -104,7 +109,7 @@ export default function useCreateAllowance() {
 
     const balance = amount ? amount.toString() : "0";
     dispatch(updateSubAccountBalance(allowance.asset.tokenSymbol, allowance.subAccountId, balance));
-    onCloseCreateAllowanceDrawer();
+    setResult(CreateResult.SUCCESS);
   };
 
   const onError = (error: string) => {
@@ -140,6 +145,8 @@ export default function useCreateAllowance() {
     if (error === AllowanceValidationErrorsEnum.Values["error.before.present.expiration"])
       return setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.before.present.expiration"]);
     removeAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.before.present.expiration"]);
+
+    setResult(CreateResult.ERROR);
   };
 
   const { mutate, isPending, isError, error, isSuccess } = useMutation({ onSuccess, onError, mutationFn });
@@ -154,5 +161,7 @@ export default function useCreateAllowance() {
     isSuccess,
     createAllowance: throttle(mutate, 1000),
     setAllowanceState,
+    result,
+    setResult,
   };
 }

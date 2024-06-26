@@ -51,7 +51,7 @@ export default function SubAccountFormItem(props: ISubAccountFormItemProps) {
   }
 
   return (
-    <div className="mt-4">
+    <div className="mx-auto mt-4 w-[22rem]">
       <label htmlFor="Subaccount" className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
         {t("subAccount")}
       </label>
@@ -65,7 +65,7 @@ export default function SubAccountFormItem(props: ISubAccountFormItemProps) {
         border={isError() ? "error" : undefined}
         onSearch={onSearchChange}
         onOpenChange={onOpenChange}
-        componentWidth="23rem"
+        componentWidth="22rem"
       />
     </div>
   );

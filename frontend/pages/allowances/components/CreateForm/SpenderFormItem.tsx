@@ -47,7 +47,7 @@ export default function SpenderFormItem(props: ISpenderFormItemProps) {
   }, [isNew]);
 
   return (
-    <div className="mt-4">
+    <div className="mx-auto mt-4 w-[22rem]">
       <label htmlFor="Spender" className="flex items-center justify-between mb-2">
         <p className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("spender")}</p>
         <div className="flex items-center justify-between px-2 py-1 rounded-md dark:bg-ThemeColorBack">
@@ -65,7 +65,7 @@ export default function SpenderFormItem(props: ISpenderFormItemProps) {
           border={getError() ? "error" : undefined}
           onSearch={onSearchChange}
           onOpenChange={onOpenChange}
-          componentWidth="23rem"
+          componentWidth="22rem"
         />
       )}
       {isNew && (

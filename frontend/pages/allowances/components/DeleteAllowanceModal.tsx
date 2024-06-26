@@ -31,7 +31,7 @@ export default function DeleteAllowanceModal() {
   return (
     <BasicModal open={isDeleteAllowance} width="w-[26rem]">
       <div className="flex items-center justify-between w-full">
-        <AlertIcon />
+        <AlertIcon className="fill-slate-color-error" />
         <CloseIcon
           onClick={() => onCancel()}
           className="cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor"

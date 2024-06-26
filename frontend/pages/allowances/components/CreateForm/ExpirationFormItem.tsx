@@ -17,7 +17,7 @@ export default function ExpirationFormItem(props: IExpirationFormItemProps) {
   const hasExpiration = useMemo(() => Boolean(allowance?.expiration), [allowance]);
 
   return (
-    <div className="mt-4">
+    <div className="mx-auto mt-4 w-[22rem]">
       <label htmlFor="Expiration" className="text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
         {t("expiration")}
       </label>

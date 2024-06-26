@@ -1,4 +1,7 @@
-import useCreateAllowance from "@pages/allowances/hooks/useCreateAllowance";
+import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
+import { ReactComponent as AlertIcon } from "@assets/svg/files/alert-icon.svg";
+// 
+import useCreateAllowance, { CreateResult } from "@pages/allowances/hooks/useCreateAllowance";
 import { useAppSelector } from "@redux/Store";
 import AssetFormItem from "./AssetFormItem";
 import SubAccountFormItem from "./SubAccountFormItem";
@@ -21,6 +24,9 @@ import { getDuplicatedAllowance } from "@pages/allowances/helpers/validators";
 import { getAllowanceDetails } from "@/common/libs/icrcledger/icrcAllowance";
 import { isHexadecimalValid } from "@pages/home/helpers/checkers";
 import logger from "@/common/utils/logger";
+import { BasicModal } from "@components/modal";
+import { CheckCircledIcon } from "@radix-ui/react-icons";
+import useAllowanceDrawer from "@pages/allowances/hooks/useAllowanceDrawer";
 
 export default function CreateForm() {
   const { t } = useTranslation();
@@ -30,11 +36,12 @@ export default function CreateForm() {
   const { selectedAsset } = useAppSelector((state) => state.asset.helper);
   const { allowances } = useAppSelector((state) => state.allowance.list);
   const { errors } = useAppSelector((state) => state.allowance);
-  const { allowance, setAllowanceState, createAllowance, isPending, isLoading, setLoading } = useCreateAllowance();
+  const { onCloseCreateAllowanceDrawer } = useAllowanceDrawer();
+  const { result, allowance, setAllowanceState, createAllowance, isPending, isLoading, setLoading, setResult } = useCreateAllowance();
   const { userPrincipal } = useAppSelector((state) => state.auth);
 
   return (
-    <form className="relative flex flex-col px-6 overflow-y-auto text-left">
+    <form className="relative flex flex-col overflow-y-auto text-left">
       <AssetFormItem
         allowance={allowance}
         assets={assets}
@@ -70,7 +77,7 @@ export default function CreateForm() {
         isLoading={isPending || isLoading}
       />
 
-      <div className={`flex items-center mt-4 ${getErrorMessage() ? "justify-between" : "justify-end"}`}>
+      <div className={`flex items-center mx-auto w-[22rem] mt-4 ${getErrorMessage() ? "justify-between" : "justify-end"}`}>
         {getErrorMessage() && <p className="mr-4 text-TextErrorColor text-md">{getErrorMessage()}</p>}
         {(isLoading || isPending) && <LoadingLoader className="mr-2" />}
         <div className="flex">
@@ -85,6 +92,33 @@ export default function CreateForm() {
           </CustomButton>
         </div>
       </div>
+
+      <BasicModal open={Boolean(result)} width="w-[15rem]">
+        <CloseIcon
+          className="absolute right-[1.5rem] cursor-pointer stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor" onClick={() => {
+            setResult(null)
+            onCloseCreateAllowanceDrawer();
+          }} />
+        <div className="mt-[1rem] w-full">
+
+          {result === CreateResult.ERROR && (
+            <div className="flex flex-col items-center w-full ">
+              <AlertIcon className="fill-slate-color-error w-[1.7rem] h-[1.7rem]" />
+              <p className="mt-[0.5rem] font-bold text-slate-color-error">
+                Ledger error
+              </p>
+            </div>
+          )}
+          {result === CreateResult.SUCCESS && (
+            <div className="flex flex-col items-center w-full ">
+              <CheckCircledIcon className="w-[2rem] h-[2rem] text-slate-color-success" />
+              <p className="mt-[0.5rem] font-bold text-slate-color-success">
+                Allowance Created
+              </p>
+            </div>
+          )}
+        </div>
+      </BasicModal>
     </form>
   );
 
