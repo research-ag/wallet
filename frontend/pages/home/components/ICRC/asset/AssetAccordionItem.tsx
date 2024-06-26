@@ -99,9 +99,9 @@ export default function AssetAccordionItem(props: AssetAccordionItemProps) {
             </div>
             <div className="flex flex-col items-center justify-between h-8 ml-3 ">
               {currentAsset?.subAccounts && accordionIndex.includes(currentAsset.tokenSymbol) ? (
-                <ChevronLeftIcon className="w-3 h-3" />
-              ) : (
                 <ChevronDownIcon className="w-3 h-3" />
+              ) : (
+                <ChevronLeftIcon className="w-3 h-3" />
               )}
               {getFullTokenAmount().token === BigInt("0") && !isAppDataFreshing && (
                 <TrashIcon

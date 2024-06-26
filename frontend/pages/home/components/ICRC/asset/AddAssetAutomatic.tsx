@@ -61,7 +61,7 @@ const AddAssetAutomatic = () => {
                   src={ChevIcon}
                   style={{ width: "2rem", height: "2rem" }}
                   alt="chevron-icon"
-                  className={`${networkTOpen ? "rotate-90" : ""}`}
+                  className={`${networkTOpen ? "" : "rotate-90"}`}
                 />
               </div>
             </DropdownMenu.Trigger>
@@ -122,7 +122,7 @@ const AddAssetAutomatic = () => {
                   src={ChevIcon}
                   style={{ width: "2rem", height: "2rem" }}
                   alt="chevron-icon"
-                  className={`${assetTOpen ? "rotate-90" : ""}`}
+                  className={`${assetTOpen ? "" : "rotate-90"}`}
                 />
               </div>
             </DropdownMenu.Trigger>
