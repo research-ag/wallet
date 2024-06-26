@@ -50,7 +50,7 @@ const AddAssetAutomatic = () => {
                   "border-BorderColorLight dark:border-BorderColor",
                   "items-center",
                   "cursor-pointer",
-                  "!w-full",
+                  "w-[6rem]",
                   "pr-0",
                 )}
               >
@@ -67,7 +67,7 @@ const AddAssetAutomatic = () => {
             </DropdownMenu.Trigger>
             <DropdownMenu.Portal>
               <DropdownMenu.Content
-                className="text-lg bg-PrimaryColorLight w-[8rem] rounded-lg dark:bg-SecondaryColor z-[2000] text-PrimaryTextColorLight dark:text-PrimaryTextColor shadow-sm shadow-BorderColorTwoLight dark:shadow-BorderColorTwo border border-BorderColorLight dark:border-BorderColor"
+                className="text-lg bg-PrimaryColorLight w-[6rem] rounded-lg dark:bg-SecondaryColor z-[2000] text-PrimaryTextColorLight dark:text-PrimaryTextColor shadow-sm shadow-BorderColorTwoLight dark:shadow-BorderColorTwo border border-BorderColorLight dark:border-BorderColor"
                 sideOffset={2}
                 align="end"
               >
@@ -75,9 +75,8 @@ const AddAssetAutomatic = () => {
                   return (
                     <DropdownMenu.Item
                       key={`net-${idx}`}
-                      className={`flex flex-row text-md justify-start items-center p-3 cursor-pointer ${
-                        idx > 0 ? "border-t border-BorderColorLight dark:border-BorderColor" : ""
-                      }`}
+                      className={`flex flex-row text-md justify-start items-center p-3 cursor-pointer ${idx > 0 ? "border-t border-BorderColorLight dark:border-BorderColor" : ""
+                        }`}
                       onSelect={() => {
                         onSelectNetwork(networkOption);
                       }}
@@ -106,7 +105,7 @@ const AddAssetAutomatic = () => {
                   "border-BorderColorLight dark:border-BorderColor",
                   "items-center",
                   "cursor-pointer",
-                  "!w-full",
+                  "w-[14rem]",
                   "pr-0",
                 )}
               >
@@ -128,7 +127,7 @@ const AddAssetAutomatic = () => {
             </DropdownMenu.Trigger>
             <DropdownMenu.Portal>
               <DropdownMenu.Content
-                className="text-lg bg-PrimaryColorLight w-[16rem] max-h-96 overflow-auto rounded-lg dark:bg-SecondaryColor z-[2000] text-PrimaryTextColorLight dark:text-PrimaryTextColor shadow-sm shadow-BorderColorTwoLight dark:shadow-BorderColorTwo border border-BorderColorLight dark:border-BorderColor"
+                className="text-lg bg-PrimaryColorLight w-[14rem] max-h-96 overflow-auto rounded-md dark:bg-SecondaryColor z-[2000] text-PrimaryTextColorLight dark:text-PrimaryTextColor shadow-sm shadow-BorderColorTwoLight dark:shadow-BorderColorTwo border border-BorderColorLight dark:border-BorderColor scroll-y-light"
                 sideOffset={2}
                 align="end"
               >
@@ -138,9 +137,8 @@ const AddAssetAutomatic = () => {
                     return (
                       <DropdownMenu.Item
                         key={`net-${idx}`}
-                        className={`flex flex-row text-md justify-start items-center p-3 cursor-pointer ${
-                          idx > 0 ? "border-t border-BorderColorLight dark:border-BorderColor" : ""
-                        }`}
+                        className={`flex flex-row text-md justify-start items-center p-3 cursor-pointer ${idx > 0 ? "border-t border-BorderColorLight dark:border-BorderColor" : ""
+                          }`}
                         onSelect={() => {
                           onSelectToken(newAsset);
                         }}
