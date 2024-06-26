@@ -45,9 +45,10 @@ export default function ReceiverContactBeneficiarySelector(props: ReceiverContac
         onSearch={onSearchChange}
         onOpenChange={onOpenChange}
         componentWidth="21rem"
+        margin="!mt-0"
       />
       <button className="absolute -right-4 -bottom-[2.75rem]" onClick={onClear}>
-        <p className="text-md text-slate-color-info">{t("clear")}</p>
+        <p className="text-md text-slate-color-info underline">{t("clear")}</p>
       </button>
     </div>
   );

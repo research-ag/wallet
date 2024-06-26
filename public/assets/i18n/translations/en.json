@@ -26,6 +26,8 @@
   "yes": "Yes",
   "service": "Service",
   "clear": "Clear",
+  "self": "Self",
+  "beneficiary": "Beneficiary",
   "supported.assets": "Supported Assets",
   "select.option": "Select an option",
   "selected.all": "Select All",

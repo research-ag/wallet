@@ -13,6 +13,7 @@ import { CustomInput } from "@components/input";
 import BeneficiaryContactBook from "./BeneficiaryContactBook";
 import { Contact } from "@redux/models/ContactsModels";
 import ReceiverContactBeneficiarySelector from "./ReceiverContactBeneficiarySelector";
+import { t } from "i18next";
 
 export default function ServiceBookReceiver() {
   const { transferState, setTransferState } = useTransfer();
@@ -83,7 +84,8 @@ export default function ServiceBookReceiver() {
   }, [filteredServices, searchSubAccountValue]);
 
   return (
-    <div className="flex flex-col justify-start items-start gap-2 mx-4">
+    <div className="flex flex-col justify-start items-start mx-4">
+      <p className="mt-2 text-md text-PrimaryTextColorLight/70 dark:text-PrimaryTeztColor/70">{t("service")}</p>
       <BasicSelect
         onSelect={onSelect}
         options={formattedServices}
@@ -92,7 +94,9 @@ export default function ServiceBookReceiver() {
         onSearch={onSearchChange}
         onOpenChange={onOpenChange}
         componentWidth="21rem"
+        margin="!mt-0"
       />
+      <p className="mt-2 text-md text-PrimaryTextColorLight/70 dark:text-PrimaryTeztColor/70">{t("beneficiary")}</p>
       {contactBeneficiary ? (
         <ReceiverContactBeneficiarySelector
           setBeneficiary={setBeneficiary}
@@ -103,7 +107,14 @@ export default function ServiceBookReceiver() {
         <CustomInput
           intent="primary"
           value={beneficiary}
-          sufix={<BeneficiaryContactBook setSelectedContact={setContactBeneficiary} />}
+          sufix={
+            <div className="flex flex-row justify-between items-center gap-1 pl-1">
+              <button className="p-0" onClick={onSelf}>
+                <p className="text-sm text-slate-color-info underline">{t("self")}</p>
+              </button>
+              <BeneficiaryContactBook setSelectedContact={setContactBeneficiary} />
+            </div>
+          }
           border={benefErr ? "error" : "primary"}
           sizeInput={"small"}
           onChange={onInputChange}
@@ -168,5 +179,15 @@ export default function ServiceBookReceiver() {
         toSubAccount: "err",
       }));
     }
+  }
+  function onSelf() {
+    setBenefErr(false);
+    setBeneficiary(authClient);
+    const princBytes = Principal.fromText(authClient).toUint8Array();
+    const princSubId = `0x${princBytes.length.toString(16) + Buffer.from(princBytes).toString("hex")}`;
+    setTransferState((prev) => ({
+      ...prev,
+      toSubAccount: princSubId,
+    }));
   }
 }
