@@ -107,6 +107,7 @@ export default function ServiceBookReceiver() {
           border={benefErr ? "error" : "primary"}
           sizeInput={"small"}
           onChange={onInputChange}
+          autoFocus
         />
       )}
     </div>
