@@ -50,7 +50,7 @@ const AddAssetAutomatic = () => {
                   "border-BorderColorLight dark:border-BorderColor",
                   "items-center",
                   "cursor-pointer",
-                  "w-[6rem]",
+                  "w-[7rem]",
                   "pr-0",
                 )}
               >
@@ -67,7 +67,7 @@ const AddAssetAutomatic = () => {
             </DropdownMenu.Trigger>
             <DropdownMenu.Portal>
               <DropdownMenu.Content
-                className="text-lg bg-PrimaryColorLight w-[6rem] rounded-lg dark:bg-SecondaryColor z-[2000] text-PrimaryTextColorLight dark:text-PrimaryTextColor shadow-sm shadow-BorderColorTwoLight dark:shadow-BorderColorTwo border border-BorderColorLight dark:border-BorderColor"
+                className="text-lg bg-PrimaryColorLight w-[7rem] rounded-lg dark:bg-SecondaryColor z-[2000] text-PrimaryTextColorLight dark:text-PrimaryTextColor shadow-sm shadow-BorderColorTwoLight dark:shadow-BorderColorTwo border border-BorderColorLight dark:border-BorderColor"
                 sideOffset={2}
                 align="end"
               >
