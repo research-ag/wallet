@@ -117,7 +117,7 @@ function getItemStyles() {
   return clsx(
     "flex items-center min-h-[3rem]",
     "justify-start px-2 py-2 bg-opacity-50",
-    "cursor-pointer hover:bg-RadioCheckColor",
+    "cursor-pointer hover:bg-RadioCheckColor/50",
   );
 }
 
@@ -126,7 +126,7 @@ const triggerStyles = (
   border: "none" | "error" | null | undefined,
   componentWidth: string,
 ) => {
-  return clsx(selectTriggerCVA({ disabled, border }), `!w-[${componentWidth}]`);
+  return clsx(selectTriggerCVA({ disabled, border }), `w-[${componentWidth}]`);
 };
 
 const selectTriggerCVA = cva(
@@ -162,7 +162,7 @@ const selectTriggerCVA = cva(
 );
 
 const contentStyles = (disabled: boolean | null | undefined, componentWidth: string) => {
-  return clsx(selectContentCVA({ disabled }), `!w-[${componentWidth}]`);
+  return clsx(selectContentCVA({ disabled }), `w-[${componentWidth}]`);
 };
 
 const selectContentCVA = cva(

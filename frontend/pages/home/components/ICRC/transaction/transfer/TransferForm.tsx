@@ -273,5 +273,9 @@ export default function TransferForm() {
       setErrorMessage("Service account balance is less than the min withdrawal plus fee");
       throw new Error(t("error.transfer.from.service.less.withdraw.minimun.plus.fee"));
     }
+
+    if (transferState.toSubAccount === "err") {
+      throw new Error("toServiceValidations: service subaccount is not valid");
+    }
   }
 }

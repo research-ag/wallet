@@ -48,7 +48,7 @@ const avatarEmptyCVA = cva(["flex", "justify-center", "items-center", "font-bold
       warning: "bg-warning",
       danger: "bg-danger",
       success: "bg-success",
-      info: "bg-info",
+      info: "bg-slate-color-info",
       inherit: "bg-inherit",
       gray: "bg-gray-600",
     },
