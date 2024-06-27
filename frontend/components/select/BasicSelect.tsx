@@ -17,13 +17,24 @@ interface TSelectProps extends VariantProps<typeof selectTriggerCVA>, VariantPro
   onSearch?: (searchValue: string) => void;
   onOpenChange?: (open: boolean) => void;
   componentWidth: string;
+  margin?: string;
 }
 
 export default function Select(props: TSelectProps) {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
-  const { disabled, options, initialValue, currentValue, onSelect, onSearch, onOpenChange, border, componentWidth } =
-    props;
+  const {
+    disabled,
+    options,
+    initialValue,
+    currentValue,
+    onSelect,
+    onSearch,
+    onOpenChange,
+    border,
+    componentWidth,
+    margin,
+  } = props;
   const searchTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
 
   const selectedValue = useMemo(() => {
@@ -35,7 +46,7 @@ export default function Select(props: TSelectProps) {
 
   return (
     <DropdownMenu.Root open={isOpen} onOpenChange={handleOpenChange}>
-      <DropdownMenu.Trigger asChild className={triggerStyles(disabled, border, componentWidth)}>
+      <DropdownMenu.Trigger asChild className={triggerStyles(disabled, border, componentWidth, margin || "")}>
         <div className="flex items-center justify-center">
           <div className="flex items-center mr-2">
             {selectedValue && (
@@ -117,7 +128,7 @@ function getItemStyles() {
   return clsx(
     "flex items-center min-h-[3rem]",
     "justify-start px-2 py-2 bg-opacity-50",
-    "cursor-pointer hover:bg-RadioCheckColor",
+    "cursor-pointer hover:bg-RadioCheckColor/50",
   );
 }
 
@@ -125,8 +136,9 @@ const triggerStyles = (
   disabled: boolean | null | undefined,
   border: "none" | "error" | null | undefined,
   componentWidth: string,
+  margin: string,
 ) => {
-  return clsx(selectTriggerCVA({ disabled, border }), `!w-[${componentWidth}]`);
+  return clsx(selectTriggerCVA({ disabled, border }), `w-[${componentWidth}]`, margin);
 };
 
 const selectTriggerCVA = cva(
@@ -162,7 +174,7 @@ const selectTriggerCVA = cva(
 );
 
 const contentStyles = (disabled: boolean | null | undefined, componentWidth: string) => {
-  return clsx(selectContentCVA({ disabled }), `!w-[${componentWidth}]`);
+  return clsx(selectContentCVA({ disabled }), `w-[${componentWidth}]`);
 };
 
 const selectContentCVA = cva(

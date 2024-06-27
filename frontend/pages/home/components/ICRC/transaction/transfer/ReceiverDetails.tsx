@@ -12,6 +12,9 @@ import { Asset, SubAccount } from "@redux/models/AccountModels";
 import { defaultSubAccount } from "@common/defaultTokens";
 import { TransferView, useTransferView } from "@pages/home/contexts/TransferViewProvider";
 import { toFullDecimal } from "@common/utils/amount";
+import { useMemo } from "react";
+import { Principal } from "@dfinity/principal";
+import { Buffer } from "buffer";
 
 export default function ReceiverDetails() {
   const { t } = useTranslation();
@@ -42,6 +45,16 @@ function ToServiceDisplay() {
   const { t } = useTranslation();
   const { transferState } = useTransfer();
   const services = useAppSelector((state) => state.services.services);
+  const { contacts } = useAppSelector((state) => state.contacts);
+
+  const beneficiary = useMemo(() => {
+    const auxContact = contacts.find((cntc) => {
+      const princBytes = Principal.fromText(cntc.principal).toUint8Array();
+      const princSubId = `0x${princBytes.length.toString(16) + Buffer.from(princBytes).toString("hex")}`;
+      return princSubId === transferState.toSubAccount;
+    });
+    return auxContact;
+  }, []);
 
   return (
     <div className="flex flex-col items-center justify-start w-full gap-1 px-4 py-2 rounded-md dark:bg-secondary-color-2 bg-secondary-color-1-light text-start text-PrimaryTextColorLight/70 dark:text-PrimaryTextColor/70 text-md">
@@ -54,8 +67,8 @@ function ToServiceDisplay() {
         <p>{transferState.toPrincipal}</p>
       </div>
       <div className="flex flex-row items-center justify-between w-full">
-        <p>{t("subaccount")}</p>
-        <p>{middleTruncation(transferState.toSubAccount, 7, 5)}</p>
+        <p>{t(beneficiary ? "beneficiary" : "subaccount")}</p>
+        <p>{beneficiary ? beneficiary.name : middleTruncation(transferState.toSubAccount, 7, 5)}</p>
       </div>
     </div>
   );

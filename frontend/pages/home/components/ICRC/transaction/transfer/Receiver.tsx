@@ -23,7 +23,7 @@ export default function Receiver() {
       <div className="w-full py-2 border-b border-opacity-25 border-gray-color-2">
         <div className="flex items-center justify-between w-full px-4 py-1">
           <p className="font-bold opacity-50 text-PrimaryTextColorLight dark:text-PrimaryTextColor text-md">To</p>
-          {!isTransferToOwn && !isSenderService && (
+          {!isTransferToOwn && !isSenderService && !isToContact && !istToService && (
             <div className="flex items-center justify-center">
               <p className="mr-2 text-black-color text-md dark:text-white">{t("manual")}</p>
               <BasicSwitch checked={isToManual} onChange={onCheckedChange} />
