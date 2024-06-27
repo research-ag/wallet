@@ -77,7 +77,7 @@ export default function AllowanceList({ allowances, handleSortChange }: Allowanc
 
             return (
               <tr key={allowance.id}>
-                <td className="flex flex-col items-start justify-start">
+                <td className="flex flex-col items-start justify-start ">
                   <div className="flex items-center justify-center">
                     {getAssetIcon(IconTypeEnum.Enum.ALLOWANCE, asset?.tokenSymbol, asset?.logo)}
                     <div className="mt-2 ml-2">
@@ -147,4 +147,5 @@ const headerStyles = clsx(
 const bodyStyles = clsx(
   "text-md text-left text-black-color dark:text-gray-color-6",
   "bg-white dark:bg-level-2-color dark:bg-level-2-color",
+  "divide-y dark:divide-gray-color-1 divide-gray-color-6"
 );
