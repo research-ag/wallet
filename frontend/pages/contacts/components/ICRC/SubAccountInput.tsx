@@ -23,6 +23,7 @@ interface SubAccountInputProps {
 
 function SubAccountInput(props: SubAccountInputProps, testRef: any) {
   const contacts = useAppSelector((state) => state.contacts.contacts);
+  const placeholder = props.isHexadecimal ? t("hexadecimal") : t("principal");
 
   return (
     <div className="relative flex flex-row items-center w-full h-10 gap-1 pr-2">
@@ -36,7 +37,7 @@ function SubAccountInput(props: SubAccountInputProps, testRef: any) {
         onKeyDown={onKeyDownIndex}
         className="h-[2.2rem] dark:bg-level-2-color bg-white rounded-lg border-[2px]"
         inputClass="h-[1.5rem]"
-        placeholder={props.isHexadecimal ? "Hexadecimal" : "Principal"}
+        placeholder={placeholder}
         sufix={
           props.error && isSubaccountDuplicated(props.newAccount?.subaccountId || undefined) ? (
             <p className="text-sm capitalize text-slate-color-error">{t("duplicate")}</p>

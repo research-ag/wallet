@@ -120,7 +120,7 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
               <CustomButton intent="success" size="small" onClick={onTestAccountAllowance}>
                 <div className="flex p-0.5">
                   <MoneyHandIcon className="relative w-5 h-5 fill-PrimaryColorLight" />
-                  <p className="ml-1 font-semibold text-md">Test</p>
+                  <p className="ml-1 font-semibold text-md">{t("test")}</p>
                 </div>
               </CustomButton>
             )}
