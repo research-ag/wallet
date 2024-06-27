@@ -26,8 +26,6 @@ export default function SendReceiveDrawer() {
     return Boolean(transactionDrawer === TransactionDrawer.SEND || transactionDrawer === TransactionDrawer.RECEIVE);
   }, [transactionDrawer]);
 
-  if (!isDrawerOpen) return <></>;
-
   return (
     <BasicDrawer isDrawerOpen={isDrawerOpen}>
       <div className="relative flex items-center justify-between w-full px-6 mt-8 row">
