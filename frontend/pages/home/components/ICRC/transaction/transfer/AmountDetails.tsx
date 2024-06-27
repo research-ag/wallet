@@ -2,7 +2,7 @@ import { TransferFromTypeEnum, TransferToTypeEnum, useTransfer } from "@pages/ho
 import { useTranslation } from "react-i18next";
 import clsx from "clsx";
 import { useAppSelector } from "@redux/Store";
-import { toFullDecimal, validateAmount } from "@common/utils/amount";
+import { toFullDecimal, toHoleBigInt, validateAmount } from "@common/utils/amount";
 import useTransferMaxAmount from "@pages/home/hooks/useTransferMaxAmount";
 import { LoadingLoader } from "@components/loader";
 import { useEffect } from "react";
@@ -29,9 +29,36 @@ export default function AmountDetails() {
 
   const isAmountValid = (() => {
     if (transferState.amount === "") return true;
-    if (transferState.amount === undefined) return true;
-    if (transferState.amount === "0") return false;
-    return validateAmount(transferState.amount, Number(currentAsset?.decimal || "8"));
+    if (transferState.amount === undefined && transferState.amount === "0") return true;
+
+    const isFromOwnSubAccount = transferState.fromType === TransferFromTypeEnum.own;
+    const isMaxAmountValid = transferState.amount && maxAmount.maxAmount !== "0";
+    const isUserAmountValid = transferState.amount !== "0" && transferState.amount !== "";
+
+    const isUserAmountFormatValid = validateAmount(
+      transferState.amount,
+      Number(currentAsset?.decimal || "8")
+    );
+
+    if (!isUserAmountFormatValid) return false;
+
+    if (isFromOwnSubAccount && isMaxAmountValid && isUserAmountValid) {
+
+      const maxAmountBigInt = toHoleBigInt(
+        maxAmount.maxAmount,
+        Number(currentAsset?.decimal || "8")
+      );
+
+      const userAmountBigInt = toHoleBigInt(
+        transferState.amount,
+        Number(currentAsset?.decimal || "8")
+      );
+
+      if (maxAmountBigInt < userAmountBigInt) return false;
+
+    };
+
+    return true;
   })();
 
   useEffect(() => {
