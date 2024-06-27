@@ -271,6 +271,7 @@
   "error.transfer.to.service.not.valid.subaccount": "La subcuenta de servicio no es válida",
   "error.transfer.from.service.less.withdraw.minimun.plus.fee": "El servicio DE tiene menos del mínimo de retiro más la tarifa",
   "error.transfer.invalid.amount": "El monto no es válido",
+  "error.transfer.invalid.decimal.amount": "Los decimales superan los permitidos por el token.",
   "error.transfer.invalid.asset": "El activo no es válido",
   "error.transfer.allowance.insufficient": "FROM no tiene saldo suficiente",
   "error.transfer.allowance.subaccount.balance.insufficient": "FROM no tiene saldo suficiente",

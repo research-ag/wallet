@@ -76,10 +76,16 @@ export default function TransferDetailsConfirmation() {
   function onTransfer() {
     setErrorMessage("");
 
-    const isAmountValid = validateAmount(transferState.amount, Number(currentAsset?.decimal || "8"));
-    if (transferState.amount === "" && !isAmountValid) {
+    if (transferState.amount === "") {
       setErrorMessage(t("error.transfer.invalid.amount"));
       throw new Error("onTransfer: Amount format is invalid");
+    }
+
+    const isAmountValid = validateAmount(transferState.amount, Number(currentAsset?.decimal || "8"));
+
+    if (!isAmountValid) {
+      setErrorMessage(t("error.transfer.invalid.decimal.amount"));
+      throw new Error("onTransfer: Amount decial is invalid");
     }
 
     if (transferState.fromType === TransferFromTypeEnum.own) transferFromOwn();

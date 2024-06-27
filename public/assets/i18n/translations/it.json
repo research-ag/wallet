@@ -270,6 +270,7 @@
   "error.transfer.to.service.not.valid.subaccount": "L'account secondario del servizio non è valido",
   "error.transfer.from.service.less.withdraw.minimun.plus.fee": "Il servizio DA ha un importo inferiore al minimo di prelievo più la commissione",
   "error.transfer.invalid.amount": "Importo non valido",
+  "error.transfer.invalid.decimal.amount": "Le cifre decimali superano quelle consentite dal token",
   "error.transfer.invalid.asset": "Asset non valido",
   "error.transfer.allowance.insufficient": "FROM non ha saldo sufficiente",
   "error.transfer.allowance.subaccount.balance.insufficient": "FROM non ha saldo sufficiente",

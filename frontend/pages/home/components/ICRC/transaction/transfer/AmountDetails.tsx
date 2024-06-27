@@ -35,28 +35,17 @@ export default function AmountDetails() {
     const isMaxAmountValid = transferState.amount && maxAmount.maxAmount !== "0";
     const isUserAmountValid = transferState.amount !== "0" && transferState.amount !== "";
 
-    const isUserAmountFormatValid = validateAmount(
-      transferState.amount,
-      Number(currentAsset?.decimal || "8")
-    );
+    const isUserAmountFormatValid = validateAmount(transferState.amount, Number(currentAsset?.decimal || "8"));
 
     if (!isUserAmountFormatValid) return false;
 
     if (isFromOwnSubAccount && isMaxAmountValid && isUserAmountValid) {
+      const maxAmountBigInt = toHoleBigInt(maxAmount.maxAmount, Number(currentAsset?.decimal || "8"));
 
-      const maxAmountBigInt = toHoleBigInt(
-        maxAmount.maxAmount,
-        Number(currentAsset?.decimal || "8")
-      );
-
-      const userAmountBigInt = toHoleBigInt(
-        transferState.amount,
-        Number(currentAsset?.decimal || "8")
-      );
+      const userAmountBigInt = toHoleBigInt(transferState.amount, Number(currentAsset?.decimal || "8"));
 
       if (maxAmountBigInt < userAmountBigInt) return false;
-
-    };
+    }
 
     return true;
   })();
