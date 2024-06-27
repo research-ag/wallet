@@ -10,27 +10,29 @@ export default function SenderAllowanceQRScanner() {
   const { setTransferState } = useTransfer();
 
   return (
-    <QRscanner
-      setQRview={onGoBack}
-      qrView={true}
-      onSuccess={(value: string) => {
-        try {
-          const decoded = decodeIcrcAccount(value);
-          const fromPrincipal = decoded.owner.toText();
-          const fromSubAccount = `0x${subUint8ArrayToHex(decoded.subaccount)}`;
+    <div className="w-[22rem] mx-auto mt-[2rem]">
+      <QRscanner
+        setQRview={onGoBack}
+        qrView={true}
+        onSuccess={(value: string) => {
+          try {
+            const decoded = decodeIcrcAccount(value);
+            const fromPrincipal = decoded.owner.toText();
+            const fromSubAccount = `0x${subUint8ArrayToHex(decoded.subaccount)}`;
 
-          setTransferState((prev) => ({
-            ...prev,
-            fromPrincipal,
-            fromSubAccount,
-          }));
+            setTransferState((prev) => ({
+              ...prev,
+              fromPrincipal,
+              fromSubAccount,
+            }));
 
-          onGoBack();
-        } catch (error) {
-          logger.debug(error);
-        }
-      }}
-    />
+            onGoBack();
+          } catch (error) {
+            logger.debug(error);
+          }
+        }}
+      />
+    </div>
   );
 
   function onGoBack() {

@@ -10,6 +10,8 @@ export default function ReceiverQRScanner() {
   const { setTransferState } = useTransfer();
 
   return (
+    <div className="w-[22rem] mx-auto mt-[2rem]">
+
     <QRscanner
       setQRview={onGoBack}
       qrView={true}
@@ -32,6 +34,7 @@ export default function ReceiverQRScanner() {
         }
       }}
     />
+    </div>
   );
 
   function onGoBack() {
