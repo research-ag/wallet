@@ -28,8 +28,8 @@ export async function getETHRate() {
     const ethRate = await fetch(ethUrl).then((x) => x.json());
 
     return {
-      id: 999,
-      name: "Ethereum",
+      id: 998,
+      name: "ckETH",
       symbol: "ckETH",
       price: ethRate.USD,
       marketcap: 0,
@@ -43,4 +43,19 @@ export async function getETHRate() {
     logger.debug("Error fetching ETH rate:", error);
     return undefined;
   }
+}
+
+export async function getckUSDCRate() {
+  return {
+    id: 999,
+    name: "ckUSDC",
+    symbol: "ckUSDC",
+    price: 1,
+    marketcap: 0,
+    volume24: 0,
+    circulating: 0,
+    total: 0,
+    liquidity: 0,
+    unreleased: 0,
+  };
 }

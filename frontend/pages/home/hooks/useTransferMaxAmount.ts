@@ -2,7 +2,7 @@ import { ChangeEvent, useState } from "react";
 import { TransferFromTypeEnum, useTransfer } from "@pages/home/contexts/TransferProvider";
 import { useAppSelector } from "@redux/Store";
 import logger from "@/common/utils/logger";
-import { toFullDecimal } from "@common/utils/amount";
+import { getTokenFromUSD, getUSDFromToken, toFullDecimal, toHoleBigInt } from "@common/utils/amount";
 import ICRC1BalanceOf from "@common/libs/icrcledger/ICRC1BalanceOf";
 import { Principal } from "@dfinity/principal";
 import { hexToUint8Array } from "@common/utils/hexadecimal";
@@ -31,7 +31,9 @@ export default function useTransferMaxAmount() {
   const services = useAppSelector((state) => state.services.services);
 
   const assets = useAppSelector((state) => state.asset.list.assets);
+  const markets = useAppSelector((state) => state.asset.utilData.tokensMarket);
   const currentAsset = assets.find((asset) => asset.tokenSymbol === transferState.tokenSymbol);
+  const currentMarket = markets.find((asset) => asset.symbol === transferState.tokenSymbol);
 
   async function onMaxAmount(noMax?: boolean) {
     const isManualAllowance = transferState.fromType === TransferFromTypeEnum.allowanceManual;
@@ -255,8 +257,31 @@ export default function useTransferMaxAmount() {
   function onChangeAmount(e: ChangeEvent<HTMLInputElement>) {
     const amount = e.target.value.trim().replace(/[^0-9.]/g, "");
     setMaxAmount((prev) => ({ ...prev, isAmountFromMax: false }));
-    setTransferState({ ...transferState, amount });
+    if (currentMarket && currentAsset) {
+      if (amount.trim() === "") setTransferState({ ...transferState, amount, usdAmount: "" });
+      else if (Number(amount) === 0) setTransferState({ ...transferState, amount, usdAmount: "0" });
+      else {
+        const bigintAmount = toHoleBigInt(amount, Number(currentAsset?.decimal || "8"));
+        const usdAmount = getUSDFromToken(bigintAmount.toString(), currentMarket.price, currentAsset.decimal || 8);
+        setTransferState({ ...transferState, amount, usdAmount });
+      }
+    } else {
+      setTransferState({ ...transferState, amount });
+    }
   }
 
-  return { maxAmount, onMaxAmount, setMaxAmount, onChangeAmount };
+  function onChangeUSDAmount(e: ChangeEvent<HTMLInputElement>) {
+    const usdAmount = e.target.value.trim().replace(/[^0-9.]/g, "");
+    setMaxAmount((prev) => ({ ...prev, isAmountFromMax: false }));
+    if (currentAsset && currentMarket) {
+      if (usdAmount.trim() === "") setTransferState({ ...transferState, amount: "", usdAmount });
+      if (Number(usdAmount) === 0) setTransferState({ ...transferState, amount: "0", usdAmount });
+      else {
+        const amount = getTokenFromUSD(usdAmount, currentMarket.price, currentAsset.decimal || 8);
+        setTransferState({ ...transferState, usdAmount, amount });
+      }
+    }
+  }
+
+  return { maxAmount, onMaxAmount, setMaxAmount, onChangeAmount, onChangeUSDAmount };
 }
