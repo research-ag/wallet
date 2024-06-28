@@ -81,6 +81,7 @@ export default function TransferForm() {
       toPrincipal: "",
       toSubAccount: "",
       amount: "",
+      usdAmount: "",
       duration: "",
     });
     setTransactionDrawerAction(TransactionDrawer.NONE);

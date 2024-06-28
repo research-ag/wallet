@@ -91,6 +91,7 @@ export default function TransferStatusModal() {
       toPrincipal: "",
       toSubAccount: "",
       amount: "",
+      usdAmount: "",
       duration: "",
     });
     setStatus(TransferStatus.NONE);

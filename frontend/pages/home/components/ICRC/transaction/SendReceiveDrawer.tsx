@@ -63,6 +63,7 @@ export default function SendReceiveDrawer() {
               toPrincipal: "",
               toSubAccount: "",
               amount: "",
+              usdAmount: "",
               duration: "",
             });
             setTransactionDrawerAction(TransactionDrawer.NONE);

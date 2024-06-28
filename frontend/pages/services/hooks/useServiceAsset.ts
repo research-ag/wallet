@@ -83,6 +83,7 @@ export default function useServiceAsset() {
       toPrincipal: service.servicePrincipal,
       toSubAccount: service.subAccountId,
       amount: "",
+      usdAmount: "",
       duration: "",
     });
     setTransactionDrawerAction(TransactionDrawer.SEND);
@@ -98,6 +99,7 @@ export default function useServiceAsset() {
       toPrincipal: "",
       toSubAccount: "",
       amount: "",
+      usdAmount: "",
       duration: "",
     });
     setTransactionDrawerAction(TransactionDrawer.SEND);
