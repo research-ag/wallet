@@ -181,6 +181,7 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
       subaccountId: false,
       tokenSymbol: false,
     });
+    testRef.current = false;
   }
 
   function onAssetChange(tokenSymbol: string) {
@@ -368,6 +369,7 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
       logger.debug("onSaveSubAccount: error", error);
     } finally {
       setIsLoading(false);
+      testRef.current = false;
     }
   }
 }
