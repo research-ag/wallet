@@ -108,10 +108,11 @@ function SubAccountInput(props: SubAccountInputProps, testRef: any) {
   }
 
   function onKeyDownIndex(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (!props.isHexadecimal) {
+    if (props.isHexadecimal) {
       if (!asciiHex.includes(e.key)) {
         e.preventDefault();
       }
+
       if (props.newAccount?.subaccountId?.toLowerCase().startsWith("0x")) {
         if (e.key?.toLowerCase() === "x") {
           e.preventDefault();
