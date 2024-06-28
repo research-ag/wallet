@@ -70,8 +70,7 @@ export default function AmountDetails() {
         <div className="flex">
           <div className="flex">
             <p className="mr-1 text-sm text-primary-color">{t("max")}: </p>
-            <p className="text-sm text-primary-color">{maxAmount.maxAmount}</p>
-            <p className="mr-2 text-sm text-primary-color">{currentAsset?.symbol || ""}</p>
+            <p className="mr-1 text-sm text-primary-color">{`${maxAmount.maxAmount} ${currentAsset?.symbol || ""}`}</p>
           </div>
 
           {!maxAmount.isLoading && maxAmount.displayAvailable && maxAmount.isAmountFromMax && (
@@ -155,7 +154,7 @@ export default function AmountDetails() {
       <div className="flex items-center justify-between w-full">
         <div className="flex flex-row justify-start items-center pl-2">
           <p className="mr-1 text-sm text-primary-color">
-            {`≈ ${currentMarket && showUSD ? transferState.amount || "0" : transferState.usdAmount || "0"}${
+            {`≈ ${currentMarket && showUSD ? transferState.amount || "0" : transferState.usdAmount || "0"} ${
               currentMarket && showUSD ? currentAsset?.symbol || "" : "USD"
             }`}
           </p>
@@ -166,12 +165,11 @@ export default function AmountDetails() {
             {isReceiverService || isToContact || isToOwnSubaccount ? "Ledger " : ""} {t("fee")}
           </p>
           <p className="text-sm text-PrimaryTextColorLight dark:text-PrimaryTextColor">
-            {toFullDecimal(
+            {`${toFullDecimal(
               currentAsset?.subAccounts?.[0]?.transaction_fee || "0",
               Number(currentAsset?.decimal || "8"),
               Number(currentAsset?.shortDecimal || "8"),
-            )}
-            {currentAsset?.symbol || "-"}
+            )} ${currentAsset?.symbol || "-"}`}
           </p>
         </div>
       </div>
