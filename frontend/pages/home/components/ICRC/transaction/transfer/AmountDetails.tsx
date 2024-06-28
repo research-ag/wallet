@@ -86,7 +86,7 @@ export default function AmountDetails() {
         <input
           type="text"
           className="w-full px-4 py-2 ml-1 bg-transparent outline-none h-14"
-          placeholder={`0 ${(currentMarket && showUSD ? "USD" : currentAsset?.symbol) || ""}`}
+          placeholder={"0"}
           onChange={currentMarket && showUSD ? onChangeUSDAmount : onChangeAmount}
           value={currentMarket && showUSD ? transferState.usdAmount : transferState.amount}
         />
@@ -101,7 +101,7 @@ export default function AmountDetails() {
                 });
               }}
             >
-              <p className="text-md pt-1 pr-0.5 text-PrimaryTextColorLight dark:text-PrimaryTextColor">
+              <p className="text-md whitespace-nowrap pr-1 text-PrimaryTextColorLight dark:text-PrimaryTextColor">
                 {currentMarket && showUSD ? "USD" : currentAsset?.symbol}
               </p>
               <ConversionIcon className="w-4 fill-PrimaryTextColorLight/70 dark:fill-PrimaryTextColor" />
