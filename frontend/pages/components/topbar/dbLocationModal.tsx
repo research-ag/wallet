@@ -94,6 +94,7 @@ const DbLocationModal = ({ setOpen }: DbLocationModalProps) => {
             onKeyUp={onKeyUp}
             onChange={onChangeCanisterId}
             border={(canisterIdErr && "error") || undefined}
+            autoFocus
           />
         )}
       </div>
