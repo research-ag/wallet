@@ -68,7 +68,7 @@ export default function ContactList({ allowanceOnly, assetFilter, contactSearchK
     });
 
     return filteredContacts;
-  }, [contacts, sortDirection, contactDropdown, contactEdited]);
+  }, [contacts, sortDirection, contactDropdown, contactEdited, allowanceOnly]);
 
   return (
     <div className="w-full h-full scroll-y-light max-h-[calc(100vh-12rem)]">

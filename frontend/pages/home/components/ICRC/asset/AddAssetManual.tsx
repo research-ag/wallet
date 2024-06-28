@@ -41,6 +41,7 @@ const AddAssetManual = () => {
 
   const [tested, setTested] = useState(false);
   const [testLoading, setTestLoading] = useState(false);
+  // 
   const [validIndex, setValidIndex] = useState(false);
   const [validToken, setValidToken] = useState(false);
   //
@@ -307,7 +308,6 @@ const AddAssetManual = () => {
     setTestLoading(true);
     let validData = false;
 
-    // function 2: check if asset address is already added
     if (checkAssetAdded(newAsset.address)) {
       setErrToken(t("adding.asset.already.imported"));
       setValidToken(false);
