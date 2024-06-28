@@ -70,7 +70,7 @@ export default function useTransferMaxAmount() {
         isLoading: false,
         isAmountFromMax: !noMax,
       });
-      !noMax && setTransferState((prev) => ({ ...prev, amount: "0" }));
+      !noMax && setTransferState((prev) => ({ ...prev, amount: "0", usdAmount: "0" }));
       // max: 0, available: balance
       return;
     }
@@ -82,11 +82,16 @@ export default function useTransferMaxAmount() {
       isLoading: false,
       isAmountFromMax: !noMax,
     });
-
+    const amount1 = toFullDecimal(balance - fee, Number(currentAsset.decimal));
+    const bigintAmount1 = toHoleBigInt(amount1, Number(currentAsset?.decimal || "8"));
+    const usdAmount1 = currentMarket
+      ? getUSDFromToken(bigintAmount1.toString(), currentMarket.price, currentAsset.decimal || 8)
+      : "";
     !noMax &&
       setTransferState((prev) => ({
         ...prev,
-        amount: toFullDecimal(balance - fee, Number(currentAsset.decimal)),
+        amount: amount1,
+        usdAmount: usdAmount1,
       }));
     // max: balance - fee, available: balance
   }
@@ -134,6 +139,7 @@ export default function useTransferMaxAmount() {
           setTransferState((prev) => ({
             ...prev,
             amount: "0",
+            usdAmount: "0",
           }));
         // max: 0, available: (balance)
         return;
@@ -147,10 +153,16 @@ export default function useTransferMaxAmount() {
         isLoading: false,
         isAmountFromMax: !noMax,
       });
+      const amount2 = toFullDecimal(allowanceAmount - fee, Number(currentAsset?.decimal || "8"));
+      const bigintAmount2 = toHoleBigInt(amount2, Number(currentAsset?.decimal || "8"));
+      const usdAmount2 = currentMarket
+        ? getUSDFromToken(bigintAmount2.toString(), currentMarket.price, currentAsset.decimal || 8)
+        : "";
       !noMax &&
         setTransferState((prev) => ({
           ...prev,
           amount: toFullDecimal(allowanceAmount - fee, Number(currentAsset?.decimal || "8")),
+          usdAmount: usdAmount2,
         }));
       // max: (allowance - fee), available: 0 (not shown)
       return;
@@ -168,6 +180,7 @@ export default function useTransferMaxAmount() {
           setTransferState((prev) => ({
             ...prev,
             amount: "0",
+            usdAmount: "0",
           }));
         // max: 0, available: (balance)
         return;
@@ -185,7 +198,9 @@ export default function useTransferMaxAmount() {
           setTransferState((prev) => ({
             ...prev,
             amount: "0",
+            usdAmount: "0",
           }));
+
         // max: 0, available: (balance)
         return;
       }
@@ -197,10 +212,16 @@ export default function useTransferMaxAmount() {
         isLoading: false,
         isAmountFromMax: !noMax,
       });
+      const amount3 = toFullDecimal(balance - fee, Number(currentAsset?.decimal || "8"));
+      const bigintAmount3 = toHoleBigInt(amount3, Number(currentAsset?.decimal || "8"));
+      const usdAmount3 = currentMarket
+        ? getUSDFromToken(bigintAmount3.toString(), currentMarket.price, currentAsset.decimal || 8)
+        : "";
       !noMax &&
         setTransferState((prev) => ({
           ...prev,
           amount: toFullDecimal(balance - fee, Number(currentAsset?.decimal || "8")),
+          usdAmount: usdAmount3,
         }));
       // max: balance - fee, available: balance
     }
