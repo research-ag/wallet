@@ -25,8 +25,12 @@ export default function WorkersWrapper({ children }: { children: React.ReactNode
     initialFetch.current = false;
 
     dispatch(setAppDataRefreshing(true));
-    const erc20Tokens = await getckERC20Tokens();
-    const snsTokens = await getSNSTokens(userAgent);
+
+    const [erc20Tokens, snsTokens] = await Promise.all([
+      getckERC20Tokens(),
+      getSNSTokens(userAgent),
+    ]);
+
     dispatch(setICRC1SystemAssets([...erc20Tokens, ...snsTokens]));
 
     const dbAssets = await db().getAssets();
