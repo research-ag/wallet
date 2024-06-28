@@ -47,7 +47,7 @@ export default function HistoricalItem(props: HistoricalItemProps) {
             }}
           />
           {data?.alias && <span className="mx-1 text-md"> | </span>}
-          <div className="text-md">{shortAddress(data.principal, 10, 10)}</div>
+          <div className="text-md ml-[0.5rem]">{shortAddress(data.principal, 10, 10)}</div>
         </div>
       ) : (
         <div className="w-full" onClick={() => onHistoricalSelectHandler(data.principal)}>
@@ -93,10 +93,13 @@ export default function HistoricalItem(props: HistoricalItemProps) {
 const getItemStyles = (isActive = false, isLast = false) =>
   clsx(
     "cursor-pointer",
-    isLast ? null : "border-b-2 dark:border-black-color",
     "flex items-center justify-between p-2",
     "text-black-color dark:text-white",
     "transition-all duration-100 ease-in-out",
-    !isActive ? "hover:bg-gray-color-8/30" : null,
-    isActive ? "bg-primary-color" : null,
+    {
+      "border-b-2 dark:border-black-color": !isLast,
+      "rounded-b-md": isLast,
+      "hover:bg-gray-color-8/30": !isActive,
+      "bg-primary-color": isActive,
+    }
   );
