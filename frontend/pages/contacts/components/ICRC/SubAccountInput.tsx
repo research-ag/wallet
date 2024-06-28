@@ -1,6 +1,5 @@
 import { ContactAccount } from "@redux/models/ContactsModels";
 import { CustomInput } from "@components/input";
-import { asciiHex } from "@pages/contacts/constants/asciiHex";
 import { Dispatch, forwardRef, SetStateAction } from "react";
 import { getSubAccount, getSubAccountId } from "@pages/contacts/helpers/formatters";
 import { ContactAccountError } from "./AddContactAccountRow";
@@ -34,7 +33,6 @@ function SubAccountInput(props: SubAccountInputProps, testRef: any) {
         sizeInput="small"
         value={props.newAccount?.subaccount}
         onChange={onSubAccountChange}
-        onKeyDown={onKeyDownIndex}
         className="h-[2.2rem] dark:bg-level-2-color bg-white rounded-lg border-[2px]"
         inputClass="h-[1.5rem]"
         placeholder={placeholder}
@@ -105,20 +103,6 @@ function SubAccountInput(props: SubAccountInputProps, testRef: any) {
         (account) => account.subaccountId === subaccountId && account.tokenSymbol === props.newAccount?.tokenSymbol,
       ),
     );
-  }
-
-  function onKeyDownIndex(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (props.isHexadecimal) {
-      if (!asciiHex.includes(e.key)) {
-        e.preventDefault();
-      }
-
-      if (props.newAccount?.subaccountId?.toLowerCase().startsWith("0x")) {
-        if (e.key?.toLowerCase() === "x") {
-          e.preventDefault();
-        }
-      }
-    }
   }
 
   function onSubAccountChange(e: React.ChangeEvent<HTMLInputElement>) {
