@@ -56,7 +56,7 @@ export default function TransferDetailsConfirmation() {
       <AmountDetails />
 
       <div className="flex items-center justify-end mt-6 max-w-[23rem] mx-auto">
-        {!isLoading && <p className="mr-4 text-md text-slate-color-error">{errorMessage}</p>}
+        {!isLoading && <p className="mr-4 text-md text-slate-color-error text-right">{errorMessage}</p>}
         {isLoading && <LoadingLoader />}
 
         <BasicButton className="w-1/6 mr-2 font-bold bg-secondary-color-2" onClick={onBack} disabled={isLoading}>
@@ -350,8 +350,17 @@ export default function TransferDetailsConfirmation() {
 
     const minWithdraw = BigInt(serviceSenderAsset.minWithdraw);
     const amount = toHoleBigInt(transferState.amount, Number(currentAsset?.decimal || "8"));
+    const max = BigInt(serviceSenderAsset.credit);
+
     if (amount < minWithdraw) {
       return { isError: true, message: t("error.transfer.amount.less.minimun.withdrawl") };
+    }
+
+    if (amount > max) {
+      return {
+        isError: true,
+        message: t("error.transfer.from.no.enough.balance"),
+      };
     }
 
     return { isError: false, message: "" };
