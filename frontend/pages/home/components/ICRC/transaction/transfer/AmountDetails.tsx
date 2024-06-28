@@ -63,7 +63,25 @@ export default function AmountDetails() {
 
   return (
     <div className="max-w-[23rem] mx-auto space-y-[0.5rem]">
-      <p className="font-bold bg-transparent opacity-50 text-md text-start">{t("amount.received")}</p>
+      <div className="flex flex-row justify-between items-center w-full">
+        <p className="text-PrimaryTextColorLight dark:text-PrimaryTextColor font-bold bg-transparent opacity-50 text-md text-start">
+          {t("amount.received")}
+        </p>
+        <div className="flex">
+          <div className="flex">
+            <p className="mr-1 text-sm text-primary-color">{t("max")}: </p>
+            <p className="text-sm text-primary-color">{maxAmount.maxAmount}</p>
+            <p className="mr-2 text-sm text-primary-color">{currentAsset?.symbol || ""}</p>
+          </div>
+
+          {!maxAmount.isLoading && maxAmount.displayAvailable && maxAmount.isAmountFromMax && (
+            <p className="text-sm text-primary-color">
+              ({maxAmount.availableAmount} {t("available")})
+            </p>
+          )}
+        </div>
+      </div>
+
       <div className={getAmountInputStyles(!isAmountValid)}>
         <input
           type="text"
@@ -135,25 +153,12 @@ export default function AmountDetails() {
       )}
 
       <div className="flex items-center justify-between w-full">
-        <div className="flex flex-row justify-start items-center">
+        <div className="flex flex-row justify-start items-center pl-2">
           <p className="mr-1 text-sm text-primary-color">
             {`≈ ${currentMarket && showUSD ? transferState.amount || "0" : transferState.usdAmount || "0"}${
               currentMarket && showUSD ? currentAsset?.symbol || "" : "USD"
             }`}
           </p>
-        </div>
-        <div className="flex">
-          <div className="flex">
-            <p className="mr-1 text-sm text-primary-color">{t("max")}: </p>
-            <p className="text-sm text-primary-color">{maxAmount.maxAmount}</p>
-            <p className="mr-2 text-sm text-primary-color">{currentAsset?.symbol || ""}</p>
-          </div>
-
-          {!maxAmount.isLoading && maxAmount.displayAvailable && maxAmount.isAmountFromMax && (
-            <p className="text-sm text-primary-color">
-              ({maxAmount.availableAmount} {t("available")})
-            </p>
-          )}
         </div>
 
         <div className="flex">
