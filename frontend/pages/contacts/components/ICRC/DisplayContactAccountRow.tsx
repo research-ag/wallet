@@ -64,7 +64,7 @@ export default function DisplayContactAccountRow(props: DisplayContactAccountRow
               border={props.errors.name ? "error" : "selected"}
               value={props.updateAccount?.name || ""}
               className="h-[2.2rem] dark:bg-level-2-color bg-white rounded-lg border-[2px]"
-              inputClass="h-[1.5rem] text-center"
+              inputClass="h-[1.5rem] text-left text-md"
             />
 
             <CheckIcon
