@@ -1,19 +1,26 @@
+// svg
+import { ReactComponent as ConversionIcon } from "@assets/svg/files/conversion-icon.svg";
+//
 import { TransferFromTypeEnum, TransferToTypeEnum, useTransfer } from "@pages/home/contexts/TransferProvider";
 import { useTranslation } from "react-i18next";
-import clsx from "clsx";
+import { clsx } from "clsx";
 import { useAppSelector } from "@redux/Store";
 import { toFullDecimal, toHoleBigInt, validateAmount } from "@common/utils/amount";
 import useTransferMaxAmount from "@pages/home/hooks/useTransferMaxAmount";
 import { LoadingLoader } from "@components/loader";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function AmountDetails() {
   const { t } = useTranslation();
   const { transferState } = useTransfer();
-  const { maxAmount, onMaxAmount, onChangeAmount } = useTransferMaxAmount();
+  const { maxAmount, onMaxAmount, onChangeAmount, onChangeUSDAmount } = useTransferMaxAmount();
   const assets = useAppSelector((state) => state.asset.list.assets);
+  const markets = useAppSelector((state) => state.asset.utilData.tokensMarket);
   const services = useAppSelector((state) => state.services.services);
+  const [showUSD, setShowUSD] = useState(false);
+  //
   const currentAsset = assets.find((asset) => asset.tokenSymbol === transferState.tokenSymbol);
+  const currentMarket = markets.find((asset) => asset.symbol === transferState.tokenSymbol);
   //
   const senderService = services.find((service) => service.principal === transferState.fromPrincipal);
   const senderServiceAsset = senderService?.assets.find((asset) => asset.principal === currentAsset?.address);
@@ -61,20 +68,35 @@ export default function AmountDetails() {
         <input
           type="text"
           className="w-full px-4 py-2 ml-1 bg-transparent outline-none h-14"
-          placeholder={`0 ${currentAsset?.symbol || ""}`}
-          onChange={onChangeAmount}
-          value={transferState.amount}
+          placeholder={`0 ${(currentMarket && showUSD ? "USD" : currentAsset?.symbol) || ""}`}
+          onChange={currentMarket && showUSD ? onChangeUSDAmount : onChangeAmount}
+          value={currentMarket && showUSD ? transferState.usdAmount : transferState.amount}
         />
         {maxAmount.isLoading && <LoadingLoader className="mr-4" />}
         {!maxAmount.isLoading && (
-          <button
-            className="flex items-center justify-center p-1 mr-2 rounded cursor-pointer bg-RadioCheckColor"
-            onClick={() => {
-              onMaxAmount();
-            }}
-          >
-            <p className="text-sm text-PrimaryTextColor">{t("max")}</p>
-          </button>
+          <div className="flex flex-row justify-end items-center gap-2">
+            <button
+              className="flex flex-row justify-start items-center p-0"
+              onClick={() => {
+                setShowUSD((prev) => {
+                  return !prev;
+                });
+              }}
+            >
+              <p className="text-md pt-1 pr-0.5 text-PrimaryTextColorLight dark:text-PrimaryTextColor">
+                {currentMarket && showUSD ? "USD" : currentAsset?.symbol}
+              </p>
+              <ConversionIcon className="w-4 fill-PrimaryTextColorLight/70 dark:fill-PrimaryTextColor" />
+            </button>
+            <button
+              className="flex items-center justify-center p-1 mr-2 rounded cursor-pointer bg-RadioCheckColor"
+              onClick={() => {
+                onMaxAmount();
+              }}
+            >
+              <p className="text-sm text-PrimaryTextColor">{t("max")}</p>
+            </button>
+          </div>
         )}
       </div>
 
@@ -113,10 +135,18 @@ export default function AmountDetails() {
       )}
 
       <div className="flex items-center justify-between w-full">
+        <div className="flex flex-row justify-start items-center">
+          <p className="mr-1 text-sm text-primary-color">
+            {`≈ ${currentMarket && showUSD ? transferState.amount || "0" : transferState.usdAmount || "0"}${
+              currentMarket && showUSD ? currentAsset?.symbol || "" : "USD"
+            }`}
+          </p>
+        </div>
         <div className="flex">
           <div className="flex">
             <p className="mr-1 text-sm text-primary-color">{t("max")}: </p>
-            <p className="mr-2 text-sm text-primary-color">{maxAmount.maxAmount}</p>
+            <p className="text-sm text-primary-color">{maxAmount.maxAmount}</p>
+            <p className="mr-2 text-sm text-primary-color">{currentAsset?.symbol || ""}</p>
           </div>
 
           {!maxAmount.isLoading && maxAmount.displayAvailable && maxAmount.isAmountFromMax && (

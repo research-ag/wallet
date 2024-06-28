@@ -40,35 +40,6 @@ export const toFullDecimal = (numb: bigint | string, decimal: number, maxDecimal
   }
 };
 
-export const toHoleBigInt = (numb: string, decimal: number | string) => {
-  const numericDecimal = Number(decimal);
-
-  const parts = numb.split(".");
-  if (parts.length === 1 || parts[1] === "") {
-    let addZeros = "";
-    for (let index = 0; index < numericDecimal; index++) {
-      addZeros = "0" + addZeros;
-    }
-    return BigInt(parts[0].replace(/,/g, "") + addZeros);
-  } else {
-    const hole = parts[0].replace(/,/g, "");
-    const dec = parts[1];
-    let addZeros = "";
-    for (let index = 0; index < numericDecimal - dec.length; index++) {
-      addZeros = "0" + addZeros;
-    }
-    return BigInt(hole + dec + addZeros);
-  }
-};
-
-export const getUSDFromToken = (
-  tokenAmount: string | number,
-  marketPrice: string | number,
-  decimal: string | number,
-) => {
-  return ((Number(tokenAmount) * Number(marketPrice)) / Math.pow(10, Number(decimal))).toFixed(2);
-};
-
 /**
  * Remove leading and trailing zeroes from a string representing an amount.
  * 000000.23 -> 0.23
@@ -96,3 +67,36 @@ export function removeZeroesFromAmount(amount: string) {
   else if (decimals === "") return whole;
   else return `${whole}.${decimals}`;
 }
+
+export const toHoleBigInt = (numb: string, decimal: number | string) => {
+  const numericDecimal = Number(decimal);
+
+  const parts = numb.split(".");
+  if (parts.length === 1 || parts[1] === "") {
+    let addZeros = "";
+    for (let index = 0; index < numericDecimal; index++) {
+      addZeros = "0" + addZeros;
+    }
+    return BigInt(parts[0].replace(/,/g, "") + addZeros);
+  } else {
+    const hole = parts[0].replace(/,/g, "");
+    let dec = parts[1];
+    if (dec.length > numericDecimal) dec = dec.slice(0, numericDecimal);
+    let addZeros = "";
+    for (let index = 0; index < numericDecimal - dec.length; index++) {
+      addZeros = "0" + addZeros;
+    }
+    return BigInt(hole + dec + addZeros);
+  }
+};
+
+export const getUSDFromToken = (
+  tokenAmount: string | number,
+  marketPrice: string | number,
+  decimal: string | number,
+) => {
+  return ((Number(tokenAmount) * Number(marketPrice)) / Math.pow(10, Number(decimal))).toFixed(2);
+};
+export const getTokenFromUSD = (usdAmount: string | number, marketPrice: string | number, decimal: string | number) => {
+  return removeZeroesFromAmount((Number(usdAmount) / Number(marketPrice)).toFixed(Number(decimal)));
+};

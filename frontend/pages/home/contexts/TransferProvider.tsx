@@ -34,6 +34,7 @@ export type TransferStateType = {
   toSubAccount: string;
 
   amount: string;
+  usdAmount: string;
   duration: string;
 };
 
@@ -59,6 +60,7 @@ export default function TransferProvider({ children }: TransferProviderProps) {
     toSubAccount: "",
     //
     amount: "",
+    usdAmount: "",
     duration: "",
   });
 
