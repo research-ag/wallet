@@ -38,8 +38,6 @@ export default function AmountDetails() {
     if (transferState.amount === "") return true;
     if (transferState.amount === undefined && transferState.amount === "0") return true;
 
-    const isFromOwnSubAccount = transferState.fromType === TransferFromTypeEnum.own;
-    const isFromService = transferState.fromType === TransferFromTypeEnum.service;
     const isMaxAmountValid = transferState.amount && maxAmount.maxAmount !== "0";
     const isUserAmountValid = transferState.amount !== "0" && transferState.amount !== "";
 
@@ -47,9 +45,7 @@ export default function AmountDetails() {
 
     if (!isUserAmountFormatValid) return false;
 
-    console.log("maxAmount.maxAmount", maxAmount.maxAmount);
-
-    if ((isFromOwnSubAccount || isFromService) && isMaxAmountValid && isUserAmountValid) {
+    if (isMaxAmountValid && isUserAmountValid) {
       const maxAmountBigInt = toHoleBigInt(maxAmount.maxAmount, Number(currentAsset?.decimal || "8"));
 
       const userAmountBigInt = toHoleBigInt(transferState.amount, Number(currentAsset?.decimal || "8"));
