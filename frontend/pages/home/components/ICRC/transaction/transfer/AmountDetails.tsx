@@ -154,9 +154,9 @@ export default function AmountDetails() {
       <div className="flex items-center justify-between w-full">
         <div className="flex flex-row justify-start items-center pl-2">
           <p className="mr-1 text-sm text-primary-color">
-            {`≈ ${currentMarket && showUSD ? transferState.amount || "0" : transferState.usdAmount || "0"} ${
-              currentMarket && showUSD ? currentAsset?.symbol || "" : "USD"
-            }`}
+            {`≈ ${currentMarket && showUSD ? "" : "$"}${
+              currentMarket && showUSD ? transferState.amount || "0" : transferState.usdAmount || "0"
+            } ${currentMarket && showUSD ? currentAsset?.symbol || "" : ""}`}
           </p>
         </div>
 
