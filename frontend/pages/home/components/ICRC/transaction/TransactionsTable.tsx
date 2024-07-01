@@ -118,12 +118,12 @@ export default function TransactionsTable(props: TransactionsTableProps) {
                   onClick={() => onTransactionInpect(transaction)}
                 >
                   <td className="w-[8%]">
-                    {isCurrentSelected && <div className="absolute w-2 h-[4.05rem] left-0 bg-primary-color"></div>}
                     <div className="flex h-full ">
                       <div className="flex items-center justify-center border rounded-md border-BorderColorTwoLight dark:border-BorderColorTwo w-[2rem] h-[2rem]">
                         <img src={srcType} alt={transaction.kind} />
                       </div>
                     </div>
+                    {isCurrentSelected && <div className="absolute w-1 h-[4.1rem] left-0 top-0 bg-primary-color"></div>}
                   </td>
 
                   <td className="w-[60%]">
