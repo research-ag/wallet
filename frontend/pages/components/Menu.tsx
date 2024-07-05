@@ -1,46 +1,67 @@
 import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
-import { CustomButton } from "@components/Button";
-import history from "@pages/history";
-import { CONTACTS, HOME } from "@pages/paths";
-import { AssetHook } from "@pages/home/hooks/assetHook";
-import { useContacts } from "@pages/contacts/hooks/contactsHook";
+import { CustomButton } from "@components/button";
+import { useAppDispatch, useAppSelector } from "@redux/Store";
+import { setRoutingPath } from "@redux/auth/AuthReducer";
+import { RoutingPathEnum } from "@common/const";
 
-const Menu = () => {
+interface MenuProps {
+  noMargin?: boolean;
+  compClass?: string;
+}
+
+const Menu = (props: MenuProps) => {
+  const { noMargin, compClass } = props;
+  const dispatch = useAppDispatch();
+  const { route } = useAppSelector((state) => state.auth);
+  const { contacts } = useAppSelector((state) => state.contacts);
+  const { assets } = useAppSelector((state) => state.asset.list);
+  const { services } = useAppSelector((state) => state.services);
+  const { allowances } = useAppSelector((state) => state.allowance.list);
   const { t } = useTranslation();
-  const { assets, assetLoading } = AssetHook();
-  const { contacts } = useContacts();
 
   const menuList = [
     {
       name: "Assets",
-      path: HOME,
+      path: RoutingPathEnum.Enum.HOME,
       label: `${assets?.length !== 1 ? t("assets") : t("asset")} (${assets?.length})`,
     },
     {
+      name: "Allowances",
+      path: RoutingPathEnum.Enum.ALLOWANCES,
+      label: `${allowances?.length !== 1 ? t("allowance.allowances") : t("allowance.allowances")} (${
+        allowances?.length
+      })`,
+    },
+    {
       name: "Contacts",
-      path: CONTACTS,
+      path: RoutingPathEnum.Enum.CONTACTS,
       label: `${assets?.length !== 1 ? t("contacts") : t("contact")} (${contacts?.length})`,
+    },
+    {
+      name: "Services",
+      path: RoutingPathEnum.Enum.SERVICES,
+      label: `${services?.length !== 1 ? t("services") : t("services")} (${services.length})`,
     },
   ];
 
   return (
     <Fragment>
-      <div className="flex flex-row gap-3 justify-start items-center w-full">
+      <div className={`flex flex-row items-center justify-start gap-3 ${compClass ? compClass : ""}`}>
         {menuList.map((menu, k) => (
           <CustomButton
             key={k}
             size={"small"}
             intent={"noBG"}
             border={"underline"}
-            className="flex flex-row justify-start items-center mb-4"
+            className={`flex flex-row items-center justify-start ${noMargin ? "" : "mb-4"}`}
             onClick={() => {
               handleMenuClic(menu.path);
             }}
           >
             <p
               className={`!font-normal  mr-2 ${
-                window.location.pathname !== menu.path
+                route !== menu.path
                   ? " text-PrimaryTextColorLight/60 dark:text-PrimaryTextColor/60"
                   : "border-b border-SelectRowColor"
               }`}
@@ -49,17 +70,12 @@ const Menu = () => {
             </p>
           </CustomButton>
         ))}
-        {assetLoading && (
-          <div className=" mt-[-1rem] inline-block w-4 h-4 after:block after:w-4 after:h-4 after:rounded-[50%] after:border-[0.2rem] after:border-t-SelectRowColor after:border-b-SelectRowColor after:border-r-transparent after:border-l-transparent lds-dual-ring"></div>
-        )}
       </div>
     </Fragment>
   );
 
   function handleMenuClic(path: string) {
-    if (window.location.pathname !== path) {
-      history.push(path);
-    }
+    dispatch(setRoutingPath(path));
   }
 };
 

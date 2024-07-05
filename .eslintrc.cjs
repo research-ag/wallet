@@ -1,5 +1,11 @@
 /* eslint-disable no-undef */
 module.exports = {
+  env: {
+    node: true,
+    commonjs: true,
+    browser: true,
+    es6: true,
+  },
   extends: [
     // By extending from a plugin config, we can get recommended rules without having to add them manually.
     "eslint:recommended",
@@ -42,7 +48,6 @@ module.exports = {
     "no-console": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
-
     "@typescript-eslint/no-unused-vars": [
       "warn",
       {
@@ -73,7 +78,7 @@ module.exports = {
     quotes: ["warn", "double"],
     "no-duplicate-imports": "error",
     "react/jsx-key": "warn",
-    "jsx-a11y/no-autofocus": "warn",
+    "jsx-a11y/no-autofocus": "off",
     "@typescript-eslint/no-empty-interface": "warn",
     "no-self-assign": "warn",
     "no-var": "warn",

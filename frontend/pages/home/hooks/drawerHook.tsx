@@ -1,7 +1,7 @@
 import { useAppDispatch } from "@redux/Store";
 import { useEffect, useState } from "react";
 import { setBlur } from "@redux/auth/AuthReducer";
-import { DrawerOption, DrawerOptionEnum } from "@/const";
+import { DrawerOption, DrawerOptionEnum } from "@/common/const";
 
 export const DrawerHook = () => {
   const dispatch = useAppDispatch();

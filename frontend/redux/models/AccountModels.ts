@@ -1,4 +1,5 @@
-import { OperationStatusEnum, OperationTypeEnum, TransactionTypeEnum } from "@/const";
+import { SupportedStandardEnum } from "@/@types/icrc";
+import { OperationStatusEnum, OperationTypeEnum, TransactionTypeEnum } from "@/common/const";
 import { z } from "zod";
 
 // Models
@@ -21,22 +22,24 @@ const ICPSubAccount = z.object({
 });
 
 export type ICPSubAccount = z.infer<typeof ICPSubAccount>;
-
-const Asset = z.object({
+export const AssetSchema = z.object({
+  sortIndex: z.number(),
   logo: z.string().optional(),
+  // INFO: name and symbol are custom from user
   name: z.string(),
   symbol: z.string(),
-  subAccounts: z.array(SubAccount),
   address: z.string(),
   decimal: z.string(),
   shortDecimal: z.string(),
-  sort_index: z.number(),
   index: z.string().optional(),
+  // INFO: tokenName and tokenSymbol are default
   tokenName: z.string(),
   tokenSymbol: z.string(),
+  subAccounts: z.array(SubAccount),
+  supportedStandards: z.array(SupportedStandardEnum),
 });
 
-export type Asset = z.infer<typeof Asset>;
+export type Asset = z.infer<typeof AssetSchema>;
 
 const Transaction = z.object({
   idx: z.string().optional(),
@@ -110,5 +113,9 @@ const AssetToAdd = z.object({
   symbol: z.string(),
   tokenSymbol: z.string(),
   logo: z.string().optional(),
+  address: z.string(),
+  decimal: z.string(),
+  shortDecimal: z.string(),
+  supportedStandards: z.array(SupportedStandardEnum),
 });
 export type AssetToAdd = z.infer<typeof AssetToAdd>;

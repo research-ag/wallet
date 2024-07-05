@@ -1,0 +1,91 @@
+type WalletDatabase = service {
+  doesStorageExist : () -> (bool) query;
+  dump : () -> (
+    vec record {
+      principal;
+      record {
+        vec opt AssetDocument;
+        vec opt ContactDocument;
+        vec opt AllowanceDocument;
+      };
+    }
+  ) query;
+  pullAllowances : (nat32, opt text, nat) -> (vec AllowanceDocument) query;
+  pullAssets : (nat32, opt text, nat) -> (vec AssetDocument) query;
+  pullContacts : (nat32, opt text, nat) -> (vec ContactDocument) query;
+  pullServices : (nat32, opt text, nat) -> (vec ServiceDocument) query;
+  pushAllowances : (vec AllowanceDocument) -> (vec AllowanceDocument);
+  pushAssets : (vec AssetDocument) -> (vec AssetDocument);
+  pushContacts : (vec ContactDocument) -> (vec ContactDocument);
+  pushServices : (vec ServiceDocument) -> (vec ServiceDocument);
+};
+type ContactDocument = record {
+  accountIdentifier : text;
+  accounts : vec record {
+    name : text;
+    subaccount : text;
+    subaccountId : text;
+    tokenSymbol : text;
+  };
+  deleted : bool;
+  name : text;
+  "principal" : text;
+  updatedAt : nat32;
+};
+type AssetDocument = record {
+  address : text;
+  decimal : text;
+  deleted : bool;
+  index : text;
+  logo : text;
+  name : text;
+  shortDecimal : text;
+  sortIndex : nat32;
+  subAccounts : vec record {
+    address : text;
+    amount : text;
+    currency_amount : text;
+    decimal : nat32;
+    name : text;
+    sub_account_id : text;
+    symbol : text;
+    transaction_fee : text;
+  };
+  supportedStandards : vec text;
+  symbol : text;
+  tokenName : text;
+  tokenSymbol : text;
+  updatedAt : nat32;
+};
+type AllowanceDocument = record {
+  asset : record {
+    address : text;
+    decimal : text;
+    logo : text;
+    name : text;
+    supportedStandards : vec text;
+    symbol : text;
+    tokenName : text;
+    tokenSymbol : text;
+  };
+  deleted : bool;
+  id : text;
+  spender : text;
+  subAccountId : text;
+  updatedAt : nat32;
+};
+type ServiceDocument = record {
+  name : text;
+  "principal" : text;
+  assets : vec record {
+    tokenSymbol : text;
+    logo : text;
+    tokenName : text;
+    decimal : text;
+    shortDecimal : text;
+    "principal" : text;
+  };
+  updatedAt : nat32;
+  deleted : bool;
+};
+service : () -> WalletDatabase;

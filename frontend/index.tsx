@@ -1,15 +1,16 @@
-import { Suspense } from "react";
+import React from "react";
 import { createRoot } from "react-dom/client";
+import "@/i18n";
+
 import "./index.css";
+
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
-const container = document.getElementById("root");
-const root = createRoot(container!); // createRoot(container!) if you use TypeScript
-root.render(
-  <Suspense fallback={null}>
+createRoot(document.getElementById("root")!).render(
+  <React.StrictMode>
     <App />
-  </Suspense>,
+  </React.StrictMode>,
 );
 
 // If you want to start measuring performance in your app, pass a function

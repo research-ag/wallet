@@ -1,70 +1,78 @@
-import { lazy, useEffect } from "react";
+import { lazy } from "react";
 import { Redirect, Router, Switch } from "react-router-dom";
-import Login from "./login";
 
-import { CONTACTS, HOME, LOGIN } from "./paths";
 import LayoutComponent from "./components/LayoutComponent";
 import history from "./history";
 import PrivateRoute from "./components/privateRoute";
 import { useAppSelector } from "@redux/Store";
-import { ThemeHook } from "./hooks/themeHook";
 import Loader from "./components/Loader";
-import { ThemesEnum } from "@/const";
-const Home = lazy(() => import("./home"));
-const Contacts = lazy(() => import("./contacts"));
+import WorkersWrapper from "@/wrappers/WorkersWrapper";
+import { RoutingPathEnum } from "@common/const";
+import TransferProvider from "./home/contexts/TransferProvider";
+
+const Login = lazy(() => import("@/pages/login"));
+const Home = lazy(() => import("@/pages/home"));
+const Contacts = lazy(() => import("@/pages/contacts"));
+const Allowances = lazy(() => import("@/pages/allowances"));
+const Services = lazy(() => import("@/pages/services"));
 
 const SwitchRoute = () => {
-  const { authLoading, superAdmin, authenticated } = useAppSelector((state) => state.auth);
-  const { blur } = useAppSelector((state) => state.auth);
-  const { changeTheme } = ThemeHook();
-  useEffect(() => {
-    if (
-      localStorage.theme === ThemesEnum.enum.dark ||
-      (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches)
-    ) {
-      document.documentElement.classList.add(ThemesEnum.enum.dark);
-      localStorage.theme = ThemesEnum.enum.dark;
-      changeTheme(ThemesEnum.enum.dark);
-    } else {
-      document.documentElement.classList.remove(ThemesEnum.enum.dark);
-      localStorage.theme = ThemesEnum.enum.light;
-      changeTheme(ThemesEnum.enum.light);
-    }
-  }, []);
+  const { authLoading, superAdmin, authenticated, blur, route } = useAppSelector((state) => state.auth);
 
-  return authLoading ? (
-    <Loader></Loader>
-  ) : (
+  if (authLoading) return <Loader />;
+
+  return (
     <>
       {blur && <div className="fixed w-full h-full bg-black/50 z-[900]"></div>}
       <Router history={history}>
         {/* NORMAL USERS */}
         {!superAdmin && authenticated && (
-          <LayoutComponent role={1} history={history}>
-            <Switch>
-              <PrivateRoute exact path={HOME} authenticated={authenticated} allowByRole={true} Component={Home} />
-              <PrivateRoute
-                exact
-                path={CONTACTS}
-                authenticated={authenticated}
-                allowByRole={true}
-                Component={Contacts}
-              />
-              <Redirect to={HOME} />
-            </Switch>
-          </LayoutComponent>
+          <WorkersWrapper>
+            <TransferProvider>
+              {/* eslint-disable-next-line jsx-a11y/aria-role */}
+              <LayoutComponent role={1} history={history} isLoginPage={false}>
+                <Switch>
+                  <PrivateRoute
+                    exact
+                    path="/"
+                    authenticated={authenticated}
+                    allowByRole={true}
+                    Component={getComponentAuth()}
+                  />
+                  <Redirect to={"/"} />
+                </Switch>
+              </LayoutComponent>
+            </TransferProvider>
+          </WorkersWrapper>
         )}
 
         {/*  LOGINS NO AUTH */}
         {!superAdmin && !authenticated && (
-          <Switch>
-            <PrivateRoute exact path={LOGIN} authenticated={authenticated} allowByRole={true} Component={Login} />
-            <Redirect to={LOGIN} />
-          </Switch>
+          // eslint-disable-next-line jsx-a11y/aria-role
+          <LayoutComponent role={1} history={history} isLoginPage={true}>
+            <Switch>
+              <PrivateRoute exact path={"/"} authenticated={authenticated} allowByRole={true} Component={Login} />
+              <Redirect to={"/"} />
+            </Switch>
+          </LayoutComponent>
         )}
       </Router>
     </>
   );
+  function getComponentAuth() {
+    switch (route) {
+      case RoutingPathEnum.Enum.CONTACTS:
+        return Contacts;
+      case RoutingPathEnum.Enum.HOME:
+        return Home;
+      case RoutingPathEnum.Enum.ALLOWANCES:
+        return Allowances;
+      case RoutingPathEnum.Enum.SERVICES:
+        return Services;
+      default:
+        return Home;
+    }
+  }
 };
 
 export default SwitchRoute;

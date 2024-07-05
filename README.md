@@ -11,6 +11,8 @@ ICRC-1 Wallet is an application designed for Internet Computer Network. This pro
 ## Table of Contents
 
 - [Getting Started](#getting-started)
+- [Local deployment](#local-deployment)
+- [IC deployment](#ic-deployment)
 - [Features](#features)
 - [Technologies](#technologies)
 - [Usage](#usage)
@@ -36,40 +38,67 @@ To get started with ICRC-1 Wallet, follow these steps:
 
    ```
    npm install
+   npm i -g ic-mops
    ```
 
-4. Create .env file in the root of the project:
+## Local deployment
+
+1. Create canisters on local replica and save the ID shown in the output
 
    ```
-   NODE_ENV=PRODUCTION
-   # Ledger canister for ICP
-   VITE_ICP_LEDGER_CANISTER_ID="ryjl3-tyaaa-aaaaa-aaaba-cai"
-   # Transaction history API for ICP
-   VITE_ROSETTA_URL=https://rosetta-api.internetcomputer.org
-   # Blockchain ID for the Network to use
-   VITE_NET_ID_BLOCKCHAIN="Internet Computer"
-   # Network ID for the Network to use
-   VITE_NET_ID_NETWORK="00000000000000020101"
-   # HOST for login with Internet Identity
-   VITE_AGGENT_HOST=https://icp0.io
-   # HOST for login with NFID
-   VITE_AGGENT_NFID_HOST=https://nfid.one
-   # APP logo for loging
-   VITE_APP_LOGO=https://bv3c6-6aaaa-aaaap-abejq-cai.icp0.io/assets/hpl-wallet-f3061133.svg
-   # APP NAME
-   VITE_APP_NAME=HPL
-   # Market price in USD for ICRC1 cryptocurrencies
-   VITE_APP_TOKEN_MARKET=https://nftpkg.com/api/icpcoins/list
-
+   dfx start --clean --background
+   dfx canister create --all
    ```
 
-5. Run the development server:
+2. Modify .env file in the root of the project with the previously saved IDs:
 
-```
-npm run dev
-```
+   ```
+   # Canister id of RXDB replica canister
+   VITE_DB_CANISTER_ID=[db canister ID]
+   VITE_DB_CANISTER_HOST=http://localhost:8000
+   # SIWE canister id
+   CANISTER_ID_IC_SIWE_PROVIDER=[ic_siwe_provider canister ID]
+   ```
 
-6. Open your web browser and visit `http://localhost:3000` to access the ICRC-1 Wallet application.
+3. Build canisters into the local replica
+
+   ```
+   make deploy-local
+   ```
+
+   Frontend will be deployed under the canister name "assets"
+
+4. For development server
+
+   ```
+   npm run dev
+   ```
+
+## IC deployment
+
+1. Create canisters on IC Blockchain and save the ID shown in the output
+
+   ```
+   dfx canister --ic create --all
+   ```
+
+2. Modify .env file in the root of the project with the previously saved IDs:
+
+   ```
+   # Canister id of RXDB replica canister
+   VITE_DB_CANISTER_ID=[db canister ID]
+   VITE_DB_CANISTER_HOST=https://identity.ic0.app
+   # SIWE canister id
+   CANISTER_ID_IC_SIWE_PROVIDER=[ic_siwe_provider canister ID]
+   ```
+
+3. Build canisters into the local replica
+
+   ```
+   make deploy
+   ```
+
+   Frontend will be deployed under the canister name "assets"
 
 ## Features
 

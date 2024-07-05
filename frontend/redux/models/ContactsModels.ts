@@ -1,55 +1,35 @@
 import { z } from "zod";
 
-// Models
+export const contactAllowanceSchema = z.object({
+  expiration: z.string(),
+  amount: z.string(),
+});
 
-const SubAccountContact = z.object({
+export type ContactAllowance = z.infer<typeof contactAllowanceSchema>;
+
+export const contactAccountSchema = z.object({
   name: z.string(),
-  subaccount_index: z.string(),
-});
-
-export type SubAccountContact = z.infer<typeof SubAccountContact>;
-
-const SubAccountContactErr = z.object({
-  name: z.boolean(),
-  subaccount_index: z.boolean(),
-});
-
-export type SubAccountContactErr = z.infer<typeof SubAccountContactErr>;
-
-const NewContactSubAccount = z.object({
-  principal: z.string(),
-  name: z.string(),
+  subaccount: z.string(),
+  subaccountId: z.string(),
   tokenSymbol: z.string(),
-  symbol: z.string(),
-  subaccIdx: z.string(),
-  subaccName: z.string(),
-  totalAssets: z.number(),
-  TotalSub: z.number(),
+  allowance: contactAllowanceSchema.optional(), // Allow optional allowance
 });
 
-export type NewContactSubAccount = z.infer<typeof NewContactSubAccount>;
+export type ContactAccount = z.infer<typeof contactAccountSchema>;
 
-const AssetContact = z.object({
-  symbol: z.string(),
-  tokenSymbol: z.string(),
-  logo: z.string().optional(),
-  subaccounts: z.array(SubAccountContact),
-});
-
-export type AssetContact = z.infer<typeof AssetContact>;
-
-const Contact = z.object({
+export const contactSchema = z.object({
   name: z.string(),
   principal: z.string(),
-  assets: z.array(AssetContact),
-  accountIdentier: z.string().optional(),
+  accountIdentifier: z.string(),
+  accounts: z.array(contactAccountSchema),
 });
 
-export type Contact = z.infer<typeof Contact>;
+export type Contact = z.infer<typeof contactSchema>;
 
-const ContactErr = z.object({
-  name: z.boolean(),
-  principal: z.boolean(),
-});
-
-export type ContactErr = z.infer<typeof ContactErr>;
+export const defaultContactSubAccount: ContactAccount = {
+  name: "",
+  subaccountId: "",
+  subaccount: "",
+  tokenSymbol: "",
+  allowance: undefined,
+};

@@ -1,9 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
 
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
-import RootReducer from "./RootReducer";
+import RootReducer from "@/redux/RootReducer";
 
 const store = configureStore({
+  devTools: true,
   reducer: RootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

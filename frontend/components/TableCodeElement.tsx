@@ -1,5 +1,6 @@
-import { AssetSymbolEnum, SpecialTxTypeEnum } from "@/const";
-import { getAddress, shortAddress } from "@/utils";
+import { AssetSymbolEnum, SpecialTxTypeEnum } from "@/common/const";
+import { getAddress, shortAddress } from "@common/utils/icrc";
+import { middleTruncation } from "@common/utils/strings";
 import { AccountHook } from "@pages/hooks/accountHook";
 import { useAppSelector } from "@redux/Store";
 import { Transaction } from "@redux/models/AccountModels";
@@ -14,11 +15,15 @@ interface CodeElementProps {
 const CodeElement = ({ tx }: CodeElementProps) => {
   const { t } = useTranslation();
 
-  const accId = clsx("text-SelectRowColor opacity-60");
+  const accId = clsx("text-primary-color/60");
   const { authClient } = AccountHook();
 
-  const { selectedAccount, ICPSubaccounts, assets } = useAppSelector((state) => state.asset);
+  const { ICPSubaccounts } = useAppSelector((state) => state.asset);
+  const { assets } = useAppSelector((state) => state.asset.list);
+  const { selectedAccount } = useAppSelector((state) => state.asset.helper);
+
   const { contacts } = useAppSelector((state) => state.contacts);
+  const { services } = useAppSelector((state) => state.services);
 
   const isTo = getAddress(
     tx.type,
@@ -57,14 +62,21 @@ const CodeElement = ({ tx }: CodeElementProps) => {
     if (contact) {
       hasContactName = true;
       contactName = contact.name;
-      const symbolAsst = contact.assets.find((asst) => asst.tokenSymbol === tx?.symbol)?.subaccounts;
+
+      const symbolAsst = contact.accounts.filter((acc) => acc.tokenSymbol === tx.symbol);
       if (symbolAsst && symbolAsst?.length > 0) {
         const subAcc = isTo ? tx.toSub || "0" : tx.fromSub || "0";
-        const subNameAux = symbolAsst.find((sa) => `0x${sa.subaccount_index}` === subAcc)?.name;
+        const subNameAux = symbolAsst.find((sa) => `0x${sa.subaccountId}` === subAcc)?.name;
         if (subNameAux) {
           hasSubName = true;
           subName = subNameAux;
         }
+      }
+    } else {
+      const service = services.find((cntc) => cntc.principal === (isTo ? tx.to || "" : tx.from || ""));
+      if (service) {
+        hasContactName = true;
+        contactName = service.name;
       }
     }
   } else {
@@ -83,7 +95,7 @@ const CodeElement = ({ tx }: CodeElementProps) => {
       }
     }
 
-    const contact = contacts.find((cntc) => cntc.accountIdentier === (isTo ? tx.to || "" : tx.from || ""));
+    const contact = contacts.find((cntc) => cntc.accountIdentifier === (isTo ? tx.to || "" : tx.from || ""));
     if (contact) {
       hasContactName = true;
       contactName = contact.name;
@@ -130,26 +142,14 @@ const CodeElement = ({ tx }: CodeElementProps) => {
           {hasSub &&
             (subName.trim() === "" ? (
               <p className={`${accId} text-left break-words max-w-[20.5rem]`}>
-                {`${hasSubName ? subName + " -" : ""} ${
-                  isICPWithSub
-                    ? ICPSubaccounts.find((sub) => sub.legacy === (isTo ? tx.to : tx.from))?.sub_account_id || "0x0"
-                    : isTo
-                    ? tx.toSub || "0"
-                    : tx.fromSub || "0"
-                } `}
+                {`${hasSubName ? subName + " -" : ""} ${getTitle()} `}
               </p>
             ) : (
               <p
                 className={`${accId} text-left break-words max-w-[20.5rem]`}
                 data-toggle="popover"
                 data-trigger="hover"
-                title={
-                  isICPWithSub
-                    ? ICPSubaccounts.find((sub) => sub.legacy === (isTo ? tx.to : tx.from))?.sub_account_id || "0x0"
-                    : isTo
-                    ? tx.toSub || "0"
-                    : tx.fromSub || "0"
-                }
+                title={getTitle()}
               >
                 {subName}
               </p>
@@ -158,6 +158,18 @@ const CodeElement = ({ tx }: CodeElementProps) => {
       )}
     </Fragment>
   );
+
+  function getTitle() {
+    return middleTruncation(
+      isICPWithSub
+        ? ICPSubaccounts.find((sub) => sub.legacy === (isTo ? tx.to : tx.from))?.sub_account_id || "0x0"
+        : isTo
+        ? tx.toSub || "0"
+        : tx.fromSub || "0",
+      6,
+      4,
+    );
+  }
 };
 
 export default CodeElement;

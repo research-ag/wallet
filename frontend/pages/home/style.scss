@@ -1,1 +1,143 @@
 @import "../../App.scss";
+
+$primary-color: #151331;
+$secondary-color: #ffffff;
+$light-gray: #bfbfbf;
+$disabled-text-color: #ffffff5f;
+$icon-gray: #d5d5d5;
+$light-text-color: #1b183f;
+$light-gray-icon: #878787;
+$light-background: #ffffff;
+$light-mask: #f8f7fa;
+$accent-color: #63a5e8;
+$border-color: #68658b;
+
+.date-picker {
+  width: 60%;
+  fieldset {
+    border-color: $border-color !important;
+  }
+  input {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    font-size: 0.75rem;
+    color: $secondary-color;
+  }
+  input.Mui-disabled {
+    -webkit-text-fill-color: $disabled-text-color !important;
+  }
+  svg {
+    path {
+      fill: $icon-gray;
+    }
+  }
+}
+
+.date-picker-light {
+  fieldset {
+    border-color: $light-gray !important;
+  }
+  input {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    font-size: 0.75rem;
+    color: $light-text-color !important;
+  }
+  svg {
+    path {
+      fill: $light-gray-icon !important;
+    }
+  }
+}
+
+.MuiDateCalendar-root {
+  background: $primary-color;
+  color: $secondary-color;
+  svg {
+    path {
+      fill: $secondary-color;
+    }
+  }
+  button {
+    color: $secondary-color;
+  }
+  span {
+    color: $secondary-color;
+  }
+}
+
+.MuiTimeClock-root {
+  background: $primary-color;
+  color: $secondary-color;
+  svg {
+    path {
+      fill: $secondary-color;
+    }
+  }
+  button {
+    color: $secondary-color;
+  }
+  span {
+    color: $secondary-color;
+  }
+  .MuiClock-squareMask {
+    background: darken($primary-color, 4%);
+  }
+}
+
+.light {
+  .MuiDateCalendar-root {
+    background: $light-background;
+    color: $primary-color;
+    svg {
+      path {
+        fill: $primary-color;
+      }
+    }
+    button {
+      color: $primary-color;
+    }
+    span {
+      color: $primary-color;
+    }
+  }
+  .MuiTimeClock-root {
+    background: $light-background;
+    color: $primary-color;
+    svg {
+      path {
+        fill: $primary-color;
+      }
+    }
+    button {
+      color: $primary-color;
+    }
+    span {
+      color: $primary-color;
+    }
+    .MuiClock-squareMask {
+      background: $light-mask;
+    }
+  }
+  .MuiClockPointer-root {
+    background-color: $accent-color;
+  }
+  .MuiClockPointer-thumb {
+    border: 16px solid $accent-color;
+    background-color: $accent-color;
+  }
+  .css-qvwuqd-MuiButtonBase-root-MuiIconButton-root-MuiClock-amButton {
+    background-color: $accent-color;
+  }
+  .css-1wq5v3b-MuiButtonBase-root-MuiIconButton-root-MuiClock-pmButton {
+    background-color: $accent-color;
+  }
+  .MuiDayCalendar-monthContainer {
+    .Mui-selected {
+      background-color: $accent-color;
+    }
+    .Mui-selected:focus {
+      background-color: $accent-color;
+    }
+  }
+}

@@ -9,6 +9,8 @@ import { ReactComponent as ICRC1LogoDark } from "@/assets/svg/files/logo_ICRC-1-
 import { ReactComponent as SunIcon } from "@/assets/svg/files/sun-icon.svg";
 import { ReactComponent as WalletIcon } from "@/assets/svg/files/wallet-icon.svg";
 import { ReactComponent as RefreshIcon } from "@/assets/svg/files/refresh-ccw.svg";
+import icUrl from "@/assets/img/icp-logo.png";
+import ethUrl from "@assets/svg/files/ethereum-icon.svg";
 //
 import { Fragment, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -18,26 +20,33 @@ import { LanguageHook } from "@hooks/languageHook";
 import { clsx } from "clsx";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { AccountHook } from "@hooks/accountHook";
-import { shortAddress } from "@/utils";
 import { logout } from "@redux/CheckAuth";
-import Modal from "@components/Modal";
+import { BasicModal } from "@components/modal";
 import ThemeModal from "./themeModal";
-import { ThemesEnum } from "@/const";
-import { useAppDispatch } from "@redux/Store";
-import { setLoading } from "@redux/assets/AssetReducer";
-import { CustomCopy } from "@components/CopyTooltip";
-import { AssetHook } from "@pages/home/hooks/assetHook";
+import { ThemesEnum } from "@/common/const";
+import { CustomCopy } from "@components/tooltip";
+import { useAppSelector } from "@redux/Store";
+import { db } from "@/database/db";
+import DbLocationModal from "./dbLocationModal";
+import { useSiweIdentity } from "ic-use-siwe-identity";
+import { useAccount } from "wagmi";
+import Pill from "./Pill";
+import getTotalAmountInCurrency from "@pages/helpers/getTotalAmountInCurrency";
+import reloadBallance from "@pages/helpers/reloadBalance";
+import WatchOnlyPill from "./WatchOnlyPill";
 
-const TopBarComponent = () => {
+const TopBarComponent = ({ isLoginPage }: { isLoginPage: boolean }) => {
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
   const { onLanguageChange } = LanguageHook();
-
+  const { watchOnlyMode } = useAppSelector((state) => state.auth);
+  const { isAppDataFreshing } = useAppSelector((state) => state.common);
   const { theme, themeOpen, setThemeOpen } = ThemeHook();
   const { authClient } = AccountHook();
-  const { getTotalAmountInCurrency, reloadBallance, assetLoading } = AssetHook();
 
   const [langOpen, setLangOpen] = useState(false);
+  const [dbLocationOpen, setDbLocationOpen] = useState(false);
+  const { identity, clear: clearSiweIdentity } = useSiweIdentity();
+  const { address } = useAccount();
 
   const langOpts = [
     { abrev: "en", name: "english", flag: <UsaFlagIcon className={flag} /> },
@@ -49,30 +58,37 @@ const TopBarComponent = () => {
   return (
     <Fragment>
       <div className="flex flex-row justify-between min-h-[4.5rem] w-full bg-PrimaryColorLight dark:bg-PrimaryColor text-PrimaryTextColorLight dark:text-PrimaryTextColor border-b border-BorderColorFourthLight dark:border-BorderColorFourth">
-        <div className="flex flex-row justify-start items-center pl-9 gap-24 text-md">
+        <div className="flex flex-row items-center justify-start gap-24 pl-9 text-md">
           {theme === ThemesEnum.enum.dark ? (
             <ICRC1LogoDark className="max-w-[7rem] h-auto" />
           ) : (
             <ICRC1Logo className="max-w-[7rem] h-auto" />
           )}
-          <div className="flex flex-row justify-start items-center gap-3">
-            <p className="opacity-50">{shortAddress(authClient, 12, 10)}</p>
-            <CustomCopy size={"small"} copyText={authClient} />
-            <RefreshIcon
-              className={`h-4 w-4 cursor-pointer fill-PrimaryTextColorLight dark:fill-PrimaryTextColor ${
-                assetLoading ? "do-spin" : ""
-              }`}
-              onClick={handleReloadButton}
-            />
-          </div>
+          {!isLoginPage && (
+            <div className="flex flex-row items-center justify-start gap-3">
+              {identity && <Pill text={(address as string) || ""} start={6} end={4} icon={ethUrl} />}
+              {!watchOnlyMode && <Pill text={authClient} start={12} end={10} icon={icUrl} />}
+              {watchOnlyMode && <WatchOnlyPill text={authClient} icon={icUrl} />}
+              <CustomCopy size={"small"} copyText={authClient} />
+              <RefreshIcon
+                className={`h-4 w-4 cursor-pointer fill-PrimaryTextColorLight dark:fill-PrimaryTextColor ${
+                  isAppDataFreshing ? "do-spin" : ""
+                }`}
+                onClick={handleReloadButton}
+              />
+              {watchOnlyMode && <p className="opacity-50">{t("watchOnlyMode.title")}</p>}
+            </div>
+          )}
         </div>
-        <div className="flex flex-row justify-start items-center pr-9 gap-9">
-          <div className="flex flex-row justify-start items-center gap-2 text-md">
-            <WalletIcon className="fill-SvgColor dark:fill-SvgColor max-w-[1.5rem] h-auto"></WalletIcon>
-            <p className="opacity-70">Total Balance:</p>
-            <p className="font-medium">{`$${getTotalAmountInCurrency().toFixed(2)}`}</p>
-            <p className="opacity-70">USD</p>
-          </div>
+        <div className="flex flex-row items-center justify-start pr-9 gap-9">
+          {!isLoginPage && (
+            <div className="flex flex-row items-center justify-start gap-2 text-md">
+              <WalletIcon className="fill-SvgColor dark:fill-SvgColor max-w-[1.5rem] h-auto"></WalletIcon>
+              <p className="opacity-70">{t("total.balance")}:</p>
+              <p className="font-medium">{`$${getTotalAmountInCurrency().toFixed(2)}`}</p>
+              <p className="opacity-70">USD</p>
+            </div>
+          )}
           <DropdownMenu.Root
             modal={false}
             onOpenChange={() => {
@@ -89,17 +105,20 @@ const TopBarComponent = () => {
                 className="text-lg bg-PrimaryColorLight rounded-lg dark:bg-SecondaryColor mr-4 z-[999] text-PrimaryTextColorLight dark:text-PrimaryTextColor shadow-sm shadow-BorderColorTwoLight dark:shadow-BorderColorTwo"
                 sideOffset={5}
               >
-                <DropdownMenu.Item
-                  className={clsx(gearPopItem, "!justify-between", "rounded-t-lg")}
-                  onSelect={(e: Event) => {
-                    e.preventDefault();
-                    setLangOpen(!langOpen);
-                  }}
-                >
-                  <p>{t("language.word")}</p>
-                  <ChevronIcon className={`fill-SvgColor dark:fill-SvgColor ${langOpen ? "" : "-rotate-90"}`} />
-                </DropdownMenu.Item>
-                {langOpen &&
+                {!isLoginPage && (
+                  <DropdownMenu.Item
+                    className={clsx(gearPopItem, "!justify-between", "rounded-t-lg")}
+                    onSelect={(e: Event) => {
+                      e.preventDefault();
+                      setLangOpen(!langOpen);
+                    }}
+                  >
+                    <p>{t("language.word")}</p>
+                    <ChevronIcon className={`fill-SvgColor dark:fill-SvgColor ${langOpen ? "" : "-rotate-90"}`} />
+                  </DropdownMenu.Item>
+                )}
+                {!isLoginPage &&
+                  langOpen &&
                   langOpts.map((lOpt, k) => {
                     return (
                       <DropdownMenu.Item
@@ -123,37 +142,53 @@ const TopBarComponent = () => {
                 >
                   <p>{t("themes")}</p>
                 </DropdownMenu.Item>
-                <DropdownMenu.Item
-                  className={clsx(gearPopItem, "!justify-between", "rounded-b-lg")}
-                  onSelect={() => {
-                    logout();
-                  }}
-                >
-                  <p className="text-LockColor">{t("lock")}</p>
-                </DropdownMenu.Item>
+                {isLoginPage && (
+                  <DropdownMenu.Item
+                    className={clsx(gearPopItem, "!justify-between", "rounded-b-lg")}
+                    onSelect={() => {
+                      setDbLocationOpen(true);
+                    }}
+                  >
+                    <p>{t("database.location")}</p>
+                  </DropdownMenu.Item>
+                )}
+                {!isLoginPage && (
+                  <DropdownMenu.Item
+                    className={clsx(gearPopItem, "!justify-between", "rounded-b-lg")}
+                    onSelect={() => {
+                      clearSiweIdentity();
+                      logout();
+                    }}
+                  >
+                    <p className="text-LockColor">{t("lock")}</p>
+                  </DropdownMenu.Item>
+                )}
               </DropdownMenu.Content>
             </DropdownMenu.Portal>
           </DropdownMenu.Root>
         </div>
       </div>
-      <Modal open={themeOpen} top="top-[35%]">
+      <BasicModal open={themeOpen} top="top-[35%]" border="dark:border-2 dark:border-gray-color-6">
         <ThemeModal setOpen={setThemeOpen} />
-      </Modal>
+      </BasicModal>
+      <BasicModal open={dbLocationOpen} top="top-[35%]" border="dark:border-2 dark:border-gray-color-6">
+        <DbLocationModal setOpen={setDbLocationOpen} />
+      </BasicModal>
     </Fragment>
   );
 
-  function handleReloadButton() {
-    dispatch(setLoading(true));
-    reloadBallance();
+  async function handleReloadButton() {
+    await reloadBallance();
   }
 
   function changeLanguage(lang: string) {
     onLanguageChange(lang);
     i18n.changeLanguage(lang, () => {
-      localStorage.setItem("language", lang);
+      db().setLanguage(lang);
     });
   }
 };
+
 export default TopBarComponent;
 
 // Tailwind CSS constants

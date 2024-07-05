@@ -8,13 +8,15 @@ pnpm-debug.log*
 lerna-debug.log*
 
 .dfx
+.mops
 node_modules
 dist
 dist-ssr
 *.local
+Makefile.prod
 
 # Editor directories and files
-.vscode/*
+.vscode
 !.vscode/extensions.json
 .idea
 .DS_Store
@@ -24,3 +26,4 @@ dist-ssr
 *.sln
 *.sw?
 canister_ids.json
+src/declarations

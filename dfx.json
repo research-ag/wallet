@@ -1,4 +1,5 @@
 {
+  "dfx": "0.20.1",
   "canisters": {
     "assets": {
       "frontend": {
@@ -6,11 +7,28 @@
       },
       "source": ["dist/"],
       "type": "assets"
+    },
+    "db": {
+      "main": "canisters/database/main.mo",
+      "type": "motoko",
+      "optimize": "cycles",
+      "declarations": {
+        "output": "frontend/candid/database"
+      }
+    },
+    "ic_siwe_provider": {
+      "type": "custom",
+      "candid": "https://github.com/kristoferlund/ic-siwe/releases/download/v0.0.6/ic_siwe_provider.did",
+      "wasm": "https://github.com/kristoferlund/ic-siwe/releases/download/v0.0.6/ic_siwe_provider.wasm.gz",
+      "declarations": {
+        "output": "frontend/candid/ic_siwe_provider"
+      }
     }
   },
   "defaults": {
     "build": {
-      "packtool": ""
+      "args": "",
+      "packtool": "mops sources"
     }
   },
   "networks": {

@@ -1,45 +1,60 @@
 import { HttpAgent } from "@dfinity/agent";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { Asset } from "@redux/models/AccountModels";
-import { ThemesEnum } from "@/const";
+import { RoutingPath, RoutingPathEnum, ThemesEnum } from "@/common/const";
 import { Principal } from "@dfinity/principal";
+import { DB_Type } from "@/database/db";
+import { WatchOnlyItem } from "@pages/login/components/WatchOnlyInput";
 
 const defaultValue: any = {};
 interface AuthState {
+  route: RoutingPath;
   authLoading: boolean;
   authenticated: boolean;
   debugMode: boolean;
   superAdmin: boolean;
+  watchOnlyMode: boolean;
   authClient: string;
   assetList: Asset[];
   theme: string;
   blur: boolean;
-  disclaimer: boolean;
-
+  dbLocation: DB_Type;
+  customDbCanisterId: string;
   userAgent: HttpAgent;
   userPrincipal: Principal;
+  watchOnlyHistory: WatchOnlyItem[];
 }
 
 const initialState: AuthState = {
+  route: RoutingPathEnum.Enum.LOGIN,
   authLoading: true,
   authenticated: false,
   debugMode: false,
   superAdmin: false,
+  watchOnlyMode: false,
   theme: ThemesEnum.enum.dark,
   blur: false,
   authClient: "",
   assetList: [],
-  disclaimer: true,
+  dbLocation: DB_Type.LOCAL,
+  customDbCanisterId: "",
   userAgent: defaultValue,
   userPrincipal: defaultValue,
+  watchOnlyHistory: [],
 };
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
+    setRoutingPath(state, action) {
+      state.route = action.payload;
+    },
     setAuth(state) {
       state.authLoading = false;
+    },
+    setReduxWatchOnlyHistory(state, action) {
+      state.watchOnlyHistory = action.payload;
     },
     setAuthLoading(state, action) {
       state.authLoading = action.payload;
@@ -48,20 +63,30 @@ const authSlice = createSlice({
       state.authLoading = false;
       state.authenticated = false;
       state.superAdmin = false;
+      state.watchOnlyMode = false;
       state.authClient = "";
       state.debugMode = false;
     },
     setAuthenticated: {
-      reducer(state, action: PayloadAction<{ authenticated: boolean; superAdmin: boolean; authClient: string }>) {
-        const { authenticated, superAdmin, authClient } = action.payload;
+      reducer(
+        state,
+        action: PayloadAction<{
+          authenticated: boolean;
+          superAdmin: boolean;
+          watchOnlyMode: boolean;
+          authClient: string;
+        }>,
+      ) {
+        const { authenticated, superAdmin, watchOnlyMode, authClient } = action.payload;
         state.authLoading = false;
         state.authenticated = authenticated;
         state.superAdmin = superAdmin;
+        state.watchOnlyMode = watchOnlyMode;
         state.authClient = authClient;
       },
-      prepare(authenticated: boolean, superAdmin: boolean, authClient: string) {
+      prepare(authenticated: boolean, superAdmin: boolean, watchOnlyMode: boolean, authClient: string) {
         return {
-          payload: { authenticated, superAdmin, authClient },
+          payload: { authenticated, superAdmin, watchOnlyMode, authClient },
         };
       },
     },
@@ -77,8 +102,11 @@ const authSlice = createSlice({
     setBlur(state, action) {
       state.blur = action.payload;
     },
-    setDisclaimer(state, action) {
-      state.disclaimer = action.payload;
+    setDbLocation(state, action) {
+      state.dbLocation = action.payload;
+    },
+    setCustomDbCanisterId(state, action) {
+      state.customDbCanisterId = action.payload;
     },
     setUserAgent(state, action) {
       state.userAgent = action.payload;
@@ -95,6 +123,7 @@ const authSlice = createSlice({
   },
 });
 export const {
+  setRoutingPath,
   clearDataAuth,
   setAuth,
   setAuthLoading,
@@ -104,9 +133,11 @@ export const {
   setAuthClient,
   setTheme,
   setBlur,
-  setDisclaimer,
+  setDbLocation,
+  setCustomDbCanisterId,
   setUserAgent,
   setUserPrincipal,
+  setReduxWatchOnlyHistory,
 } = authSlice.actions;
 
 export default authSlice.reducer;

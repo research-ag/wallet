@@ -1,0 +1,137 @@
+{
+  "assets": {
+    "schema": {
+      "type": "object",
+      "version": 0,
+      "primaryKey": "address",
+      "properties": {
+        "sortIndex": { "type": "number" },
+        "address": { "type": "string", "maxLength": 100 },
+        "symbol": { "type": "string", "maxLength": 100 },
+        "name": { "type": "string", "maxLength": 100 },
+        "tokenName": { "type": "string", "maxLength": 100 },
+        "tokenSymbol": { "type": "string", "maxLength": 100 },
+        "decimal": { "type": "string", "maxLength": 100 },
+        "shortDecimal": { "type": "string", "maxLength": 100 },
+        "subAccounts": {
+          "type": "array",
+          "items": {
+            "type": "record",
+            "properties": {
+              "name": { "type": "string", "maxLength": 100 },
+              "sub_account_id": { "type": "string" },
+              "address": { "type": "string" },
+              "amount": { "type": "string", "maxLength": 100 },
+              "currency_amount": { "type": "string", "maxLength": 100 },
+              "transaction_fee": { "type": "string", "maxLength": 100 },
+              "decimal": { "type": "string", "maxLength": 100 },
+              "symbol": { "type": "string", "maxLength": 100 }
+            },
+            "required": ["numb", "name", "amount", "currency_amount"]
+          }
+        },
+        "index": { "type": "string", "maxLength": 100 },
+        "logo": { "type": "string", "maxLength": 1000 },
+        "supportedStandards": {
+          "type": "array",
+          "items": { "type": "string", "maxLength": 100 }
+        }
+      },
+      "required": [
+        "sortIndex",
+        "symbol",
+        "name",
+        "tokenName",
+        "tokenSymbol",
+        "decimal",
+        "shortDecimal",
+        "subAccounts",
+        "fee",
+        "index",
+        "logo",
+        "supportedStandards"
+      ],
+      "indexes": ["name"]
+    },
+    "migrationStrategies": {}
+  },
+  "contacts": {
+    "schema": {
+      "type": "object",
+      "version": 0,
+      "primaryKey": "principal",
+      "properties": {
+        "principal": { "type": "string", "maxLength": 100 },
+        "name": { "type": "string", "maxLength": 100 },
+        "accountIdentifier": { "type": "string", "maxLength": 100 },
+        "accounts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "subaccount": { "type": "string" },
+              "subaccountId": { "type": "string" },
+              "tokenSymbol": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  },
+  "allowances": {
+    "schema": {
+      "type": "object",
+      "version": 0,
+      "primaryKey": "id",
+      "properties": {
+        "id": { "type": "string", "maxLength": 100 },
+        "subAccountId": { "type": "string", "maxLength": 100 },
+        "spender": { "type": "string", "maxLength": 100 },
+        "asset": {
+          "type": "record",
+          "properties": {
+            "logo": { "type": "string", "maxLength": 100 },
+            "name": { "type": "string", "maxLength": 100 },
+            "symbol": { "type": "string", "maxLength": 100 },
+            "address": { "type": "string", "maxLength": 100 },
+            "decimal": { "type": "string", "maxLength": 100 },
+            "tokenName": { "type": "string", "maxLength": 100 },
+            "tokenSymbol": { "type": "string", "maxLength": 100 },
+            "supportedStandards": {
+              "type": "array",
+              "items": { "type": "string", "maxLength": 100 }
+            }
+          },
+          "required": ["logo", "name", "symbol", "address", "decimal", "tokenName", "tokenSymbol", "supportedStandards"]
+        }
+      },
+      "required": ["subAccountId", "asset", "spender"]
+    }
+  },
+  "services": {
+    "schema": {
+      "type": "object",
+      "version": 0,
+      "primaryKey": "principal",
+      "properties": {
+        "principal": { "type": "string", "maxLength": 100 },
+        "name": { "type": "string", "maxLength": 100 },
+        "assets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "tokenSymbol": { "type": "string" },
+              "logo": { "type": "string" },
+              "tokenName": { "type": "string" },
+              "shortDecimal": { "type": "string" },
+              "principal": { "type": "string" },
+              "decimal": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}
