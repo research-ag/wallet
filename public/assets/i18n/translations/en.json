@@ -177,6 +177,7 @@
   "check.add.contact.prin.err": "Please enter a new and valid Principal",
   "check.add.contact.subacc.err": "Check invalid data",
   "transaction.sent": "Sent",
+  "check.existing": "Check Existing",
   "transaction.received": "Received",
   "transaction.destinationAccount": "Destination Account",
   "transaction.shippingAccount": "Shipping Account",

@@ -173,6 +173,7 @@
   "check.add.contact.prin.err": "Ingrese un Principal nuevo y válido",
   "check.add.contact.subacc.err": "Verificar datos no válidos",
   "transaction.sent": "Enviado",
+  "check.existing": "Verificar Existente",
   "transaction.received": "Recibido",
   "transaction.destinationAccount": "Cuenta de Destino",
   "transaction.shippingAccount": "Cuenta de Envío",
