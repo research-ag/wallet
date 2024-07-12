@@ -4,7 +4,7 @@ import { ReactComponent as DropIcon } from "@assets/svg/files/chevron-right-icon
 //
 import { useAppSelector } from "@redux/Store";
 import { Buffer } from "buffer";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { Service } from "@redux/models/ServiceModels";
 import { useTranslation } from "react-i18next";
