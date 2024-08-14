@@ -81,7 +81,6 @@ export function getSubAccountId(value: string | undefined): string {
     )
       return "0x0";
     if (value.slice(0, 2).toLocaleLowerCase() === "0x") {
-      if (value.length === 3 && value[2] === "0") return value;
       return removeLeadingZerosFromHex(value);
     }
 

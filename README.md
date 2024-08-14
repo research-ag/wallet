@@ -67,7 +67,7 @@ To get started with ICRC-1 Wallet, follow these steps:
    make deploy-local
    ```
 
-   Step by step and arguments needed are specify in Makefile (at project root)
+   Step by step and arguments needed are specify in Makefile (at project root).
    Frontend will be deployed under the canister name "assets"
 
 4. For development server
@@ -100,7 +100,7 @@ To get started with ICRC-1 Wallet, follow these steps:
    make deploy
    ```
 
-Step by step and arguments needed are specify in Makefile (at project root)
+Step by step and arguments needed are specify in Makefile (at project root).
 Frontend will be deployed under the canister name "assets"
 
 ## Features

@@ -2,7 +2,7 @@ import { TransactionDrawer } from "@/@types/transactions";
 import { CustomButton } from "@components/button";
 import { BasicDrawer } from "@components/drawer";
 import { useAppSelector } from "@redux/Store";
-import { resetSendStateAction, setTransactionDrawerAction } from "@redux/transaction/TransactionActions";
+import { setTransactionDrawerAction } from "@redux/transaction/TransactionActions";
 import { useTranslation } from "react-i18next";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 import { DrawerOptionEnum } from "@/common/const";
@@ -67,7 +67,6 @@ export default function SendReceiveDrawer() {
               duration: "",
             });
             setTransactionDrawerAction(TransactionDrawer.NONE);
-            resetSendStateAction();
           }}
         />
       </div>

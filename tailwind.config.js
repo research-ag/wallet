@@ -4,7 +4,7 @@ const colors = require("tailwindcss/colors");
 
 module.exports = {
   darkMode: "class",
-  content: ["./index.html", "./frontend/**/*.{js,ts,jsx,tsx}", "./node_modules/tailwind-datepicker-react/dist/**/*.js"],
+  content: ["./index.html", "./frontend/**/*.{js,ts,jsx,tsx}"],
   variants: {
     extend: {},
   },
@@ -69,7 +69,7 @@ module.exports = {
       RadioNoCheckColorLight: "#4442777f",
       SvgColorLight: "#6F6C99",
       SvgColor: "#6F6C99",
-      acceptButtonColor: "#33B2EF",
+      AccpetButtonColor: "#33B2EF",
       DenyButtonColor: "#332F60",
       SearchInputBorder: "#444277",
       SearchInputBorderLight: "#DFDFE6",
@@ -79,7 +79,7 @@ module.exports = {
       TextSendColor: "#F5797D",
       TextReceiveColor: "#3BC9A9",
       SelectRowColor: "#33B2EF",
-      AddSubAccount: "#0D4864",
+      AddSubaccount: "#0D4864",
       ReceiverColor: "#8A9CB7",
       FromBoxColor: "#1C1940",
       FromBoxColorLight: "#DBE4ED",

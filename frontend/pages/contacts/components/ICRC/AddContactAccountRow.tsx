@@ -327,7 +327,6 @@ export default function AddContactAccountRow(props: AddContactAccountRowProps) {
       // --- validate ---
       if (!newAccount) return;
 
-
       if (!isNewAccountValid(newAccount)) {
         setIsLoading(false);
         return;
