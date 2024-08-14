@@ -39,7 +39,7 @@ To get started with ICRC-1 Wallet, follow these steps:
    ```
    npm install
    npm i -g ic-mops
-   npm i -g ic-mops
+   mops install
    ```
 
 ## Local deployment
@@ -100,8 +100,8 @@ To get started with ICRC-1 Wallet, follow these steps:
    make deploy
    ```
 
-   Step by step and arguments needed are specify in Makefile (at project root)
-   Frontend will be deployed under the canister name "assets"
+Step by step and arguments needed are specify in Makefile (at project root)
+Frontend will be deployed under the canister name "assets"
 
 ## Features
 
