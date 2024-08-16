@@ -277,6 +277,6 @@
   "error.transfer.allowance.insufficient": "FROM does not have enough balance",
   "error.transfer.allowance.subaccount.balance.insufficient": "FROM does not have enough balance",
   "error.transfer.to.service.invalid": "TO service is not valid",
-  "error.transfer.amount.less.minimun.deposit": "Amount is less than minimun deposit",
-  "error.transfer.amount.less.minimun.withdrawl": "Amount is less than minimun withdrawl"
+  "error.transfer.amount.less.minimun.deposit": "Amount must be higher than deposit fee",
+  "error.transfer.amount.less.minimun.withdrawl": "Amount must be higher than withdraw fee"
 }

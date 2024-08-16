@@ -9,6 +9,7 @@ interface ICRCXWithdrawArgs {
   to: Account;
   token: Principal;
   amount: bigint;
+  expected_fee: [] | [bigint];
   canisterId: string | Principal;
   agent: HttpAgent;
 }

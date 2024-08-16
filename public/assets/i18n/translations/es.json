@@ -278,6 +278,6 @@
   "error.transfer.allowance.insufficient": "FROM no tiene saldo suficiente",
   "error.transfer.allowance.subaccount.balance.insufficient": "FROM no tiene saldo suficiente",
   "error.transfer.to.service.invalid": "El servicio PARA no es válido",
-  "error.transfer.amount.less.minimun.deposit": "El monto es menor al mínimo de depósito",
-  "error.transfer.amount.less.minimun.withdrawl": "El monto es menor al mínimo de retiro"
+  "error.transfer.amount.less.minimun.deposit": "El monto debe ser mayor que la tarifa de depósito",
+  "error.transfer.amount.less.minimun.withdrawl": "El monto debe ser mayor que la tarifa de retiro"
 }

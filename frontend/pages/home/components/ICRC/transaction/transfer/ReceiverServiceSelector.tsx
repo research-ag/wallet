@@ -79,8 +79,6 @@ export default function ServiceBookReceiver() {
           assetShortDecimal: currentAsset.shortDecimal,
           assetName: currentAsset.name,
           subAccountId: princSubId,
-          minDeposit: currentServiceAsset.minDeposit,
-          minWithdraw: currentServiceAsset.minWithdraw,
           depositFee: currentServiceAsset.depositFee,
           withdrawFee: currentServiceAsset.withdrawFee,
         });

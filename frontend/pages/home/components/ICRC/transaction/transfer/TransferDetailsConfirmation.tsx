@@ -169,8 +169,8 @@ export default function TransferDetailsConfirmation() {
           };
         }
 
-        const minDeposit = BigInt(serviceReceiverAsset.minDeposit);
-        if (amount < minDeposit) {
+        const minDeposit = BigInt(serviceReceiverAsset.depositFee);
+        if (amount <= minDeposit) {
           return {
             isError: true,
             message: t("error.transfer.amount.less.minimun.deposit"),
@@ -277,10 +277,10 @@ export default function TransferDetailsConfirmation() {
           };
         }
 
-        const minDeposit = BigInt(serviceReceiverAsset.minDeposit);
+        const minDeposit = BigInt(serviceReceiverAsset.depositFee);
         const amount = toHoleBigInt(transferState.amount, Number(currentAsset?.decimal || "8"));
 
-        if (amount < minDeposit) {
+        if (amount <= minDeposit) {
           return {
             isError: true,
             message: t("error.transfer.amount.less.minimun.deposit"),
@@ -348,11 +348,11 @@ export default function TransferDetailsConfirmation() {
       return { isError: true, message: t("error.transfer.from.service.invalid") };
     }
 
-    const minWithdraw = BigInt(serviceSenderAsset.minWithdraw);
+    const minWithdraw = BigInt(serviceSenderAsset.withdrawFee);
     const amount = toHoleBigInt(transferState.amount, Number(currentAsset?.decimal || "8"));
     const max = BigInt(serviceSenderAsset.credit);
 
-    if (amount < minWithdraw) {
+    if (amount <= minWithdraw) {
       return { isError: true, message: t("error.transfer.amount.less.minimun.withdrawl") };
     }
 
@@ -382,13 +382,14 @@ export default function TransferDetailsConfirmation() {
       setIsLoading(false);
       setStatus(TransferStatus.SENDING);
 
-      const res = await ICRCXWithdraw({
+      const res = (await ICRCXWithdraw({
         agent: userAgent,
         canisterId: Principal.fromText(transferState.fromPrincipal),
         token: Principal.fromText(currentAsset?.address || ""),
         amount: toHoleBigInt(transferState.amount, Number(currentAsset?.decimal || "8")),
         to: { owner: Principal.fromText(authClient), subaccount: [hexToUint8Array(transferState.toSubAccount)] },
-      });
+        expected_fee: [],
+      })) as any;
 
       if (res.data) {
         dispatch(
@@ -399,20 +400,23 @@ export default function TransferDetailsConfirmation() {
             res.data.balance,
           ),
         );
+        setStatus(TransferStatus.DONE);
+        reloadBallance();
+      } else if (res.err) {
+        logger.debug(res.err);
+        setIsLoading(false);
+        const isUserVisibleError = validationResult.message.length > 0 && validationResult.isError;
+        if (!isUserVisibleError) setStatus(TransferStatus.ERROR);
       }
-
-      setStatus(TransferStatus.DONE);
     } catch (error) {
       logger.debug(error);
       setIsLoading(false);
-
       const isUserVisibleError = validationResult.message.length > 0 && validationResult.isError;
       if (!isUserVisibleError) setStatus(TransferStatus.ERROR);
     } finally {
       const endTime = new Date();
       const duration = getElapsedSecond(initTime, endTime);
       setTransferState((prev) => ({ ...prev, duration }));
-      await reloadBallance();
     }
   }
 }
