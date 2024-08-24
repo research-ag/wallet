@@ -1,5 +1,5 @@
 [dependencies]
-base = "0.10.4"
-rxmodb = "0.1.5"
-vector = "0.2.0"
+base = "0.12.1"
+rxmodb = "0.2.0"
+vector = "0.4.0"
 stableheapbtreemap = "1.5.0"
