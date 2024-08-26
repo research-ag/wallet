@@ -7,6 +7,8 @@
   "portuguese": "Portoghese",
   "themes": "Tema",
   "lock": "Bloccar",
+  "about": "Informazioni",
+  "version": "Versione",
   "database.location": "Sincronizzare",
   "database.localStorage": "Memoria Locale",
   "database.canister": "RxDB Canister",

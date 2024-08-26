@@ -2,8 +2,9 @@
   "name": "dapp-wallet",
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
+    "git-info": "node frontend/gitInfo.js",
+    "dev": "npm run git-info && vite",
+    "build": "npm run git-info && tsc && vite build",
     "serve": "vite preview",
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
