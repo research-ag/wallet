@@ -129,8 +129,8 @@
   "add.asset.manually": "Adicionar ativo manualmente",
   "no.valid.address": "O endereço não é válido",
   "no.valid.address.unknown": "Ocorreu um erro ao validar o endereço, tente mais tarde",
-  "token.contract.address": "Endereço do contrato de token",
-  "token.index.address": "Endereço de índice de token",
+  "token.contract.address": "Ledger canister",
+  "token.index.address": "Index canister",
   "token.validation.msg": "Interface do razão reconhecida. Recomenda-se não alterar o símbolo, nome e decimais do token",
   "index.validation.msg": "Interface de índice reconhecida",
   "sendes.as.receiver": "Remetente igual ao Destinatário, verifique o endereço ou selecione uma subconta",
@@ -149,7 +149,7 @@
   "theme.modal.msg.option": "Você está bem hoje",
   "database.modal.msg": "Local para salvar metadados da carteira",
   "type": "Tipo",
-  "transactionID": "ID da transação",
+  "transactionID": "De / Para",
   "date": "Data",
   "copy.transaction.id": "Copiar ID da transação",
   "status": "Status",
@@ -172,6 +172,7 @@
   "check.add.contact.prin.err": "Por favor, insira um Principal novo e válido",
   "check.add.contact.subacc.err": "Verificar dados inválidos",
   "transaction.sent": "Enviado",
+  "check.existing": "Verifique Existente",
   "transaction.received": "Recebida",
   "transaction.destinationAccount": "Conta de Destino",
   "transaction.shippingAccount": "Conta de Envio",
@@ -276,6 +277,6 @@
   "error.transfer.allowance.insufficient": "FROM não possui saldo suficiente",
   "error.transfer.allowance.subaccount.balance.insufficient": "FROM não possui saldo suficiente",
   "error.transfer.to.service.invalid": "O serviço PARA não é válido",
-  "error.transfer.amount.less.minimun.deposit": "O valor é inferior ao depósito mínimo",
-  "error.transfer.amount.less.minimun.withdrawl": "O valor é inferior ao saque mínimo"
+  "error.transfer.amount.less.minimun.deposit": "O valor deve ser maior que a taxa de depósito",
+  "error.transfer.amount.less.minimun.withdrawl": "O valor deve ser maior que a taxa de retirada"
 }

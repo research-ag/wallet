@@ -128,8 +128,8 @@
   "add.asset.manually": "Add asset manually",
   "no.valid.address": "Address is not valid",
   "no.valid.address.unknown": "An error accurred while validating address, please try later",
-  "token.contract.address": "Contract address",
-  "token.index.address": "Index address",
+  "token.contract.address": "Ledger canister",
+  "token.index.address": "Index canister",
   "token.validation.msg": "Ledger interface recognized. It is recommended not to change the token's symbol, name and decimals",
   "index.validation.msg": "Index interface recognized",
   "sendes.as.receiver": "Sender same as Receiver, please check the address or select a subaccount",
@@ -148,7 +148,7 @@
   "theme.modal.msg.option": "You look nice today",
   "database.modal.msg": "Location to save wallet metadata",
   "type": "Type",
-  "transactionID": "Transaction ID",
+  "transactionID": "From / To",
   "date": "Date",
   "copy.transaction.id": "Copy transaction ID",
   "status": "Status",
@@ -171,6 +171,7 @@
   "check.add.contact.prin.err": "Please enter a new and valid Principal",
   "check.add.contact.subacc.err": "Check invalid data",
   "transaction.sent": "Sent",
+  "check.existing": "Check Existing",
   "transaction.received": "Received",
   "transaction.destinationAccount": "Destination Account",
   "transaction.shippingAccount": "Shipping Account",
@@ -276,6 +277,6 @@
   "error.transfer.allowance.insufficient": "FROM does not have enough balance",
   "error.transfer.allowance.subaccount.balance.insufficient": "FROM does not have enough balance",
   "error.transfer.to.service.invalid": "TO service is not valid",
-  "error.transfer.amount.less.minimun.deposit": "Amount is less than minimun deposit",
-  "error.transfer.amount.less.minimun.withdrawl": "Amount is less than minimun withdrawl"
+  "error.transfer.amount.less.minimun.deposit": "Amount must be higher than deposit fee",
+  "error.transfer.amount.less.minimun.withdrawl": "Amount must be higher than withdraw fee"
 }

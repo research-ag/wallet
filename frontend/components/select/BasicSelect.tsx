@@ -53,8 +53,16 @@ export default function Select(props: TSelectProps) {
               <>
                 {selectedValue?.icon}
                 <div className="ml-2">
-                  <p className={textStyles()}>{selectedValue?.label}</p>
-                  <p className={textStyles(true)}>{selectedValue?.subLabel}</p>
+                  <p className={`${textStyles()} ${selectedValue.labelClassname ? selectedValue.labelClassname : ""}`}>
+                    {selectedValue?.label}
+                  </p>
+                  <p
+                    className={`${textStyles(true)} ${
+                      selectedValue.sublabelClassname ? selectedValue.sublabelClassname : ""
+                    }`}
+                  >
+                    {selectedValue?.subLabel}
+                  </p>
                 </div>
               </>
             )}
@@ -91,8 +99,12 @@ export default function Select(props: TSelectProps) {
                 >
                   {option?.icon}
                   <div className="ml-2">
-                    <p className={textStyles()}>{option.label}</p>
-                    <p className={textStyles(true)}>{option?.subLabel}</p>
+                    <p className={`${textStyles()} ${option.labelClassname ? option.labelClassname : ""}`}>
+                      {option.label}
+                    </p>
+                    <p className={`${textStyles(true)} ${option.sublabelClassname ? option.sublabelClassname : ""}`}>
+                      {option?.subLabel}
+                    </p>
                   </div>
                 </div>
               ))}

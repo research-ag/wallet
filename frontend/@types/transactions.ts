@@ -78,8 +78,6 @@ export const ServiceSubAccountSchema = z.object({
   assetName: z.string().optional(),
   subAccountIndex: z.string().optional(),
   subAccountId: z.string(),
-  minDeposit: z.string(),
-  minWithdraw: z.string(),
   depositFee: z.string(),
   withdrawFee: z.string(),
 });

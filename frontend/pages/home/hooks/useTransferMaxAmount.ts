@@ -242,9 +242,9 @@ export default function useTransferMaxAmount() {
     }
 
     const balance = BigInt(asset.credit);
-    const minWithdraw = BigInt(asset?.minWithdraw || "0");
+    const minWithdraw = BigInt(asset?.withdrawFee || "0");
 
-    if (balance < minWithdraw) {
+    if (balance <= minWithdraw) {
       setMaxAmount({
         maxAmount: "0",
         availableAmount: toFullDecimal(balance, Number(currentAsset?.decimal || "8")),

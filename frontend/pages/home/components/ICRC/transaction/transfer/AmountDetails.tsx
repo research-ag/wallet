@@ -116,40 +116,6 @@ export default function AmountDetails() {
         )}
       </div>
 
-      {isReceiverService && (
-        <p
-          className={
-            // TransactionValidationErrorsEnum.Values["error.lower.than.minimum.deposit"]
-            getTextError(false)
-          }
-        >
-          {t("minimun.deposit.is")}{" "}
-          {toFullDecimal(
-            receiverServiceAsset?.minDeposit || "0",
-            Number(currentAsset?.decimal || "8"),
-            Number(currentAsset?.shortDecimal || "8"),
-          )}{" "}
-          {currentAsset?.symbol || ""}
-        </p>
-      )}
-
-      {isSenderService && (
-        <p
-          className={
-            // TransactionValidationErrorsEnum.Values["error.lower.than.minimum.withdraw"]
-            getTextError(false)
-          }
-        >
-          {t("minimun.withdraw.is")}{" "}
-          {toFullDecimal(
-            senderServiceAsset?.minWithdraw || "0",
-            Number(currentAsset?.decimal || "8"),
-            Number(currentAsset?.shortDecimal || "8"),
-          )}{" "}
-          {currentAsset?.symbol || ""}
-        </p>
-      )}
-
       <div className="flex items-center justify-between w-full">
         <div className="flex flex-row justify-start items-center pl-2">
           <p className="mr-1 text-sm text-primary-color">
@@ -221,10 +187,3 @@ function getAmountInputStyles(hasError: boolean) {
     hasError ? "border-slate-color-error" : "border-BorderColorLight dark:border-BorderColor",
   );
 }
-
-const getTextError = (error: boolean) =>
-  clsx(
-    "text-sm",
-    "text-start",
-    error ? "text-slate-color-error" : "text-PrimaryTextColorLight dark:text-PrimaryTextColor",
-  );

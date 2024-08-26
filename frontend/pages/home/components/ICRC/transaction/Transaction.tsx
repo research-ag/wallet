@@ -13,6 +13,7 @@ import { getAssetSymbol, getICRC1Acc, shortAddress } from "@common/utils/icrc";
 import { toFullDecimal } from "@common/utils/amount";
 import logger from "@/common/utils/logger";
 import { middleTruncation } from "@common/utils/strings";
+import moment from "moment";
 
 const DrawerTransaction = () => {
   const { t } = useTranslation();
@@ -51,7 +52,7 @@ const DrawerTransaction = () => {
             <div className="flex flex-row items-center justify-between w-full font-normal">
               <p>{`${t("acc.subacc")}`}</p>
               <div className="flex flex-row items-center justify-start gap-2">
-                <p>{`${hasSub(false) ? getSub(false) : t("unknown")}`}</p>
+                <p>{`${hasSub(false) ? middleTruncation(getSub(false), 8, 8) : t("unknown")}`}</p>
                 <CustomCopy
                   size={"small"}
                   copyText={getSub(false).substring(2)}
@@ -122,7 +123,7 @@ const DrawerTransaction = () => {
             <div className="flex flex-row items-center justify-between w-full font-normal">
               <p>{`${t("acc.subacc")}`}</p>
               <div className="flex flex-row items-center justify-start gap-2">
-                <p>{`${hasSub(true) ? getSub(true) : t("unknown")}`}</p>
+                <p>{`${hasSub(true) ? middleTruncation(getSub(true), 8, 8) : t("unknown")}`}</p>
                 <CustomCopy
                   size={"small"}
                   copyText={getSub(true).substring(2)}
@@ -177,6 +178,22 @@ const DrawerTransaction = () => {
             </div>
           </div>
         )}
+        {selectedTransaction?.timestamp && (
+          <div className="flex flex-col justify-center items-center gap-4 w-[calc(100%-3rem)] mx-6 mt-5 p-4 bg-secondary-color-1-light dark:bg-level-1-color rounded-md">
+            <div className="flex flex-row items-center justify-between w-full font-normal">
+              <p className="font-bold">{t("date")}</p>
+              <div className="flex flex-row items-center justify-start gap-2">
+                <p className="font-bold">{moment(selectedTransaction?.timestamp).format("MM/DD/YYYY hh:mm")}</p>
+                <CustomCopy
+                  size={"small"}
+                  copyText={selectedTransaction.timestamp.toString()}
+                  copyStroke="cursor-pointer max-w-[0.7rem] h-auto"
+                  isTransaction={true}
+                />
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </Fragment>
   );
@@ -212,18 +229,14 @@ const DrawerTransaction = () => {
     return undefined;
   }
 
-  function formatLargeSubaccount(subaccount: string) {
-    return subaccount.length > 15 ? middleTruncation(subaccount, 10, 10) : subaccount;
-  }
-
   function getSub(to: boolean) {
     if (isICPWithSub(to)) {
       const subaccount = ICPSubaccounts.find(
         (sub) => sub.legacy === (to ? selectedTransaction?.to : selectedTransaction?.from),
       )?.sub_account_id;
       return subaccount || "0x0";
-    } else if (to) return formatLargeSubaccount(selectedTransaction?.toSub || "0x0");
-    else return formatLargeSubaccount(selectedTransaction?.fromSub || "0x0");
+    } else if (to) return selectedTransaction?.toSub || "0x0";
+    else return selectedTransaction?.fromSub || "0x0";
   }
 
   function getICRCAccount(to: boolean): string {

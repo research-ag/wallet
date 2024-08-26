@@ -37,7 +37,7 @@ const AddAssetAutomatic = () => {
     <div className="flex flex-col items-start justify-start w-full">
       <div className="flex flex-row items-center justify-start w-full gap-4">
         <div className="flex flex-col items-start justify-start w-1/2">
-          <p className="w-full text-left opacity-60">{t("network")}</p>
+          <p className="w-full text-left opacity-60">{t("type")}</p>
           <DropdownMenu.Root
             onOpenChange={(e: boolean) => {
               setNetworkTOpen(e);
@@ -75,8 +75,9 @@ const AddAssetAutomatic = () => {
                   return (
                     <DropdownMenu.Item
                       key={`net-${idx}`}
-                      className={`flex flex-row text-md justify-start items-center p-3 cursor-pointer ${idx > 0 ? "border-t border-BorderColorLight dark:border-BorderColor" : ""
-                        }`}
+                      className={`flex flex-row text-md justify-start items-center p-3 cursor-pointer ${
+                        idx > 0 ? "border-t border-BorderColorLight dark:border-BorderColor" : ""
+                      }`}
                       onSelect={() => {
                         onSelectNetwork(networkOption);
                       }}
@@ -137,8 +138,9 @@ const AddAssetAutomatic = () => {
                     return (
                       <DropdownMenu.Item
                         key={`net-${idx}`}
-                        className={`flex flex-row text-md justify-start items-center p-3 cursor-pointer ${idx > 0 ? "border-t border-BorderColorLight dark:border-BorderColor" : ""
-                          }`}
+                        className={`flex flex-row text-md justify-start items-center p-3 cursor-pointer ${
+                          idx > 0 ? "border-t border-BorderColorLight dark:border-BorderColor" : ""
+                        }`}
                         onSelect={() => {
                           onSelectToken(newAsset);
                         }}

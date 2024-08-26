@@ -52,7 +52,7 @@ export default function ReceiverOwner() {
             subAccount?.symbol?.toLocaleLowerCase().includes(filterValue) ||
             filterValue === "",
         )
-        .map(formatSubAccount);
+        .map((sub) => formatSubAccount(sub));
     }
 
     return subAccounts
@@ -62,7 +62,7 @@ export default function ReceiverOwner() {
           subAccount?.symbol?.toLocaleLowerCase().includes(filterValue) ||
           filterValue === "",
       )
-      .map(formatSubAccount);
+      .map((sub) => formatSubAccount(sub));
   }
 
   function onSelect(option: SelectOption) {

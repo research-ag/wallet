@@ -41,8 +41,6 @@ export const assetServiceToServiceSubAccount = (
     assetShortDecimal: asset.shortDecimal,
     assetName: asset.name,
     subAccountId: princSubId,
-    minDeposit: assetService.minDeposit,
-    minWithdraw: assetService.minWithdraw,
     depositFee: assetService.depositFee,
     withdrawFee: assetService.withdrawFee,
   };

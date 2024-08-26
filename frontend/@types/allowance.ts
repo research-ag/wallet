@@ -19,6 +19,7 @@ export const allowanceSchema = z.object({
   asset: AllowanceAssetSchema,
   subAccountId: z.string(),
   spender: z.string(),
+  spenderSubaccount: z.string().optional(),
   amount: z.string().optional(),
   expiration: z.string().optional(),
 });
@@ -34,6 +35,7 @@ export type AllowanceErrorFields = z.infer<typeof AllowanceErrorFieldsEnum>;
 export const AllowanceValidationErrorsEnum = z.enum([
   "error.invalid.asset",
   "error.invalid.spender.principal",
+  "error.invalid.spender.beneficiary",
   "error.invalid.expiration",
   "error.expiration.required",
   "error.expiration.not.allowed",

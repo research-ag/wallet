@@ -13,7 +13,7 @@ export default function ContactMainDetails() {
 
   return (
     <div className="flex flex-row items-start justify-start w-full gap-3">
-      <div className="flex flex-col justify-start items-start w-[50%]">
+      <div className="flex flex-col justify-start items-start w-[65%]">
         <p>{t("name")}</p>
         <CustomInput
           sizeInput={"medium"}
@@ -58,20 +58,22 @@ export default function ContactMainDetails() {
   }
 
   function onNameChange(value: string) {
-    setNewContact((prev: Contact) => ({ ...prev, name: value }));
-    if (value.length === 0 || value.length > 15)
-      setNewContactErrors((prev) => ({
-        ...prev,
-        name: true,
-        principal: false,
-        message: t("contact.error.invalid.name"),
-      }));
-    else
-      setNewContactErrors((prev) => ({
-        ...prev,
-        name: false,
-        principal: false,
-        message: "",
-      }));
+    if (value.length <= 32) {
+      setNewContact((prev: Contact) => ({ ...prev, name: value }));
+      if (value.length === 0 || value.length > 32)
+        setNewContactErrors((prev) => ({
+          ...prev,
+          name: true,
+          principal: false,
+          message: t("contact.error.invalid.name"),
+        }));
+      else
+        setNewContactErrors((prev) => ({
+          ...prev,
+          name: false,
+          principal: false,
+          message: "",
+        }));
+    }
   }
 }

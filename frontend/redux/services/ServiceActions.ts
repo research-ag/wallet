@@ -47,8 +47,6 @@ export const getServicesData = async (userAgent?: HttpAgent) => {
                 balance: "",
                 principal: ast.toText(),
                 credit: credit ? credit[1].toString() : "",
-                minDeposit: tokenInfo.min_deposit.toString(),
-                minWithdraw: tokenInfo.min_withdrawal.toString(),
                 depositFee: tokenInfo.deposit_fee.toString(),
                 withdrawFee: tokenInfo.withdrawal_fee.toString(),
                 visible: false,
@@ -146,8 +144,6 @@ export const getServiceData = async (myAgent: HttpAgent, servicePrincipal: strin
             balance: "",
             principal: ast.toText(),
             credit: credit ? credit[1].toString() : "",
-            minDeposit: tokenInfo.min_deposit.toString(),
-            minWithdraw: tokenInfo.min_withdrawal.toString(),
             depositFee: tokenInfo.deposit_fee.toString(),
             withdrawFee: tokenInfo.withdrawal_fee.toString(),
             visible: false,
@@ -199,7 +195,9 @@ export const testServicePrincipal = async (myAgent: HttpAgent, servicePrincipal:
     });
     await serviceActor.icrc84_supported_tokens();
     return true;
-  } catch {
+  } catch (e) {
+    console.log("e", e);
+
     return false;
   }
 };

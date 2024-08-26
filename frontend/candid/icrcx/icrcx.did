@@ -1,83 +1,224 @@
-type WithdrawResult = variant {
-  Err : variant {
-    AmountBelowMinimum : record {};
-    CallLedgerError : record { message : text };
-    InsufficientCredit : record {};
-  };
-  Ok : record {
-    amount : nat;
-    txid : nat;
-  };
-};
+type Token = principal;
+type Amount = nat;
+
 type TokenInfo = record {
-  deposit_fee : nat;
-  min_deposit : nat;
-  min_withdrawal : nat;
-  withdrawal_fee : nat;
+  allowance_fee : Amount;
+  deposit_fee : Amount;
+  withdrawal_fee : Amount;
 };
-type NotifyResult = variant {
+
+type Subaccount = blob;
+
+type NotifyArg = record {
+  token : Token;
+};
+
+type NotifyResult = record {
+  deposit_inc : Amount;
+  credit_inc : Amount;
+  credit : int;
+};
+
+type NotifyResponse = variant {
+  Ok : NotifyResult;
   Err : variant {
     CallLedgerError : record { message : text };
     NotAvailable : record { message : text };
   };
-  Ok : record {
-    credit : int;
-    credit_inc : nat;
-    deposit_inc : nat;
-  };
 };
-type DepositResponse = variant {
+
+type BalanceResponse = variant {
+  Ok : Amount;
   Err : variant {
-    AmountBelowMinimum : record {};
-    CallLedgerError : record { message : text };
-    TransferError : record { message : text };
+    NotAvailable : record { message : text };
   };
+};
+
+type WithdrawArgs = record {
+  to : Account;
+  amount : Amount;
+  token : Token;
+  expected_fee : opt nat;
+};
+
+type WithdrawResponse = variant {
   Ok : record {
-    credit : int;
-    credit_inc : nat;
     txid : nat;
+    amount : Amount;
+  };
+  Err : variant {
+    BadFee : record { expected_fee : nat };
+    CallLedgerError : record { message : text };
+    InsufficientCredit : record {};
+    AmountBelowMinimum : record {};
   };
 };
+
 type DepositArgs = record {
-  amount : nat;
+  token : Token;
+  amount : Amount;
   from : Account;
-  token : principal;
+  expected_fee : opt nat;
 };
+
 type Account = record {
   owner : principal;
-  subaccount : opt blob;
+  subaccount : opt Subaccount;
 };
-service : {
-  icrc84_all_credits : () -> (
-    vec record {
-      principal;
-      int;
-    }
-  ) query;
-  icrc84_credit : (principal) -> (int) query;
-  icrc84_deposit : (DepositArgs) -> (DepositResponse);
-  icrc84_notify : (record { token : principal }) -> (NotifyResult);
-  icrc84_supported_tokens : () -> (vec principal) query;
-  icrc84_token_info : (principal) -> (TokenInfo) query;
-  icrc84_trackedDeposit : (principal) -> (
-    variant {
-      Err : variant { NotAvailable : record { message : text } };
-      Ok : nat;
-    }
-  ) query;
-  icrc84_withdraw : (
-    record {
-      amount : nat;
-      to : Account;
-      token : principal;
-    }
-  ) -> (WithdrawResult);
-  init : () -> ();
+
+type DepositResult = record {
+  txid : nat;
+  credit_inc : Amount;
+  credit : int;
+};
+
+type DepositResponse = variant {
+  Ok : DepositResult;
+  Err : variant {
+    AmountBelowMinimum : record {};
+    BadFee : record { expected_fee : nat };
+    CallLedgerError : record { message : text };
+    TransferError : record { message : text }; // insufficient allowance or insufficient funds
+  };
+};
+
+type OrderId = nat;
+
+type Order = record {
+  icrc1Ledger : Token;
+  price : float64;
+  volume : nat;
+};
+
+type CancellationArg = variant {
+  all : opt vec Token;
+  orders : vec variant { ask : OrderId; bid : OrderId };
+};
+type PlaceArg = vec variant {
+  ask : record { Token; nat; float64 };
+  bid : record { Token; nat; float64 };
+};
+
+type ManageOrdersResponse = variant {
+  Ok : vec OrderId;
+  Err : variant {
+    UnknownPrincipal;
+    cancellation : record {
+      index : nat;
+      error : variant {
+        UnknownAsset;
+        UnknownOrder;
+      };
+    };
+    placement : record {
+      index : nat;
+      error : variant {
+        ConflictingOrder : record { variant { ask; bid }; opt OrderId };
+        NoCredit;
+        TooLowOrder;
+        UnknownAsset;
+        VolumeStepViolated : record { baseVolumeStep : nat };
+      };
+    };
+  };
+};
+
+type PlaceOrderResponse = variant {
+  Ok : OrderId;
+  Err : variant {
+    ConflictingOrder : record { variant { ask; bid }; opt OrderId };
+    NoCredit;
+    TooLowOrder;
+    UnknownAsset;
+    UnknownPrincipal;
+    VolumeStepViolated : record { baseVolumeStep : nat };
+  };
+};
+type ReplaceOrderResponse = variant {
+  Ok : OrderId;
+  Err : variant {
+    ConflictingOrder : record { variant { ask; bid }; opt OrderId };
+    NoCredit;
+    TooLowOrder;
+    UnknownAsset;
+    UnknownOrder;
+    UnknownPrincipal;
+    VolumeStepViolated : record { baseVolumeStep : nat };
+  };
+};
+type CancelOrderResponse = variant {
+  Ok;
+  Err : variant {
+    UnknownOrder;
+    UnknownPrincipal;
+  };
+};
+
+type IndicativeStats = record {
+  clearingPrice : float64;
+  clearingVolume : nat;
+  totalAskVolume : nat;
+  totalBidVolume : nat;
+};
+
+service : (opt principal, opt principal) -> {
+  // ICRC-84 API
+  // helper function
   principalToSubaccount : (principal) -> (opt blob) query;
-  registerAsset : (principal) -> (
-    variant {
-      Err : variant { AlreadyRegistered : nat };
-      Ok : nat;
-    }
-  );
+
+  // public queries
+  icrc84_supported_tokens : () -> (vec Token) query;
+  icrc84_token_info : (Token) -> (TokenInfo) query;
+
+  // private queries
+  icrc84_credit : (Token) -> (int) query;
+  icrc84_all_credits : () -> (vec record { Token; int }) query;
+  icrc84_trackedDeposit : (Token) -> (BalanceResponse) query;
+
+  // updates
+  icrc84_notify : (NotifyArg) -> (NotifyResponse);
+  icrc84_deposit : (DepositArgs) -> (DepositResponse);
+  icrc84_withdraw : (WithdrawArgs) -> (WithdrawResponse);
+
+  // auction API
+
+  // system queries
+  getQuoteLedger : () -> (principal) query;
+  sessionsCounter : () -> (nat) query;
+  sessionRemainingTime : () -> (nat) query;
+  settings : () -> (record { orderQuoteVolumeMinimum : nat; orderQuoteVolumeStep : nat }) query;
+  indicativeStats : (principal) -> (IndicativeStats) query;
+
+  // user queries
+  queryTokenBids : (Token) -> (vec record { OrderId; Order }) query;
+  queryBids : () -> (vec record { OrderId; Order }) query;
+  queryTokenAsks : (Token) -> (vec record { OrderId; Order }) query;
+  queryAsks : () -> (vec record { OrderId; Order }) query;
+  queryCredits : () -> (vec record { principal; record { total : nat; available : nat; locked : nat } }) query;
+
+  // Providing token in the arguments to history queries will filter results by token
+
+  // return values are: timestamp in nanoseconds; number of auction session; transaction type; ICRC1 ledger principal; transaction volume; transaction price
+  queryTransactionHistory : (opt Token, nat, nat) -> (vec record { nat64; nat; variant { ask; bid }; Token; nat; float64 }) query;
+  // return values are: timestamp in nanoseconds; number of auction session; ICRC1 ledger principal; volume sold; price
+  queryPriceHistory : (opt Token, nat, nat) -> (vec record { nat64; nat; Token; nat; float64 }) query;
+
+  // update
+  manageOrders : (opt CancellationArg, PlaceArg) -> (ManageOrdersResponse);
+
+  placeAsks : (vec record { Token; nat; float64 }) -> (vec PlaceOrderResponse);
+  replaceAsk : (OrderId, nat, float64) -> (ReplaceOrderResponse);
+  cancelAsks : (vec OrderId) -> (vec CancelOrderResponse);
+
+  placeBids : (vec record { Token; nat; float64 }) -> (vec PlaceOrderResponse);
+  replaceBid : (OrderId, nat, float64) -> (ReplaceOrderResponse);
+  cancelBids : (vec OrderId) -> (vec CancelOrderResponse);
+
+  // ADMIN API
+  // query
+  listAdmins : () -> (vec principal) query;
+  // update
+  addAdmin : (principal) -> ();
+  removeAdmin : (principal) -> ();
+  registerAsset : (principal, nat) -> (variant { Ok : nat; Err : variant { AlreadyRegistered : nat } });
 };

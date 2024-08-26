@@ -25,6 +25,9 @@ export async function validateCreateAllowance(allowance: TAllowance, asset: Asse
   if (allowance?.spender === store.getState().auth.userPrincipal.toText())
     throw AllowanceValidationErrorsEnum.Values["error.self.allowance"];
 
+  if (allowance.spenderSubaccount == "err")
+    throw AllowanceValidationErrorsEnum.Values["error.invalid.spender.beneficiary"];
+
   const fee = await ICRC1Fee({
     canisterId: allowance.asset.address,
     agent: store.getState().auth.userAgent,

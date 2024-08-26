@@ -27,7 +27,7 @@ import { hexToUint8Array } from "@common/utils/hexadecimal";
 export enum CreateResult {
   SUCCESS = "success",
   ERROR = "error",
-};
+}
 
 export default function useCreateAllowance() {
   const [result, setResult] = useState<CreateResult | null>(null);
@@ -35,6 +35,7 @@ export default function useCreateAllowance() {
   const [isLoading, setLoading] = useState(false);
   const { assets } = useAppSelector((state) => state.asset.list);
   const { selectedAsset, selectedAccount } = useAppSelector((state) => state.asset.helper);
+  const { isFromService, selectedAllowance } = useAppSelector((state) => state.allowance);
   const { userAgent, userPrincipal } = useAppSelector((state) => state.auth);
 
   const initial = useMemo(() => {
@@ -44,6 +45,16 @@ export default function useCreateAllowance() {
     if (!selectedAsset) return initialAllowanceState;
 
     const asset = getAllowanceAsset(selectedAsset);
+
+    if (isFromService) {
+      return {
+        ...initialAllowanceState,
+        asset: supported ? asset : initialAllowanceState.asset,
+        subAccountId: "0x0",
+        spender: selectedAllowance.spender,
+        spenderSubaccount: selectedAllowance.spenderSubaccount,
+      };
+    }
 
     return {
       ...initialAllowanceState,
@@ -62,7 +73,7 @@ export default function useCreateAllowance() {
 
   const mutationFn = useCallback(async () => {
     setIsLoadingAllowanceAction(true);
-    setResult(null)
+    setResult(null);
     setFullAllowanceErrorsAction([]);
 
     const asset = assets.find((asset) => asset.tokenSymbol === allowance.asset.tokenSymbol) as Asset;
@@ -125,6 +136,10 @@ export default function useCreateAllowance() {
     if (error === AllowanceValidationErrorsEnum.Values["error.invalid.spender.principal"])
       return setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.spender.principal"]);
     removeAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.spender.principal"]);
+
+    if (error === AllowanceValidationErrorsEnum.Values["error.invalid.spender.beneficiary"])
+      return setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.spender.beneficiary"]);
+    removeAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.spender.beneficiary"]);
 
     if (error === AllowanceValidationErrorsEnum.Values["error.self.allowance"])
       return setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.self.allowance"]);

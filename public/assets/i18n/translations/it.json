@@ -129,8 +129,8 @@
   "add.asset.manually": "Aggiungi risorsa manualmente",
   "no.valid.address": "L'indirizzo non è valido",
   "no.valid.address.unknown": "Si è verificato un errore durante la convalida dell'indirizzo, riprova più tardi",
-  "token.contract.address": "Indirizzo contratto token",
-  "token.index.address": "Indirizzo indice token",
+  "token.contract.address": "Ledger canister",
+  "token.index.address": "Index canister",
   "token.validation.msg": "Interfaccia ledger riconosciuta. Si consiglia di non modificare il simbolo, il nome e i decimali del token",
   "index.validation.msg": "Interfaccia dell'indice riconosciuta",
   "sendes.as.receiver": "Mittente uguale al destinatario, controlla l'indirizzo o seleziona un account secondario",
@@ -149,7 +149,7 @@
   "theme.modal.msg.option": "Sei carina oggi",
   "database.modal.msg": "Posizione in cui salvare i metadati del portafoglio",
   "type": "Tipo",
-  "transactionID": "ID Transazione",
+  "transactionID": "Da / A",
   "date": "Data",
   "copy.transaction.id": "Copia ID transazione",
   "status": "Stato",
@@ -172,6 +172,7 @@
   "check.add.contact.prin.err": "Inserisci un Principal nuovo e valido",
   "check.add.contact.subacc.err": "Controlla i dati non validi",
   "transaction.sent": "Inviato",
+  "check.existing": "Controlla Esistente",
   "transaction.received": "Ricevuto",
   "transaction.destinationAccount": "Conto di Destinazione",
   "transaction.shippingAccount": "Conto di Spedizione",
@@ -276,6 +277,6 @@
   "error.transfer.allowance.insufficient": "FROM non ha saldo sufficiente",
   "error.transfer.allowance.subaccount.balance.insufficient": "FROM non ha saldo sufficiente",
   "error.transfer.to.service.invalid": "Il servizio A non è valido",
-  "error.transfer.amount.less.minimun.deposit": "L'importo è inferiore al deposito minimo",
-  "error.transfer.amount.less.minimun.withdrawl": "L'importo è inferiore al prelievo minimo"
+  "error.transfer.amount.less.minimun.deposit": "L'importo deve essere superiore alla commissione di deposito",
+  "error.transfer.amount.less.minimun.withdrawl": "L'importo deve essere superiore alla commissione di prelievo"
 }
