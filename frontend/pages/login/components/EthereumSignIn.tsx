@@ -1,8 +1,7 @@
 import GoBackIcon from "@/assets/svg/files/go-back-icon.svg";
-import { useAccount, useNetwork } from "wagmi";
+import { useAccount } from "wagmi";
 import ConnectButton from "@/pages/login/components/ConnectButton";
 import AddressPill from "@/pages/login/components/AddressPill";
-import { isChainIdSupported } from "@/config/wagmi";
 import { CustomButton } from "@components/button";
 import { useTranslation } from "react-i18next";
 import LoginButton from "@/pages/login/components/LoginButton";
@@ -13,7 +12,6 @@ import { cleanEthLogin, handleSiweAuthenticated } from "@redux/CheckAuth";
 export default function EthereumSignIn() {
   const { t } = useTranslation();
   const { isConnected, address } = useAccount();
-  const { chain } = useNetwork();
   const { prepareLogin, isPrepareLoginIdle, identity } = useSiweIdentity();
 
   useEffect(() => {
@@ -34,10 +32,8 @@ export default function EthereumSignIn() {
         </div>
         <div className="flex flex-row items-center justify-start gap-3">
           {!isConnected && <ConnectButton />}
-          {isConnected && isChainIdSupported(chain?.id) && (
-            <AddressPill address={address} className="justify-center w-36" />
-          )}
-          {isConnected && !isChainIdSupported(chain?.id) && (
+          {isConnected && <AddressPill address={address} className="justify-center w-36" />}
+          {isConnected && (
             <CustomButton disabled className="text-sm opacity-50 bg-GrayColor w-36">
               {t("unsupported.network")}
             </CustomButton>

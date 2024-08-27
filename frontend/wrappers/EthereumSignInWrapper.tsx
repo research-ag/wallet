@@ -2,7 +2,7 @@ import { chains, wagmiConfig } from "@/config/wagmi";
 import { darkTheme, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { SiweIdentityProvider, useSiweIdentity } from "ic-use-siwe-identity";
 import { useEffect } from "react";
-import { WagmiConfig } from "wagmi";
+import { WagmiProvider } from "wagmi";
 import { canisterId, idlFactory } from "@/candid/ic_siwe_provider";
 
 function EthereumSignInProvider({ children }: { children: React.ReactNode }) {
@@ -19,9 +19,8 @@ function EthereumSignInProvider({ children }: { children: React.ReactNode }) {
 
 export default function EthereumSignInProviderWrapper({ children }: { children: React.ReactNode }) {
   return (
-    <WagmiConfig config={wagmiConfig}>
+    <WagmiProvider config={wagmiConfig}>
       <RainbowKitProvider
-        chains={chains}
         modalSize="compact"
         theme={darkTheme({
           accentColor: "#7b3fe4",
@@ -34,6 +33,6 @@ export default function EthereumSignInProviderWrapper({ children }: { children: 
           <EthereumSignInProvider>{children}</EthereumSignInProvider>
         </SiweIdentityProvider>
       </RainbowKitProvider>
-    </WagmiConfig>
+    </WagmiProvider>
   );
 }

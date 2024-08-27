@@ -1,11 +1,9 @@
 import { useSiweIdentity } from "ic-use-siwe-identity";
-import { isChainIdSupported } from "@/config/wagmi";
 import { CustomButton } from "@components/button";
-import { useAccount, useNetwork } from "wagmi";
+import { useAccount } from "wagmi";
 
 export default function LoginButton() {
   const { isConnected } = useAccount();
-  const { chain } = useNetwork();
   const { login, isLoggingIn, isPrepareLoginSuccess, isPreparingLogin } = useSiweIdentity();
 
   function buttonText() {
@@ -18,7 +16,7 @@ export default function LoginButton() {
     return "Sign in";
   }
 
-  const disabled = !isChainIdSupported(chain?.id) || isLoggingIn || !isConnected || !isPrepareLoginSuccess;
+  const disabled = isLoggingIn || !isConnected || !isPrepareLoginSuccess;
 
   return (
     <>
