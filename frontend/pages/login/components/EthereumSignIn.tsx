@@ -2,17 +2,16 @@ import GoBackIcon from "@/assets/svg/files/go-back-icon.svg";
 import { useAccount } from "wagmi";
 import ConnectButton from "@/pages/login/components/ConnectButton";
 import AddressPill from "@/pages/login/components/AddressPill";
-import { CustomButton } from "@components/button";
-import { useTranslation } from "react-i18next";
 import LoginButton from "@/pages/login/components/LoginButton";
 import { useSiweIdentity } from "ic-use-siwe-identity";
 import { useEffect } from "react";
-import { cleanEthLogin, handleSiweAuthenticated } from "@redux/CheckAuth";
+import { handleSiweAuthenticated } from "@redux/CheckAuth";
+import { useAccountModal } from "@rainbow-me/rainbowkit";
 
 export default function EthereumSignIn() {
-  const { t } = useTranslation();
   const { isConnected, address } = useAccount();
   const { prepareLogin, isPrepareLoginIdle, identity } = useSiweIdentity();
+  const { openAccountModal } = useAccountModal();
 
   useEffect(() => {
     if (!isPrepareLoginIdle || !isConnected || !address) return;
@@ -34,15 +33,9 @@ export default function EthereumSignIn() {
           {!isConnected && <ConnectButton />}
           {isConnected && <AddressPill address={address} className="justify-center w-36" />}
           {isConnected && (
-            <CustomButton disabled className="text-sm opacity-50 bg-GrayColor w-36">
-              {t("unsupported.network")}
-            </CustomButton>
-          )}
-          {isConnected && (
             <button
               onClick={() => {
-                cleanEthLogin();
-                location.reload();
+                openAccountModal?.();
               }}
             >
               <img src={GoBackIcon} alt="" className="w-4" />

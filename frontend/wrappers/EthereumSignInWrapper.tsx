@@ -31,7 +31,10 @@ export default function EthereumSignInProviderWrapper({ children }: { children: 
             overlayBlur: "none",
           })}
         >
-          <SiweIdentityProvider canisterId={canisterId} idlFactory={idlFactory}>
+          <SiweIdentityProvider
+            canisterId={canisterId || import.meta.env.VITE_CANISTER_ID_IC_SIWE_PROVIDER || ""}
+            idlFactory={idlFactory}
+          >
             <EthereumSignInProvider>{children}</EthereumSignInProvider>
           </SiweIdentityProvider>
         </RainbowKitProvider>

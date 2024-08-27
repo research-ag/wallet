@@ -1,10 +1,12 @@
 import { useSiweIdentity } from "ic-use-siwe-identity";
 import { CustomButton } from "@components/button";
 import { useAccount } from "wagmi";
+import { useEffect } from "react";
 
 export default function LoginButton() {
   const { isConnected } = useAccount();
-  const { login, isLoggingIn, isPrepareLoginSuccess, isPreparingLogin } = useSiweIdentity();
+  const { login, isLoggingIn, isPrepareLoginSuccess, isPrepareLoginError, isPreparingLogin, prepareLoginError } =
+    useSiweIdentity();
 
   function buttonText() {
     if (isLoggingIn) {
@@ -16,7 +18,11 @@ export default function LoginButton() {
     return "Sign in";
   }
 
-  const disabled = isLoggingIn || !isConnected || !isPrepareLoginSuccess;
+  useEffect(() => {
+    prepareLoginError && console.log("prepareLoginError", prepareLoginError);
+  }, [prepareLoginError]);
+
+  const disabled = isLoggingIn || !isConnected || isPreparingLogin || isPrepareLoginError || !isPrepareLoginSuccess;
 
   return (
     <>
