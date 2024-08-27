@@ -58,7 +58,7 @@ export default function TransactionsFiltering({ children }: { children: JSX.Elem
     if (isNotSelectedAsset) return;
 
     const subaccount_index = selectedAccount?.sub_account_id || "";
-    const isOGY = selectedAccount?.symbol === AssetSymbolEnum.Enum.OGY;
+    const isOGY = selectedAccount?.symbol === AssetSymbolEnum.Enum.OGYL;
 
     const tx: Transaction[] = await getAllTransactionsICP({
       subaccount_index,
@@ -77,7 +77,7 @@ export default function TransactionsFiltering({ children }: { children: JSX.Elem
 
   async function refreshCurrentAccountTransactions() {
     const isSelectedICP = selectedAsset?.tokenSymbol === AssetSymbolEnum.Enum.ICP;
-    const isSelectedOGY = selectedAsset?.tokenSymbol === AssetSymbolEnum.Enum.OGY;
+    const isSelectedOGY = selectedAsset?.tokenSymbol === AssetSymbolEnum.Enum.OGYL;
     if (isSelectedICP || isSelectedOGY) {
       await refreshICPTxWorker();
     } else {
