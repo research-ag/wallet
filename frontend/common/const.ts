@@ -33,8 +33,8 @@ export type DrawerOption = z.infer<typeof DrawerOptionEnum>;
 export const IconTypeEnum = z.enum(["ASSET", "HEADER", "FILTER", "ALLOWANCE", "SELECT"]);
 export type IconType = z.infer<typeof IconTypeEnum>;
 
-export const AssetSymbolEnum = z.enum(["ICP", "ckBTC", "CHAT", "KINIC", "SNS1", "HOT", "OGY", "OGYL"]);
-export type AssetSymbol = z.infer<typeof AssetSymbolEnum>;
+export const RossetaAssetEnum = z.enum(["ICP", "OGYL"]);
+export type RossetaAsset = z.infer<typeof RossetaAssetEnum>;
 
 export const ThemesEnum = z.enum(["dark", "light"]);
 export type Themes = z.infer<typeof ThemesEnum>;

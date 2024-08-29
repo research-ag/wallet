@@ -8,7 +8,7 @@ deploy:
 	        uri = \"https://vgxgm-maaaa-aaaap-abuva-cai.icp0.io\"; \
 	        salt = \"icrc1-wallet\"; \
 	        chain_id = opt 1; \
-	        scheme = opt \"http\"; \
+	        scheme = opt \"https\"; \
 	        statement = opt \"Login to the ICRC-1 wallet.\"; \
 	        sign_in_expires_in = opt 300000000000;  \
 	        session_expires_in = opt 604800000000000;  \
@@ -40,7 +40,7 @@ deploy-siwe:
 	        uri = \"https://vgxgm-maaaa-aaaap-abuva-cai.icp0.io\"; \
 	        salt = \"icrc1-wallet\"; \
 	        chain_id = opt 1; \
-	        scheme = opt \"http\"; \
+	        scheme = opt \"https\"; \
 	        statement = opt \"Login to the ICRC-1 wallet.\"; \
 	        sign_in_expires_in = opt 300000000000; /* 5 minutes */ \
 	        session_expires_in = opt 604800000000000; /* 1 week */ \

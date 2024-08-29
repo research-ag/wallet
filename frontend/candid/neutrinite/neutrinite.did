@@ -1,0 +1,260 @@
+type Volume24 = float64;
+type TokenTickShared = vec opt TokenTickItem;
+type TokenTickItem = record {
+  circulating_supply : nat;
+  fee : nat;
+  locking : opt LockingTick;
+  total_supply : nat;
+};
+type TokenLocking = variant {
+  none;
+  ogy;
+  sns : SnsConfig;
+};
+type TokenId = nat;
+type TokenDetail = variant {
+  link : record {
+    href : text;
+    name : text;
+  };
+  sns_sale : record {
+    end : Time;
+    price_usd : float64;
+    sold_tokens : nat;
+  };
+};
+type TokenConfig = record {
+  decimals : nat;
+  deleted : bool;
+  details : vec TokenDetail;
+  ledger : variant {
+    dip20 : record { ledger : principal };
+    icrc1 : record { ledger : principal };
+    none;
+  };
+  locking : TokenLocking;
+  name : text;
+  symbol : text;
+};
+type Time = int;
+type TickShared = vec opt TickItem;
+type TickItem = record {
+  High;
+  Low;
+  LastBid;
+  LastAsk;
+  Volume24;
+  DepthBid50;
+  DepthAsk50;
+};
+type SnsConfig = record {
+  governance : principal;
+  index : principal;
+  ledger : principal;
+  other_treasuries : vec record {
+    owner : principal;
+    subaccount : vec nat8;
+    token_id : TokenId;
+  };
+  root : principal;
+  swap : principal;
+  treasury_subaccount : vec nat8;
+};
+type Result_1 = variant {
+  err : text;
+  ok;
+};
+type Result = variant {
+  err : OraclePushError;
+  ok : Time;
+};
+type PairId = nat;
+type PairConfig = record {
+  config : variant {
+    icdex : record { canister : principal };
+    icpswap : record { canister : principal };
+    oracle : record { id : text };
+    sonic : record { id : text };
+    xrc : record {
+      base_asset : Asset;
+      quote_asset : Asset;
+    };
+  };
+  deleted : bool;
+  tokens : record {
+    TokenId;
+    TokenId;
+  };
+};
+type OraclePushError = variant {
+  not_in_validator_set;
+  too_early;
+};
+type NodeInfoShared = record {
+  bad : nat;
+  good : nat;
+  last : Time;
+  name : text;
+  "principal" : principal;
+};
+type Low = float64;
+type LockingTick = record {
+  dissolving : vec nat;
+  not_dissolving : vec nat;
+  other_treasuries : vec record {
+    TokenId;
+    nat;
+  };
+  total_locked : nat;
+  treasury : nat;
+};
+type LatestWalletTokens = record {
+  latest : vec LatestExtendedToken;
+  ticks : vec LatestWalletTokenTicks;
+};
+type LatestWalletTokenTicks = record {
+  from_id : TokenId;
+  t6h : vec float64;
+  to_id : TokenId;
+};
+type LatestTokenRow = record {
+  record {
+    TokenId;
+    TokenId;
+  };
+  text;
+  float64;
+};
+type LatestExtendedTokenTickItem = record {
+  circulating_supply : nat;
+  dissolving_1d : nat;
+  dissolving_1y : nat;
+  dissolving_30d : nat;
+  fee : nat;
+  other_treasuries : vec record {
+    TokenId;
+    nat;
+  };
+  total_locked : nat;
+  total_supply : nat;
+  treasury : nat;
+};
+type LatestExtendedToken = record {
+  config : TokenConfig;
+  id : TokenId;
+  last : opt LatestExtendedTokenTickItem;
+  rates : vec LatestExtendedRate;
+};
+type LatestExtendedRate = record {
+  depth2 : float64;
+  depth50 : float64;
+  depth8 : float64;
+  rate : float64;
+  symbol : text;
+  to_token : TokenId;
+  volume : float64;
+};
+type LastBid = float64;
+type LastAsk = float64;
+type High = float64;
+type GetTokensResult = variant {
+  err : GetError;
+  ok : record {
+    data : vec TokenTickShared;
+    first : Time;
+    last : Time;
+    updated : Time;
+  };
+};
+type GetPairsResult = variant {
+  err : GetError;
+  ok : record {
+    data : vec TickShared;
+    first : Time;
+    last : Time;
+    updated : Time;
+  };
+};
+type GetError = variant { invalid_frame };
+type Frame = variant {
+  t1d;
+  t1h;
+  t5m;
+};
+type ErrorLine = record {
+  Time;
+  text;
+  ErrorCode;
+  text;
+};
+type ErrorCode = variant {
+  call_error : record { err_code : nat32 };
+  canister_error;
+  canister_reject;
+  destination_invalid;
+  future : nat32;
+  system_fatal;
+  system_transient;
+};
+type DepthBid50 = vec float64;
+type DepthAsk50 = vec float64;
+type AssetClass = variant {
+  Cryptocurrency;
+  FiatCurrency;
+};
+type Asset = record {
+  class : AssetClass;
+  symbol : text;
+};
+type AdminCommand = variant {
+  pair_add : PairConfig;
+  pair_del : PairId;
+  pair_set : record {
+    PairId;
+    PairConfig;
+  };
+  token_add : TokenConfig;
+  token_collect : TokenId;
+  token_del : TokenId;
+  token_set : record {
+    TokenId;
+    TokenConfig;
+  };
+};
+service : {
+  admin : (vec AdminCommand) -> ();
+  controller_export_pair : (Frame, Time, nat, nat) -> (vec opt TickItem);
+  controller_import_pair : (
+    Frame,
+    Time,
+    nat,
+    vec opt TickItem,
+    variant {
+      add;
+      overwrite;
+    },
+  ) -> ();
+  controller_oracle_add : (text, principal) -> (Result_1);
+  controller_oracle_rem : (principal) -> (Result_1);
+  get_config : () -> (
+    record {
+      pairs : vec PairConfig;
+      tokens : vec TokenConfig;
+    }
+  ) query;
+  get_latest : () -> (vec LatestTokenRow) query;
+  get_latest_extended : () -> (vec LatestExtendedToken) query;
+  get_latest_wallet_tokens : () -> (LatestWalletTokens) query;
+  get_pairs : (Frame, vec nat, opt Time, opt Time) -> (GetPairsResult) query;
+  get_tokens : (vec nat, opt Time, opt Time) -> (GetTokensResult) query;
+  log_show : () -> (vec opt ErrorLine) query;
+  oracle_push : (
+    record {
+      data : vec record {
+        text;
+        float64;
+      };
+    }
+  ) -> (Result);
+  oracles_get : () -> (vec NodeInfoShared) query;
+};

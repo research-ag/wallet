@@ -2,7 +2,7 @@ import { chunkTransactions } from "@pages/home/helpers/mappers";
 import { useAppDispatch, useAppSelector } from "@redux/Store";
 import { useEffect, useRef } from "react";
 import { setTransactions, updateTxWorkerSubAccount } from "@redux/transaction/TransactionReducer";
-import { AssetSymbolEnum } from "@common/const";
+import { RossetaAssetEnum } from "@common/const";
 import { getAllTransactionsICP, getAllTransactionsICRC1 } from "@pages/home/helpers/requests";
 import { Asset, SubAccount, Transaction, TransactionList } from "@redux/models/AccountModels";
 import { hexToUint8Array } from "@common/utils/hexadecimal";
@@ -58,7 +58,7 @@ export default function TransactionsFiltering({ children }: { children: JSX.Elem
     if (isNotSelectedAsset) return;
 
     const subaccount_index = selectedAccount?.sub_account_id || "";
-    const isOGY = selectedAccount?.symbol === AssetSymbolEnum.Enum.OGYL;
+    const isOGY = selectedAccount?.symbol === RossetaAssetEnum.Enum.OGYL;
 
     const tx: Transaction[] = await getAllTransactionsICP({
       subaccount_index,
@@ -76,8 +76,8 @@ export default function TransactionsFiltering({ children }: { children: JSX.Elem
   };
 
   async function refreshCurrentAccountTransactions() {
-    const isSelectedICP = selectedAsset?.tokenSymbol === AssetSymbolEnum.Enum.ICP;
-    const isSelectedOGY = selectedAsset?.tokenSymbol === AssetSymbolEnum.Enum.OGYL;
+    const isSelectedICP = selectedAsset?.tokenSymbol === RossetaAssetEnum.Enum.ICP;
+    const isSelectedOGY = selectedAsset?.tokenSymbol === RossetaAssetEnum.Enum.OGYL;
     if (isSelectedICP || isSelectedOGY) {
       await refreshICPTxWorker();
     } else {
