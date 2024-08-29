@@ -36,7 +36,7 @@ export default function TransferDetailsConfirmation() {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(false);
   //
-  const { userAgent, userPrincipal, authClient } = useAppSelector((state) => state.auth);
+  const { userAgent, userPrincipal } = useAppSelector((state) => state.auth);
   //
   const assets = useAppSelector((state) => state.asset.list.assets);
   const currentAsset = assets.find((asset) => asset.tokenSymbol === transferState.tokenSymbol);
