@@ -54,6 +54,20 @@ export const ICRC1systemAssets: Array<Asset> = [
     index: "",
     supportedStandards,
   },
+  {
+    sortIndex: 10003,
+    symbol: "TCYCLES",
+    name: "Trillion Cycles",
+    tokenSymbol: "TCYCLES",
+    tokenName: "Trillion Cycles",
+    address: "um5iw-rqaaa-aaaaq-qaaba-cai",
+    decimal: "12",
+    shortDecimal: "12",
+    logo: "",
+    index: "ul4oc-4iaaa-aaaaq-qaabq-cai",
+    subAccounts: [{ ...defaultSubAccount, transaction_fee: "10" }],
+    supportedStandards,
+  },
 ];
 
 // INFO: default assets of a new user
@@ -74,6 +88,20 @@ export const defaultTokens: Asset[] = [
   },
   {
     sortIndex: 1,
+    symbol: "TCYCLES",
+    name: "Trillion Cycles",
+    tokenSymbol: "TCYCLES",
+    tokenName: "Trillion Cycles",
+    address: "um5iw-rqaaa-aaaaq-qaaba-cai",
+    decimal: "12",
+    shortDecimal: "12",
+    logo: "",
+    index: "ul4oc-4iaaa-aaaaq-qaabq-cai",
+    subAccounts: [{ ...defaultSubAccount, transaction_fee: "10" }],
+    supportedStandards,
+  },
+  {
+    sortIndex: 2,
     symbol: "ckBTC",
     name: "ckBTC",
     tokenSymbol: "ckBTC",
@@ -87,7 +115,7 @@ export const defaultTokens: Asset[] = [
     supportedStandards,
   },
   {
-    sortIndex: 2,
+    sortIndex: 3,
     symbol: "ckETH",
     name: "ckETH",
     tokenSymbol: "ckETH",
@@ -101,7 +129,7 @@ export const defaultTokens: Asset[] = [
     supportedStandards,
   },
   {
-    sortIndex: 3,
+    sortIndex: 4,
     symbol: "ckUSDC",
     name: "ckUSDC",
     tokenSymbol: "ckUSDC",
@@ -115,7 +143,7 @@ export const defaultTokens: Asset[] = [
     supportedStandards,
   },
   {
-    sortIndex: 4,
+    sortIndex: 5,
     symbol: "ckUSDT",
     name: "ckUSDT",
     tokenSymbol: "ckUSDT",
