@@ -69,7 +69,7 @@ To get started with ICRC-1 Wallet, follow these steps:
    VITE_DB_CANISTER_ID=[db canister ID]
    VITE_DB_CANISTER_HOST=http://localhost:8000
    # SIWE canister id
-   CANISTER_ID_IC_SIWE_PROVIDER=[ic_siwe_provider canister ID]
+   VITE_CANISTER_ID_IC_SIWE_PROVIDER=[ic_siwe_provider canister ID]
    ```
 
 3. Build canisters into the local replica
@@ -102,7 +102,7 @@ To get started with ICRC-1 Wallet, follow these steps:
    VITE_DB_CANISTER_ID=[db canister ID]
    VITE_DB_CANISTER_HOST=https://identity.ic0.app
    # SIWE canister id
-   CANISTER_ID_IC_SIWE_PROVIDER=[ic_siwe_provider canister ID]
+   VITE_CANISTER_ID_IC_SIWE_PROVIDER=[ic_siwe_provider canister ID]
    ```
 
 3. Build canisters into the local replica
