@@ -72,7 +72,7 @@ To get started with ICRC-1 Wallet, follow these steps:
    VITE_CANISTER_ID_IC_SIWE_PROVIDER=[ic_siwe_provider canister ID]
    ```
 
-3. Build canisters into the local replica
+3. Deploy canisters to the local replica
 
    ```
    make deploy-local
@@ -105,7 +105,7 @@ To get started with ICRC-1 Wallet, follow these steps:
    VITE_CANISTER_ID_IC_SIWE_PROVIDER=[ic_siwe_provider canister ID]
    ```
 
-3. Build canisters into the local replica
+3. Deploy canisters to mainnet
 
    ```
    make deploy
