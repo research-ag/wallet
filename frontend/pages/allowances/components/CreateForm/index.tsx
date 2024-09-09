@@ -11,7 +11,6 @@ import ExpirationFormItem from "./ExpirationFormItem";
 import { AllowanceValidationErrorsEnum } from "@/@types/allowance";
 import { useTranslation } from "react-i18next";
 import { CustomButton } from "@components/button";
-import { validatePrincipal } from "@/common/utils/definityIdentity";
 import {
   removeAllowanceErrorAction,
   setAllowanceErrorAction,
