@@ -11,6 +11,9 @@ import { ReactComponent as SortIcon } from "@assets/svg/files/sort.svg";
 import { getAssetIcon } from "@/common/utils/icons";
 import { IconTypeEnum } from "@/common/const";
 import clsx from "clsx";
+import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
+import { Principal } from "@dfinity/principal";
+import { hexToUint8Array } from "@common/utils/hexadecimal";
 
 interface AllowanceListProps {
   allowances: TAllowance[];
@@ -66,6 +69,12 @@ export default function AllowanceList({ allowances, handleSortChange }: Allowanc
             // Spender
             const principal = allowance.spender;
             const spenderName = contacts.find((contact) => contact.principal === principal)?.name;
+            const spenderEncoded = encodeIcrcAccount({
+              owner: Principal.fromText(allowance.spender),
+              subaccount: allowance.spenderSubaccount
+                ? hexToUint8Array(allowance.spenderSubaccount || "0x0")
+                : undefined,
+            });
 
             // Amount
             const hidden = !allowance?.expiration && allowance.amount === "0";
@@ -91,12 +100,12 @@ export default function AllowanceList({ allowances, handleSortChange }: Allowanc
                 </td>
                 <td className="py-1">
                   {spenderName && <p>{spenderName}</p>}
-                  {principal && (
+                  {spenderEncoded && (
                     <div className="flex">
                       <p className="mr-2 dark:text-gray-color-4 text-gray-color-5">
-                        {middleTruncation(principal, 10, 10)}
+                        {middleTruncation(spenderEncoded, 10, 10)}
                       </p>
-                      <CustomCopy size={"xSmall"} copyText={principal} />
+                      <CustomCopy size={"xSmall"} copyText={spenderEncoded} />
                     </div>
                   )}
                 </td>
@@ -147,5 +156,5 @@ const headerStyles = clsx(
 const bodyStyles = clsx(
   "text-md text-left text-black-color dark:text-gray-color-6",
   "bg-white dark:bg-level-2-color dark:bg-level-2-color",
-  "divide-y dark:divide-gray-color-1 divide-gray-color-6"
+  "divide-y dark:divide-gray-color-1 divide-gray-color-6",
 );

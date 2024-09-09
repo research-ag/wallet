@@ -23,6 +23,9 @@ import { db } from "@/database/db";
 import { removeZeroesFromAmount, toFullDecimal, toHoleBigInt } from "@common/utils/amount";
 import ICRC1BalanceOf from "@common/libs/icrcledger/ICRC1BalanceOf";
 import { hexToUint8Array } from "@common/utils/hexadecimal";
+import { Subaccount } from "@dfinity/ledger-icrc/dist/candid/icrc_ledger";
+import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
+import { subUint8ArrayToHex } from "@common/utils/unitArray";
 
 export enum CreateResult {
   SUCCESS = "success",
@@ -78,9 +81,25 @@ export default function useCreateAllowance() {
 
     const asset = assets.find((asset) => asset.tokenSymbol === allowance.asset.tokenSymbol) as Asset;
 
-    const fullAllowance = {
+    let spenderPrincipal = "";
+    let subaccount: Subaccount | undefined = undefined;
+    try {
+      const decodedSpender = decodeIcrcAccount(allowance?.spender);
+      spenderPrincipal = decodedSpender.owner.toText();
+      subaccount = decodedSpender.subaccount;
+    } catch {
+      throw AllowanceValidationErrorsEnum.Values["error.invalid.spender.principal"];
+    }
+
+    const auxAllowance = {
       ...allowance,
-      id: db().generateAllowancePrimaryKey(allowance),
+      spender: spenderPrincipal,
+      spenderSubaccount: subaccount ? `0x${subUint8ArrayToHex(subaccount)}` : allowance.spenderSubaccount,
+    };
+
+    const fullAllowance = {
+      ...auxAllowance,
+      id: db().generateAllowancePrimaryKey(auxAllowance),
       amount: removeZeroesFromAmount(allowance.amount || "0"),
     };
 

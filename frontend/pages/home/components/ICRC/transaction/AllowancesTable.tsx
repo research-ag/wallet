@@ -11,6 +11,9 @@ import ActionCard from "@pages/allowances/components/ActionCard";
 import clsx from "clsx";
 import UpdateAllowanceDrawer from "@pages/allowances/components/UpdateAllowanceDrawer";
 import DeleteAllowanceModal from "@pages/allowances/components/DeleteAllowanceModal";
+import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
+import { hexToUint8Array } from "@common/utils/hexadecimal";
+import { Principal } from "@dfinity/principal";
 
 const columns = ["subAccount", "spender", "amount", "expiration", "action"];
 
@@ -62,6 +65,12 @@ export default function AllowancesTable() {
             // Spender
             const principal = allowance.spender;
             const spenderName = contacts.find((contact) => contact.principal === principal)?.name;
+            const spenderEncoded = encodeIcrcAccount({
+              owner: Principal.fromText(allowance.spender),
+              subaccount: allowance.spenderSubaccount
+                ? hexToUint8Array(allowance.spenderSubaccount || "0x0")
+                : undefined,
+            });
 
             // Amount
             const hidden = !allowance?.expiration && allowance.amount === "0";
@@ -82,12 +91,12 @@ export default function AllowancesTable() {
                 </td>
                 <td className="py-1">
                   {spenderName && <p>{spenderName}</p>}
-                  {principal && (
+                  {spenderEncoded && (
                     <div className="flex">
                       <p className="mr-2 dark:text-gray-color-4 text-gray-color-5">
-                        {middleTruncation(principal, 10, 10)}
+                        {middleTruncation(spenderEncoded, 10, 10)}
                       </p>
-                      <CustomCopy size={"xSmall"} copyText={principal} />
+                      <CustomCopy size={"xSmall"} copyText={spenderEncoded} />
                     </div>
                   )}
                 </td>

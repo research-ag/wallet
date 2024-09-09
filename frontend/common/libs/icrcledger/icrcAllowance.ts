@@ -62,13 +62,13 @@ export function createApproveAllowanceParams(allowance: TAllowance): ApprovePara
 
   const owner = Principal.fromText(spenderPrincipal);
   const subAccountUint8Array = new Uint8Array(hexToUint8Array(allowanceSubAccountId));
-  const sependerSubAccountUint8Array = new Uint8Array(hexToUint8Array(allowanceSpenderSubAccountId || ""));
+  const spenderSubAccountUint8Array = new Uint8Array(hexToUint8Array(allowanceSpenderSubAccountId || ""));
   const amount: bigint = toHoleBigInt(allowanceAmount, Number(allowanceAssetDecimal));
   const expiration = calculateExpirationAsBigInt(allowance.expiration);
   return {
     spender: {
       owner,
-      subaccount: allowanceSpenderSubAccountId ? [sependerSubAccountUint8Array] : [],
+      subaccount: allowanceSpenderSubAccountId ? [spenderSubAccountUint8Array] : [],
     },
     from_subaccount: subAccountUint8Array,
     amount: amount,

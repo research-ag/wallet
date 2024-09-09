@@ -13,7 +13,8 @@ export async function allowanceCacheRefresh() {
     const promises = allowances.map(async (allowance) => {
       try {
         const spenderPrincipal = allowance?.spender;
-        const spenderSubaccount = allowance?.subAccountId;
+        const spenderSubaccount = allowance?.spenderSubaccount;
+        const allocatorSubaccount = allowance?.subAccountId;
         const assetAddress = allowance?.asset.address;
         const assetDecimal = allowance?.asset.decimal;
 
@@ -25,7 +26,8 @@ export async function allowanceCacheRefresh() {
         ) {
           const response = await getAllowanceDetails({
             spenderPrincipal,
-            allocatorSubaccount: spenderSubaccount,
+            spenderSubaccount,
+            allocatorSubaccount: allocatorSubaccount,
             assetAddress,
             assetDecimal,
           });
