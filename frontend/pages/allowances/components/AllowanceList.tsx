@@ -23,7 +23,7 @@ interface AllowanceListProps {
   handleSortChange: (column: AllowancesTableColumns) => Promise<void>;
 }
 
-const columns = ["subAccount", "spender", "amount", "expiration", "action"];
+const columns = ["subAccount", "spender", "amount", "expiration", "action", "share"];
 
 export default function AllowanceList({ allowances, handleSortChange }: AllowanceListProps) {
   const { t } = useTranslation();
@@ -130,15 +130,19 @@ export default function AllowanceList({ allowances, handleSortChange }: Allowanc
                   <p>{hidden ? "-" : userDate}</p>
                 </td>
                 <td className="flex justify-end ">
-                  <ActionCard allowance={allowance} />
-                  <span className="cursor-pointer">
+                  <div className="flex w-full justify-center">
+                    <ActionCard allowance={allowance} />
+                  </div>
+                </td>
+                <td>
+                  <div className="flex w-full justify-center">
                     <ShareIcon
-                      className="w-5 h-5 ml-1 cursor-pointer stroke-gray-color-3 dark:fill-PrimaryColorLight fill-gray-color-3"
+                      className="w-5 h-5 cursor-pointer stroke-gray-color-3 dark:fill-PrimaryColorLight fill-gray-color-3"
                       onClick={() => {
                         setAllowanceInfo(allowance);
                       }}
                     />
-                  </span>
+                  </div>
                 </td>
               </tr>
             );
@@ -166,7 +170,9 @@ function justifyCell(index: number) {
     case 3:
       return "justify-start";
     case 4:
-      return "justify-end";
+      return "justify-center";
+    case 5:
+      return "justify-center";
     default:
       return "";
   }

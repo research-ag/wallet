@@ -33,8 +33,10 @@ const DrawerAllowanceAccount = (props: DrawerAllowanceAccountProps) => {
           }}
         />
       </div>
+
       <div className="px-8 overflow-y-auto">
-        <div className="flex flex-col justify-start items-center w-full h-full gap-4 pt-[30%]">
+        <div className="flex flex-col justify-start items-center w-full h-full gap-4 pt-[20%]">
+          <p className="text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("Source")}</p>
           <div className="flex justify-center items-center w-[60%] border-4 border-SelectRowColor bg-white rounded-lg p-3">
             <QRCode
               style={{ height: "auto", maxWidth: "100%", width: "100%", borderRadius: "0.5rem" }}

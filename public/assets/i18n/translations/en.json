@@ -50,6 +50,8 @@
   "confirm": "Confirm",
   "name": "Name",
   "action": "Action",
+  "share": "Share",
+  "source": "Source",
   "wrap": "Wrap",
   "test": "Test",
   "save": "Save",
