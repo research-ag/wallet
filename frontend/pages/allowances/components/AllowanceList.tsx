@@ -1,4 +1,5 @@
 import { AllowancesTableColumns, TAllowance } from "@/@types/allowance";
+import { ReactComponent as ShareIcon } from "@assets/svg/files/share-apple.svg";
 import UpdateAllowanceDrawer from "@pages/allowances/components/UpdateAllowanceDrawer";
 import DeleteAllowanceModal from "@pages/allowances/components/DeleteAllowanceModal";
 import { useAppSelector } from "@redux/Store";
@@ -14,6 +15,8 @@ import clsx from "clsx";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
 import { hexToUint8Array } from "@common/utils/hexadecimal";
+import { useState } from "react";
+import DrawerAllowanceAccount from "./AllowanceAccountsDrawer";
 
 interface AllowanceListProps {
   allowances: TAllowance[];
@@ -27,11 +30,19 @@ export default function AllowanceList({ allowances, handleSortChange }: Allowanc
   const { assets } = useAppSelector((state) => state.asset.list);
   const { contacts } = useAppSelector((state) => state.contacts);
   const { isAppDataFreshing } = useAppSelector((state) => state.common);
+  const [allowanceInfo, setAllowanceInfo] = useState<TAllowance>();
 
   return (
     <div className="w-full max-h-[calc(100vh-13rem)] scroll-y-light mt-4">
       <UpdateAllowanceDrawer />
       <DeleteAllowanceModal />
+      {allowanceInfo && (
+        <DrawerAllowanceAccount
+          isDrawerOpen={!!allowanceInfo}
+          setDrawerOpen={setDrawerOpen}
+          allowance={allowanceInfo}
+        />
+      )}
       <table className="relative w-full text-black-color dark:text-gray-color-9">
         <thead className={headerStyles}>
           <tr>
@@ -118,8 +129,16 @@ export default function AllowanceList({ allowances, handleSortChange }: Allowanc
                 <td className="py-1">
                   <p>{hidden ? "-" : userDate}</p>
                 </td>
-                <td className="flex justify-end mr-4">
+                <td className="flex justify-end ">
                   <ActionCard allowance={allowance} />
+                  <span className="cursor-pointer">
+                    <ShareIcon
+                      className="w-5 h-5 ml-1 cursor-pointer stroke-gray-color-3 dark:fill-PrimaryColorLight fill-gray-color-3"
+                      onClick={() => {
+                        setAllowanceInfo(allowance);
+                      }}
+                    />
+                  </span>
                 </td>
               </tr>
             );
@@ -128,6 +147,12 @@ export default function AllowanceList({ allowances, handleSortChange }: Allowanc
       </table>
     </div>
   );
+
+  function setDrawerOpen(value: boolean) {
+    if (!value) {
+      setAllowanceInfo(undefined);
+    }
+  }
 }
 
 function justifyCell(index: number) {
