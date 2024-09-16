@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import { LoadingLoader } from "@components/loader";
 import { BasicButton } from "@components/button";
 import { useState } from "react";
-import { isPrincipalValid, isSubAccountIdValid } from "@pages/home/helpers/validators";
+import { isPrincipalValid, isSubAccountIdValid, isValidICRC1Account } from "@pages/home/helpers/validators";
 import { TransferFromTypeEnum, TransferToTypeEnum, useTransfer } from "@pages/home/contexts/TransferProvider";
 import { useAppSelector } from "@redux/Store";
 import logger from "@/common/utils/logger";
@@ -15,9 +15,11 @@ import { setTransactionDrawerAction } from "@redux/transaction/TransactionAction
 import { TransactionDrawer } from "@/@types/transactions";
 import { TransferView, useTransferView } from "@pages/home/contexts/TransferViewProvider";
 import ICRC2Allowance from "@common/libs/icrcledger/ICRC2Allowance";
-import { hexToUint8Array } from "@common/utils/hexadecimal";
+import { hexadecimalToUint8Array, hexToUint8Array } from "@common/utils/hexadecimal";
 import { Principal } from "@dfinity/principal";
 import ICRC1BalanceOf from "@common/libs/icrcledger/ICRC1BalanceOf";
+import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
+import { subUint8ArrayToHex } from "@common/utils/unitArray";
 
 export default function TransferForm() {
   const { t } = useTranslation();
@@ -93,7 +95,7 @@ export default function TransferForm() {
       throw new Error("Token symbol must be selected");
     }
 
-    if (!isPrincipalValid(transferState.fromPrincipal)) {
+    if (!isValidICRC1Account(transferState.fromPrincipal)) {
       setErrorMessage(t("error.transfer.from.invalid"));
       throw new Error("isPrincipalValid: from principal must be valid and no empty");
     }
@@ -103,10 +105,10 @@ export default function TransferForm() {
       throw new Error("isPrincipalValid: to principal must be valid and no empty");
     }
 
-    if (!isSubAccountIdValid(transferState.fromSubAccount)) {
-      setErrorMessage(t("error.transfer.from.invalid"));
-      throw new Error("isSubAccountIdValid: from sub account must be valid and no empty");
-    }
+    // if (!isSubAccountIdValid(transferState.fromSubAccount)) {
+    //   setErrorMessage(t("error.transfer.from.invalid"));
+    //   throw new Error("isSubAccountIdValid: from sub account must be valid and no empty");
+    // }
 
     if (!isSubAccountIdValid(transferState.toSubAccount)) {
       setErrorMessage(t("error.transfer.to.invalid"));
@@ -178,8 +180,10 @@ export default function TransferForm() {
       throw new Error("TransferForm: asset not found");
     }
 
+    const fromAccount = decodeIcrcAccount(transferState.fromPrincipal);
+
     // case 1: from principal must be different to the session principal
-    if (transferState.fromPrincipal === userPrincipal.toString()) {
+    if (fromAccount.owner.toText() === userPrincipal.toString()) {
       setErrorMessage(t("error.transfer.to.self.allowance"));
       throw new Error("fromAllowanceValidations: from principal must be different to session principal");
     }
@@ -189,12 +193,12 @@ export default function TransferForm() {
       agent: userAgent,
       canisterId: Principal.fromText(currentAsset.address),
       account: {
-        owner: Principal.fromText(transferState.fromPrincipal),
-        subaccount: [new Uint8Array(hexToUint8Array(transferState.fromSubAccount))],
+        owner: fromAccount.owner,
+        subaccount: fromAccount.subaccount ? [fromAccount.subaccount] : [],
       },
       spender: {
-        owner: userPrincipal,
-        subaccount: [],
+        owner: Principal.fromText(transferState.toPrincipal),
+        subaccount: hexadecimalToUint8Array(transferState.toSubAccount),
       },
     });
 
@@ -219,13 +223,19 @@ export default function TransferForm() {
 
     if (isToManual || isToIcrc || isToScanner || isToContact) {
       // case 2: from principal is different the session principal, but both are same. Sub account must be different
-      if (transferState.fromPrincipal === transferState.toPrincipal) {
-        if (transferState.fromSubAccount === transferState.toSubAccount) {
+      if (fromAccount.owner.toText() === transferState.toPrincipal) {
+        if (`0x${subUint8ArrayToHex(fromAccount.subaccount)}` === transferState.toSubAccount) {
           setErrorMessage(t("error.transfer.from.to.subaccounts.must.different"));
           throw new Error("fromAllowanceValidations: sub accounts must be differents");
         }
       }
     }
+    if (isToManual)
+      setTransferState({
+        ...transferState,
+        fromPrincipal: fromAccount.owner.toText(),
+        fromSubAccount: fromAccount.subaccount ? `0x${subUint8ArrayToHex(fromAccount.subaccount)}` : "0x0",
+      });
   }
 
   function fromServiceValidations() {
