@@ -221,6 +221,8 @@ export default function TransferForm() {
     const isToScanner = transferState.toType === TransferToTypeEnum.thidPartyScanner;
     const isToContact = transferState.toType === TransferToTypeEnum.thirdPartyContact;
 
+    console.log("toType", transferState.toType);
+
     if (isToManual || isToIcrc || isToScanner || isToContact) {
       // case 2: from principal is different the session principal, but both are same. Sub account must be different
       if (fromAccount.owner.toText() === transferState.toPrincipal) {
@@ -230,7 +232,7 @@ export default function TransferForm() {
         }
       }
     }
-    if (isToManual)
+    if (transferState.fromType === TransferFromTypeEnum.allowanceManual)
       setTransferState({
         ...transferState,
         fromPrincipal: fromAccount.owner.toText(),
