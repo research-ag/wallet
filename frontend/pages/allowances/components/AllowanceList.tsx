@@ -17,6 +17,8 @@ import { Principal } from "@dfinity/principal";
 import { hexToUint8Array } from "@common/utils/hexadecimal";
 import { useState } from "react";
 import DrawerAllowanceAccount from "./AllowanceAccountsDrawer";
+import Loader from "@pages/components/Loader";
+import { LoadingLoader } from "@components/loader";
 
 interface AllowanceListProps {
   allowances: TAllowance[];
@@ -88,7 +90,6 @@ export default function AllowanceList({ allowances, handleSortChange }: Allowanc
             });
 
             // Amount
-            const hidden = !allowance?.expiration && allowance.amount === "0";
             const amount = isAppDataFreshing && !allowance?.amount ? "0" : allowance.amount;
             const assetSymbol = assets.find((asset) => asset.tokenSymbol === allowance.asset.tokenSymbol)?.symbol;
 
@@ -122,12 +123,17 @@ export default function AllowanceList({ allowances, handleSortChange }: Allowanc
                 </td>
                 <td className="py-1">
                   <p>
-                    {hidden && "-"}
-                    {!hidden && amount} {!hidden && assetSymbol}
+                    {isAppDataFreshing ? (
+                      <div className="ml-6">
+                        <LoadingLoader />
+                      </div>
+                    ) : (
+                      `${amount} ${assetSymbol}`
+                    )}
                   </p>
                 </td>
                 <td className="py-1">
-                  <p>{hidden ? "-" : userDate}</p>
+                  <p>{userDate}</p>
                 </td>
                 <td className="flex justify-end ">
                   <div className="flex w-full justify-center">
