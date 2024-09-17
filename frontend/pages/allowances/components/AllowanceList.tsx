@@ -17,7 +17,6 @@ import { Principal } from "@dfinity/principal";
 import { hexToUint8Array } from "@common/utils/hexadecimal";
 import { useState } from "react";
 import DrawerAllowanceAccount from "./AllowanceAccountsDrawer";
-import Loader from "@pages/components/Loader";
 import { LoadingLoader } from "@components/loader";
 
 interface AllowanceListProps {
