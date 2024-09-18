@@ -14,6 +14,7 @@ import DeleteAllowanceModal from "@pages/allowances/components/DeleteAllowanceMo
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { hexToUint8Array } from "@common/utils/hexadecimal";
 import { Principal } from "@dfinity/principal";
+import { LoadingLoader } from "@components/loader";
 
 const columns = ["subAccount", "spender", "amount", "expiration", "action"];
 
@@ -73,8 +74,7 @@ export default function AllowancesTable() {
             });
 
             // Amount
-            const hidden = !allowance?.expiration && allowance.amount === "0";
-            const amount = isAppDataFreshing && !allowance?.amount ? "0" : allowance.amount;
+            const amount = allowance.amount || 0;
 
             const assetSymbol = assets.find((asset) => asset.tokenSymbol === allowance.asset.tokenSymbol)?.symbol;
 
@@ -102,12 +102,17 @@ export default function AllowancesTable() {
                 </td>
                 <td className="py-1">
                   <p>
-                    {hidden && "-"}
-                    {!hidden && amount} {!hidden && assetSymbol}
+                    {isAppDataFreshing ? (
+                      <div className="ml-6">
+                        <LoadingLoader />
+                      </div>
+                    ) : (
+                      `${amount} ${assetSymbol}`
+                    )}
                   </p>
                 </td>
                 <td className="py-1">
-                  <p>{hidden ? "-" : userDate}</p>
+                  <p>{userDate}</p>
                 </td>
                 <td className="flex justify-end mr-4">
                   <ActionCard allowance={allowance} />

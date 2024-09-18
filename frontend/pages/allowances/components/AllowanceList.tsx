@@ -89,7 +89,7 @@ export default function AllowanceList({ allowances, handleSortChange }: Allowanc
             });
 
             // Amount
-            const amount = isAppDataFreshing && !allowance?.amount ? "0" : allowance.amount;
+            const amount = allowance.amount || 0;
             const assetSymbol = assets.find((asset) => asset.tokenSymbol === allowance.asset.tokenSymbol)?.symbol;
 
             // Expiration
