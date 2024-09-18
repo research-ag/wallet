@@ -20,7 +20,6 @@ export async function allowanceCacheRefresh() {
 
         if (
           typeof spenderPrincipal === "string" &&
-          typeof spenderSubaccount === "string" &&
           typeof assetAddress === "string" &&
           typeof assetDecimal === "string"
         ) {
