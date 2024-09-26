@@ -183,7 +183,7 @@ const DrawerTransaction = () => {
             <div className="flex flex-row items-center justify-between w-full font-normal">
               <p className="font-bold">{t("date")}</p>
               <div className="flex flex-row items-center justify-start gap-2">
-                <p className="font-bold">{moment(selectedTransaction?.timestamp).format("MM/DD/YYYY hh:mm")}</p>
+                <p className="font-bold">{moment(selectedTransaction?.timestamp).format("MM/DD/YYYY HH:mm")}</p>
                 <CustomCopy
                   size={"small"}
                   copyText={selectedTransaction.timestamp.toString()}

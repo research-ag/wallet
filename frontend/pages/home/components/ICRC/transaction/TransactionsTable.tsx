@@ -132,7 +132,7 @@ export default function TransactionsTable(props: TransactionsTableProps) {
 
                   <td className="w-[11%]">
                     <div className="flex items-center">
-                      <p className="text-md w-fit">{moment(transaction.timestamp).format("M/DD/YYYY hh:mm")}</p>
+                      <p className="text-md w-fit">{moment(transaction.timestamp).format("M/DD/YYYY HH:mm")}</p>
                     </div>
                   </td>
 
