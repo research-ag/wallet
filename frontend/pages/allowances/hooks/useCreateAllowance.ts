@@ -102,6 +102,7 @@ export default function useCreateAllowance() {
       id: db().generateAllowancePrimaryKey(auxAllowance),
       amount: removeZeroesFromAmount(allowance.amount || "0"),
     };
+    console.log("fullAllowance", fullAllowance);
 
     await validateCreateAllowance(fullAllowance, asset);
 
