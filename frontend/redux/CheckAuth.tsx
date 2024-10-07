@@ -41,6 +41,7 @@ export const handleAuthenticated = async (opt: AuthNetwork) => {
           !!opt?.type && opt?.type === AuthNetworkTypeEnum.Values.NFID
             ? opt?.network + AUTH_PATH
             : NETWORK_AUTHORIZE_PATH,
+        derivationOrigin: `${import.meta.env.VITE_DERIVATION_ORIGIN}`,
         onSuccess: () => {
           handleLoginApp(authClient.getIdentity());
           store.dispatch(setDebugMode(false));

@@ -1,4 +1,4 @@
-import { AssetSymbolEnum, SpecialTxTypeEnum } from "@/common/const";
+import { RossetaAssetEnum, SpecialTxTypeEnum } from "@/common/const";
 import { getAddress, shortAddress } from "@common/utils/icrc";
 import { middleTruncation } from "@common/utils/strings";
 import { AccountHook } from "@pages/hooks/accountHook";
@@ -33,9 +33,9 @@ const CodeElement = ({ tx }: CodeElementProps) => {
     selectedAccount?.sub_account_id || "",
   );
   const hasSub =
-    tx?.symbol !== AssetSymbolEnum.Enum.ICP || ICPSubaccounts.find((sub) => sub.legacy === (isTo ? tx.to : tx.from));
+    tx?.symbol !== RossetaAssetEnum.Enum.ICP || ICPSubaccounts.find((sub) => sub.legacy === (isTo ? tx.to : tx.from));
   const isICPWithSub =
-    tx?.symbol === AssetSymbolEnum.Enum.ICP && ICPSubaccounts.find((sub) => sub.legacy === (isTo ? tx.to : tx.from));
+    tx?.symbol === RossetaAssetEnum.Enum.ICP && ICPSubaccounts.find((sub) => sub.legacy === (isTo ? tx.to : tx.from));
 
   let iAm = false;
   let hasSubName = false;
@@ -44,7 +44,7 @@ const CodeElement = ({ tx }: CodeElementProps) => {
   let hasContactName = false;
   let contactName = "";
 
-  if (tx?.symbol !== AssetSymbolEnum.Enum.ICP) {
+  if (tx?.symbol !== RossetaAssetEnum.Enum.ICP) {
     iAm = authClient === (isTo ? tx.to || "" : tx.from || "");
     if (iAm) {
       const symbolAsst = assets.find((asst) => asst.tokenSymbol === tx?.symbol)?.subAccounts;

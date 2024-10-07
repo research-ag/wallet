@@ -119,8 +119,8 @@ export abstract class IWalletDatabase {
    *
    * @returns The primary key for the allowance object.
    */
-  generateAllowancePrimaryKey({ spender, subAccountId, asset: { symbol } }: TAllowance): string {
-    return `${symbol}|${subAccountId}|${spender}`;
+  generateAllowancePrimaryKey({ spender, subAccountId, asset: { symbol }, spenderSubaccount }: TAllowance): string {
+    return `${symbol}|${subAccountId}|${spender}|${spenderSubaccount || "0x0"}`;
   }
 
   /**

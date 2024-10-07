@@ -34,6 +34,7 @@ import Pill from "./Pill";
 import getTotalAmountInCurrency from "@pages/helpers/getTotalAmountInCurrency";
 import reloadBallance from "@pages/helpers/reloadBalance";
 import WatchOnlyPill from "./WatchOnlyPill";
+import AboutModal from "./AboutModal";
 
 const TopBarComponent = ({ isLoginPage }: { isLoginPage: boolean }) => {
   const { t } = useTranslation();
@@ -45,6 +46,7 @@ const TopBarComponent = ({ isLoginPage }: { isLoginPage: boolean }) => {
 
   const [langOpen, setLangOpen] = useState(false);
   const [dbLocationOpen, setDbLocationOpen] = useState(false);
+  const [aboutOpen, setAboutOpen] = useState(false);
   const { identity, clear: clearSiweIdentity } = useSiweIdentity();
   const { address } = useAccount();
 
@@ -142,6 +144,16 @@ const TopBarComponent = ({ isLoginPage }: { isLoginPage: boolean }) => {
                 >
                   <p>{t("themes")}</p>
                 </DropdownMenu.Item>
+
+                <DropdownMenu.Item
+                  className={clsx(gearPopItem, "!justify-between", "rounded-b-lg")}
+                  onSelect={() => {
+                    setAboutOpen(true);
+                  }}
+                >
+                  <p>{t("about")}</p>
+                </DropdownMenu.Item>
+
                 {isLoginPage && (
                   <DropdownMenu.Item
                     className={clsx(gearPopItem, "!justify-between", "rounded-b-lg")}
@@ -173,6 +185,9 @@ const TopBarComponent = ({ isLoginPage }: { isLoginPage: boolean }) => {
       </BasicModal>
       <BasicModal open={dbLocationOpen} top="top-[35%]" border="dark:border-2 dark:border-gray-color-6">
         <DbLocationModal setOpen={setDbLocationOpen} />
+      </BasicModal>
+      <BasicModal open={aboutOpen} width={"w-[20rem]"} top="top-[35%]" border="dark:border-2 dark:border-gray-color-6">
+        <AboutModal setOpen={setAboutOpen} />
       </BasicModal>
     </Fragment>
   );

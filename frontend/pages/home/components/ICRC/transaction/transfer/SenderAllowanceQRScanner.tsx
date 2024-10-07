@@ -1,4 +1,3 @@
-import { subUint8ArrayToHex } from "@common/utils/unitArray";
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import QRscanner from "@pages/components/QRscanner";
 import logger from "@/common/utils/logger";
@@ -16,14 +15,11 @@ export default function SenderAllowanceQRScanner() {
         qrView={true}
         onSuccess={(value: string) => {
           try {
-            const decoded = decodeIcrcAccount(value);
-            const fromPrincipal = decoded.owner.toText();
-            const fromSubAccount = `0x${subUint8ArrayToHex(decoded.subaccount)}`;
+            decodeIcrcAccount(value);
 
             setTransferState((prev) => ({
               ...prev,
-              fromPrincipal,
-              fromSubAccount,
+              fromPrincipal: value,
             }));
 
             onGoBack();

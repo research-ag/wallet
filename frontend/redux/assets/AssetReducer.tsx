@@ -99,7 +99,15 @@ const assetSlice = createSlice({
       state.mutation.extraData = action.payload;
     },
     setICRC1SystemAssets(state, action: PayloadAction<Asset[]>) {
-      state.utilData.icr1SystemAssets = [...ICRC1systemAssets, ...action.payload];
+      const initSymbols = ICRC1systemAssets.map((asset) => asset.tokenSymbol);
+      const auxNewAssets: Asset[] = [];
+      action.payload.map((asset) => {
+        if (!initSymbols.includes(asset.tokenSymbol)) {
+          auxNewAssets.push({ ...asset, logo: asset.logo });
+          initSymbols.push(asset.symbol);
+        }
+      });
+      state.utilData.icr1SystemAssets = [...ICRC1systemAssets, ...auxNewAssets];
     },
     setICPSubaccounts(state, action: PayloadAction<ICPSubAccount[]>) {
       state.ICPSubaccounts = action.payload;

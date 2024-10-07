@@ -8,7 +8,7 @@ import logger from "@common/utils/logger";
 
 export async function getckERC20Tokens(): Promise<Asset[]> {
   try {
-    const canisterId = import.meta.env.VITE_CKUSDC_CANISTER_ID;
+    const canisterId = import.meta.env.VITE_CKERC20_CANISTER_ID;
     const agent = store.getState().auth.userAgent;
 
     const { managed_canisters } = await getOrchestratorInfo({ agent, canisterId });

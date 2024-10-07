@@ -1,27 +1,25 @@
 import "@rainbow-me/rainbowkit/styles.css";
-import { arbitrum, base, mainnet, optimism, polygon, zora } from "wagmi/chains";
-import { configureChains, createConfig } from "wagmi";
-import { publicProvider } from "wagmi/providers/public";
+import { http, createConfig } from "wagmi";
+import { mainnet, polygon, sepolia } from "wagmi/chains";
 import { getDefaultWallets } from "@rainbow-me/rainbowkit";
-
-export const supportedChains = [mainnet, polygon, optimism, arbitrum, base, zora];
-
-export const { chains, publicClient } = configureChains(supportedChains, [publicProvider()]);
+import { QueryClient } from "@tanstack/react-query";
 
 const info = {
-  appName: import.meta.env.VITE_APP_NAME,
-  projectId: import.meta.env.VITE_PROJECT_ID,
-  chains,
+  appName: process.env.REACT_APP_APP_NAME || "HPL",
+  projectId: process.env.REACT_APP_PROJECT_ID || "e8e4bbcc79064b8170622441993742c1",
 };
 
 const { connectors } = getDefaultWallets(info);
 
+export const chains = [mainnet, polygon, sepolia];
 export const wagmiConfig = createConfig({
-  autoConnect: true,
+  chains: [mainnet, polygon, sepolia],
+  transports: {
+    [mainnet.id]: http(),
+    [polygon.id]: http(),
+    [sepolia.id]: http(),
+  },
   connectors,
-  publicClient,
 });
 
-export function isChainIdSupported(id?: number) {
-  return supportedChains.find((chain) => chain.id === id) !== undefined;
-}
+export const queryClient = new QueryClient();

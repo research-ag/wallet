@@ -1,7 +1,6 @@
 import { AllowanceValidationErrorsEnum, TAllowance } from "@/@types/allowance";
 import { SelectOption } from "@/@types/components";
 import formatContact from "@/common/utils/formatContact";
-import { validatePrincipal } from "@/common/utils/definityIdentity";
 import { BasicInput } from "@components/input";
 import { BasicSelect } from "@components/select";
 import { BasicSwitch } from "@components/switch";
@@ -11,6 +10,7 @@ import { initialAllowanceState } from "@redux/allowance/AllowanceReducer";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Contact } from "@redux/models/ContactsModels";
+import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 
 interface ISpenderFormItemProps {
   contacts: Contact[];
@@ -87,11 +87,12 @@ export default function SpenderFormItem(props: ISpenderFormItemProps) {
   function onInputChange(event: React.ChangeEvent<HTMLInputElement>) {
     const newSearchValue = event.target.value.trim();
 
-    if (!validatePrincipal(newSearchValue)) {
-      setIsPrincipalValid(false);
-    } else {
+    try {
+      decodeIcrcAccount(newSearchValue);
       setIsPrincipalValid(true);
       removeAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.spender.principal"]);
+    } catch {
+      setIsPrincipalValid(false);
     }
 
     clearTimeout(inputTimeoutRef.current);

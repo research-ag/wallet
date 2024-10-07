@@ -2,6 +2,7 @@ import { checkHexString } from "@common/utils/hexadecimal";
 import { Principal } from "@dfinity/principal";
 import { Asset } from "@redux/models/AccountModels";
 import logger from "@/common/utils/logger";
+import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 // common
 
 export const isPrincipalValid = (principal: string): boolean => {
@@ -41,6 +42,16 @@ export const isValidInputPrincipal = (principal: string): boolean => {
     Principal.fromText(principal);
     return true;
   } catch (error) {
+    return false;
+  }
+};
+
+export const isValidICRC1Account = (account: string): boolean => {
+  try {
+    if (!account || account === "") return true;
+    decodeIcrcAccount(account);
+    return true;
+  } catch {
     return false;
   }
 };

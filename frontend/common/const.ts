@@ -5,6 +5,8 @@ import ckBTCIcon from "@/assets/svg/files/ckbtc.svg";
 import GoldTokenIcon from "@/assets/svg/files/gldt_icon.svg";
 import OrigynIcon from "@/assets/svg/files/ogy_icon.svg";
 import ckUSDCIcon from "@/assets/svg/files/ckUSDC.svg";
+import ckUSDTIcon from "@/assets/svg/files/ckUSDT.svg";
+import TcyclesIcon from "@/assets/svg/files/tcycles.svg";
 import { z } from "zod";
 import { ICRC1systemAssets } from "./defaultTokens";
 import { Asset } from "@redux/models/AccountModels";
@@ -32,8 +34,8 @@ export type DrawerOption = z.infer<typeof DrawerOptionEnum>;
 export const IconTypeEnum = z.enum(["ASSET", "HEADER", "FILTER", "ALLOWANCE", "SELECT"]);
 export type IconType = z.infer<typeof IconTypeEnum>;
 
-export const AssetSymbolEnum = z.enum(["ICP", "ckBTC", "CHAT", "KINIC", "SNS1", "HOT", "OGY"]);
-export type AssetSymbol = z.infer<typeof AssetSymbolEnum>;
+export const RossetaAssetEnum = z.enum(["ICP", "OGYL"]);
+export type RossetaAsset = z.infer<typeof RossetaAssetEnum>;
 
 export const ThemesEnum = z.enum(["dark", "light"]);
 export type Themes = z.infer<typeof ThemesEnum>;
@@ -88,5 +90,8 @@ export const symbolIconDict: { [key: string]: string } = {
   ckETH: ckETHIcon,
   GLDT: GoldTokenIcon,
   OGY: OrigynIcon,
+  OGYL: OrigynIcon,
   ckUSDC: ckUSDCIcon,
+  ckUSDT: ckUSDTIcon,
+  TCYCLES: TcyclesIcon,
 };

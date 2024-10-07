@@ -36,7 +36,7 @@ export default function TransferDetailsConfirmation() {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(false);
   //
-  const { userAgent, userPrincipal, authClient } = useAppSelector((state) => state.auth);
+  const { userAgent, userPrincipal } = useAppSelector((state) => state.auth);
   //
   const assets = useAppSelector((state) => state.asset.list.assets);
   const currentAsset = assets.find((asset) => asset.tokenSymbol === transferState.tokenSymbol);
@@ -387,7 +387,7 @@ export default function TransferDetailsConfirmation() {
         canisterId: Principal.fromText(transferState.fromPrincipal),
         token: Principal.fromText(currentAsset?.address || ""),
         amount: toHoleBigInt(transferState.amount, Number(currentAsset?.decimal || "8")),
-        to: { owner: Principal.fromText(authClient), subaccount: [hexToUint8Array(transferState.toSubAccount)] },
+        to_subaccount: [hexToUint8Array(transferState.toSubAccount)],
         expected_fee: [],
       })) as any;
 

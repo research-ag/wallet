@@ -1,12 +1,12 @@
 import { Actor, HttpAgent } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
-import { Account, _SERVICE as IcrcxActor } from "@candid/icrcx/service.did";
+import { _SERVICE as IcrcxActor } from "@candid/icrcx/service.did";
 import { idlFactory as IcrcxIDLFactory } from "@candid/icrcx/candid.did";
 import { getCreditBalance } from "@redux/services/ServiceActions";
 import { isString } from "lodash";
 
 interface ICRCXWithdrawArgs {
-  to: Account;
+  to_subaccount: [] | [Uint8Array];
   token: Principal;
   amount: bigint;
   expected_fee: [] | [bigint];

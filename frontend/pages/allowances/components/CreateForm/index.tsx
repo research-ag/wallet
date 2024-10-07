@@ -11,7 +11,6 @@ import ExpirationFormItem from "./ExpirationFormItem";
 import { AllowanceValidationErrorsEnum } from "@/@types/allowance";
 import { useTranslation } from "react-i18next";
 import { CustomButton } from "@components/button";
-import { validatePrincipal } from "@/common/utils/definityIdentity";
 import {
   removeAllowanceErrorAction,
   setAllowanceErrorAction,
@@ -29,6 +28,9 @@ import { CheckCircledIcon } from "@radix-ui/react-icons";
 import useAllowanceDrawer from "@pages/allowances/hooks/useAllowanceDrawer";
 import ServiceSpenderFormItem from "./ServiceSpenderFormItem";
 import { useEffect } from "react";
+import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
+import { Subaccount } from "@dfinity/ledger-icrc/dist/candid/icrc_ledger";
+import { subUint8ArrayToHex } from "@common/utils/unitArray";
 
 export default function CreateForm() {
   const { t } = useTranslation();
@@ -157,11 +159,19 @@ export default function CreateForm() {
         return setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.subaccount"]);
       removeAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.subaccount"]);
 
-      if (!validatePrincipal(allowance?.spender))
-        return setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.spender.principal"]);
-      removeAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.spender.principal"]);
+      const initSpender = allowance.spender;
 
-      if (allowance?.spender === userPrincipal.toText())
+      let spenderPrincipal = "";
+      let subaccount: Subaccount | undefined = undefined;
+      try {
+        const decodedSpender = decodeIcrcAccount(allowance?.spender);
+        spenderPrincipal = decodedSpender.owner.toText();
+        subaccount = decodedSpender.subaccount;
+      } catch {
+        return setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.invalid.spender.beneficiary"]);
+      }
+
+      if (spenderPrincipal === userPrincipal.toText())
         return setAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.self.allowance"]);
       removeAllowanceErrorAction(AllowanceValidationErrorsEnum.Values["error.self.allowance"]);
 
@@ -173,16 +183,25 @@ export default function CreateForm() {
         assetAddress: allowance.asset.address,
         assetDecimal: allowance.asset.decimal,
         allocatorSubaccount: allowance.subAccountId,
-        spenderPrincipal: allowance.spender,
-        spenderSubaccount: isFromService ? allowance.spenderSubaccount : undefined,
+        spenderPrincipal: spenderPrincipal,
+        spenderSubaccount: isFromService
+          ? allowance.spenderSubaccount
+          : subaccount
+          ? `0x${subUint8ArrayToHex(subaccount)}`
+          : undefined,
       });
 
       if (response.amount !== "") {
-        const newAllowance = {
+        const auxAllowance = {
           ...allowance,
+          spender: spenderPrincipal,
+          spenderSubaccount: subaccount ? `0x${subUint8ArrayToHex(subaccount)}` : allowance.spenderSubaccount,
+        };
+        const newAllowance = {
+          ...auxAllowance,
           amount: response?.amount || "0",
           expiration: response?.expiration || "",
-          id: db().generateAllowancePrimaryKey(allowance),
+          id: db().generateAllowancePrimaryKey(auxAllowance),
         };
 
         const duplicated = await getDuplicatedAllowance(newAllowance);
@@ -210,7 +229,12 @@ export default function CreateForm() {
           );
         }
 
-        setAllowanceState({ ...newAllowance, amount: newAllowance.amount.replace(/,/g, "") });
+        setAllowanceState({
+          ...newAllowance,
+          spender: initSpender,
+          spenderSubaccount: undefined,
+          amount: newAllowance.amount.replace(/,/g, ""),
+        });
       } else {
         setAllowanceState({ ...allowance, amount: "" });
       }

@@ -10,7 +10,7 @@ export default function Input(props: InputProps) {
   const { disabled, border, ...additionalProps } = props;
   return (
     <div className={inputContainerCVA({ disabled, border })}>
-      <input className={inputCVA({})} {...additionalProps} />
+      <input className={inputCVA({})} {...additionalProps} spellCheck={false} />
     </div>
   );
 }

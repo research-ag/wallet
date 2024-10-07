@@ -42,6 +42,17 @@ To get started with ICRC-1 Wallet, follow these steps:
    mops install
    ```
 
+4. Add git info base file named generatedGitInfo.json inside root frontend folder:
+
+   ```
+   {
+      "gitBranch": "branch-name",
+      "gitCommitHash": "b5508aa23aeef0b6b23740d12c5029c8ae15f793",
+      "dateString": "2024.8.26",
+      "hourString": "11:46:40"
+   }
+   ```
+
 ## Local deployment
 
 1. Create canisters on local replica and save the ID shown in the output
@@ -58,10 +69,10 @@ To get started with ICRC-1 Wallet, follow these steps:
    VITE_DB_CANISTER_ID=[db canister ID]
    VITE_DB_CANISTER_HOST=http://localhost:8000
    # SIWE canister id
-   CANISTER_ID_IC_SIWE_PROVIDER=[ic_siwe_provider canister ID]
+   VITE_CANISTER_ID_IC_SIWE_PROVIDER=[ic_siwe_provider canister ID]
    ```
 
-3. Build canisters into the local replica
+3. Deploy canisters to the local replica
 
    ```
    make deploy-local
@@ -91,10 +102,10 @@ To get started with ICRC-1 Wallet, follow these steps:
    VITE_DB_CANISTER_ID=[db canister ID]
    VITE_DB_CANISTER_HOST=https://identity.ic0.app
    # SIWE canister id
-   CANISTER_ID_IC_SIWE_PROVIDER=[ic_siwe_provider canister ID]
+   VITE_CANISTER_ID_IC_SIWE_PROVIDER=[ic_siwe_provider canister ID]
    ```
 
-3. Build canisters into the local replica
+3. Deploy canisters to mainnet
 
    ```
    make deploy

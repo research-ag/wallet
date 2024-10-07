@@ -38,6 +38,8 @@ const Modal = ({
             className={`bg-black/50 data-[state=open]:animate-overlayShow fixed inset-0 z-[${overlayZIndex}]`}
           />
           <Dialog.Content className={`fixed ${top} left-[50%] outline-none shadow-md z-[${contentZIndex}]`}>
+            <Dialog.Title></Dialog.Title>
+            <Dialog.Description></Dialog.Description>
             <div
               className={`absolute flex flex-col justify-start items-start text-lg translate-x-[-50%] translate-y-[-50%] ${width} ${height}  ${background} ${padding} ${rounded} ${text} ${border}`}
             >

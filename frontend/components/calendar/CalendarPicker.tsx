@@ -14,7 +14,7 @@ interface CalendarDatePickerProps extends DateTimePickerProps<dayjs.Dayjs> {
 export default function CalendarPicker(props: CalendarDatePickerProps) {
   const {
     timezone = "system",
-    format = "MM/DD/YY hh:mm:ss a",
+    format = "MM/DD/YY HH:mm:ss a",
     timeSteps = { minutes: 1, seconds: 5 },
     disablePast = true,
     disabled = false,

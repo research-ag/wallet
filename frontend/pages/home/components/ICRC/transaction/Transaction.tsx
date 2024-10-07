@@ -3,7 +3,7 @@ import { ReactComponent as DownBlueArrow } from "@assets/svg/files/down-blue-arr
 //
 import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
-import { AssetSymbolEnum, SpecialTxTypeEnum } from "@/common/const";
+import { RossetaAssetEnum, SpecialTxTypeEnum } from "@/common/const";
 import { Principal } from "@dfinity/principal";
 import { AccountHook } from "@pages/hooks/accountHook";
 import { CustomCopy } from "@components/tooltip";
@@ -73,7 +73,7 @@ const DrawerTransaction = () => {
                 />
               </div>
             </div>
-            {selectedTransaction?.symbol === AssetSymbolEnum.Enum.ICP && (
+            {selectedTransaction?.symbol === RossetaAssetEnum.Enum.ICP && (
               <div className="flex flex-row items-center justify-between w-full font-normal">
                 <p>{`${t("acc.identifier")}`}</p>
                 <div className="flex flex-row items-center justify-start gap-2">
@@ -144,7 +144,7 @@ const DrawerTransaction = () => {
                 />
               </div>
             </div>
-            {selectedTransaction?.symbol === AssetSymbolEnum.Enum.ICP && (
+            {selectedTransaction?.symbol === RossetaAssetEnum.Enum.ICP && (
               <div className="flex flex-row items-center justify-between w-full font-normal">
                 <p>{`${t("acc.identifier")}`}</p>
                 <div className="flex flex-row items-center justify-start gap-2">
@@ -183,7 +183,7 @@ const DrawerTransaction = () => {
             <div className="flex flex-row items-center justify-between w-full font-normal">
               <p className="font-bold">{t("date")}</p>
               <div className="flex flex-row items-center justify-start gap-2">
-                <p className="font-bold">{moment(selectedTransaction?.timestamp).format("MM/DD/YYYY hh:mm")}</p>
+                <p className="font-bold">{moment(selectedTransaction?.timestamp).format("MM/DD/YYYY HH:mm")}</p>
                 <CustomCopy
                   size={"small"}
                   copyText={selectedTransaction.timestamp.toString()}
@@ -200,20 +200,20 @@ const DrawerTransaction = () => {
 
   function hasSub(to: boolean) {
     return (
-      selectedTransaction?.symbol !== AssetSymbolEnum.Enum.ICP ||
+      selectedTransaction?.symbol !== RossetaAssetEnum.Enum.ICP ||
       ICPSubaccounts.find((sub) => sub.legacy === (to ? selectedTransaction?.to : selectedTransaction?.from))
     );
   }
 
   function isICPWithSub(to: boolean) {
     return (
-      selectedTransaction?.symbol === AssetSymbolEnum.Enum.ICP &&
+      selectedTransaction?.symbol === RossetaAssetEnum.Enum.ICP &&
       ICPSubaccounts.find((sub) => sub.legacy === (to ? selectedTransaction?.to : selectedTransaction?.from))
     );
   }
 
   function getIdentifier(to: boolean) {
-    if (selectedTransaction?.symbol === AssetSymbolEnum.Enum.ICP) {
+    if (selectedTransaction?.symbol === RossetaAssetEnum.Enum.ICP) {
       if (to) return selectedTransaction?.to || "";
       else return selectedTransaction?.from || "";
     } else
