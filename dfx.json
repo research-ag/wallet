@@ -37,7 +37,11 @@
       "type": "ephemeral"
     },
     "ic": {
-      "providers": ["https://mainnet.dfinity.network"],
+      "providers": ["https://ic0.app"],
+      "type": "persistent"
+    },
+    "test": {
+      "providers": ["https://ic0.app"],
       "type": "persistent"
     }
   },
