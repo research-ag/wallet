@@ -68,6 +68,20 @@ export const ICRC1systemAssets: Array<Asset> = [
     subAccounts: [{ ...defaultSubAccount, transaction_fee: "10" }],
     supportedStandards,
   },
+  {
+    sortIndex: 10004,
+    symbol: "DOD",
+    name: "DOD",
+    tokenSymbol: "DOD",
+    tokenName: "DOD",
+    address: "cp4zx-yiaaa-aaaah-aqzea-cai",
+    index: "cefgz-dyaaa-aaaar-qag5a-cai",
+    decimal: "8",
+    shortDecimal: "8",
+    logo: "",
+    subAccounts: [{ ...defaultSubAccount, transaction_fee: "0" }],
+    supportedStandards,
+  },
 ];
 
 // INFO: default assets of a new user
