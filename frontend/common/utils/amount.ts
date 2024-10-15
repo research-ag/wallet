@@ -47,6 +47,17 @@ export const toFullDecimal = (
   }
 };
 
+export const addCommasToNumber = (numberStr: string) => {
+  // Split the string into whole and decimal parts
+  const [whole, decimal] = numberStr.split(".");
+
+  // Add commas to the whole part using a regular expression
+  const wholeWithCommas = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+  // Combine the whole part with the decimal part
+  return decimal ? `${wholeWithCommas}.${decimal}` : wholeWithCommas;
+};
+
 /**
  * Remove leading and trailing zeroes from a string representing an amount.
  * 000000.23 -> 0.23

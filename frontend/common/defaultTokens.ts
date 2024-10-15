@@ -75,7 +75,7 @@ export const ICRC1systemAssets: Array<Asset> = [
     tokenSymbol: "DOD",
     tokenName: "DOD",
     address: "cp4zx-yiaaa-aaaah-aqzea-cai",
-    index: "cefgz-dyaaa-aaaar-qag5a-cai",
+    index: "ci57d-vqaaa-aaaah-aqzeq-cai",
     decimal: "8",
     shortDecimal: "8",
     logo: "",

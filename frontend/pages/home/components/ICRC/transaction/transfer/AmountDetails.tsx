@@ -5,7 +5,7 @@ import { TransferFromTypeEnum, TransferToTypeEnum, useTransfer } from "@pages/ho
 import { useTranslation } from "react-i18next";
 import { clsx } from "clsx";
 import { useAppSelector } from "@redux/Store";
-import { toFullDecimal, toHoleBigInt, validateAmount } from "@common/utils/amount";
+import { addCommasToNumber, toFullDecimal, toHoleBigInt, validateAmount } from "@common/utils/amount";
 import useTransferMaxAmount from "@pages/home/hooks/useTransferMaxAmount";
 import { LoadingLoader } from "@components/loader";
 import { useEffect, useState } from "react";
@@ -69,7 +69,9 @@ export default function AmountDetails() {
         <div className="flex">
           <div className="flex">
             <p className="mr-1 text-sm text-primary-color">{t("max")}: </p>
-            <p className="mr-1 text-sm text-primary-color">{`${maxAmount.maxAmount} ${currentAsset?.symbol || ""}`}</p>
+            <p className="mr-1 text-sm text-primary-color">{`${addCommasToNumber(maxAmount.maxAmount)} ${
+              currentAsset?.symbol || ""
+            }`}</p>
           </div>
 
           {!maxAmount.isLoading && maxAmount.displayAvailable && maxAmount.isAmountFromMax && (
@@ -120,7 +122,9 @@ export default function AmountDetails() {
         <div className="flex flex-row justify-start items-center pl-2">
           <p className="mr-1 text-sm text-primary-color">
             {`≈ ${currentMarket && showUSD ? "" : "$"}${
-              currentMarket && showUSD ? transferState.amount || "0" : transferState.usdAmount || "0"
+              currentMarket && showUSD
+                ? addCommasToNumber(transferState.amount) || "0"
+                : addCommasToNumber(transferState.usdAmount) || "0"
             } ${currentMarket && showUSD ? currentAsset?.symbol || "" : ""}`}
           </p>
         </div>
