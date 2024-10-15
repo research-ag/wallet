@@ -7,6 +7,7 @@ import OrigynIcon from "@/assets/svg/files/ogy_icon.svg";
 import ckUSDCIcon from "@/assets/svg/files/ckUSDC.svg";
 import ckUSDTIcon from "@/assets/svg/files/ckUSDT.svg";
 import TcyclesIcon from "@/assets/svg/files/tcycles.svg";
+import DodIcon from "@/assets/svg/files/dod.svg";
 import { z } from "zod";
 import { ICRC1systemAssets } from "./defaultTokens";
 import { Asset } from "@redux/models/AccountModels";
@@ -94,4 +95,5 @@ export const symbolIconDict: { [key: string]: string } = {
   ckUSDC: ckUSDCIcon,
   ckUSDT: ckUSDTIcon,
   TCYCLES: TcyclesIcon,
+  DOD: DodIcon,
 };

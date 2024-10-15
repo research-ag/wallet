@@ -76,13 +76,13 @@ export default function useTransferMaxAmount() {
     }
 
     setMaxAmount({
-      maxAmount: toFullDecimal(balance - fee, Number(currentAsset.decimal)),
+      maxAmount: toFullDecimal(balance - fee, Number(currentAsset.decimal), undefined, true),
       availableAmount: toFullDecimal(balance, Number(currentAsset.decimal)),
       displayAvailable: false,
       isLoading: false,
       isAmountFromMax: !noMax,
     });
-    const amount1 = toFullDecimal(balance - fee, Number(currentAsset.decimal));
+    const amount1 = toFullDecimal(balance - fee, Number(currentAsset.decimal), undefined, true);
     const bigintAmount1 = toHoleBigInt(amount1, Number(currentAsset?.decimal || "8"));
     const usdAmount1 = currentMarket
       ? getUSDFromToken(bigintAmount1.toString(), currentMarket.price, currentAsset.decimal || 8)
