@@ -83,6 +83,7 @@ export default function useCreateAllowance() {
 
     let spenderPrincipal = "";
     let subaccount: Subaccount | undefined = undefined;
+
     try {
       const decodedSpender = decodeIcrcAccount(allowance?.spender);
       spenderPrincipal = decodedSpender.owner.toText();
