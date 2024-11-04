@@ -30,7 +30,7 @@ export const ICRC1systemAssets: Array<Asset> = [
   },
   {
     sortIndex: 10001,
-    address: "oh54a-baaaa-aaaap-abryq-cai",
+    address: "6c7su-kiaaa-aaaar-qaira-cai",
     symbol: "GLDT",
     name: "Gold token",
     tokenSymbol: "GLDT",
