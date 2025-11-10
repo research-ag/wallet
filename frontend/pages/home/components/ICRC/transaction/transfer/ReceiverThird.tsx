@@ -4,7 +4,6 @@ import { CustomInput } from "@components/input";
 import { ChangeEvent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import ThidInputSufix from "@/pages/home/components/ICRC/transaction/transfer/ThirdInputSufix";
-import { decodeIcrcAccount, encodeIcrcAccount } from "@dfinity/ledger";
 import { subUint8ArrayToHex } from "@common/utils/unitArray";
 import { TransferToTypeEnum, useTransfer } from "@pages/home/contexts/TransferProvider";
 import useReceiver from "@pages/home/hooks/useReceiver";
@@ -12,6 +11,7 @@ import ContactBookReceiver from "@/pages/home/components/ICRC/transaction/transf
 import ServiceBookReceiver from "@/pages/home/components/ICRC/transaction/transfer/ReceiverServiceSelector";
 import { Principal } from "@dfinity/principal";
 import { hexToUint8Array } from "@common/utils/hexadecimal";
+import { decodeIcrcAccount, encodeIcrcAccount } from "@dfinity/ledger-icrc";
 
 export default function ReceiverThird() {
   const { isToFilled, toType } = useReceiver();

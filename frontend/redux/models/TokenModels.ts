@@ -6,12 +6,6 @@ const TokenMarketInfo = z.object({
   name: z.string(),
   symbol: z.string(),
   price: z.number(),
-  marketcap: z.number(),
-  volume24: z.number(),
-  circulating: z.number(),
-  total: z.number(),
-  liquidity: z.number(),
-  unreleased: z.number(),
 });
 
 export type TokenMarketInfo = z.infer<typeof TokenMarketInfo>;

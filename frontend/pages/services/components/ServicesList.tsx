@@ -67,7 +67,7 @@ export default function ServicesList({ services, newService, setNewService }: Se
           {services.map((srv, k) => {
             return (
               <Fragment key={k}>
-                <tr className={ServiceStyle(srv)}>
+                <tr className={ServiceStyle(srv)} key={k}>
                   <td
                     onDoubleClick={() => {
                       !watchOnlyMode && onEditService(srv);

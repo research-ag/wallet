@@ -1,4 +1,5 @@
 import { AllowancesTableColumns, TAllowance } from "@/@types/allowance";
+import { ReactComponent as ShareIcon } from "@assets/svg/files/share-apple.svg";
 import UpdateAllowanceDrawer from "@pages/allowances/components/UpdateAllowanceDrawer";
 import DeleteAllowanceModal from "@pages/allowances/components/DeleteAllowanceModal";
 import { useAppSelector } from "@redux/Store";
@@ -11,24 +12,38 @@ import { ReactComponent as SortIcon } from "@assets/svg/files/sort.svg";
 import { getAssetIcon } from "@/common/utils/icons";
 import { IconTypeEnum } from "@/common/const";
 import clsx from "clsx";
+import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
+import { Principal } from "@dfinity/principal";
+import { hexToUint8Array } from "@common/utils/hexadecimal";
+import { useState } from "react";
+import DrawerAllowanceAccount from "./AllowanceAccountsDrawer";
+import { LoadingLoader } from "@components/loader";
 
 interface AllowanceListProps {
   allowances: TAllowance[];
   handleSortChange: (column: AllowancesTableColumns) => Promise<void>;
 }
 
-const columns = ["subAccount", "spender", "amount", "expiration", "action"];
+const columns = ["subAccount", "spender", "amount", "expiration", "action", "share"];
 
 export default function AllowanceList({ allowances, handleSortChange }: AllowanceListProps) {
   const { t } = useTranslation();
   const { assets } = useAppSelector((state) => state.asset.list);
   const { contacts } = useAppSelector((state) => state.contacts);
   const { isAppDataFreshing } = useAppSelector((state) => state.common);
+  const [allowanceInfo, setAllowanceInfo] = useState<TAllowance>();
 
   return (
     <div className="w-full max-h-[calc(100vh-13rem)] scroll-y-light mt-4">
       <UpdateAllowanceDrawer />
       <DeleteAllowanceModal />
+      {allowanceInfo && (
+        <DrawerAllowanceAccount
+          isDrawerOpen={!!allowanceInfo}
+          setDrawerOpen={setDrawerOpen}
+          allowance={allowanceInfo}
+        />
+      )}
       <table className="relative w-full text-black-color dark:text-gray-color-9">
         <thead className={headerStyles}>
           <tr>
@@ -66,10 +81,15 @@ export default function AllowanceList({ allowances, handleSortChange }: Allowanc
             // Spender
             const principal = allowance.spender;
             const spenderName = contacts.find((contact) => contact.principal === principal)?.name;
+            const spenderEncoded = encodeIcrcAccount({
+              owner: Principal.fromText(allowance.spender),
+              subaccount: allowance.spenderSubaccount
+                ? hexToUint8Array(allowance.spenderSubaccount || "0x0")
+                : undefined,
+            });
 
             // Amount
-            const hidden = !allowance?.expiration && allowance.amount === "0";
-            const amount = isAppDataFreshing && !allowance?.amount ? "0" : allowance.amount;
+            const amount = allowance.amount || 0;
             const assetSymbol = assets.find((asset) => asset.tokenSymbol === allowance.asset.tokenSymbol)?.symbol;
 
             // Expiration
@@ -91,26 +111,43 @@ export default function AllowanceList({ allowances, handleSortChange }: Allowanc
                 </td>
                 <td className="py-1">
                   {spenderName && <p>{spenderName}</p>}
-                  {principal && (
+                  {spenderEncoded && (
                     <div className="flex">
                       <p className="mr-2 dark:text-gray-color-4 text-gray-color-5">
-                        {middleTruncation(principal, 10, 10)}
+                        {middleTruncation(spenderEncoded, 10, 10)}
                       </p>
-                      <CustomCopy size={"xSmall"} copyText={principal} />
+                      <CustomCopy size={"xSmall"} copyText={spenderEncoded} />
                     </div>
                   )}
                 </td>
                 <td className="py-1">
                   <p>
-                    {hidden && "-"}
-                    {!hidden && amount} {!hidden && assetSymbol}
+                    {isAppDataFreshing ? (
+                      <div className="ml-6">
+                        <LoadingLoader />
+                      </div>
+                    ) : (
+                      `${amount} ${assetSymbol}`
+                    )}
                   </p>
                 </td>
                 <td className="py-1">
-                  <p>{hidden ? "-" : userDate}</p>
+                  <p>{userDate}</p>
                 </td>
-                <td className="flex justify-end mr-4">
-                  <ActionCard allowance={allowance} />
+                <td className="flex justify-end ">
+                  <div className="flex w-full justify-center">
+                    <ActionCard allowance={allowance} />
+                  </div>
+                </td>
+                <td>
+                  <div className="flex w-full justify-center">
+                    <ShareIcon
+                      className="w-5 h-5 cursor-pointer stroke-gray-color-3 dark:fill-PrimaryColorLight fill-gray-color-3"
+                      onClick={() => {
+                        setAllowanceInfo(allowance);
+                      }}
+                    />
+                  </div>
                 </td>
               </tr>
             );
@@ -119,6 +156,12 @@ export default function AllowanceList({ allowances, handleSortChange }: Allowanc
       </table>
     </div>
   );
+
+  function setDrawerOpen(value: boolean) {
+    if (!value) {
+      setAllowanceInfo(undefined);
+    }
+  }
 }
 
 function justifyCell(index: number) {
@@ -132,7 +175,9 @@ function justifyCell(index: number) {
     case 3:
       return "justify-start";
     case 4:
-      return "justify-end";
+      return "justify-center";
+    case 5:
+      return "justify-center";
     default:
       return "";
   }
@@ -147,5 +192,5 @@ const headerStyles = clsx(
 const bodyStyles = clsx(
   "text-md text-left text-black-color dark:text-gray-color-6",
   "bg-white dark:bg-level-2-color dark:bg-level-2-color",
-  "divide-y dark:divide-gray-color-1 divide-gray-color-6"
+  "divide-y dark:divide-gray-color-1 divide-gray-color-6",
 );

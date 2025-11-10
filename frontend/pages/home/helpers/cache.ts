@@ -1,4 +1,4 @@
-import { AssetSymbolEnum } from "@common/const";
+import { RossetaAssetEnum } from "@common/const";
 import { Asset } from "@redux/models/AccountModels";
 import store from "@redux/Store";
 import { setTxWorker } from "@redux/transaction/TransactionReducer";
@@ -13,7 +13,7 @@ async function fetchICPTransactions(asset: Asset) {
   for (const subAccount of asset.subAccounts) {
     const params = {
       subaccount_index: subAccount.sub_account_id,
-      isOGY: asset.tokenSymbol === AssetSymbolEnum.Enum.OGY,
+      isOGY: asset.tokenSymbol === RossetaAssetEnum.Enum.OGYL,
     };
 
     promises.push(getAllTransactionsICP(params));
@@ -68,7 +68,7 @@ export async function transactionCacheRefresh(assets: Asset[]) {
     const txWorker = [];
 
     for (const asset of assets) {
-      if (asset.tokenSymbol === AssetSymbolEnum.Enum.ICP || asset.tokenSymbol === AssetSymbolEnum.Enum.OGY) {
+      if (asset.tokenSymbol === RossetaAssetEnum.Enum.ICP || asset.tokenSymbol === RossetaAssetEnum.Enum.OGYL) {
         const transactionsBySubAccounts = await fetchICPTransactions(asset);
         txWorker.push(...transactionsBySubAccounts);
       } else {

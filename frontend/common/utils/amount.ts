@@ -13,7 +13,12 @@ export const validateAmount = (amnt: string, dec: number): boolean => {
   return true;
 };
 
-export const toFullDecimal = (numb: bigint | string, decimal: number, maxDecimals?: number) => {
+export const toFullDecimal = (
+  numb: bigint | string,
+  decimal: number,
+  maxDecimals?: number,
+  withoutCommas?: boolean,
+) => {
   if (BigInt(numb) === BigInt(0)) return "0";
 
   let numbStr = numb.toString();
@@ -27,7 +32,9 @@ export const toFullDecimal = (numb: bigint | string, decimal: number, maxDecimal
       if (numbStr.length > decimal) break;
     }
   }
-  const holeStr = numbStr.slice(0, numbStr.length - decimal).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  const holeStr = withoutCommas
+    ? numbStr.slice(0, numbStr.length - decimal)
+    : numbStr.slice(0, numbStr.length - decimal).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   if (maxDecimals === 0) return holeStr;
 
   const decimalStr = numbStr.slice(numbStr.length - decimal).replace(/0+$/, "");
@@ -38,6 +45,17 @@ export const toFullDecimal = (numb: bigint | string, decimal: number, maxDecimal
     if (Number(newNumber) === 0) return "0";
     else return holeStr + "." + decimalStr.slice(0, maxDecimals || decimal);
   }
+};
+
+export const addCommasToNumber = (numberStr: string) => {
+  // Split the string into whole and decimal parts
+  const [whole, decimal] = numberStr.split(".");
+
+  // Add commas to the whole part using a regular expression
+  const wholeWithCommas = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+  // Combine the whole part with the decimal part
+  return decimal ? `${wholeWithCommas}.${decimal}` : wholeWithCommas;
 };
 
 /**

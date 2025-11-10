@@ -5,7 +5,7 @@ import QRCode from "react-qr-code";
 import { CustomCopy } from "@components/tooltip";
 import { AccountHook } from "@pages/hooks/accountHook";
 import { hexToUint8Array } from "@common/utils/hexadecimal";
-import { AssetSymbolEnum } from "@common/const";
+import { RossetaAssetEnum } from "@common/const";
 import { AccountIdentifier, SubAccount } from "@dfinity/ledger-icp";
 import { useTranslation } from "react-i18next";
 
@@ -33,7 +33,7 @@ const DrawerReceive = () => {
             copyText={copyValue()}
           />
         </div>
-        {selectedAsset?.tokenSymbol === AssetSymbolEnum.Enum.ICP && (
+        {selectedAsset?.tokenSymbol === RossetaAssetEnum.Enum.ICP && (
           <div className="flex flex-row items-center justify-center p-2 border rounded border-BorderColorLight dark:border-BorderColor bg-SecondaryColorLight dark:bg-SecondaryColor">
             <div className="flex flex-col justify-center items-center w-full">
               <p className="text-PrimaryTextColorLight dark:text-PrimaryTextColor">{t("acc.identifier")}</p>

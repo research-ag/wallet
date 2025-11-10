@@ -13,7 +13,7 @@ export default function AssetAccordion(props: AssetAccordionProps) {
   const { searchKey } = props;
   const dispatch = useAppDispatch();
   const { assets } = useAppSelector((state) => state.asset.list);
-  const { accordionIndex } = useAppSelector((state) => state.asset.helper);
+  const { accordionIndex, selectedAsset } = useAppSelector((state) => state.asset.helper);
 
   return (
     <div className="w-full max-h-[calc(100vh-13rem)] scroll-y-light">
@@ -50,7 +50,13 @@ export default function AssetAccordion(props: AssetAccordionProps) {
   );
 
   function onValueChange(tokenSymbols: string[]) {
-    const differ = accordionIndex.map((index) => tokenSymbols.includes(index));
-    if (differ.includes(true)) dispatch(setAccordionAssetIdx(tokenSymbols));
+    if (tokenSymbols.length < accordionIndex.length) {
+      const differ = accordionIndex.find((index) => !tokenSymbols.includes(index));
+      if (differ === selectedAsset?.tokenSymbol) {
+        dispatch(setAccordionAssetIdx(tokenSymbols));
+      }
+    } else {
+      dispatch(setAccordionAssetIdx(tokenSymbols));
+    }
   }
 }
